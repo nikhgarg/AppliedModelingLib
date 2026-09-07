@@ -1,0 +1,430 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "GKGMM19IterativeLocalVoting",
+  "private_source_map_sha256": "fa64599f8163036dce602b076dc8831c0f34ee63b250a494a0c31fa4b5c2fb60",
+  "public_manifest_path": "papers/GKGMM19IterativeLocalVoting/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "685d910b26379959d1dfc6cc1c102f9c52fce805fce4fece21c6492800e54842",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "definition1_lp_normed_utilities_formula",
+    "definition2_weighted_euclidean_utilities_formula",
+    "definition3_decomposable_utilities_formula",
+    "finite_c123_execution_model",
+    "lemma3_finite_holder_dual_gradient_candidate_norm_formula",
+    "modelA_response_formula",
+    "modelB_finite_response_formula",
+    "proposition1_weighted_euclidean_l2",
+    "proposition2_decomposable_linf_medians",
+    "raw_utility_query_domain",
+    "source_appendix_lemma1_uniform_direction_error",
+    "source_appendix_lemma2_bad_event_linear_rate",
+    "source_appendix_lemma4_weighted_bad_event_linear_rate",
+    "source_appendix_theorem4_expected_subgradient",
+    "source_appendix_theorem5_ssgm_convergence",
+    "source_definition4_dlcd",
+    "theorem1_lp_normed_dual_cases",
+    "theorem2_modelB_holder_dual_norms",
+    "theorem3_convergent_l2_modelB_is_directional_equilibrium",
+    "theorem3_projected_source_model"
+  ],
+  "selected_source_items": {
+    "definition1_lp_normed_utilities_formula": {
+      "source_anchors": [
+        {
+          "line_end": 475,
+          "line_start": 474,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 1. Lp normed utilities. The voter utility function is Lp normed if fv (x) =\n−kx − xv kp , ∀x ∈ X .",
+          "quoted_text_sha256": "561f40014ad7adfa959894f0fac72b31c9a0579f5923f2311ded225b9cc8ea65"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition2_weighted_euclidean_utilities_formula": {
+      "source_anchors": [
+        {
+          "line_end": 534,
+          "line_start": 521,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 2. Weighted Euclidean utilities. Let the solution space X P           be decomposable\ninto K different sub-spaces, so that x = (x1 , . . . , xK ) for each x ∈ X (where K         k\n                                                                                  k=1 dim(x ) =\nM ). Suppose that the utility function of the voter v is\n                                         K\n                                         X  wvk\n                              fv (x) = −          kxk − xkv k2 .\n                                           kwv k2\n                                         k=1\n\nwhere wv is a voter-specific weight vector, then the function is a Weighted Euclidean utility\nfunction. We further assume that wv ∈ W ⊂ RK      + and xv are independently drawn for each\nvoter v from a joint probability distribution with a bounded and measurable density function,\nwith W nonempty, bounded, closed, and convex.",
+          "quoted_text_sha256": "4b6ada67eaa3f735581d55746f9369e5b8e01bedbb48035a8228c0bca891ff7e"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition3_decomposable_utilities_formula": {
+      "source_anchors": [
+        {
+          "line_end": 594,
+          "line_start": 582,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 3. Decomposable utilities. A voter utility functionPis decomposable if there\n                                                                     m=1 fv (x ).\nexists concave functions fvm for m ∈ {1 . . . M } such that fv (x) = M    m m\n\n\n   If the utility functions for the voters are decomposable, then we can show that our\nalgorithm under L\n                   ∞ neighborhoods converges to the vector of medians of voters' ideal points\n                                    m\non each dimension. Suppose that hX is the marginal density function of the random variable\nxm             m                          m\n v , and let x̄ be the set of medians of xv . (By   set of medians, we mean the set of points\nsuch that, on each dimension, the mass of voters with ideal points above and below.)",
+          "quoted_text_sha256": "97cfa739aa239fa86979a5fdcdf80d090b5e20537712d870e2b63dc35197e3e9"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "finite_c123_execution_model": {
+      "source_anchors": [
+        {
+          "line_end": 452,
+          "line_start": 449,
+          "publication_locator": "cited publication",
+          "quoted_text": " C1 The solution space X ⊆ RM is non-empty, bounded, closed, and convex.\n C2 Each voter v has a unique ideal solution xv ∈ X .\n C3 The ideal point xv of each voter is drawn independently from a probability distribution\n      with a bounded and measurable density function hX .",
+          "quoted_text_sha256": "d85fbca28dcb346ebad9ca19c16b7e93d218b750d3081b8a58170129d1f58739"
+        },
+        {
+          "line_end": 190,
+          "line_start": 177,
+          "publication_locator": "cited publication",
+          "quoted_text": " Algorithm 1: Iterative Local Voting (ILV)\n  Inputs: Initial solution x0 ∈ X , tolerance ϵ > 0, an integer N , initial radius r0 > 0,\n    termination time T , norm q for local neighborhood.\n   Output:     Solution x.\n\n       • For t ≥ 1, sample a voter vt ∈ V at random from the population; set rt = r0 /t\n           and elicit\n\n\n                             x0t = arg maxx∈{s:ks−xt−1 kq ≤rt } fvt (x),             (1)\n                                         0\n           and then compute xt = [xt ]X , where [·]X is a projection onto space X ; i.e. ask\n           the voter to move to her favorite point within constraints, and then project the\n           reported point onto X .",
+          "quoted_text_sha256": "456fba46733999390cf3482fec98c6beb035b7d15d9c2b7385260ff6163c9c76"
+        },
+        {
+          "line_end": 124,
+          "line_start": 118,
+          "publication_locator": "cited publication",
+          "quoted_text": "   More formally, consider a M -dimensional societal decision problem in X  ⊂ RM and a\npopulation of voters V , where each voter v ∈ V has bounded utility fv (x) ∈ R, ∀ x ∈ X .\nThen we consider the class of algorithms described in Algorithm 1. We study the algorithm\nclass under two plausible models of how voters respond to query (1), which asks for the\nvoter's favorite point in a local region.\n\n",
+          "quoted_text_sha256": "3fd88f38751ae907f43cde8cf8790dccf33c4a765293d633c5e6d97b40ac279c"
+        }
+      ],
+      "source_kind": "model"
+    },
+    "lemma3_finite_holder_dual_gradient_candidate_norm_formula": {
+      "source_anchors": [
+        {
+          "line_end": 2160,
+          "line_start": 2158,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 3. ∀ (p, q) s.t. p > 0, q > 0, and 1/p + 1/q = 1, k∇kx − xv kp kq = 1, ∀ x s.t.\n       v for any m.\nxm 6= xm",
+          "quoted_text_sha256": "4d2e841bfda325105d4f95380582760e995a56cc9fe54df062442d1d91f21604"
+        },
+        {
+          "line_end": 2630,
+          "line_start": 2575,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 3 ∀ (p, q) s.t. p > 0, q > 0, 1/p+1/q = 1, k∇kx−xv kp kq = 1, ∀ x s.t. ∀ m, xm 6= xm\n                                                                                         v .\n\nProof. If xm 6= xm\n                 v ,∀m :\n                                                                                  !1/p\n                                                              X\n                          ∇m kx − xv kp = ∇m                       |xm − xm\n                                                                          v |\n                                                                             p\n\n                                                               m\n                                                   1    ∇m |xm − xmv |\n                                                                       p\n                                               =      P\n                                                   p(    |xm − xm  p 1−1/p\n                                                             m  v | )\n                                                   |xm − xm\n                                                          v |\n                                                              p−1 (∇ |xm − xm |)\n                                                                    m       v\n                                               =\n                                                                   kx − xv kp−1\n                                                                            p\n\nThen\n\n                         |xm − xm\n                                v |\n                                   p−1 (∇ |xm − xm |)\n                                         m       v\n k∇kx − xv kp kq = k                                                  kq\n                                    kx − xv kp−1\n                                             p\n                                                                                             !1/q\n                              1              X                                         q\n                                                        m\n                    =                              |x       − xm\n                                                               v |\n                                                                   p−1\n                                                                       (∇m |xm − xm\n                                                                                  v |)\n                        kx − xv kp−1\n                                 p            m\n                                                                           !1/q\n                              1              X\n                                                        m\n                    =                              |x       − xm\n                                                               v |\n                                                                  (p−1)q\n                        kx − xv kp−1\n                                 p            m\n                             1                p/q\n                    =            p−1 kx − xv kp                                                     (p − 1)q = p\n                        kx − xv kp\n                    =1",
+          "quoted_text_sha256": "1006bec16c4cd4bed7a2d1496b3a1a57a519106294850e23f99a9b6c6684c9e1"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "modelA_response_formula": {
+      "source_anchors": [
+        {
+          "line_end": 136,
+          "line_start": 126,
+          "publication_locator": "cited publication",
+          "quoted_text": "• Model A:       One possibility is that voters exactly perform the maximization asked of\n  them, responding with their favorite point in the given L\n                                                                       q norm constraint set. In other\n\n  words, they return a point arg maxx∈{s:ks−x                    fvt (x). Note that by definition of this\n                                                  t−1 kq ≤rt }\n  movement, the algorithm is     myopically incentive compatible : if a voter is the last voter\n  and no projections are used, then truthfully performing this movement is the dominant\n  strategy.   In general, the mechanism is not globally incentive compatible, nor incentive\n  compatible with projections onto the feasible region. Simple examples of manipulations\n  in both instances exist.",
+          "quoted_text_sha256": "f0c70968e7cbf0bb9988865d4dab084813bd594382c6c228be9b01787a329840"
+        },
+        {
+          "line_end": 190,
+          "line_start": 177,
+          "publication_locator": "cited publication",
+          "quoted_text": " Algorithm 1: Iterative Local Voting (ILV)\n  Inputs: Initial solution x0 ∈ X , tolerance ϵ > 0, an integer N , initial radius r0 > 0,\n    termination time T , norm q for local neighborhood.\n   Output:     Solution x.\n\n       • For t ≥ 1, sample a voter vt ∈ V at random from the population; set rt = r0 /t\n           and elicit\n\n\n                             x0t = arg maxx∈{s:ks−xt−1 kq ≤rt } fvt (x),             (1)\n                                         0\n           and then compute xt = [xt ]X , where [·]X is a projection onto space X ; i.e. ask\n           the voter to move to her favorite point within constraints, and then project the\n           reported point onto X .",
+          "quoted_text_sha256": "456fba46733999390cf3482fec98c6beb035b7d15d9c2b7385260ff6163c9c76"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "modelB_finite_response_formula": {
+      "source_anchors": [
+        {
+          "line_end": 148,
+          "line_start": 140,
+          "publication_locator": "cited publication",
+          "quoted_text": "• Model B:       On the other hand, voters may not actually search within the constraint set\n  to find their favorite point inside of it. Rather, a voter v may have an idea about how\n  to best improve the current point and then move in that direction to the boundary of\n  the given constraint set. This model leads to a voter moving the current solution in the\n                                                                                           gt\n  direction of the gradient of her utility function, returning a point xt−1 + rt\n                                                                                         kgt kq , for some\n  gt ∈ ∂fvt (xt−1 ). Note that ∂f (x) denotes the set of subgradients of a function f at x, i.e.\n  g ∈ ∂f (x) if ∀y , f (y) − f (x) ≥ g T (y − x).",
+          "quoted_text_sha256": "332c310cecb177f0aa5aaecc80efbcb5304eb922fafef6b3b6c5b01baa3a7093"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "proposition1_weighted_euclidean_l2": {
+      "source_anchors": [
+        {
+          "line_end": 559,
+          "line_start": 556,
+          "publication_locator": "cited publication",
+          "quoted_text": "Proposition 1. Suppose that conditions C1 , C2 , and C3 are satisfied, the voter utilities are\nWeighted Euclidean, and voters correctly respond to query (1) according to either Model A\nor Model B. Then, ILV with L2 neighborhoods converges with probability 1 to the societal\noptimal point.",
+          "quoted_text_sha256": "990bb46813b9ece391ad04eb5232b188e9b87bc7f24734f47e1b00b26531cdc8"
+        },
+        {
+          "line_end": 194,
+          "line_start": 118,
+          "publication_locator": "cited publication",
+          "quoted_text": "   More formally, consider a M -dimensional societal decision problem in X  ⊂ RM and a\npopulation of voters V , where each voter v ∈ V has bounded utility fv (x) ∈ R, ∀ x ∈ X .\nThen we consider the class of algorithms described in Algorithm 1. We study the algorithm\nclass under two plausible models of how voters respond to query (1), which asks for the\nvoter's favorite point in a local region.\n\n\n\n• Model A:       One possibility is that voters exactly perform the maximization asked of\n  them, responding with their favorite point in the given L\n                                                                       q norm constraint set. In other\n\n  words, they return a point arg maxx∈{s:ks−x                    fvt (x). Note that by definition of this\n                                                  t−1 kq ≤rt }\n  movement, the algorithm is     myopically incentive compatible : if a voter is the last voter\n  and no projections are used, then truthfully performing this movement is the dominant\n  strategy.   In general, the mechanism is not globally incentive compatible, nor incentive\n  compatible with projections onto the feasible region. Simple examples of manipulations\n  in both instances exist.\n\n\n\n• Model B:       On the other hand, voters may not actually search within the constraint set\n  to find their favorite point inside of it. Rather, a voter v may have an idea about how\n  to best improve the current point and then move in that direction to the boundary of\n  the given constraint set. This model leads to a voter moving the current solution in the\n                                                                                           gt\n  direction of the gradient of her utility function, returning a point xt−1 + rt\n                                                                                         kgt kq , for some\n  gt ∈ ∂fvt (xt−1 ). Note that ∂f (x) denotes the set of subgradients of a function f at x, i.e.\n  g ∈ ∂f (x) if ∀y , f (y) − f (x) ≥ g T (y − x).\n\n   ILV is directly inspired by the stochastic approximation approach to solve optimization\nproblems (Robbins & Monro, 1951), especially stochastic gradient descent (SGD) and the\nstochastic subgradient method (SSGM). The idea is that if (a) voter preferences are drawn\nfrom some probability distribution and (b) the response of a voter to the query (1) moves the\nsolution approximately in the direction of her utility gradient, then this procedure              almost\nimplements stochastic gradient descent for minimizing negative expected utility.\n\n   The caveat is that although the procedure can potentially obtain the direction of the\ngradient of the voter utilities, it cannot in general obtain any information about its magni-\ntude since the movement norm is chosen by the procedure itself. However, we show that for\ncertain plausible utility and voter response models, the algorithm does indeed converge to a\nunique point with desirable properties, including cases in which it converges to the societal\noptimum.\n\n   Note that with such feedback and without any additional assumptions on voter prefer-\nences (e.g. that voter utilities are normalized to the same scale), no algorithm has any hope\nof finding a desirable solution that depends on the cardinal values of voters' utilities, e.g., the\nsocial welfare maximizing solution (the solution that maximizes the sum of agent utilities).\nThis is because an algorithm that uses only ordinal information about voter preferences is\ninsensitive to any scaling or even monotonic transformations of those preferences.\n\n\n\n                                                 317\n\f                          Garg, Kamble, Goel, Marn, & Munagala\n\n\n Algorithm 1: Iterative Local Voting (ILV)\n  Inputs: Initial solution x0 ∈ X , tolerance ϵ > 0, an integer N , initial radius r0 > 0,\n    termination time T , norm q for local neighborhood.\n   Output:     Solution x.\n\n       • For t ≥ 1, sample a voter vt ∈ V at random from the population; set rt = r0 /t\n           and elicit\n\n\n                             x0t = arg maxx∈{s:ks−xt−1 kq ≤rt } fvt (x),             (1)\n                                         0\n           and then compute xt = [xt ]X , where [·]X is a projection onto space X ; i.e. ask\n           the voter to move to her favorite point within constraints, and then project the\n           reported point onto X .\n\n\n       • Stop when either t = T , in which case return xT , or when\n         maxl, m∈{t−N,...,t} |xl − xm | ≤ ϵ, in which case return x = xt .",
+          "quoted_text_sha256": "2e2577f5a9e57a360a6889d0e0028a51cf43d66d9c5529c76af3e0038e041d3b"
+        },
+        {
+          "line_end": 465,
+          "line_start": 449,
+          "publication_locator": "cited publication",
+          "quoted_text": " C1 The solution space X ⊆ RM is non-empty, bounded, closed, and convex.\n C2 Each voter v has a unique ideal solution xv ∈ X .\n C3 The ideal point xv of each voter is drawn independently from a probability distribution\n      with a bounded and measurable density function hX .\n\n\nUnder this model, for a solution x ∈ X , the societal utility is given by Ev [fv (x)]. and the\nsocial optimal (SO) solution is any x\n                                         ∗ ∈ arg max\n                                                    x∈X Ev [fv (x)].\n   “Convergence” of    ILV refers to the convergence of the sequence of random variables\n{xt }t≥1 to some x ∈ X with probability 1, assuming that the algorithm is allowed to run\nindefinitely (this notion of convergence also implies the termination of the algorithm with\nprobability 1).\n   In the following subsections, we present several classes of utility functions for which\nthe algorithm converges, summarized in Table 1. We further formalize the relationship to\ndirectional equilibria in Section 3.3.",
+          "quoted_text_sha256": "068930249fcbda36303cd0b92d52c361f3897f50d30b02e4dbdfa4f0155c17b3"
+        },
+        {
+          "line_end": 554,
+          "line_start": 521,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 2. Weighted Euclidean utilities. Let the solution space X P           be decomposable\ninto K different sub-spaces, so that x = (x1 , . . . , xK ) for each x ∈ X (where K         k\n                                                                                  k=1 dim(x ) =\nM ). Suppose that the utility function of the voter v is\n                                         K\n                                         X  wvk\n                              fv (x) = −          kxk − xkv k2 .\n                                           kwv k2\n                                         k=1\n\nwhere wv is a voter-specific weight vector, then the function is a Weighted Euclidean utility\nfunction. We further assume that wv ∈ W ⊂ RK      + and xv are independently drawn for each\nvoter v from a joint probability distribution with a bounded and measurable density function,\nwith W nonempty, bounded, closed, and convex.\n   This utility function can be interpreted as follows: the decision-making problem is de-\n                                                                           k\ncomposable into K sub-problems, and each voter v has an ideal point xv and a weight wv\n                                                                                               k\n\nfor each sub-problem k , so that the voter's disutility for a solution is the weighted sum of\nthe Euclidean distances to the ideal points in each sub-problems.       Such utility functions\nmay emerge in facility location problems, for example, where voters have preferences on\n\n\n\n                                               323\n\f                        Garg, Kamble, Goel, Marn, & Munagala\n\n\nthe locations of multiple facilities on a map. This utility form is also the one most closely\nrelated to the existing literature on Directional Equilibria and Quadratic Voting, in which\npreferences are linear. To recover the weighted linear preferences case, set K      = M , with\neach sub-space of dimension 1. In this case, the following holds:\n",
+          "quoted_text_sha256": "5515def383072a3947b0218d103c5357bc70eab4617fdb4ace4e51379c1171ac"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "proposition2_decomposable_linf_medians": {
+      "source_anchors": [
+        {
+          "line_end": 600,
+          "line_start": 587,
+          "publication_locator": "cited publication",
+          "quoted_text": "   If the utility functions for the voters are decomposable, then we can show that our\nalgorithm under L\n                   ∞ neighborhoods converges to the vector of medians of voters' ideal points\n                                    m\non each dimension. Suppose that hX is the marginal density function of the random variable\nxm             m                          m\n v , and let x̄ be the set of medians of xv . (By   set of medians, we mean the set of points\nsuch that, on each dimension, the mass of voters with ideal points above and below.)\n\n\nProposition 2. Suppose that conditions C1 , C2 , and C3 are satisfied, the voter utilities\nare decomposable, and voters respond to query (1) according to either Model A or Model\nB. Then, ILV with L∞ neighborhoods converges with probability 1 to a point in the set of\nmedians x̄.",
+          "quoted_text_sha256": "ed305f6e818e7649c8c578ccdd23721b8601f52698540334093fafc33c510caa"
+        },
+        {
+          "line_end": 194,
+          "line_start": 118,
+          "publication_locator": "cited publication",
+          "quoted_text": "   More formally, consider a M -dimensional societal decision problem in X  ⊂ RM and a\npopulation of voters V , where each voter v ∈ V has bounded utility fv (x) ∈ R, ∀ x ∈ X .\nThen we consider the class of algorithms described in Algorithm 1. We study the algorithm\nclass under two plausible models of how voters respond to query (1), which asks for the\nvoter's favorite point in a local region.\n\n\n\n• Model A:       One possibility is that voters exactly perform the maximization asked of\n  them, responding with their favorite point in the given L\n                                                                       q norm constraint set. In other\n\n  words, they return a point arg maxx∈{s:ks−x                    fvt (x). Note that by definition of this\n                                                  t−1 kq ≤rt }\n  movement, the algorithm is     myopically incentive compatible : if a voter is the last voter\n  and no projections are used, then truthfully performing this movement is the dominant\n  strategy.   In general, the mechanism is not globally incentive compatible, nor incentive\n  compatible with projections onto the feasible region. Simple examples of manipulations\n  in both instances exist.\n\n\n\n• Model B:       On the other hand, voters may not actually search within the constraint set\n  to find their favorite point inside of it. Rather, a voter v may have an idea about how\n  to best improve the current point and then move in that direction to the boundary of\n  the given constraint set. This model leads to a voter moving the current solution in the\n                                                                                           gt\n  direction of the gradient of her utility function, returning a point xt−1 + rt\n                                                                                         kgt kq , for some\n  gt ∈ ∂fvt (xt−1 ). Note that ∂f (x) denotes the set of subgradients of a function f at x, i.e.\n  g ∈ ∂f (x) if ∀y , f (y) − f (x) ≥ g T (y − x).\n\n   ILV is directly inspired by the stochastic approximation approach to solve optimization\nproblems (Robbins & Monro, 1951), especially stochastic gradient descent (SGD) and the\nstochastic subgradient method (SSGM). The idea is that if (a) voter preferences are drawn\nfrom some probability distribution and (b) the response of a voter to the query (1) moves the\nsolution approximately in the direction of her utility gradient, then this procedure              almost\nimplements stochastic gradient descent for minimizing negative expected utility.\n\n   The caveat is that although the procedure can potentially obtain the direction of the\ngradient of the voter utilities, it cannot in general obtain any information about its magni-\ntude since the movement norm is chosen by the procedure itself. However, we show that for\ncertain plausible utility and voter response models, the algorithm does indeed converge to a\nunique point with desirable properties, including cases in which it converges to the societal\noptimum.\n\n   Note that with such feedback and without any additional assumptions on voter prefer-\nences (e.g. that voter utilities are normalized to the same scale), no algorithm has any hope\nof finding a desirable solution that depends on the cardinal values of voters' utilities, e.g., the\nsocial welfare maximizing solution (the solution that maximizes the sum of agent utilities).\nThis is because an algorithm that uses only ordinal information about voter preferences is\ninsensitive to any scaling or even monotonic transformations of those preferences.\n\n\n\n                                                 317\n\f                          Garg, Kamble, Goel, Marn, & Munagala\n\n\n Algorithm 1: Iterative Local Voting (ILV)\n  Inputs: Initial solution x0 ∈ X , tolerance ϵ > 0, an integer N , initial radius r0 > 0,\n    termination time T , norm q for local neighborhood.\n   Output:     Solution x.\n\n       • For t ≥ 1, sample a voter vt ∈ V at random from the population; set rt = r0 /t\n           and elicit\n\n\n                             x0t = arg maxx∈{s:ks−xt−1 kq ≤rt } fvt (x),             (1)\n                                         0\n           and then compute xt = [xt ]X , where [·]X is a projection onto space X ; i.e. ask\n           the voter to move to her favorite point within constraints, and then project the\n           reported point onto X .\n\n\n       • Stop when either t = T , in which case return xT , or when\n         maxl, m∈{t−N,...,t} |xl − xm | ≤ ϵ, in which case return x = xt .",
+          "quoted_text_sha256": "2e2577f5a9e57a360a6889d0e0028a51cf43d66d9c5529c76af3e0038e041d3b"
+        },
+        {
+          "line_end": 465,
+          "line_start": 449,
+          "publication_locator": "cited publication",
+          "quoted_text": " C1 The solution space X ⊆ RM is non-empty, bounded, closed, and convex.\n C2 Each voter v has a unique ideal solution xv ∈ X .\n C3 The ideal point xv of each voter is drawn independently from a probability distribution\n      with a bounded and measurable density function hX .\n\n\nUnder this model, for a solution x ∈ X , the societal utility is given by Ev [fv (x)]. and the\nsocial optimal (SO) solution is any x\n                                         ∗ ∈ arg max\n                                                    x∈X Ev [fv (x)].\n   “Convergence” of    ILV refers to the convergence of the sequence of random variables\n{xt }t≥1 to some x ∈ X with probability 1, assuming that the algorithm is allowed to run\nindefinitely (this notion of convergence also implies the termination of the algorithm with\nprobability 1).\n   In the following subsections, we present several classes of utility functions for which\nthe algorithm converges, summarized in Table 1. We further formalize the relationship to\ndirectional equilibria in Section 3.3.",
+          "quoted_text_sha256": "068930249fcbda36303cd0b92d52c361f3897f50d30b02e4dbdfa4f0155c17b3"
+        },
+        {
+          "line_end": 586,
+          "line_start": 574,
+          "publication_locator": "cited publication",
+          "quoted_text": "Next consider the general class of decomposable utilities, motivated by the fact that the\nalgorithm with L\n                  ∞ neighborhoods is of special interest since they are easy for humans to\n\nunderstand: one can change each dimension up to a certain amount, independent of the\nothers.\n\n\nDefinition 3. Decomposable utilities. A voter utility functionPis decomposable if there\n                                                                     m=1 fv (x ).\nexists concave functions fvm for m ∈ {1 . . . M } such that fv (x) = M    m m\n\n",
+          "quoted_text_sha256": "00506493c7eb1a4361b160fecf4d32d363d9a1d4e6be440cc3e368b6dcf7071a"
+        },
+        {
+          "line_end": 2221,
+          "line_start": 2203,
+          "publication_locator": "cited publication",
+          "quoted_text": "   Now, we sketch the proof for fully decomposable utility functions and L\n                                                                                     ∞ neighborhoods.\n\n\nProposition 2. Suppose that conditions C1 , C2 , and C3 are satisfied, the voter utilities\nare decomposable, and voters respond to query (1) according to either Model A or Model\nB. Then, ILV with L∞ neighborhoods converges with probability 1 to a point in the set of\nmedians x̄.\nProof. Consider each dimension separately. If xm      m\n                                               t−1 < xv , then the sampled voter increases\nxm                     m            m                         m       m\n t−1 by rt as long as xt−1 + rt ≤ xv . On the other hand if xt−1 > xv , then the sampled\n                 m                     m           m\nvoter decreases xt−1 by rt as long as xt−1 − rt ≥ xv . Thus except for when a voter's ideal\nsolution is too close to the current point, the algorithm can be seen as performing SSGM\non each dimension separately as if the utility function was L\n                                                                         1 (the absolute value) on each\n\ndimension. Thus a proof akin to that of Theorem 1 with p = 1, q = ∞ holds.",
+          "quoted_text_sha256": "d63c2207ced35f6cb2aceb9fec8633b53bfaeaf59b46ca1bcef68e4e6af881a2"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "raw_utility_query_domain": {
+      "source_anchors": [
+        {
+          "line_end": 190,
+          "line_start": 177,
+          "publication_locator": "cited publication",
+          "quoted_text": " Algorithm 1: Iterative Local Voting (ILV)\n  Inputs: Initial solution x0 ∈ X , tolerance ϵ > 0, an integer N , initial radius r0 > 0,\n    termination time T , norm q for local neighborhood.\n   Output:     Solution x.\n\n       • For t ≥ 1, sample a voter vt ∈ V at random from the population; set rt = r0 /t\n           and elicit\n\n\n                             x0t = arg maxx∈{s:ks−xt−1 kq ≤rt } fvt (x),             (1)\n                                         0\n           and then compute xt = [xt ]X , where [·]X is a projection onto space X ; i.e. ask\n           the voter to move to her favorite point within constraints, and then project the\n           reported point onto X .",
+          "quoted_text_sha256": "456fba46733999390cf3482fec98c6beb035b7d15d9c2b7385260ff6163c9c76"
+        },
+        {
+          "line_end": 475,
+          "line_start": 474,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 1. Lp normed utilities. The voter utility function is Lp normed if fv (x) =\n−kx − xv kp , ∀x ∈ X .",
+          "quoted_text_sha256": "561f40014ad7adfa959894f0fac72b31c9a0579f5923f2311ded225b9cc8ea65"
+        },
+        {
+          "line_end": 537,
+          "line_start": 521,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 2. Weighted Euclidean utilities. Let the solution space X P           be decomposable\ninto K different sub-spaces, so that x = (x1 , . . . , xK ) for each x ∈ X (where K         k\n                                                                                  k=1 dim(x ) =\nM ). Suppose that the utility function of the voter v is\n                                         K\n                                         X  wvk\n                              fv (x) = −          kxk − xkv k2 .\n                                           kwv k2\n                                         k=1\n\nwhere wv is a voter-specific weight vector, then the function is a Weighted Euclidean utility\nfunction. We further assume that wv ∈ W ⊂ RK      + and xv are independently drawn for each\nvoter v from a joint probability distribution with a bounded and measurable density function,\nwith W nonempty, bounded, closed, and convex.\n   This utility function can be interpreted as follows: the decision-making problem is de-\n                                                                           k\ncomposable into K sub-problems, and each voter v has an ideal point xv and a weight wv",
+          "quoted_text_sha256": "725e54a89992465a50ac36fdfe4f92426fe349fca1453c0d0465f8a68ab77acf"
+        },
+        {
+          "line_end": 584,
+          "line_start": 574,
+          "publication_locator": "cited publication",
+          "quoted_text": "Next consider the general class of decomposable utilities, motivated by the fact that the\nalgorithm with L\n                  ∞ neighborhoods is of special interest since they are easy for humans to\n\nunderstand: one can change each dimension up to a certain amount, independent of the\nothers.\n\n\nDefinition 3. Decomposable utilities. A voter utility functionPis decomposable if there\n                                                                     m=1 fv (x ).\nexists concave functions fvm for m ∈ {1 . . . M } such that fv (x) = M    m m",
+          "quoted_text_sha256": "5d489b16b19f131e44f8ef3267e841275574ab774af248bd014c908d6e527bb6"
+        }
+      ],
+      "source_kind": "model"
+    },
+    "source_appendix_lemma1_uniform_direction_error": {
+      "source_anchors": [
+        {
+          "line_end": 2090,
+          "line_start": 2082,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 1. For q ∈ {1, 2, ∞}, there exists K2 ∈ R+ s.t. kg̃v (x) − gt k2 ≤ K2 , ∀ gt ∈ ∂fv (x)\nfor any v and x.\n\nThe lemma bounds the error in the movement direction from the gradient direction, by\nnoting that both the movement direction and the gradient direction have bounded norms.\n\n\nWe also need the following lemma, which is proved separately for each case in the following\nsections.",
+          "quoted_text_sha256": "0b7f0ce319d9e7c90af0693431b9dec77ef88bd6025859e91996473c9b0b6b7b"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "source_appendix_lemma2_bad_event_linear_rate": {
+      "source_anchors": [
+        {
+          "line_end": 2104,
+          "line_start": 2093,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 2. Suppose that fv (x) , kxv − xkp and define the function\n\n                                    At , I{g̃vt (xt ) ∈\n                                                      / ∂fvt (xt )},\n\nwhere g̃vt (xt ) is as defined in (2). Then there exists C ∈ R s.t. ∀ n, P(At = 1|Ft ) ≤ Crt ,\nwhen (p = 2, q = 2), (p = 1, q = ∞), or (p = ∞, q = 1).\n\nThe lemma can be interpreted as follows: At indicates a `bad' event, when a voter may not\nbe providing a true subgradient of her utility function. However, the probability of the event\noccurring vanishes with rt , which, as we will see below, is the right rate for the algorithm\nto converge.",
+          "quoted_text_sha256": "5ecd331165db7bed61cfd44191d8d87865cecd1ffc0b8deec1f1d6bbeabbc296"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "source_appendix_lemma4_weighted_bad_event_linear_rate": {
+      "source_anchors": [
+        {
+          "line_end": 2190,
+          "line_start": 2183,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 4. Suppose that fv (x) ,                   wvk     k   k\n                                            k=1 kwv k2 kx − xv k2   , and define the function\n\n                                                        / ∂fvt (xt )},\n                                      At , I{g̃vt (xt ) ∈\n\nwhere g̃vt (xt ) is as defined in (2) for q = 2. Then there exists C ∈ R s.t. ∀ n, P(At =\n1|Ft ) ≤ Crt .",
+          "quoted_text_sha256": "3bdc451469a5c1eba71b0f350b0b74492b15d80aaacd30d165cb3bc87e0eb830"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "source_appendix_theorem4_expected_subgradient": {
+      "source_anchors": [
+        {
+          "line_end": 1991,
+          "line_start": 1976,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 4. (Nemirovski et al., 2009; Strassen,\n                                            R       1965) Let θ ∈ Θ be a random vector with\ndistribution P. Let f (x) = E[f (x, θ)] = Θ f (x, θ)dP (θ), for x ∈ X , a non-empty bounded\n                      ¯\nclosed convex set, and assume the expectation is well-defined and finite valued. Suppose that\nf (·, θ), θ ∈ Θ is convex and f¯(·) is continuous and finite valued in a neighborhood of point\nx.\n     For each θ, choose any g(x, θ) ∈ ∂f (x, θ). Then, there exists ḡ(x) ∈ ∂ f¯(x) s.t. ḡ(x) =\nEθ [g(x, θ)].\n\n\n   This theorem says that the expected value of the sub-gradient of the utility at any point\nx across voters is a subgradient of the societal utility at x, irrespective of how the voters\nchoose the subgradient when there are multiple subgradients, i.e., when the utility function\nis not differentiable. This key result allows us to use the subgradient of utility function of a\nsampled voter as an unbaised estimate of the societal subgradient.",
+          "quoted_text_sha256": "479bd5e8745cadfad078e36919f2bc0612e25f1e36fe876109bdc45b7b067787"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "source_appendix_theorem5_ssgm_convergence": {
+      "source_anchors": [
+        {
+          "line_end": 2024,
+          "line_start": 2004,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 5. (Jiang & Walrand, 2010) Consider the above update rule. If\n                                 f (·) has a unique minimizer x∗ ∈ X\n                                         X           X\n                                 rt > 0,     rt = ∞,    rt2 < ∞\n                                          t            t\n                                 ∃C1 ∈ R < ∞ s.t. k∂f (x)k2 ≤ C1 , ∀ x ∈ X\n                                 ∃C2 ∈ R < ∞ s.t. Et [kzt k2 ] ≤ C2 , ∀ t\n                                 ∃C3 ∈ R < ∞ s.t. kbt k2 ≤ C3 , ∀ t\n                                 X\n                                    rt kbt k < ∞ w.p. 1\n                                  t\n\nThen xt    → x∗   w.p. 1 as t → ∞.\n   Note: Jiang and Walrand (2010) prove the result for gradients, though the same proof\nfollows for subgradients. Only the inequality [x\n                                                             ∗ − x ]T g ≤ f (x∗ ) − f (x ) for gradient g\n                                                                  t    t                t                t\nat iteration t is used, which holds for subgradients.              Boyd and Mutapcic (2006) provide\na general discussion of subgradient methods, along with similar results.                  Shor (1998), in\nTheorem 46, provide a convergence proof for the stochastic subgradient method without\nprojections and the extra noise terms.",
+          "quoted_text_sha256": "622523be4c004d150ef6fc4ec99a4de41c938fa5c26808cb46e8abaec10f5602"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "source_definition4_dlcd": {
+      "source_anchors": [
+        {
+          "line_end": 716,
+          "line_start": 688,
+          "publication_locator": "cited publication",
+          "quoted_text": "   Rather, we consider an unconstrained budget allocation problem, one in which a voter's\nutility includes a term for the budget deficit.             Let E   ⊆ {1 . . . M }, I = {1 . . . M } \\ E be\nthe expenditure and income items, respectively. Then the general\n                       P          P                                                    budget utility function is\nfv (x) = gv (x) − d(        e              i\n                       e∈E x −        i∈I x ), where d is an increasing function on the deficit.\n   For example, suppose a voter's disutility was proportional to the                           square of the budget\ndeficit (she especially dislikes large budget deficits); then, this term adds complex depen-\ndencies between the budget items. In general, nothing is known about convergence of Algo-\nrithm 1 with such utilities, as the deficit term may add complex dependencies between the\ndimensions. However, if the voter utility functions are decomposable across the dimensions\nand L\n      ∞ neighborhoods used, then the results of Section 3.2 can be applied. We propose\n\nthe following class of decomposable utility functions for the budgeting problem, achieved\nby assuming that the cost for the deficit is linear, and call the class “decomposable with a\nlinear cost for deficit,\" or DLCD.\n\n\nDefinition 4. Let fv (x) be DLCD if\n                                      M\n                                                                                       !\n                                      X                      X           X\n                           fv (x) =         fvm (xm ) − wv         e\n                                                                   x −         x   i\n                                                                                           ,\n                                      m=1                    e∈E         i∈I\n\nwhere fvm is a concave function for each m and wv ∈ R+ .",
+          "quoted_text_sha256": "8b3dabcc3cba5f422d72b37a0089f3d9589f04fb2d46810558cb80dbb0e30f76"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "theorem1_lp_normed_dual_cases": {
+      "source_anchors": [
+        {
+          "line_end": 484,
+          "line_start": 481,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 1. Suppose that conditions C1 , C2 , and C3 are satisfied, the voter utilities are Lp\nnormed, and voters respond to query (1) according to either Model A or Model B. Then,\nILV with Lq neighborhoods converges to the societal optimal point w.p. 1 when (p, q) = (2, 2),\n(1, ∞), or (∞, 1).",
+          "quoted_text_sha256": "d250b02b94eaad9e5a058c0655186a26d989a1346c4c43c6c4061a284e9fd6d4"
+        },
+        {
+          "line_end": 194,
+          "line_start": 118,
+          "publication_locator": "cited publication",
+          "quoted_text": "   More formally, consider a M -dimensional societal decision problem in X  ⊂ RM and a\npopulation of voters V , where each voter v ∈ V has bounded utility fv (x) ∈ R, ∀ x ∈ X .\nThen we consider the class of algorithms described in Algorithm 1. We study the algorithm\nclass under two plausible models of how voters respond to query (1), which asks for the\nvoter's favorite point in a local region.\n\n\n\n• Model A:       One possibility is that voters exactly perform the maximization asked of\n  them, responding with their favorite point in the given L\n                                                                       q norm constraint set. In other\n\n  words, they return a point arg maxx∈{s:ks−x                    fvt (x). Note that by definition of this\n                                                  t−1 kq ≤rt }\n  movement, the algorithm is     myopically incentive compatible : if a voter is the last voter\n  and no projections are used, then truthfully performing this movement is the dominant\n  strategy.   In general, the mechanism is not globally incentive compatible, nor incentive\n  compatible with projections onto the feasible region. Simple examples of manipulations\n  in both instances exist.\n\n\n\n• Model B:       On the other hand, voters may not actually search within the constraint set\n  to find their favorite point inside of it. Rather, a voter v may have an idea about how\n  to best improve the current point and then move in that direction to the boundary of\n  the given constraint set. This model leads to a voter moving the current solution in the\n                                                                                           gt\n  direction of the gradient of her utility function, returning a point xt−1 + rt\n                                                                                         kgt kq , for some\n  gt ∈ ∂fvt (xt−1 ). Note that ∂f (x) denotes the set of subgradients of a function f at x, i.e.\n  g ∈ ∂f (x) if ∀y , f (y) − f (x) ≥ g T (y − x).\n\n   ILV is directly inspired by the stochastic approximation approach to solve optimization\nproblems (Robbins & Monro, 1951), especially stochastic gradient descent (SGD) and the\nstochastic subgradient method (SSGM). The idea is that if (a) voter preferences are drawn\nfrom some probability distribution and (b) the response of a voter to the query (1) moves the\nsolution approximately in the direction of her utility gradient, then this procedure              almost\nimplements stochastic gradient descent for minimizing negative expected utility.\n\n   The caveat is that although the procedure can potentially obtain the direction of the\ngradient of the voter utilities, it cannot in general obtain any information about its magni-\ntude since the movement norm is chosen by the procedure itself. However, we show that for\ncertain plausible utility and voter response models, the algorithm does indeed converge to a\nunique point with desirable properties, including cases in which it converges to the societal\noptimum.\n\n   Note that with such feedback and without any additional assumptions on voter prefer-\nences (e.g. that voter utilities are normalized to the same scale), no algorithm has any hope\nof finding a desirable solution that depends on the cardinal values of voters' utilities, e.g., the\nsocial welfare maximizing solution (the solution that maximizes the sum of agent utilities).\nThis is because an algorithm that uses only ordinal information about voter preferences is\ninsensitive to any scaling or even monotonic transformations of those preferences.\n\n\n\n                                                 317\n\f                          Garg, Kamble, Goel, Marn, & Munagala\n\n\n Algorithm 1: Iterative Local Voting (ILV)\n  Inputs: Initial solution x0 ∈ X , tolerance ϵ > 0, an integer N , initial radius r0 > 0,\n    termination time T , norm q for local neighborhood.\n   Output:     Solution x.\n\n       • For t ≥ 1, sample a voter vt ∈ V at random from the population; set rt = r0 /t\n           and elicit\n\n\n                             x0t = arg maxx∈{s:ks−xt−1 kq ≤rt } fvt (x),             (1)\n                                         0\n           and then compute xt = [xt ]X , where [·]X is a projection onto space X ; i.e. ask\n           the voter to move to her favorite point within constraints, and then project the\n           reported point onto X .\n\n\n       • Stop when either t = T , in which case return xT , or when\n         maxl, m∈{t−N,...,t} |xl − xm | ≤ ϵ, in which case return x = xt .",
+          "quoted_text_sha256": "2e2577f5a9e57a360a6889d0e0028a51cf43d66d9c5529c76af3e0038e041d3b"
+        },
+        {
+          "line_end": 475,
+          "line_start": 449,
+          "publication_locator": "cited publication",
+          "quoted_text": " C1 The solution space X ⊆ RM is non-empty, bounded, closed, and convex.\n C2 Each voter v has a unique ideal solution xv ∈ X .\n C3 The ideal point xv of each voter is drawn independently from a probability distribution\n      with a bounded and measurable density function hX .\n\n\nUnder this model, for a solution x ∈ X , the societal utility is given by Ev [fv (x)]. and the\nsocial optimal (SO) solution is any x\n                                         ∗ ∈ arg max\n                                                    x∈X Ev [fv (x)].\n   “Convergence” of    ILV refers to the convergence of the sequence of random variables\n{xt }t≥1 to some x ∈ X with probability 1, assuming that the algorithm is allowed to run\nindefinitely (this notion of convergence also implies the termination of the algorithm with\nprobability 1).\n   In the following subsections, we present several classes of utility functions for which\nthe algorithm converges, summarized in Table 1. We further formalize the relationship to\ndirectional equilibria in Section 3.3.\n\n\n3.1 Spatial Utilities\nHere we consider spatial utility functions, where the utilities of each voters can be expressed\nin the form of some kind of spatial distance from their ideal solutions. First, we consider\nthe following kind of utilities.\n\n\nDefinition 1. Lp normed utilities. The voter utility function is Lp normed if fv (x) =\n−kx − xv kp , ∀x ∈ X .",
+          "quoted_text_sha256": "0437305ca6470a060b8181064c188ecca5cb83b91944b0ff24ac78155eacb30a"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem2_modelB_holder_dual_norms": {
+      "source_anchors": [
+        {
+          "line_end": 508,
+          "line_start": 505,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 2. Suppose that conditions C1 , C2 , and C3 are satisfied, the voter utilities are\nLp normed, and voters respond to query (1) according to Model B. Then, ILV with Lq\nneighborhoods converges to the societal optimal point w.p. 1 for any p > 0 and q > 0 such\nthat 1/p + 1/q = 1.",
+          "quoted_text_sha256": "1f2b5e21a7a32d7b2a0f0d1ce01b6dbee8a90090e741aa7d1a24b05f0e1e89b9"
+        },
+        {
+          "line_end": 194,
+          "line_start": 118,
+          "publication_locator": "cited publication",
+          "quoted_text": "   More formally, consider a M -dimensional societal decision problem in X  ⊂ RM and a\npopulation of voters V , where each voter v ∈ V has bounded utility fv (x) ∈ R, ∀ x ∈ X .\nThen we consider the class of algorithms described in Algorithm 1. We study the algorithm\nclass under two plausible models of how voters respond to query (1), which asks for the\nvoter's favorite point in a local region.\n\n\n\n• Model A:       One possibility is that voters exactly perform the maximization asked of\n  them, responding with their favorite point in the given L\n                                                                       q norm constraint set. In other\n\n  words, they return a point arg maxx∈{s:ks−x                    fvt (x). Note that by definition of this\n                                                  t−1 kq ≤rt }\n  movement, the algorithm is     myopically incentive compatible : if a voter is the last voter\n  and no projections are used, then truthfully performing this movement is the dominant\n  strategy.   In general, the mechanism is not globally incentive compatible, nor incentive\n  compatible with projections onto the feasible region. Simple examples of manipulations\n  in both instances exist.\n\n\n\n• Model B:       On the other hand, voters may not actually search within the constraint set\n  to find their favorite point inside of it. Rather, a voter v may have an idea about how\n  to best improve the current point and then move in that direction to the boundary of\n  the given constraint set. This model leads to a voter moving the current solution in the\n                                                                                           gt\n  direction of the gradient of her utility function, returning a point xt−1 + rt\n                                                                                         kgt kq , for some\n  gt ∈ ∂fvt (xt−1 ). Note that ∂f (x) denotes the set of subgradients of a function f at x, i.e.\n  g ∈ ∂f (x) if ∀y , f (y) − f (x) ≥ g T (y − x).\n\n   ILV is directly inspired by the stochastic approximation approach to solve optimization\nproblems (Robbins & Monro, 1951), especially stochastic gradient descent (SGD) and the\nstochastic subgradient method (SSGM). The idea is that if (a) voter preferences are drawn\nfrom some probability distribution and (b) the response of a voter to the query (1) moves the\nsolution approximately in the direction of her utility gradient, then this procedure              almost\nimplements stochastic gradient descent for minimizing negative expected utility.\n\n   The caveat is that although the procedure can potentially obtain the direction of the\ngradient of the voter utilities, it cannot in general obtain any information about its magni-\ntude since the movement norm is chosen by the procedure itself. However, we show that for\ncertain plausible utility and voter response models, the algorithm does indeed converge to a\nunique point with desirable properties, including cases in which it converges to the societal\noptimum.\n\n   Note that with such feedback and without any additional assumptions on voter prefer-\nences (e.g. that voter utilities are normalized to the same scale), no algorithm has any hope\nof finding a desirable solution that depends on the cardinal values of voters' utilities, e.g., the\nsocial welfare maximizing solution (the solution that maximizes the sum of agent utilities).\nThis is because an algorithm that uses only ordinal information about voter preferences is\ninsensitive to any scaling or even monotonic transformations of those preferences.\n\n\n\n                                                 317\n\f                          Garg, Kamble, Goel, Marn, & Munagala\n\n\n Algorithm 1: Iterative Local Voting (ILV)\n  Inputs: Initial solution x0 ∈ X , tolerance ϵ > 0, an integer N , initial radius r0 > 0,\n    termination time T , norm q for local neighborhood.\n   Output:     Solution x.\n\n       • For t ≥ 1, sample a voter vt ∈ V at random from the population; set rt = r0 /t\n           and elicit\n\n\n                             x0t = arg maxx∈{s:ks−xt−1 kq ≤rt } fvt (x),             (1)\n                                         0\n           and then compute xt = [xt ]X , where [·]X is a projection onto space X ; i.e. ask\n           the voter to move to her favorite point within constraints, and then project the\n           reported point onto X .\n\n\n       • Stop when either t = T , in which case return xT , or when\n         maxl, m∈{t−N,...,t} |xl − xm | ≤ ϵ, in which case return x = xt .",
+          "quoted_text_sha256": "2e2577f5a9e57a360a6889d0e0028a51cf43d66d9c5529c76af3e0038e041d3b"
+        },
+        {
+          "line_end": 475,
+          "line_start": 449,
+          "publication_locator": "cited publication",
+          "quoted_text": " C1 The solution space X ⊆ RM is non-empty, bounded, closed, and convex.\n C2 Each voter v has a unique ideal solution xv ∈ X .\n C3 The ideal point xv of each voter is drawn independently from a probability distribution\n      with a bounded and measurable density function hX .\n\n\nUnder this model, for a solution x ∈ X , the societal utility is given by Ev [fv (x)]. and the\nsocial optimal (SO) solution is any x\n                                         ∗ ∈ arg max\n                                                    x∈X Ev [fv (x)].\n   “Convergence” of    ILV refers to the convergence of the sequence of random variables\n{xt }t≥1 to some x ∈ X with probability 1, assuming that the algorithm is allowed to run\nindefinitely (this notion of convergence also implies the termination of the algorithm with\nprobability 1).\n   In the following subsections, we present several classes of utility functions for which\nthe algorithm converges, summarized in Table 1. We further formalize the relationship to\ndirectional equilibria in Section 3.3.\n\n\n3.1 Spatial Utilities\nHere we consider spatial utility functions, where the utilities of each voters can be expressed\nin the form of some kind of spatial distance from their ideal solutions. First, we consider\nthe following kind of utilities.\n\n\nDefinition 1. Lp normed utilities. The voter utility function is Lp normed if fv (x) =\n−kx − xv kp , ∀x ∈ X .",
+          "quoted_text_sha256": "0437305ca6470a060b8181064c188ecca5cb83b91944b0ff24ac78155eacb30a"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem3_convergent_l2_modelB_is_directional_equilibrium": {
+      "source_anchors": [
+        {
+          "line_end": 637,
+          "line_start": 627,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3. Suppose that C1 , C2 , and C3 are satisfied, and let G(x) , Ev k∇f       ∇fv (x)\n                                                                                     v (x)k2\n                                                                                             .\nSuppose, G(x) is uniformly continuous, L movement norm constraints are used, and voters\n                                          2\n\nmove according to Model B. If a trajectory {x}∞    t=1 of the algorithm converges to x , i.e.\n                                                                                       ∗\n\nxt → x , then x is a directional equilibrium, i.e. G(x ) = 0.\n      ∗        ∗                                       ∗",
+          "quoted_text_sha256": "e4eb28746dd1fba1c3e70ca265bf080bc35c3007ce1591dcf53876a03bcd3216"
+        },
+        {
+          "line_end": 194,
+          "line_start": 118,
+          "publication_locator": "cited publication",
+          "quoted_text": "   More formally, consider a M -dimensional societal decision problem in X  ⊂ RM and a\npopulation of voters V , where each voter v ∈ V has bounded utility fv (x) ∈ R, ∀ x ∈ X .\nThen we consider the class of algorithms described in Algorithm 1. We study the algorithm\nclass under two plausible models of how voters respond to query (1), which asks for the\nvoter's favorite point in a local region.\n\n\n\n• Model A:       One possibility is that voters exactly perform the maximization asked of\n  them, responding with their favorite point in the given L\n                                                                       q norm constraint set. In other\n\n  words, they return a point arg maxx∈{s:ks−x                    fvt (x). Note that by definition of this\n                                                  t−1 kq ≤rt }\n  movement, the algorithm is     myopically incentive compatible : if a voter is the last voter\n  and no projections are used, then truthfully performing this movement is the dominant\n  strategy.   In general, the mechanism is not globally incentive compatible, nor incentive\n  compatible with projections onto the feasible region. Simple examples of manipulations\n  in both instances exist.\n\n\n\n• Model B:       On the other hand, voters may not actually search within the constraint set\n  to find their favorite point inside of it. Rather, a voter v may have an idea about how\n  to best improve the current point and then move in that direction to the boundary of\n  the given constraint set. This model leads to a voter moving the current solution in the\n                                                                                           gt\n  direction of the gradient of her utility function, returning a point xt−1 + rt\n                                                                                         kgt kq , for some\n  gt ∈ ∂fvt (xt−1 ). Note that ∂f (x) denotes the set of subgradients of a function f at x, i.e.\n  g ∈ ∂f (x) if ∀y , f (y) − f (x) ≥ g T (y − x).\n\n   ILV is directly inspired by the stochastic approximation approach to solve optimization\nproblems (Robbins & Monro, 1951), especially stochastic gradient descent (SGD) and the\nstochastic subgradient method (SSGM). The idea is that if (a) voter preferences are drawn\nfrom some probability distribution and (b) the response of a voter to the query (1) moves the\nsolution approximately in the direction of her utility gradient, then this procedure              almost\nimplements stochastic gradient descent for minimizing negative expected utility.\n\n   The caveat is that although the procedure can potentially obtain the direction of the\ngradient of the voter utilities, it cannot in general obtain any information about its magni-\ntude since the movement norm is chosen by the procedure itself. However, we show that for\ncertain plausible utility and voter response models, the algorithm does indeed converge to a\nunique point with desirable properties, including cases in which it converges to the societal\noptimum.\n\n   Note that with such feedback and without any additional assumptions on voter prefer-\nences (e.g. that voter utilities are normalized to the same scale), no algorithm has any hope\nof finding a desirable solution that depends on the cardinal values of voters' utilities, e.g., the\nsocial welfare maximizing solution (the solution that maximizes the sum of agent utilities).\nThis is because an algorithm that uses only ordinal information about voter preferences is\ninsensitive to any scaling or even monotonic transformations of those preferences.\n\n\n\n                                                 317\n\f                          Garg, Kamble, Goel, Marn, & Munagala\n\n\n Algorithm 1: Iterative Local Voting (ILV)\n  Inputs: Initial solution x0 ∈ X , tolerance ϵ > 0, an integer N , initial radius r0 > 0,\n    termination time T , norm q for local neighborhood.\n   Output:     Solution x.\n\n       • For t ≥ 1, sample a voter vt ∈ V at random from the population; set rt = r0 /t\n           and elicit\n\n\n                             x0t = arg maxx∈{s:ks−xt−1 kq ≤rt } fvt (x),             (1)\n                                         0\n           and then compute xt = [xt ]X , where [·]X is a projection onto space X ; i.e. ask\n           the voter to move to her favorite point within constraints, and then project the\n           reported point onto X .\n\n\n       • Stop when either t = T , in which case return xT , or when\n         maxl, m∈{t−N,...,t} |xl − xm | ≤ ϵ, in which case return x = xt .",
+          "quoted_text_sha256": "2e2577f5a9e57a360a6889d0e0028a51cf43d66d9c5529c76af3e0038e041d3b"
+        },
+        {
+          "line_end": 465,
+          "line_start": 449,
+          "publication_locator": "cited publication",
+          "quoted_text": " C1 The solution space X ⊆ RM is non-empty, bounded, closed, and convex.\n C2 Each voter v has a unique ideal solution xv ∈ X .\n C3 The ideal point xv of each voter is drawn independently from a probability distribution\n      with a bounded and measurable density function hX .\n\n\nUnder this model, for a solution x ∈ X , the societal utility is given by Ev [fv (x)]. and the\nsocial optimal (SO) solution is any x\n                                         ∗ ∈ arg max\n                                                    x∈X Ev [fv (x)].\n   “Convergence” of    ILV refers to the convergence of the sequence of random variables\n{xt }t≥1 to some x ∈ X with probability 1, assuming that the algorithm is allowed to run\nindefinitely (this notion of convergence also implies the termination of the algorithm with\nprobability 1).\n   In the following subsections, we present several classes of utility functions for which\nthe algorithm converges, summarized in Table 1. We further formalize the relationship to\ndirectional equilibria in Section 3.3.",
+          "quoted_text_sha256": "068930249fcbda36303cd0b92d52c361f3897f50d30b02e4dbdfa4f0155c17b3"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem3_projected_source_model": {
+      "source_anchors": [
+        {
+          "line_end": 194,
+          "line_start": 118,
+          "publication_locator": "cited publication",
+          "quoted_text": "   More formally, consider a M -dimensional societal decision problem in X  ⊂ RM and a\npopulation of voters V , where each voter v ∈ V has bounded utility fv (x) ∈ R, ∀ x ∈ X .\nThen we consider the class of algorithms described in Algorithm 1. We study the algorithm\nclass under two plausible models of how voters respond to query (1), which asks for the\nvoter's favorite point in a local region.\n\n\n\n• Model A:       One possibility is that voters exactly perform the maximization asked of\n  them, responding with their favorite point in the given L\n                                                                       q norm constraint set. In other\n\n  words, they return a point arg maxx∈{s:ks−x                    fvt (x). Note that by definition of this\n                                                  t−1 kq ≤rt }\n  movement, the algorithm is     myopically incentive compatible : if a voter is the last voter\n  and no projections are used, then truthfully performing this movement is the dominant\n  strategy.   In general, the mechanism is not globally incentive compatible, nor incentive\n  compatible with projections onto the feasible region. Simple examples of manipulations\n  in both instances exist.\n\n\n\n• Model B:       On the other hand, voters may not actually search within the constraint set\n  to find their favorite point inside of it. Rather, a voter v may have an idea about how\n  to best improve the current point and then move in that direction to the boundary of\n  the given constraint set. This model leads to a voter moving the current solution in the\n                                                                                           gt\n  direction of the gradient of her utility function, returning a point xt−1 + rt\n                                                                                         kgt kq , for some\n  gt ∈ ∂fvt (xt−1 ). Note that ∂f (x) denotes the set of subgradients of a function f at x, i.e.\n  g ∈ ∂f (x) if ∀y , f (y) − f (x) ≥ g T (y − x).\n\n   ILV is directly inspired by the stochastic approximation approach to solve optimization\nproblems (Robbins & Monro, 1951), especially stochastic gradient descent (SGD) and the\nstochastic subgradient method (SSGM). The idea is that if (a) voter preferences are drawn\nfrom some probability distribution and (b) the response of a voter to the query (1) moves the\nsolution approximately in the direction of her utility gradient, then this procedure              almost\nimplements stochastic gradient descent for minimizing negative expected utility.\n\n   The caveat is that although the procedure can potentially obtain the direction of the\ngradient of the voter utilities, it cannot in general obtain any information about its magni-\ntude since the movement norm is chosen by the procedure itself. However, we show that for\ncertain plausible utility and voter response models, the algorithm does indeed converge to a\nunique point with desirable properties, including cases in which it converges to the societal\noptimum.\n\n   Note that with such feedback and without any additional assumptions on voter prefer-\nences (e.g. that voter utilities are normalized to the same scale), no algorithm has any hope\nof finding a desirable solution that depends on the cardinal values of voters' utilities, e.g., the\nsocial welfare maximizing solution (the solution that maximizes the sum of agent utilities).\nThis is because an algorithm that uses only ordinal information about voter preferences is\ninsensitive to any scaling or even monotonic transformations of those preferences.\n\n\n\n                                                 317\n\f                          Garg, Kamble, Goel, Marn, & Munagala\n\n\n Algorithm 1: Iterative Local Voting (ILV)\n  Inputs: Initial solution x0 ∈ X , tolerance ϵ > 0, an integer N , initial radius r0 > 0,\n    termination time T , norm q for local neighborhood.\n   Output:     Solution x.\n\n       • For t ≥ 1, sample a voter vt ∈ V at random from the population; set rt = r0 /t\n           and elicit\n\n\n                             x0t = arg maxx∈{s:ks−xt−1 kq ≤rt } fvt (x),             (1)\n                                         0\n           and then compute xt = [xt ]X , where [·]X is a projection onto space X ; i.e. ask\n           the voter to move to her favorite point within constraints, and then project the\n           reported point onto X .\n\n\n       • Stop when either t = T , in which case return xT , or when\n         maxl, m∈{t−N,...,t} |xl − xm | ≤ ϵ, in which case return x = xt .",
+          "quoted_text_sha256": "2e2577f5a9e57a360a6889d0e0028a51cf43d66d9c5529c76af3e0038e041d3b"
+        },
+        {
+          "line_end": 465,
+          "line_start": 449,
+          "publication_locator": "cited publication",
+          "quoted_text": " C1 The solution space X ⊆ RM is non-empty, bounded, closed, and convex.\n C2 Each voter v has a unique ideal solution xv ∈ X .\n C3 The ideal point xv of each voter is drawn independently from a probability distribution\n      with a bounded and measurable density function hX .\n\n\nUnder this model, for a solution x ∈ X , the societal utility is given by Ev [fv (x)]. and the\nsocial optimal (SO) solution is any x\n                                         ∗ ∈ arg max\n                                                    x∈X Ev [fv (x)].\n   “Convergence” of    ILV refers to the convergence of the sequence of random variables\n{xt }t≥1 to some x ∈ X with probability 1, assuming that the algorithm is allowed to run\nindefinitely (this notion of convergence also implies the termination of the algorithm with\nprobability 1).\n   In the following subsections, we present several classes of utility functions for which\nthe algorithm converges, summarized in Table 1. We further formalize the relationship to\ndirectional equilibria in Section 3.3.",
+          "quoted_text_sha256": "068930249fcbda36303cd0b92d52c361f3897f50d30b02e4dbdfa4f0155c17b3"
+        },
+        {
+          "line_end": 637,
+          "line_start": 627,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3. Suppose that C1 , C2 , and C3 are satisfied, and let G(x) , Ev k∇f       ∇fv (x)\n                                                                                     v (x)k2\n                                                                                             .\nSuppose, G(x) is uniformly continuous, L movement norm constraints are used, and voters\n                                          2\n\nmove according to Model B. If a trajectory {x}∞    t=1 of the algorithm converges to x , i.e.\n                                                                                       ∗\n\nxt → x , then x is a directional equilibrium, i.e. G(x ) = 0.\n      ∗        ∗                                       ∗",
+          "quoted_text_sha256": "e4eb28746dd1fba1c3e70ca265bf080bc35c3007ce1591dcf53876a03bcd3216"
+        }
+      ],
+      "source_kind": "model"
+    }
+  },
+  "source_artifact_sha256": "00dc65bbee160e2c7f5eb9007fe25963059fb4949fcfec81abdcfd36094869ea",
+  "source_coverage_mode": "named_theoretical_statements"
+}

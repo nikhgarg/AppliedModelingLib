@@ -340,35 +340,35 @@ theorem sum_reverseItem {n : ℕ} (f : Item n → ℝ) :
 
 /-- Reindexing by item reversal preserves finite maxima. -/
 theorem finiteMax_reverseItem {n : ℕ} [NeZero n] (v : Item n → ℝ) :
-    EconCSLib.finiteMax (fun j : Item n => v (reverseItem j)) =
-      EconCSLib.finiteMax v := by
+    AppliedModelingLib.finiteMax (fun j : Item n => v (reverseItem j)) =
+      AppliedModelingLib.finiteMax v := by
   apply le_antisymm
   · obtain ⟨j, hj⟩ :=
-      EconCSLib.exists_finiteMax_eq
+      AppliedModelingLib.exists_finiteMax_eq
         (fun j : Item n => v (reverseItem j))
     rw [hj]
-    exact EconCSLib.le_finiteMax v (reverseItem j)
-  · obtain ⟨j, hj⟩ := EconCSLib.exists_finiteMax_eq v
+    exact AppliedModelingLib.le_finiteMax v (reverseItem j)
+  · obtain ⟨j, hj⟩ := AppliedModelingLib.exists_finiteMax_eq v
     rw [hj]
     have hle :=
-      EconCSLib.le_finiteMax
+      AppliedModelingLib.le_finiteMax
         (fun j : Item n => v (reverseItem j)) (reverseItem j)
     simpa [reverseItem_reverseItem] using hle
 
 /-- Reindexing by item reversal preserves finite minima. -/
 theorem finiteMin_reverseItem {n : ℕ} [NeZero n] (v : Item n → ℝ) :
-    EconCSLib.finiteMin (fun j : Item n => v (reverseItem j)) =
-      EconCSLib.finiteMin v := by
+    AppliedModelingLib.finiteMin (fun j : Item n => v (reverseItem j)) =
+      AppliedModelingLib.finiteMin v := by
   apply le_antisymm
-  · refine EconCSLib.le_finiteMin v ?_
+  · refine AppliedModelingLib.le_finiteMin v ?_
     intro j
     have hle :=
-      EconCSLib.finiteMin_le
+      AppliedModelingLib.finiteMin_le
         (fun j : Item n => v (reverseItem j)) (reverseItem j)
     simpa [reverseItem_reverseItem] using hle
-  · refine EconCSLib.le_finiteMin (fun j : Item n => v (reverseItem j)) ?_
+  · refine AppliedModelingLib.le_finiteMin (fun j : Item n => v (reverseItem j)) ?_
     intro j
-    exact EconCSLib.finiteMin_le v (reverseItem j)
+    exact AppliedModelingLib.finiteMin_le v (reverseItem j)
 
 /-- The indexed `q_j(α)` used in the opposing-preference proofs. -/
 noncomputable def pairShare {n : ℕ}
@@ -532,14 +532,14 @@ theorem value_antitone_of_val_le {n : ℕ} {v : Item n → ℝ}
 /-- A strictly decreasing value vector attains its finite maximum at item `1`. -/
 theorem finiteMax_eq_firstItem {n : ℕ} [NeZero n] {v : Item n → ℝ}
     (hdec : StrictlyDecreasingByIndex v) :
-    EconCSLib.finiteMax v = v firstItem := by
+    AppliedModelingLib.finiteMax v = v firstItem := by
   apply le_antisymm
-  · obtain ⟨j, hj⟩ := EconCSLib.exists_finiteMax_eq v
+  · obtain ⟨j, hj⟩ := AppliedModelingLib.exists_finiteMax_eq v
     rw [hj]
     have hle : (firstItem : Item n).val ≤ j.val := by
       simp
     exact value_antitone_of_val_le hdec hle
-  · exact EconCSLib.le_finiteMax v firstItem
+  · exact AppliedModelingLib.le_finiteMax v firstItem
 
 /--
 Appendix D, Lemma 9, indexed alpha-monotonicity component:
@@ -2118,7 +2118,7 @@ noncomputable def mirrorTypePolicy {n : ℕ} (ρ : TypePolicy 2 n) :
                 ∑ x : Item n, ((ρ 1) x).toReal := by
                   simpa using
                     (sum_reverseItem (fun x : Item n => ((ρ 1) x).toReal))
-            _ = 1 := EconCSLib.pmfToRealSum (ρ 1)
+            _ = 1 := AppliedModelingLib.pmfToRealSum (ρ 1)
         · have hk1 : k = 1 := by
             fin_cases k
             · exact (hk rfl).elim
@@ -2130,7 +2130,7 @@ noncomputable def mirrorTypePolicy {n : ℕ} (ρ : TypePolicy 2 n) :
                 ∑ x : Item n, ((ρ 0) x).toReal := by
                   simpa using
                     (sum_reverseItem (fun x : Item n => ((ρ 0) x).toReal))
-            _ = 1 := EconCSLib.pmfToRealSum (ρ 0)⟩⟩)
+            _ = 1 := AppliedModelingLib.pmfToRealSum (ρ 0)⟩⟩)
 
 @[simp] theorem mirrorTypePolicy_zero_toReal {n : ℕ}
     (ρ : TypePolicy 2 n) (j : Item n) :
@@ -2156,8 +2156,8 @@ theorem twoTypeReducedModel_bestItemUtility_one_eq_zero {n : ℕ} [NeZero n]
       TypeWeightedRecommendationModel.bestItemUtility
         (twoTypeReducedModel alpha v) 0 := by
   unfold TypeWeightedRecommendationModel.bestItemUtility
-  change EconCSLib.finiteMax (fun j : Item n => v (reverseItem j)) =
-    EconCSLib.finiteMax v
+  change AppliedModelingLib.finiteMax (fun j : Item n => v (reverseItem j)) =
+    AppliedModelingLib.finiteMax v
   exact finiteMax_reverseItem v
 
 /-- Mirroring swaps type `0` raw utility with type `1` raw utility. -/
@@ -2168,7 +2168,7 @@ theorem twoTypeReducedModel_rawTypeUtility_mirror_zero_eq_one {n : ℕ}
       TypeWeightedRecommendationModel.rawTypeUtility
         (twoTypeReducedModel alpha v) ρ 1 := by
   unfold TypeWeightedRecommendationModel.rawTypeUtility
-    EconCSLib.Policy.agentScore EconCSLib.pmfExp
+    AppliedModelingLib.Policy.agentScore AppliedModelingLib.pmfExp
   change
     (∑ j : Item n, ((mirrorTypePolicy ρ 0) j).toReal * v j) =
       ∑ j : Item n, ((ρ 1) j).toReal * v (reverseItem j)
@@ -2185,7 +2185,7 @@ theorem twoTypeReducedModel_rawTypeUtility_mirror_one_eq_zero {n : ℕ}
       TypeWeightedRecommendationModel.rawTypeUtility
         (twoTypeReducedModel alpha v) ρ 0 := by
   unfold TypeWeightedRecommendationModel.rawTypeUtility
-    EconCSLib.Policy.agentScore EconCSLib.pmfExp
+    AppliedModelingLib.Policy.agentScore AppliedModelingLib.pmfExp
   change
     (∑ j : Item n,
       ((mirrorTypePolicy ρ 1) j).toReal * v (reverseItem j)) =
@@ -2202,8 +2202,8 @@ theorem twoTypeReducedModel_bestItemUtility_mirror_zero_eq_one
       TypeWeightedRecommendationModel.bestItemUtility
         (twoTypeReducedModel alpha v) 1 := by
   unfold TypeWeightedRecommendationModel.bestItemUtility
-  change EconCSLib.finiteMax v =
-    EconCSLib.finiteMax (fun j : Item n => v (reverseItem j))
+  change AppliedModelingLib.finiteMax v =
+    AppliedModelingLib.finiteMax (fun j : Item n => v (reverseItem j))
   rw [finiteMax_reverseItem]
 
 /-- Mirroring swaps the type `1` best-item denominator with type `0`. -/
@@ -2214,8 +2214,8 @@ theorem twoTypeReducedModel_bestItemUtility_mirror_one_eq_zero
       TypeWeightedRecommendationModel.bestItemUtility
         (twoTypeReducedModel alpha v) 0 := by
   unfold TypeWeightedRecommendationModel.bestItemUtility
-  change EconCSLib.finiteMax (fun j : Item n => v (reverseItem j)) =
-    EconCSLib.finiteMax v
+  change AppliedModelingLib.finiteMax (fun j : Item n => v (reverseItem j)) =
+    AppliedModelingLib.finiteMax v
   exact finiteMax_reverseItem v
 
 /-- Mirroring swaps normalized type utility from type `0` to type `1`. -/
@@ -2252,40 +2252,40 @@ theorem twoTypeReducedModel_typeFairness_mirror_eq
         (twoTypeReducedModel alpha v) ρ := by
   apply le_antisymm
   · unfold TypeWeightedRecommendationModel.typeFairness
-    refine EconCSLib.le_finiteMin
+    refine AppliedModelingLib.le_finiteMin
       (TypeWeightedRecommendationModel.normalizedTypeUtility
         (twoTypeReducedModel alpha v) ρ) ?_
     intro k
     fin_cases k
     · have hle :=
-        EconCSLib.finiteMin_le
+        AppliedModelingLib.finiteMin_le
           (TypeWeightedRecommendationModel.normalizedTypeUtility
             (twoTypeReducedModel (1 - alpha) v) (mirrorTypePolicy ρ))
           (1 : UserType 2)
       simpa [twoTypeReducedModel_normalizedTypeUtility_mirror_one_eq_zero]
         using hle
     · have hle :=
-        EconCSLib.finiteMin_le
+        AppliedModelingLib.finiteMin_le
           (TypeWeightedRecommendationModel.normalizedTypeUtility
             (twoTypeReducedModel (1 - alpha) v) (mirrorTypePolicy ρ))
           (0 : UserType 2)
       simpa [twoTypeReducedModel_normalizedTypeUtility_mirror_zero_eq_one]
         using hle
   · unfold TypeWeightedRecommendationModel.typeFairness
-    refine EconCSLib.le_finiteMin
+    refine AppliedModelingLib.le_finiteMin
       (TypeWeightedRecommendationModel.normalizedTypeUtility
         (twoTypeReducedModel (1 - alpha) v) (mirrorTypePolicy ρ)) ?_
     intro k
     fin_cases k
     · have hle :=
-        EconCSLib.finiteMin_le
+        AppliedModelingLib.finiteMin_le
           (TypeWeightedRecommendationModel.normalizedTypeUtility
             (twoTypeReducedModel alpha v) ρ)
           (1 : UserType 2)
       simpa [twoTypeReducedModel_normalizedTypeUtility_mirror_zero_eq_one]
         using hle
     · have hle :=
-        EconCSLib.finiteMin_le
+        AppliedModelingLib.finiteMin_le
           (TypeWeightedRecommendationModel.normalizedTypeUtility
             (twoTypeReducedModel alpha v) ρ)
           (0 : UserType 2)
@@ -2316,8 +2316,8 @@ theorem twoTypeReducedModel_bestItemUtility_zero_pos {n : ℕ} [NeZero n]
       (twoTypeReducedModel alpha v) 0 := by
   let j0 : Item n := Classical.choice inferInstance
   unfold TypeWeightedRecommendationModel.bestItemUtility
-  change 0 < EconCSLib.finiteMax v
-  exact lt_of_lt_of_le (hpos j0) (EconCSLib.le_finiteMax v j0)
+  change 0 < AppliedModelingLib.finiteMax v
+  exact lt_of_lt_of_le (hpos j0) (AppliedModelingLib.le_finiteMax v j0)
 
 /-- Item normalizers in the two-type model are the denominators of `q_j(α)`. -/
 theorem twoTypeReducedModel_itemNormalizer_eq {n : ℕ}
@@ -2390,7 +2390,7 @@ theorem twoTypeReducedModel_itemFairness_mirror_eq {n : ℕ} [NeZero n]
     (fun j : Item n =>
       TypeWeightedRecommendationModel.normalizedItemUtility
         (twoTypeReducedModel alpha v) ρ j)]
-  apply congrArg EconCSLib.finiteMin
+  apply congrArg AppliedModelingLib.finiteMin
   funext j
   exact twoTypeReducedModel_normalizedItemUtility_mirror_eq_reverse
     alpha v ρ j
@@ -2516,13 +2516,13 @@ theorem problem6_typeOne_prob_nonneg {n : ℕ}
 theorem problem6_typeZero_sum_eq_one {n : ℕ}
     (ρ : TypePolicy 2 n) :
     (∑ j : Item n, (ρ 0 j).toReal) = 1 := by
-  exact EconCSLib.pmfToRealSum (ρ 0)
+  exact AppliedModelingLib.pmfToRealSum (ρ 0)
 
 /-- Problem 6 row constraint `∑_j y_j = 1`. -/
 theorem problem6_typeOne_sum_eq_one {n : ℕ}
     (ρ : TypePolicy 2 n) :
     (∑ j : Item n, (ρ 1 j).toReal) = 1 := by
-  exact EconCSLib.pmfToRealSum (ρ 1)
+  exact AppliedModelingLib.pmfToRealSum (ρ 1)
 
 /-- Lemma 5's left-side sum `L_t = ∑_{j<t} 1 / q_j`. -/
 noncomputable def problem6LeftSum {n : ℕ}
@@ -4927,7 +4927,7 @@ theorem problem6_typeOneRawUtility_le_of_dualCertificate {n : ℕ}
           (twoTypeReducedModel alpha v) ρ 1 =
         ∑ j : Item n, v (reverseItem j) * y j := by
     unfold TypeWeightedRecommendationModel.rawTypeUtility
-      EconCSLib.Policy.agentScore EconCSLib.pmfExp
+      AppliedModelingLib.Policy.agentScore AppliedModelingLib.pmfExp
     refine Finset.sum_congr rfl ?_
     intro j _hj
     simp [twoTypeReducedModel, y, mul_comm]
@@ -4983,8 +4983,8 @@ theorem problem6TypeOneDualRowOne_ge_reverse {n : ℕ} [NeZero n]
   unfold problem6TypeOneDualRowOne
   unfold TypeWeightedRecommendationModel.bestItemUtility
   change v (reverseItem j) ≤
-    EconCSLib.finiteMax (fun l : Item n => v (reverseItem l))
-  exact EconCSLib.le_finiteMax (fun l : Item n => v (reverseItem l)) j
+    AppliedModelingLib.finiteMax (fun l : Item n => v (reverseItem l))
+  exact AppliedModelingLib.le_finiteMax (fun l : Item n => v (reverseItem l)) j
 
 theorem problem6TypeOneDualRowOne_sub_reverse_nonneg {n : ℕ} [NeZero n]
     (alpha : ℝ) (v : Item n → ℝ) (j : Item n) :
@@ -5360,24 +5360,24 @@ theorem problem6PolicyOptimal_value_eq_finiteMin {n : ℕ} [NeZero n]
     {alpha : ℝ} {v : Item n → ℝ} {ρ : TypePolicy 2 n} {ell : ℝ}
     (hopt : Problem6PolicyOptimal alpha v ρ ell) :
     ell =
-      EconCSLib.finiteMin (fun l : Item n =>
+      AppliedModelingLib.finiteMin (fun l : Item n =>
         pairShare alpha v l * (ρ 0 l).toReal +
           (1 - pairShare alpha v l) * (ρ 1 l).toReal) := by
   let value : Item n → ℝ := fun l =>
     pairShare alpha v l * (ρ 0 l).toReal +
       (1 - pairShare alpha v l) * (ρ 1 l).toReal
-  have hell_le_min : ell ≤ EconCSLib.finiteMin value := by
-    dsimp [EconCSLib.finiteMin]
+  have hell_le_min : ell ≤ AppliedModelingLib.finiteMin value := by
+    dsimp [AppliedModelingLib.finiteMin]
     apply Finset.le_inf'
     intro l _hl
     exact hopt.1 l
   have hmin_feas : problem6LPFeasible alpha v ρ
-      (EconCSLib.finiteMin value) := by
+      (AppliedModelingLib.finiteMin value) := by
     intro l
     dsimp [value]
-    exact EconCSLib.finiteMin_le value l
-  have hmin_le_ell : EconCSLib.finiteMin value ≤ ell :=
-    hopt.2 ρ (EconCSLib.finiteMin value) hmin_feas
+    exact AppliedModelingLib.finiteMin_le value l
+  have hmin_le_ell : AppliedModelingLib.finiteMin value ≤ ell :=
+    hopt.2 ρ (AppliedModelingLib.finiteMin value) hmin_feas
   exact le_antisymm hell_le_min hmin_le_ell
 
 /--
@@ -5399,10 +5399,10 @@ theorem problem6_noStrictPointwiseImprovement_of_policyOptimal
   let value' : Item n → ℝ := fun l =>
     pairShare alpha v l * (ρ' 0 l).toReal +
       (1 - pairShare alpha v l) * (ρ' 1 l).toReal
-  let delta : ℝ := EconCSLib.finiteMin (fun l : Item n => value' l - value l)
+  let delta : ℝ := AppliedModelingLib.finiteMin (fun l : Item n => value' l - value l)
   have hdelta_pos : 0 < delta := by
     dsimp [delta]
-    apply EconCSLib.finiteMin_pos
+    apply AppliedModelingLib.finiteMin_pos
     intro l
     exact sub_pos.mpr (hstrict l)
   let ell' : ℝ := ell + delta
@@ -5411,7 +5411,7 @@ theorem problem6_noStrictPointwiseImprovement_of_policyOptimal
     have hdelta_le :
         delta ≤ value' l - value l := by
       dsimp [delta]
-      exact EconCSLib.finiteMin_le
+      exact AppliedModelingLib.finiteMin_le
         (fun l : Item n => value' l - value l) l
     have hell_le_value : ell ≤ value l := by
       dsimp [value]
@@ -5434,7 +5434,7 @@ theorem problem6PolicyOptimal_value_pos {n : ℕ} [NeZero n]
   let value : Item n → ℝ := fun j =>
     pairShare alpha v j * (ρu 0 j).toReal +
       (1 - pairShare alpha v j) * (ρu 1 j).toReal
-  let ell0 : ℝ := EconCSLib.finiteMin value
+  let ell0 : ℝ := AppliedModelingLib.finiteMin value
   have hvalue_pos : ∀ j : Item n, 0 < value j := by
     intro j
     have hqpos : 0 < pairShare alpha v j :=
@@ -5457,11 +5457,11 @@ theorem problem6PolicyOptimal_value_pos {n : ℕ} [NeZero n]
     linarith
   have hell0_pos : 0 < ell0 := by
     dsimp [ell0]
-    exact EconCSLib.finiteMin_pos value hvalue_pos
+    exact AppliedModelingLib.finiteMin_pos value hvalue_pos
   have hfeas0 : problem6LPFeasible alpha v ρu ell0 := by
     intro j
     dsimp [ell0, value]
-    exact EconCSLib.finiteMin_le value j
+    exact AppliedModelingLib.finiteMin_le value j
   have hell0_le : ell0 ≤ ell :=
     hopt.2 ρu ell0 hfeas0
   exact lt_of_lt_of_le hell0_pos hell0_le
@@ -6419,7 +6419,7 @@ theorem problem6ClosedPolicy_rawTypeUtility_zero_eq {n : ℕ}
       (problem6ClosedPolicy alpha v t halpha0 halpha1 hpos hpivot) 0 =
       problem6ClosedTypeZeroRawUtility alpha v t := by
   unfold TypeWeightedRecommendationModel.rawTypeUtility
-    EconCSLib.Policy.agentScore EconCSLib.pmfExp
+    AppliedModelingLib.Policy.agentScore AppliedModelingLib.pmfExp
     problem6ClosedTypeZeroRawUtility
   refine Finset.sum_congr rfl ?_
   intro j _hj
@@ -6438,7 +6438,7 @@ theorem problem6ClosedPolicy_rawTypeUtility_one_eq {n : ℕ}
       (problem6ClosedPolicy alpha v t halpha0 halpha1 hpos hpivot) 1 =
       problem6ClosedTypeOneRawUtility alpha v t := by
   unfold TypeWeightedRecommendationModel.rawTypeUtility
-    EconCSLib.Policy.agentScore EconCSLib.pmfExp
+    AppliedModelingLib.Policy.agentScore AppliedModelingLib.pmfExp
     problem6ClosedTypeOneRawUtility
   refine Finset.sum_congr rfl ?_
   intro j _hj
@@ -7882,7 +7882,7 @@ theorem twoType_typeFairness_eq_one_of_one_le_zero {n : ℕ} [NeZero n]
         TypeWeightedRecommendationModel.normalizedTypeUtility T ρ 0) :
     TypeWeightedRecommendationModel.typeFairness T ρ =
       TypeWeightedRecommendationModel.normalizedTypeUtility T ρ 1 := by
-  unfold TypeWeightedRecommendationModel.typeFairness EconCSLib.finiteMin
+  unfold TypeWeightedRecommendationModel.typeFairness AppliedModelingLib.finiteMin
   apply le_antisymm
   · exact Finset.inf'_le
       (s := (Finset.univ : Finset (UserType 2)))
@@ -11440,7 +11440,7 @@ theorem problem6LPFeasible_iff_le_itemFairness
         (twoTypeReducedModel alpha v) ρ := by
   constructor
   · intro h
-    unfold TypeWeightedRecommendationModel.itemFairness EconCSLib.finiteMin
+    unfold TypeWeightedRecommendationModel.itemFairness AppliedModelingLib.finiteMin
     apply Finset.le_inf'
     intro j _hj
     have hden :=
@@ -11456,7 +11456,7 @@ theorem problem6LPFeasible_iff_le_itemFairness
             (twoTypeReducedModel alpha v) ρ ≤
           TypeWeightedRecommendationModel.normalizedItemUtility
             (twoTypeReducedModel alpha v) ρ j := by
-      exact EconCSLib.finiteMin_le
+      exact AppliedModelingLib.finiteMin_le
         (TypeWeightedRecommendationModel.normalizedItemUtility
           (twoTypeReducedModel alpha v) ρ) j
     rw [twoTypeReducedModel_normalizedItemUtility_eq_pairShare
@@ -11500,7 +11500,7 @@ theorem problem6LPValueSet_bddAbove
           (twoTypeReducedModel alpha v) ρ ≤
         TypeWeightedRecommendationModel.normalizedItemUtility
           (twoTypeReducedModel alpha v) ρ j0 := by
-    exact EconCSLib.finiteMin_le
+    exact AppliedModelingLib.finiteMin_le
       (TypeWeightedRecommendationModel.normalizedItemUtility
         (twoTypeReducedModel alpha v) ρ) j0
   have hWeightNonneg :
@@ -11894,7 +11894,7 @@ theorem problem6ClosedPolicy_normalizedTypeUtility_one_ge_closedValue_of_pivot_l
           (twoTypeReducedModel alpha v) 1 =
         v firstItem := by
     rw [twoTypeReducedModel_bestItemUtility_one_eq_zero alpha v]
-    change EconCSLib.finiteMax v = v firstItem
+    change AppliedModelingLib.finiteMax v = v firstItem
     exact finiteMax_eq_firstItem hdec
   unfold TypeWeightedRecommendationModel.normalizedTypeUtility
   rw [problem6ClosedPolicy_rawTypeUtility_one_eq
@@ -12289,7 +12289,7 @@ theorem problem6EqualizedBasicOptimal_item_value_eq_itemFairness
     have hle :
         TypeWeightedRecommendationModel.itemFairness T ρ ≤
           TypeWeightedRecommendationModel.normalizedItemUtility T ρ j0 :=
-      EconCSLib.finiteMin_le
+      AppliedModelingLib.finiteMin_le
         (TypeWeightedRecommendationModel.normalizedItemUtility T ρ) j0
     have hden :
         0 < alpha * v j0 + (1 - alpha) * v (reverseItem j0) :=
@@ -12514,7 +12514,7 @@ theorem problem6ClosedPolicy_typeFairness_dominates_feasibleAtLevel_one_of_close
       TypeWeightedRecommendationModel.typeFairness T ρ ≤
         TypeWeightedRecommendationModel.normalizedTypeUtility T ρ 1 := by
     unfold TypeWeightedRecommendationModel.typeFairness
-    exact EconCSLib.finiteMin_le
+    exact AppliedModelingLib.finiteMin_le
       (TypeWeightedRecommendationModel.normalizedTypeUtility T ρ) 1
   have hclosed_type :
       TypeWeightedRecommendationModel.typeFairness T ρclosed =

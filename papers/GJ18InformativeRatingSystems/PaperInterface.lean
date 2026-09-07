@@ -5,7 +5,7 @@ namespace GJ18InformativeRatingSystems
 namespace PaperInterface
 
 open Filter
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 open GJ18InformativeRatingSystems.ProofBridge
 noncomputable section
 
@@ -32,10 +32,10 @@ def source_definition_pairwise_objective_formulaSpec
     (mu : PMF Omega) (score : Omega -> Fin n -> Real)
     (p : finiteChainOrderedPair n) : Prop :=
   sourceStatePairwisePk mu score p =
-    EconCSLib.pmfProb mu
+    AppliedModelingLib.pmfProb mu
       (fun omega => score omega (finiteChainOrderedPairHi p) >
         score omega (finiteChainOrderedPairLo p)) -
-      EconCSLib.pmfProb mu
+      AppliedModelingLib.pmfProb mu
         (fun omega => score omega (finiteChainOrderedPairHi p) <
           score omega (finiteChainOrderedPairLo p))
 

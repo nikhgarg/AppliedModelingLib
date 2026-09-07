@@ -12,7 +12,7 @@
 
 \dagPaperLegendRightOfMetadata{
 \node[dag_result,dag_template_legend] (legExact) at (0,0) {source-shaped\\formalization};
-\node[dag_template_note,dag_template_legend] (legNote) at (4.6,0) {ordinary source\\or domain note};
+\node[dag_template_note,dag_template_legend] (legNote) at (4.6,0) {source-model\\clarification};
 }
 \daglegend{(legExact)(legNote)}{Legend}
 
@@ -23,7 +23,7 @@
 
 \node[dag_result] (Sequential) at (0,-4.1) {\textbf{Sequential Composition}\\feasibility, substitutability,\\one-instability and additive bounds};
 \node[dag_result] (TheoremTwo) at (6.2,-4.1) {\textbf{Theorem 2}\\realized range $1\leq m\leq n$ and\\single-order characterization};
-\node[dag_result] (Programs) at (12.4,-4.1) {\textbf{Proposition 2 Programs}\\exact variability $1,2,3,6$ and\\one-instability for all four classes};
+\node[dag_result] (Programs) at (12.4,-4.1) {\textbf{Proposition 2 Programs}\\abstract queue procedures; exact\\variability $1$, $2$, $3$, and $6$};
 
 \node[dag_result] (ChoiceProps) at (0,-8.2) {\textbf{Choice-Property Calculus}\\monotonicity, consistency,\\independence and equivalences};
 \node[dag_result] (Parity) at (6.2,-8.2) {\textbf{Parity Characterization}\\positive even distance iff inconsistency;\\no consistent positive even tightness};
@@ -33,7 +33,7 @@
 \node[dag_result] (LAPOrder) at (6.2,-12.3) {\textbf{LAP Ordering}\\assigned applicants outrank rejected;\\higher applicants are selected};
 \node[dag_result] (LAPVariation) at (12.4,-12.3) {\textbf{LAP Predictability}\\one-instability and variability bounded\\by distinct induced slot orders};
 
-\node[dag_template_note,text width=18.2cm] (StatusNote) at (6.2,-16.4) {\textbf{Status: formalized.}  The selected source surface is covered.  Nondegeneracy conditions and the intended forms of a small number of displayed statements are recorded as source clarifications; none is a substantial paper caveat.};
+\node[dag_template_note,text width=18.2cm] (StatusNote) at (6.2,-16.4) {\textbf{Status: formalized.}  All 64 selected source-to-Spec claims are covered.  Proposition 2 is formalized as the paper's abstract one-, two-, three-, and six-queue procedures, not as an empirical roster or simulator.  Fixed generic tie-breaking is a source-model clarification that makes the operational selector single-valued; it is not an economic restriction or a caveat.};
 
 \draw[dag_arrow] (CoreModel) -- (TheoremOne);
 \draw[dag_arrow] (TheoremOne) -- (MLFormulas);

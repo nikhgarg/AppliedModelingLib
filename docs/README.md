@@ -1,65 +1,34 @@
-# EconCSLib Documentation
+# Documentation
 
-This directory has two kinds of documentation.
+Start with the [project overview](../README.md) and [paper library](PAPER_STATUS.md).
+Each paper's validation report explains what is formalized, links any source
+clarifications, and identifies remaining formalization gaps. Its review packet
+and dependency diagram provide more detail.
 
-## Human-Facing
+## Reading and reviewing a formalization
 
-These files are for readers who want to understand the project, paper status,
-or what a completed formalization proves without reading proof internals.
+- [Validation model](VALIDATION_MODEL.md): how proofs, source comparisons and human review fit together.
+- [Status labels](STATUS.md): what the paper labels and scope notes mean.
+- [Review dashboard](REVIEW_DASHBOARD.md): inspect and annotate formal statements.
 
-- [../README.md](../README.md): short project overview and review path.
-- [REVIEW_DASHBOARD.md](REVIEW_DASHBOARD.md): theorem-statement review
-  dashboard workflow.
-- [VALIDATION_MODEL.md](VALIDATION_MODEL.md): how to read Lean proof status,
-  human statement review, LLM audit status, and public paper labels.
-- [PAPER_STATUS.md](PAPER_STATUS.md): generated paper citation, status labels
-  linked to validation reports, human-review, Lean LOC, and note table.
-- `../papers/<PaperName>/status.json`: paper-local machine-readable source of
-  truth for status, review rows, and artifact paths.
-- [../papers/human_status.json](../papers/human_status.json): generated compact
-  human-facing status JSON for public summaries.
-- [../papers/status.json](../papers/status.json): generated aggregate paper
-  status.
-- [NEW_CONTRIBUTOR_WORKFLOW.md](NEW_CONTRIBUTOR_WORKFLOW.md): first-time
-  contributor workflow using public `main` as a base, private development, and
-  a public-safe pull request when ready.
-- [paper-formalization-quickstart/README.md](paper-formalization-quickstart/README.md):
-  concise prompt and steering guide for starting or managing a paper
-  formalization.
-- [PUBLIC_RELEASE_CHECKLIST.md](PUBLIC_RELEASE_CHECKLIST.md): checks before a
-  public announcement or broad external contribution request.
-- [PAGES_PUBLISHING.md](PAGES_PUBLISHING.md): static-site publishing steps for
-  GitHub Pages.
-- Paper-level `FINAL_VALIDATION_REPORT.md`, `PaperInterface.lean`, and
-  `docs/DependencyDAG.pdf` files under `papers/<PaperName>/`.
+## Contributing
 
-## Agent And Maintainer-Facing
+- [Contribution guide](../CONTRIBUTING.md) and [first contribution](NEW_CONTRIBUTOR_WORKFLOW.md).
+- [One-paper workflow](contributing/README.md): work on one paper without reopening the library.
+- [Formalization quickstart](paper-formalization-quickstart/DETAILS-for-agent.md): prompts and guidance for working with an agent.
+- [Lean style](LEAN_STYLE.md) and [theorem interfaces](THEOREM_ERGONOMICS.md).
 
-These files are operational references for formalization agents and maintainers.
-They may assume Lean familiarity and may be more detailed.
+## Library and workflow design
 
-- [AGENT_FORMALIZATION_WORKFLOW.md](AGENT_FORMALIZATION_WORKFLOW.md): how to
-  start, run, audit, and finish a paper formalization with an agent.
-- [ARCHITECTURE.md](ARCHITECTURE.md): repository structure, paper-folder
-  contract, paper-facing ledger rules, and maintenance notes.
-- [ECONCSLIB_DOMAIN_INDEX.md](ECONCSLIB_DOMAIN_INDEX.md): reusable library
-  modules by domain.
-- [LEAN_STYLE.md](LEAN_STYLE.md): Lean style conventions.
-- [LIBRARY_PROVENANCE.md](LIBRARY_PROVENANCE.md): how to audit reusable
-  certificate/source-boundary APIs and paper wrapper obligations.
-- [UPSTREAM_LEAN_SOURCES.md](UPSTREAM_LEAN_SOURCES.md): imported and potential
-  upstream Lean sources to scout before creating local APIs.
-- [STATUS.md](STATUS.md): controlled vocabulary for paper status rows.
-- [THEOREM_ERGONOMICS.md](THEOREM_ERGONOMICS.md): theorem statement and
-  interface conventions.
-- [PROBABILITY_LIBRARY_ROADMAP.md](PROBABILITY_LIBRARY_ROADMAP.md) and
-  [OPTIMIZATION_LIBRARY_ROADMAP.md](OPTIMIZATION_LIBRARY_ROADMAP.md): reusable
-  library roadmaps.
-- [ECONCSLIB_DOMAIN_INDEX.md](ECONCSLIB_DOMAIN_INDEX.md): reusable library
-  modules and linked domain-specific roadmaps for cross-paper extraction work.
+- [Architecture](ARCHITECTURE.md) and [library domain index](APPLIEDMODELINGLIB_DOMAIN_INDEX.md).
+- [Library provenance](LIBRARY_PROVENANCE.md) and [upstream Lean sources](UPSTREAM_LEAN_SOURCES.md).
+- [Agent formalization workflow](AGENT_FORMALIZATION_WORKFLOW.md) and [executable skills](../skills/econcs-formalizer/SKILL.md).
 
-Agent skills live under [`skills/`](../skills/). Use
-[`skills/econcs-formalizer/`](../skills/econcs-formalizer/) for paper workflow,
-audit, and closeout rules, and
-[`skills/econcs-prover/`](../skills/econcs-prover/) for Lean theorem proving
-and proof repair.
+## Maintaining the website and releases
+
+- [Website maintenance](WEBSITE_MAINTENANCE.md): generated tables, local preview and link checks.
+- [Publishing and the repository rename](PAGES_PUBLISHING.md).
+- [Release checklist](PUBLIC_RELEASE_CHECKLIST.md).
+
+Internal campaign plans, repair assignments and historical audit notes are
+maintained separately from these reader and contributor guides.

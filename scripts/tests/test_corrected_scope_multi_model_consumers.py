@@ -624,69 +624,6 @@ class CorrectedScopeMultiModelConsumerTests(unittest.TestCase):
             )
         )
 
-    def test_repository_record_bindings_route_only_the_assigned_model(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            folder = Path(temp_dir) / "Fixture"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            source_record = {
-                "semantic_model_items": [
-                    {
-                        "qualified_declaration": self.optional_target,
-                        "record_input_bindings": [
-                            {
-                                "binder_names": ["optional"],
-                                "record_roots": [self.optional_model],
-                            }
-                        ],
-                    },
-                    {
-                        "qualified_declaration": self.report_target,
-                        "record_input_bindings": [
-                            {
-                                "binder_names": ["report"],
-                                "record_roots": [self.report_model],
-                            },
-                            {
-                                "binder_names": ["paired"],
-                                "record_roots": [self.paired_model],
-                            },
-                        ],
-                    },
-                    {
-                        "qualified_declaration": "Fixture.PaperInterface.support_row",
-                        "record_input_bindings": [
-                            {
-                                "binder_names": ["support"],
-                                "record_roots": [self.optional_model],
-                            }
-                        ],
-                    },
-                ]
-            }
-            (audit / "source_record_audit.json").write_text(
-                json.dumps(source_record), encoding="utf-8"
-            )
-            with mock.patch.object(
-                repository,
-                "current_author_approved_corrected_scope",
-                return_value=True,
-            ):
-                bindings = repository.corrected_scope_semantic_record_bindings(
-                    folder,
-                    {
-                        "review_surface": {},
-                        "formalization_scope": self._multi_scope(),
-                    },
-                )
-
-        self.assertEqual(
-            bindings,
-            {
-                self.optional_target: ((frozenset({"optional"}), self.optional_model),),
-                self.report_target: ((frozenset({"report"}), self.report_model),),
-            },
-        )
 
     def test_repository_premise_bridge_rejects_a_paired_model_root(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

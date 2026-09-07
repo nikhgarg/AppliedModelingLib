@@ -8,12 +8,29 @@ import hashlib
 import json
 import os
 import re
+import sys
 import tempfile
 from collections import Counter
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+if __package__ in {None, ""}:  # Import the trusted current-closeout package.
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from scripts.current_closeout.protocol_selection import current_v11_protocol_selected
+
+try:
+    from approved_review_context_report import (
+        approved_review_contexts_for_report,
+        replace_approved_review_context_block,
+    )
+except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
+    from scripts.approved_review_context_report import (
+        approved_review_contexts_for_report,
+        replace_approved_review_context_block,
+    )
 
 try:
     from source_coverage_scope import (
@@ -265,7 +282,9 @@ SOURCE_RECORD_ORDER = [
 ]
 
 
-def uses_direct_source_spec_closeout(status: Mapping[str, Any]) -> bool:
+def uses_direct_source_spec_closeout(
+    status: Mapping[str, Any], source_map: Mapping[str, Any] | None = None
+) -> bool:
     """Whether a report is owned by the source-to-expanded-Spec closeout lane.
 
     The legacy refresher projects v10 sidecars into sections 13--21.  Those
@@ -274,17 +293,7 @@ def uses_direct_source_spec_closeout(status: Mapping[str, Any]) -> bool:
     deliberately curated closeout report with an obsolete evidence lane.
     """
 
-    review_surface = status.get("review_surface")
-    if not isinstance(review_surface, Mapping):
-        return False
-    if review_surface.get("require_source_spec_correspondence") is True:
-        return True
-    statement_review = review_surface.get("llm_statement_review")
-    return (
-        isinstance(statement_review, Mapping)
-        and str(statement_review.get("required_prompt_version") or "").strip()
-        == "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2"
-    )
+    return current_v11_protocol_selected(status, source_map)
 
 
 def supports_legacy_generated_layout(text: str) -> bool:
@@ -415,20 +424,42 @@ def load_report_input_snapshot(path: Path) -> ReportInputSnapshot:
         else {}
     )
 
-    evidence: dict[str, dict[str, Any] | None] = {}
-    sidecar_paths: dict[str, Path | None] = {}
-    for key, name in CANONICAL_SIDECAR_NAMES.items():
-        selected_path, payload = selected_sidecar(name)
-        sidecar_paths[key] = selected_path
-        evidence[key] = payload
-    summary_payloads: dict[str, dict[str, Any] | None] = {}
-    for key, name in SUMMARY_SIDECAR_NAMES.items():
-        selected_path, payload = selected_sidecar(name)
-        sidecar_paths[key] = selected_path
-        summary_payloads[key] = payload
-
-    cache_path = folder / ".review_traces" / "paper_interface_cache.json"
-    cache_raw = read_optional(cache_path)
+    # Decide the lane from current status/map bytes before touching historical
+    # sidecars or their root aliases. Current reports need only their source
+    # context; the old machine-summary layout is not their evidence owner.
+    source_map_path = folder / "audit" / "paper_statement_map.json"
+    source_map_raw = read_optional(source_map_path)
+    canonical_source_map = (
+        _json_object_from_bytes(source_map_path, source_map_raw)
+        if source_map_raw is not None
+        else None
+    )
+    current_v11 = uses_direct_source_spec_closeout(status, canonical_source_map)
+    evidence: dict[str, dict[str, Any] | None] = {
+        key: None for key in CANONICAL_SIDECAR_NAMES
+    }
+    sidecar_paths: dict[str, Path | None] = {
+        key: None for key in (*CANONICAL_SIDECAR_NAMES, *SUMMARY_SIDECAR_NAMES)
+    }
+    summary_payloads: dict[str, dict[str, Any] | None] = {
+        key: None for key in SUMMARY_SIDECAR_NAMES
+    }
+    cache_raw = None
+    if current_v11:
+        evidence["source_map"] = canonical_source_map
+        if source_map_raw is not None:
+            sidecar_paths["source_map"] = source_map_path.resolve()
+    else:
+        for key, name in CANONICAL_SIDECAR_NAMES.items():
+            selected_path, payload = selected_sidecar(name)
+            sidecar_paths[key] = selected_path
+            evidence[key] = payload
+        for key, name in SUMMARY_SIDECAR_NAMES.items():
+            selected_path, payload = selected_sidecar(name)
+            sidecar_paths[key] = selected_path
+            summary_payloads[key] = payload
+        cache_path = folder / ".review_traces" / "paper_interface_cache.json"
+        cache_raw = read_optional(cache_path)
     cache_rows: tuple[dict[str, Any], ...] = ()
     if cache_raw is not None:
         cache_payload = _json_object_from_bytes(cache_path, cache_raw)
@@ -3310,16 +3341,36 @@ def replace_or_insert_block(text: str, block: str, path: Path) -> str:
 
 def prepare_report(path: Path) -> PreparedReport:
     snapshot = load_report_input_snapshot(path)
-    reuse = saved_report_reuse_authorization(path.parent, snapshot.status)
-    if uses_direct_source_spec_closeout(snapshot.status) or not supports_legacy_generated_layout(
-        snapshot.text
+    current_v11 = uses_direct_source_spec_closeout(
+        snapshot.status, snapshot.evidence.get("source_map")
+    )
+    reuse = (
+        SavedSidecarReuseAuthorization(False, "current source-to-Spec report")
+        if current_v11
+        else saved_report_reuse_authorization(path.parent, snapshot.status)
+    )
+    approved_contexts, approved_context_error = approved_review_contexts_for_report(
+        path.parent
+    )
+    if approved_context_error:
+        raise ValueError(
+            f"{_path_label(path)} cannot project settled review context: "
+            + approved_context_error
+        )
+    context_updated = replace_approved_review_context_block(
+        snapshot.text,
+        contexts=approved_contexts,
+        path=path,
+    )
+    if current_v11 or not supports_legacy_generated_layout(
+        context_updated
     ):
         # v11 report prose and its source-first link surface are hand-authored
         # closeout artifacts.  Updating it through the retired v10 projection
         # would regress the semantic review contract rather than refresh it.
         # Reports which no longer declare the legacy section layout are also
         # intentionally left alone rather than acquiring a mixed layout.
-        return PreparedReport(snapshot=snapshot, reuse=reuse, rendered=snapshot.text)
+        return PreparedReport(snapshot=snapshot, reuse=reuse, rendered=context_updated)
     surface = semantic_review_surface(
         path.parent,
         snapshot.status,
@@ -3333,7 +3384,7 @@ def prepare_report(path: Path) -> PreparedReport:
         reuse_authorization=reuse,
         semantic_surface=surface,
     )
-    updated = replace_audit_summary(snapshot.text, summary, path)
+    updated = replace_audit_summary(context_updated, summary, path)
     updated = replace_or_insert_block(updated, result_block(summary), path)
     for section, content in generated_section_blocks(
         path.parent,
@@ -3360,6 +3411,10 @@ def validate_prepared_report(
         raise ValueError(
             f"{_path_label(prepared.snapshot.path)} inputs changed during rendering"
         )
+    if uses_direct_source_spec_closeout(
+        prepared.snapshot.status, prepared.snapshot.evidence.get("source_map")
+    ):
+        return
     current_reuse = saved_sidecar_reuse_authorization(
         prepared.snapshot.path.parent,
         prepared.snapshot.status,

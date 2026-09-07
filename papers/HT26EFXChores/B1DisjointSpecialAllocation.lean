@@ -12,7 +12,7 @@ Source: EFXadditivechores.tex, lines 2425--2439.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The direct B.2.1(b) schedule behind the source's two exceptional
 multiplicities.  The two type-(0,1) chores in uZero go to agent 0, the

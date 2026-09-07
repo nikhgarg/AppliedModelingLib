@@ -1,6 +1,6 @@
 import KR21Monoculture.Payoff
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -12,14 +12,14 @@ theorem expectedRerankingGain_eq_zero_of_all_missProb_zero {n : ℕ}
     (μ : PMF (Ranking n)) (value : Candidate n → ℝ)
     (hmiss : ∀ π : Ranking n, firstChoiceMissProb μ (firstChoice π) = 0) :
     expectedRerankingGain μ value = 0 := by
-  simpa [expectedRerankingGain, EconCSLib.SocialChoice.Ranking.expectedRerankingGain,
-    firstChoiceMissProb, EconCSLib.SocialChoice.Ranking.firstChoiceMissProb,
-    firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice] using
-    EconCSLib.SocialChoice.Ranking.expectedRerankingGain_eq_zero_of_all_missProb_zero
+  simpa [expectedRerankingGain, AppliedModelingLib.SocialChoice.Ranking.expectedRerankingGain,
+    firstChoiceMissProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb,
+    firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice] using
+    AppliedModelingLib.SocialChoice.Ranking.expectedRerankingGain_eq_zero_of_all_missProb_zero
       (μ := μ) (value := value) (by
         intro π
-        simpa [firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice,
-          firstChoiceMissProb, EconCSLib.SocialChoice.Ranking.firstChoiceMissProb]
+        simpa [firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice,
+          firstChoiceMissProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb]
           using hmiss π)
 
 /--
@@ -30,12 +30,12 @@ theorem expectedRerankingGain_eq_zero_of_all_valueGap_zero {n : ℕ}
     (μ : PMF (Ranking n)) (value : Candidate n → ℝ)
     (hgap : ∀ π : Ranking n, valueGap value π = 0) :
     expectedRerankingGain μ value = 0 := by
-  simpa [expectedRerankingGain, EconCSLib.SocialChoice.Ranking.expectedRerankingGain,
-    valueGap, EconCSLib.SocialChoice.Ranking.valueGap] using
-    EconCSLib.SocialChoice.Ranking.expectedRerankingGain_eq_zero_of_all_valueGap_zero
+  simpa [expectedRerankingGain, AppliedModelingLib.SocialChoice.Ranking.expectedRerankingGain,
+    valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap] using
+    AppliedModelingLib.SocialChoice.Ranking.expectedRerankingGain_eq_zero_of_all_valueGap_zero
       (μ := μ) (value := value) (by
         intro π
-        simpa [valueGap, EconCSLib.SocialChoice.Ranking.valueGap] using hgap π)
+        simpa [valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap] using hgap π)
 
 /--
 Zero miss probability collapses independent and shared second-mover utility.
@@ -45,14 +45,14 @@ theorem expectedSecondMoverIndependent_eq_shared_of_all_missProb_zero {n : ℕ}
     (hmiss : ∀ π : Ranking n, firstChoiceMissProb μ (firstChoice π) = 0) :
     expectedSecondMoverIndependent μ μ value = expectedSecondMoverShared μ value := by
   simpa [expectedSecondMoverIndependent,
-    EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent,
+    AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent,
     expectedSecondMoverShared,
-    EconCSLib.SocialChoice.Ranking.expectedSecondMoverShared] using
-    EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent_eq_shared_of_all_missProb_zero
+    AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverShared] using
+    AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent_eq_shared_of_all_missProb_zero
       (μ := μ) (value := value) (by
         intro π
-        simpa [firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice,
-          firstChoiceMissProb, EconCSLib.SocialChoice.Ranking.firstChoiceMissProb]
+        simpa [firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice,
+          firstChoiceMissProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb]
           using hmiss π)
 
 /--
@@ -63,13 +63,13 @@ theorem expectedSecondMoverIndependent_eq_shared_of_all_valueGap_zero {n : ℕ}
     (hgap : ∀ π : Ranking n, valueGap value π = 0) :
     expectedSecondMoverIndependent μ μ value = expectedSecondMoverShared μ value := by
   simpa [expectedSecondMoverIndependent,
-    EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent,
+    AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent,
     expectedSecondMoverShared,
-    EconCSLib.SocialChoice.Ranking.expectedSecondMoverShared] using
-    EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent_eq_shared_of_all_valueGap_zero
+    AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverShared] using
+    AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent_eq_shared_of_all_valueGap_zero
       (μ := μ) (value := value) (by
         intro π
-        simpa [valueGap, EconCSLib.SocialChoice.Ranking.valueGap] using hgap π)
+        simpa [valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap] using hgap π)
 
 /-- No independent-reranking preference is possible when all relevant miss probabilities vanish. -/
 theorem not_prefersIndependentReranking_of_all_missProb_zero {n : ℕ}
@@ -77,12 +77,12 @@ theorem not_prefersIndependentReranking_of_all_missProb_zero {n : ℕ}
     (hmiss : ∀ π : Ranking n, firstChoiceMissProb μ (firstChoice π) = 0) :
     ¬ Model.PrefersIndependentReranking μ value := by
   simpa [Model.PrefersIndependentReranking,
-    EconCSLib.SocialChoice.Ranking.PrefersIndependentReranking] using
-    EconCSLib.SocialChoice.Ranking.not_prefersIndependentReranking_of_all_missProb_zero
+    AppliedModelingLib.SocialChoice.Ranking.PrefersIndependentReranking] using
+    AppliedModelingLib.SocialChoice.Ranking.not_prefersIndependentReranking_of_all_missProb_zero
       (μ := μ) (value := value) (by
         intro π
-        simpa [firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice,
-          firstChoiceMissProb, EconCSLib.SocialChoice.Ranking.firstChoiceMissProb]
+        simpa [firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice,
+          firstChoiceMissProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb]
           using hmiss π)
 
 /-- No independent-reranking preference is possible when every top-second gap is zero. -/
@@ -91,10 +91,10 @@ theorem not_prefersIndependentReranking_of_all_valueGap_zero {n : ℕ}
     (hgap : ∀ π : Ranking n, valueGap value π = 0) :
     ¬ Model.PrefersIndependentReranking μ value := by
   simpa [Model.PrefersIndependentReranking,
-    EconCSLib.SocialChoice.Ranking.PrefersIndependentReranking] using
-    EconCSLib.SocialChoice.Ranking.not_prefersIndependentReranking_of_all_valueGap_zero
+    AppliedModelingLib.SocialChoice.Ranking.PrefersIndependentReranking] using
+    AppliedModelingLib.SocialChoice.Ranking.not_prefersIndependentReranking_of_all_valueGap_zero
       (μ := μ) (value := value) (by
         intro π
-        simpa [valueGap, EconCSLib.SocialChoice.Ranking.valueGap] using hgap π)
+        simpa [valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap] using hgap π)
 
 end KR21Monoculture

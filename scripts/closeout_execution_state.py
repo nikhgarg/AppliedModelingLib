@@ -383,6 +383,7 @@ class CloseoutExecutionLease:
     lease_id: str
     running_payload: dict[str, Any]
     lock_fd: int
+    monotonic_started: float
 
     @classmethod
     def acquire(
@@ -497,6 +498,7 @@ class CloseoutExecutionLease:
                     lease_id=lease_id,
                     running_payload=running_payload,
                     lock_fd=fd,
+                    monotonic_started=time.monotonic(),
                 ),
                 "",
             )
@@ -511,14 +513,64 @@ class CloseoutExecutionLease:
         self.running_payload["child_process_identity"] = _proc_identity(pid)
         atomic_write_json(self.state_path, self.running_payload)
 
+    def heartbeat(
+        self,
+        *,
+        stage: str,
+        completed_units: int | None = None,
+        total_units: int | None = None,
+        cache_hits: int | None = None,
+        cache_misses: int | None = None,
+        details: Mapping[str, Any] | None = None,
+    ) -> None:
+        """Atomically publish non-authoritative progress while holding the lease."""
+
+        if self.lock_fd < 0 or not _lock_path_matches_fd(self.lock_fd, self.lock_path):
+            raise RuntimeError("cannot heartbeat a closeout lease that is not held")
+        progress: dict[str, Any] = {
+            "schema": 1,
+            "stage": str(stage).strip() or "unknown",
+            "heartbeat_at": utc_now(),
+            "elapsed_seconds": round(
+                max(
+                    0.0,
+                    time.monotonic() - self.monotonic_started,
+                ),
+                3,
+            ),
+        }
+        for key, value in (
+            ("completed_units", completed_units),
+            ("total_units", total_units),
+            ("cache_hits", cache_hits),
+            ("cache_misses", cache_misses),
+        ):
+            if value is not None:
+                if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+                    raise ValueError(f"closeout heartbeat {key} must be nonnegative")
+                progress[key] = value
+        if details:
+            progress["details"] = dict(details)
+        self.running_payload["progress"] = progress
+        atomic_write_json(self.state_path, self.running_payload)
+
     def complete(
         self,
         *,
         exit_code: int,
         result: Mapping[str, Any],
     ) -> None:
+        # Progress describes only a live operation. Keeping the last heartbeat
+        # beside a terminal result made successful workers appear stuck at an
+        # earlier inner stage. The terminal result already carries the final
+        # closeout DAG, so publish one outcome authority and drop stale progress.
+        terminal_base = {
+            key: value
+            for key, value in self.running_payload.items()
+            if key != "progress"
+        }
         payload = {
-            **self.running_payload,
+            **terminal_base,
             "state": "complete",
             "completed_at": utc_now(),
             "exit_code": exit_code,

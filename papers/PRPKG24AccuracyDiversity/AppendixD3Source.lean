@@ -13,9 +13,9 @@ uses the equivalent one-based bottom index `q - r`.
 -/
 private theorem sampleTopKSum_succ_sub_eq_upperOrderStatistic
     {q r : ℕ} (hrq : r < q) (sample : Fin q → ℝ) :
-    EconCSLib.Probability.sampleTopKSum sample (r + 1) =
-      EconCSLib.Probability.sampleTopKSum sample r +
-        EconCSLib.Probability.upperOrderStatistic sample ⟨r, hrq⟩ := by
+    AppliedModelingLib.Probability.sampleTopKSum sample (r + 1) =
+      AppliedModelingLib.Probability.sampleTopKSum sample r +
+        AppliedModelingLib.Probability.upperOrderStatistic sample ⟨r, hrq⟩ := by
   have hr_le_q : r ≤ q := Nat.le_of_lt hrq
   have hrsucc_le_q : r + 1 ≤ q := Nat.succ_le_iff.mpr hrq
   have hmin_succ : min (r + 1) q = r + 1 := min_eq_left hrsucc_le_q
@@ -25,30 +25,30 @@ private theorem sampleTopKSum_succ_sub_eq_upperOrderStatistic
   let e : Fin r ≃ Fin (min r q) :=
     (Fin.castOrderIso hmin.symm).toEquiv
   have htop_succ :
-      EconCSLib.Probability.sampleTopKSum sample (r + 1) =
+      AppliedModelingLib.Probability.sampleTopKSum sample (r + 1) =
         ∑ i : Fin (r + 1),
-          EconCSLib.Probability.upperOrderStatistic sample
-            (EconCSLib.Probability.topKRankEmbedding (r + 1) q (eSucc i)) := by
-    unfold EconCSLib.Probability.sampleTopKSum
+          AppliedModelingLib.Probability.upperOrderStatistic sample
+            (AppliedModelingLib.Probability.topKRankEmbedding (r + 1) q (eSucc i)) := by
+    unfold AppliedModelingLib.Probability.sampleTopKSum
     symm
     exact Fintype.sum_equiv eSucc
-      (fun i => EconCSLib.Probability.upperOrderStatistic sample
-        (EconCSLib.Probability.topKRankEmbedding (r + 1) q (eSucc i)))
-      (fun i => EconCSLib.Probability.upperOrderStatistic sample
-        (EconCSLib.Probability.topKRankEmbedding (r + 1) q i))
+      (fun i => AppliedModelingLib.Probability.upperOrderStatistic sample
+        (AppliedModelingLib.Probability.topKRankEmbedding (r + 1) q (eSucc i)))
+      (fun i => AppliedModelingLib.Probability.upperOrderStatistic sample
+        (AppliedModelingLib.Probability.topKRankEmbedding (r + 1) q i))
       (fun _ => rfl)
   have htop :
-      EconCSLib.Probability.sampleTopKSum sample r =
+      AppliedModelingLib.Probability.sampleTopKSum sample r =
         ∑ i : Fin r,
-          EconCSLib.Probability.upperOrderStatistic sample
-            (EconCSLib.Probability.topKRankEmbedding r q (e i)) := by
-    unfold EconCSLib.Probability.sampleTopKSum
+          AppliedModelingLib.Probability.upperOrderStatistic sample
+            (AppliedModelingLib.Probability.topKRankEmbedding r q (e i)) := by
+    unfold AppliedModelingLib.Probability.sampleTopKSum
     symm
     exact Fintype.sum_equiv e
-      (fun i => EconCSLib.Probability.upperOrderStatistic sample
-        (EconCSLib.Probability.topKRankEmbedding r q (e i)))
-      (fun i => EconCSLib.Probability.upperOrderStatistic sample
-        (EconCSLib.Probability.topKRankEmbedding r q i))
+      (fun i => AppliedModelingLib.Probability.upperOrderStatistic sample
+        (AppliedModelingLib.Probability.topKRankEmbedding r q (e i)))
+      (fun i => AppliedModelingLib.Probability.upperOrderStatistic sample
+        (AppliedModelingLib.Probability.topKRankEmbedding r q i))
       (fun _ => rfl)
   rw [htop_succ, htop]
   rw [Fin.sum_univ_castSucc (n := r)]
@@ -63,16 +63,16 @@ top-`k` statistic.
 private theorem exponential_iid_expectedSampleTopKSum_integrable
     (lambda : ℝ) (hlambda_pos : 0 < lambda) {q : ℕ} [NeZero q] (k : ℕ) :
     MeasureTheory.Integrable
-      (fun sample : Fin q → ℝ => EconCSLib.Probability.sampleTopKSum sample k)
+      (fun sample : Fin q → ℝ => AppliedModelingLib.Probability.sampleTopKSum sample k)
       ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q) := by
   let M := exponentialDistributionModel lambda hlambda_pos
   have hsample_eq :
       (fun sample : Fin q → ℝ =>
-        EconCSLib.Probability.sampleTopKSum sample k) =ᵐ[M.iidProductMeasure q]
+        AppliedModelingLib.Probability.sampleTopKSum sample k) =ᵐ[M.iidProductMeasure q]
         exponentialFiniteSampleTopKSum (q := q) k := by
     filter_upwards [M.iidProductMeasure_all_nonnegative_ae q] with sample hnonneg
     simpa [exponentialFiniteSampleTopKSum] using
-      (EconCSLib.Probability.topKSumOn_eq_sampleTopKSum_of_forall_nonneg
+      (AppliedModelingLib.Probability.topKSumOn_eq_sampleTopKSum_of_forall_nonneg
         sample k hnonneg).symm
   exact (exponentialFiniteSampleTopKSum_integrable M k).congr hsample_eq.symm
 
@@ -82,23 +82,23 @@ difference between two concrete expected top-`k` sample sums.
 -/
 private theorem exponential_iid_expectedUpperOrderStatistic_eq_topK_difference
     (lambda : ℝ) (hlambda_pos : 0 < lambda) {q r : ℕ} (hrq : r < q) :
-    EconCSLib.Probability.expectedUpperOrderStatistic
+    AppliedModelingLib.Probability.expectedUpperOrderStatistic
         ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q)
         ⟨r, hrq⟩ =
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
           ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q)
           (r + 1) -
-        EconCSLib.Probability.expectedSampleTopKSum
+        AppliedModelingLib.Probability.expectedSampleTopKSum
           ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q)
           r := by
   let M := exponentialDistributionModel lambda hlambda_pos
   let mu := M.iidProductMeasure q
   let f : (Fin q → ℝ) → ℝ := fun sample =>
-    EconCSLib.Probability.sampleTopKSum sample (r + 1)
+    AppliedModelingLib.Probability.sampleTopKSum sample (r + 1)
   let g : (Fin q → ℝ) → ℝ := fun sample =>
-    EconCSLib.Probability.sampleTopKSum sample r
+    AppliedModelingLib.Probability.sampleTopKSum sample r
   let h : (Fin q → ℝ) → ℝ := fun sample =>
-    EconCSLib.Probability.upperOrderStatistic sample ⟨r, hrq⟩
+    AppliedModelingLib.Probability.upperOrderStatistic sample ⟨r, hrq⟩
   have hpoint : f = fun sample => g sample + h sample := by
     funext sample
     exact sampleTopKSum_succ_sub_eq_upperOrderStatistic hrq sample
@@ -135,16 +135,16 @@ is an integral over the actual product sample law.
 -/
 private theorem exponential_iid_expectedSampleTopKSum_eq_orderStatisticValue
     (lambda : ℝ) (hlambda_pos : 0 < lambda) {q : ℕ} [NeZero q] (k : ℕ) :
-    EconCSLib.Probability.expectedSampleTopKSum
+    AppliedModelingLib.Probability.expectedSampleTopKSum
         ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q) k =
       exponentialTopKOrderStatisticValue lambda k q := by
   let M := exponentialDistributionModel lambda hlambda_pos
   calc
-    EconCSLib.Probability.expectedSampleTopKSum (M.iidProductMeasure q) k =
+    AppliedModelingLib.Probability.expectedSampleTopKSum (M.iidProductMeasure q) k =
         ∫ sample, exponentialFiniteSampleTopKSum (q := q) k sample
           ∂M.iidProductMeasure q := by
           simpa [exponentialFiniteSampleTopKSum] using
-            (EconCSLib.Probability.expectedSampleTopKSum_eq_integral_topKSumOn_of_ae_nonneg
+            (AppliedModelingLib.Probability.expectedSampleTopKSum_eq_integral_topKSumOn_of_ae_nonneg
               (M.iidProductMeasure q) k (M.iidProductMeasure_all_nonnegative_ae q))
     _ = exponentialTopKOrderStatisticValue lambda k q := by
       simpa [M] using
@@ -172,18 +172,18 @@ theorem lemmaD3_exponential_iid_fixed_rank_mean_eq_harmonic_difference
     expectedOrderStatisticMeanSeq
         (fun a => (exponentialDistributionModel lambda hlambda_pos).iidProductMeasure a)
         (q - r) q =
-        EconCSLib.Probability.expectedUpperOrderStatistic
+        AppliedModelingLib.Probability.expectedUpperOrderStatistic
           ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q)
           ⟨r, hrq⟩ := by
           simpa [expectedOrderStatisticMeanSeq] using
-            EconCSLib.Probability.expectedSampleOrderStatisticMean_eq_expectedUpperOrderStatistic_of_rank_from_top
+            AppliedModelingLib.Probability.expectedSampleOrderStatisticMean_eq_expectedUpperOrderStatistic_of_rank_from_top
               (μ := (exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q)
               (r := r) (a := q) hrq
     _ =
-        EconCSLib.Probability.expectedSampleTopKSum
+        AppliedModelingLib.Probability.expectedSampleTopKSum
             ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q)
             (r + 1) -
-          EconCSLib.Probability.expectedSampleTopKSum
+          AppliedModelingLib.Probability.expectedSampleTopKSum
             ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q)
             r :=
       exponential_iid_expectedUpperOrderStatistic_eq_topK_difference

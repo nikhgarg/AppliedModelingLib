@@ -16,12 +16,15 @@ the receipt fields derived from data that has remained structurally covered:
 * `closure_environment_sha256`; and
 * `item_identity_sha256`.
 
-It preserves `source_atom_bindings` and `closure_node_dispositions` byte for
-byte.  Before accepting a candidate it asks the existing runtime validator to
-check those preserved mappings against the new Lean-owned closure.  A changed
-bound component, an added/removed material terminal, a changed external pin,
-or any malformed retained semantic evidence is a refusal, not a guessed
-rebind.  It also does not create missing correspondence records.
+It preserves the reviewed semantic bridges and `closure_node_dispositions`
+byte for byte.  Before accepting a candidate it asks the existing runtime
+validator to check those mappings against the new Lean-owned closure.  The
+only component-coordinate rewrite it can make is a complete-Spec root rebind:
+an old singleton root component may be replaced by the current root only when
+the paper's current v11 verbatim-source-to-expanded-Spec review is independently
+current.  Subcomponent mappings, added/removed material terminals, changed
+external pins, and malformed retained evidence are refusals, not guessed
+rebinds.  It also does not create missing correspondence records.
 
 Use the default dry run first.  A successful `--write` is atomic for the
 selected established records, but is only a receipt refresh: run the normal
@@ -44,16 +47,24 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT / "scripts") not in sys.path:
-    sys.path.insert(0, str(ROOT / "scripts"))
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-import audit_evidence_integrity as integrity  # noqa: E402
-import audit_repository as repository  # noqa: E402
-from lean_signature_manifest import (  # noqa: E402
+from scripts import audit_evidence_integrity as integrity  # noqa: E402
+from scripts import audit_repository as repository  # noqa: E402
+from scripts.obligation_routes import (  # noqa: E402
+    EvidenceRouteSet,
+    ObligationRouteError,
+)
+from scripts.lean_signature_manifest import (  # noqa: E402
+    foreign_model_definition_scope,
     paper_local_module_names,
     run_lean_semantic_contract_closure_manifests,
 )
-from review_dashboard import review_source_file, review_source_module  # noqa: E402
+from scripts.review_dashboard import (  # noqa: E402
+    review_source_file,
+    review_source_module,
+)
 
 
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$", re.IGNORECASE)
@@ -67,11 +78,13 @@ DERIVED_RECEIPT_FIELDS = frozenset(
         "item_identity_sha256",
     }
 )
+DEFAULT_TIMEOUT_SECONDS = 180
+DEFAULT_BUILD_TIMEOUT_SECONDS = 600
 
 
 @dataclass(frozen=True)
 class RefreshCandidate:
-    """One accepted receipt update with no semantic mapping rewrite."""
+    """One accepted receipt update with no unreviewed semantic mapping rewrite."""
 
     correspondence: dict[str, Any]
     changed: bool
@@ -125,9 +138,47 @@ def _closure_receipt_fields(closure: object) -> tuple[dict[str, str] | None, lis
     return (values if not errors else None), errors
 
 
+def _exact_quote_atom_identity_rebinds(
+    raw_atoms: list[object],
+) -> dict[str, str]:
+    """Map a legacy atom coordinate to its exact-quote coordinate.
+
+    Schema 2 deliberately drops curator prose and source line numbers from the
+    semantic identity and uses the byte-pinned quote alone.  The v11 activator
+    may upgrade an otherwise unchanged atom before an older correspondence is
+    refreshed.  Reconstruct the legacy identity from the same current atom so
+    a caller with independent current v11 authority can change only that
+    coordinate, rather than reopening the reviewed mapping.
+    """
+
+    rebinds: dict[str, str] = {}
+    for raw_atom in raw_atoms:
+        if not isinstance(raw_atom, dict):
+            continue
+        if raw_atom.get(
+            integrity.SOURCE_CLAIM_ATOM_IDENTITY_SCHEMA_FIELD
+        ) not in integrity.EXACT_SOURCE_CLAIM_ATOM_IDENTITY_SCHEMAS:
+            continue
+        current_sha = integrity.source_claim_atom_semantic_sha256(raw_atom)
+        legacy_atom = dict(raw_atom)
+        legacy_atom[integrity.SOURCE_CLAIM_ATOM_IDENTITY_SCHEMA_FIELD] = (
+            integrity.LEGACY_SOURCE_CLAIM_ATOM_IDENTITY_SCHEMA
+        )
+        legacy_sha = integrity.source_claim_atom_semantic_sha256(legacy_atom)
+        if not _digest(current_sha) or not _digest(legacy_sha):
+            continue
+        prior = rebinds.get(legacy_sha)
+        if prior is not None and prior != current_sha:
+            return {}
+        rebinds[legacy_sha] = current_sha
+    return rebinds
+
+
 def refresh_existing_correspondence(
     raw_item: object,
     closure: object,
+    *,
+    allow_whole_surface_rebind: bool = False,
 ) -> tuple[RefreshCandidate | None, list[str]]:
     """Refresh one existing record only when its semantic structure survives.
 
@@ -176,9 +227,58 @@ def refresh_existing_correspondence(
             "refresh cannot choose bindings"
         ]
 
-    # Preserve the reviewed semantic mapping exactly.  `deepcopy` makes the
-    # no-rebinding invariant explicit even if callers later mutate their map.
+    # Preserve the reviewed semantic mapping.  A singleton component equal to
+    # the former complete-Spec root is a coordinate for the whole proposition,
+    # not a hand-selected subexpression.  It may be rebound to the current
+    # complete-Spec root only after the separate v11 raw-source-to-expanded-Spec
+    # lane has directly accepted the current proposition.  This is deliberately
+    # narrower than accepting a renamed/moved subcomponent by resemblance.
     candidate = copy.deepcopy(dict(raw_correspondence))
+    original_bindings = copy.deepcopy(candidate.get("source_atom_bindings"))
+    original_dispositions = copy.deepcopy(
+        candidate.get("closure_node_dispositions")
+    )
+    old_surface_sha = _digest(raw_correspondence.get("spec_surface_sha256"))
+    new_surface_sha = receipt_fields["spec_surface_sha256"]
+    rebound_root_count = 0
+    atom_identity_rebinds = (
+        _exact_quote_atom_identity_rebinds(raw_atoms)
+        if allow_whole_surface_rebind
+        else {}
+    )
+    if allow_whole_surface_rebind:
+        bindings = candidate.get("source_atom_bindings")
+        if isinstance(bindings, list):
+            for binding in bindings:
+                if not isinstance(binding, dict):
+                    continue
+                old_atom_sha = _digest(binding.get("source_atom_sha256"))
+                if old_atom_sha in atom_identity_rebinds:
+                    binding["source_atom_sha256"] = atom_identity_rebinds[
+                        old_atom_sha
+                    ]
+                components = binding.get("spec_component_sha256s")
+                normalized = (
+                    [_digest(value) for value in components]
+                    if isinstance(components, list)
+                    else []
+                )
+                if (
+                    old_surface_sha != new_surface_sha
+                    and normalized == [old_surface_sha]
+                ):
+                    binding["spec_component_sha256s"] = [new_surface_sha]
+                    rebound_root_count += 1
+        dispositions = candidate.get("closure_node_dispositions")
+        if isinstance(dispositions, list):
+            for disposition in dispositions:
+                if not isinstance(disposition, dict):
+                    continue
+                old_atom_sha = _digest(disposition.get("source_atom_sha256"))
+                if old_atom_sha in atom_identity_rebinds:
+                    disposition["source_atom_sha256"] = atom_identity_rebinds[
+                        old_atom_sha
+                    ]
     candidate["source_atoms_sha256"] = source_atoms_sha
     candidate.update(receipt_fields)
     candidate["item_identity_sha256"] = integrity.source_spec_correspondence_item_identity_sha256(
@@ -210,10 +310,16 @@ def refresh_existing_correspondence(
         ]
 
     # A future refactor must not accidentally grow this writer into a mapper.
+    # The sole non-derived change admitted here is the exact singleton
+    # old-whole-root -> current-whole-root substitution and the exact
+    # schema-1 -> schema-2 source-atom coordinate substitution above. The
+    # semantic bridge, binding count/order, and all subcomponent choices remain
+    # byte-identical.
     changed_nonderived = sorted(
         field
         for field in set(candidate) | set(raw_correspondence)
         if field not in DERIVED_RECEIPT_FIELDS
+        and field not in {"source_atom_bindings", "closure_node_dispositions"}
         and not _json_equal(candidate.get(field), raw_correspondence.get(field))
     )
     if changed_nonderived:
@@ -222,6 +328,63 @@ def refresh_existing_correspondence(
             "field(s): "
             + ", ".join(changed_nonderived)
         ]
+    if not _json_equal(candidate.get("source_atom_bindings"), original_bindings):
+        expected_bindings = copy.deepcopy(original_bindings)
+        expected_rebound_count = 0
+        if isinstance(expected_bindings, list):
+            for binding in expected_bindings:
+                if not isinstance(binding, dict):
+                    continue
+                old_atom_sha = _digest(binding.get("source_atom_sha256"))
+                if old_atom_sha in atom_identity_rebinds:
+                    binding["source_atom_sha256"] = atom_identity_rebinds[
+                        old_atom_sha
+                    ]
+                components = binding.get("spec_component_sha256s")
+                normalized = (
+                    [_digest(value) for value in components]
+                    if isinstance(components, list)
+                    else []
+                )
+                if (
+                    old_surface_sha != new_surface_sha
+                    and normalized == [old_surface_sha]
+                ):
+                    binding["spec_component_sha256s"] = [new_surface_sha]
+                    expected_rebound_count += 1
+        if (
+            not allow_whole_surface_rebind
+            or rebound_root_count != expected_rebound_count
+            or not _json_equal(candidate.get("source_atom_bindings"), expected_bindings)
+        ):
+            return None, [
+                "internal safety check failed: refresh attempted an unreviewed "
+                "source_atom_bindings rewrite"
+            ]
+    if not _json_equal(
+        candidate.get("closure_node_dispositions"), original_dispositions
+    ):
+        expected_dispositions = copy.deepcopy(original_dispositions)
+        if isinstance(expected_dispositions, list):
+            for disposition in expected_dispositions:
+                if not isinstance(disposition, dict):
+                    continue
+                old_atom_sha = _digest(disposition.get("source_atom_sha256"))
+                if old_atom_sha in atom_identity_rebinds:
+                    disposition["source_atom_sha256"] = atom_identity_rebinds[
+                        old_atom_sha
+                    ]
+        if (
+            not allow_whole_surface_rebind
+            or not _json_equal(
+                candidate.get("closure_node_dispositions"),
+                expected_dispositions,
+            )
+        ):
+            return None, [
+                "internal safety check failed: refresh attempted an unreviewed "
+                "closure_node_dispositions rewrite"
+            ]
     changed = not _json_equal(candidate, raw_correspondence)
     return RefreshCandidate(candidate, changed), []
 
@@ -302,11 +465,18 @@ def current_lean_closures(
     modules = paper_local_module_names(root, folder)
     if not modules:
         return {}, ["could not determine the PaperInterface-owned paper module closure"]
+    foreign_definitions, foreign_modules, foreign_scope_error = (
+        foreign_model_definition_scope(root, folder)
+    )
+    if foreign_scope_error:
+        return {}, ["could not validate foreign model definition scope: " + foreign_scope_error]
     closures = run_lean_semantic_contract_closure_manifests(
         root,
         import_module,
         sorted(specifications),
         modules,
+        foreign_model_definitions=foreign_definitions,
+        foreign_model_modules=foreign_modules,
         max_expansions=512,
         timeout_seconds=timeout_seconds,
         build_timeout_seconds=build_timeout_seconds,
@@ -334,6 +504,7 @@ def refreshed_payload(
     closures: Mapping[str, object],
     *,
     requested_items: Sequence[str] = (),
+    allow_whole_surface_rebind: bool = False,
 ) -> tuple[dict[str, Any] | None, list[str], list[str], list[str]]:
     """Build an all-or-nothing refreshed map without invoking Lean.
 
@@ -359,7 +530,11 @@ def refreshed_payload(
         if closure is None:
             errors.append(f"{key}: no current Lean closure receipt for `{specification}`")
             continue
-        candidate, candidate_errors = refresh_existing_correspondence(raw_item, closure)
+        candidate, candidate_errors = refresh_existing_correspondence(
+            raw_item,
+            closure,
+            allow_whole_surface_rebind=allow_whole_surface_rebind,
+        )
         if candidate_errors:
             errors.extend(f"{key}: {error}" for error in candidate_errors)
             continue
@@ -375,6 +550,198 @@ def refreshed_payload(
         return None, [], skipped, errors
     return updated, sorted(refreshed), skipped, []
 
+
+def source_spec_correspondence_refresh_preflight(
+    root: Path,
+    folder: Path,
+    *,
+    payload: Mapping[str, Any] | None = None,
+    evidence_context: object | None = None,
+    whole_surface_rebind_authorized: bool = False,
+    timeout_seconds: int = DEFAULT_TIMEOUT_SECONDS,
+    build_timeout_seconds: int = DEFAULT_BUILD_TIMEOUT_SECONDS,
+) -> dict[str, Any]:
+    """Classify established realization receipts without modifying evidence.
+
+    The result is intentionally scheduler-shaped but is not an acceptance
+    credential.  ``refresh_required`` means the existing human-reviewed atom
+    bindings and terminal dispositions survived the current Lean closure and
+    only the five derived receipt hashes differ.  Every structural or semantic
+    change is ``blocked`` rather than being guessed into a repair.
+    """
+
+    if payload is None:
+        try:
+            payload = _load_json_object(folder / STATEMENT_MAP_RELATIVE_PATH)
+        except ValueError as exc:
+            return {
+                "schema": 1,
+                "required": True,
+                "state": "blocked",
+                "current": False,
+                "safe_refresh": False,
+                "refreshed_items": [],
+                "errors": [str(exc)],
+                "acceptance_credential": False,
+            }
+    # A current v11 graph already owns theorem realization.  Select its exact
+    # typed result rows before consulting the historical persisted-receipt
+    # marker, so a fresh paper never needs a second manual correspondence
+    # worksheet merely to enter strict closeout.
+    try:
+        route_set = EvidenceRouteSet.from_source_map(payload)
+        raw_items = payload.get("items")
+        graph_selected = [
+            (route.source_item_id, dict(raw_items[route.source_item_id]))
+            for route in route_set.result_routes()
+            if isinstance(raw_items, Mapping)
+            and isinstance(raw_items.get(route.source_item_id), Mapping)
+        ]
+    except (ObligationRouteError, TypeError, ValueError):
+        graph_selected = []
+    if graph_selected:
+        graph_result = integrity.graph_native_source_spec_realization_receipts(
+            root,
+            folder,
+            payload,
+            graph_selected,
+            evidence_context=evidence_context,
+        )
+        if graph_result is not None:
+            graph_receipts, graph_errors = graph_result
+            expected = {key for key, _item in graph_selected}
+            if not graph_errors and set(graph_receipts) == expected:
+                return {
+                    "schema": 2,
+                    "required": True,
+                    "state": "current_graph_authority",
+                    "current": True,
+                    "safe_refresh": False,
+                    "refreshed_items": [],
+                    "graph_native_items": sorted(expected),
+                    "errors": [],
+                    "acceptance_credential": False,
+                }
+            return {
+                "schema": 2,
+                "required": True,
+                "state": "blocked",
+                "current": False,
+                "safe_refresh": False,
+                "refreshed_items": [],
+                "errors": graph_errors or [
+                    "current v11 graph omitted one or more typed realization rows"
+                ],
+                "acceptance_credential": False,
+            }
+    if not integrity.source_spec_correspondence_enabled(payload):
+        return {
+            "schema": 1,
+            "required": False,
+            "state": "not_applicable",
+            "current": True,
+            "safe_refresh": False,
+            "refreshed_items": [],
+            "errors": [],
+            "acceptance_credential": False,
+        }
+    selected, _skipped, selection_errors = _selected_record_items(payload, ())
+    if selection_errors:
+        return {
+            "schema": 1,
+            "required": True,
+            "state": "blocked",
+            "current": False,
+            "safe_refresh": False,
+            "refreshed_items": [],
+            "errors": selection_errors,
+            "acceptance_credential": False,
+        }
+    semantic_authority_errors = _semantic_authority_correspondence_errors(
+        root,
+        folder,
+        payload,
+        selected,
+        evidence_context=evidence_context,
+    )
+    if semantic_authority_errors is not None:
+        return {
+            "schema": 1,
+            "required": True,
+            "state": (
+                "current_semantic_authority"
+                if not semantic_authority_errors
+                else "blocked"
+            ),
+            "current": not semantic_authority_errors,
+            "safe_refresh": False,
+            "refreshed_items": [],
+            "errors": semantic_authority_errors,
+            "acceptance_credential": False,
+        }
+    closures, closure_errors = current_lean_closures(
+        root,
+        folder,
+        selected,
+        timeout_seconds=timeout_seconds,
+        build_timeout_seconds=build_timeout_seconds,
+    )
+    if closure_errors:
+        return {
+            "schema": 1,
+            "required": True,
+            "state": "blocked",
+            "current": False,
+            "safe_refresh": False,
+            "refreshed_items": [],
+            "errors": closure_errors,
+            "acceptance_credential": False,
+        }
+    updated, refreshed, _skipped_again, refresh_errors = refreshed_payload(
+        payload,
+        closures,
+        allow_whole_surface_rebind=whole_surface_rebind_authorized,
+    )
+    if refresh_errors or updated is None:
+        return {
+            "schema": 1,
+            "required": True,
+            "state": "blocked",
+            "current": False,
+            "safe_refresh": False,
+            "refreshed_items": [],
+            "errors": refresh_errors,
+            "acceptance_credential": False,
+        }
+    return {
+        "schema": 1,
+        "required": True,
+        "state": "refresh_required" if refreshed else "current",
+        "current": not refreshed,
+        "safe_refresh": bool(refreshed),
+        "refreshed_items": refreshed,
+        "errors": [],
+        "acceptance_credential": False,
+    }
+
+
+def _semantic_authority_correspondence_errors(
+    root: Path,
+    folder: Path,
+    payload: Mapping[str, Any],
+    selected: Sequence[tuple[str, dict[str, Any]]],
+    *,
+    evidence_context: object | None,
+) -> list[str] | None:
+    """Delegate to the shared acceptance-facing semantic-authority validator."""
+
+    return integrity.graph_authority_source_spec_correspondence_errors(
+        root,
+        folder,
+        payload,
+        selected,
+        evidence_context=evidence_context,
+    )
 
 def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
     """Replace one map only after every selected record has validated."""
@@ -419,13 +786,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--timeout-seconds",
         type=int,
-        default=180,
+        default=DEFAULT_TIMEOUT_SECONDS,
         help="per Lean closure-extraction timeout (default: 180)",
     )
     parser.add_argument(
         "--build-timeout-seconds",
         type=int,
-        default=600,
+        default=DEFAULT_BUILD_TIMEOUT_SECONDS,
         help="PaperInterface build timeout (default: 600)",
     )
     parser.add_argument(
@@ -474,10 +841,26 @@ def main() -> int:
         for error in closure_errors:
             print(f"- {error}", file=sys.stderr)
         return 2
+    try:
+        status_payload = _load_json_object(folder / "status.json")
+    except ValueError as exc:
+        print(f"{args.paper}: receipt refresh refused: {exc}", file=sys.stderr)
+        return 2
+    status = str(status_payload.get("status") or "").strip().lower()
+    whole_surface_rebind_authorized, semantic_review_error = (
+        integrity.v11_direct_semantic_review_state(folder, status)
+    )
+    if semantic_review_error and not whole_surface_rebind_authorized:
+        print(
+            f"{args.paper}: current v11 direct semantic review does not authorize "
+            f"complete-Spec root rebinding: {semantic_review_error}",
+            file=sys.stderr,
+        )
     updated, refreshed, skipped_again, errors = refreshed_payload(
         payload,
         closures,
         requested_items=args.item,
+        allow_whole_surface_rebind=whole_surface_rebind_authorized,
     )
     assert skipped_again == skipped
     if errors or updated is None:

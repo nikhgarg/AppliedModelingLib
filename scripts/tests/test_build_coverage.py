@@ -62,10 +62,10 @@ class BuildCoverageTests(unittest.TestCase):
 
     def test_direct_interface_elaboration_is_a_focused_route(self) -> None:
         findings = self.findings(
-            "lake build EconCSLib.Shared && "
+            "lake build AppliedModelingLib.Shared && "
             "lake env lean papers/FixturePaper/PaperInterface.lean",
             defaults=set(),
-            libraries={"FixturePaper", "EconCSLib"},
+            libraries={"FixturePaper", "AppliedModelingLib"},
         )
 
         self.assertEqual(findings, [])
@@ -81,9 +81,9 @@ class BuildCoverageTests(unittest.TestCase):
 
     def test_unrelated_build_target_is_not_a_paper_build(self) -> None:
         findings = self.findings(
-            "lake build EconCSLib",
+            "lake build AppliedModelingLib",
             defaults={"FixturePaper"},
-            libraries={"FixturePaper", "EconCSLib"},
+            libraries={"FixturePaper", "AppliedModelingLib"},
         )
 
         self.assertEqual(len(findings), 1)
@@ -92,7 +92,7 @@ class BuildCoverageTests(unittest.TestCase):
     def test_paper_requires_its_own_declared_lean_library(self) -> None:
         findings = self.findings(
             "lake build FixturePaper",
-            libraries={"EconCSLib"},
+            libraries={"AppliedModelingLib"},
         )
 
         self.assertEqual(len(findings), 1)

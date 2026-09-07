@@ -10,6 +10,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -21,6 +22,7 @@ for import_root in (ROOT, ROOT / "scripts"):
         sys.path.insert(0, import_root_text)
 from source_coverage_scope import (  # noqa: E402
     DEEP_PAPER_WITH_ALL_PROSE_CLAIMS,
+    KNOWN_SOURCE_PRESENTATION_KINDS,
     NAMED_THEORETICAL_STATEMENTS,
     filter_source_map_items_for_coverage,
 )
@@ -29,6 +31,7 @@ assert SPEC is not None and SPEC.loader is not None
 GATE = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = GATE
 SPEC.loader.exec_module(GATE)
+from scripts import source_manifest_validation as source_validation
 REPOSITORY_SPEC = importlib.util.spec_from_file_location(
     "audit_repository", REPOSITORY_PATH
 )
@@ -129,6 +132,9 @@ class SourceProofFidelityTests(unittest.TestCase):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
+        source_root_patch = mock.patch.object(source_validation, "ROOT", self.root)
+        source_root_patch.start()
+        self.addCleanup(source_root_patch.stop)
         previous_root = GATE.ROOT
         GATE.ROOT = self.root
         self.addCleanup(setattr, GATE, "ROOT", previous_root)
@@ -587,7 +593,7 @@ class SourceProofFidelityTests(unittest.TestCase):
             "statement": "An unnumbered source passage asserts an endpoint.",
         }
 
-        self.assertIn("prose_assertion", REPOSITORY.SOURCE_INVENTORY_KINDS)
+        self.assertIn("prose_assertion", KNOWN_SOURCE_PRESENTATION_KINDS)
         self.assertNotIn(
             "prose_assertion", REPOSITORY.THEOREM_LIKE_SOURCE_INVENTORY_KINDS
         )
@@ -602,6 +608,23 @@ class SourceProofFidelityTests(unittest.TestCase):
                 {"unnumbered": item}, DEEP_PAPER_WITH_ALL_PROSE_CLAIMS
             ),
             {"unnumbered": item},
+        )
+
+    def test_model_context_is_known_but_not_an_ordinary_named_claim(self) -> None:
+        item = {
+            "source_kind": "model_context",
+            "statement": "An unnumbered source-model explanation.",
+        }
+
+        self.assertIn("model_context", KNOWN_SOURCE_PRESENTATION_KINDS)
+        self.assertNotIn(
+            "model_context", REPOSITORY.THEOREM_LIKE_SOURCE_INVENTORY_KINDS
+        )
+        self.assertEqual(
+            filter_source_map_items_for_coverage(
+                {"context": item}, NAMED_THEORETICAL_STATEMENTS
+            ),
+            {},
         )
 
     def test_deep_observation_cannot_bypass_deep_all_prose_review(self) -> None:
@@ -1114,6 +1137,36 @@ class SourceProofFidelityTests(unittest.TestCase):
         self.assertTrue(
             any("semantic_model_review schema 2" in finding.message for finding in semantic_findings)
         )
+
+    def test_selected_v11_fidelity_gate_never_demands_v10_migration_bundle(
+        self,
+    ) -> None:
+        context = mock.Mock(spec=GATE.V11EvidenceRunContext)
+        with (
+            mock.patch.object(
+                GATE,
+                "v10_migration_pending_findings",
+                side_effect=AssertionError(
+                    "selected v11 fidelity audit entered the v10 migration gate"
+                ),
+            ),
+            mock.patch.object(
+                source_validation, "source_proof_fidelity_config", return_value=None
+            ),
+            mock.patch.object(
+                source_validation,
+                "source_proof_fidelity_requirement_reasons",
+                return_value=(),
+            ),
+        ):
+            findings = GATE.source_proof_fidelity_findings(
+                self.paper,
+                "formalized",
+                {},
+                context=context,
+            )
+
+        self.assertEqual(findings, [])
 
     def test_repository_structural_mode_does_not_certify_missing_source_bytes(self) -> None:
         self.write_ledger(self.valid_ledger())

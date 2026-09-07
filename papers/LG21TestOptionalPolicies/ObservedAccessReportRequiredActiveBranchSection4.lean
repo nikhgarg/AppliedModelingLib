@@ -18,7 +18,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- Under the declared fibrewise active-branch selection, the selected
 report-required profile has Definition 6's actual access-estimate law.  The

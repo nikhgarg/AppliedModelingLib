@@ -197,6 +197,47 @@ class SourceArchiveSurfaceTests(unittest.TestCase):
             [],
         )
 
+    def test_migration_preserves_offsets_after_member_without_final_newline(self) -> None:
+        second_member = b"The second source claim has no final newline."
+        with tarfile.open(self.archive, "w") as handle:
+            for name, raw in (("first.tex", self.member), ("second.tex", second_member)):
+                info = tarfile.TarInfo(name)
+                info.size = len(raw)
+                handle.addfile(info, io.BytesIO(raw))
+        legacy = {
+            "source_artifact_path": "source.tar",
+            "source_artifact_sha256": sha256(self.archive.read_bytes()),
+            "items": {
+                "first": {"source_location": "source_tex/first.tex:1-3"},
+                "second": {"source_location": "source_tex/second.tex:1"},
+            },
+        }
+        surface, changes = migration.migrate_payload(
+            self.paper,
+            legacy,
+            member_mapping={
+                "source_tex/first.tex": "first.tex",
+                "source_tex/second.tex": "second.tex",
+            },
+            surface_path="audit/source_archive_surface.tex",
+        )
+        self.assertEqual(changes, 2)
+        self.assertEqual(
+            legacy["items"]["first"]["source_location"],
+            "audit/source_archive_surface.tex:2-4",
+        )
+        self.assertEqual(
+            legacy["items"]["second"]["source_location"],
+            "audit/source_archive_surface.tex:7",
+        )
+        self.surface.write_text(surface, encoding="utf-8")
+        self.assertEqual(
+            archive_surface.source_archive_surface_validation_issues(
+                self.paper, legacy, repository_root=self.root
+            ),
+            [],
+        )
+
 
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()

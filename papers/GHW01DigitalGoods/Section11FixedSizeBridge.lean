@@ -14,7 +14,7 @@ theorem.
 
 namespace GHW01DigitalGoods
 
-open EconCSLib
+open AppliedModelingLib
 
 noncomputable section
 
@@ -68,13 +68,13 @@ theorem uniformFixedSizeSampleLaw_event_probability_eq_fixedSizeSampleProbabilit
       samples.card := by
     simp [samples]
   unfold pmfEventProbability uniformFixedSizeSampleLaw
-  have hprob : EconCSLib.pmfProb
-      (EconCSLib.uniformPMF (FixedSizeSampleSpace Agent sampleSize))
+  have hprob : AppliedModelingLib.pmfProb
+      (AppliedModelingLib.uniformPMF (FixedSizeSampleSpace Agent sampleSize))
       (fun sample => event sample.1) =
         (eventSet.card : ℝ) /
           (Fintype.card (FixedSizeSampleSpace Agent sampleSize) : ℝ) := by
-    rw [← EconCSLib.pmfProb_uniformPMF_finset eventSet]
-    apply EconCSLib.pmfProb_congr
+    rw [← AppliedModelingLib.pmfProb_uniformPMF_finset eventSet]
+    apply AppliedModelingLib.pmfProb_congr
     intro sample
     simp [eventSet]
   rw [hprob, hevent_card, hspace_card]

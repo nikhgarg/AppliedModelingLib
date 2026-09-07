@@ -1,18 +1,103 @@
 {
+  "approved_review_context_schema": 1,
   "declared_scope_exclusions": [
     "Empirical redistricting data, geographic feasibility constraints, map-generation implementation, simulation estimates, figures, and policy conclusions.",
-    "Standalone formulas, the STV transition algorithm, and proof-local quota bookkeeping are retained as dependencies of the named results rather than independent normal-scope claims.",
+    "Other standalone formulas, the STV transition algorithm, and proof-local quota bookkeeping are retained as dependencies of the named results or reviewed deep-audit material rather than independent normal-scope claims.",
     "The prose discussion of computational use is retained as byte-pinned deep-audit material, but is not an additional source-presented named result."
   ],
-  "generated_at": "2026-07-29",
+  "generated_at": "2026-09-01",
   "items": {
+    "footnote10_pav_unique_integer_characterization": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec and its paired endpoint use this recorded positive-share domain. GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec and its paired endpoint instead cover 0 <= partyShare <= 1, including partyShare = 0.",
+          "classification": "literal_source_domain",
+          "formal_meaning": "Lemma C.1 explicitly states y_R in (0,1], and its Lean Spec has the matching premises 0 < partyShare and partyShare <= 1. Proposition 1 does not use this positive-share domain: its separate Spec assumes 0 <= partyShare and proves the y_R = 0 boundary.",
+          "id": "GGRS26-POSITIVE-PARTY-SHARE-CONVENTION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "795e33747a4f7a2079530186e9670bae8dacc63d1e33f9c17a4d06af0a5e0190",
+          "source_locator": "cited publication:485-490; cited publication:2414-2433",
+          "why_needed": "The ledger distinguishes Lemma C.1's literal positive-share domain from Proposition 1's nonnegative party-share domain so that the lemma premise cannot be mistaken for a Proposition 1 narrowing."
+        }
+      ],
+      "claim_bearing": false,
+      "deep_audit_observation_ids": [
+        "GGRS26-FOOTNOTE10-PRESENTATION-01"
+      ],
+      "inventory_role": "deep_audit_material",
+      "model_convention_ids": [
+        "GGRS26-POSITIVE-PARTY-SHARE-CONVENTION-01"
+      ],
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "This footnote is an earlier presentation of the exact Lemma C.1 interval characterization rather than a second normal result row.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 532,
+          "line_start": 527,
+          "publication_locator": "cited publication",
+          "quoted_text": "  10\n     For precision, we further show that nR (yR , λPAV ) is the unique integer such that\n\n                                 yR · (M + 1) − 1 ≤ nR (yR , λPAV ) < yR · (M + 1),                               (2)\n\nand use this value.",
+          "quoted_text_sha256": "977464aecf11ab5f5f209b8bb0c3cc75b63f69c4c0136a3d0eddcd65bac18242"
+        }
+      ],
+      "source_component_of": "lemma_c1_pav_min_argmax_interval",
+      "source_kind": "prose_assertion",
+      "source_location": "cited publication:527-532",
+      "source_note": "This earlier unlabelled footnote presents the same expanded semantic claim later labelled and proved as Lemma C.1. It is retained as a byte-pinned deep-audit presentation of that canonical item, not as a second result row, Spec, proof endpoint, or semantic-review denominator entry.",
+      "source_url": "https://arxiv.org/pdf/2107.07083.pdf",
+      "statement": "Footnote 10 states that the selected PAV party seat count is the unique integer in the interval y_R(M+1)-1 <= n_R < y_R(M+1)."
+    },
     "lemma_c1_pav_min_argmax_interval": {
+      "aliases": [
+        "Footnote 10 presentation (cited publication:527-532)"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec and GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec both take 1 <= seats, and their ProofInterface endpoints take and pass the same premise. The underlying already-proved arithmetic and STV results are unchanged.",
+          "classification": "literal_source_domain",
+          "formal_meaning": "Every district magnitude N_k is a natural number satisfying N_k >= 1. The two selected single-district result Specs and their paired proof endpoints therefore assume 1 <= seats.",
+          "id": "GGRS26-POSITIVE-DISTRICT-MAGNITUDE-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "7582357ccaeb1f5f5a98f65374185c283b1eaf48e7751edaa61ddc9a5e7a7d54",
+          "source_locator": "cited publication:310-316; cited publication:485-490; cited publication:2414-2433",
+          "why_needed": "The displayed result statements use a district with M seats inside the Section 2.1 governing model. Recording the inherited positive-magnitude premise prevents Lean's natural-number value zero and its totalized divisions or zero-seat selectors from silently enlarging the source domain."
+        },
+        {
+          "checked_scope": "Only GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec and its paired endpoint use this recorded positive-share domain. GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec and its paired endpoint instead cover 0 <= partyShare <= 1, including partyShare = 0.",
+          "classification": "literal_source_domain",
+          "formal_meaning": "Lemma C.1 explicitly states y_R in (0,1], and its Lean Spec has the matching premises 0 < partyShare and partyShare <= 1. Proposition 1 does not use this positive-share domain: its separate Spec assumes 0 <= partyShare and proves the y_R = 0 boundary.",
+          "id": "GGRS26-POSITIVE-PARTY-SHARE-CONVENTION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "795e33747a4f7a2079530186e9670bae8dacc63d1e33f9c17a4d06af0a5e0190",
+          "source_locator": "cited publication:485-490; cited publication:2414-2433",
+          "why_needed": "The ledger distinguishes Lemma C.1's literal positive-share domain from Proposition 1's nonnegative party-share domain so that the lemma premise cannot be mistaken for a Proposition 1 narrowing."
+        }
+      ],
       "claim_bearing": true,
       "lean_declarations": [
         "GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_interval"
       ],
       "model_convention_ids": [
+        "GGRS26-POSITIVE-DISTRICT-MAGNITUDE-01",
         "GGRS26-POSITIVE-PARTY-SHARE-CONVENTION-01"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 393,
+              "line_start": 377,
+              "publication_locator": "cited publication",
+              "quoted_text": "    A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv\nof the Nk candidates they like most. The set of winners is determined as follows. Consider a\npotential set of winners C. The amount of points that voter v contributes to C is i=1         λ(i), and\n                                                                                     P|Sv ∩C|\n\nthe set C with the most points across voters (after tie-breaking) is selected. The (non-increasing)\nfunction λ establishes that votes have diminishing returns; the ith approved candidate in the set is\nworth λ(i). For example, winner-take-all approval voting is a Thiele rule with λ(i) = 1: for each\nvoter, the set C receives a number of points equal to the number of candidates in the set that the\nvoter likes, and so the Nk candidates with the most votes win. We further consider Proportional\nApproval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV\nis well-studied in the theoretical social choice literature and comes with optimality guarantees (in\nterms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns\nthan PAV in a voter having more of their preferred candidates winning, and thus prioritizes more\nvoters having at least one approved candidate (and 50/50 outcomes between two parties, regardless\nof underlying vote shares). More generally, Thiele rules both contain common voting rules and\nparameterize a rule’s tendency to favor proportional or balanced outcomes.",
+              "quoted_text_sha256": "de953d3b3b9ad41c8e30275b3be2e2ca4c3d246f354a81ddec433be350a1de02"
+            }
+          ]
+        }
       ],
       "semantic_contract": {
         "evidence_declaration": "GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_interval",
@@ -32,9 +117,11 @@
       "source_claim_atoms": [
         {
           "id": "lemma_c1.pav_selector_unique_interval",
+          "identity_schema": 2,
           "reviewed_lean_route": "GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_interval",
           "semantic_claim": "For every party share y_R in (0,1] and district magnitude M, the tie-broken PAV selector is the unique integer ell with y_R(M+1)-1 <= ell < y_R(M+1).",
-          "source_locator": "cited publication:2414-2433"
+          "source_locator": "cited publication:2414-2433",
+          "source_quote_sha256": "d65a4d82a8d7aa9cd0a67b120cc327fbf9f949c8743af1bf26e0e94b3c3f9635"
         }
       ],
       "source_kind": "lemma",
@@ -43,27 +130,246 @@
       "source_url": "https://arxiv.org/pdf/2107.07083.pdf",
       "statement": "Lemma C.1: for y_R in (0,1], the paper's leftmost PAV maximizing Republican seat count equals the unique integer ell satisfying y_R(M+1)-1 <= ell < y_R(M+1).",
       "support_lean_declarations": [
-        "GGRS26CombattingGerrymanderingRCV.paper_pav_min_argmax",
-        "GGRS26CombattingGerrymanderingRCV.paper_pav_integer_interval",
-        "GGRS26CombattingGerrymanderingRCV.paper_pav_seat_interval",
-        "GGRS26CombattingGerrymanderingRCV.paper_pav_seat_score",
-        "GGRS26CombattingGerrymanderingRCV.paper_pav_min_argmax_seat_interval"
+        "GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec"
       ]
     },
+    "map_level_party_share_pigeonhole_and_minority_seat_guarantee": {
+      "claim_bearing": false,
+      "deep_audit_observation_ids": [
+        "GGRS26-MAP-LEVEL-PARAGRAPH-01"
+      ],
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "This unlabelled map-level observation remains typed deep-audit material outside the paper's named-theory denominator.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 832,
+          "line_start": 830,
+          "publication_locator": "cited publication",
+          "quoted_text": "above 13 . Note that, by the pigeonhole principle, with overall party p vote share vp , for any map\nthere will always be at least one district in which its vote share is at least vp ; so, as the threshold to\nwin 1 seat decreases with district size, an ever-smaller minority party is guaranteed at least one seat.",
+          "quoted_text_sha256": "af466ac677ded9b6da12990da43a23026babcc97fad4aee2dfce84af9d39abdd"
+        }
+      ],
+      "source_kind": "prose_assertion",
+      "source_location": "cited publication:830-832",
+      "source_note": "This unlabelled discussion after Figure 2 is retained as deep-audit evidence rather than an independent normal named-theory result. Its typed support represents statewide share as the population-weighted average of district shares, exposes the strict decrease of the PAV threshold 1/(M+1), and derives a positive selected PAV seat count in a witness district when statewide share exceeds that threshold.",
+      "source_url": "https://arxiv.org/pdf/2107.07083.pdf",
+      "statement": "For every map, some district has party vote share at least the statewide share; because the one-seat threshold falls with district magnitude, parties above that threshold receive a seat in such a district."
+    },
+    "pav_party_seat_selector_definition": {
+      "aliases": [
+        "paper_thiele_party_min_argmax",
+        "paper_thiele_party_republican_seat_count",
+        "paper_thiele_party_democratic_seat_count",
+        "paper_pav_selected_seat_count"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_min_argmax",
+        "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_selected_seat_counts",
+        "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_selection",
+        "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_seat_count",
+        "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_seat_count_spec",
+        "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_democratic_seat_count",
+        "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_selected_seat_counts_spec",
+        "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_selected_seat_counts_add",
+        "GGRS26CombattingGerrymanderingRCV.paper_pav_selected_seat_count",
+        "GGRS26CombattingGerrymanderingRCV.paper_pav_selected_seat_count_spec"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 456,
+          "line_start": 428,
+          "publication_locator": "cited publication",
+          "quoted_text": "Calculating seat share given vote shares. Suppose – for a given district with Nk seats and\nVk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).\nHow do we calculate the number of winners np from each party for a given social choice function?\n   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for\nThiele rules, as candidates from a given party receive the same votes—and so we do not have to\nconsider individual candidates, only the number of winners from each party directly. Then, we have\nthat the party R seat share is:\n                                                                             n\n                                                         \"           \"\n                                    nR (yR , λ) = min arg max yR\n                                                                             X\n                                                                                   λ(i)\n                                                     n           n\n                                                                             i=1\n                                                                                   \n                                                                      k −n\n                                                                     NX\n                                                      +(1 − yR )             λ(i) .                               (1)\n                                                                      i=1\n\n    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction\nyR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction\n                                                      P\n\n1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The\n                                                                           P k −n\n\nouter min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜\nNk − nR (yR , λ).",
+          "quoted_text_sha256": "f5b7e365bdb033b43d639c00f333d15b3d0053098c1659b413fa163b384f656c"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:428-456",
+      "source_note": "Direct displayed party-seat selector and tie-breaking definition used by Lemma C.1 and Proposition 1.",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "0dda03291e42ad862ab7723d82780d7f1266fe6d1729681473238887eb8acf73",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The source item restates the pinned finite two-party Thiele score, leftmost maximizing Republican selector, Democratic complement, and harmonic PAV specialization.",
+        "source_item_statement_sha256": "7d22bf43e41ccbde9b7397a3ebfc805f6f3a1da40cf3322a78f844194c0f0a58",
+        "validated_at": "2026-09-01T00:00:00Z",
+        "validator": "Codex GGRS26 source-first inventory repair",
+        "validator_type": "agent"
+      },
+      "statement": "For a generic Thiele marginal-weight schedule lambda, n_R(y_R,lambda) is the smallest maximizing integer n in {0,...,M} for y_R sum_{i=1}^n lambda(i) + (1-y_R) sum_{i=1}^{M-n} lambda(i), which implements D-favoring ties; n_D is M-n_R, and PAV is the lambda(i)=1/i specialization."
+    },
+    "pav_thiele_rule_definition": {
+      "aliases": [
+        "paper_thiele_fixed_size_selected_committee",
+        "paper_pav_fixed_size_selected_committee"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GGRS26CombattingGerrymanderingRCV.PaperThieleWeights",
+        "GGRS26CombattingGerrymanderingRCV.paper_thiele_committee_score",
+        "GGRS26CombattingGerrymanderingRCV.paper_thiele_fixed_size_selected_committee",
+        "GGRS26CombattingGerrymanderingRCV.paper_pav_fixed_size_selected_committee"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 393,
+          "line_start": 377,
+          "publication_locator": "cited publication",
+          "quoted_text": "    A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv\nof the Nk candidates they like most. The set of winners is determined as follows. Consider a\npotential set of winners C. The amount of points that voter v contributes to C is i=1         λ(i), and\n                                                                                     P|Sv ∩C|\n\nthe set C with the most points across voters (after tie-breaking) is selected. The (non-increasing)\nfunction λ establishes that votes have diminishing returns; the ith approved candidate in the set is\nworth λ(i). For example, winner-take-all approval voting is a Thiele rule with λ(i) = 1: for each\nvoter, the set C receives a number of points equal to the number of candidates in the set that the\nvoter likes, and so the Nk candidates with the most votes win. We further consider Proportional\nApproval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV\nis well-studied in the theoretical social choice literature and comes with optimality guarantees (in\nterms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns\nthan PAV in a voter having more of their preferred candidates winning, and thus prioritizes more\nvoters having at least one approved candidate (and 50/50 outcomes between two parties, regardless\nof underlying vote shares). More generally, Thiele rules both contain common voting rules and\nparameterize a rule’s tendency to favor proportional or balanced outcomes.",
+          "quoted_text_sha256": "de953d3b3b9ad41c8e30275b3be2e2ca4c3d246f354a81ddec433be350a1de02"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:377-393",
+      "source_note": "Direct prose definition of Thiele committee scoring and the PAV harmonic specialization used by the paper's seat-count result.",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "7d31ca52ecfd4de3e3ed17197581284cf0915223048540588794a42032ac6b07",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The source item restates the pinned cumulative Thiele score, fixed-size maximizing committee, diminishing marginal weights, and harmonic PAV specialization.",
+        "source_item_statement_sha256": "94a204815da2b6e3881b32288a106fa4ba7d2879929843a62074b1ca4870884c",
+        "validated_at": "2026-09-01T00:00:00Z",
+        "validator": "Codex GGRS26 source-first inventory repair",
+        "validator_type": "agent"
+      },
+      "statement": "A Thiele rule scores a committee by summing each voter's marginal weights for approved winners; PAV uses the harmonic marginal weight lambda_PAV(i) = 1/i and selects a maximum-score committee after tie-breaking."
+    },
+    "population_tolerance_prose": {
+      "claim_bearing": false,
+      "deep_audit_observation_ids": [
+        "GGRS26-POPULATION-TOLERANCE-PROSE-01"
+      ],
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "This prose is deep-audit context only and never contributes a normal source-result, Spec, prerequisite, or human-review row.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 319,
+          "line_start": 310,
+          "publication_locator": "cited publication",
+          "quoted_text": "Multi-member redistricting. In redistricting, the blocks B are partitioned into K geographically\ncontiguous districts, where each district k is allocated Nk ∈ N seats in the legislature such that\n  k Nk = N , and Nk ≥ 1. Each district also must be population balanced in accordance with\nP\n\nNk , such that the population ratio of district k to the whole state is bounded between NkN±ϵ for\npopulation tolerance ϵ.3 The resulting set of districts is referred to as a map or a plan. Maps can\nbe drawn to fulfill various objective functions. For example, a party can gerrymander a map to\nmaximize the seats won by their party, or an independent commission can attempt to satisfy one or\nmore notions of fairness.",
+          "quoted_text_sha256": "55bb1e59618e179774c6cb2e55e0aa9c375555787548a63e94d2b217480cfe3a"
+        },
+        {
+          "line_end": 355,
+          "line_start": 348,
+          "publication_locator": "cited publication",
+          "quoted_text": "   3\n     Our chosen tolerance provides a 1% upper bound in population deviation. More precisely, in the optimization, let\nτ = 0.01 and the single-seat ideal population be Pideal = Ptotal /N . For a district with Nk seats at tree depth L, we\nenforce Pk ∈ [Nk Pideal ± (τ Pideal /L)], i.e., a relative deviation δk = τ /(LNk ) from Pideal,k = Nk Pideal , bounded above\nby 1%. This modeling tolerance should not be interpreted as a legal threshold: for U.S. congressional redistricting,\nthe constitutional standard is population equality “as mathematically equal as reasonably possible;” the U.S. Supreme\nCourt has struck down a plan with less than a 1% deviation between the smallest and largest district (American Civil\nLiberties Union 2001).",
+          "quoted_text_sha256": "eeacdfefaf6e4bc69111c443adc3a73143aaf53decf0a1e1d42af3673dafc4c5"
+        }
+      ],
+      "source_kind": "model_context",
+      "source_location": "cited publication:310-319; cited publication:348-355",
+      "source_note": "This redistricting and optimization context is retained as a byte-pinned deep observation. It is not a named result or a material premise of either selected result.",
+      "source_url": "https://arxiv.org/pdf/2107.07083.pdf",
+      "statement": "Section 2.1 describes population balance as a district population ratio near the seat share and its footnote specifies the optimization tolerance scaling."
+    },
     "proposition1_stv_pav_rounded_seats": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec and GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec both take 1 <= seats, and their ProofInterface endpoints take and pass the same premise. The underlying already-proved arithmetic and STV results are unchanged.",
+          "classification": "literal_source_domain",
+          "formal_meaning": "Every district magnitude N_k is a natural number satisfying N_k >= 1. The two selected single-district result Specs and their paired proof endpoints therefore assume 1 <= seats.",
+          "id": "GGRS26-POSITIVE-DISTRICT-MAGNITUDE-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "7582357ccaeb1f5f5a98f65374185c283b1eaf48e7751edaa61ddc9a5e7a7d54",
+          "source_locator": "cited publication:310-316; cited publication:485-490; cited publication:2414-2433",
+          "why_needed": "The displayed result statements use a district with M seats inside the Section 2.1 governing model. Recording the inherited positive-magnitude premise prevents Lean's natural-number value zero and its totalized divisions or zero-seat selectors from silently enlarging the source domain."
+        },
+        {
+          "checked_scope": "The convention applies only to the STV prerequisite surface and Proposition 1's STV conjunct. It does not affect PAV, Lemma C.1, empirical tie frequencies, expected outcomes, or any claimed probability law.",
+          "classification": "source_faithful_support_boundary",
+          "formal_meaning": "The source breaks cross-party ties in party D's favor and resolves ties randomly within the selected party. Lean formalizes the complete support of those within-party random choices as a relation and proves Proposition 1 for every reachable terminal in that support. It does not formalize or claim equality of probability weights, a joint tie-breaking law, or any distributional conclusion.",
+          "id": "GGRS26-RANDOM-WITHIN-PARTY-SUPPORT-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "85f931a1df6820e41ca9335c55d4b5d5777b24fa082415cf8adacde6da8ea263",
+          "report_summary": "The Proposition 1 proof is pathwise over the full support of the source's random within-party tie rule; no tie-breaking probability distribution is formalized or claimed.",
+          "source_locator": "cited publication:394-408; cited publication:485-490",
+          "why_needed": "Replacing the source's random rule by unexplained unrestricted nondeterminism would misstate the algorithm. The support-level interpretation is sufficient for the pathwise rounded-seat conclusion, while explicitly preserving the unformalized distributional boundary."
+        },
+        {
+          "checked_scope": "Only GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec and its paired endpoint use this source-supported model interpretation. It is not represented as a literal displayed Proposition 1 antecedent, and it does not apply to Lemma C.1 or to a general multi-party STV statement.",
+          "classification": "source_supported_model_interpretation",
+          "formal_meaning": "For the Proposition 1 STV route, every initially active candidate belongs to exactly one of the Republican or Democratic candidate rosters: the two rosters are disjoint and their union contains the initial active roster. No third-party active candidate is present in the theorem's two-party district model.",
+          "id": "GGRS26-TWO-PARTY-ACTIVE-CANDIDATE-UNIVERSE-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "ff246c187996aa30fbb88a54aa67d04d61fab09988184f4213bc3c6afdc25b8a",
+          "source_locator": "cited publication:303-305; cited publication:332-335; cited publication:415-426; cited publication:485-490; cited publication:2490-2505",
+          "why_needed": "The Lean operational model represents the active candidate universe separately from the two party rosters. The source proof's party-exhaustion and two separate-process argument is valid only when no additional active party/candidate can receive a transfer. The displayed proposition says parties range over {R,D}, while the surrounding model and appendix make the two-party restriction and its importance explicit; recording the exact candidate-universe condition prevents a third-party-free inference from being hidden in the proof."
+        }
+      ],
       "claim_bearing": true,
       "lean_declarations": [
-        "GGRS26CombattingGerrymanderingRCV.paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pav"
+        "GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pav"
       ],
       "model_convention_ids": [
-        "GGRS26-POSITIVE-PARTY-SHARE-CONVENTION-01",
-        "GGRS26-TWO-PARTY-ACTIVE-CANDIDATE-UNIVERSE-01"
+        "GGRS26-POSITIVE-DISTRICT-MAGNITUDE-01",
+        "GGRS26-TWO-PARTY-ACTIVE-CANDIDATE-UNIVERSE-01",
+        "GGRS26-RANDOM-WITHIN-PARTY-SUPPORT-01"
+      ],
+      "semantic_context_requirements": [
+        {
+          "explanation": "The paper defines STV as a transfer-rule family, states that the Section 3 results do not depend on the transfer rule, and explicitly says Proposition 1 applies to other rules that preserve the number of surplus votes. Fractional STV is selected only for the simulations.",
+          "kind": "stv_transfer_rule_scope",
+          "semantic_role": "scope",
+          "source_anchor_evidence": [
+            {
+              "line_end": 408,
+              "line_start": 394,
+              "publication_locator": "cited publication",
+              "quoted_text": "    In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each\nvoter instead submits a ranking over candidates (here, we assume the rankings are complete, not\npartial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as\nfollows. The number of first-place votes for each candidate is counted. Any candidate with a number\nof votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus\nvotes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has\nenough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,\nand their votes are transferred. The process continues until Nk candidates have been selected, or\nthe number of remaining candidates equals the number of remaining seats. STV is commonly used\nin practice in multi-winner elections.\n    Details can differ in how such votes are transferred, but our results in Section 3 do not depend\non the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV\nrule, in which each voter keeps a fractional number of votes equal to their share of the winning\ncandidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we\nassume that ties are broken in favor of candidates from party D, but randomly within each party.5",
+              "quoted_text_sha256": "0ee0998364381a3114ff31db82d257daa6d4fb2a2a7a455bf42bbf13bcaa1607"
+            },
+            {
+              "line_end": 498,
+              "line_start": 492,
+              "publication_locator": "cited publication",
+              "quoted_text": "    At a high level, the proof establishes that no candidate receives meaningful (in terms of party\nvote share) votes from voters of the other party; in terms of party vote share, we can proceed with\nrunning two separate STV processes. Then, the sequential round path dependence does not matter,\nas the overall number of first-place votes for candidates of each party is invariant, and so the final\npartisan outcome depends just on initial vote shares. We note that the proof does not depend on\nour assumption of fractional STV; other transfer rules (such as random voter transfer) that preserve\nthe number of surplus votes would induce seat shares according to the same formula.",
+              "quoted_text_sha256": "1247e9bff0128a70fc7bc9f9d99c92ce5e04c6b419566011cf409f2757d3bcfe"
+            }
+          ],
+          "source_location": "cited publication:394-408; cited publication:492-498"
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 393,
+              "line_start": 377,
+              "publication_locator": "cited publication",
+              "quoted_text": "    A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv\nof the Nk candidates they like most. The set of winners is determined as follows. Consider a\npotential set of winners C. The amount of points that voter v contributes to C is i=1         λ(i), and\n                                                                                     P|Sv ∩C|\n\nthe set C with the most points across voters (after tie-breaking) is selected. The (non-increasing)\nfunction λ establishes that votes have diminishing returns; the ith approved candidate in the set is\nworth λ(i). For example, winner-take-all approval voting is a Thiele rule with λ(i) = 1: for each\nvoter, the set C receives a number of points equal to the number of candidates in the set that the\nvoter likes, and so the Nk candidates with the most votes win. We further consider Proportional\nApproval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV\nis well-studied in the theoretical social choice literature and comes with optimality guarantees (in\nterms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns\nthan PAV in a voter having more of their preferred candidates winning, and thus prioritizes more\nvoters having at least one approved candidate (and 50/50 outcomes between two parties, regardless\nof underlying vote shares). More generally, Thiele rules both contain common voting rules and\nparameterize a rule’s tendency to favor proportional or balanced outcomes.",
+              "quoted_text_sha256": "de953d3b3b9ad41c8e30275b3be2e2ca4c3d246f354a81ddec433be350a1de02"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 408,
+              "line_start": 394,
+              "publication_locator": "cited publication",
+              "quoted_text": "    In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each\nvoter instead submits a ranking over candidates (here, we assume the rankings are complete, not\npartial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as\nfollows. The number of first-place votes for each candidate is counted. Any candidate with a number\nof votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus\nvotes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has\nenough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,\nand their votes are transferred. The process continues until Nk candidates have been selected, or\nthe number of remaining candidates equals the number of remaining seats. STV is commonly used\nin practice in multi-winner elections.\n    Details can differ in how such votes are transferred, but our results in Section 3 do not depend\non the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV\nrule, in which each voter keeps a fractional number of votes equal to their share of the winning\ncandidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we\nassume that ties are broken in favor of candidates from party D, but randomly within each party.5",
+              "quoted_text_sha256": "0ee0998364381a3114ff31db82d257daa6d4fb2a2a7a455bf42bbf13bcaa1607"
+            }
+          ]
+        }
       ],
       "semantic_contract": {
-        "evidence_declaration": "GGRS26CombattingGerrymanderingRCV.paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pav",
+        "evidence_declaration": "GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pav",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "GGRS26CombattingGerrymanderingRCV.paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pavSpec"
+        "spec_declaration": "GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec"
       },
       "source_anchor_evidence": [
         {
@@ -77,21 +383,21 @@
       "source_claim_atoms": [
         {
           "id": "proposition1.stv_rounded_seat_count",
-          "reviewed_lean_route": "GGRS26CombattingGerrymanderingRCV.paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pav",
+          "identity_schema": 3,
+          "reviewed_lean_route": "GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pav",
           "semantic_claim": "Under the displayed two-party, candidate-count, turnout, solid-coalition, and D-favoring tie assumptions, the Republican STV seat count belongs to {floor(y_R M), ceil(y_R M)}.",
-          "source_locator": "cited publication:485-490"
+          "source_locator": "cited publication:485-490",
+          "source_quote_sha256": "3fe3d139a2019ca1148de08cc82430a8dec50476aa16fe6dd34fb0b38b504bb6",
+          "verbatim_source_clause": "both\nnR (yR , ST V )"
         },
         {
           "id": "proposition1.pav_rounded_seat_count",
-          "reviewed_lean_route": "GGRS26CombattingGerrymanderingRCV.paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pav",
+          "identity_schema": 3,
+          "reviewed_lean_route": "GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pav",
           "semantic_claim": "Under the displayed source domain, the Republican PAV seat count belongs to {floor(y_R M), ceil(y_R M)}.",
-          "source_locator": "cited publication:485-490"
-        },
-        {
-          "id": "proposition1.surplus_preserving_transfer_generality",
-          "reviewed_lean_route": "GGRS26CombattingGerrymanderingRCV.paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pav",
-          "semantic_claim": "The Proposition 1 rounded STV seat-share formula does not depend on fractional STV specifically: other transfer rules that preserve the number of surplus votes induce the same formula under the stated assumptions.",
-          "source_locator": "cited publication:492-498"
+          "source_locator": "cited publication:485-490",
+          "source_quote_sha256": "3fe3d139a2019ca1148de08cc82430a8dec50476aa16fe6dd34fb0b38b504bb6",
+          "verbatim_source_clause": "nR (yR , λPAV ) are in {⌊yR M ⌋, ⌈yR M ⌉}."
         }
       ],
       "source_defect_ids": [
@@ -100,7 +406,7 @@
       ],
       "source_kind": "proposition",
       "source_location": "cited publication:485-490",
-      "source_note": "The following source paragraph explains that the rounded conclusion is independent of the fractional transfer implementation for surplus-preserving transfer rules. The direct route uses a reachable ballot-routed transfer policy, a unit-weight initial state only on the source's finite electorate, and every legal terminal execution; party projection, cutoff, and terminal accounting are proved internally. Its exact-header companion proves that a legal terminal execution exists from that same state and policy, so the universal outcome result is not vacuous. The source model's two-party active-candidate universe is separately recorded from the displayed proposition: the two named party rosters cover the active candidates, rather than merely supplying two subsets of a larger candidate set. A winner's supporting ballot can retain or transfer weight but cannot gain weight or reassign it to another voter; off-support ballots are unchanged and exactly one quota leaves the winner's support. This is the common physical ballot semantics of fractional and random-voter transfer. The PAV side ranges over the relational leftmost `min arg max` definition rather than an internal choice witness, with its finite totality and functionality proved by the separately reviewed Lemma C.1 route. The paper's D-favoring tie condition is source-recorded, while the checked rounded conclusion is tie-robust. These scope facts are enumerated as source atoms and expanded semantic obligations, rather than inferred from Lean names.",
+      "source_note": "The direct route quantifies over every admitted surplus-preserving ballot-routed transfer policy. For each policy it constructs an actual terminal execution from the source unit-weight electorate and proves the rounded Republican count for every reachable terminal. Its transition relation enforces D-favoring cross-party election and elimination selection and retains the complete support of the source's random within-party tied choices, without claiming a probability law. The same endpoint includes the paper's selected leftmost PAV count and covers y_R = 0; party projection, cutoff, and terminal accounting are proved internally. The source model's two-party active-candidate universe is separately recorded from the displayed proposition: the two named party rosters cover the active candidates, rather than merely supplying two subsets of a larger candidate set. The transfer-rule paragraph is retained below as typed deep-audit support for this normal result's scope, not as a second normal result row; the fractional theorem is only a derived specialization.",
       "source_presentation_reconciliation": {
         "boundary_reason": "completed_statement_then_explanation",
         "core_anchor": {
@@ -114,26 +420,19 @@
         "presentation_label": "Proposition 1",
         "relation": "conservative_text_span_core",
         "schema": 1,
-        "semantic_basis": "The pinned core contains the complete displayed Proposition 1 hypotheses and both STV and PAV conclusions. The extractor's longer source span contains explanation and empirical discussion after that completed statement.",
+        "semantic_basis": "The pinned core contains the complete displayed Proposition 1 hypotheses and both STV and PAV conclusions. The separate byte-pinned scope context records the surrounding definition and explanatory paragraph that make the proposition's transfer-rule quantifier precise without creating a second result row.",
         "validated_at": "2026-07-29T00:00:00Z",
         "validator": "Codex GGRS26 source-only named-result reconciliation"
       },
       "source_url": "https://arxiv.org/pdf/2107.07083.pdf",
       "statement": "Proposition 1: in a two-party M-seat district with V >= M(M+1), at least M candidates per party, solid coalitions, and D-favoring ties, both the STV and PAV Republican seat counts are in {floor(y_R M), ceil(y_R M)}.",
       "support_lean_declarations": [
-        "GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_interval",
-        "GGRS26CombattingGerrymanderingRCV.paper_pav_min_argmax",
-        "GGRS26CombattingGerrymanderingRCV.paper_pav_seat_score",
-        "GGRS26CombattingGerrymanderingRCV.paper_seat_share_rounded",
-        "GGRS26CombattingGerrymanderingRCV.paper_complete_party_ranking_ballots",
-        "GGRS26CombattingGerrymanderingRCV.paper_complete_party_ranking_ballots_solid_coalition",
-        "GGRS26CombattingGerrymanderingRCV.paper_proposition1_ballot_routed_stv_initial_state",
-        "GGRS26CombattingGerrymanderingRCV.paper_proposition1_ballot_routed_stv_initial_state_exists",
-        "GGRS26CombattingGerrymanderingRCV.paper_proposition1_ballot_routed_stv_outcome_domain_nonempty"
+        "GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec"
       ]
     },
     "proposition1_stv_pav_rounded_seats_appendix_presentation": {
-      "claim_bearing": true,
+      "claim_bearing": false,
+      "inventory_role": "source_presentation_alias",
       "source_anchor_evidence": [
         {
           "line_end": 2470,
@@ -149,9 +448,9 @@
         "canonical_source_item": "proposition1_stv_pav_rounded_seats",
         "relation": "repeated_source_presentation",
         "schema": 1,
-        "semantic_basis": "The appendix presentation repeats the same visible Proposition 1 label, hypotheses, and two rounded-seat conclusions before the proof. This source-only comparison is based on the two pinned source spans, not a map key or Lean declaration name.",
-        "validated_at": "2026-07-29T00:00:00Z",
-        "validator": "Codex GGRS26 source-only named-result reconciliation"
+        "semantic_basis": "The appendix repeats the same Proposition 1 label, hypotheses, and rounded STV/PAV seat-count conclusions before its proof.",
+        "validated_at": "2026-08-18T00:00:00Z",
+        "validator": "v11 source-first review-surface preparation"
       },
       "source_presentation_reconciliation": {
         "boundary_reason": "completed_statement_then_explanation",
@@ -173,13 +472,162 @@
       "source_url": "https://arxiv.org/pdf/2107.07083.pdf",
       "statement": "Appendix proof presentation repeating Proposition 1 before its proof."
     },
+    "solid_coalition_voter_model": {
+      "aliases": [
+        "paper_two_party_voter_model"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GGRS26CombattingGerrymanderingRCV.paper_candidate_ranked_before",
+        "GGRS26CombattingGerrymanderingRCV.paper_complete_solid_coalition_rankings",
+        "GGRS26CombattingGerrymanderingRCV.paper_two_party_voter_model"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 426,
+          "line_start": 415,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fVoter assumptions. Next, we require assumptions on how voters rank or approve candidates.\nFor each Thiele rule, we assume that in each district k there are exactly Nk candidates from each\nparty, and each voter simply approves all the candidates in their party.6 For STV, we assume that\nin each district k there are at least Nk candidates from each party.7 For our primarily empirical\nanalysis, we further assume that parties are solid coalitions (Dummett 1984): that each voter ranks\nall candidates of their party over each candidate of the other party, though intra-party rankings\nmay vary. These assumptions reflect that party membership is a strong predictor of the party of\nthe candidate for which a voter votes. Such an assumption, using historical party vote shares to\npredict vote shares in future elections, is used throughout the redistricting literature for SMDs; our\nadditional assumption is that this behavior extends to partisan voting in multi-member elections.\nWe relax this assumption in Section 4 and study intra-party effects, where voters may disagree on\nwithin-party rankings, in Appendix B.",
+          "quoted_text_sha256": "c79244f0a8e122f4c7cf276f73df8aa733425006afbcacd1d3cb60620823cb10"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:415-426",
+      "source_note": "Direct voter and candidate model used by the two-party PAV and STV seat-share calculations.",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "325de5c250d5d5ea0db8a47dd0e62b3256752bba43b5ffd6dc36f8a5ed9621f8",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The source item restates the pinned party-candidate counts, approval behavior, complete rankings, same-party priority, and unrestricted intra-party ranking model.",
+        "source_item_statement_sha256": "f87432bfa82ffdc329a60faaa813decdcd197fd835b88a3db427f903b6dcf34b",
+        "validated_at": "2026-09-01T00:00:00Z",
+        "validator": "Codex GGRS26 source-first inventory repair",
+        "validator_type": "agent"
+      },
+      "statement": "For the paper's PAV model each party supplies exactly as many candidates as seats and voters approve their party's candidates; for STV each party supplies at least that many candidates, rankings are complete, and solid-coalition voters rank every same-party candidate above every other-party candidate while intra-party rankings may vary."
+    },
+    "stv_iterative_rule_definition": {
+      "aliases": [
+        "paper_source_stv_rule_execution"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The convention applies only to the STV prerequisite surface and Proposition 1's STV conjunct. It does not affect PAV, Lemma C.1, empirical tie frequencies, expected outcomes, or any claimed probability law.",
+          "classification": "source_faithful_support_boundary",
+          "formal_meaning": "The source breaks cross-party ties in party D's favor and resolves ties randomly within the selected party. Lean formalizes the complete support of those within-party random choices as a relation and proves Proposition 1 for every reachable terminal in that support. It does not formalize or claim equality of probability weights, a joint tie-breaking law, or any distributional conclusion.",
+          "id": "GGRS26-RANDOM-WITHIN-PARTY-SUPPORT-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "85f931a1df6820e41ca9335c55d4b5d5777b24fa082415cf8adacde6da8ea263",
+          "report_summary": "The Proposition 1 proof is pathwise over the full support of the source's random within-party tie rule; no tie-breaking probability distribution is formalized or claimed.",
+          "source_locator": "cited publication:394-408; cited publication:485-490",
+          "why_needed": "Replacing the source's random rule by unexplained unrestricted nondeterminism would misstate the algorithm. The support-level interpretation is sufficient for the pathwise rounded-seat conclusion, while explicitly preserving the unformalized distributional boundary."
+        }
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState",
+        "GGRS26CombattingGerrymanderingRCV.paper_first_active_candidate",
+        "GGRS26CombattingGerrymanderingRCV.paper_source_stv_tally",
+        "GGRS26CombattingGerrymanderingRCV.paper_source_stv_execution_terminal",
+        "GGRS26CombattingGerrymanderingRCV.paper_source_surplus_transfer_policy",
+        "GGRS26CombattingGerrymanderingRCV.paper_source_stv_d_favoring_transition",
+        "GGRS26CombattingGerrymanderingRCV.paper_source_stv_rule_execution"
+      ],
+      "model_convention_ids": [
+        "GGRS26-RANDOM-WITHIN-PARTY-SUPPORT-01"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 408,
+          "line_start": 394,
+          "publication_locator": "cited publication",
+          "quoted_text": "    In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each\nvoter instead submits a ranking over candidates (here, we assume the rankings are complete, not\npartial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as\nfollows. The number of first-place votes for each candidate is counted. Any candidate with a number\nof votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus\nvotes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has\nenough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,\nand their votes are transferred. The process continues until Nk candidates have been selected, or\nthe number of remaining candidates equals the number of remaining seats. STV is commonly used\nin practice in multi-winner elections.\n    Details can differ in how such votes are transferred, but our results in Section 3 do not depend\non the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV\nrule, in which each voter keeps a fractional number of votes equal to their share of the winning\ncandidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we\nassume that ties are broken in favor of candidates from party D, but randomly within each party.5",
+          "quoted_text_sha256": "0ee0998364381a3114ff31db82d257daa6d4fb2a2a7a455bf42bbf13bcaa1607"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:394-408",
+      "source_note": "Methods-section support needed to interpret Proposition 1. The semantic target is explicitly support-level: it proves the rounded conclusion for every outcome allowed by the source's random within-party tie rule but does not formalize that rule's distribution.",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "0d54cd03964ae224d85983b49fbd791f139c97b3702aacff5522e11c7d29adb4",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "At the only in-scope pathwise level, the source's unparameterized random within-party tie wording determines that every tied same-party choice remains a possible outcome. The source states neither tie probabilities nor a distributional conclusion, and the selected result is proved for every such supported terminal. The item therefore restates the pinned complete-ranking STV process, floor-Droop quota, election and elimination transitions, stopping cases, transfer-rule scope, and tie convention at that support level; it is not a distributional formalization.",
+        "source_item_statement_sha256": "a8269363e2f565025a2d1be1e25e4b0a0569d0d540b550a598deda8f7e650360",
+        "validated_at": "2026-09-01T00:00:00Z",
+        "validator": "Codex GGRS26 source-first inventory repair",
+        "validator_type": "agent"
+      },
+      "statement": "STV uses complete rankings of exactly the declared candidates and the Droop quota floor(|V|/(N+1))+1, then runs finitely from the unit-weight initial count by quota election with an admitted surplus-transfer policy or, when no candidate reaches quota, minimum-tally elimination, until either all seats are filled or the remaining candidates exactly fill the remaining seats. Cross-party ties favor D; Lean retains the full support of the source's random within-party tie rule but asserts no probability law."
+    },
+    "surplus_preserving_transfer_rule_seat_share_formula": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The convention applies only to the STV prerequisite surface and Proposition 1's STV conjunct. It does not affect PAV, Lemma C.1, empirical tie frequencies, expected outcomes, or any claimed probability law.",
+          "classification": "source_faithful_support_boundary",
+          "formal_meaning": "The source breaks cross-party ties in party D's favor and resolves ties randomly within the selected party. Lean formalizes the complete support of those within-party random choices as a relation and proves Proposition 1 for every reachable terminal in that support. It does not formalize or claim equality of probability weights, a joint tie-breaking law, or any distributional conclusion.",
+          "id": "GGRS26-RANDOM-WITHIN-PARTY-SUPPORT-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "85f931a1df6820e41ca9335c55d4b5d5777b24fa082415cf8adacde6da8ea263",
+          "report_summary": "The Proposition 1 proof is pathwise over the full support of the source's random within-party tie rule; no tie-breaking probability distribution is formalized or claimed.",
+          "source_locator": "cited publication:394-408; cited publication:485-490",
+          "why_needed": "Replacing the source's random rule by unexplained unrestricted nondeterminism would misstate the algorithm. The support-level interpretation is sufficient for the pathwise rounded-seat conclusion, while explicitly preserving the unformalized distributional boundary."
+        },
+        {
+          "checked_scope": "Only GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec and its paired endpoint use this source-supported model interpretation. It is not represented as a literal displayed Proposition 1 antecedent, and it does not apply to Lemma C.1 or to a general multi-party STV statement.",
+          "classification": "source_supported_model_interpretation",
+          "formal_meaning": "For the Proposition 1 STV route, every initially active candidate belongs to exactly one of the Republican or Democratic candidate rosters: the two rosters are disjoint and their union contains the initial active roster. No third-party active candidate is present in the theorem's two-party district model.",
+          "id": "GGRS26-TWO-PARTY-ACTIVE-CANDIDATE-UNIVERSE-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "ff246c187996aa30fbb88a54aa67d04d61fab09988184f4213bc3c6afdc25b8a",
+          "source_locator": "cited publication:303-305; cited publication:332-335; cited publication:415-426; cited publication:485-490; cited publication:2490-2505",
+          "why_needed": "The Lean operational model represents the active candidate universe separately from the two party rosters. The source proof's party-exhaustion and two separate-process argument is valid only when no additional active party/candidate can receive a transfer. The displayed proposition says parties range over {R,D}, while the surrounding model and appendix make the two-party restriction and its importance explicit; recording the exact candidate-universe condition prevents a third-party-free inference from being hidden in the proof."
+        }
+      ],
+      "claim_bearing": false,
+      "deep_audit_observation_ids": [
+        "GGRS26-P1-TRANSFER-PARAGRAPH-01"
+      ],
+      "inventory_role": "deep_audit_material",
+      "model_convention_ids": [
+        "GGRS26-TWO-PARTY-ACTIVE-CANDIDATE-UNIVERSE-01",
+        "GGRS26-RANDOM-WITHIN-PARTY-SUPPORT-01"
+      ],
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "This unlabelled paragraph is typed support for Proposition 1's transfer-policy scope rather than a second normal result row.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 498,
+          "line_start": 492,
+          "publication_locator": "cited publication",
+          "quoted_text": "    At a high level, the proof establishes that no candidate receives meaningful (in terms of party\nvote share) votes from voters of the other party; in terms of party vote share, we can proceed with\nrunning two separate STV processes. Then, the sequential round path dependence does not matter,\nas the overall number of first-place votes for candidates of each party is invariant, and so the final\npartisan outcome depends just on initial vote shares. We note that the proof does not depend on\nour assumption of fractional STV; other transfer rules (such as random voter transfer) that preserve\nthe number of surplus votes would induce seat shares according to the same formula.",
+          "quoted_text_sha256": "1247e9bff0128a70fc7bc9f9d99c92ce5e04c6b419566011cf409f2757d3bcfe"
+        }
+      ],
+      "source_kind": "prose_assertion",
+      "source_location": "cited publication:492-498",
+      "source_note": "This unlabelled methods-section paragraph is retained as deep-audit evidence rather than an independent normal named-theory result. Its typed support ranges over every ballot-routed policy that removes exactly one quota of actual support at election and otherwise preserves routed surplus mass; it supplies an actual D-favoring terminal execution and proves the rounded Republican seat formula for every such terminal, including y_R = 0.",
+      "source_url": "https://arxiv.org/pdf/2107.07083.pdf",
+      "statement": "The Proposition 1 seat-share formula is invariant across fractional STV and other surplus-preserving transfer rules, including random voter transfer."
+    },
     "vote_share_calculation_and_optimization_prose": {
       "aliases": [],
+      "claim_bearing": false,
       "deep_audit_observation_ids": [
         "GGRS26-P1-EFFICIENT-CALCULATION-01"
       ],
       "inventory_role": "deep_audit_material",
-      "lean_declarations": [],
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "This computational-use discussion is typed deep-audit support for Proposition 1 rather than an additional source result.",
       "source_anchor_evidence": [
         {
           "line_end": 483,
@@ -201,28 +649,46 @@
       "source_kind_validator": "source-kind verification",
       "source_location": "cited publication:481-483; cited publication:499-505",
       "source_note": "This is unnumbered computational-use prose, not a named source theorem. The ballot-routed Proposition 1 endpoint proves the per-district rounded outcome, while paper_vote_share_only_selector_refinement_and_cost proves only a per-query selector-pair refinement and five-operation arithmetic certificate. Neither is credit for the paper's whole-map implementation or runtime discussion.",
-      "statement": "Unnumbered prose says Proposition 1 permits an up-to-rounding party-seat calculation from vote shares without individual rankings, and uses that shortcut in a large map-optimization workload.",
-      "support_lean_declarations": [
-        "GGRS26CombattingGerrymanderingRCV.paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pav",
-        "GGRS26CombattingGerrymanderingRCV.paper_vote_share_only_selector_refinement_and_cost"
-      ]
+      "statement": "Unnumbered prose says Proposition 1 permits an up-to-rounding party-seat calculation from vote shares without individual rankings, and uses that shortcut in a large map-optimization workload."
     }
   },
   "non_target_source_inventory": {
     "Appendix proof bookkeeping": "cited publication:2435-2536",
     "PAV formula and selector": "cited publication:433-476",
-    "Proposition 1 transfer-rule explanation": "cited publication:492-498",
     "STV transition and solid-coalition model": "cited publication:403-432",
     "Vote-share computation discussion": "cited publication:481-483; cited publication:499-505"
   },
   "paper": "GGRS26CombattingGerrymanderingRCV",
-  "publication_source_display_projection": {
-    "manifest": "audit/public_source_display_projection.json",
-    "raw_source_bytes_included": false,
-    "schema": 1
+  "paper_interface_namespace": "GGRS26CombattingGerrymanderingRCV",
+  "paper_semantic_prerequisite_sources": {
+    "GGRS26CombattingGerrymanderingRCV.PaperSourceSTVState": "stv_iterative_rule_definition",
+    "GGRS26CombattingGerrymanderingRCV.PaperThieleWeights": "pav_thiele_rule_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_candidate_ranked_before": "solid_coalition_voter_model",
+    "GGRS26CombattingGerrymanderingRCV.paper_complete_solid_coalition_rankings": "solid_coalition_voter_model",
+    "GGRS26CombattingGerrymanderingRCV.paper_first_active_candidate": "stv_iterative_rule_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_pav_fixed_size_selected_committee": "pav_thiele_rule_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_pav_selected_seat_count": "pav_party_seat_selector_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_pav_selected_seat_count_spec": "pav_party_seat_selector_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_source_stv_d_favoring_transition": "stv_iterative_rule_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_source_stv_execution_terminal": "stv_iterative_rule_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_source_stv_rule_execution": "stv_iterative_rule_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_source_stv_tally": "stv_iterative_rule_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_source_surplus_transfer_policy": "stv_iterative_rule_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_thiele_committee_score": "pav_thiele_rule_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_thiele_fixed_size_selected_committee": "pav_thiele_rule_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_democratic_seat_count": "pav_party_seat_selector_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_min_argmax": "pav_party_seat_selector_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_seat_count": "pav_party_seat_selector_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_seat_count_spec": "pav_party_seat_selector_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_republican_selection": "pav_party_seat_selector_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_selected_seat_counts": "pav_party_seat_selector_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_selected_seat_counts_add": "pav_party_seat_selector_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_thiele_party_selected_seat_counts_spec": "pav_party_seat_selector_definition",
+    "GGRS26CombattingGerrymanderingRCV.paper_two_party_voter_model": "solid_coalition_voter_model"
   },
   "schema": 1,
   "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
   "source_anchor_evidence_required": true,
   "source_artifact_sha256": "57762234dc7b4a41d10b7f05110551853ab717136eca7b9216da9425cfb8bce5",
   "source_claim_atoms_schema": 1,
@@ -230,18 +696,336 @@
   "source_curated": true,
   "source_curated_at": "2026-07-29T00:00:00Z",
   "source_inventory_kind": "source_curated_named_theory",
-  "source_inventory_policy": "Normal named-theory scope is determined from the pinned source presentation, not Lean identifiers. The source-only index finds Lemma C.1 and two visible presentations of Proposition 1. The STV algorithm, PAV formulas, proof bookkeeping, simulation machinery, and empirical runtime discussion remain dependencies or deep-audit material unless a separate deep-paper audit is requested.",
+  "source_inventory_policy": "Normal named-theory scope is determined from the pinned source presentation, not Lean identifiers. The normal denominator contains the labelled Lemma C.1 and Proposition 1 semantic claims. Proposition 1's appendix restatement is a repeated presentation, while Footnote 10 is an earlier unlabelled presentation of the Lemma C.1 semantic claim. The three unlabelled claim candidates and the remaining five holistic candidates are retained as deep-audit material rather than promoted to independent normal named-theory rows. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
   "source_named_result_inventory_review": {
+    "candidate_presentations": [
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_001",
+        "presentation_label": "No visible source label (cited publication:492-498)",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "The unlabelled paragraph strengthens the stated STV seat-share result beyond fractional STV but is retained as typed support for Proposition 1 rather than as an independent normal result.",
+        "source_anchor": {
+          "line_end": 498,
+          "line_start": 492,
+          "publication_locator": "cited publication",
+          "quoted_text": "    At a high level, the proof establishes that no candidate receives meaningful (in terms of party\nvote share) votes from voters of the other party; in terms of party vote share, we can proceed with\nrunning two separate STV processes. Then, the sequential round path dependence does not matter,\nas the overall number of first-place votes for candidates of each party is invariant, and so the final\npartisan outcome depends just on initial vote shares. We note that the proof does not depend on\nour assumption of fractional STV; other transfer rules (such as random voter transfer) that preserve\nthe number of surplus votes would induce seat shares according to the same formula.",
+          "quoted_text_sha256": "1247e9bff0128a70fc7bc9f9d99c92ce5e04c6b419566011cf409f2757d3bcfe"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_002",
+        "presentation_label": "No visible source label (cited publication:527-532)",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "The footnote is an earlier presentation of the exact unique-integer characterization later labelled Lemma C.1, not an independent normal result.",
+        "source_anchor": {
+          "line_end": 532,
+          "line_start": 527,
+          "publication_locator": "cited publication",
+          "quoted_text": "  10\n     For precision, we further show that nR (yR , λPAV ) is the unique integer such that\n\n                                 yR · (M + 1) − 1 ≤ nR (yR , λPAV ) < yR · (M + 1),                               (2)\n\nand use this value.",
+          "quoted_text_sha256": "977464aecf11ab5f5f209b8bb0c3cc75b63f69c4c0136a3d0eddcd65bac18242"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_003",
+        "presentation_label": "No visible source label (cited publication:775-787)",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "The paragraph specializes the PAV threshold to a two-seat explanatory example and does not present an independent normal result.",
+        "source_anchor": {
+          "line_end": 787,
+          "line_start": 775,
+          "publication_locator": "cited publication",
+          "quoted_text": "    What explains these results? With SMDs, an R gerrymander would draw a map such that as\nmany districts as possible have a majority of Rs (up to a tolerance for robustness). It does so by\ncracking, creating many districts in which the D vote share is just below 12 (thus electing an R\ncandidate), and, as necessary, packing, creating a few districts in which the D vote share is as close\nto 1 as possible. Such a map would maximize D wasted votes. Now, consider PAV, i.e., a Thiele\nrule with λ(i) = 1i , and two-member districts. Any district in which the D vote share is between 13\nand 23 would elect one member from each party. Cracking thus requires creating districts in which\nthe D vote share is less than 13 . Packing – wasting D votes – could mean targeting the D vote share\nto be just below 23 (e.g., a D vote share of 0.6 to elect one member for each party), or close to 1\nbut then giving up both seats in the district. In each case, gerrymandering requires more precision\nand wastes fewer votes for the opposing party.18 Simultaneously, having fewer districts to draw\nreduces the degrees of freedom available. The corresponding bands become narrower as district size\nincreases.",
+          "quoted_text_sha256": "a7245a48261e14384bda2f099598ac3869a546710d230a4bfc421b6fc1e59205"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_004",
+        "presentation_label": "No visible source label (cited publication:811-813)",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "The footnote gives a supporting wasted-vote formula rather than an independently presented normal result.",
+        "source_anchor": {
+          "line_end": 813,
+          "line_start": 811,
+          "publication_locator": "cited publication",
+          "quoted_text": "  18\n     Under our voting assumptions, for every PAV election with Nk seats, Nk1+1 of the votes are wasted in total, and\nso the potential wasted votes for either party also goes to 0 with district size.",
+          "quoted_text_sha256": "958576f9920c4f3ce2e53a0adde7ebb7aa35a8ffe9c8b6f3e67f269e8b6436ce"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_005",
+        "presentation_label": "No visible source label (cited publication:830-832)",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "The map-level pigeonhole and minority-seat discussion is retained as typed deep-audit material outside the named-theory denominator.",
+        "source_anchor": {
+          "line_end": 832,
+          "line_start": 830,
+          "publication_locator": "cited publication",
+          "quoted_text": "above 13 . Note that, by the pigeonhole principle, with overall party p vote share vp , for any map\nthere will always be at least one district in which its vote share is at least vp ; so, as the threshold to\nwin 1 seat decreases with district size, an ever-smaller minority party is guaranteed at least one seat.",
+          "quoted_text_sha256": "af466ac677ded9b6da12990da43a23026babcc97fad4aee2dfce84af9d39abdd"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_006",
+        "presentation_label": "No visible source label (cited publication:2497-2505)",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "The paragraph isolates proof-support invariants inside the Proposition 1 proof rather than an independent normal result.",
+        "source_anchor": {
+          "line_end": 2505,
+          "line_start": 2497,
+          "publication_locator": "cited publication",
+          "quoted_text": "     The key step in the proof is noting that, under the assumptions, votes can only be transferred\nfrom a candidate of one party to a candidate of the other party (either after a candidate is eliminated\nor selected as a winner) if candidates from the sending party have been exhausted, as the sending\nparty voters rank all other party members after all their own party members.\n     Thus, for any set of voter rankings under the assumptions, the per-party seat share remains\nthe same under re-arrangements of how each voter ranks members of the other party (at the point\nthat such rearrangements matter for who is elected, only one party’s candidates are left, and so the\npartisan seat share does not change). Thus, without loss of generality, for the rest of the proof we\nassume that all voters within a party share the same ordering for candidates of the other party.",
+          "quoted_text_sha256": "1d5fa5e9f3dcc73c95cab0ef5dafcc133851a384e724fb09ef2c2bb22b020f6c"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_007",
+        "presentation_label": "No visible source label (cited publication:2506-2509)",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "The paragraph states a proof-local Droop-quota reachability property rather than an independent normal result.",
+        "source_anchor": {
+          "line_end": 2509,
+          "line_start": 2506,
+          "publication_locator": "cited publication",
+          "quoted_text": "     Recall that the Droop quota is designed such that exactly M total candidates meet the Droop\nquota across rounds, if all voters submit full rankings and V ≥ M (M + 1). (For simplicity and\nwithout loss of generality, we assume that the election continues even when the number of candidates\nremaining equals the number of seats to be filled, so that they each meet the quota after transfers).",
+          "quoted_text_sha256": "d81f882499d7408a277aa3eb2da26b283de82fbac5533406040ebf70665b866d"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_008",
+        "presentation_label": "No visible source label (cited publication:2537-2543)",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "The paragraph states a proof-local party-decomposition step rather than an independent normal result.",
+        "source_anchor": {
+          "line_end": 2543,
+          "line_start": 2537,
+          "publication_locator": "cited publication",
+          "quoted_text": "    The above facts establish that we can carry out the initial rounds of STV separately for each\nparty, until in each party there are either no candidates remaining or there is one remaining candidate\nwith less than Q votes: no winners have been selected with votes transferred across parties up to\nthis stage; as long as we only elect candidates with votes at or above the Droop quota, we do not\nmistakenly elect any candidate separately that we would not have together; and if this stage is ever\nreached, the identities of the elected or eliminated candidates do not matter, since up to now there\nis a conservation of votes by party and so the per-party counts remain the same.",
+          "quoted_text_sha256": "1e3149a0e31db3d9bbdafbf403f3722ec46bf13ff165397d8a058783c9361cd9"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_009",
+        "presentation_label": "Population-tolerance footnote (cited publication:348-355)",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "The footnote specifies the empirical optimization tolerance and its legal disclaimer. It is prose-only context, not a selected named result, a premise of either selected result, or an independent formalization obligation.",
+        "source_anchor": {
+          "line_end": 355,
+          "line_start": 348,
+          "publication_locator": "cited publication",
+          "quoted_text": "   3\n     Our chosen tolerance provides a 1% upper bound in population deviation. More precisely, in the optimization, let\nτ = 0.01 and the single-seat ideal population be Pideal = Ptotal /N . For a district with Nk seats at tree depth L, we\nenforce Pk ∈ [Nk Pideal ± (τ Pideal /L)], i.e., a relative deviation δk = τ /(LNk ) from Pideal,k = Nk Pideal , bounded above\nby 1%. This modeling tolerance should not be interpreted as a legal threshold: for U.S. congressional redistricting,\nthe constitutional standard is population equality “as mathematically equal as reasonably possible;” the U.S. Supreme\nCourt has struck down a plan with less than a 1% deviation between the smallest and largest district (American Civil\nLiberties Union 2001).",
+          "quoted_text_sha256": "eeacdfefaf6e4bc69111c443adc3a73143aaf53decf0a1e1d42af3673dafc4c5"
+        },
+        "visible_kind": "holistic"
+      }
+    ],
     "complete": true,
+    "discovered_candidate_presentation_sha256": "974c52cfe14fcfb72d50b1a4af7d0cd4e6d56ca4bdc718800a486b6fb8d06cc7",
     "discovered_named_result_sha256": "751c69772759fc0eb8dd07d7fcb2643122e065b508a1689b2491c2a06492abfb",
-    "discovered_prose_definition_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-    "method": "Independently indexed the exact pinned cited publication without consulting source-map keys, Lean declarations, or theorem names. The normal named-theory index contains Proposition 1 in the methods section, Lemma C.1 in the appendix, and the appendix's repeated Proposition 1 presentation. The repeated Proposition 1 is retained as a separately byte-pinned source-presentation alias; formulas, algorithm prose, proof steps, figures, and empirical text are not independent normal-scope named results.",
-    "prose_definition_presentations": [],
+    "discovered_prose_definition_sha256": "a3e47ea7871d69692473c88d50339eff5e151306408217e03ee4b0ad05ef3dc2",
+    "method": "Preserved the completed source-only named-result classification; retained Section 2.1 redistricting, map, election, metric, population-scaling, and tolerance prose as deep-audit context; and retained only the PAV, STV, voter-model, and party-seat-selector definitions needed to interpret the two selected named results as semantic prerequisites.",
+    "prose_definition_presentations": [
+      {
+        "defined_entity_kind": "object",
+        "defined_object": "legislature composed of N seats",
+        "definitional_clause": "2.1   Problem definition\nThe task is to elect a legislature composed of N seats. There is a population of voters V; each\nvoter v ∈ V lives in an atomic block bv ∈ B and belongs to a party pv ∈ {R, D}. The blocks B\n\n\n                                                  6\n\fare organized in an adjacency graph where two blocks share an edge when they are geographically\nadjacent to each other.",
+        "normal_scope_exclusion_approval": {
+          "approval_kind": "explicit_user_instruction",
+          "approval_reference": "The underlying approval record is withheld from this public projection.",
+          "approved_at": "2026-09-01T14:54:06Z",
+          "schema": 1
+        },
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "deep_only_definition",
+        "scope_judgment": "excluded_from_normal_named_theory",
+        "scope_judgment_source_sha256": "a59a91f439314f73466b3cddfe4a54eca5bf74464324bd50f959cd34becaff9b",
+        "scope_reason": "This prose supplies redistricting context but is not a selected named result or a material premise of either selected result.",
+        "source_anchor": {
+          "line_end": 308,
+          "line_start": 301,
+          "publication_locator": "cited publication",
+          "quoted_text": "2.1   Problem definition\nThe task is to elect a legislature composed of N seats. There is a population of voters V; each\nvoter v ∈ V lives in an atomic block bv ∈ B and belongs to a party pv ∈ {R, D}. The blocks B\n\n\n                                                  6\n\fare organized in an adjacency graph where two blocks share an edge when they are geographically\nadjacent to each other.",
+          "quoted_text_sha256": "be96bf0318a27b183e046578cb05169a30b6372357590e7834a3d1e66fe61b3d"
+        },
+        "validated_at": "2026-09-01T00:00:00Z",
+        "validator": "Maintainer source-scope instruction (2026-09-01)",
+        "validator_type": "human"
+      },
+      {
+        "defined_entity_kind": "object",
+        "defined_object": "map or a plan",
+        "definitional_clause": "Multi-member redistricting. In redistricting, the blocks B are partitioned into K geographically\ncontiguous districts, where each district k is allocated Nk ∈ N seats in the legislature such that\n  k Nk = N , and Nk ≥ 1. Each district also must be population balanced in accordance with\nP\n\nNk , such that the population ratio of district k to the whole state is bounded between NkN±ϵ for\npopulation tolerance ϵ.3 The resulting set of districts is referred to as a map or a plan. Maps can\nbe drawn to fulfill various objective functions. For example, a party can gerrymander a map to\nmaximize the seats won by their party, or an independent commission can attempt to satisfy one or\nmore notions of fairness.",
+        "normal_scope_exclusion_approval": {
+          "approval_kind": "explicit_user_instruction",
+          "approval_reference": "The underlying approval record is withheld from this public projection.",
+          "approved_at": "2026-09-01T14:54:06Z",
+          "schema": 1
+        },
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "deep_only_definition",
+        "scope_judgment": "excluded_from_normal_named_theory",
+        "scope_judgment_source_sha256": "164b7292470caac90bbae5debc006839d3bab7d15a0d8431c3beb6ad9c864093",
+        "scope_reason": "The prose map definition and exact population-balance scaling are not selected named results and are not material premises of either selected result.",
+        "source_anchor": {
+          "line_end": 319,
+          "line_start": 310,
+          "publication_locator": "cited publication",
+          "quoted_text": "Multi-member redistricting. In redistricting, the blocks B are partitioned into K geographically\ncontiguous districts, where each district k is allocated Nk ∈ N seats in the legislature such that\n  k Nk = N , and Nk ≥ 1. Each district also must be population balanced in accordance with\nP\n\nNk , such that the population ratio of district k to the whole state is bounded between NkN±ϵ for\npopulation tolerance ϵ.3 The resulting set of districts is referred to as a map or a plan. Maps can\nbe drawn to fulfill various objective functions. For example, a party can gerrymander a map to\nmaximize the seats won by their party, or an independent commission can attempt to satisfy one or\nmore notions of fairness.",
+          "quoted_text_sha256": "55bb1e59618e179774c6cb2e55e0aa9c375555787548a63e94d2b217480cfe3a"
+        },
+        "validated_at": "2026-09-01T00:00:00Z",
+        "validator": "Maintainer source-scope instruction (2026-09-01)",
+        "validator_type": "human"
+      },
+      {
+        "defined_entity_kind": "object",
+        "defined_object": "social choice function F",
+        "definitional_clause": "Social choice function. Each district runs a separate election to fill its Nk seats, with each voter\nv voting in the district k(bv ) to which their block bv belongs. Each election is run according to a\nsocial choice function F that determines what information each voter provides (in this work, either\na set of approved candidates or a ranking over candidates) and how votes are aggregated to produce\nthe Nk winners in each district k.\n    Together, the choice of map (K contiguous districts with Nk seats each) and social choice function\nF define an election. Given data on voters and assumptions on how they rank candidates (detailed in\nSection 2.2), the procedure determines the set of N winners. (In our empirical optimization approach,\nwe use a probabilistic approach to compute the expected seat share based on the variance of past\nelections to model the heterogeneous political elasticity and noise among different constituencies.)",
+        "normal_scope_exclusion_approval": {
+          "approval_kind": "explicit_user_instruction",
+          "approval_reference": "The underlying approval record is withheld from this public projection.",
+          "approved_at": "2026-09-01T14:54:06Z",
+          "schema": 1
+        },
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "deep_only_definition",
+        "scope_judgment": "excluded_from_normal_named_theory",
+        "scope_judgment_source_sha256": "18195e454d08e2fc742e9a50617bb534ec5e85b64ed73ab5beec548778301449",
+        "scope_reason": "This prose supplies election context but is not a selected named result or a material premise of either selected result.",
+        "source_anchor": {
+          "line_end": 330,
+          "line_start": 321,
+          "publication_locator": "cited publication",
+          "quoted_text": "Social choice function. Each district runs a separate election to fill its Nk seats, with each voter\nv voting in the district k(bv ) to which their block bv belongs. Each election is run according to a\nsocial choice function F that determines what information each voter provides (in this work, either\na set of approved candidates or a ranking over candidates) and how votes are aggregated to produce\nthe Nk winners in each district k.\n    Together, the choice of map (K contiguous districts with Nk seats each) and social choice function\nF define an election. Given data on voters and assumptions on how they rank candidates (detailed in\nSection 2.2), the procedure determines the set of N winners. (In our empirical optimization approach,\nwe use a probabilistic approach to compute the expected seat share based on the variance of past\nelections to model the heterogeneous political elasticity and noise among different constituencies.)",
+          "quoted_text_sha256": "cd7f41f65201f0084f8cc0104fd404719b0ead6b42a6c7b8e3656e1974f17986"
+        },
+        "validated_at": "2026-09-01T00:00:00Z",
+        "validator": "Maintainer source-scope instruction (2026-09-01)",
+        "validator_type": "human"
+      },
+      {
+        "defined_entity_kind": "object",
+        "defined_object": "proportionality gap",
+        "definitional_clause": "Evaluation metrics. An election procedure can be evaluated based on the set of winners it\nproduces. To measure outcomes across parties, we primarily consider proportionality: how does\nthe fraction of winners wp belonging to each party p ∈ {R, D} (seat share) compare to the fraction\nof voters yp (vote share); the proportionality gap is the difference |wR − yR |. The larger the gap,\nthe more that the procedure favors one party over another. In Appendix B, we further consider\nintra-party measures, i.e., how the election procedure influences within-party differences.",
+        "normal_scope_exclusion_approval": {
+          "approval_kind": "explicit_user_instruction",
+          "approval_reference": "The underlying approval record is withheld from this public projection.",
+          "approved_at": "2026-09-01T14:54:06Z",
+          "schema": 1
+        },
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "deep_only_definition",
+        "scope_judgment": "excluded_from_normal_named_theory",
+        "scope_judgment_source_sha256": "d67f4c9de2d22183f70d351a0375d68974b5d8c73f842bede267f38f708dfb34",
+        "scope_reason": "This prose supplies evaluation context but is not a selected named result or a material premise of either selected result.",
+        "source_anchor": {
+          "line_end": 337,
+          "line_start": 332,
+          "publication_locator": "cited publication",
+          "quoted_text": "Evaluation metrics. An election procedure can be evaluated based on the set of winners it\nproduces. To measure outcomes across parties, we primarily consider proportionality: how does\nthe fraction of winners wp belonging to each party p ∈ {R, D} (seat share) compare to the fraction\nof voters yp (vote share); the proportionality gap is the difference |wR − yR |. The larger the gap,\nthe more that the procedure favors one party over another. In Appendix B, we further consider\nintra-party measures, i.e., how the election procedure influences within-party differences.",
+          "quoted_text_sha256": "09cbc9f90afb9442f48c7619d14b6222013f95f0dbdeac7aa129014d5f3594ee"
+        },
+        "validated_at": "2026-09-01T00:00:00Z",
+        "validator": "Maintainer source-scope instruction (2026-09-01)",
+        "validator_type": "human"
+      },
+      {
+        "defined_entity_kind": "object",
+        "defined_object": "A Thiele rule",
+        "definitional_clause": "A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv\nof the Nk candidates they like most. The set of winners is determined as follows. Consider a\npotential set of winners C. The amount of points that voter v contributes to C is i=1         λ(i), and\n                                                                                     P|Sv ∩C|\n\nthe set C with the most points across voters (after tie-breaking) is selected. The (non-increasing)\nfunction λ establishes that votes have diminishing returns; the ith approved candidate in the set is\nworth λ(i). For example, winner-take-all approval voting is a Thiele rule with λ(i) = 1: for each\nvoter, the set C receives a number of points equal to the number of candidates in the set that the\nvoter likes, and so the Nk candidates with the most votes win. We further consider Proportional\nApproval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV\nis well-studied in the theoretical social choice literature and comes with optimality guarantees (in\nterms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns\nthan PAV in a voter having more of their preferred candidates winning, and thus prioritizes more\nvoters having at least one approved candidate (and 50/50 outcomes between two parties, regardless\nof underlying vote shares). More generally, Thiele rules both contain common voting rules and\nparameterize a rule’s tendency to favor proportional or balanced outcomes.",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 393,
+          "line_start": 377,
+          "publication_locator": "cited publication",
+          "quoted_text": "    A Thiele rule is characterized by a function λ. Each voter v in district k provides a set Sv\nof the Nk candidates they like most. The set of winners is determined as follows. Consider a\npotential set of winners C. The amount of points that voter v contributes to C is i=1         λ(i), and\n                                                                                     P|Sv ∩C|\n\nthe set C with the most points across voters (after tie-breaking) is selected. The (non-increasing)\nfunction λ establishes that votes have diminishing returns; the ith approved candidate in the set is\nworth λ(i). For example, winner-take-all approval voting is a Thiele rule with λ(i) = 1: for each\nvoter, the set C receives a number of points equal to the number of candidates in the set that the\nvoter likes, and so the Nk candidates with the most votes win. We further consider Proportional\nApproval Voting (PAV), a Thiele rule with λPAV (i) = 1i ; and Thiele Squared, with λTS = i12 . PAV\nis well-studied in the theoretical social choice literature and comes with optimality guarantees (in\nterms of proportionality) (Skowron 2021). Thiele Squared induces even sharper diminishing returns\nthan PAV in a voter having more of their preferred candidates winning, and thus prioritizes more\nvoters having at least one approved candidate (and 50/50 outcomes between two parties, regardless\nof underlying vote shares). More generally, Thiele rules both contain common voting rules and\nparameterize a rule’s tendency to favor proportional or balanced outcomes.",
+          "quoted_text_sha256": "de953d3b3b9ad41c8e30275b3be2e2ca4c3d246f354a81ddec433be350a1de02"
+        }
+      },
+      {
+        "defined_entity_kind": "object",
+        "defined_object": "Single Transferable Vote (STV)",
+        "definitional_clause": "In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each\nvoter instead submits a ranking over candidates (here, we assume the rankings are complete, not\npartial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as\nfollows. The number of first-place votes for each candidate is counted. Any candidate with a number\nof votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus\nvotes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has\nenough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,\nand their votes are transferred. The process continues until Nk candidates have been selected, or\nthe number of remaining candidates equals the number of remaining seats. STV is commonly used\nin practice in multi-winner elections.\n    Details can differ in how such votes are transferred, but our results in Section 3 do not depend\non the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV\nrule, in which each voter keeps a fractional number of votes equal to their share of the winning\ncandidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we\nassume that ties are broken in favor of candidates from party D, but randomly within each party.5",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 408,
+          "line_start": 394,
+          "publication_locator": "cited publication",
+          "quoted_text": "    In Single Transferable Vote (STV), a type of ranked choice voting for multiple winners, each\nvoter instead submits a ranking over candidates (here, we assume the rankings are complete, not\npartial). Consider a district with Nk seats and Vk voters; the set of winners is created iteratively, as\nfollows. The number of first-place votes for each candidate is counted. Any candidate with a number\nof votes at least the “Droop” threshold Q = ⌊ NVk k+1 ⌋ + 1 is selected as a winner, and their surplus\nvotes (number of votes minus Q) are transferred to each voter’s next preference. If no candidate has\nenough votes, then the candidate with the least number of votes (with tie-breaking) is eliminated,\nand their votes are transferred. The process continues until Nk candidates have been selected, or\nthe number of remaining candidates equals the number of remaining seats. STV is commonly used\nin practice in multi-winner elections.\n    Details can differ in how such votes are transferred, but our results in Section 3 do not depend\non the transfer rule; in our simulations in Section 4 and Appendix B, we use the “fractional” STV\nrule, in which each voter keeps a fractional number of votes equal to their share of the winning\ncandidate’s surplus votes (we describe this formally in Section 4). For consistency, for all rules we\nassume that ties are broken in favor of candidates from party D, but randomly within each party.5",
+          "quoted_text_sha256": "0ee0998364381a3114ff31db82d257daa6d4fb2a2a7a455bf42bbf13bcaa1607"
+        }
+      },
+      {
+        "defined_entity_kind": "object",
+        "defined_object": "solid coalitions",
+        "definitional_clause": "Voter assumptions. Next, we require assumptions on how voters rank or approve candidates.\nFor each Thiele rule, we assume that in each district k there are exactly Nk candidates from each\nparty, and each voter simply approves all the candidates in their party.6 For STV, we assume that\nin each district k there are at least Nk candidates from each party.7 For our primarily empirical\nanalysis, we further assume that parties are solid coalitions (Dummett 1984): that each voter ranks\nall candidates of their party over each candidate of the other party, though intra-party rankings\nmay vary. These assumptions reflect that party membership is a strong predictor of the party of\nthe candidate for which a voter votes. Such an assumption, using historical party vote shares to\npredict vote shares in future elections, is used throughout the redistricting literature for SMDs; our\nadditional assumption is that this behavior extends to partisan voting in multi-member elections.\nWe relax this assumption in Section 4 and study intra-party effects, where voters may disagree on\nwithin-party rankings, in Appendix B.",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 426,
+          "line_start": 415,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fVoter assumptions. Next, we require assumptions on how voters rank or approve candidates.\nFor each Thiele rule, we assume that in each district k there are exactly Nk candidates from each\nparty, and each voter simply approves all the candidates in their party.6 For STV, we assume that\nin each district k there are at least Nk candidates from each party.7 For our primarily empirical\nanalysis, we further assume that parties are solid coalitions (Dummett 1984): that each voter ranks\nall candidates of their party over each candidate of the other party, though intra-party rankings\nmay vary. These assumptions reflect that party membership is a strong predictor of the party of\nthe candidate for which a voter votes. Such an assumption, using historical party vote shares to\npredict vote shares in future elections, is used throughout the redistricting literature for SMDs; our\nadditional assumption is that this behavior extends to partisan voting in multi-member elections.\nWe relax this assumption in Section 4 and study intra-party effects, where voters may disagree on\nwithin-party rankings, in Appendix B.",
+          "quoted_text_sha256": "c79244f0a8e122f4c7cf276f73df8aa733425006afbcacd1d3cb60620823cb10"
+        }
+      },
+      {
+        "defined_entity_kind": "object",
+        "defined_object": "party R seat share",
+        "definitional_clause": "Calculating seat share given vote shares. Suppose – for a given district with Nk seats and\nVk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).\nHow do we calculate the number of winners np from each party for a given social choice function?\n   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for\nThiele rules, as candidates from a given party receive the same votes—and so we do not have to\nconsider individual candidates, only the number of winners from each party directly. Then, we have\nthat the party R seat share is:\n                                                                             n\n                                                         \"           \"\n                                    nR (yR , λ) = min arg max yR\n                                                                             X\n                                                                                   λ(i)\n                                                     n           n\n                                                                             i=1\n                                                                                   \n                                                                      k −n\n                                                                     NX\n                                                      +(1 − yR )             λ(i) .                               (1)\n                                                                      i=1\n\n    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction\nyR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction\n                                                      P\n\n1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The\n                                                                           P k −n\n\nouter min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜\nNk − nR (yR , λ).",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 456,
+          "line_start": 428,
+          "publication_locator": "cited publication",
+          "quoted_text": "Calculating seat share given vote shares. Suppose – for a given district with Nk seats and\nVk voters – we know the fraction yp of voters that belong to each party p ∈ {R, D} (vote share).\nHow do we calculate the number of winners np from each party for a given social choice function?\n   Given our assumptions (including solid coalitions), it is straightforward to efficiently do so for\nThiele rules, as candidates from a given party receive the same votes—and so we do not have to\nconsider individual candidates, only the number of winners from each party directly. Then, we have\nthat the party R seat share is:\n                                                                             n\n                                                         \"           \"\n                                    nR (yR , λ) = min arg max yR\n                                                                             X\n                                                                                   λ(i)\n                                                     n           n\n                                                                             i=1\n                                                                                   \n                                                                      k −n\n                                                                     NX\n                                                      +(1 − yR )             λ(i) .                               (1)\n                                                                      i=1\n\n    The inner arg max comes directly from the rule definition – for a given n, suppose a fraction\nyR approves n candidates. Then that will yield yR ni=1 λ(i) points, with the remaining fraction\n                                                      P\n\n1 − yR approving Nk − n candidates and yielding an additional (1 − yR ) N     i=1 λ(i) points. The\n                                                                           P k −n\n\nouter min simply encodes tie-breaking in favor of party D.8 The party D seat share is nD (yR , λ) ≜\nNk − nR (yR , λ).",
+          "quoted_text_sha256": "f5b7e365bdb033b43d639c00f333d15b3d0053098c1659b413fa163b384f656c"
+        }
+      }
+    ],
     "schema": 1,
     "source_artifact_sha256": "57762234dc7b4a41d10b7f05110551853ab717136eca7b9216da9425cfb8bce5",
-    "validated_at": "2026-07-29T00:00:00Z",
-    "validator": "Codex GGRS26 source-only named-result reconciliation"
+    "validated_at": "2026-09-01T00:00:00Z",
+    "validator": "Codex GGRS26 repair-only source-scope review"
   },
+  "source_spec_correspondence_schema": 1,
   "source_url": "https://arxiv.org/pdf/2107.07083.pdf",
+  "source_version": "arXiv:2107.07083 source bundle and byte-pinned cited publication transcript",
   "title": "Combatting Gerrymandering with Ranked Choice Voting: an Experimental Analysis of Multi-member Districts in the United States"
 }

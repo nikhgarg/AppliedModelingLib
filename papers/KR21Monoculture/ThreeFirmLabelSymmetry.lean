@@ -1,6 +1,6 @@
 import KR21Monoculture.DirectRankMeanBridge
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 

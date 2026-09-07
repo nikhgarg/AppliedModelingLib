@@ -2,7 +2,7 @@ import KR21Monoculture.ThreeFirmMallowsPMFBridge
 import KR21Monoculture.DirectRankMeanBridge
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -21,7 +21,7 @@ an iid Uniform cardinal-value construction, an equilibrium result, or a
 source-welfare bridge.
 -/
 
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib.SocialChoice.Ranking
 
 /-! ## Generic finite products -/
 

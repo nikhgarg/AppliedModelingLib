@@ -1,13 +1,9 @@
 # Final Validation Report: User-Item Fairness Tradeoffs in Recommendations
-Updated: 2026-08-16
+Updated: 2026-09-06
 
 ## 1. Human Verdict
 
-**Formalized.** The paper's named definitions, lemmas, propositions, and
-theorems, including its Appendix D/E results, have closed proofs. Appendix E
-Lemma 15 contains a localized display typo; the corrected formula is proved and
-the printed display is not treated as a theorem. Independent human review has
-not yet been recorded.
+The formalization covers the named fairness tradeoff results and their Appendix D/E optimization arguments. With two opposing utility types, item fairness is least costly at a balanced population. Preference misestimation can be much more costly when full item fairness is imposed.
 
 ## 2. Closeout Status
 
@@ -25,21 +21,15 @@ surface and are not counted as formalized results.
 
 ## 4. Researcher Summary of Checked Results
 
-- D4 constructs the unique Problem 6 optimizer and proves its two-sided
-  threshold support from primitive model conditions.
-- D5 derives the optimizer value and every displayed `x`/`y` coordinate.
-- D6--D7 prove the optimal-policy type-utility order and monotonicity of the
-  actual unique optimizer's pivot.
-- D10--D11 prove the midpoint pivot bound and optimal item-fairness
-  monotonicity on a selected-pivot interval.
-- E13 represents the source's basic-feasible qualifier for the actual
-  mirror-restricted Problem 11 equality-feasible polytope by its standard
-  extreme-point characterization, then derives the full pivot support pattern.
-- E14 constructs and proves uniqueness of the global Problem 11 optimum.
-- E15 derives every noncenter coordinate and the corrected center branch for
-  an arbitrary global optimum.
-- E17 proves right-half zero support for every global optimum without a BFS
-  or pivot-support premise.
+| Result | Comparison with the paper |
+| --- | --- |
+| Propositions 1--2 | **Exact.** |
+| Theorem 3 | **Exact.** |
+| [Theorem 4](docs/SOURCE_CLARIFICATIONS.md#theorem-4-population-masses-and-positive-tolerance-section-5-p-7-appendix-e-p-39) | **Typo fixed:** cold-start mass `1-beta` becomes `1-2 beta`, alongside two masses `beta`. |
+| Appendix C Lemmas 1--2 | **Exact.** |
+| Appendix D Lemmas 3--11 | **Exact.** |
+| Appendix E Lemmas 12--14 and 16--17 | **Exact.** |
+| [Appendix E Lemma 15](docs/APPENDIX_E_LEMMA15_SOURCE_NOTE.md#appendix-e-lemma-15-source-clarification) | **Typo fixed:** the center branch includes both mirrored known types, giving `lambda=1/(1+L_t)`. |
 
 ## 5. Remaining Boundaries and Gaps
 
@@ -63,24 +53,112 @@ No additional generalization is established here.
 
 ## 10. Source Clarifications and Exact Readings
 
-In Appendix E Lemma 15, the Problem 11 center item equation must retain both
-mirrored known-type contributions. At the center, `q_t = 1/2`, so the full
-equation gives
+Theorem 4's cold-start population mass changes from `1-beta` to `1-2 beta` so the three masses sum to one. Appendix E Lemma 15's center equation includes both mirrored types, giving `lambda=1/(1+L_t)`. See the [population note](docs/SOURCE_CLARIFICATIONS.md#theorem-4-population-masses-and-positive-tolerance-section-5-p-7-appendix-e-p-39) and [center-equation note](docs/APPENDIX_E_LEMMA15_SOURCE_NOTE.md#appendix-e-lemma-15-source-clarification).
 
-`lambda = 1 / (1 + L_t)`.
+<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
+<!-- settled-review-context-sha256: 7ed2f7d51f011de1d6e6651cdaa68aa3c867bc958182e40f5c13bf14a0c1dc0a -->
+<!-- settled-review-context-presentation-sha256: 0685128706672e74e3977463dbd8a0e2b2a1323f04cb2d5c2d4b7cd0997fd00c -->
+### Source readings and additional assumptions
 
-The printed expression is false. The checked witness `n = 3`, `beta = 2/5`,
-`q_t = 1/2`, and `L_t = 4/3` gives corrected value `3/7` and printed value
-`9/25`.
-
-### [Appendix E source note](docs/APPENDIX_E_LEMMA15_SOURCE_NOTE.md)
-
-The corrected E15 theorem is proved. Its false printed center display is
-confined to an appendix derivation and does not leave a main-text or downstream
-theorem obligation open. A pinned source revision can fix the display, but it
-is not required for the paper's `formalized` status.
+- For Theorem 4, the normalized three-type construction uses masses beta, beta, and 1 - 2 beta; the stated beta range keeps all three masses positive.
+<!-- END GENERATED SETTLED REVIEW CONTEXT -->
 
 ## 11. Paper Issues or Caveats
 
-None. The Appendix E Lemma 15 display noted above is a localized source typo,
-not a limitation on the paper's status.
+None.
+
+## 12. Detailed Formalization Evidence
+
+[PaperInterface.lean](PaperInterface.lean) contains 23 transparent
+paper-facing result specifications, and [ProofInterface.lean](ProofInterface.lean)
+supplies the corresponding checked endpoints. The main-text surface comprises
+Propositions 1--2 and both clauses of Theorems 3--4; the remaining
+specifications cover Appendix C Lemmas 1--2, Appendix D Lemmas 3--11, and
+Appendix E Lemmas 12--17. The [final closure receipt](FINAL_CLOSURE_RECEIPT.md)
+points to the accepted obligation graph.
+
+## 13. Paper Assumption Provenance
+
+[status.json](status.json) lists 12 source-condition declarations.
+The [assumption ledger](FINAL_CLOSURE_RECEIPT.md) records 11 standalone
+premise declarations as paper conditions. The twelfth,
+`assumption_theorem4_universal_value_vector`, is an existential value-vector
+property inside the Theorem 4 conclusion rather than a separate theorem
+premise; its source route is recorded in the
+[statement map](audit/paper_statement_map.json). The 25 paper-local model and
+definition prerequisites all match their selected source connections in the
+[prerequisite ledger](FINAL_CLOSURE_RECEIPT.md).
+
+## 14. Displayed Formula Provenance
+
+The [statement map](audit/paper_statement_map.json) routes the displayed
+recommendation, fairness, optimization, and misestimation formulas. Theorem 4's
+normalized population uses masses `beta`, `beta`, and `1-2 beta`; Appendix
+E Lemma 15 uses the corrected center value `lambda=1/(1+L_t)`. The exact
+source comparisons are documented in the
+[source clarification memo](docs/SOURCE_CLARIFICATIONS.md), the
+[Lemma 15 note](docs/APPENDIX_E_LEMMA15_SOURCE_NOTE.md#appendix-e-lemma-15-source-clarification), and the
+[source-fidelity ledger](FINAL_CLOSURE_RECEIPT.md).
+
+## 15. Library Lift Pass
+
+The [library semantic ledger](FINAL_CLOSURE_RECEIPT.md) selects no
+material reusable-library prerequisite. Recommendation policies, fairness
+objectives, symmetric reductions, and misestimation constructions remain
+paper-local.
+
+## 16. DAG Audit
+
+The one-page [DependencyDAG.pdf](docs/DependencyDAG.pdf), generated from
+[DependencyDAG.tex](docs/DependencyDAG.tex), was visually inspected at 144 dpi
+on 2026-09-05. Its legend, nodes, labels, and directed edges are readable, with
+no visible clipping or overlap. The dashed Example 1 node is an unformalized
+illustration; the displayed result chains reach Theorems 3 and 4.
+
+## 17. Validation Checks
+
+The [focused-build receipt](FINAL_CLOSURE_RECEIPT.md) records a passing
+paper build. The [import-closure receipt](FINAL_CLOSURE_RECEIPT.md)
+records the checked Lean import surface, and the
+[final closure receipt](FINAL_CLOSURE_RECEIPT.md) points to the accepted
+obligation graph.
+
+## 18. Paper Definitions Checked
+
+The reviewed model surface covers recommendation utility, user and item
+fairness, the price of fairness, the price of misestimation, the symmetric
+optimization reductions, the opposing two-type model, and the true and
+estimated three-type models used for Theorem 4. Exact declaration bodies and
+source routes are recorded in the [statement map](audit/paper_statement_map.json)
+and [prerequisite ledger](FINAL_CLOSURE_RECEIPT.md).
+
+## 19. Named Theorem Statements Checked
+
+- Propositions 1--2: symmetric linear-program reduction and existence of a
+  symmetric optimum.
+- Theorem 3: the price of item fairness decreases toward a balanced
+  two-type population and increases away from it.
+- Theorem 4: the universal no-fairness misestimation bound and the
+  high-item-fairness tradeoff construction.
+- Appendix C Lemmas 1--2, Appendix D Lemmas 3--11, and Appendix E Lemmas
+  12--17: the supporting optimization statements summarized in Section 4.
+
+Each item has a transparent specification in [PaperInterface.lean](PaperInterface.lean)
+and a checked endpoint in [ProofInterface.lean](ProofInterface.lean).
+
+## 20. Paper-Facing Statement Validator Ledger
+
+The [current source-to-Spec ledger](FINAL_CLOSURE_RECEIPT.md)
+contains 23 judgments: 22 matches and one corrected-target match for
+Appendix E Lemma 15. [status.json](status.json) separately records that human
+review remains 0 of 23 rows.
+
+## 21. Source-Coverage Audit Ledger
+
+The [coverage ledger](FINAL_CLOSURE_RECEIPT.md) contains 27 inventoried
+named-theory items: 26 covered and one covered as a corrected target. The
+corrected item is Appendix E Lemma 15; its counterexample support is recorded
+in the [defect-support ledger](FINAL_CLOSURE_RECEIPT.md) and the
+[Lemma 15 note](docs/APPENDIX_E_LEMMA15_SOURCE_NOTE.md#appendix-e-lemma-15-source-clarification). The complete source
+inventory and route assignments are in the
+[statement map](audit/paper_statement_map.json).

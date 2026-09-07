@@ -1,0 +1,95 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "Naor1969QueueTolls",
+  "private_source_map_sha256": "a2472bcc7371b52090c3183ff1abc54f09647934acf0a4ab1aeae39a41017730",
+  "public_manifest_path": "papers/Naor1969QueueTolls/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "dbaa0331e335c0dc94c13e0d6a11a4763db5c22084f236b1d7dff244159879fa",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "socialTollImplementsOptimalThreshold",
+    "source_concluding_qualitative_generalizations",
+    "source_social_crossing_numerical_generalizations"
+  ],
+  "selected_source_items": {
+    "socialTollImplementsOptimalThreshold": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 131,
+              "line_start": 120,
+              "publication_locator": "cited publication",
+              "quoted_text": "Secondly, for our model to make sense it is required that under favorable circumstances a customer will desire to queue up for (completion of) service. Hence if a\nnewly arrived customer encounters a completely empty service station he should\nmake the \"pro-queueing\" choice. His expected loss is given by CV' whereas his\nreward to be collected at the end of service equals R. If the dimensionless quantity\n(Rp/C) is denoted by v, it is clear that in meaningful models the following inequality\nmust hold\n(1)\n\nVS= >C ) 1.\n\nIf inequality (1) does not hold the optimal policy is to disband the service station\nand divert the customer stream altogether.",
+              "quoted_text_sha256": "fb3b0657ea5343c805d815ed15981816942351289a01380cad51b051e17ee11d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 364,
+              "line_start": 341,
+              "publication_locator": "cited publication",
+              "quoted_text": "If the viewpoint is taken that the expected sum of the net gains accruing to\ncustomers in unit time is the public good which should be optimized, we must\nproceed in a different mode from that outlined in the previous section. We note\nthat expected total net gain, P, under some strategy n is given by\n(17)\n\nP =(-C)R=-RCE {i} =\n\n(l -Pn)-Cq\n\np\n-AR l\npna cL1P\n\nn pn+l\n\n\f20\n\nP. NAOR\n\nBy some elementary (but lengthy) considerations it can be shown that the\nfunction P in its dependence on n is \"discretely unimodal\" or, in other words, a\nlocal maximum is a global maximum. Hence we seek that strategy, no say, which is\nassociated with two inequalities",
+              "quoted_text_sha256": "8669e1c51af9464d1f2e738cb3ac8c7f900203b141e83b0bd3244d68ee89baed"
+            },
+            {
+              "line_end": 503,
+              "line_start": 477,
+              "publication_locator": "cited publication",
+              "quoted_text": "To deal with (22) it will be convenient to investigate a function,\n\n(23)\n\nVs= [vo( (-p)-p\n\n(' -P vo)] (1 _p)-\n\n2\n\nof two independent variables p (> 0) and vo() 1). We note, in passing, that no true\nsingularity exists for this function if p = 1; rather the function is well behaved and\na nonzero and finite function value exists at that value of p, to wit: vs= (vo(vo+ 1)/2).\nNext we study a setting in which the value of p is arbitrary (positive) but fixed; we\nnote that vs is a boundlessly increasing function of vo. Hence the integers between\nwhich vo lies (viewed now as a function of v, and p) will obey the inequalities associated with (22). As a result we arrive at\n(24)\n\nno = [vo],\n\nan expression which is completely analogous to (18). Further manipulations lead\nto the inequality\n(25)\n\nVO< Vs\n\nwhere the equality sign holds only4 if vs equals unity.",
+              "quoted_text_sha256": "21eac693f88b89481f97c1c017471e921662a17e5de0e6b49147fcf12e96e16d"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 338,
+          "line_start": 296,
+          "publication_locator": "cited publication",
+          "quoted_text": "The newly arrived customer weighs the two alternatives-to join or not to join\nthe queue-by the net gains associated with them. The net gain, in the first case,\nis equal to\n(t2)\n\nGi = R- (i+ 1)C-.\n\nIn the alternative case the net gain is zero. Hence self interest is served if a strategy\nis established in the following fashion. An integer, ns,is found which satisfies simultaneously two inequalities\n(13)\n\nR-n\n\nC-\n\n0\n\nand\n(14)\n\nR- (ns+ l)C-\n\n< O.\n\nInequality (13) pertains to the case where the number of queueing customers\n(including the one in service) encountered by the newly arrived customer falls\nshort of the critical number by one. The customer, of course, is supposed to join\nand indeed the inequality is in his favor. Inequality (14) relates to the unfavorable\nevent: the critical number, ns, of customers is already in the queue. We can incorporate the two inequalities in one expression\n(15)\n\nnS <C\n\n1\n\nAlternatively we may express the same idea in different notation\n(16)\n\nnS-I[Vs]\n\nwhere [ ] is the well known bracket function; that is, ns is the largest integer not\nexceeding vs.\nWe note that the critical number, ns, derived by \"actualizing self interest\" depends on ,u,R, and C, but not on the arrival intensity A.This fact alone sufficesbefore pursuing further detailed investigation-to throw serious doubt on the",
+          "quoted_text_sha256": "4abcc50518e992566caf39575e87448f2eafbe2601a6980717356225cbae1222"
+        },
+        {
+          "line_end": 761,
+          "line_start": 731,
+          "publication_locator": "cited publication",
+          "quoted_text": "narrow self interest-the facilities of the system are overly congested. To arrive at\nan ameliorated state of affairs it is necessary to reduce the strategy n from n, to no.\nThis can be done in two distinct ways: either through an administrative rule to\nthe effect that the maximally permissible queue size should be smaller5 than a\nprima facie admissible number n8; or, alternatively, a toll 0 is imposed on customers\njoining the queue and their (individually) expected net gain is reduced in such a way\nthat no is the current criterion of newly arrived customers based on their present\ncomparison of alternatives.\nWhat is the optimal value, 0*, or rather the optimal range, of the toll? Clearly\nthis is given by\n\n(26)\n\n-(v5-no-1)\n\n(\n\n=R-\n\n1\n\n< 0*\n\nR - Cn = At (V5-no)\n\nIf a toll taken from this range is levied on customers joining the queue, the combined income (in unit time) of customers and the revenue agency is maximized.\nWe might explicitly mention that expenditure incurred in toll collection and in\ninformation processing is considered negligible in this presentation.\nClearly, if the toll revenue may be used for redistribution of income among the\npopulation or for socially useful purposes the proposed imposition of tolls is an\noptimal procedure.",
+          "quoted_text_sha256": "9ce29119aec46cd7eea7a1cebd171e61fea4578e598903a293c0db6770b03529"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "source_concluding_qualitative_generalizations": {
+      "source_anchors": [
+        {
+          "line_end": 870,
+          "line_start": 853,
+          "publication_locator": "cited publication",
+          "quoted_text": "There is very little to add to the critique of the model and the general conclusions\ndrawn from its structure. One point should be re-emphasized: The results in qualitative form are independent of the specifics of the model. Thus, for instance, if\nservice times were distributed in some manner other then exponentially, we still\nwould derive benefits from the collection of tolls, though the derivation of no (or\nan equivalent doctrine) may be much more complex than that presented in this\nstudy.\nThe basic features of the model are shaped by the assumption of the existence of\na public good and by the assumption of possible nonadmission of customers to\nthe service station. Rewards are considered to be constant and equal. Again, no\nbasically different results would have been obtained had these rewards been\ndrawn from a distribution. A strong modification may be called for if we were to\nassume that the reward obtained depends in some way on the effective traffic density. Again, without going into detailed arguments, it can be shown that a policy of\n\"laissez faire\" is only rarely and accidentally a correct one (i.e., socially optimal).\nIn this latter more general case, in which effective interaction between customers\nand therefore dependence on traffic density is assumed, the proper strategy is not\nnecessarily the imposition of a toll; cases can be constructed where the handing\nout of subsidies to joining customers optimizes public good. The detailed analysis\nof such situations is the subject of further investigation.",
+          "quoted_text_sha256": "a32ac5160804fa5adc123efae6d7260092db9c63aca90bbfd1faecc887fd9bb9"
+        }
+      ],
+      "source_kind": "prose_assertion"
+    },
+    "source_social_crossing_numerical_generalizations": {
+      "source_anchors": [
+        {
+          "line_end": 718,
+          "line_start": 714,
+          "publication_locator": "cited publication",
+          "quoted_text": "in vo=2 and the converse of this statement holds as well. It is easy to prove both\nimplications. Indeed one may even state (and prove) the following generalizations:\n(a) whenever the inequality v, - p >2 holds, the appropriate value of vo can be\nbracketed by v, - p > vo > 2; and (b) whenever the inequality v, - p < 2 holds, it\nmay be established that v, - p < vo< 2.",
+          "quoted_text_sha256": "cfd0f66d0bd147d8536ea9a9b497b3a286ab0fb642fb8adced2794de033cc8c3"
+        }
+      ],
+      "source_kind": "prose_assertion"
+    }
+  },
+  "source_artifact_sha256": "1f0b933683a0f80dd0f70091fde0be6168bfbe7d8ec979f06008b4b691880614",
+  "source_coverage_mode": "named_theoretical_statements"
+}

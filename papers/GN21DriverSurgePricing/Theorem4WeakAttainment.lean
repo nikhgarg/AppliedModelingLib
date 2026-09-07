@@ -9,7 +9,7 @@ policy-by-policy weak replacement into the explicit source canonical family.
 The caller must prove that replacement from the actual aggregate objective.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 
 namespace GN21DriverSurgePricing

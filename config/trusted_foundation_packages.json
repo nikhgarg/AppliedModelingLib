@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "policy_id": "trusted-foundation-packages-v1",
+  "argument_policy": "retain_occurrence_and_recursively_scan_elaborated_arguments",
+  "packages": [
+    {
+      "module_root": "Batteries",
+      "category": "trusted_lean_foundation",
+      "semantic_policy": "default_trust_with_reviewable_semantic_expansion"
+    },
+    {
+      "module_root": "Init",
+      "category": "trusted_lean_foundation",
+      "semantic_policy": "default_trust_with_reviewable_semantic_expansion"
+    },
+    {
+      "module_root": "Lean",
+      "category": "trusted_lean_foundation",
+      "semantic_policy": "default_trust_with_reviewable_semantic_expansion"
+    },
+    {
+      "module_root": "Mathlib",
+      "category": "trusted_mathematics_foundation",
+      "semantic_policy": "default_trust_with_reviewable_semantic_expansion"
+    },
+    {
+      "module_root": "Std",
+      "category": "trusted_lean_foundation",
+      "semantic_policy": "default_trust_with_reviewable_semantic_expansion"
+    }
+  ]
+}

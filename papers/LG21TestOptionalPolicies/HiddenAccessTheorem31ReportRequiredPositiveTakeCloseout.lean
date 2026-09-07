@@ -12,7 +12,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-- Literal stability against positive-mass report-required local entries

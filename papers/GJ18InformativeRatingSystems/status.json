@@ -13,6 +13,7 @@
     "paper_interface": "papers/GJ18InformativeRatingSystems/PaperInterface.lean",
     "readme": "papers/GJ18InformativeRatingSystems/README.md",
     "source_archive": "cited publication",
+    "source_clarifications": "papers/GJ18InformativeRatingSystems/docs/GOVERNING_MODEL_CLARIFICATION.md",
     "source_model_bridge": "papers/GJ18InformativeRatingSystems/SourceModelBridge.lean",
     "source_proof_fidelity": "papers/GJ18InformativeRatingSystems/audit/source_proof_fidelity.json",
     "source_rate_positivity": "papers/GJ18InformativeRatingSystems/SourceRatePositivity.lean",
@@ -129,7 +130,7 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 18,
+    "total_rows": 3,
     "uncertain_rows": 0
   },
   "human_summary": "",
@@ -137,11 +138,11 @@
   "main_caveat": "Formalized for the author-approved corrected finite-chain model, not asserted identical to the pinned archival TeX. The corrected model makes the type-count, positive match-rate, iid state-law, endpoint-tail, and extended-rate clauses explicit; the report records each archival delta.",
   "paper_interface": {
     "declaration_rows": 24,
-    "line_count": 559,
+    "line_count": 216,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/GJ18InformativeRatingSystems/PaperInterface.lean",
-    "review_rows": 18
+    "review_rows": 3
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/GJ18InformativeRatingSystems/FINAL_VALIDATION_REPORT.md",
@@ -157,28 +158,17 @@
     "assumption_policy": "strict",
     "assumption_source_file": "papers/GJ18InformativeRatingSystems/Assumptions.lean",
     "auxiliary_names": [
+      "sourceOrdinalUpperTail",
+      "source_at_most_one_match_per_period",
+      "source_monotone_match_rates",
+      "source_nonnegative_match_rates",
       "sourcePaperLogMGF",
       "sourcePaperRateFunction",
       "sourcePaperRateFunctionTop"
     ],
     "include_names": [
-      "source_definition_floor_sample_count_formulaSpec",
-      "source_definition_aggregate_score_formulaSpec",
-      "source_definition_pairwise_objective_formulaSpec",
-      "source_definition_uniform_ranking_objective_formulaSpec",
-      "source_definition_uniform_ranking_normalizationSpec",
-      "source_iid_completion_pairwise_objective_bridgeSpec",
-      "source_iid_completion_weak_inversion_bridgeSpec",
-      "source_iid_completion_uniform_ranking_objective_bridgeSpec",
-      "author_confirmed_clarified_uniform_type_priorSpec",
-      "author_confirmed_clarified_iid_state_lawSpec",
-      "source_definition_log_mgf_formulaSpec",
-      "source_definition_rate_function_formulaSpec",
-      "source_definition_extended_rate_function_formulaSpec",
       "source_appendix_problessthan_score_gap_rate_iid_completionSpec",
       "source_appendix_pk_ld_complement_rate_iid_completionSpec",
-      "source_pairwise_objective_tendsto_one_iid_completionSpec",
-      "source_uniform_ranking_objective_tendsto_one_iid_completionSpec",
       "author_approved_corrected_model_theorem1_finite_real_rateSpec"
     ],
     "llm_assumption_review": {
@@ -205,7 +195,7 @@
       "paper_coverage_audit_file": "papers/GJ18InformativeRatingSystems/audit/paper_coverage_llm.json",
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
       "require_explicit_source_routes": true,
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
       "review_surface_audit_file": "papers/GJ18InformativeRatingSystems/audit/review_surface_llm.json",
       "surface_audit_threshold": 30,
       "surface_warning_threshold": 120
@@ -213,23 +203,8 @@
     "paper_coverage_required": true,
     "proposition_spec_proofs": {
       "author_approved_corrected_model_theorem1_finite_real_rateSpec": "author_approved_corrected_model_theorem1_finite_real_rate",
-      "author_confirmed_clarified_iid_state_lawSpec": "author_confirmed_clarified_iid_state_law",
-      "author_confirmed_clarified_uniform_type_priorSpec": "author_confirmed_clarified_uniform_type_prior",
       "source_appendix_pk_ld_complement_rate_iid_completionSpec": "source_appendix_pk_ld_complement_rate_iid_completion",
-      "source_appendix_problessthan_score_gap_rate_iid_completionSpec": "source_appendix_problessthan_score_gap_rate_iid_completion",
-      "source_definition_aggregate_score_formulaSpec": "source_definition_aggregate_score_formula",
-      "source_definition_extended_rate_function_formulaSpec": "source_definition_extended_rate_function_formula",
-      "source_definition_floor_sample_count_formulaSpec": "source_definition_floor_sample_count_formula",
-      "source_definition_log_mgf_formulaSpec": "source_definition_log_mgf_formula",
-      "source_definition_pairwise_objective_formulaSpec": "source_definition_pairwise_objective_formula",
-      "source_definition_rate_function_formulaSpec": "source_definition_rate_function_formula",
-      "source_definition_uniform_ranking_normalizationSpec": "source_definition_uniform_ranking_normalization",
-      "source_definition_uniform_ranking_objective_formulaSpec": "source_definition_uniform_ranking_objective_formula",
-      "source_iid_completion_pairwise_objective_bridgeSpec": "source_iid_completion_pairwise_objective_bridge",
-      "source_iid_completion_uniform_ranking_objective_bridgeSpec": "source_iid_completion_uniform_ranking_objective_bridge",
-      "source_iid_completion_weak_inversion_bridgeSpec": "source_iid_completion_weak_inversion_bridge",
-      "source_pairwise_objective_tendsto_one_iid_completionSpec": "source_pairwise_objective_tendsto_one_iid_completion",
-      "source_uniform_ranking_objective_tendsto_one_iid_completionSpec": "source_uniform_ranking_objective_tendsto_one_iid_completion"
+      "source_appendix_problessthan_score_gap_rate_iid_completionSpec": "source_appendix_problessthan_score_gap_rate_iid_completion"
     },
     "require_source_spec_correspondence": true,
     "require_v11_raw_source_spec_screening": true,
@@ -249,61 +224,13 @@
     },
     "slices": [
       {
-        "id": "source-state-definitions",
+        "id": "additional_source_results",
         "names": [
-          "source_definition_floor_sample_count_formula",
-          "source_definition_aggregate_score_formula",
-          "source_definition_pairwise_objective_formula",
-          "source_definition_uniform_ranking_objective_formula",
-          "source_definition_uniform_ranking_normalization"
+          "source_appendix_problessthan_score_gap_rate_iid_completionSpec",
+          "source_appendix_pk_ld_complement_rate_iid_completionSpec",
+          "author_approved_corrected_model_theorem1_finite_real_rateSpec"
         ],
-        "title": "Literal source-state formulas"
-      },
-      {
-        "id": "iid-completion",
-        "names": [
-          "source_iid_completion_pairwise_objective_bridge",
-          "source_iid_completion_weak_inversion_bridge",
-          "source_iid_completion_uniform_ranking_objective_bridge"
-        ],
-        "title": "Explicit iid completion bridges"
-      },
-      {
-        "id": "author-confirmed-clarification",
-        "names": [
-          "author_confirmed_clarified_uniform_type_prior",
-          "author_confirmed_clarified_iid_state_law",
-          "author_confirmed_clarified_model_theorem1_state_rate",
-          "author_approved_corrected_model_theorem1_finite_real_rate"
-        ],
-        "title": "Author-confirmed model additions"
-      },
-      {
-        "id": "rate-definitions",
-        "names": [
-          "source_definition_log_mgf_formula",
-          "source_definition_rate_function_formula",
-          "source_definition_extended_rate_function_formula",
-          "source_fidelity_diagnostic_unrestricted_real_pairwise_rate_mismatch"
-        ],
-        "title": "Rate definitions and codomain correction"
-      },
-      {
-        "id": "appendix-rates",
-        "names": [
-          "source_appendix_problessthan_score_gap_rate_iid_completion",
-          "source_appendix_pk_ld_complement_rate_iid_completion"
-        ],
-        "title": "Corrected Appendix rate results"
-      },
-      {
-        "id": "convergence-and-theorem1",
-        "names": [
-          "source_pairwise_objective_tendsto_one_iid_completion",
-          "source_uniform_ranking_objective_tendsto_one_iid_completion",
-          "source_theorem1_informative_rating_system_rate_iid_completion"
-        ],
-        "title": "Convergence and corrected Theorem 1"
+        "title": "Additional source results"
       }
     ],
     "source_file": "papers/GJ18InformativeRatingSystems/PaperInterface.lean",

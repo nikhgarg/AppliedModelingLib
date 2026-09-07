@@ -1,5 +1,5 @@
-import EconCSLib.Algorithms.Online.AdWords
-import EconCSLib.Algorithms.Complexity.Yao
+import AppliedModelingLib.Algorithms.Online.AdWords
+import AppliedModelingLib.Algorithms.Complexity.Yao
 import Mathlib.Algebra.Order.Floor.Semiring
 import Mathlib.Algebra.Order.Field.GeomSum
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
@@ -15,10 +15,10 @@ algorithm. This file records the finite certificate interface needed for that
 argument.
 -/
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Online
 
-open EconCSLib
+open AppliedModelingLib
 
 /--
 A finite Yao certificate for a randomized lower bound.
@@ -106,7 +106,7 @@ permutation positions `i, i+1, ..., N-1`.
 -/
 noncomputable def uniformPermutationDistribution (N : ℕ) :
     PMF (Equiv.Perm (Fin N)) :=
-  EconCSLib.uniformPMF (Equiv.Perm (Fin N))
+  AppliedModelingLib.uniformPMF (Equiv.Perm (Fin N))
 
 /--
 Expectation under the paper's uniform permutation distribution is invariant
@@ -123,7 +123,7 @@ theorem uniformPermutationExpectation_eq_of_relabel
   classical
   haveI : Nonempty (Equiv.Perm (Fin N)) := ⟨Equiv.refl (Fin N)⟩
   simpa [uniformPermutationDistribution] using
-    EconCSLib.pmfExp_uniformPMF_eq_of_comp_equiv
+    AppliedModelingLib.pmfExp_uniformPMF_eq_of_comp_equiv
       (α := Equiv.Perm (Fin N)) relabel h
 
 /--
@@ -2958,4 +2958,4 @@ theorem eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
 end BMatchingTheorem9SymmetricPointwiseLayerCountFamilyCertificate
 
 end Online
-end EconCSLib
+end AppliedModelingLib

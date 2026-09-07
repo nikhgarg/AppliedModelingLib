@@ -21,10 +21,10 @@ EXISTING = "XYZ25ExistingPaper"
 PROVIDER = "DEF24ProviderPaper"
 BASE_LAKEFILE = f'''name = "Fixture"
 version = "0.1.0"
-defaultTargets = ["EconCSLib"]
+defaultTargets = ["AppliedModelingLib"]
 
 [[lean_lib]]
-name = "EconCSLib"
+name = "AppliedModelingLib"
 
 [[lean_lib]]
 name = "{EXISTING}"
@@ -1018,7 +1018,7 @@ class PaperContributionCommandTests(unittest.TestCase):
 
         self.assertEqual(
             commands[0],
-            ["lake", "build", PAPER],
+            ["lake", "build", f"+{PAPER}"],
         )
         flat = [" ".join(command) for command in commands]
         closeouts = [command for command in flat if "audit_repository.py" in command]
@@ -1045,10 +1045,10 @@ class PaperContributionCommandTests(unittest.TestCase):
 
         self.assertEqual(
             commands[0],
-            ["lake", "build", f"{PAPER}.PaperInterface"],
+            ["lake", "build", f"+{PAPER}.PaperInterface"],
         )
         self.assertEqual(len(commands), 1)
-        self.assertFalse(any(part.startswith("+") for part in commands[0]))
+        self.assertTrue(commands[0][-1].startswith("+"))
 
     def test_check_with_base_uses_exact_committed_diff_range(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -1084,6 +1084,7 @@ class PaperContributionCommandTests(unittest.TestCase):
                 f"papers/{EXISTING}",
                 f"papers/{EXISTING}.lean",
                 "lakefile.toml",
+                f":(exclude)papers/{EXISTING}/source/",
             ],
         )
 
@@ -1421,22 +1422,12 @@ class PaperContributionCommandTests(unittest.TestCase):
         )
         semantic.assert_not_called()
 
-    def test_full_check_cold_cache_uses_one_planner_build_before_manifest(self) -> None:
+    def test_full_check_replans_after_one_paper_build(self) -> None:
         identity = "c" * 64
         build = {
             "id": "paper_build",
             "state": "ready_now",
-            "argv": ["env", "LEAN_NUM_THREADS=1", "lake", "build", PAPER],
-        }
-        manifest = {
-            "id": "fresh_manifest_batch",
-            "state": "after_paper_build",
-            "argv": [
-                "python3",
-                "scripts/refresh_closeout_manifest_cache.py",
-                "--paper",
-                PAPER,
-            ],
+            "argv": ["env", "LEAN_NUM_THREADS=1", "lake", "build", f"+{PAPER}"],
         }
         strict = {
             "id": "strict_closeout",
@@ -1450,7 +1441,7 @@ class PaperContributionCommandTests(unittest.TestCase):
             ],
         }
         plans = [
-            {"next_action": build, "actions": [build, manifest]},
+            {"next_action": build, "actions": [build]},
             {"plan_identity_sha256": identity, "next_action": strict},
         ]
         events: list[str] = []
@@ -1464,15 +1455,8 @@ class PaperContributionCommandTests(unittest.TestCase):
                 "--check",
             ]:
                 events.append("sync")
-            elif argv == ["env", "LEAN_NUM_THREADS=1", "lake", "build", PAPER]:
+            elif argv == ["env", "LEAN_NUM_THREADS=1", "lake", "build", f"+{PAPER}"]:
                 events.append("build")
-            elif argv == [
-                contribution.PYTHON,
-                "scripts/refresh_closeout_manifest_cache.py",
-                "--paper",
-                PAPER,
-            ]:
-                events.append("manifest")
             elif argv == [
                 contribution.PYTHON,
                 "scripts/run_paper_closeout.py",
@@ -1516,7 +1500,7 @@ class PaperContributionCommandTests(unittest.TestCase):
 
         self.assertEqual(
             events,
-            ["sync", "build", "isolation", "manifest", "strict", "diff"],
+            ["sync", "build", "isolation", "strict", "diff"],
         )
         self.assertEqual(events.count("build"), 1)
         terminal.assert_called_once_with(
@@ -1528,22 +1512,12 @@ class PaperContributionCommandTests(unittest.TestCase):
         build = {
             "id": "paper_build",
             "state": "ready_now",
-            "argv": ["env", "LEAN_NUM_THREADS=1", "lake", "build", PAPER],
-        }
-        manifest = {
-            "id": "fresh_manifest_batch",
-            "state": "after_paper_build",
-            "argv": [
-                "python3",
-                "scripts/refresh_closeout_manifest_cache.py",
-                "--paper",
-                PAPER,
-            ],
+            "argv": ["env", "LEAN_NUM_THREADS=1", "lake", "build", f"+{PAPER}"],
         }
         plans = [
             {
                 "next_action": build,
-                "actions": [build, manifest],
+                "actions": [build],
             },
             {
                 "plan_identity_sha256": identity,
@@ -1571,13 +1545,7 @@ class PaperContributionCommandTests(unittest.TestCase):
         self.assertEqual(
             [call.args[0] for call in runner.call_args_list],
             [
-                ["env", "LEAN_NUM_THREADS=1", "lake", "build", PAPER],
-                [
-                    contribution.PYTHON,
-                    "scripts/refresh_closeout_manifest_cache.py",
-                    "--paper",
-                    PAPER,
-                ],
+                ["env", "LEAN_NUM_THREADS=1", "lake", "build", f"+{PAPER}"],
                 [
                     contribution.PYTHON,
                     "scripts/run_paper_closeout.py",
@@ -1588,6 +1556,29 @@ class PaperContributionCommandTests(unittest.TestCase):
                 ],
             ],
         )
+
+    def test_retired_manifest_refresh_action_fails_closed(self) -> None:
+        plan = {
+            "next_action": {
+                "id": "fresh_manifest_batch",
+                "argv": [
+                    "python3",
+                    "scripts/refresh_closeout_manifest_cache.py",
+                    "--paper",
+                    PAPER,
+                ],
+            }
+        }
+        with (
+            mock.patch.object(contribution, "_run_json", return_value=plan),
+            mock.patch.object(contribution, "_run") as runner,
+        ):
+            with self.assertRaisesRegex(
+                contribution.ContributionError,
+                "closeout stopped at `fresh_manifest_batch`",
+            ):
+                contribution._execute_planned_closeout(PAPER)
+        runner.assert_not_called()
 
     def test_planner_stops_immediately_at_deterministic_receipt_publication_error(
         self,

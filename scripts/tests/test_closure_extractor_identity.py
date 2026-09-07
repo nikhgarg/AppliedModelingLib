@@ -25,7 +25,10 @@ class PythonSourceSliceIdentityTests(unittest.TestCase):
         path.write_text(source, encoding="utf-8")
         for dependency in (
             "lean_import_closure.py",
+            "lean_process_diagnostics.py",
+            "formalization_protocol.py",
             "python_source_slice_identity.py",
+            "semantic_reuse_authority.py",
         ):
             (path.parent / dependency).write_bytes(
                 (MANIFEST_SOURCE.parent / dependency).read_bytes()
@@ -310,6 +313,63 @@ def public(name):
         self.assertIsNone(imported_alias_identity)
         self.assertIsNone(module_alias_identity)
 
+    def test_exact_package_import_fallback_is_one_bound_provider(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / ".git").mkdir()
+            scripts = root / "scripts"
+            scripts.mkdir()
+            producer = scripts / "producer.py"
+            helper = scripts / "helper.py"
+            producer.write_text(
+                """if __package__:
+    from .helper import VALUE, action as run
+else:
+    from helper import VALUE, action as run
+
+def public():
+    return VALUE + run()
+""",
+                encoding="utf-8",
+            )
+            helper.write_text("VALUE = 1\ndef action(): return 2\n", encoding="utf-8")
+            baseline = transitive_top_level_source_slice_identity(
+                producer, ("public",)
+            )
+            helper.write_text("VALUE = 1\ndef action(): return 3\n", encoding="utf-8")
+            changed = transitive_top_level_source_slice_identity(
+                producer, ("public",)
+            )
+
+        self.assertIsNotNone(baseline)
+        self.assertIsNotNone(changed)
+        assert baseline is not None and changed is not None
+        self.assertNotEqual(
+            baseline["source_slice_sha256"], changed["source_slice_sha256"]
+        )
+
+    def test_mismatched_conditional_import_fallback_remains_fail_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            producer = directory / "producer.py"
+            (directory / "first.py").write_text("VALUE = 1\n", encoding="utf-8")
+            (directory / "second.py").write_text("VALUE = 1\n", encoding="utf-8")
+            producer.write_text(
+                """if __package__:
+    from .first import VALUE
+else:
+    from second import VALUE
+
+def public():
+    return VALUE
+""",
+                encoding="utf-8",
+            )
+            identity = transitive_top_level_source_slice_identity(
+                producer, ("public",)
+            )
+        self.assertIsNone(identity)
+
     def test_production_slice_binds_lean_import_closure_implementation(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -320,7 +380,10 @@ def public(name):
             producer.write_bytes(MANIFEST_SOURCE.read_bytes())
             for dependency in (
                 "lean_import_closure.py",
+                "lean_process_diagnostics.py",
+                "formalization_protocol.py",
                 "python_source_slice_identity.py",
+                "semantic_reuse_authority.py",
             ):
                 (scripts / dependency).write_bytes(
                     (MANIFEST_SOURCE.parent / dependency).read_bytes()
@@ -366,8 +429,8 @@ def public(name):
 
     def test_real_closure_constant_change_changes_closure_slice(self) -> None:
         source = MANIFEST_SOURCE.read_text(encoding="utf-8")
-        old = "SEMANTIC_CONTRACT_CLOSURE_CHUNK_SIZE = 4"
-        new = "SEMANTIC_CONTRACT_CLOSURE_CHUNK_SIZE = 5"
+        old = "SEMANTIC_CONTRACT_CLOSURE_CHUNK_SIZE = 2"
+        new = "SEMANTIC_CONTRACT_CLOSURE_CHUNK_SIZE = 3"
         self.assertIn(old, source)
         changed = source.replace(old, new, 1)
         with tempfile.TemporaryDirectory() as temporary:
@@ -404,12 +467,31 @@ def public(name):
 class ClosureModuleIdentityReattachmentTests(unittest.TestCase):
     EXTRACTOR = {
         "schema": "4",
+        "canonical_surface_representation": (
+            "lean_compact_canonical_surface_sha256_v2"
+        ),
+        "digest_algorithm": "sha256",
+        "lean_helper_sha256": "9" * 64,
+        "python_source_slice_schema": "2",
         "python_source_slice_sha256": "a" * 64,
+        "python_source_slice_builder_sha256": "8" * 64,
+        "python_source_slice_roots_sha256": "7" * 64,
+        "python_source_slice_symbols_sha256": "6" * 64,
+        "python_source_slice_symbol_count": "10",
+        "python_source_slice_local_imports_sha256": "5" * 64,
+        "python_source_slice_local_import_count": "2",
     }
     HASH_TOOL = {
         "schema": "1",
+        "command": "sha256sum",
         "resolved_path": "/verified/sha256sum",
         "executable_sha256": "b" * 64,
+        "version_stdout_sha256": "d" * 64,
+        "version_banner": "sha256sum fixture",
+        "known_vector": "sha256(abc)",
+        "known_vector_sha256": (
+            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        ),
     }
     SPECIFICATION = "Fixture.Spec"
     MODULE_IDENTITIES = [
@@ -533,7 +615,7 @@ class ClosureModuleIdentityReattachmentTests(unittest.TestCase):
         self.assertEqual(set(rebound), {self.SPECIFICATION})
         self.assertEqual(rebound[self.SPECIFICATION], manifest)
 
-    def test_reattachment_rejects_core_extractor_and_artifact_drift(self) -> None:
+    def test_reattachment_rejects_core_contract_and_artifact_drift(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "lake-manifest.json").write_text("{}", encoding="utf-8")
@@ -544,9 +626,22 @@ class ClosureModuleIdentityReattachmentTests(unittest.TestCase):
             tampered_core["surface"] = {"binder_domains": [], "body": {"tag": "false"}}
             self.assertEqual(self.reattach(root, tampered_core), {})
 
-            stale_extractor = dict(baseline)
-            stale_extractor["closure_extractor_identity"] = {"schema": "old"}
-            self.assertEqual(self.reattach(root, stale_extractor), {})
+            changed_implementation = dict(baseline)
+            changed_implementation["closure_extractor_identity"] = {
+                **self.EXTRACTOR,
+                "python_source_slice_sha256": "4" * 64,
+            }
+            self.assertEqual(
+                self.reattach(root, changed_implementation),
+                {self.SPECIFICATION: baseline},
+            )
+
+            changed_contract = dict(baseline)
+            changed_contract["closure_extractor_contract_identity"] = {
+                **baseline["closure_extractor_contract_identity"],
+                "contract": "different_contract",
+            }
+            self.assertEqual(self.reattach(root, changed_contract), {})
 
             changed_artifacts = [
                 {**self.MODULE_IDENTITIES[0], "artifact_sha256": "d" * 64}
@@ -555,6 +650,36 @@ class ClosureModuleIdentityReattachmentTests(unittest.TestCase):
                 self.reattach(root, baseline, changed_artifacts),
                 {},
             )
+
+    def test_legacy_implementation_identity_migrates_without_lean_replay(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "lake-manifest.json").write_text("{}", encoding="utf-8")
+            (root / "lean-toolchain").write_text("fixture", encoding="utf-8")
+            baseline = self.attached_manifest(root)
+            legacy = dict(baseline)
+            legacy.pop("closure_extractor_contract_identity")
+            legacy["closure_module_context_sha256"] = manifest_module._closure_json_sha256(
+                {
+                    "schema": manifest_module.SEMANTIC_CONTRACT_CLOSURE_SCHEMA,
+                    "foundation_context_sha256": legacy[
+                        "closure_foundation_context_sha256"
+                    ],
+                    "module_identities": legacy["closure_module_identities"],
+                    "extractor_identity": legacy["closure_extractor_identity"],
+                }
+            )
+            rebound = self.reattach(root, legacy)
+
+        self.assertEqual(set(rebound), {self.SPECIFICATION})
+        self.assertEqual(
+            rebound[self.SPECIFICATION]["closure_extractor_contract_identity"],
+            baseline["closure_extractor_contract_identity"],
+        )
+        self.assertEqual(
+            rebound[self.SPECIFICATION]["closure_module_context_sha256"],
+            baseline["closure_module_context_sha256"],
+        )
 
 
 if __name__ == "__main__":

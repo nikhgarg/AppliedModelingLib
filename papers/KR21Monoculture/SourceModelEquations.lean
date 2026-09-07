@@ -1,8 +1,8 @@
 import KR21Monoculture.LiteralDefinition1Theorem1Bridge
-import EconCSLib.Foundations.Math.IntervalCrossing
+import AppliedModelingLib.Foundations.Math.IntervalCrossing
 
-open EconCSLib
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 
@@ -79,8 +79,8 @@ theorem equation3_independent_reranking_payoff_identity
     _ = pmfPairIndicatorExp mu mu disagreementEvent
           (fun pair =>
             value (firstChoice pair.1) - value (secondChoice pair.1)) := by
-      unfold EconCSLib.pmfPairIndicatorExp
-      apply congrArg (EconCSLib.pmfPairExp mu mu)
+      unfold AppliedModelingLib.pmfPairIndicatorExp
+      apply congrArg (AppliedModelingLib.pmfPairExp mu mu)
       funext pi sigma
       by_cases h : firstChoice pi = firstChoice sigma
       · have h' : pi 0 = sigma 0 := by

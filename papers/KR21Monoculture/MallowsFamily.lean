@@ -2,7 +2,7 @@ import KR21Monoculture.MallowsPairwise
 import KR21Monoculture.Theorem1
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 /-!
 # Parameterized Mallows Families
@@ -113,7 +113,7 @@ the finite epsilon-delta interface used by Theorem 1.
 theorem concreteMallowsSpec_atom_continuity
     {n : ℕ} (center : Ranking n) {θ : ℝ} (hθ : 0 < θ)
     (π : Ranking n) :
-    EconCSLib.EpsilonContinuousAt
+    AppliedModelingLib.EpsilonContinuousAt
       (fun θ' => (((concreteMallowsSpec center θ').law) π).toReal) θ := by
   have hq_cont : ContinuousAt mallowsAccuracyQ θ :=
     mallowsAccuracyQ_continuousAt_of_pos hθ
@@ -126,7 +126,7 @@ theorem concreteMallowsSpec_atom_continuity
       ContinuousAt
         (fun θ' => mallowsPartition (mallowsAccuracyQ θ') center) θ := by
     unfold mallowsPartition
-    exact EconCSLib.continuousAt_finset_sum
+    exact AppliedModelingLib.continuousAt_finset_sum
       (s := (Finset.univ : Finset (Ranking n)))
       (f := fun τ θ' => mallowsWeight (mallowsAccuracyQ θ') center τ)
       (fun τ _ => by
@@ -141,7 +141,7 @@ theorem concreteMallowsSpec_atom_continuity
           mallowsWeight (mallowsAccuracyQ θ') center π /
             mallowsPartition (mallowsAccuracyQ θ') center) θ :=
     hnum_cont.div hden_cont hden_ne
-  exact EconCSLib.epsilonContinuousAt_of_continuousAt
+  exact AppliedModelingLib.epsilonContinuousAt_of_continuousAt
     (by
       simpa [concreteMallowsSpec, MallowsSpec.ofQ] using hratio)
 
@@ -194,14 +194,14 @@ theorem candidateRankWeightedAverage_continuousAt_zero
   have hnum :
       ContinuousAt
         (fun q => ∑ r : Candidate n, q ^ (r : ℕ) * B r) 0 :=
-    EconCSLib.continuousAt_finset_sum
+    AppliedModelingLib.continuousAt_finset_sum
       (s := (Finset.univ : Finset (Candidate n)))
       (f := fun r q => q ^ (r : ℕ) * B r)
       (fun r _ => (continuousAt_id.pow (r : ℕ)).mul continuousAt_const)
   have hden :
       ContinuousAt (fun q => candidateRankPowerSum n q) 0 := by
     unfold candidateRankPowerSum
-    exact EconCSLib.continuousAt_finset_sum
+    exact AppliedModelingLib.continuousAt_finset_sum
       (s := (Finset.univ : Finset (Candidate n)))
       (f := fun r q => q ^ (r : ℕ))
       (fun r _ => continuousAt_id.pow (r : ℕ))
@@ -355,7 +355,7 @@ theorem candidateRankSecondChoiceWeightedAverage_continuousAt_zero
         ContinuousAt (fun q => candidateRankSecondChoiceWeight n q s) 0 := by
     intro s
     unfold candidateRankSecondChoiceWeight
-    exact EconCSLib.continuousAt_finset_sum
+    exact AppliedModelingLib.continuousAt_finset_sum
       (s := (Finset.univ : Finset (Candidate n)))
       (f := fun r q =>
         if r < s then q ^ ((r : ℕ) + (s : ℕ) - 1)
@@ -380,14 +380,14 @@ theorem candidateRankSecondChoiceWeightedAverage_continuousAt_zero
         (fun q =>
           ∑ s : Candidate n,
             candidateRankSecondChoiceWeight n q s * B s) 0 :=
-    EconCSLib.continuousAt_finset_sum
+    AppliedModelingLib.continuousAt_finset_sum
       (s := (Finset.univ : Finset (Candidate n)))
       (f := fun s q => candidateRankSecondChoiceWeight n q s * B s)
       (fun s _ => (hweight s).mul continuousAt_const)
   have hpow :
       ContinuousAt (fun q => candidateRankPowerSum n q) 0 := by
     unfold candidateRankPowerSum
-    exact EconCSLib.continuousAt_finset_sum
+    exact AppliedModelingLib.continuousAt_finset_sum
       (s := (Finset.univ : Finset (Candidate n)))
       (f := fun r q => q ^ (r : ℕ))
       (fun r _ => continuousAt_id.pow (r : ℕ))
@@ -400,7 +400,7 @@ theorem candidateRankSecondChoiceWeightedAverage_continuousAt_zero
       funext q
       rw [candidateRankRemovalPowerSum_eq_range]
     rw [hfun]
-    exact EconCSLib.continuousAt_finset_sum
+    exact AppliedModelingLib.continuousAt_finset_sum
       (s := Finset.range (n + 1))
       (f := fun m q => q ^ m)
       (fun m _ => continuousAt_id.pow m)
@@ -488,17 +488,17 @@ theorem exists_pos_radius_humanAgainstRankAverage_lt_pureCenter_payoff
     expectedFirstMoverUtility (PMF.pure M.center) value +
       expectedSecondMoverShared (PMF.pure M.center) value
   have hcont :
-      EconCSLib.EpsilonContinuousAt
+      AppliedModelingLib.EpsilonContinuousAt
         (fun q => M.humanAgainstRankAverage value q) 0 :=
-    EconCSLib.epsilonContinuousAt_of_continuousAt
+    AppliedModelingLib.epsilonContinuousAt_of_continuousAt
       (M.humanAgainstRankAverage_continuousAt_zero value)
   have hpure_cont :
-      EconCSLib.EpsilonContinuousAt (fun _ : ℝ => purePayoff) 0 :=
-    EconCSLib.epsilonContinuousAt_const purePayoff 0
+      AppliedModelingLib.EpsilonContinuousAt (fun _ : ℝ => purePayoff) 0 :=
+    AppliedModelingLib.epsilonContinuousAt_const purePayoff 0
   have hlt :
       M.humanAgainstRankAverage value 0 < purePayoff :=
     M.humanAgainstRankAverage_zero_lt_pureCenter_payoff value hvalue
-  rcases EconCSLib.exists_right_radius_lt_of_epsilonContinuousAt
+  rcases AppliedModelingLib.exists_right_radius_lt_of_epsilonContinuousAt
       hcont hpure_cont hlt with ⟨δ, hδ_pos, hδ⟩
   refine ⟨δ, hδ_pos, ?_⟩
   intro q hq_pos hq_lt
@@ -887,21 +887,21 @@ theorem exists_pos_radius_humanAgainstRankAverage_lt_sharedRankPayoffAverage
         M.humanAgainstRankAverage value q <
           M.sharedRankPayoffAverage value q := by
   have hh_cont :
-      EconCSLib.EpsilonContinuousAt
+      AppliedModelingLib.EpsilonContinuousAt
         (fun q => M.humanAgainstRankAverage value q) 0 :=
-    EconCSLib.epsilonContinuousAt_of_continuousAt
+    AppliedModelingLib.epsilonContinuousAt_of_continuousAt
       (M.humanAgainstRankAverage_continuousAt_zero value)
   have hs_cont :
-      EconCSLib.EpsilonContinuousAt
+      AppliedModelingLib.EpsilonContinuousAt
         (fun q => M.sharedRankPayoffAverage value q) 0 :=
-    EconCSLib.epsilonContinuousAt_of_continuousAt
+    AppliedModelingLib.epsilonContinuousAt_of_continuousAt
       (M.sharedRankPayoffAverage_continuousAt_zero value)
   have hlt :
       M.humanAgainstRankAverage value 0 <
         M.sharedRankPayoffAverage value 0 := by
     rw [M.sharedRankPayoffAverage_zero]
     exact M.humanAgainstRankAverage_zero_lt_pureCenter_payoff value hvalue
-  rcases EconCSLib.exists_right_radius_lt_of_epsilonContinuousAt
+  rcases AppliedModelingLib.exists_right_radius_lt_of_epsilonContinuousAt
       hh_cont hs_cont hlt with ⟨δ, hδ_pos, hδ⟩
   refine ⟨δ, hδ_pos, ?_⟩
   intro q hq_pos hq_lt
@@ -1355,7 +1355,7 @@ theorem expectedBestAfterRemoval_le_of_rankBestAfterRemoval_pairwise
         ∑ r : Candidate n, wH r * B r := by
     rfl
   rw [halg_den, hhuman_den, halg_num, hhuman_num]
-  exact EconCSLib.PositiveDenominator.div_le_div_of_cross_mul_le
+  exact AppliedModelingLib.PositiveDenominator.div_le_div_of_cross_mul_le
     hdenH_pos hdenA_pos (by linarith)
 
 /--
@@ -1506,7 +1506,7 @@ structure MallowsAccuracyFamilySpec (n : ℕ) where
   q_strictAnti : ∀ θA θH, 0 < θH → θH < θA → (spec θA).q < (spec θH).q
   dist_atom_continuity :
     ∀ θ, 0 < θ →
-      ∀ π : Ranking n, EconCSLib.EpsilonContinuousAt
+      ∀ π : Ranking n, AppliedModelingLib.EpsilonContinuousAt
         (fun θ' => (((spec θ').law) π).toReal) θ
   asymptotic_first_dominance :
     ∀ θH lower, 0 < θH → θH < lower →

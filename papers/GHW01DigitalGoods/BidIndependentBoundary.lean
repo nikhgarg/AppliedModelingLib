@@ -12,7 +12,7 @@ and proves that it is pointwise dominated on the binary adversarial inputs.
 
 namespace GHW01DigitalGoods
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 
 /-!
 The `acceptsEquality` bit is the source footnote's per-erased-multiset choice:

@@ -20,13 +20,13 @@ import sys
 import textwrap
 from pathlib import Path
 
-try:
-    from scripts.review_dashboard import parse_review_source_declarations
-except ModuleNotFoundError:
-    from review_dashboard import parse_review_source_declarations
-
-
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.review_dashboard import parse_review_source_declarations
+
+
 _DECL_HEAD_RE = re.compile(
     r"^(?P<prefix>(?:(?:noncomputable|private|protected)\s+)*)"
     r"(?P<kind>theorem|lemma|def|abbrev)\s+"

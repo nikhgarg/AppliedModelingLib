@@ -8,7 +8,7 @@ iteration and multi-agent work: feasible current-bounds data prove weak IC,
 while optimal-policy positive-response data prove a.e. uniqueness.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology ENNReal
 

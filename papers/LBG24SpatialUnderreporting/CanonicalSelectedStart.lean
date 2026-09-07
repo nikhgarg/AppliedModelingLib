@@ -1,5 +1,5 @@
 import LBG24SpatialUnderreporting.ConditionOneTail
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalForwardPoisson
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalForwardPoisson
 
 /-!
 # Canonical selected-start Poisson tail for LBG24
@@ -22,7 +22,7 @@ strong Markov property at an arbitrary stopped filtration.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory Filter ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal
 
 noncomputable section
@@ -299,7 +299,7 @@ theorem lemma2_canonicalForward_selectedStart_conditional_exponential_tail
           {ω' | forwardPostStopIntervalCount
             (canonicalForwardHomogeneousPoissonCountingProcessByLaw hrate)
             C.startTime u ω' = 0} =
-        ((EconCSLib.Probability.Exponential.Model.mk rate hrate).measure
+        ((AppliedModelingLib.Probability.Exponential.Model.mk rate hrate).measure
           (Set.Ioi (u : ℝ))).toReal := by
   intro C hfirst htail u
   filter_upwards [lemma2_canonicalForward_selectedStart_conditional_no_report

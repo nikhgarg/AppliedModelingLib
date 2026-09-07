@@ -1,1 +1,2 @@
 import GJ18InformativeRatingSystems.PaperInterface
+import GJ18InformativeRatingSystems.ProofInterface

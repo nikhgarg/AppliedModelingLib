@@ -5,7 +5,7 @@ Last reviewed through: 2026-06-27.
 This ledger records the AI-formalization workflow papers reviewed from the
 related-work discussion in Garg, *EconCSLib: AI-Assisted Lean Formalization for
 Economics & Computation research*, arXiv:2606.13306. It is a credit and source
-map for `../SKILL.md`, not a replacement for the operational EconCSLib
+map for `../SKILL.md`, not a replacement for the operational AppliedModelingLib
 formalizer skill.
 
 ## Core Source
@@ -200,7 +200,7 @@ formalizer skill.
   Contribution: organize workflow analysis end-to-end: preprocessing, model
   design, evaluation, applications, datasets, and open challenges.
 
-## Practical Translation Into EconCSLib
+## Practical Translation Into AppliedModelingLib
 
 - Use dependency graphs both as planning artifacts and as review surfaces.
 - Compile statement skeletons first; proof repair should not keep changing the

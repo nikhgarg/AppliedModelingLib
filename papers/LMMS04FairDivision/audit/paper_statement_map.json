@@ -1,371 +1,40 @@
 {
+  "approved_review_context_schema": 1,
   "generated_at": "2026-06-29T01:27:19Z",
   "items": {
-    "assumption_additive_transfer_load_window_conditions": {
-      "aliases": [
-        "assumption_additive_transfer_load_window_conditions"
-      ],
-      "claim_bearing": true,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nLemma 3.5's algebraic transfer row exposes positivity and half-load window\nconditions for the source, rounded, and output loads."
-    },
-    "assumption_alpha_marginal_value_bound": {
-      "aliases": [
-        "assumption_alpha_marginal_value_bound"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- The alpha-bounded form assumes every marginal item value is at most `alpha`."
-    },
-    "assumption_base_load_at_most_rounded_average": {
-      "aliases": [
-        "assumption_base_load_at_most_rounded_average"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Capped rounded-supply endpoints compare the base load with the rounded average."
-    },
-    "assumption_claim34_positive_small_goods_domain": {
-      "aliases": [
-        "assumption_claim34_positive_small_goods_domain"
-      ],
-      "claim_bearing": true,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Claim 3.4 finite small-good model uses positive goods whose value is below `L`."
-    },
-    "assumption_claim34_rounded_type_window_condition": {
-      "aliases": [
-        "assumption_claim34_rounded_type_window_condition"
-      ],
-      "claim_bearing": true,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nClaim 3.4's finite rounded-type assignment endpoints use the source rounded\ntype window for the selected min/max pair."
-    },
-    "assumption_duplicate_free_goods_enumeration": {
-      "aliases": [
-        "assumption_duplicate_free_goods_enumeration"
-      ],
-      "claim_bearing": true,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- The constructive algorithm endpoint enumerates the input goods without duplicates."
-    },
-    "assumption_external_graham_scheduling_boundary": {
-      "aliases": [
-        "assumption_external_graham_scheduling_boundary"
-      ],
-      "claim_bearing": true,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 3.2 cites Graham's scheduling approximation theorem; this folder\nformalizes the fair-division consequence from that scheduling certificate."
-    },
-    "assumption_fixed_dimension_ip_runtime_boundary": {
-      "aliases": [
-        "assumption_fixed_dimension_ip_runtime_boundary"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nThe final PTAS/FPTAS runtime conclusion is conditional on reusable\nfixed-dimension integer-program complexity infrastructure."
-    },
-    "assumption_nonnegative_alpha_bound": {
-      "aliases": [
-        "assumption_nonnegative_alpha_bound"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- The alpha-bounded envy statements use a nonnegative marginal-value bound."
-    },
-    "assumption_positive_atom_bound": {
-      "aliases": [
-        "assumption_positive_atom_bound"
-      ],
-      "claim_bearing": true,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- The measure-valued envy theorem is stated for a positive atom bound."
-    },
-    "assumption_positive_rounding_and_load_parameters": {
-      "aliases": [
-        "assumption_positive_rounding_and_load_parameters"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Rounded-search statements expose the paper's positive load and rounding-scale domain."
-    },
-    "assumption_ptas_error_parameter_range": {
-      "aliases": [
-        "assumption_ptas_error_parameter_range"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- PTAS/FPTAS ratio statements quantify over the usual positive error range."
-    },
-    "assumption_uniform_random_weight_normalization": {
-      "aliases": [
-        "assumption_uniform_random_weight_normalization"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "paper-facing review target; exact source location to be refined",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- The randomized allocation concentration bound uses normalized nonnegative item weights."
-    },
     "claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goods": {
       "aliases": [
         "claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goods"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goods"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goods",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goodsSpec"
-      },
+      "inventory_role": "source_scope_exclusion",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "The user-approved public partial closeout retains Claim 3.4 as visible Section 3 support rather than credits it as a selected direct source contract.",
       "source_anchor_evidence": [
         {
-          "line_end": 498,
-          "line_start": 491,
+          "line_end": 581,
+          "line_start": 494,
           "publication_locator": "cited publication",
-          "quoted_text": "We omit the details for handling goods with v(i) ≥ L and\nfrom now on we will assume that v(i) < L for every i. We\nhave the following fact:\nClaim 3.4. If v(i) < L for every good i, then there exists an optimal allocation A = (A1 , ..., An ) such that 12 L <\nv(Ai ) < 2L.\nThe proof is by showing that in a given optimal solution, it\nis possible to reallocate the goods so that the envy-ratio does\nnot increase and the conditions of the claim are satisfied.",
-          "quoted_text_sha256": "f46a3e3d9152082b808cfbea7dd06e55b2704f1f50b677392ebff6768122f095"
+          "quoted_text": "Claim 3.4. If v(i) < L for every good i, then there exists an optimal allocation A = (A1 , ..., An ) such that 12 L <\nv(Ai ) < 2L.\nThe proof is by showing that in a given optimal solution, it\nis possible to reallocate the goods so that the envy-ratio does\nnot increase and the conditions of the claim are satisfied.\nWe will now describe how to round the values of the goods\nand obtain an instance in which there is only a constant\nnumber of different types of goods (i.e. a constant number of\ndistinct values for the goods). The construction is the same\nas in [2] and we repeat it here for the sake of completeness.\nWe will denote the rounded instance by I R (λ), where λ is\na positive constant and will be determined later (λ will be\nO(1/\u000f)). We will often omit λ in the notation.\nWe first round the value of every good with relatively high\nvalue. In particular, for every good i with v(i) > L/λ, we\nround v(i) to the next integer multiple of L/λ2 . Roughly\nthis means that we round up the first least significant digits\nof v(i). We cannot afford to do the same for goods with\nsmall value since the error introduced by this process might\nbe very big. Instead, let S be the sum of the values of\nthe goods with value less than L/λ. We round S to the\nnext integer multiple of L/λ, say S R . Instance I R (λ) will\nhave S R λ/L new goods with value L/λ. This completes the\nconstruction. Note that in I R (λ) all values are of the form\nkL/λ2 , where λ ≤ k ≤ λ2 . Hence we have only a constant\nnumber of distinct values.\nLet M R be the set of goods in the newP\ninstance and v R (i)\nR\n1\nbe the value of each good. Let L = n j∈M R v R (i). It is\neasy to see that L ≤ LR and that all values in I R (λ) are at\nmost LR . Hence by Claim 3.4 there is an optimal solution\nR\nR\nR\n1 R\nAR = (AR\n1 , ..., An ) such that 2 L < v(Ap ) < 2L for every\np. In the algorithm below we will search for such a solution.\nWe represent a player’s bundle by a vector t = (tλ , ..., tλ2 ),\nwhere tk is the number of goods with value kL/λ2 assigned\nto her. We will then say thatP\nthe player is of type t. The\nutility derived from t is v(t) = k tk kL/λ2 . Let U be the set\nof all possible types t, with 21 LR < v(t) < 2LR . It is easy to\nsee that |U | is bounded by a constant which is exponential in\nλ. Hence for a player of type t ∈ U , there is only a constant\nnumber of distinct values for her utility. Let V (U ) be the set\nof these values, i.e. V (U ) = {u : v(t) = u for some t ∈ U }.\nWe can now show how to find the optimal envy-ratio in\nI R (λ). For all pairs of values u1 , u2 ∈ V (U ), we will solve\nthe following decision problem: Is there an allocation in\nwhich the utility of every player is between u1 and u2 ? Since\n|V (U )| is constant, after solving the above problem for all\nu1 , u2 we can output the allocation corresponding to u∗1 , u∗2\nfor which the minimum ratio u∗2 /u∗1 is attained.\nTo solve the decision problem, we will write an integer\nprogram (IP) with a constant number of variables and use\nLenstra’s algorithm [12]. In the following IP, for each t ∈ U\nwe have an integer variable Xt indicating how many players\nare of type t. The first constraint implies that all players\n\nX\n\nXt = n\n\nX\n\nXt tk = nk\n\nt∈U\n\n∀k\n\nt∈U\n\nXt ≥ 0\n\n∀Xt with t ∈ Uuu12\n\nXt = 0\n\n∀Xt with t ∈ U \\ Uuu12\n\nWe need to see how the original instance is related to the\nrounded instance. The following Lemma has been proved\nin [2]:",
+          "quoted_text_sha256": "19edde0406d85e90e56996b0ec9f8f0302cf44b2ca1521b3b07399d0a2dbee1a"
         }
       ],
-      "source_location": "Claim 3.4; cited publication:491-498",
+      "source_kind": "claim",
+      "source_location": "cited publication:494-581",
+      "source_note": "The finite exact-allocation descent layer remains visible but is retained as Section 3 partial-formalization support rather than a selected direct result.",
+      "source_status": "partial_formalization_boundary",
       "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Claim 3.4 exact-allocation bounded optimum endpoint.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goodsSpec"
-      ]
-    },
-    "claim3_4_identical_utilities_bounded_optimum_bound": {
-      "aliases": [
-        "claim3_4_identical_utilities_bounded_optimum_bound"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.claim3_4_identical_utilities_bounded_optimum_bound"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.claim3_4_identical_utilities_bounded_optimum_bound",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.claim3_4_identical_utilities_bounded_optimum_boundSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 498,
-          "line_start": 491,
-          "publication_locator": "cited publication",
-          "quoted_text": "We omit the details for handling goods with v(i) ≥ L and\nfrom now on we will assume that v(i) < L for every i. We\nhave the following fact:\nClaim 3.4. If v(i) < L for every good i, then there exists an optimal allocation A = (A1 , ..., An ) such that 12 L <\nv(Ai ) < 2L.\nThe proof is by showing that in a given optimal solution, it\nis possible to reallocate the goods so that the envy-ratio does\nnot increase and the conditions of the claim are satisfied.",
-          "quoted_text_sha256": "f46a3e3d9152082b808cfbea7dd06e55b2704f1f50b677392ebff6768122f095"
-        }
-      ],
-      "source_location": "Claim 3.4; cited publication:491-498",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nClaim 3.4 identical-utilities bounded optimum bound.\nSection 3 rounded-search runtime layer remains a partial boundary.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.claim3_4_identical_utilities_bounded_optimum_boundSpec"
-      ]
-    },
-    "directMechanism_fields": {
-      "aliases": [
-        "directMechanism_fields"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.directMechanism_fields"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.directMechanism_fields",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.directMechanism_fieldsSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 758,
-          "line_start": 740,
-          "publication_locator": "cited publication",
-          "quoted_text": "TRUTHFULNESS\n\nSo far we have assumed that we can obtain the actual\nutilities of the players for the goods. However, in many situations players’ utilities are private information and they\nmight lie about their valuations in order to obtain a better\nbundle. We would like to investigate the question of whether\nwe can have mechanisms that elicit truthful utilities from\nthe players and also produce allocations with minimum or\nbounded envy. A mechanism is truthful if for every player,\nher profit is maximized by declaring her true utility i.e. being truthful is a dominant strategy.\nIn the last few years, truthful mechanisms have been the\nsubject of research especially in the context of auctions.\nHowever, unlike our problem, auction mechanisms are allowed to compensate the players with money to keep them\ntruthful.\nWe will present a simple argument to prove that any mechanism that computes a minimum-envy allocation can not be\ntruthful even in the special case where the utility functions\nare additive.\n\nIn the rest of the section, we present a simple truthful",
-          "quoted_text_sha256": "e2bf56db4033186b191996252a32a0871415675baff4cb8c351ca778d3465fda"
-        }
-      ],
-      "source_location": "Section 4, mechanism setup; cited publication:740-758",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nA direct no-transfer mechanism consists only of an allocation rule.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.directMechanism_fieldsSpec"
-      ]
-    },
-    "envy": {
-      "aliases": [
-        "envy"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.envy"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.envy",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.envySpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 145,
-          "line_start": 141,
-          "publication_locator": "cited publication",
-          "quoted_text": "the envy of p for q:\nepq (A) = max{0, vp (Aq ) − vp (Ap )}.\nWe define e(A) to be the maximum envy between any pair\nof players.\ne(A) = max{epq (A), p, q ∈ N }.",
-          "quoted_text_sha256": "535ebbf227ad66548c77445fbd61cf116a7c9a4e9379486f2b742e8030fe63e9"
-        }
-      ],
-      "source_location": "Section 2, envy definition; cited publication:141-145",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Envy of agent `i` toward agent `j`: positive part of the value difference.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.envySpec"
-      ]
-    },
-    "envyBoundedBy": {
-      "aliases": [
-        "envyBoundedBy"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.envyBoundedBy"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.envyBoundedBy",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.envyBoundedBySpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 165,
-          "line_start": 147,
-          "publication_locator": "cited publication",
-          "quoted_text": "A natural question is whether there exist allocations with\nbounded envy. We obtain a bound on the envy in terms of\nthe maximum marginal utility of the goods, α. The marginal\nutility of a good i with respect to a player p and a subset of\ngoods S, is the amount by which it increases the utility of\np, when added to S, i.e., vp (S ∪ {i}) − vp (S). The maximum\nmarginal utility is:\nα = max vp (S ∪ {i}) − vp (S)\nS,p,i\n\nIn addition to proving a bound on the envy, we present an\nefficient algorithm that computes a desired allocation. For\nthat, we assume that the algorithm can ask an oracle for the\nutility of a player p for any subset S.\nTheorem 2.1. For any set of goods and any set of players, there exists an allocation A such that the maximum envy\nof A is bounded by the maximum marginal utility of the\ngoods, α. Furthermore, given oracle access for the utility\nfunctions of the players, there is an O(mn3 ) time algorithm\nfor finding such an allocation.",
-          "quoted_text_sha256": "b96e4b632f400c13d1738ae2206752da6852206f5d661ed1a6f88852e122f05c"
-        }
-      ],
-      "source_location": "Section 2, bounded maximum envy; cited publication:147-165",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Bounded-envy predicate used in Theorem 2.1.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.envyBoundedBySpec"
-      ]
-    },
-    "envyFree": {
-      "aliases": [
-        "envyFree"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.envyFree"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.envyFree",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.envyFreeSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 145,
-          "line_start": 141,
-          "publication_locator": "cited publication",
-          "quoted_text": "the envy of p for q:\nepq (A) = max{0, vp (Aq ) − vp (Ap )}.\nWe define e(A) to be the maximum envy between any pair\nof players.\ne(A) = max{epq (A), p, q ∈ N }.",
-          "quoted_text_sha256": "535ebbf227ad66548c77445fbd61cf116a7c9a4e9379486f2b742e8030fe63e9"
-        }
-      ],
-      "source_location": "Section 2, envy and maximum-envy definitions; cited publication:141-145",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Envy-free allocations have no positive envy between any ordered pair.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.envyFreeSpec"
-      ]
-    },
-    "isAllocationOf": {
-      "aliases": [
-        "isAllocationOf"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.isAllocationOf"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.isAllocationOf",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.isAllocationOfSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 212,
-          "line_start": 201,
-          "publication_locator": "cited publication",
-          "quoted_text": "Let N = {1, 2, ..., n} be a set of players and M = {1, 2, ...,\nm} be a set of indivisible goods. A utility function vp is\nassociated with each player p. For S ⊆ M , vp (S) is the\nhappiness player p derives if she obtains the subset S. We\nassume that vp is non-negative and monotone i.e. vp (S) ≤\nvp (T ) for every S ⊆ T and every p.\nAn allocation A is a partition of the goods A = (A1 , A2 , ...,\nAn ) where ∪n\np=1 Ap = M and Ap ∩Aq = ∅ for all p 6= q. Ap is\nthe subset allocated to player p. Note that some of the sets\nAp may be empty. A partial allocation will be a partition\nof some subset of M .",
-          "quoted_text_sha256": "3962b941fca479fe8ddf917095405b8fead1bd3d1eea7b17ab108c2f701f5138"
-        }
-      ],
-      "source_location": "Section 2, allocation and partial-allocation definitions; cited publication:201-212",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Allocation of exactly the specified finite set of goods.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.isAllocationOfSpec"
-      ]
+      "statement": "Claim 3.4: if every good has value below L, an optimal allocation exists with every player's value strictly between L/2 and 2L.",
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-05",
+        "reason": "Claim 3.4 remains visible Section 3 support, but is not selected for direct source-result credit in the current public partial closeout.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "19edde0406d85e90e56996b0ec9f8f0302cf44b2ca1521b3b07399d0a2dbee1a",
+        "source_evidence": "The pinned source span states Claim 3.4 and then develops the rounded-instance construction. The current scope does not certify the complete Section 3 source construction as a direct theorem route.",
+        "source_locator": "cited publication:494-581"
+      }
     },
     "lemma2_2_acyclic_reduction": {
       "aliases": [
@@ -373,26 +42,38 @@
       ],
       "claim_bearing": true,
       "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.lemma2_2_acyclic_reduction"
+        "LMMS04FairDivision.PaperInterface.lemma2_2_acyclic_reductionSpec_proof"
       ],
       "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.lemma2_2_acyclic_reduction",
-        "evidence_mode": "definitionally_realizes",
+        "evidence_declaration": "LMMS04FairDivision.PaperInterface.lemma2_2_acyclic_reductionSpec_proof",
+        "evidence_mode": "proves",
         "semantic_shape": "plain",
         "spec_declaration": "LMMS04FairDivision.PaperInterface.lemma2_2_acyclic_reductionSpec"
       },
       "source_anchor_evidence": [
         {
-          "line_end": 197,
-          "line_start": 166,
+          "line_end": 174,
+          "line_start": 170,
           "publication_locator": "cited publication",
-          "quoted_text": "Given an allocation A, we define the envy graph of A as\nfollows: every node of the graph represents a player and\nthere is a directed edge from p to q iff p envies q. The proof\nof Theorem 2.1 is based on the following Lemma:\nLemma 2.2. For any partial allocation A with envy graph\nG, we can find another partial allocation B with envy graph\nH such that:\n• e(B) ≤ e(A)\n• H is acyclic.\nProof. If G has no directed cycles, we are done. Suppose\nthat C = p1 → p2 → · · · → pr → p1 is a directed cycle in\nG. If A = {A1 , ..., An }, we can obtain A0 = (A01 , ...A0n )\nby re-allocating the goods as follows: A0p = Ap for all p ∈\n/\n{p1 , . . . , pr }, and A0p1 = Ap2 , A0p2 = Ap3 , . . . , A0pr = Ap1 .\nNote that all players evaluate what they have in A0 at\nleast as much as what they have in A. Therefore it is easy\nto see that e(A0 ) ≤ e(A).\nWe can also show that the number of edges in the envy\ngraph G0 corresponding to A0 has decreased. To see this,\nfirst note that the set of the edges between pairs of vertices\nin N \\C has not changed. Also every edge of the form p → pj\nfor p ∈ N \\C and pj ∈ C has now become the edge p → pj−1\n(or p → pr if j = 1) in G0 and no more edges of this form\nhave been added. The number of edges of the form pj → p\nhas either decreased or remained the same since players in\nC are strictly happier. Finally for pi ∈ C the number of\nedges from pi to vertices in C has decreased by at least 1.\nThus by repeatedly removing cycles using the above procedure, we will obtain an allocation B with corresponding\nenvy graph H such that e(B) ≤ e(A) and H is acyclic. Since\nthe number of edges decreases at every step, the process will\nterminate.",
-          "quoted_text_sha256": "98d42fddc9c5075fe7102b01bbda7fcd02be0c30396dbc7a42bf66632d8cbf4a"
+          "quoted_text": "Lemma 2.2. For any partial allocation A with envy graph\nG, we can find another partial allocation B with envy graph\nH such that:\n• e(B) ≤ e(A)\n• H is acyclic.",
+          "quoted_text_sha256": "e8c60ed0cd167175e2accd502378625993c1d11acce7cd6959d8a4fbef839a4d"
         }
       ],
-      "source_location": "Lemma 2.2; cited publication:166-197",
+      "source_claim_atoms": [
+        {
+          "id": "lemma2.2.acyclic.reduction",
+          "identity_schema": 2,
+          "reviewed_lean_route": "LMMS04FairDivision.PaperInterface.lemma2_2_acyclic_reductionSpec_proof",
+          "semantic_claim": "Lemma 2.2: every partial allocation has another allocation of the same goods with no greater maximum envy and an acyclic envy graph.",
+          "source_locator": "cited publication:170-174",
+          "source_quote_sha256": "e8c60ed0cd167175e2accd502378625993c1d11acce7cd6959d8a4fbef839a4d"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:170-174",
+      "source_note": "Named Section 2 cycle-elimination result. The transparent route uses a bound-parametric form; its source comparison remains against the printed no-greater-maximum-envy conclusion.",
       "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Lemma 2.2: envy-cycle elimination produces an acyclic envy graph.",
+      "statement": "Lemma 2.2: every partial allocation has another allocation of the same goods with no greater maximum envy and an acyclic envy graph.",
       "support_lean_declarations": [
         "LMMS04FairDivision.PaperInterface.lemma2_2_acyclic_reductionSpec"
       ]
@@ -402,192 +83,68 @@
         "lemma2_4_real_interval_low_value_partition"
       ],
       "claim_bearing": true,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "Lemma 2.4; formalized through Lemma24MeasurePartition.lean and the Theorem 2.3 real-interval bridge",
+      "inventory_role": "source_scope_exclusion",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "The user-approved public partial closeout retains Lemma 2.4's stated O(n/alpha) cardinality conclusion as an explicit boundary; the repaired finite high-point/residual construction receives no source-lemma cardinality credit.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 342,
+          "line_start": 337,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 2.4. The interval [0, 1] can be partitioned in m\ndisjoint sets S1 , ..., Sm such that m = O(n/α) and vp (Sj ) ≤\nα for every p = 1, ..., n, j = 1, ..., m\nProof. Find the minimum possible value for x ∈ [0, 1]\nsuch that vp ([0, x]) ≤ α for every player p. Such an x\n",
+          "quoted_text_sha256": "22dbf4f7f858c126fb6cb168de9360264725398b7add2e7e83a5fe235e94f1cd"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:337-342",
+      "source_note": "The current Lean construction proves a finite high-point/residual partition sufficient for the selected positive-alpha Theorem 2.3 route, but does not prove the source lemma's stated O(n/alpha) cardinality conclusion. Its printed endpoint-choice word is separately recorded as a source-proof direction defect.",
+      "source_status": "formalization_pending",
       "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Lemma 2.4: partition the real interval support into finitely many low-value pieces under the paper atom-bound hypothesis."
+      "statement": "Lemma 2.4: [0,1] has a finite O(n/alpha)-size partition into pieces of value at most alpha for every player.",
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-05",
+        "reason": "Lemma 2.4's stated O(n/alpha) cardinality conclusion remains an explicit unproved boundary. The repaired finite high-point/residual construction receives credit only for the selected positive-alpha Theorem 2.3 endpoint, not for this source lemma's size bound.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "22dbf4f7f858c126fb6cb168de9360264725398b7add2e7e83a5fe235e94f1cd",
+        "source_evidence": "The source labels Lemma 2.4 as a finite O(n/alpha)-size simultaneous low-value partition. The current Lean route establishes a finite residual partition sufficient for Theorem 2.3 but does not state or prove the paper's cardinality asymptotic.",
+        "source_locator": "cited publication:337-342"
+      }
     },
     "lemma3_5_additive_transfer_epsilon_bound": {
       "aliases": [
         "lemma3_5_additive_transfer_epsilon_bound"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.lemma3_5_additive_transfer_epsilon_bound"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.lemma3_5_additive_transfer_epsilon_bound",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.lemma3_5_additive_transfer_epsilon_boundSpec"
-      },
+      "inventory_role": "source_scope_exclusion",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "The user-approved public partial closeout retains Lemma 3.5 as visible Section 3 support rather than credits it apart from the unresolved source construction.",
       "source_anchor_evidence": [
         {
-          "line_end": 607,
+          "line_end": 763,
           "line_start": 582,
           "publication_locator": "cited publication",
-          "quoted_text": "Lemma 3.5. Let A = (A1 , ..., An ) be an allocation in I,\nwhere 12 L < v(Ai ) < 2L. Then there exists an allocation\nB = (B1 , ..., Bn ) in the rounded instance, I R , such that:\nv(Ai ) −\n\n1\nλ+1\n1\nL ≤ v(Bi ) ≤\nv(Ai ) + L\nλ\nλ\nλ\n\nAlso if B = (B1 , ..., Bn ) is an allocation in I R such that\n1 R\nL < v(Bi ) < 2LR , then there exists an allocation A =\n2\n(A1 , ..., An ), in I such that:\nλ\n2\n1\nv(Bi ) − L ≤ v(Ai ) ≤ v(Bi ) + L\nλ+1\nλ\nλ",
-          "quoted_text_sha256": "6bb49100ed8e8889ac23cc4f1a7615a17736316e580efc608d46f9755e6ba9e8"
+          "quoted_text": "Lemma 3.5. Let A = (A1 , ..., An ) be an allocation in I,\nwhere 12 L < v(Ai ) < 2L. Then there exists an allocation\nB = (B1 , ..., Bn ) in the rounded instance, I R , such that:\nv(Ai ) −\n\n1\nλ+1\n1\nL ≤ v(Bi ) ≤\nv(Ai ) + L\nλ\nλ\nλ\n\nAlso if B = (B1 , ..., Bn ) is an allocation in I R such that\n1 R\nL < v(Bi ) < 2LR , then there exists an allocation A =\n2\n(A1 , ..., An ), in I such that:\nλ\n2\n1\nv(Bi ) − L ≤ v(Ai ) ≤ v(Bi ) + L\nλ+1\nλ\nλ\nWe are now ready to prove our Theorem. Our algorithm\nwill be: Given instance I, compute the instance I R , find\nR\nR\nan optimal allocation AR = (AR\n1 , ..., An ) for I , and then\nR\nconvert A to an allocation A = (A1 , ..., An ) for I using\nLemma 3.5. Output A.\nSuppose without loss of generality that v(AR\n1 ) ≤ ... ≤\n∗\n∗\n∗\nv(AR\nn ) and v(A1 ) ≤ ... ≤ v(An ). Let A = (A1 , ..., An ) be an\noptimal solution to I satisfying the conditions of Claim 3.4\nand assume v(A∗1 ) ≤ ... ≤ v(A∗n ). We want to show:\nv(A∗n )\nv(An )\n≤ (1 + \u000f)\n)\nv(A1 )\nv(A∗1\nBy Lemma 3.5 we know that:\nv(An ) ≤ v(AR\nn) +\n\n1\n2\n1 R\nL ≤ v(AR\nL ≤ v(AR\n)\nn) =\nn )(1 +\nλ\nλ\nλ\n\n4\nλ\nSimilar calculations yield: v(A1 ) ≥ v(AR\n1 )( λ+1 − λ ). Therefore:\n1 + λ2\nv(An )\nv(AR\nn)\n≤\n(\n)\nλ\n4\nv(A1 )\nv(AR\n1 ) λ+1 − λ\n\nWe need to relate the optimal solution in I R with the\noptimal solution in I. By using the first part of Lemma 3.5\nand by performing similar calculations we have that there\nexists an allocation A0 = (A01 , ..., A0n ) in I R such that:\n+ 2\nv(A0n )\nv(A∗n ) λ+1\n≤\n( λ 2λ )\n0\n∗\nv(A1 )\nv(A1 ) 1 − λ\n\n129\n\n\fSince AR is an optimal solution in I R the ratio in A0 will\nbe at least as big as in AR . Hence by combining the above\nequations we finally have:\nv(An )\nv(A1 )\n\n≤\n\nλ+1\n+ 2\nv(A∗n ) 1 + λ2\n( λ\n)( λ 2 λ )\n∗\n4\nv(A1 ) λ+1 − λ\n1− λ\n\n≤\n\n(λ + 1)(λ + 2)(λ + 3)\nOP T\n(λ − 2)(λ2 − 4λ − 4)\n\nbe envious). But then player 2 will receive a and at most 25\neggs so she will be envious, a contradiction. Therefore in A\nplayer 1 receives a and T eggs and player 2 receives b and\nk − T eggs. It is also easy to see that 25 ≤ T ≤ 75.\nCase 1: T < 74\nIn this case player 1 can increase her utility by lying and\ndeclaring that good a has less value for her. It is possible for\nher to lie in such a way to force the mechanism to give her\nthe good a and at least T + 1 eggs (assuming that 2 does not\nchange her declaration). She can declare that her valuation\nfunction is: v1 (a) = 0.45−δ, v1 (b) = 0.35+δ, v1 (egg) = 0.2/k\nwhere δ is such that:\n\nThus, if we set λ = 56/\u000f, it is easy to see that the factor\nwill be at most 1 + \u000f.\nFor the FPTAS in the case that the number of players is\nconstant, the proof is by rounding the goods and running a\ndynamic programming algorithm [19].\n\n4.\n\n0.45 − δ + (T + 1)0.2/k = 1/2\nNotice that under this new declaration, there still exists an\nenvy-free outcome. Let A0 be the new output of M. Again\nplayer 1 will receive a. This is true because if player 1 receives b then she has to receive at least k − T − 1 eggs so\nthat she is not jealous. But then player 2 will receive good\na and at most T + 1 ≤ 74 eggs which in total is worth less\nthan 1/2. Hence player 1 will get a and at least T + 1 eggs\n(otherwise her bundle is worth less than 1/2) which is more\nthan what she gets if she is honest.\nCase 2: T ≥ 74\nNow it is player 2 who can try to cheat. By misreporting\nher utilities in a similar manner as in Case 1, she can obtain\na higher utility than before.\n\nTRUTHFULNESS\n\nSo far we have assumed that we can obtain the actual\nutilities of the players for the goods. However, in many situations players’ utilities are private information and they\nmight lie about their valuations in order to obtain a better\nbundle. We would like to investigate the question of whether\nwe can have mechanisms that elicit truthful utilities from\nthe players and also produce allocations with minimum or\nbounded envy. A mechanism is truthful if for every player,\nher profit is maximized by declaring her true utility i.e. being truthful is a dominant strategy.\nIn the last few years, truthful mechanisms have been the\nsubject of research especially in the context of auctions.\nHowever, unlike our problem, auction mechanisms are allowed to compensate the players with money to keep them\ntruthful.\nWe will present a simple argument to prove that any mechanism that computes a minimum-envy allocation can not be\ntruthful even in the special case where the utility functions\nare additive.\n\nIn the rest of the section, we present a simple truthful\nmechanism which allocates the goods to the players uniformly at random. We assume that the sum of the utilities\nof each player over all goods is one. We will show that with\nhigh probability the maximum\nenvy of the resulting alloca√\ntion is no more than O( αn1/2+\u000f ).",
+          "quoted_text_sha256": "6181bf8a4aac13666ba742c0b15423d23c2e122a557e06b8c605ba1171f75ad3"
         }
       ],
-      "source_location": "Lemma 3.5; cited publication:582-607",
+      "source_kind": "lemma",
+      "source_location": "cited publication:582-763",
+      "source_note": "The algebraic transfer machinery is visible Section 3 support, while its source theorem is not selected independently of the unresolved PTAS/FPTAS construction.",
+      "source_status": "partial_formalization_boundary",
       "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nLemma 3.5 additive transfer epsilon bound.\ncertificate/load-window premises are recorded in the paper assumption ledger.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.lemma3_5_additive_transfer_epsilon_boundSpec"
-      ]
-    },
-    "maxMarginal": {
-      "aliases": [
-        "maxMarginal"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.maxMarginal"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.maxMarginal",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.maxMarginalSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 155,
-          "line_start": 147,
-          "publication_locator": "cited publication",
-          "quoted_text": "A natural question is whether there exist allocations with\nbounded envy. We obtain a bound on the envy in terms of\nthe maximum marginal utility of the goods, α. The marginal\nutility of a good i with respect to a player p and a subset of\ngoods S, is the amount by which it increases the utility of\np, when added to S, i.e., vp (S ∪ {i}) − vp (S). The maximum\nmarginal utility is:\nα = max vp (S ∪ {i}) − vp (S)\nS,p,i",
-          "quoted_text_sha256": "9e64945754ee51da4c12cd83af3a70b2e84008cea828da854dda3c910f7aaa51"
-        }
-      ],
-      "source_location": "Section 2, maximum marginal utility definition; cited publication:147-155",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Maximum marginal item value.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.maxMarginalSpec"
-      ]
-    },
-    "randomizedDirectMechanism_fields": {
-      "aliases": [
-        "randomizedDirectMechanism_fields"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.randomizedDirectMechanism_fields"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.randomizedDirectMechanism_fields",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.randomizedDirectMechanism_fieldsSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 776,
-          "line_start": 758,
-          "publication_locator": "cited publication",
-          "quoted_text": "In the rest of the section, we present a simple truthful\nmechanism which allocates the goods to the players uniformly at random. We assume that the sum of the utilities\nof each player over all goods is one. We will show that with\nhigh probability the maximum\nenvy of the resulting alloca√\ntion is no more than O( αn1/2+\u000f ).\nTheorem 4.2. Suppose that vp,i ≤ α ∀p ∈ N, j ∈ M .\nThen for every \u000f > 0, and for large enough n, there exists\na truthful algorithm such that with high probability the allocation\n√ output by the algorithm has maximum envy at most\nO( α n1/2+\u000f ).\n\nTheorem 4.1. Any mechanism that returns an allocation\nwith minimum possible envy cannot be truthful. The same is\ntrue for any mechanism that returns an envy-free allocation\nwhenever there exists one.\n\nProof. The proof is based on the probabilistic method.\nAllocate each good independently to player p with probability 1/n. Clearly this is a truthful mechanism. We will show",
-          "quoted_text_sha256": "83fb4524064b3900288d7d4b81ad9a4518a1419adce482be3a7a06478f86711f"
-        }
-      ],
-      "source_location": "Section 4, uniform-random mechanism setup; cited publication:758-776",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nA randomized direct no-transfer mechanism consists only of an allocation law.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.randomizedDirectMechanism_fieldsSpec"
-      ]
-    },
-    "randomizedTruthful": {
-      "aliases": [
-        "randomizedTruthful"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.randomizedTruthful"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.randomizedTruthful",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.randomizedTruthfulSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 776,
-          "line_start": 758,
-          "publication_locator": "cited publication",
-          "quoted_text": "In the rest of the section, we present a simple truthful\nmechanism which allocates the goods to the players uniformly at random. We assume that the sum of the utilities\nof each player over all goods is one. We will show that with\nhigh probability the maximum\nenvy of the resulting alloca√\ntion is no more than O( αn1/2+\u000f ).\nTheorem 4.2. Suppose that vp,i ≤ α ∀p ∈ N, j ∈ M .\nThen for every \u000f > 0, and for large enough n, there exists\na truthful algorithm such that with high probability the allocation\n√ output by the algorithm has maximum envy at most\nO( α n1/2+\u000f ).\n\nTheorem 4.1. Any mechanism that returns an allocation\nwith minimum possible envy cannot be truthful. The same is\ntrue for any mechanism that returns an envy-free allocation\nwhenever there exists one.\n\nProof. The proof is based on the probabilistic method.\nAllocate each good independently to player p with probability 1/n. Clearly this is a truthful mechanism. We will show",
-          "quoted_text_sha256": "83fb4524064b3900288d7d4b81ad9a4518a1419adce482be3a7a06478f86711f"
-        }
-      ],
-      "source_location": "Section 4, uniform-random truthful mechanism; cited publication:758-776",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Expected-utility truthfulness for randomized direct mechanisms.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.randomizedTruthfulSpec"
-      ]
-    },
-    "theorem2_1_algorithm_correct_list_toFinset": {
-      "aliases": [
-        "theorem2_1_algorithm_correct_list_toFinset"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem2_1_algorithm_correct_list_toFinset"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem2_1_algorithm_correct_list_toFinset",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem2_1_algorithm_correct_list_toFinsetSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 268,
-          "line_start": 219,
-          "publication_locator": "cited publication",
-          "quoted_text": "\fProof of Theorem 2.1. We give an algorithm that produces the desired allocation. The algorithm proceeds in m\nrounds. At each round one more good is allocated to some\nplayer.\nIn the first round, we allocate good 1 to some player arbitrarily. Clearly the maximum envy is at most α. Suppose at\nthe end of round i, the goods {1, ..., i} have been allocated\nto the players and the maximum envy is at most α. At\nround i + 1, we construct the envy graph corresponding to\nthe current allocation. We use the procedure of Lemma 2.2\nto obtain an allocation A in which the maximum envy is at\nmost α and the new envy graph G is acyclic. Since G is\nacyclic, there is a player p ∈ N with in-degree 0, which implies that nobody envies p. We then allocate good i + 1 to p.\nLet B = (B1 , ..., Bn ) be the new allocation. For any 2 players q, r with q, r 6= p, eqr (B) = eqr (A) ≤ α. For q ∈ N \\ {p},\nsince eqp (A) = 0 we have:\neqp (B)\n\nexists since atoms have value at most α. Set S1 = [0, x]\nand consider the interval (x, 1]. Again find the minimum\nvalue of y ∈ (x, 1] such that vp ((x, y]) ≤ α for every p. Set\nS2 = (x, y]. We can continue in the same manner until we\npartition the whole interval [0, 1]. It is easy to check that\nthe number of disjoint intervals S1 , S2 , ..., Sm of the partition\nwill be O(n/α).\nWe can now treat the intervals S1 , ..., Sm produced in the\nprevious Lemma as indivisible goods and Theorem 2.1 will\ncomplete the proof.\n\n3.\n\nAlthough we can produce an allocation with bounded\nenvy, in many instances the maximum envy can be smaller\nthan α. Therefore we would like to look at the following two\noptimization problems:\n\n= max{0, vq (Ap ∪ {i}) − vq (Aq )}\n≤\n\nMINIMIZING ENVY AS AN OPTIMIZATION PROBLEM\n\nmax{0, α + vq (Ap ) − vq (Aq )} ≤ α\nProblem 1: Minimum envy\nCompute an allocation A that minimizes the envy\n\nWe use a simple amortized analysis for the running time\nof the algorithm. In Lemma 2.2, we keep removing cycles\nuntil the envy-graph is acyclic. Finding a cycle and removing it takes at most O(n2 ) time and it decreases the number\nof edges by at least one. Initially the envy graph has no\nedges. Allocating a good at any round adds at most n edges\nto the new envy graph. Since every cycle removal decreases\nthe number of edges, the number of times we have to remove a cycle is at most O(nm) and the total running time\nis O(mn3 ).",
-          "quoted_text_sha256": "7b34a4bb8f96201012f1d71b5776c705221e524ccfc90e15637556c4b96ab8ac"
-        }
-      ],
-      "source_location": "Proof of Theorem 2.1; cited publication:219-268",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Theorem 2.1 constructive list algorithm form.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem2_1_algorithm_correct_list_toFinsetSpec"
-      ]
-    },
-    "theorem2_1_alpha_bounded_allocation_exists": {
-      "aliases": [
-        "theorem2_1_alpha_bounded_allocation_exists"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem2_1_alpha_bounded_allocation_exists"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem2_1_alpha_bounded_allocation_exists",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem2_1_alpha_bounded_allocation_existsSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 165,
-          "line_start": 161,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 2.1. For any set of goods and any set of players, there exists an allocation A such that the maximum envy\nof A is bounded by the maximum marginal utility of the\ngoods, α. Furthermore, given oracle access for the utility\nfunctions of the players, there is an O(mn3 ) time algorithm\nfor finding such an allocation.",
-          "quoted_text_sha256": "267ff83eeb0a1d798aa9cc1191931e1b8ae6bba166b101dfc86ad5273941fa54"
-        }
-      ],
-      "source_location": "Theorem 2.1; cited publication:161-165",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Theorem 2.1 alpha-bounded form.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem2_1_alpha_bounded_allocation_existsSpec"
-      ]
+      "statement": "Lemma 3.5: allocations in the original and rounded instances can be transferred with the displayed per-player additive load bounds.",
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-05",
+        "reason": "Lemma 3.5 remains visible algebraic support, but is not credited independently of the unclosed source rounded-search construction.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "6181bf8a4aac13666ba742c0b15423d23c2e122a557e06b8c605ba1171f75ad3",
+        "source_evidence": "The pinned source span states the forward and backward allocation-transfer inequalities and uses them in the Section 3 construction. The current partial scope does not certify that complete construction.",
+        "source_locator": "cited publication:582-763"
+      }
     },
     "theorem2_1_bounded_envy_allocation_exists": {
       "aliases": [
@@ -595,29 +152,71 @@
       ],
       "claim_bearing": true,
       "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem2_1_bounded_envy_allocation_exists"
+        "LMMS04FairDivision.PaperInterface.theorem2_1_bounded_envy_allocation_existsSpec_proof"
       ],
       "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem2_1_bounded_envy_allocation_exists",
-        "evidence_mode": "definitionally_realizes",
+        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem2_1_bounded_envy_allocation_existsSpec_proof",
+        "evidence_mode": "proves",
         "semantic_shape": "plain",
         "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem2_1_bounded_envy_allocation_existsSpec"
       },
       "source_anchor_evidence": [
         {
-          "line_end": 165,
+          "line_end": 169,
           "line_start": 161,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 2.1. For any set of goods and any set of players, there exists an allocation A such that the maximum envy\nof A is bounded by the maximum marginal utility of the\ngoods, α. Furthermore, given oracle access for the utility\nfunctions of the players, there is an O(mn3 ) time algorithm\nfor finding such an allocation.",
-          "quoted_text_sha256": "267ff83eeb0a1d798aa9cc1191931e1b8ae6bba166b101dfc86ad5273941fa54"
+          "quoted_text": "Theorem 2.1. For any set of goods and any set of players, there exists an allocation A such that the maximum envy\nof A is bounded by the maximum marginal utility of the\ngoods, α. Furthermore, given oracle access for the utility\nfunctions of the players, there is an O(mn3 ) time algorithm\nfor finding such an allocation.\nGiven an allocation A, we define the envy graph of A as\nfollows: every node of the graph represents a player and\nthere is a directed edge from p to q iff p envies q. The proof\nof Theorem 2.1 is based on the following Lemma:",
+          "quoted_text_sha256": "94d9eb4722d5e618d4b7fc4dbbded1baca5a9980f48a98c32a78ce0f53c6c1bf"
         }
       ],
-      "source_location": "Theorem 2.1; cited publication:161-165",
+      "source_claim_atoms": [
+        {
+          "id": "theorem2.1.bounded.envy.allocation.exists",
+          "identity_schema": 2,
+          "reviewed_lean_route": "LMMS04FairDivision.PaperInterface.theorem2_1_bounded_envy_allocation_existsSpec_proof",
+          "semantic_claim": "Theorem 2.1 existence clause: every finite indivisible-goods instance has an allocation whose maximum envy is at most the maximum marginal utility alpha.",
+          "source_locator": "cited publication:161-165",
+          "source_quote_sha256": "267ff83eeb0a1d798aa9cc1191931e1b8ae6bba166b101dfc86ad5273941fa54"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:161-169",
+      "source_note": "This is the existence clause of the printed theorem. Its separate machine-runtime clause is retained as its own partial boundary rather than being credited by allocation correctness.",
       "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Theorem 2.1: bounded-envy allocation existence.",
+      "statement": "Theorem 2.1 existence clause: every finite indivisible-goods instance has an allocation whose maximum envy is at most the maximum marginal utility alpha.",
       "support_lean_declarations": [
         "LMMS04FairDivision.PaperInterface.theorem2_1_bounded_envy_allocation_existsSpec"
       ]
+    },
+    "theorem2_1_runtime_bound": {
+      "claim_bearing": true,
+      "inventory_role": "source_scope_exclusion",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "The user-approved public partial closeout retains the printed value-oracle O(m n^3) machine-runtime conclusion as an explicit boundary; allocation correctness receives no runtime credit.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 169,
+          "line_start": 161,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 2.1. For any set of goods and any set of players, there exists an allocation A such that the maximum envy\nof A is bounded by the maximum marginal utility of the\ngoods, α. Furthermore, given oracle access for the utility\nfunctions of the players, there is an O(mn3 ) time algorithm\nfor finding such an allocation.\nGiven an allocation A, we define the envy graph of A as\nfollows: every node of the graph represents a player and\nthere is a directed edge from p to q iff p envies q. The proof\nof Theorem 2.1 is based on the following Lemma:",
+          "quoted_text_sha256": "94d9eb4722d5e618d4b7fc4dbbded1baca5a9980f48a98c32a78ce0f53c6c1bf"
+        }
+      ],
+      "source_kind": "runtime_claim",
+      "source_location": "cited publication:161-169",
+      "source_note": "The allocation algorithm is formalized for correctness, but no machine-model O(m n^3) theorem is presently routed through a transparent PaperInterface Spec.",
+      "source_status": "formalization_pending",
+      "statement": "Theorem 2.1 runtime clause: with value-oracle access, an O(m n^3) algorithm finds the bounded-envy allocation.",
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-05",
+        "reason": "The value-oracle O(m n^3) runtime clause remains an explicit unproved boundary; allocation correctness receives no machine-complexity credit.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "94d9eb4722d5e618d4b7fc4dbbded1baca5a9980f48a98c32a78ce0f53c6c1bf",
+        "source_evidence": "The source separately asserts a value-oracle O(m n^3) algorithm after its allocation-existence claim. The current Lean theorem establishes allocation correctness only and contains no machine-cost model.",
+        "source_locator": "cited publication:161-169"
+      }
     },
     "theorem2_3_real_interval_supported_atom_bound": {
       "aliases": [
@@ -625,347 +224,173 @@
       ],
       "claim_bearing": true,
       "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem2_3_real_interval_supported_atom_bound"
+        "LMMS04FairDivision.PaperInterface.theorem2_3_real_interval_supported_atom_boundSpec_proof"
       ],
       "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem2_3_real_interval_supported_atom_bound",
-        "evidence_mode": "definitionally_realizes",
+        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem2_3_real_interval_supported_atom_boundSpec_proof",
+        "evidence_mode": "proves",
         "semantic_shape": "plain",
         "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem2_3_real_interval_supported_atom_boundSpec"
       },
       "source_anchor_evidence": [
         {
-          "line_end": 340,
-          "line_start": 299,
+          "line_end": 315,
+          "line_start": 313,
           "publication_locator": "cited publication",
-          "quoted_text": "In [8], a similar model has been defined with the difference\nthat the utility function of every player is additive and we\nhave a combination of divisible and indivisible goods. More\nformally, in [8] the problem is to partition a measurable\nspace (Ω, F ). Each player has a utility function which is a\nprobability measure vp on (Ω, F ) such that for each vp the\nmaximum value of an atom is α. A subset S ⊆ Ω is an\natom for vp if vp (S) > 0 and ∀E ⊂ S, either vp (E) = 0 or\nvp (E) = vp (S). It is shown that there exist allocations with\nenvy at most O(αn3/2 ).\nWe can prove that our result also holds for their model\nand hence it improves the bound of O(αn3/2 ) to α. The idea\nis that we can partition Ω into indivisible goods of value at\nmost α and then apply Theorem 2.1.\nTheorem 2.3. When the utilities of the players are probability measures on (Ω, F ) = ([0, 1], Borel sets) with atoms\nof value at most α, there exists a partition A = (A1 , ..., An )\nof Ω such that e(A) ≤ α.\n\nTheorem 3.1. Any (deterministic) algorithm that computes an allocation with minimum envy or minimum envyratio requires a number of queries which is exponential in\nthe number of goods in the worst case.\n\nProof. Since each measure vp has atoms of value at most\nα, this means that for every x ∈ [0, 1], vp ({x}) ≤ α. The\ncase α = 0 corresponds to an infinitely divisible cake and\nan envy-free allocation always exists [8]. For α > 0 we can\nreduce the problem to allocating indivisible goods of value\nat most α and then use Theorem 2.1.\n\nProof. We give an outline of the proof. Suppose m = 2k.\nWe consider the following class of utility functions F . A\nfunction v is in F if:\nv(S) = 0 for all S with |S| < k.\nv(S) = 1 for all S with |S| > k.\nv(S) = 1 − v(S̄) for all |S| = k\nNow, consider instances (v, v) in which there are two players with the same utility function v for some v ∈ F . The\nnumber of such instances is doubly exponential in k. Since\nthe algorithm asks only a polynomial number of queries, it\n\nLemma 2.4. The interval [0, 1] can be partitioned in m\ndisjoint sets S1 , ..., Sm such that m = O(n/α) and vp (Sj ) ≤\nα for every p = 1, ..., n, j = 1, ..., m\nProof. Find the minimum possible value for x ∈ [0, 1]",
-          "quoted_text_sha256": "0fd32c9c866a806d957bfb94dd26136ad09322401f2cfbc55410843eff74d923"
+          "quoted_text": "Theorem 2.3. When the utilities of the players are probability measures on (Ω, F ) = ([0, 1], Borel sets) with atoms\nof value at most α, there exists a partition A = (A1 , ..., An )\nof Ω such that e(A) ≤ α.",
+          "quoted_text_sha256": "be552889f4e603e060bd278030f8105a1365b38b54196d916cc919c9138d2d09"
         }
       ],
-      "source_location": "Theorem 2.3 and its reduction; cited publication:299-340",
+      "source_claim_atoms": [
+        {
+          "id": "theorem2.3.real.interval.supported.atom.bound",
+          "identity_schema": 2,
+          "reviewed_lean_route": "LMMS04FairDivision.PaperInterface.theorem2_3_real_interval_supported_atom_boundSpec_proof",
+          "semantic_claim": "Theorem 2.3: probability-measure utilities on ([0,1], Borel sets) with atoms of value at most alpha admit a partition with maximum envy at most alpha.",
+          "source_locator": "cited publication:313-315",
+          "source_quote_sha256": "be552889f4e603e060bd278030f8105a1365b38b54196d916cc919c9138d2d09"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:313-315",
+      "source_note": "The checked route makes finite-measure, interval-support, and positive-atom domain explicit and uses the recorded Lemma 2.4 proof-direction correction only in the proof route.",
       "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 2.3 real-interval supported atom-bound endpoint.",
+      "statement": "Theorem 2.3: probability-measure utilities on ([0,1], Borel sets) with atoms of value at most alpha admit a partition with maximum envy at most alpha.",
       "support_lean_declarations": [
         "LMMS04FairDivision.PaperInterface.theorem2_3_real_interval_supported_atom_boundSpec"
       ]
+    },
+    "theorem2_3_zero_atom_envyfree_external_boundary": {
+      "claim_bearing": true,
+      "inventory_role": "source_scope_exclusion",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "The user-approved public partial closeout retains the source's alpha = 0 external cake-cutting invocation as an explicit boundary; the positive-alpha finite-partition route receives no zero-alpha proof credit.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 325,
+          "line_start": 320,
+          "publication_locator": "cited publication",
+          "quoted_text": "Proof. Since each measure vp has atoms of value at most\nα, this means that for every x ∈ [0, 1], vp ({x}) ≤ α. The\ncase α = 0 corresponds to an infinitely divisible cake and\nan envy-free allocation always exists [8]. For α > 0 we can\nreduce the problem to allocating indivisible goods of value\nat most α and then use Theorem 2.1.",
+          "quoted_text_sha256": "0cacde71f6c27cc84e1c46871c425b316da111de4be9d2c245c91b58447f50e1"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:320-325",
+      "source_note": "The selected real-interval Spec is the alpha > 0 finite-partition branch. The source's alpha = 0 branch invokes [8] and has no native Lean proof in this partial closeout.",
+      "source_status": "formalization_pending",
+      "statement": "Theorem 2.3 zero-atom branch: when alpha = 0, the source appeals to an external envy-free cake-allocation result.",
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-05",
+        "reason": "The source's alpha = 0 external cake-cutting invocation remains visible and unproved. The selected finite-partition route receives proof credit only for alpha > 0.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "0cacde71f6c27cc84e1c46871c425b316da111de4be9d2c245c91b58447f50e1",
+        "source_evidence": "The source expressly separates alpha = 0, cites an external envy-free cake result, and applies Theorem 2.1 only for alpha > 0. No native Lean proof of the external alpha-zero branch is claimed.",
+        "source_locator": "cited publication:320-325"
+      }
     },
     "theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queries": {
       "aliases": [
         "theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queries"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queries"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queries",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queriesSpec"
-      },
+      "inventory_role": "source_scope_exclusion",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "The user-approved public partial closeout retains the complete printed exponential-query theorem as an explicit boundary; the historical hard-family wrapper receives no source-result credit.",
       "source_anchor_evidence": [
         {
-          "line_end": 354,
+          "line_end": 318,
           "line_start": 317,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Any (deterministic) algorithm that computes an allocation with minimum envy or minimum envyratio requires a number of queries which is exponential in\nthe number of goods in the worst case.\n\nProof. Since each measure vp has atoms of value at most\nα, this means that for every x ∈ [0, 1], vp ({x}) ≤ α. The\ncase α = 0 corresponds to an infinitely divisible cake and\nan envy-free allocation always exists [8]. For α > 0 we can\nreduce the problem to allocating indivisible goods of value\nat most α and then use Theorem 2.1.\n\nProof. We give an outline of the proof. Suppose m = 2k.\nWe consider the following class of utility functions F . A\nfunction v is in F if:\nv(S) = 0 for all S with |S| < k.\nv(S) = 1 for all S with |S| > k.\nv(S) = 1 − v(S̄) for all |S| = k\nNow, consider instances (v, v) in which there are two players with the same utility function v for some v ∈ F . The\nnumber of such instances is doubly exponential in k. Since\nthe algorithm asks only a polynomial number of queries, it\n\nLemma 2.4. The interval [0, 1] can be partitioned in m\ndisjoint sets S1 , ..., Sm such that m = O(n/α) and vp (Sj ) ≤\nα for every p = 1, ..., n, j = 1, ..., m\nProof. Find the minimum possible value for x ∈ [0, 1]\nsuch that vp ([0, x]) ≤ α for every player p. Such an x\n\n127\n\n\fcan produce only an exponential number of different query\nsequences. Therefore, there exist two different functions\nu, v ∈ F such that the query sequences corresponding to\nthe instances defined by u and v are the same.\nConsider the instances (u, v) and (v, u). The algorithm\nwill produce the same query sequences for both instances\nand therefore it will produce the same allocation for (u, v)\nand (v, u). It is easy to see that although for either case,\nthere exists an allocation which is envy free, there is no\nsingle allocation that is envy free for both instances.",
-          "quoted_text_sha256": "ed5234b30365d0ac6ce59b8f1e11a8ee6bf93283f0f2e1beef502957e5462ad1"
+          "quoted_text": "Theorem 3.1. Any (deterministic) algorithm that computes an allocation with minimum envy or minimum envyratio requires a number of queries which is exponential in\nthe number of goods in the worst case.",
+          "quoted_text_sha256": "03518634081e112077d869580ffb8b7a86ba326e3baa7d4fe27721f2648e2e35"
         }
       ],
-      "source_location": "Theorem 3.1 and proof outline; cited publication:317-354",
+      "source_kind": "theorem",
+      "source_location": "cited publication:317-318",
+      "source_note": "The historical hard-family wrapper is retained in the source inventory, but is outside this public partial-paper direct-contract scope pending a source-faithful whole theorem route.",
+      "source_status": "partial_formalization_boundary",
       "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 3.1 adaptive-query lower bound.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queriesSpec"
-      ]
-    },
-    "theorem3_1_eventually_minimum_envy_ratio_lower_bound_from_twoBit_adaptive_queries": {
-      "aliases": [
-        "theorem3_1_eventually_minimum_envy_ratio_lower_bound_from_twoBit_adaptive_queries"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_1_eventually_minimum_envy_ratio_lower_bound_from_twoBit_adaptive_queries"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem3_1_eventually_minimum_envy_ratio_lower_bound_from_twoBit_adaptive_queries",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem3_1_eventually_minimum_envy_ratio_lower_bound_from_twoBit_adaptive_queriesSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 354,
-          "line_start": 317,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Any (deterministic) algorithm that computes an allocation with minimum envy or minimum envyratio requires a number of queries which is exponential in\nthe number of goods in the worst case.\n\nProof. Since each measure vp has atoms of value at most\nα, this means that for every x ∈ [0, 1], vp ({x}) ≤ α. The\ncase α = 0 corresponds to an infinitely divisible cake and\nan envy-free allocation always exists [8]. For α > 0 we can\nreduce the problem to allocating indivisible goods of value\nat most α and then use Theorem 2.1.\n\nProof. We give an outline of the proof. Suppose m = 2k.\nWe consider the following class of utility functions F . A\nfunction v is in F if:\nv(S) = 0 for all S with |S| < k.\nv(S) = 1 for all S with |S| > k.\nv(S) = 1 − v(S̄) for all |S| = k\nNow, consider instances (v, v) in which there are two players with the same utility function v for some v ∈ F . The\nnumber of such instances is doubly exponential in k. Since\nthe algorithm asks only a polynomial number of queries, it\n\nLemma 2.4. The interval [0, 1] can be partitioned in m\ndisjoint sets S1 , ..., Sm such that m = O(n/α) and vp (Sj ) ≤\nα for every p = 1, ..., n, j = 1, ..., m\nProof. Find the minimum possible value for x ∈ [0, 1]\nsuch that vp ([0, x]) ≤ α for every player p. Such an x\n\n127\n\n\fcan produce only an exponential number of different query\nsequences. Therefore, there exist two different functions\nu, v ∈ F such that the query sequences corresponding to\nthe instances defined by u and v are the same.\nConsider the instances (u, v) and (v, u). The algorithm\nwill produce the same query sequences for both instances\nand therefore it will produce the same allocation for (u, v)\nand (v, u). It is easy to see that although for either case,\nthere exists an allocation which is envy free, there is no\nsingle allocation that is envy free for both instances.",
-          "quoted_text_sha256": "ed5234b30365d0ac6ce59b8f1e11a8ee6bf93283f0f2e1beef502957e5462ad1"
-        }
-      ],
-      "source_location": "Theorem 3.1 and proof outline; cited publication:317-354",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 3.1 adaptive-query ratio lower bound.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_1_eventually_minimum_envy_ratio_lower_bound_from_twoBit_adaptive_queriesSpec"
-      ]
+      "statement": "Theorem 3.1: every deterministic algorithm computing minimum envy or minimum envy ratio needs exponentially many queries in the worst case.",
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-05",
+        "reason": "The printed exponential-query lower bound remains a visible but unproved boundary in this scoped partial closeout. The historical hard-family wrapper is not credited as the full source theorem.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "03518634081e112077d869580ffb8b7a86ba326e3baa7d4fe27721f2648e2e35",
+        "source_evidence": "The byte-pinned source statement asserts an exponential worst-case query lower bound. The current Lean route is only a historical hard-family wrapper and does not establish that complete source conclusion.",
+        "source_locator": "cited publication:317-318"
+      }
     },
     "theorem3_2_graham_certificate_to_envy_ratio_bound": {
       "aliases": [
         "theorem3_2_graham_certificate_to_envy_ratio_bound"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_2_graham_certificate_to_envy_ratio_bound"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem3_2_graham_certificate_to_envy_ratio_bound",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem3_2_graham_certificate_to_envy_ratio_boundSpec"
-      },
+      "inventory_role": "source_scope_exclusion",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "The user-approved public partial closeout retains Graham's cited scheduling theorem as an explicit external boundary; the conditional fair-division consequence receives no native-proof credit for it.",
       "source_anchor_evidence": [
         {
-          "line_end": 365,
-          "line_start": 356,
+          "line_end": 362,
+          "line_start": 359,
           "publication_locator": "cited publication",
-          "quoted_text": "player whose current bundle has the least value. In [5] it was\nproved (in the context of scheduling) that the approximation\nfactor of Graham’s algorithm is 1.4 for the ratio problem.\nTheorem 3.2. [5] Graham’s algorithm achieves an approximation factor of 1.4 for the envy-ratio problem.\nIn the next Theorem, we improve this result and show\nthat we can achieve any constant factor arbitrarily close to\n1 for the envy-ratio problem.\nTheorem 3.3. There is a PTAS for the envy-ratio problem when all players have the same utility for each good.\nFurthermore, when the number of players is constant, there\nis an FPTAS.",
-          "quoted_text_sha256": "fee55209a5cbba7270fa5fcfe0d533de91065aa7bad0c523147dac21a30dcf8e"
+          "quoted_text": "Theorem 3.2. [5] Graham’s algorithm achieves an approximation factor of 1.4 for the envy-ratio problem.\nIn the next Theorem, we improve this result and show\nthat we can achieve any constant factor arbitrarily close to\n1 for the envy-ratio problem.",
+          "quoted_text_sha256": "6a54522795e0cfd14d8733ea99befad5c7435e06f687467cf42f47abde396fe7"
         }
       ],
-      "source_location": "Theorem 3.2; cited publication:356-365",
+      "source_kind": "theorem",
+      "source_location": "cited publication:359-362",
+      "source_note": "The existing Lean route proves only the fair-division consequence conditional on an external Graham certificate; it is not a native proof of the cited theorem.",
+      "source_status": "partial_formalization_boundary",
       "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 3.2 Graham-certificate fair-division consequence.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_2_graham_certificate_to_envy_ratio_boundSpec"
-      ]
-    },
-    "theorem3_2_graham_factor_eq_seven_fifths": {
-      "aliases": [
-        "theorem3_2_graham_factor_eq_seven_fifths"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_2_graham_factor_eq_seven_fifths"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem3_2_graham_factor_eq_seven_fifths",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem3_2_graham_factor_eq_seven_fifthsSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 365,
-          "line_start": 356,
-          "publication_locator": "cited publication",
-          "quoted_text": "player whose current bundle has the least value. In [5] it was\nproved (in the context of scheduling) that the approximation\nfactor of Graham’s algorithm is 1.4 for the ratio problem.\nTheorem 3.2. [5] Graham’s algorithm achieves an approximation factor of 1.4 for the envy-ratio problem.\nIn the next Theorem, we improve this result and show\nthat we can achieve any constant factor arbitrarily close to\n1 for the envy-ratio problem.\nTheorem 3.3. There is a PTAS for the envy-ratio problem when all players have the same utility for each good.\nFurthermore, when the number of players is constant, there\nis an FPTAS.",
-          "quoted_text_sha256": "fee55209a5cbba7270fa5fcfe0d533de91065aa7bad0c523147dac21a30dcf8e"
-        }
-      ],
-      "source_location": "Theorem 3.2; cited publication:356-365",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 3.2 evaluates the Graham factor as seven fifths.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_2_graham_factor_eq_seven_fifthsSpec"
-      ]
-    },
-    "theorem3_3_claim34_capped_weighted_supply_ratio_endpoint": {
-      "aliases": [
-        "theorem3_3_claim34_capped_weighted_supply_ratio_endpoint"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_3_claim34_capped_weighted_supply_ratio_endpoint"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem3_3_claim34_capped_weighted_supply_ratio_endpoint",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem3_3_claim34_capped_weighted_supply_ratio_endpointSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 550,
-          "line_start": 494,
-          "publication_locator": "cited publication",
-          "quoted_text": "Claim 3.4. If v(i) < L for every good i, then there exists an optimal allocation A = (A1 , ..., An ) such that 12 L <\nv(Ai ) < 2L.\nThe proof is by showing that in a given optimal solution, it\nis possible to reallocate the goods so that the envy-ratio does\nnot increase and the conditions of the claim are satisfied.\nWe will now describe how to round the values of the goods\nand obtain an instance in which there is only a constant\nnumber of different types of goods (i.e. a constant number of\ndistinct values for the goods). The construction is the same\nas in [2] and we repeat it here for the sake of completeness.\nWe will denote the rounded instance by I R (λ), where λ is\na positive constant and will be determined later (λ will be\nO(1/\u000f)). We will often omit λ in the notation.\nWe first round the value of every good with relatively high\nvalue. In particular, for every good i with v(i) > L/λ, we\nround v(i) to the next integer multiple of L/λ2 . Roughly\nthis means that we round up the first least significant digits\nof v(i). We cannot afford to do the same for goods with\nsmall value since the error introduced by this process might\nbe very big. Instead, let S be the sum of the values of\nthe goods with value less than L/λ. We round S to the\nnext integer multiple of L/λ, say S R . Instance I R (λ) will\nhave S R λ/L new goods with value L/λ. This completes the\nconstruction. Note that in I R (λ) all values are of the form\nkL/λ2 , where λ ≤ k ≤ λ2 . Hence we have only a constant\nnumber of distinct values.\nLet M R be the set of goods in the newP\ninstance and v R (i)\nR\n1\nbe the value of each good. Let L = n j∈M R v R (i). It is\neasy to see that L ≤ LR and that all values in I R (λ) are at\nmost LR . Hence by Claim 3.4 there is an optimal solution\nR\nR\nR\n1 R\nAR = (AR\n1 , ..., An ) such that 2 L < v(Ap ) < 2L for every\np. In the algorithm below we will search for such a solution.\nWe represent a player’s bundle by a vector t = (tλ , ..., tλ2 ),\nwhere tk is the number of goods with value kL/λ2 assigned\nto her. We will then say thatP\nthe player is of type t. The\nutility derived from t is v(t) = k tk kL/λ2 . Let U be the set\nof all possible types t, with 21 LR < v(t) < 2LR . It is easy to\nsee that |U | is bounded by a constant which is exponential in\nλ. Hence for a player of type t ∈ U , there is only a constant\nnumber of distinct values for her utility. Let V (U ) be the set\nof these values, i.e. V (U ) = {u : v(t) = u for some t ∈ U }.\nWe can now show how to find the optimal envy-ratio in\nI R (λ). For all pairs of values u1 , u2 ∈ V (U ), we will solve\nthe following decision problem: Is there an allocation in\nwhich the utility of every player is between u1 and u2 ? Since\n|V (U )| is constant, after solving the above problem for all\nu1 , u2 we can output the allocation corresponding to u∗1 , u∗2\nfor which the minimum ratio u∗2 /u∗1 is attained.",
-          "quoted_text_sha256": "f108529bbb953a6dff6a353c3612b8d1116d06361bdee2f103ed74c3102ab50d"
-        }
-      ],
-      "source_location": "Claim 3.4 and rounded-instance construction; cited publication:494-550",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nClaim 3.4 capped weighted-supply endpoint.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_3_claim34_capped_weighted_supply_ratio_endpointSpec"
-      ]
-    },
-    "theorem3_3_claim34_fixed_rounding_ratio_endpoint": {
-      "aliases": [
-        "theorem3_3_claim34_fixed_rounding_ratio_endpoint"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_3_claim34_fixed_rounding_ratio_endpoint"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem3_3_claim34_fixed_rounding_ratio_endpoint",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem3_3_claim34_fixed_rounding_ratio_endpointSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 719,
-          "line_start": 681,
-          "publication_locator": "cited publication",
-          "quoted_text": "\fSince AR is an optimal solution in I R the ratio in A0 will\nbe at least as big as in AR . Hence by combining the above\nequations we finally have:\nv(An )\nv(A1 )\n\n≤\n\nλ+1\n+ 2\nv(A∗n ) 1 + λ2\n( λ\n)( λ 2 λ )\n∗\n4\nv(A1 ) λ+1 − λ\n1− λ\n\n≤\n\n(λ + 1)(λ + 2)(λ + 3)\nOP T\n(λ − 2)(λ2 − 4λ − 4)\n\nbe envious). But then player 2 will receive a and at most 25\neggs so she will be envious, a contradiction. Therefore in A\nplayer 1 receives a and T eggs and player 2 receives b and\nk − T eggs. It is also easy to see that 25 ≤ T ≤ 75.\nCase 1: T < 74\nIn this case player 1 can increase her utility by lying and\ndeclaring that good a has less value for her. It is possible for\nher to lie in such a way to force the mechanism to give her\nthe good a and at least T + 1 eggs (assuming that 2 does not\nchange her declaration). She can declare that her valuation\nfunction is: v1 (a) = 0.45−δ, v1 (b) = 0.35+δ, v1 (egg) = 0.2/k\nwhere δ is such that:\n\nThus, if we set λ = 56/\u000f, it is easy to see that the factor\nwill be at most 1 + \u000f.",
-          "quoted_text_sha256": "3a11e606c5fe6d6769cb057ef35d2bcfd2629d021b9df5599233d74002253fce"
-        }
-      ],
-      "source_location": "Theorem 3.3 approximation-ratio endpoint; cited publication:681-719",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nClaim 3.4 fixed-rounding ratio endpoint.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_3_claim34_fixed_rounding_ratio_endpointSpec"
-      ]
-    },
-    "theorem3_3_external_solver_consequence_and_selected_pair_full_summary_source_output_of_claim_3_4_source_average_forward_additive_no_top_of_margin": {
-      "aliases": [
-        "theorem3_3_external_solver_consequence_and_selected_pair_full_summary_source_output_of_claim_3_4_source_average_forward_additive_no_top_of_margin"
-      ],
-      "claim_bearing": true,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "partial boundary",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 3.3 strongest Claim-3.4 additive external-solver endpoint.\nselected-pair estimates, this returns the compact external-solver package."
-    },
-    "theorem3_3_external_solver_selected_pair_full_summary_source_output_consequence": {
-      "aliases": [
-        "theorem3_3_external_solver_selected_pair_full_summary_source_output_consequence"
-      ],
-      "claim_bearing": true,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "partial boundary",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 3.3 compact external-solver consequence projection.\nthe external solver consequence, pending the reusable fixed-dimension IP theorem."
-    },
-    "theorem3_3_external_solver_selected_pair_full_summary_source_output_package": {
-      "aliases": [
-        "theorem3_3_external_solver_selected_pair_full_summary_source_output_package"
-      ],
-      "claim_bearing": true,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "partial boundary",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 3.3 compact external-solver package.\nruntime/FPTAS conclusion is exactly the supplied external solver consequence."
-    },
-    "theorem3_3_external_solver_selected_pair_full_summary_source_output_payload": {
-      "aliases": [
-        "theorem3_3_external_solver_selected_pair_full_summary_source_output_payload"
-      ],
-      "claim_bearing": true,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_location": "partial boundary",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 3.3 compact external-solver payload projection.\npayload from the conditional external-solver package."
-    },
-    "theorem3_3_ratio_transfer_certificate_epsilon_of_agentwise_additive_loads": {
-      "aliases": [
-        "theorem3_3_ratio_transfer_certificate_epsilon_of_agentwise_additive_loads"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_3_ratio_transfer_certificate_epsilon_of_agentwise_additive_loads"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem3_3_ratio_transfer_certificate_epsilon_of_agentwise_additive_loads",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem3_3_ratio_transfer_certificate_epsilon_of_agentwise_additive_loadsSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 719,
-          "line_start": 608,
-          "publication_locator": "cited publication",
-          "quoted_text": "We are now ready to prove our Theorem. Our algorithm\nwill be: Given instance I, compute the instance I R , find\nR\nR\nan optimal allocation AR = (AR\n1 , ..., An ) for I , and then\nR\nconvert A to an allocation A = (A1 , ..., An ) for I using\nLemma 3.5. Output A.\nSuppose without loss of generality that v(AR\n1 ) ≤ ... ≤\n∗\n∗\n∗\nv(AR\nn ) and v(A1 ) ≤ ... ≤ v(An ). Let A = (A1 , ..., An ) be an\noptimal solution to I satisfying the conditions of Claim 3.4\nand assume v(A∗1 ) ≤ ... ≤ v(A∗n ). We want to show:\nv(A∗n )\nv(An )\n≤ (1 + \u000f)\n)\nv(A1 )\nv(A∗1\nBy Lemma 3.5 we know that:\nv(An ) ≤ v(AR\nn) +\n\n1\n2\n1 R\nL ≤ v(AR\nL ≤ v(AR\n)\nn) =\nn )(1 +\nλ\nλ\nλ\n\n4\nλ\nSimilar calculations yield: v(A1 ) ≥ v(AR\n1 )( λ+1 − λ ). Therefore:\n1 + λ2\nv(An )\nv(AR\nn)\n≤\n(\n)\nλ\n4\nv(A1 )\nv(AR\n1 ) λ+1 − λ\n\nWe need to relate the optimal solution in I R with the\noptimal solution in I. By using the first part of Lemma 3.5\nand by performing similar calculations we have that there\nexists an allocation A0 = (A01 , ..., A0n ) in I R such that:\n+ 2\nv(A0n )\nv(A∗n ) λ+1\n≤\n( λ 2λ )\n0\n∗\nv(A1 )\nv(A1 ) 1 − λ\n\n129\n\n\fSince AR is an optimal solution in I R the ratio in A0 will\nbe at least as big as in AR . Hence by combining the above\nequations we finally have:\nv(An )\nv(A1 )\n\n≤\n\nλ+1\n+ 2\nv(A∗n ) 1 + λ2\n( λ\n)( λ 2 λ )\n∗\n4\nv(A1 ) λ+1 − λ\n1− λ\n\n≤\n\n(λ + 1)(λ + 2)(λ + 3)\nOP T\n(λ − 2)(λ2 − 4λ − 4)\n\nbe envious). But then player 2 will receive a and at most 25\neggs so she will be envious, a contradiction. Therefore in A\nplayer 1 receives a and T eggs and player 2 receives b and\nk − T eggs. It is also easy to see that 25 ≤ T ≤ 75.\nCase 1: T < 74\nIn this case player 1 can increase her utility by lying and\ndeclaring that good a has less value for her. It is possible for\nher to lie in such a way to force the mechanism to give her\nthe good a and at least T + 1 eggs (assuming that 2 does not\nchange her declaration). She can declare that her valuation\nfunction is: v1 (a) = 0.45−δ, v1 (b) = 0.35+δ, v1 (egg) = 0.2/k\nwhere δ is such that:\n\nThus, if we set λ = 56/\u000f, it is easy to see that the factor\nwill be at most 1 + \u000f.",
-          "quoted_text_sha256": "4decd5039e320a53b4cf1ab4b3bd93bd24e2a43ffbfef2cffa5a0f5f40736e3a"
-        }
-      ],
-      "source_location": "Theorem 3.3 transfer calculation; cited publication:608-719",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 3.3 additive-load ratio transfer.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_3_ratio_transfer_certificate_epsilon_of_agentwise_additive_loadsSpec"
-      ]
+      "statement": "Theorem 3.2: Graham's algorithm achieves a 1.4 approximation factor for the envy-ratio problem.",
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-05",
+        "reason": "The cited 1.4 scheduling theorem remains a visible external-theorem boundary. Lean proves only its fair-division consequence conditional on a certificate and receives no native proof credit for the cited result.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "6a54522795e0cfd14d8733ea99befad5c7435e06f687467cf42f47abde396fe7",
+        "source_evidence": "The source explicitly attributes the 1.4 factor to Graham's algorithm. The current formal route assumes the corresponding scheduling certificate rather than deriving that external theorem.",
+        "source_locator": "cited publication:359-362"
+      }
     },
     "theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guarantee": {
       "aliases": [
         "theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guarantee"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guarantee"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guarantee",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guaranteeSpec"
-      },
+      "inventory_role": "source_scope_exclusion",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "The user-approved public partial closeout retains the PTAS/FPTAS conclusion as an explicit boundary because the fixed-dimension integer-program machine-runtime theorem is absent from the reusable library.",
       "source_anchor_evidence": [
         {
-          "line_end": 392,
-          "line_start": 374,
+          "line_end": 368,
+          "line_start": 363,
           "publication_locator": "cited publication",
-          "quoted_text": "Proof. Before going into the details of the proof we give\na brief outline of the technique. Our algorithm is similar\nto [2] and [20]. However our objective function does not fit\nin their framework. The algorithm is as follows: Given our\noriginal instance, we round the utility of each good to obtain\na coarsest instance in which there is a constant number of\ndistinct utilities (i.e., a constant number of different types of\ngoods). We then show that in the new instance, we can find\nan optimal solution by searching for every player among a\nconstant number of distinct assignments of goods. The constant will be exponential in the approximation parameter\n1/\u000f. This observation enables us to compute the optimal\nsolution in the rounded instance by solving a series of integer programs with a constant number of variables using\nLenstra’s algorithm [12]. After finding an optimal allocation\nin the rounded instance, we will convert it into an allocation\nfor the original instance. In the whole process, there are 2\nsources of error: computing the rounded instance from the\noriginal one and transforming the optimal allocation of the\nrounded instance to an allocation of the original instance.\nWe are able to bound the error by 1 + \u000f.",
-          "quoted_text_sha256": "4596a9562f798200159a84ef20279cfa809fdc34f011930aab8233d01ef90a15"
+          "quoted_text": "Theorem 3.3. There is a PTAS for the envy-ratio problem when all players have the same utility for each good.\nFurthermore, when the number of players is constant, there\nis an FPTAS.\n\nWe would like to note that an interesting fact about Theorem 3.1 is that it is unconditional, i.e., not dependent on\nany complexity theory assumption.",
+          "quoted_text_sha256": "2d083d0abbc85534042358635b46d74a045486ce1693ff966e242077d221b020"
         }
       ],
-      "source_location": "Theorem 3.3 rounding and integer-program construction; cited publication:374-392",
+      "source_kind": "theorem",
+      "source_location": "cited publication:363-368",
+      "source_note": "Finite rounding, search, IP-certificate, and transfer mathematics are available, but the fixed-dimension IP machine-runtime theorem needed for the PTAS/FPTAS result remains external.",
+      "source_status": "partial_formalization_boundary",
       "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 3.3 conditional fixed-dimension IP summary.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guaranteeSpec"
-      ]
-    },
-    "theorem4_1_source_goods_content": {
-      "aliases": [
-        "theorem4_1_source_goods_content"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem4_1_source_goods_content"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem4_1_source_goods_content",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem4_1_source_goods_contentSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 814,
-          "line_start": 795,
-          "publication_locator": "cited publication",
-          "quoted_text": "Proof. Let M be a mechanism that outputs an allocation with minimum envy. Consider the following instance:\nWe have two players, 1 and 2 and k + 2 goods. In particular\nwe have good a, good b and k eggs. Let’s say k = 100. The\nk eggs are playing the role of an almost divisible good of\nvalue 0.2. Suppose the players have the following utilities\nfor the goods:\nv1 (a) = 0.45, v1 (b) = 0.35, v1 (egg) = 0.2/k,\nv2 (a) = 0.35, v2 (b) = 0.45, v2 (egg) = 0.2/k\nThe specific instance admits an envy-free allocation: give\nto player 1 good a and 25 eggs and give the rest to player\n2. Therefore in the allocation that M will output there will\nbe no envy. Let A be the partition that M outputs for\nthis instance. Note that in A each player receives exactly\none of the goods a, b because if one player received both\nthen the other player would envy her. Also we note that\nit is Player 1 who receives a. To see this, suppose on the\ncontrary that player 1 receives b. Then in order for A to be\nenvy-free player 1 should receive at least 75 eggs (otherwise\nthe bundle S of player 1 is worth less than 1/2 and she will\n",
-          "quoted_text_sha256": "fb0cf55e8fd49b2df3e4cec3efc542bf14e2c9870026f3c9073fe7393b0e36db"
-        }
-      ],
-      "source_location": "Proof of Theorem 4.1, two players and goods; cited publication:795-814",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 4.1 uses the full finite source universe: two named goods plus eight\negg goods, for ten goods total and two agents.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem4_1_source_goods_contentSpec"
-      ]
+      "statement": "Theorem 3.3: identical-utility envy-ratio admits a PTAS, and an FPTAS when the number of players is constant.",
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-05",
+        "reason": "The PTAS/FPTAS conclusion remains a visible boundary because its fixed-dimension integer-program machine-runtime theorem is not a Lean-proved reusable dependency.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "2d083d0abbc85534042358635b46d74a045486ce1693ff966e242077d221b020",
+        "source_evidence": "The source states both a PTAS and, for constant player count, an FPTAS. The Lean finite rounding and transfer support does not establish the required machine-runtime theorem.",
+        "source_locator": "cited publication:363-368"
+      }
     },
     "theorem4_1_source_minimum_envy_not_truthful": {
       "aliases": [
@@ -973,11 +398,11 @@
       ],
       "claim_bearing": true,
       "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem4_1_source_minimum_envy_not_truthful"
+        "LMMS04FairDivision.PaperInterface.theorem4_1_source_minimum_envy_not_truthfulSpec_proof"
       ],
       "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem4_1_source_minimum_envy_not_truthful",
-        "evidence_mode": "definitionally_realizes",
+        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem4_1_source_minimum_envy_not_truthfulSpec_proof",
+        "evidence_mode": "proves",
         "semantic_shape": "plain",
         "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem4_1_source_minimum_envy_not_truthfulSpec"
       },
@@ -990,9 +415,21 @@
           "quoted_text_sha256": "948b0969c709217b0b29a218b285362a9a8c7748096e36846650f7d2bb66b557"
         }
       ],
-      "source_location": "Theorem 4.1; cited publication:770-773",
+      "source_claim_atoms": [
+        {
+          "id": "theorem4.1.source.minimum.envy.not.truthful",
+          "identity_schema": 2,
+          "reviewed_lean_route": "LMMS04FairDivision.PaperInterface.theorem4_1_source_minimum_envy_not_truthfulSpec_proof",
+          "semantic_claim": "Theorem 4.1 minimum-envy clause: no truthful mechanism can always return a minimum-envy allocation.",
+          "source_locator": "cited publication:770-773",
+          "source_quote_sha256": "948b0969c709217b0b29a218b285362a9a8c7748096e36846650f7d2bb66b557"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:770-773",
+      "source_note": "This is the minimum-envy clause of printed Theorem 4.1, reviewed separately from its envy-free clause. The proof uses a smaller finite witness with the same counterexample structure.",
       "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Theorem 4.1 minimum-envy mechanism impossibility.",
+      "statement": "Theorem 4.1 minimum-envy clause: no truthful mechanism can always return a minimum-envy allocation.",
       "support_lean_declarations": [
         "LMMS04FairDivision.PaperInterface.theorem4_1_source_minimum_envy_not_truthfulSpec"
       ]
@@ -1003,11 +440,11 @@
       ],
       "claim_bearing": true,
       "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem4_1_source_not_truthful_envy_free_whenever_exists"
+        "LMMS04FairDivision.PaperInterface.theorem4_1_source_not_truthful_envy_free_whenever_existsSpec_proof"
       ],
       "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem4_1_source_not_truthful_envy_free_whenever_exists",
-        "evidence_mode": "definitionally_realizes",
+        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem4_1_source_not_truthful_envy_free_whenever_existsSpec_proof",
+        "evidence_mode": "proves",
         "semantic_shape": "plain",
         "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem4_1_source_not_truthful_envy_free_whenever_existsSpec"
       },
@@ -1020,72 +457,54 @@
           "quoted_text_sha256": "948b0969c709217b0b29a218b285362a9a8c7748096e36846650f7d2bb66b557"
         }
       ],
-      "source_location": "Theorem 4.1; cited publication:770-773",
+      "source_claim_atoms": [
+        {
+          "id": "theorem4.1.source.not.truthful.envy.free.whenever.exists",
+          "identity_schema": 2,
+          "reviewed_lean_route": "LMMS04FairDivision.PaperInterface.theorem4_1_source_not_truthful_envy_free_whenever_existsSpec_proof",
+          "semantic_claim": "Theorem 4.1 envy-free clause: no truthful mechanism can always return an envy-free allocation whenever one exists.",
+          "source_locator": "cited publication:770-773",
+          "source_quote_sha256": "948b0969c709217b0b29a218b285362a9a8c7748096e36846650f7d2bb66b557"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:770-773",
+      "source_note": "This is the envy-free clause of printed Theorem 4.1, reviewed separately from its minimum-envy clause. The proof uses a smaller finite witness with the same counterexample structure.",
       "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Theorem 4.1 envy-free mechanism impossibility.",
+      "statement": "Theorem 4.1 envy-free clause: no truthful mechanism can always return an envy-free allocation whenever one exists.",
       "support_lean_declarations": [
         "LMMS04FairDivision.PaperInterface.theorem4_1_source_not_truthful_envy_free_whenever_existsSpec"
       ]
     },
-    "theorem4_1_true_report_formula": {
-      "aliases": [
-        "theorem4_1_true_report_formula"
-      ],
+    "theorem4_2_asymptotic_high_probability_rate": {
       "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem4_1_true_report_formula"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem4_1_true_report_formula",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem4_1_true_report_formulaSpec"
-      },
+      "inventory_role": "source_scope_exclusion",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "The user-approved public partial closeout retains the source Big-O and sufficiently-large-n high-probability rate as an explicit boundary; the finite concentration inequality receives no asymptotic-rate credit.",
       "source_anchor_evidence": [
         {
-          "line_end": 803,
-          "line_start": 795,
-          "publication_locator": "cited publication",
-          "quoted_text": "Proof. Let M be a mechanism that outputs an allocation with minimum envy. Consider the following instance:\nWe have two players, 1 and 2 and k + 2 goods. In particular\nwe have good a, good b and k eggs. Let’s say k = 100. The\nk eggs are playing the role of an almost divisible good of\nvalue 0.2. Suppose the players have the following utilities\nfor the goods:\nv1 (a) = 0.45, v1 (b) = 0.35, v1 (egg) = 0.2/k,\nv2 (a) = 0.35, v2 (b) = 0.45, v2 (egg) = 0.2/k\nThe specific instance admits an envy-free allocation: give",
-          "quoted_text_sha256": "a3231ca1da0f0c332dbb415c0644afad793eb9d75bdb81ee2f18a62c8900d77c"
-        }
-      ],
-      "source_location": "Proof of Theorem 4.1, truthful utilities; cited publication:795-803",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 4.1's truthful report is the additive bundle valuation generated by\nthe displayed two-player item weights.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem4_1_true_report_formulaSpec"
-      ]
-    },
-    "theorem4_2_uniform_random_max_envy_probability_bound": {
-      "aliases": [
-        "theorem4_2_uniform_random_max_envy_probability_bound"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem4_2_uniform_random_max_envy_probability_bound"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem4_2_uniform_random_max_envy_probability_bound",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem4_2_uniform_random_max_envy_probability_boundSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 789,
+          "line_end": 768,
           "line_start": 764,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 4.2. Suppose that vp,i ≤ α ∀p ∈ N, j ∈ M .\nThen for every \u000f > 0, and for large enough n, there exists\na truthful algorithm such that with high probability the allocation\n√ output by the algorithm has maximum envy at most\nO( α n1/2+\u000f ).\n\nTheorem 4.1. Any mechanism that returns an allocation\nwith minimum possible envy cannot be truthful. The same is\ntrue for any mechanism that returns an envy-free allocation\nwhenever there exists one.\n\nProof. The proof is based on the probabilistic method.\nAllocate each good independently to player p with probability 1/n. Clearly this is a truthful mechanism. We will show\nthat with high probability, the allocation produced satisfies\nthe desired bound. Fix two players p, q. Given p and q we\ndefine a random variable Yj indicating the contribution of\ngood j to the envy of player p for q. The variable Yj is equal\nto 1, if good j is allocated to player q, -1, if it is allocated to\nplayer p, and 0 otherwise. Hence: Yj = 1 with probability\n1/n, −1 w.p. 1/n and 0 w.p.\nP (n − 2)/n. We now define\nthe random variable: fpq = j vp,j Yj . Clearly the envy of\np for q is epq = max{0, fpq }. We will show that with high\n√\nprobability, for every p, q, fpq ≤ O( α n1/2+\u000f ) and this will\ncomplete the proof.",
-          "quoted_text_sha256": "cd0ff5d240ce54dae1a109d073868a3f3a110b36305c15bd0ab1850445f20483"
+          "quoted_text": "Theorem 4.2. Suppose that vp,i ≤ α ∀p ∈ N, j ∈ M .\nThen for every \u000f > 0, and for large enough n, there exists\na truthful algorithm such that with high probability the allocation\n√ output by the algorithm has maximum envy at most\nO( α n1/2+\u000f ).",
+          "quoted_text_sha256": "aefc64b37e1b7ccf3b767459a491716681a24b050b98a301c4af653e6c3e88e2"
         }
       ],
-      "source_location": "Theorem 4.2 and probability calculation; cited publication:764-789",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "-\nTheorem 4.2 uniform-random maximum-envy probability bound.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem4_2_uniform_random_max_envy_probability_boundSpec"
-      ]
+      "source_kind": "theorem",
+      "source_location": "cited publication:764-768",
+      "source_note": "The existing Lean result is an explicit finite probability inequality. Its bridge to the source Big-O/high-probability statement is an explicit partial boundary.",
+      "source_status": "formalization_pending",
+      "statement": "Theorem 4.2 rate component: under the stated bounded-value condition, for every epsilon and sufficiently large n a truthful algorithm has maximum envy O(alpha n^(1/2+epsilon)) with high probability.",
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-05",
+        "reason": "The source asymptotic Big-O and sufficiently-large-n high-probability rate remains explicit and unproved; the checked finite concentration inequality is not credited as that rate.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "aefc64b37e1b7ccf3b767459a491716681a24b050b98a301c4af653e6c3e88e2",
+        "source_evidence": "The source statement quantifies over epsilon and large enough n and concludes a Big-O high-probability rate. The Lean result is a finite probability inequality without the required asymptotic bridge.",
+        "source_locator": "cited publication:764-768"
+      }
     },
     "theorem4_2_uniform_random_mechanism_truthful": {
       "aliases": [
@@ -1093,58 +512,40 @@
       ],
       "claim_bearing": true,
       "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.theorem4_2_uniform_random_mechanism_truthful"
+        "LMMS04FairDivision.PaperInterface.theorem4_2_uniform_random_mechanism_truthfulSpec_proof"
       ],
       "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem4_2_uniform_random_mechanism_truthful",
-        "evidence_mode": "definitionally_realizes",
+        "evidence_declaration": "LMMS04FairDivision.PaperInterface.theorem4_2_uniform_random_mechanism_truthfulSpec_proof",
+        "evidence_mode": "proves",
         "semantic_shape": "plain",
         "spec_declaration": "LMMS04FairDivision.PaperInterface.theorem4_2_uniform_random_mechanism_truthfulSpec"
       },
       "source_anchor_evidence": [
         {
           "line_end": 776,
-          "line_start": 758,
+          "line_start": 764,
           "publication_locator": "cited publication",
-          "quoted_text": "In the rest of the section, we present a simple truthful\nmechanism which allocates the goods to the players uniformly at random. We assume that the sum of the utilities\nof each player over all goods is one. We will show that with\nhigh probability the maximum\nenvy of the resulting alloca√\ntion is no more than O( αn1/2+\u000f ).\nTheorem 4.2. Suppose that vp,i ≤ α ∀p ∈ N, j ∈ M .\nThen for every \u000f > 0, and for large enough n, there exists\na truthful algorithm such that with high probability the allocation\n√ output by the algorithm has maximum envy at most\nO( α n1/2+\u000f ).\n\nTheorem 4.1. Any mechanism that returns an allocation\nwith minimum possible envy cannot be truthful. The same is\ntrue for any mechanism that returns an envy-free allocation\nwhenever there exists one.\n\nProof. The proof is based on the probabilistic method.\nAllocate each good independently to player p with probability 1/n. Clearly this is a truthful mechanism. We will show",
-          "quoted_text_sha256": "83fb4524064b3900288d7d4b81ad9a4518a1419adce482be3a7a06478f86711f"
+          "quoted_text": "Theorem 4.2. Suppose that vp,i ≤ α ∀p ∈ N, j ∈ M .\nThen for every \u000f > 0, and for large enough n, there exists\na truthful algorithm such that with high probability the allocation\n√ output by the algorithm has maximum envy at most\nO( α n1/2+\u000f ).\n\nTheorem 4.1. Any mechanism that returns an allocation\nwith minimum possible envy cannot be truthful. The same is\ntrue for any mechanism that returns an envy-free allocation\nwhenever there exists one.\n\nProof. The proof is based on the probabilistic method.\nAllocate each good independently to player p with probability 1/n. Clearly this is a truthful mechanism. We will show",
+          "quoted_text_sha256": "2a8e17c07a99541dba1e6033e998f65639289562500c766bff97fef5a68d73bd"
         }
       ],
-      "source_location": "Theorem 4.2 proof, uniform allocation; cited publication:758-776",
+      "source_claim_atoms": [
+        {
+          "id": "theorem4.2.uniform.random.mechanism.truthful",
+          "identity_schema": 2,
+          "reviewed_lean_route": "LMMS04FairDivision.PaperInterface.theorem4_2_uniform_random_mechanism_truthfulSpec_proof",
+          "semantic_claim": "Theorem 4.2 proof component: allocating each good independently and uniformly to a player is a truthful mechanism.",
+          "source_locator": "cited publication:775-776",
+          "source_quote_sha256": "88b48c0fc847cdbd1a73d281264b4187447cf70a3db95eb1b4fa7705ac484a09"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:764-776",
+      "source_note": "This atomized source component is the truthfulness part of Theorem 4.2's uniform-random construction. The printed asymptotic high-probability rate remains separate.",
       "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Theorem 4.2 uniform-random mechanism truthfulness.",
+      "statement": "Theorem 4.2 proof component: allocating each good independently and uniformly to a player is a truthful mechanism.",
       "support_lean_declarations": [
         "LMMS04FairDivision.PaperInterface.theorem4_2_uniform_random_mechanism_truthfulSpec"
-      ]
-    },
-    "truthful": {
-      "aliases": [
-        "truthful"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.truthful"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "LMMS04FairDivision.PaperInterface.truthful",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "LMMS04FairDivision.PaperInterface.truthfulSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 749,
-          "line_start": 740,
-          "publication_locator": "cited publication",
-          "quoted_text": "TRUTHFULNESS\n\nSo far we have assumed that we can obtain the actual\nutilities of the players for the goods. However, in many situations players’ utilities are private information and they\nmight lie about their valuations in order to obtain a better\nbundle. We would like to investigate the question of whether\nwe can have mechanisms that elicit truthful utilities from\nthe players and also produce allocations with minimum or\nbounded envy. A mechanism is truthful if for every player,\nher profit is maximized by declaring her true utility i.e. being truthful is a dominant strategy.",
-          "quoted_text_sha256": "3e1b460298f934db77b10cd1f2ad767bf681277c449dad3ebba3c1fdc49d5255"
-        }
-      ],
-      "source_location": "Section 4, truthfulness definition; cited publication:740-749",
-      "source_url": "https://doi.org/10.1145/988772.988792",
-      "statement": "- Dominant-strategy truthfulness for direct fair-division mechanisms.",
-      "support_lean_declarations": [
-        "LMMS04FairDivision.PaperInterface.truthfulSpec"
       ]
     }
   },
@@ -1152,12 +553,29 @@
   "paper_interface_namespace": "LMMS04FairDivision",
   "schema": 1,
   "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
+  "source_anchor_evidence_required": true,
   "source_artifact_sha256": "0dd14a20e6667cff71dc2a8834df2d12649372127d07295c1ab6ad9b94516f14",
+  "source_claim_atoms_schema": 1,
   "source_coverage_mode": "named_theoretical_statements",
   "source_curated": true,
   "source_inventory_kind": "source_curated",
   "source_inventory_policy": "Independent source-first inventory from the pinned line-numbered EC’04 text extraction. Published-paper section, theorem, and formula locators remain the human-facing references. The inventory includes paper-defined fair-allocation notions, stated results, and explicit proof boundaries; formal interface abstractions remain routing only, never semantic evidence. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
+  "source_named_result_inventory_review": {
+    "candidate_presentations": [],
+    "complete": true,
+    "discovered_candidate_presentation_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "discovered_named_result_sha256": "22198fd9d73273cd99a67a73a03f10dc7c6e9993c258689922c45f0c0e29d7a9",
+    "discovered_prose_definition_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "method": "Read the exact restored line-numbered source text before using Lean routes; inventory each labelled theorem, lemma, and claim. Split genuinely composite printed results only into explicitly identified source clauses, retain proof-support and external/runtime material visibly, and do not infer a source result from a Lean helper name.",
+    "prose_definition_presentations": [],
+    "schema": 1,
+    "source_artifact_sha256": "0dd14a20e6667cff71dc2a8834df2d12649372127d07295c1ab6ad9b94516f14",
+    "validated_at": "2026-09-05T02:31:28-04:00",
+    "validator": "LMMS04 Agent-2 source-only current-protocol intake"
+  },
   "source_spec_correspondence_schema": 1,
   "source_url": "https://www.stat.berkeley.edu/~mossel/publications/happy.pdf; https://doi.org/10.1145/988772.988792",
+  "source_version": "cited publication source record",
   "title": "On Approximately Fair Allocations of Indivisible Goods"
 }

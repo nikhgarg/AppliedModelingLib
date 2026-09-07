@@ -1,7 +1,7 @@
 import KR21Monoculture.GumbelRUMPlackettLuce
 import KR21Monoculture.ExponentialRaceOrderReindex
 import KR21Monoculture.PlackettLuceFullRankingProduct
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalFiniteDensity
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalFiniteDensity
 import Mathlib.MeasureTheory.Measure.WithDensity
 
 /-!
@@ -12,7 +12,7 @@ Gumbel--Plackett--Luce bridge.  It deliberately starts from the literal
 product of exponential measures, rather than a sampled ranking law.
 -/
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 open scoped ENNReal BigOperators
 
 namespace KR21Monoculture
@@ -29,7 +29,7 @@ theorem measurable_heterogeneousExponentialDensity {m : ℕ} (rate : Fin m → �
     Measurable (heterogeneousExponentialDensity rate) := by
   unfold heterogeneousExponentialDensity
   exact Finset.measurable_prod Finset.univ fun i _ =>
-    (EconCSLib.Probability.PoissonProcess.measurable_exponentialPDF
+    (AppliedModelingLib.Probability.PoissonProcess.measurable_exponentialPDF
       (rate i)).comp (measurable_pi_apply i)
 
 /-- The total rate of the positions at or after `j`. -/
@@ -105,7 +105,7 @@ theorem pi_expMeasure_eq_withDensity_heterogeneous
         intro i
         exact hrate _
       have hg : Measurable g := by
-        exact ((EconCSLib.Probability.PoissonProcess.measurable_exponentialPDF
+        exact ((AppliedModelingLib.Probability.PoissonProcess.measurable_exponentialPDF
           headRate).comp measurable_fst).mul
           ((measurable_heterogeneousExponentialDensity tailRate).comp measurable_snd)
       have hdens : heterogeneousExponentialDensity rate = g ∘ e := by
@@ -135,13 +135,13 @@ theorem pi_expMeasure_eq_withDensity_heterogeneous
               (fun p => exponentialPDF headRate p.1 *
                 heterogeneousExponentialDensity tailRate p.2)
           rw [MeasureTheory.prod_withDensity
-            (EconCSLib.Probability.PoissonProcess.measurable_exponentialPDF headRate)
+            (AppliedModelingLib.Probability.PoissonProcess.measurable_exponentialPDF headRate)
             (measurable_heterogeneousExponentialDensity tailRate)]
         _ = Measure.map e ((volume : Measure (Fin (q + 1) → ℝ)).withDensity
             (heterogeneousExponentialDensity rate)) := by
           rw [hdens]
           symm
-          exact EconCSLib.Probability.PoissonProcess.map_withDensity_comp_of_measurePreserving
+          exact AppliedModelingLib.Probability.PoissonProcess.map_withDensity_comp_of_measurePreserving
             (MeasureTheory.volume_preserving_piFinSuccAbove
               (fun _ : Fin (q + 1) => ℝ) (Fin.last q)) g hg
 
@@ -151,10 +151,10 @@ at or after `j`. -/
 theorem sum_rate_mul_cumulativeArrivalLinearMap_eq_sum_suffixRate_mul
     {m : ℕ} (rate gap : Fin m → ℝ) :
     (∑ i : Fin m, rate i *
-      EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i) =
+      AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i) =
       ∑ j : Fin m, exponentialRaceSuffixRate rate j * gap j := by
-  rw [EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap_apply]
-  unfold EconCSLib.Probability.PoissonProcess.cumulativeArrivalVector
+  rw [AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap_apply]
+  unfold AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalVector
     exponentialRaceSuffixRate
   calc
     (∑ i : Fin m, rate i * ∑ j : {j : Fin m // j ≤ i}, gap j) =
@@ -197,18 +197,18 @@ theorem sum_rate_mul_cumulativeArrivalLinearMap_eq_sum_suffixRate_mul
 segment. -/
 theorem cumulativeArrivalLinearMap_apply_eq_sum_filter {m : ℕ}
     (gap : Fin m → ℝ) (i : Fin m) :
-    EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i =
+    AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i =
       ∑ j ∈ Finset.univ.filter (fun j : Fin m => j ≤ i), gap j := by
-  rw [EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap_apply]
-  unfold EconCSLib.Probability.PoissonProcess.cumulativeArrivalVector
+  rw [AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap_apply]
+  unfold AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalVector
   rw [← Finset.sum_subtype_eq_sum_filter]
   simp
 
 /-- Consecutive cumulative coordinates differ by their new gap. -/
 theorem cumulativeArrivalLinearMap_succ_eq_add
     {n : ℕ} (gap : Fin (n + 2) → ℝ) (i : Fin (n + 1)) :
-    EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap i.succ =
-      EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap i.castSucc +
+    AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap i.succ =
+      AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap i.castSucc +
         gap i.succ := by
   rw [cumulativeArrivalLinearMap_apply_eq_sum_filter,
     cumulativeArrivalLinearMap_apply_eq_sum_filter]
@@ -235,7 +235,7 @@ theorem cumulativeArrivalLinearMap_succ_eq_add
 /-- The first cumulative coordinate is the first gap. -/
 theorem cumulativeArrivalLinearMap_zero_eq
     {n : ℕ} (gap : Fin (n + 2) → ℝ) :
-    EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap 0 =
+    AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap 0 =
       gap 0 := by
   rw [cumulativeArrivalLinearMap_apply_eq_sum_filter]
   have hfilter :
@@ -249,7 +249,7 @@ theorem cumulativeArrivalLinearMap_zero_eq
 gaps. -/
 theorem gap_succ_pos_of_strictIncreasingExponentialCell
     {n : ℕ} (gap : Fin (n + 2) → ℝ)
-    (hstrict : EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap
+    (hstrict : AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap
       (n + 2) gap ∈ strictIncreasingExponentialCell (n + 2))
     (i : Fin (n + 1)) :
     0 < gap i.succ := by
@@ -270,11 +270,11 @@ theorem heterogeneousExponentialDensity_eq_zero_of_exists_neg
 the first one, where it forces the arrival-time density to vanish. -/
 theorem heterogeneousExponentialDensity_cumulativeArrivalLinearMap_eq_zero_of_strict_and_exists_neg
     {n : ℕ} (rate gap : Fin (n + 2) → ℝ)
-    (hstrict : EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap
+    (hstrict : AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap
       (n + 2) gap ∈ strictIncreasingExponentialCell (n + 2))
     (hneg : ∃ i, gap i < 0) :
     heterogeneousExponentialDensity rate
-        (EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap) = 0 := by
+        (AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap) = 0 := by
   rcases hneg with ⟨i, hi⟩
   revert hi
   refine Fin.cases ?_ (fun j => ?_) i
@@ -290,7 +290,7 @@ theorem heterogeneousExponentialDensity_cumulativeArrivalLinearMap_eq_zero_of_st
 /-- Positive gaps give strictly increasing cumulative arrival times. -/
 theorem strictIncreasingExponentialCell_cumulativeArrivalLinearMap_of_pos
     {m : ℕ} (gap : Fin m → ℝ) (hgap : ∀ i, 0 < gap i) :
-    EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap ∈
+    AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap ∈
       strictIncreasingExponentialCell m := by
   intro p q hpq
   rw [cumulativeArrivalLinearMap_apply_eq_sum_filter,
@@ -309,7 +309,7 @@ theorem strictIncreasingExponentialCell_cumulativeArrivalLinearMap_of_pos
 /-- Positive gaps also make every cumulative arrival coordinate positive. -/
 theorem cumulativeArrivalLinearMap_pos_of_pos {m : ℕ}
     (gap : Fin m → ℝ) (hgap : ∀ i, 0 < gap i) (i : Fin m) :
-    0 < EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i := by
+    0 < AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i := by
   rw [cumulativeArrivalLinearMap_apply_eq_sum_filter]
   refine Finset.sum_pos' (fun j _ => (hgap j).le) ?_
   exact ⟨i, Finset.mem_filter.mpr ⟨Finset.mem_univ i, le_rfl⟩, hgap i⟩
@@ -320,20 +320,20 @@ theorem prod_exp_neg_rate_cumulativeArrivalLinearMap_eq_prod_exp_neg_suffixRate
     {m : ℕ} (rate gap : Fin m → ℝ) :
     (∏ i : Fin m,
       Real.exp (-(rate i *
-        EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i))) =
+        AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i))) =
       ∏ j : Fin m,
         Real.exp (-(exponentialRaceSuffixRate rate j * gap j)) := by
   calc
     (∏ i : Fin m,
         Real.exp (-(rate i *
-          EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i))) =
+          AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i))) =
         Real.exp (∑ i : Fin m,
           -(rate i *
-            EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i)) := by
+            AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i)) := by
           rw [Real.exp_sum]
     _ = Real.exp (-∑ i : Fin m,
           rate i *
-            EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i) := by
+            AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i) := by
           congr 1
           rw [Finset.sum_neg_distrib]
     _ = Real.exp (-∑ j : Fin m, exponentialRaceSuffixRate rate j * gap j) := by
@@ -367,7 +367,7 @@ theorem prod_rate_exp_neg_cumulativeArrivalLinearMap_eq_orderWeight_mul_prod_suf
     {m : ℕ} (rate gap : Fin m → ℝ) (hrate : ∀ i, 0 < rate i) :
     (∏ i : Fin m, rate i *
       Real.exp (-(rate i *
-        EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i))) =
+        AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i))) =
       exponentialRaceOrderWeight rate *
         ∏ j : Fin m, exponentialRaceSuffixRate rate j *
           Real.exp (-(exponentialRaceSuffixRate rate j * gap j)) := by
@@ -391,19 +391,19 @@ theorem heterogeneousExponentialDensity_cumulativeArrivalLinearMap_eq_orderWeigh
     {m : ℕ} (rate gap : Fin m → ℝ) (hrate : ∀ i, 0 < rate i)
     (hgap : ∀ i, 0 < gap i) :
     heterogeneousExponentialDensity rate
-        (EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap) =
+        (AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap) =
       ENNReal.ofReal (exponentialRaceOrderWeight rate) *
         heterogeneousExponentialDensity (exponentialRaceSuffixRate rate) gap := by
   unfold heterogeneousExponentialDensity
   have harrival_nonneg : ∀ i : Fin m, 0 ≤
-      EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i := by
+      AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i := by
     intro i
     exact (cumulativeArrivalLinearMap_pos_of_pos gap hgap i).le
   have harrival_pdf : ∀ i : Fin m,
       exponentialPDF (rate i)
-        (EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i) =
+        (AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i) =
         ENNReal.ofReal (rate i * Real.exp (-(rate i *
-          EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i))) := by
+          AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i))) := by
     intro i
     exact exponentialPDF_of_nonneg (harrival_nonneg i)
   have hgap_pdf : ∀ i : Fin m,
@@ -420,9 +420,9 @@ theorem heterogeneousExponentialDensity_cumulativeArrivalLinearMap_eq_orderWeigh
   simp_rw [harrival_pdf, hgap_pdf]
   calc
     (∏ i : Fin m, ENNReal.ofReal (rate i * Real.exp (-(rate i *
-        EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i)))) =
+        AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i)))) =
         ENNReal.ofReal (∏ i : Fin m, rate i * Real.exp (-(rate i *
-          EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i))) := by
+          AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap m gap i))) := by
             symm
             apply ENNReal.ofReal_prod_of_nonneg
             intro i _hi
@@ -452,7 +452,7 @@ theorem strictIncreasing_indicator_heterogeneousExponentialDensity_cumulativeArr
     (hgap_ne_zero : ∀ i, gap i ≠ 0) :
     (strictIncreasingExponentialCell (n + 2)).indicator
         (heterogeneousExponentialDensity rate)
-        (EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap) =
+        (AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap) =
       ENNReal.ofReal (exponentialRaceOrderWeight rate) *
         heterogeneousExponentialDensity (exponentialRaceSuffixRate rate) gap := by
   by_cases hgap_pos : ∀ i, 0 < gap i
@@ -467,7 +467,7 @@ theorem strictIncreasing_indicator_heterogeneousExponentialDensity_cumulativeArr
     rw [heterogeneousExponentialDensity_eq_zero_of_exists_neg
       (exponentialRaceSuffixRate rate) gap hneg_exists, mul_zero]
     by_cases hstrict :
-        EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap ∈
+        AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap ∈
           strictIncreasingExponentialCell (n + 2)
     · rw [Set.indicator_of_mem hstrict,
         heterogeneousExponentialDensity_cumulativeArrivalLinearMap_eq_zero_of_strict_and_exists_neg
@@ -490,7 +490,7 @@ theorem strictIncreasing_indicator_density_cumulativeArrivalLinearMap_ae
     (fun gap : Fin (n + 2) → ℝ =>
       (strictIncreasingExponentialCell (n + 2)).indicator
         (heterogeneousExponentialDensity rate)
-        (EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap)) =ᵐ[
+        (AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap)) =ᵐ[
           volume]
       fun gap => ENNReal.ofReal (exponentialRaceOrderWeight rate) *
         heterogeneousExponentialDensity (exponentialRaceSuffixRate rate) gap := by
@@ -552,8 +552,8 @@ theorem pi_expMeasure_strictIncreasingExponentialCell_eq_orderWeight
     _ = ∫⁻ gap : Fin (n + 2) → ℝ,
         (strictIncreasingExponentialCell (n + 2)).indicator
           (heterogeneousExponentialDensity rate)
-          (EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap) ∂volume := by
-          exact (EconCSLib.Probability.PoissonProcess.cumulativeArrivalLinearMap_volume_preserving
+          (AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap (n + 2) gap) ∂volume := by
+          exact (AppliedModelingLib.Probability.PoissonProcess.cumulativeArrivalLinearMap_volume_preserving
             (n + 2)).lintegral_comp hindicator_meas |>.symm
     _ = ∫⁻ gap : Fin (n + 2) → ℝ,
         ENNReal.ofReal (exponentialRaceOrderWeight rate) *

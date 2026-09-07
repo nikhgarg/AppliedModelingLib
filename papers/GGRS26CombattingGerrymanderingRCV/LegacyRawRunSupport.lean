@@ -17,7 +17,7 @@ accounting from the ballot-routed STV semantics.
 
 namespace GGRS26CombattingGerrymanderingRCV
 
-open EconCSLib.SocialChoice.Voting
+open AppliedModelingLib.SocialChoice.Voting
 
 /--
 Legacy raw-run bridge retained only for compatibility. It is not eligible for

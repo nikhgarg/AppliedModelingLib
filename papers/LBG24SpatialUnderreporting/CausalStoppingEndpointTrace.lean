@@ -14,8 +14,8 @@ time.
 This is a source-model construction, not a derivation of an arbitrary endpoint
 law from the printed Conditions 1--2 alone.  The source's prose says that endpoints depend on
 reports only through information available up to their times
-(`cited publication:254-258`, `1574-1579`) and later calls this a stopping-times
-assumption (`cited publication:2086-2110`).  A source-carrier bridge still has to
+(`source.txt:254-258`, `1574-1579`) and later calls this a stopping-times
+assumption (`source.txt:2086-2110`).  A source-carrier bridge still has to
 establish the corresponding conditional transition law.  In particular, this
 module does not turn the marginal Condition-2 density into that law.
 -/
@@ -23,8 +23,8 @@ module does not turn the marginal Condition-2 density into that law.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped BigOperators ENNReal NNReal ProbabilityTheory
 
 noncomputable section
@@ -164,7 +164,7 @@ end CollapsedFiniteStageEndpointKernelModel
 The paper's simulator is a concrete source-supported instance of the causal
 reading: after each report it races a new report clock against a death clock
 whose rate may depend on the number of reports already received
-(`cited publication:1897-1904`).  The following construction has one realized death
+(`source.txt:1897-1904`).  The following construction has one realized death
 endpoint on every accepted finite branch.  The independently generated clock
 coordinates are implementation noise for that sequential policy, not a claim
 that the archived Conditions 1--2 imply a product law on an existing carrier.
@@ -195,7 +195,7 @@ theorem endpointKernel_nonnegative_support
     (deathRate_pos : ∀ j, 0 < deathRate j)
     (j : Fin (count + 1)) (history : Fin j.1 -> ℝ) :
     endpointKernel deathRate j history (Set.Iio (0 : ℝ)) = 0 := by
-  let D : EconCSLib.Probability.Exponential.Model :=
+  let D : AppliedModelingLib.Probability.Exponential.Model :=
     ⟨deathRate j, deathRate_pos j⟩
   change D.measure (Set.Iio (0 : ℝ)) = 0
   exact D.measure_Iio_zero

@@ -18,38 +18,35 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 31,
+    "total_rows": 6,
     "uncertain_rows": 0
   },
-  "human_summary": "Sections 2 and 4 are fully formalized. Section 3 has query/descent/rounded-search support. The PTAS/FPTAS runtime layer needs reusable fixed-dimension IP complexity infrastructure.",
+  "human_summary": "Six source-facing Section 2/4 contracts are formally checked: Lemma 2.2, Theorem 2.1 existence, positive-alpha Theorem 2.3, both Theorem 4.1 clauses, and Theorem 4.2 uniform-random truthfulness. Nine remaining source claims, including the Section 3 PTAS/FPTAS runtime layer, are explicit zero-proof boundaries.",
   "id": "LMMS04FairDivision",
-  "main_caveat": "Partial-formalization boundary: the Section 3 runtime/search layer and some rounded-IP/counterexample endpoints remain certificate boundaries; Sections 2 and 4 stay formalized at their existing boundary.",
+  "main_caveat": "Partial-formalization boundary: six selected Section 2/4 source-facing contracts are checked, while the Theorem 2.1 runtime, Lemma 2.4 cardinality, Theorem 2.3 zero-atom, all Section 3, and Theorem 4.2 asymptotic claims remain explicit zero-proof boundaries.",
   "paper_interface": {
-    "declaration_rows": 48,
-    "line_count": 303,
+    "declaration_rows": 78,
+    "line_count": 497,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/LMMS04FairDivision/PaperInterface.lean",
     "proof_interface_line_count": 7726,
     "proof_interface_path": "papers/LMMS04FairDivision/ProofInterface.lean",
-    "review_rows": 31
+    "review_rows": 6
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/LMMS04FairDivision/FINAL_VALIDATION_REPORT.md",
   "review_surface": {
     "assumption_names": [
-      "assumption_nonnegative_alpha_bound",
+      "assumption_additive_transfer_load_window_conditions",
       "assumption_alpha_marginal_value_bound",
-      "assumption_duplicate_free_goods_enumeration",
-      "assumption_positive_atom_bound",
-      "assumption_ptas_error_parameter_range",
-      "assumption_external_graham_scheduling_boundary",
-      "assumption_fixed_dimension_ip_runtime_boundary",
-      "assumption_positive_rounding_and_load_parameters",
       "assumption_base_load_at_most_rounded_average",
       "assumption_claim34_positive_small_goods_domain",
-      "assumption_claim34_rounded_type_window_condition",
-      "assumption_additive_transfer_load_window_conditions",
+      "assumption_duplicate_free_goods_enumeration",
+      "assumption_nonnegative_alpha_bound",
+      "assumption_positive_atom_bound",
+      "assumption_positive_rounding_and_load_parameters",
+      "assumption_ptas_error_parameter_range",
       "assumption_uniform_random_weight_normalization"
     ],
     "assumption_policy": "strict",
@@ -67,127 +64,40 @@
       "theorem3_3_external_solver_selected_pair_full_summary_source_output_payload"
     ],
     "include_names": [
-      "envySpec",
-      "envyFreeSpec",
-      "envyBoundedBySpec",
-      "maxMarginalSpec",
-      "isAllocationOfSpec",
       "lemma2_2_acyclic_reductionSpec",
       "theorem2_1_bounded_envy_allocation_existsSpec",
-      "theorem2_1_alpha_bounded_allocation_existsSpec",
-      "theorem2_1_algorithm_correct_list_toFinsetSpec",
       "theorem2_3_real_interval_supported_atom_boundSpec",
-      "theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queriesSpec",
-      "theorem3_1_eventually_minimum_envy_ratio_lower_bound_from_twoBit_adaptive_queriesSpec",
-      "theorem3_2_graham_certificate_to_envy_ratio_boundSpec",
-      "theorem3_2_graham_factor_eq_seven_fifthsSpec",
-      "theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guaranteeSpec",
-      "theorem3_3_claim34_fixed_rounding_ratio_endpointSpec",
-      "theorem3_3_claim34_capped_weighted_supply_ratio_endpointSpec",
-      "claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goodsSpec",
-      "claim3_4_identical_utilities_bounded_optimum_boundSpec",
-      "theorem3_3_ratio_transfer_certificate_epsilon_of_agentwise_additive_loadsSpec",
-      "lemma3_5_additive_transfer_epsilon_boundSpec",
-      "directMechanism_fieldsSpec",
-      "randomizedDirectMechanism_fieldsSpec",
-      "truthfulSpec",
-      "randomizedTruthfulSpec",
-      "theorem4_1_source_goods_contentSpec",
-      "theorem4_1_true_report_formulaSpec",
       "theorem4_1_source_not_truthful_envy_free_whenever_existsSpec",
       "theorem4_1_source_minimum_envy_not_truthfulSpec",
-      "theorem4_2_uniform_random_mechanism_truthfulSpec",
-      "theorem4_2_uniform_random_max_envy_probability_boundSpec"
+      "theorem4_2_uniform_random_mechanism_truthfulSpec"
     ],
     "llm_assumption_review": "papers/LMMS04FairDivision/audit/assumption_match_llm.json",
     "llm_statement_review": {
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2"
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
     },
     "proposition_spec_proofs": {
-      "claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goodsSpec": "claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goods",
-      "claim3_4_identical_utilities_bounded_optimum_boundSpec": "claim3_4_identical_utilities_bounded_optimum_bound",
-      "directMechanism_fieldsSpec": "directMechanism_fields",
-      "envyBoundedBySpec": "envyBoundedBy",
-      "envyFreeSpec": "envyFree",
-      "envySpec": "envy",
-      "isAllocationOfSpec": "isAllocationOf",
-      "lemma2_2_acyclic_reductionSpec": "lemma2_2_acyclic_reduction",
-      "lemma3_5_additive_transfer_epsilon_boundSpec": "lemma3_5_additive_transfer_epsilon_bound",
-      "maxMarginalSpec": "maxMarginal",
-      "randomizedDirectMechanism_fieldsSpec": "randomizedDirectMechanism_fields",
-      "randomizedTruthfulSpec": "randomizedTruthful",
-      "theorem2_1_algorithm_correct_list_toFinsetSpec": "theorem2_1_algorithm_correct_list_toFinset",
-      "theorem2_1_alpha_bounded_allocation_existsSpec": "theorem2_1_alpha_bounded_allocation_exists",
-      "theorem2_1_bounded_envy_allocation_existsSpec": "theorem2_1_bounded_envy_allocation_exists",
-      "theorem2_3_real_interval_supported_atom_boundSpec": "theorem2_3_real_interval_supported_atom_bound",
-      "theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queriesSpec": "theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queries",
-      "theorem3_1_eventually_minimum_envy_ratio_lower_bound_from_twoBit_adaptive_queriesSpec": "theorem3_1_eventually_minimum_envy_ratio_lower_bound_from_twoBit_adaptive_queries",
-      "theorem3_2_graham_certificate_to_envy_ratio_boundSpec": "theorem3_2_graham_certificate_to_envy_ratio_bound",
-      "theorem3_2_graham_factor_eq_seven_fifthsSpec": "theorem3_2_graham_factor_eq_seven_fifths",
-      "theorem3_3_claim34_capped_weighted_supply_ratio_endpointSpec": "theorem3_3_claim34_capped_weighted_supply_ratio_endpoint",
-      "theorem3_3_claim34_fixed_rounding_ratio_endpointSpec": "theorem3_3_claim34_fixed_rounding_ratio_endpoint",
-      "theorem3_3_ratio_transfer_certificate_epsilon_of_agentwise_additive_loadsSpec": "theorem3_3_ratio_transfer_certificate_epsilon_of_agentwise_additive_loads",
-      "theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guaranteeSpec": "theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guarantee",
-      "theorem4_1_source_goods_contentSpec": "theorem4_1_source_goods_content",
-      "theorem4_1_source_minimum_envy_not_truthfulSpec": "theorem4_1_source_minimum_envy_not_truthful",
-      "theorem4_1_source_not_truthful_envy_free_whenever_existsSpec": "theorem4_1_source_not_truthful_envy_free_whenever_exists",
-      "theorem4_1_true_report_formulaSpec": "theorem4_1_true_report_formula",
-      "theorem4_2_uniform_random_max_envy_probability_boundSpec": "theorem4_2_uniform_random_max_envy_probability_bound",
-      "theorem4_2_uniform_random_mechanism_truthfulSpec": "theorem4_2_uniform_random_mechanism_truthful",
-      "truthfulSpec": "truthful"
+      "lemma2_2_acyclic_reductionSpec": "lemma2_2_acyclic_reductionSpec_proof",
+      "theorem2_1_bounded_envy_allocation_existsSpec": "theorem2_1_bounded_envy_allocation_existsSpec_proof",
+      "theorem2_3_real_interval_supported_atom_boundSpec": "theorem2_3_real_interval_supported_atom_boundSpec_proof",
+      "theorem4_1_source_minimum_envy_not_truthfulSpec": "theorem4_1_source_minimum_envy_not_truthfulSpec_proof",
+      "theorem4_1_source_not_truthful_envy_free_whenever_existsSpec": "theorem4_1_source_not_truthful_envy_free_whenever_existsSpec_proof",
+      "theorem4_2_uniform_random_mechanism_truthfulSpec": "theorem4_2_uniform_random_mechanism_truthfulSpec_proof"
     },
     "require_source_spec_correspondence": true,
     "require_v11_raw_source_spec_screening": true,
     "slices": [
       {
-        "id": "definitions-and-section-2",
+        "id": "additional_source_results",
         "names": [
-          "envy",
-          "envyFree",
-          "envyBoundedBy",
-          "maxMarginal",
-          "isAllocationOf",
-          "lemma2_2_acyclic_reduction",
-          "theorem2_1_bounded_envy_allocation_exists",
-          "theorem2_1_alpha_bounded_allocation_exists",
-          "theorem2_1_algorithm_correct_list_toFinset",
-          "theorem2_3_real_interval_supported_atom_bound"
+          "lemma2_2_acyclic_reductionSpec",
+          "theorem2_1_bounded_envy_allocation_existsSpec",
+          "theorem2_3_real_interval_supported_atom_boundSpec",
+          "theorem4_1_source_not_truthful_envy_free_whenever_existsSpec",
+          "theorem4_1_source_minimum_envy_not_truthfulSpec",
+          "theorem4_2_uniform_random_mechanism_truthfulSpec"
         ],
-        "title": "Definitions and Section 2"
-      },
-      {
-        "id": "section-3-lower-bound-and-scheduling",
-        "names": [
-          "theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queries",
-          "theorem3_1_eventually_minimum_envy_ratio_lower_bound_from_twoBit_adaptive_queries",
-          "theorem3_2_graham_certificate_to_envy_ratio_bound",
-          "theorem3_2_graham_factor_eq_seven_fifths"
-        ],
-        "title": "Section 3 Lower Bound and Scheduling"
-      },
-      {
-        "id": "section-3-ptas-boundary",
-        "names": [
-          "theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guarantee",
-          "theorem3_3_claim34_fixed_rounding_ratio_endpoint",
-          "theorem3_3_claim34_capped_weighted_supply_ratio_endpoint",
-          "claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goods",
-          "theorem3_3_ratio_transfer_certificate_epsilon_of_agentwise_additive_loads"
-        ],
-        "title": "Section 3 PTAS Boundary"
-      },
-      {
-        "id": "section-4-truthfulness",
-        "names": [
-          "truthful",
-          "randomizedTruthful",
-          "theorem4_1_source_not_truthful_envy_free_whenever_exists",
-          "theorem4_1_source_minimum_envy_not_truthful",
-          "theorem4_2_uniform_random_mechanism_truthful",
-          "theorem4_2_uniform_random_max_envy_probability_bound"
-        ],
-        "title": "Section 4 Truthfulness"
+        "title": "Additional source results"
       }
     ],
     "source_file": "papers/LMMS04FairDivision/PaperInterface.lean"

@@ -16,7 +16,7 @@ For `PaperInterface.lean` and `MainTheorems.lean`-style files:
   named result, plus only genuinely source-facing auxiliary definitions. Move
   helper variants, certificates, proof-seam aliases, and diagnostic endpoints
   to `ProofInterface.lean`, `PostPaperAudit.lean`, or implementation modules.
-- Keep source notation explicit, even when generic wrappers exist in `EconCSLib`.
+- Keep source notation explicit, even when generic wrappers exist in `AppliedModelingLib`.
 - Prefer source names in docstrings and comments:
   - “Lemma X”, “Theorem 3.1”, “Proposition A”, etc.
 - Keep each source item anchored by a concrete declaration with a stable name.
@@ -26,7 +26,7 @@ For `PaperInterface.lean` and `MainTheorems.lean`-style files:
 ## 2) Declaration quality bar
 
 - Use `## Main declarations` in module docstrings for every paper-facing ledger
-  and reusable `EconCSLib` module.
+  and reusable `AppliedModelingLib` module.
 - Place all assumptions on theorem arguments, not in informal side comments.
 - For paper-facing declarations, every theorem argument that is an assumption
   rather than a derived object must reference an explicit paper assumption
@@ -107,7 +107,7 @@ Before claiming progress:
 
 - Keep library-style theorem names short, snake_case, and grouped by intent:
   - `..._mono`, `..._eq`, `..._iff`, `..._of_...`, `..._implies_...`.
-- Keep paper-logic wrappers in paper folders and generic helpers in `EconCSLib/`.
+- Keep paper-logic wrappers in paper folders and generic helpers in `AppliedModelingLib/`.
 - Add one-line comments when a theorem is a convenience shell over a lower-level
   lemma so downstream users know where to inspect proof details.
 

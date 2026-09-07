@@ -1,10 +1,10 @@
-import EconCSLib.Foundations.Probability.FiniteExpectation
-import EconCSLib.Foundations.Probability.FairCoin
-import EconCSLib.Foundations.Math.FiniteRanking
-import EconCSLib.Foundations.Math.PositiveDenominator
-import EconCSLib.MechanismDesign.Auctions.DigitalGoods
-import EconCSLib.MechanismDesign.Auctions.Position
-import EconCSLib.MechanismDesign.Auctions.Combinatorial
+import AppliedModelingLib.Foundations.Probability.FiniteExpectation
+import AppliedModelingLib.Foundations.Probability.FairCoin
+import AppliedModelingLib.Foundations.Math.FiniteRanking
+import AppliedModelingLib.Foundations.Math.PositiveDenominator
+import AppliedModelingLib.MechanismDesign.Auctions.DigitalGoods
+import AppliedModelingLib.MechanismDesign.Auctions.Position
+import AppliedModelingLib.MechanismDesign.Auctions.Combinatorial
 import GHW01DigitalGoods.AuctionMainTheorems
 import Mathlib.Analysis.SpecialFunctions.Log.Base
 import Mathlib.Data.Fintype.Sets
@@ -21,11 +21,11 @@ open ProbabilityTheory
 # Paper-Facing Theorems: EOS GSP and Position Auctions
 
 This file contains the EOS07GSP paper-facing auction theorem surface.  The
-reusable position-auction definitions remain in `EconCSLib.MechanismDesign.Auctions.Position`;
+reusable position-auction definitions remain in `AppliedModelingLib.MechanismDesign.Auctions.Position`;
 this module is intentionally paper-owned.
 -/
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Auction
 
 /--
@@ -54072,4 +54072,4 @@ theorem paper_theorem8_bstar_ranked_threshold_strict_ordered_finite_exact_histor
         belief).mpr hlocal
 
 end Auction
-end EconCSLib
+end AppliedModelingLib

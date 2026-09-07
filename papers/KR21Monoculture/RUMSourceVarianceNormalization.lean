@@ -1,7 +1,7 @@
 import KR21Monoculture.UnitVarianceNormalization
 
-open EconCSLib MeasureTheory ProbabilityTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib.SocialChoice.Ranking
 
 /-!
 # Finite-positive-variance normalization for KR21 RUMs

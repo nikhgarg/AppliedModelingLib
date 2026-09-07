@@ -25,7 +25,7 @@ structure HeterogeneousBernoulliUniformHomogeneityCertificate
   likelihood_pos : ∀ t, 0 < B.likelihood t
   asymptotic_uniform :
     ConsumptionModel.AsymptoticHomogeneityTarget
-      (fun _ => B.toConsumptionModel) (uniformProfile T) EconCSLib.Math.ExactInvRate
+      (fun _ => B.toConsumptionModel) (uniformProfile T) AppliedModelingLib.Math.ExactInvRate
 
 /--
 Auxiliary heterogeneous-Bernoulli asymptotic bridge from an explicit certificate.
@@ -34,7 +34,7 @@ theorem heterogeneous_bernoulli_asymptotic_uniform_homogeneity
     {T : ℕ} [NeZero T] (B : BernoulliSatisfactionModel T)
     (hcert : HeterogeneousBernoulliUniformHomogeneityCertificate B) :
     ConsumptionModel.AsymptoticHomogeneityTarget
-      (fun _ => B.toConsumptionModel) (uniformProfile T) EconCSLib.Math.ExactInvRate := hcert.asymptotic_uniform
+      (fun _ => B.toConsumptionModel) (uniformProfile T) AppliedModelingLib.Math.ExactInvRate := hcert.asymptotic_uniform
 
 /--
 The source Theorem 3 log-share weight for a Bernoulli type.
@@ -110,14 +110,14 @@ noncomputable def theorem3LogOffset {T : ℕ}
 /-- A finite bound for all pairwise log-likelihood offsets in Theorem 3. -/
 noncomputable def theorem3LogOffsetBound {T : ℕ} [NeZero T]
     (B : BernoulliSatisfactionModel T) : ℝ :=
-  EconCSLib.finiteMax
+  AppliedModelingLib.finiteMax
     (fun p : ItemType T × ItemType T => theorem3LogOffset B p.1 p.2)
 
 theorem theorem3LogOffset_le_bound {T : ℕ} [NeZero T]
     (B : BernoulliSatisfactionModel T) (i j : ItemType T) :
     theorem3LogOffset B i j ≤ theorem3LogOffsetBound B := by
   unfold theorem3LogOffsetBound
-  exact EconCSLib.le_finiteMax
+  exact AppliedModelingLib.le_finiteMax
     (fun p : ItemType T × ItemType T => theorem3LogOffset B p.1 p.2) (i, j)
 
 theorem theorem3LogOffsetBound_pos {T : ℕ} [NeZero T]
@@ -137,7 +137,7 @@ theorem theorem3LogOffsetBound_pos {T : ℕ} [NeZero T]
 
 /-- The minimum Theorem 3 target weight across the finite type set. -/
 noncomputable def theorem3LogShareWeightMin {T : ℕ} [NeZero T]
-    (B : BernoulliSatisfactionModel T) : ℝ := EconCSLib.finiteMin (theorem3LogShareWeight B)
+    (B : BernoulliSatisfactionModel T) : ℝ := AppliedModelingLib.finiteMin (theorem3LogShareWeight B)
 
 theorem theorem3LogShareWeightMin_pos {T : ℕ} [NeZero T]
     (B : BernoulliSatisfactionModel T)
@@ -145,14 +145,14 @@ theorem theorem3LogShareWeightMin_pos {T : ℕ} [NeZero T]
     (hprob_lt_one : ∀ t, B.successProb t < 1) :
     0 < theorem3LogShareWeightMin B := by
   unfold theorem3LogShareWeightMin
-  exact EconCSLib.finiteMin_pos (theorem3LogShareWeight B)
+  exact AppliedModelingLib.finiteMin_pos (theorem3LogShareWeight B)
     (theorem3LogShareWeight_pos B hprob_pos hprob_lt_one)
 
 theorem theorem3LogShareWeightMin_le {T : ℕ} [NeZero T]
     (B : BernoulliSatisfactionModel T) (t : ItemType T) :
     theorem3LogShareWeightMin B ≤ theorem3LogShareWeight B t := by
   unfold theorem3LogShareWeightMin
-  exact EconCSLib.finiteMin_le (theorem3LogShareWeight B) t
+  exact AppliedModelingLib.finiteMin_le (theorem3LogShareWeight B) t
 
 /-- Generic small-`N` scaled-count bound from the finite positive weight floor. -/
 noncomputable def theorem3SmallNScaledBound {T : ℕ} [NeZero T]
@@ -173,7 +173,7 @@ theorem theorem3_scaled_count_pairwise_abs_le_of_total_lt
     (hprob_pos : ∀ t, 0 < B.successProb t)
     (hprob_lt_one : ∀ t, B.successProb t < 1)
     (a : CountAllocation T) {N threshold : ℕ}
-    (htotal : EconCSLib.Allocation.total a = N)
+    (htotal : AppliedModelingLib.Allocation.total a = N)
     (hNlt : N < threshold) :
     ∀ i j,
       |(a.count i : ℝ) / theorem3LogShareWeight B i -
@@ -182,7 +182,7 @@ theorem theorem3_scaled_count_pairwise_abs_le_of_total_lt
   intro i j
   have hmin_pos := theorem3LogShareWeightMin_pos B hprob_pos hprob_lt_one
   simpa [theorem3SmallNScaledBound] using
-    EconCSLib.Allocation.pairwise_scaled_abs_le_of_total_lt
+    AppliedModelingLib.Allocation.pairwise_scaled_abs_le_of_total_lt
       (a := a) (weight := theorem3LogShareWeight B)
       (N := N) (threshold := threshold)
       (weightFloor := theorem3LogShareWeightMin B)
@@ -194,12 +194,12 @@ than `K`.
 -/
 theorem exists_count_gt_of_card_mul_lt_total
     {T : ℕ} [NeZero T] (a : CountAllocation T) {K : ℕ}
-    (hgt : T * K < EconCSLib.Allocation.total a) :
+    (hgt : T * K < AppliedModelingLib.Allocation.total a) :
     ∃ t : ItemType T, K < a.count t := by
   have hgt' :
-      Fintype.card (ItemType T) * K < EconCSLib.Allocation.total a := by
+      Fintype.card (ItemType T) * K < AppliedModelingLib.Allocation.total a := by
     simpa [Fintype.card_fin] using hgt
-  exact EconCSLib.Allocation.exists_count_gt_of_card_mul_lt_total a hgt'
+  exact AppliedModelingLib.Allocation.exists_count_gt_of_card_mul_lt_total a hgt'
 
 theorem theorem3LogShareProfile_normalizer_pos {T : ℕ} [NeZero T]
     (B : BernoulliSatisfactionModel T)
@@ -263,7 +263,7 @@ noncomputable def bernoulliAllConsumedModel {T : ℕ}
 /-- Allocation putting all `N` recommendations on one type. -/
 def allOnTypeAllocation {T : ℕ} (N : ℕ) (best : ItemType T) :
     CountAllocation T :=
-  EconCSLib.Allocation.allOnTypeAllocation N best
+  AppliedModelingLib.Allocation.allOnTypeAllocation N best
 
 @[simp] theorem allOnTypeAllocation_self {T : ℕ}
     (N : ℕ) (best : ItemType T) :
@@ -274,12 +274,12 @@ theorem allOnTypeAllocation_of_ne {T : ℕ}
     (N : ℕ) {best t : ItemType T} (hne : t ≠ best) :
     (allOnTypeAllocation N best).count t = 0 := by
   simpa [allOnTypeAllocation] using
-    EconCSLib.Allocation.allOnTypeAllocation_of_ne (κ := ItemType T) N (best := best)
+    AppliedModelingLib.Allocation.allOnTypeAllocation_of_ne (κ := ItemType T) N (best := best)
       (k := t) hne
 
 theorem allOnTypeAllocation_total {T : ℕ}
     (N : ℕ) (best : ItemType T) :
-    EconCSLib.Allocation.total (allOnTypeAllocation N best) = N := by
+    AppliedModelingLib.Allocation.total (allOnTypeAllocation N best) = N := by
   simp [allOnTypeAllocation]
 
 theorem linearized_objective_eq_sum_count_mul_score {T : ℕ}
@@ -288,7 +288,7 @@ theorem linearized_objective_eq_sum_count_mul_score {T : ℕ}
       ∑ t : ItemType T, (a.count t : ℝ) * (likelihood t * perItemValue t) := by
   simpa [ConsumptionModel.objective, ConsumptionModel.linearized,
     ConsumptionModel.linearValueOfCount] using
-    EconCSLib.Allocation.objective_linearValueOfCount_eq_sum_count_mul_score
+    AppliedModelingLib.Allocation.objective_linearValueOfCount_eq_sum_count_mul_score
       likelihood perItemValue a
 
 /--
@@ -304,7 +304,7 @@ theorem allOnTypeAllocation_linearized_isOptimalAtTotal {T : ℕ}
   simpa [ConsumptionModel.IsOptimalAtTotal, ConsumptionModel.FeasibleAtTotal,
     ConsumptionModel.objective, ConsumptionModel.linearized,
     ConsumptionModel.linearValueOfCount, allOnTypeAllocation] using
-    EconCSLib.Allocation.allOnTypeAllocation_isOptimalAtTotal_linearValueOfCount
+    AppliedModelingLib.Allocation.allOnTypeAllocation_isOptimalAtTotal_linearValueOfCount
       likelihood perItemValue N best hbest
 
 /--
@@ -322,7 +322,7 @@ theorem linearized_optimal_count_eq_zero_of_strict_score_lt
         likelihood best * perItemValue best) :
     a.count t = 0 := by
   exact
-    EconCSLib.Allocation.count_eq_zero_of_isOptimalAtTotal_linearValueOfCount_of_strict_score_lt
+    AppliedModelingLib.Allocation.count_eq_zero_of_isOptimalAtTotal_linearValueOfCount_of_strict_score_lt
       (weight := likelihood) (perUnitValue := perItemValue) (N := N) (a := a)
       (k := t) (best := best)
       (by
@@ -546,12 +546,12 @@ noncomputable def
     intro N a _hN hlarge hopt dst
     by_contra hnot_pos
     have hdst_zero : a.count dst = 0 := Nat.eq_zero_of_not_pos hnot_pos
-    have htotal_gt : T * hcert.count_threshold < EconCSLib.Allocation.total a := by
+    have htotal_gt : T * hcert.count_threshold < AppliedModelingLib.Allocation.total a := by
       rw [hopt.1]
       exact Nat.lt_of_succ_le hlarge
     obtain ⟨src, hsrc_gt⟩ :=
       exists_count_gt_of_card_mul_lt_total a htotal_gt
-    have hcan : EconCSLib.Allocation.CanMoveOne a src :=
+    have hcan : AppliedModelingLib.Allocation.CanMoveOne a src :=
       Nat.lt_of_le_of_lt (Nat.zero_le hcert.count_threshold) hsrc_gt
     have hne : src ≠ dst := by
       intro hsd
@@ -626,7 +626,7 @@ theorem varying_bernoulli_log_share_exact_rate_of_certificate
     (hcert : VaryingBernoulliLogShareCertificate B) :
     ConsumptionModel.AsymptoticHomogeneityTarget
       (fun _ => B.toConsumptionModel) (theorem3LogShareProfile B)
-      EconCSLib.Math.ExactInvRate :=
+      AppliedModelingLib.Math.ExactInvRate :=
   ConsumptionModel.AsymptoticHomogeneityTarget.of_uniform_count_abs_error
     hcert.count_bound_pos hcert.count_close
 
@@ -670,7 +670,7 @@ theorem bernoulli_optimum_pairwise_difference_bounded
       mul_div_cancel_right₀ (↑(a.count t₁)) hlog_neg.ne
     rw [h2]
     linarith
-  · have hcan : EconCSLib.Allocation.CanMoveOne a t₁ := ha1
+  · have hcan : AppliedModelingLib.Allocation.CanMoveOne a t₁ := ha1
     have hfoc := BernoulliSatisfactionModel.forwardMarginal_le_backwardMarginal_of_optimum B N hopt hne hcan
     have h_lp1_pos : 0 < B.likelihood t₁ * B.successProb t₁ := mul_pos (hlike_pos t₁) (hprob_pos t₁)
     have h_lp2_pos : 0 < B.likelihood t₂ * B.successProb t₂ := mul_pos (hlike_pos t₂) (hprob_pos t₂)
@@ -721,7 +721,7 @@ theorem bernoulli_optimum_log_scaled_count_pairwise_upper
   · subst dst
     have hscale_pos := theorem3LogScale_pos B hprob_pos hprob_lt_one src
     linarith
-  · have hcan : EconCSLib.Allocation.CanMoveOne a src := hsrc_pos
+  · have hcan : AppliedModelingLib.Allocation.CanMoveOne a src := hsrc_pos
     have hfoc :=
       BernoulliSatisfactionModel.forwardMarginal_le_backwardMarginal_of_optimum
         B N hopt hne hcan
@@ -1011,13 +1011,13 @@ theorem mixed_foc_one_zero (B : BernoulliSatisfactionModel 1) (Ulike : ItemType 
     (Ulike 0) * (1 / ((a.count 1 + 1 : ℝ) * (a.count 1 + 2 : ℝ))) ≤
     (B.likelihood 0) * (B.successProb 0) * (1 - B.successProb 0) ^ (a.count 0 - 1) := by
   have hne : (0 : ItemType 2) ≠ 1 := by norm_num
-  have hcan : EconCSLib.Allocation.CanMoveOne a 0 := ha0
+  have hcan : AppliedModelingLib.Allocation.CanMoveOne a 0 := ha0
   have h := ConsumptionModel.weightedForwardMarginal_le_weightedBackwardMarginal_of_optimum
     (mixedConsumptionModel B Ulike) N hopt hne hcan
   unfold mixedConsumptionModel at h
   unfold ConsumptionModel.weightedForwardMarginal ConsumptionModel.weightedBackwardMarginal at h
   unfold ConsumptionModel.marginalValue at h
-  unfold EconCSLib.Allocation.marginal at h
+  unfold AppliedModelingLib.Allocation.marginal at h
   dsimp only at h
   have ha0ne0 : a.count 0 ≠ 0 := ne_of_gt ha0
   rw [dif_neg ha0ne0] at h
@@ -1070,7 +1070,7 @@ structure MixedBernoulliUniformHomogeneityCertificate
   asymptotic_mixed :
     ConsumptionModel.AsymptoticHomogeneityTarget
       (fun _ => mixedConsumptionModel B Ulike) (mixedTargetProfile (Ulike 0))
-      EconCSLib.Math.ExactInvSqrtRate
+      AppliedModelingLib.Math.ExactInvSqrtRate
 
 /--
 Auxiliary mixed Bernoulli-uniform homogeneity bridge from an explicit
@@ -1081,6 +1081,6 @@ theorem mixed_bernoulli_uniform_asymptotic_homogeneity
     (hcert : MixedBernoulliUniformHomogeneityCertificate B Ulike) :
     ConsumptionModel.AsymptoticHomogeneityTarget
       (fun _ => mixedConsumptionModel B Ulike) (mixedTargetProfile (Ulike 0))
-      EconCSLib.Math.ExactInvSqrtRate := hcert.asymptotic_mixed
+      AppliedModelingLib.Math.ExactInvSqrtRate := hcert.asymptotic_mixed
 
 end PRPKG24AccuracyDiversity

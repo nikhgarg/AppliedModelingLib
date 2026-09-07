@@ -19,7 +19,7 @@ by the source immediately after the general-model discussion.
 
 namespace Roth82StableMatching
 
-open EconCSLib.Matching
+open AppliedModelingLib.Matching
 
 /-! ## Dummy completion of optional assignments -/
 
@@ -176,7 +176,7 @@ noncomputable def batchedApplicantOutcome
     (hdomain : strictDomain val_applicant val_college) :
     QuotaAssignment Applicants Colleges :=
   ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment
-    quota val_applicant val_college hdomain.2.1
+    quota val_applicant val_college hdomain.2.1 hdomain.1.1
 
 /--
 The quota footnote's batched waiting-list runner is a checked refinement of

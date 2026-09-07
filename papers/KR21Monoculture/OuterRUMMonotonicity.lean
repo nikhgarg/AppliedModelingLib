@@ -1,6 +1,6 @@
 import KR21Monoculture.Theorem2OuterConditionalSource
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 
 namespace KR21Monoculture
 namespace DistributionalAccuracyFamily

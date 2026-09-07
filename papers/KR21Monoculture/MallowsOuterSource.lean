@@ -1,6 +1,6 @@
 import KR21Monoculture.OuterLinearPayoffBridge
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
 
 namespace KR21Monoculture
 

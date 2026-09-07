@@ -12,7 +12,7 @@ Source: `EFXadditivechores.tex`, lines 2411--2419.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The source's B.2.1(b) transfer: remove one chore from the presently long
 agent `2` and give it to agent `3`.  The subsequent label swap is handled

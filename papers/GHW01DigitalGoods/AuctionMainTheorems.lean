@@ -1,10 +1,10 @@
-import EconCSLib.Foundations.Probability.FiniteExpectation
-import EconCSLib.Foundations.Probability.FairCoin
-import EconCSLib.Foundations.Math.FiniteRanking
-import EconCSLib.Foundations.Math.PositiveDenominator
-import EconCSLib.MechanismDesign.Auctions.DigitalGoods
-import EconCSLib.MechanismDesign.Auctions.Position
-import EconCSLib.MechanismDesign.Auctions.Combinatorial
+import AppliedModelingLib.Foundations.Probability.FiniteExpectation
+import AppliedModelingLib.Foundations.Probability.FairCoin
+import AppliedModelingLib.Foundations.Math.FiniteRanking
+import AppliedModelingLib.Foundations.Math.PositiveDenominator
+import AppliedModelingLib.MechanismDesign.Auctions.DigitalGoods
+import AppliedModelingLib.MechanismDesign.Auctions.Position
+import AppliedModelingLib.MechanismDesign.Auctions.Combinatorial
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Analysis.SpecialFunctions.Log.Base
 import Mathlib.Data.Fintype.Sets
@@ -28,7 +28,7 @@ The full approximation/equilibrium theorems remain future work; this file
 exposes the closed unconditional theorem surface now available.
 -/
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Auction
 
 /-! ## 1) Paper-Facing Definitions: 2021 Digital Goods -/
@@ -13336,12 +13336,12 @@ theorem paper_theorem9_3_erased_bid_offer_anonymity_of_relabeling_anonymity
           simp)
 
 end Auction
-end EconCSLib
+end AppliedModelingLib
 
 namespace GHW01DigitalGoods
 namespace Theorem93
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 
 /--
 Source-facing deterministic anonymous model for GHW Theorem 9.3. The final
@@ -13661,7 +13661,7 @@ noncomputable def anonymousTruthfulDeterministicSourceModelOfBidListOfferSourceM
 end Theorem93
 end GHW01DigitalGoods
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Auction
 
 open GHW01DigitalGoods.Theorem93
@@ -14407,4 +14407,4 @@ theorem paper_theorem9_3_deterministic_truthful_ratio_witness_of_count_threshold
       hhigh_ge_two halpha_pos
 
 end Auction
-end EconCSLib
+end AppliedModelingLib

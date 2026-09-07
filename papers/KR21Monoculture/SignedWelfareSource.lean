@@ -1,7 +1,7 @@
 import KR21Monoculture.QuantitativeWitnesses
 import KR21Monoculture.MallowsOuterSource
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 

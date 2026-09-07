@@ -1,6 +1,6 @@
 import KR21Monoculture.RerankingGain
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -10,7 +10,7 @@ This is the shared-ranking welfare counterpart to the independent ordered welfar
 -/
 noncomputable def expectedWelfareShared {n : ℕ}
     (μ : PMF (Ranking n)) (value : Candidate n → ℝ) : ℝ :=
-  EconCSLib.SocialChoice.Ranking.expectedWelfareShared μ value
+  AppliedModelingLib.SocialChoice.Ranking.expectedWelfareShared μ value
 
 /-- Shared-ranking welfare is first-position utility plus second-position utility. -/
 theorem expectedWelfareShared_eq_firstMover_add_secondMoverShared {n : ℕ}
@@ -18,7 +18,7 @@ theorem expectedWelfareShared_eq_firstMover_add_secondMoverShared {n : ℕ}
     expectedWelfareShared μ value =
       expectedFirstMoverUtility μ value + expectedSecondMoverShared μ value := by
   simpa [expectedWelfareShared] using
-    EconCSLib.SocialChoice.Ranking.expectedWelfareShared_eq_firstMover_add_secondMoverShared
+    AppliedModelingLib.SocialChoice.Ranking.expectedWelfareShared_eq_firstMover_add_secondMoverShared
       (μ := μ) (value := value)
 
 /--
@@ -30,7 +30,7 @@ theorem expectedWelfareOrdered_eq_firstMover_add_secondMoverIndependent {n : ℕ
     expectedWelfareOrdered μ₂ μ₁ value =
       expectedFirstMoverUtility μ₁ value + expectedSecondMoverIndependent μ₂ μ₁ value := by
   exact
-    EconCSLib.SocialChoice.Ranking.expectedWelfareOrdered_eq_firstMover_add_secondMoverIndependent
+    AppliedModelingLib.SocialChoice.Ranking.expectedWelfareOrdered_eq_firstMover_add_secondMoverIndependent
       (μ₂ := μ₂) (μ₁ := μ₁) (value := value)
 
 /--
@@ -42,7 +42,7 @@ theorem expectedWelfareOrdered_self_sub_expectedWelfareShared_eq_expectedReranki
     expectedWelfareOrdered μ μ value - expectedWelfareShared μ value =
       expectedRerankingGain μ value := by
   simpa [expectedWelfareShared] using
-    EconCSLib.SocialChoice.Ranking.expectedWelfareOrdered_self_sub_expectedWelfareShared_eq_expectedRerankingGain
+    AppliedModelingLib.SocialChoice.Ranking.expectedWelfareOrdered_self_sub_expectedWelfareShared_eq_expectedRerankingGain
       (μ := μ) (value := value)
 
 /-- Additive version of the shared-vs-independent welfare decomposition. -/
@@ -51,7 +51,7 @@ theorem expectedWelfareOrdered_self_eq_expectedWelfareShared_add_expectedReranki
     expectedWelfareOrdered μ μ value =
       expectedWelfareShared μ value + expectedRerankingGain μ value := by
   simpa [expectedWelfareShared] using
-    EconCSLib.SocialChoice.Ranking.expectedWelfareOrdered_self_eq_expectedWelfareShared_add_expectedRerankingGain
+    AppliedModelingLib.SocialChoice.Ranking.expectedWelfareOrdered_self_eq_expectedWelfareShared_add_expectedRerankingGain
       (μ := μ) (value := value)
 
 namespace Model

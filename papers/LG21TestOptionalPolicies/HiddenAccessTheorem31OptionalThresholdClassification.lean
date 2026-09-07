@@ -17,7 +17,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-- Under the literal hidden-access source model, stable optional reporting is
@@ -192,7 +192,8 @@ theorem lg21HiddenAccess_optional_reportDecision_eq_rawPosteriorCutoff_ae_of_lit
           E.reportedPayoff (lg21HiddenAccessStudentBase testFeature student.2)
             (lg21HiddenAccessStudentScore testFeature student.2) := by
     simpa [accessLaw, baseScore, lg21HiddenAccessAccessBaseScoreLaw] using
-      (ae_of_ae_map hbaseScore.aemeasurable hreportBest.1)
+      (ae_of_ae_map hbaseScore.aemeasurable
+        (E.optionalReportBestResponse_ae hreportBest).1)
   have hchosenAccess : ∀ᵐ student ∂accessLaw,
       E.reportDecision (lg21HiddenAccessStudentBase testFeature student.2)
         (lg21HiddenAccessStudentScore testFeature student.2) = true ->

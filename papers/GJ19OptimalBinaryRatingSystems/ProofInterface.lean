@@ -8,7 +8,7 @@ namespace GJ19OptimalBinaryRatingSystems
 
 namespace PaperInterface
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 open Filter
 open Topology
 open MeasureTheory
@@ -50,18 +50,6 @@ theorem lemmaC7_uniform_doubled_objective_rate_ge_one_fifth_old_objective
         (fun _ : Fin (m + 2) => (1 : ℝ))) : lemmaC7_uniform_doubled_objective_rate_ge_one_fifth_old_objectiveSpec (m := m) (hm := hm) (oldLevels := oldLevels) (holdLevels := holdLevels) (holdEq := holdEq) := by
   exact GJ19OptimalBinaryRatingSystems.ProofBridge.lemmaC7_uniform_doubled_objective_rate_ge_one_fifth_old_objective (m := m) (hm := hm) (oldLevels := oldLevels) (holdLevels := holdLevels) (holdEq := holdEq)
 
-theorem corollaryC3_monotone_scaled_first_level_ge_half_inv_adjacent_count_sq
-    {m : ℕ} (hm : 0 < m)
-    {levels sampleRate : Fin (m + 2) → ℝ}
-    (hlevels : BinaryEndpointLevelVector levels)
-    (heq : BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate)
-    (hsample_pos : ∀ idx : Fin (m + 2), 0 < sampleRate idx)
-    (hsample_mono :
-      ∀ {a b : Fin (m + 2)}, a.val ≤ b.val → sampleRate a ≤ sampleRate b)
-    (hfirst_sample :
-      sampleRate (adjacentHighIndex (firstAdjacentIndex : Fin (m + 1))) = 1) : corollaryC3_monotone_scaled_first_level_ge_half_inv_adjacent_count_sqSpec (m := m) (hm := hm) (levels := levels) (sampleRate := sampleRate) (hlevels := hlevels) (heq := heq) (hsample_pos := hsample_pos) (hsample_mono := hsample_mono) (hfirst_sample := hfirst_sample) := by
-  exact GJ19OptimalBinaryRatingSystems.ProofBridge.corollaryC3_monotone_scaled_first_level_ge_half_inv_adjacent_count_sq (m := m) (hm := hm) (levels := levels) (sampleRate := sampleRate) (hlevels := hlevels) (heq := heq) (hsample_pos := hsample_pos) (hsample_mono := hsample_mono) (hfirst_sample := hfirst_sample)
-
 theorem paper_theoremB1_uniform_subsequence_principle_to_of_quantile_floor_tendstoUniformlyOn_geometric_mesh
     (betaSeq quantileSeq : ℕ → ℝ → ℝ)
     (quantileLimit : ℝ → ℝ)
@@ -70,7 +58,7 @@ theorem paper_theoremB1_uniform_subsequence_principle_to_of_quantile_floor_tends
     (hrepr : ∀ (m : ℕ) (θ : ℝ), betaSeq (m + 2) θ = levels m (levelIndex m θ))
     (hoptimal :
       ∀ m : ℕ,
-        EconCSLib.Optimization.IsMaximizerOn BinaryEndpointLevelVector
+        AppliedModelingLib.Optimization.IsMaximizerOn BinaryEndpointLevelVector
           (fun xs => binaryEndpointAwareAdjacentRateObjective xs (fun _ => (1 : ℝ)))
           (levels m))
     (hlevelIndex_val :
@@ -181,25 +169,12 @@ theorem theorem31_source_cell_matching_rate_eq_lower_cutpoint
     (hg : MonotoneOn g (Set.Icc (cut i.val) (cut (i.val + 1)))) : theorem31_source_cell_matching_rate_eq_lower_cutpointSpec (m := m) (cut := cut) (g := g) (i := i) (hcut := hcut) (hg := hg) := by
   exact GJ19OptimalBinaryRatingSystems.sourceCellMatchingRate_eq_lower_cutpoint (m := m) (cut := cut) (g := g) (i := i) (hcut := hcut) (hg := hg)
 
-theorem theorem31_source_matching_function_unique_value_argmax_lexicographic
-    (μ : Measure ℝ) [IsFiniteMeasure (μ.prod μ)]
-    [Measure.IsOpenPosMeasure (μ.prod μ)]
-    (S : Theorem31SourceFiniteDiscretizationWeightedModel μ)
-    (limitingValue : (ℕ → ℝ) → ℝ)
-    (rate : (ℕ → ℝ) → (Fin (S.m + 2) → ℝ) → ℝ)
-    (hcut_value :
-      EconCSLib.Optimization.IsMaximizerOn
-        (monotoneIntervalCutpointsEndpointFeasible (S.m + 2))
-        limitingValue S.cut)
-    (hcut_value_unique :
-      ∀ cut : ℕ → ℝ,
-        monotoneIntervalCutpointsEndpointFeasible (S.m + 2) cut →
-          limitingValue cut = limitingValue S.cut → cut = S.cut)
-    (hrate_cut :
-      ∀ levels : Fin (S.m + 2) → ℝ, BinaryEndpointLevelVector levels →
-        rate S.cut levels =
-          binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) : theorem31_source_matching_function_unique_value_argmax_lexicographicSpec (μ := μ) (S := S) (limitingValue := limitingValue) (rate := rate) (hcut_value := hcut_value) (hcut_value_unique := hcut_value_unique) (hrate_cut := hrate_cut) := by
-  exact GJ19OptimalBinaryRatingSystems.theorem31_source_matching_function_weighted_unique_value_argmax_lexicographic_certificate (μ := μ) (S := S) (limitingValue := limitingValue) (rate := rate) (hcut_value := hcut_value) (hcut_value_unique := hcut_value_unique) (hrate_cut := hrate_cut)
+theorem theorem31_source_matching_function_lexicographic_formula {m : ℕ} (hm : 0 < m)
+    (weight : ℝ × ℝ → ℝ)
+    (hweight_pos : ∀ q ∈ sourceOrderedQualityPairs, 0 < weight q)
+    (hweight_norm : ∫ q in sourceOrderedQualityPairs, weight q ∂(volume.prod volume) = 1)
+    (g : ℝ → ℝ) (hg : SourceMatchingFunction g) : theorem31_source_matching_function_lexicographic_formulaSpec hm weight hweight_pos hweight_norm g hg := by
+  exact GJ19OptimalBinaryRatingSystems.theorem31_source_matching_function_lexicographic_formula hm weight hweight_pos hweight_norm g hg
 
 theorem lemmaB1_matching_rate_shift
     {m k : ℕ} (hk0 : 0 < k) (hkm : k < m + 1)
@@ -677,15 +652,6 @@ theorem source_lemmaC5_refinement_equations24_25_realizes_spec : source_lemmaC5_
     exact GJ19OptimalBinaryRatingSystems.uniformDoubledEndpointLevels_middle_odd hk0 hkm oldLevels, by
     intro pLo pHi hpLo0 hpHi1 hlt
     exact GJ19OptimalBinaryRatingSystems.lemmaC5_uniform_interiorEqualSplit_rate_eq hpLo0 hpHi1 hlt⟩
-
-theorem source_lemmaC8_uniform_first_level_polynomial_lower_bound
-    {m : ℕ} (hm : 0 < m)
-    {levels : Fin (m + 2) → ℝ}
-    (hlevels : BinaryEndpointLevelVector levels)
-    (heq :
-      BinaryEndpointAwareAdjacentRatesEqualize levels
-        (fun _ : Fin (m + 2) => (1 : ℝ))) : source_lemmaC8_uniform_first_level_polynomial_lower_boundSpec (m := m) (hm := hm) (levels := levels) (hlevels := hlevels) (heq := heq) := by
-  exact GJ19OptimalBinaryRatingSystems.ProofBridge.source_lemmaC8_uniform_first_level_polynomial_lower_bound (m := m) (hm := hm) (levels := levels) (hlevels := hlevels) (heq := heq)
 
 theorem source_lemmaC9_nested_bisection_runtime_log_squared
     {M : ℕ} (hM : 0 < M) {delta : ℝ} (hdelta : 0 < delta) : source_lemmaC9_nested_bisection_runtime_log_squaredSpec (M := M) (hM := hM) (delta := delta) (hdelta := hdelta) := by

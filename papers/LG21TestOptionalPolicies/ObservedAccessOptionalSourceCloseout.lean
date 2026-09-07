@@ -19,7 +19,7 @@ namespace LG21TestOptionalPolicies
 noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 open scoped ENNReal ProbabilityTheory
 
 /-- The complete observed public action event for sequential optional

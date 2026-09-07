@@ -6,7 +6,7 @@ namespace GJ19OptimalBinaryRatingSystems
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 open Filter Topology
 open MeasureTheory
 
@@ -144,9 +144,9 @@ structure LemmaC4RawSourcePositiveSupportIntervalModel
   hsample_meas : Measurable sampleRate
   weight : ℝ × ℝ → ℝ
   hsource_weight_int :
-    Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+    Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
   hsource_weight_nonneg :
-    ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q
+    ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q
   hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ)
   hweight_diag_cont :
     ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ
@@ -220,7 +220,7 @@ theorem lemmaC4_appropriate_finite_levels_const_weight_rate_certificate
     ∃ levels : Fin (S.m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (S.m + 2) → ℝ) → Prop)
             (fun candidate : Fin (S.m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate S.sampleRate)
@@ -248,7 +248,7 @@ theorem lemmaC4_appropriate_finite_levels_weighted_rate_certificate
     ∃ levels : Fin (S.m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (S.m + 2) → ℝ) → Prop)
             (fun candidate : Fin (S.m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate S.sampleRate)
@@ -282,7 +282,7 @@ theorem theorem31_appropriate_finite_levels_weighted_fixed_value_lexicographic_c
             (theorem31SourceWbar μ S.cut S.hmono S.sampleRate levels hlevels
               S.weight)
             (binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
+          AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
             (BinaryEndpointLevelVector : (Fin (S.m + 2) → ℝ) → Prop)
             (fun _candidate : Fin (S.m + 2) → ℝ => limitingValue)
             (fun candidate : Fin (S.m + 2) → ℝ =>
@@ -320,7 +320,7 @@ theorem lemmaC4_appropriate_finite_levels_const_weight_finiteRange_and_rate_cert
       ∃ hlevels : BinaryEndpointLevelVector levels,
         lemmaC4FiniteRangeOnIoo (cutpointStepSuccessProb S.cut levels) lo hi ∧
           BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate ∧
-            EconCSLib.Optimization.IsMaximizerOn
+            AppliedModelingLib.Optimization.IsMaximizerOn
               (BinaryEndpointLevelVector : (Fin (S.m + 2) → ℝ) → Prop)
               (fun candidate : Fin (S.m + 2) → ℝ =>
                 binaryEndpointAwareAdjacentRateObjective candidate S.sampleRate)
@@ -352,7 +352,7 @@ theorem lemmaC4_appropriate_finite_levels_weighted_finiteRange_and_rate_certific
       ∃ hlevels : BinaryEndpointLevelVector levels,
         lemmaC4FiniteRangeOnIoo (cutpointStepSuccessProb S.cut levels) lo hi ∧
           BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate ∧
-            EconCSLib.Optimization.IsMaximizerOn
+            AppliedModelingLib.Optimization.IsMaximizerOn
               (BinaryEndpointLevelVector : (Fin (S.m + 2) → ℝ) → Prop)
               (fun candidate : Fin (S.m + 2) → ℝ =>
                 binaryEndpointAwareAdjacentRateObjective candidate S.sampleRate)
@@ -463,7 +463,7 @@ The canonical uniform equalized endpoint levels are finite-rate optimal for the
 uniform sample-rate endpoint-aware adjacent objective.
 -/
 theorem canonicalUniformEqualizedEndpointLevels_isMaximizerOn (m : ℕ) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun xs : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective xs
@@ -489,7 +489,7 @@ theorem canonicalUniformEqualizedEndpointLevels_isMaximizerOn (m : ℕ) :
             (fun _ : Fin (0 + 2) => (1 : ℝ)) = 0 := by
       unfold binaryEndpointAwareAdjacentRateObjective
       exact
-        EconCSLib.finiteMin_eq_of_forall
+        AppliedModelingLib.finiteMin_eq_of_forall
           (fun i : Fin (0 + 1) =>
             binaryEndpointAwareAdjacentRate alt
               (fun _ : Fin (0 + 2) => (1 : ℝ)) i)
@@ -505,7 +505,7 @@ theorem canonicalUniformEqualizedEndpointLevels_isMaximizerOn (m : ℕ) :
             (fun _ : Fin (0 + 2) => (1 : ℝ)) = 0 := by
       unfold binaryEndpointAwareAdjacentRateObjective
       exact
-        EconCSLib.finiteMin_eq_of_forall
+        AppliedModelingLib.finiteMin_eq_of_forall
           (fun i : Fin (0 + 1) =>
             binaryEndpointAwareAdjacentRate
               (canonicalUniformEqualizedEndpointLevels 0)
@@ -717,7 +717,7 @@ and Theorem 3.2 bridges can consume finite optimality directly.
 theorem binaryEndpointAwareAdjacentRatesEqualize_uniform_of_isMaximizerOn
     {m : ℕ} {levels : Fin (m + 2) → ℝ}
     (hoptimal :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -753,7 +753,7 @@ index/quantile map, not the finite level vector.
 theorem canonicalUniformEqualizedEndpointLevels_eq_of_isMaximizerOn
     {m : ℕ} {levels : Fin (m + 2) → ℝ}
     (hoptimal :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -3459,29 +3459,29 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_uniformNormalizedLogRa
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hkernel_nonneg :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * kernel k q)
     (hupper_const :
       ∀ᶠ k : ℕ in atTop,
         (∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict EconCSLib.strictUpperPairSet) ≤ B)
+          (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet) ≤ B)
     (hcert :
       UniformNormalizedLogRateCertificateOn kernel phi
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hweighted_near :
       HasPositiveWeightNearAEEssentialInfimum
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet) weight phi 0) :
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet) weight phi 0) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+          (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 :=
   lemmaC4_weighted_ordered_pair_integral_has_zero_rate_of_uniformNormalizedLogRateCertificate_weightedNearInf_of_ae_mem_certSet
     μ weight kernel phi hBpos hkernel_int hkernel_nonneg hupper_const hcert
-    (ae_restrict_mem EconCSLib.isOpen_strictUpperPairSet.measurableSet)
+    (ae_restrict_mem AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet)
     hweighted_near
 
 /--
@@ -3496,30 +3496,30 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_probabilityKernel_loca
     (phi : ℝ × ℝ → ℝ)
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hkernel_unit :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ kernel k q ∧ kernel k q ≤ 1)
     (hnear_sets : ∀ targetRate : ℝ, 0 < targetRate →
       ∃ nearMinimizers : Set (ℝ × ℝ), ∃ c : ℝ, ∃ δ : ℝ,
         MeasurableSet nearMinimizers ∧
-          0 < ((μ.prod μ).restrict EconCSLib.strictUpperPairSet).real
+          0 < ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet).real
             nearMinimizers ∧
             0 < c ∧ 0 < δ ∧
               (∀ k : ℕ,
                 IntegrableOn
                   (fun q : ℝ × ℝ => weight q * kernel k q)
                   nearMinimizers
-                  ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)) ∧
+                  ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) ∧
                 (∀ᵐ q ∂((μ.prod μ).restrict
-                    EconCSLib.strictUpperPairSet).restrict nearMinimizers,
+                    AppliedModelingLib.strictUpperPairSet).restrict nearMinimizers,
                   c ≤ weight q) ∧
                   (∀ q : ℝ × ℝ, q ∈ nearMinimizers →
                     phi q + δ ≤ targetRate) ∧
@@ -3528,7 +3528,7 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_probabilityKernel_loca
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+          (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 :=
   lemmaC4_weighted_ordered_pair_integral_has_zero_rate_of_probabilityKernel_localUniformNormalizedLogRateCertificate_nearRate_sets
     μ weight kernel phi hweight_int hweight_nonneg hkernel_int
@@ -3545,30 +3545,30 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_boundedKernel_localUni
     (hK_nonneg : 0 ≤ K)
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hkernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ kernel k q ∧ kernel k q ≤ K)
     (hnear_sets : ∀ targetRate : ℝ, 0 < targetRate →
       ∃ nearMinimizers : Set (ℝ × ℝ), ∃ c : ℝ, ∃ δ : ℝ,
         MeasurableSet nearMinimizers ∧
-          0 < ((μ.prod μ).restrict EconCSLib.strictUpperPairSet).real
+          0 < ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet).real
             nearMinimizers ∧
             0 < c ∧ 0 < δ ∧
               (∀ k : ℕ,
                 IntegrableOn
                   (fun q : ℝ × ℝ => weight q * kernel k q)
                   nearMinimizers
-                  ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)) ∧
+                  ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) ∧
                 (∀ᵐ q ∂((μ.prod μ).restrict
-                    EconCSLib.strictUpperPairSet).restrict nearMinimizers,
+                    AppliedModelingLib.strictUpperPairSet).restrict nearMinimizers,
                   c ≤ weight q) ∧
                   (∀ q : ℝ × ℝ, q ∈ nearMinimizers →
                     phi q + δ ≤ targetRate) ∧
@@ -3577,7 +3577,7 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_boundedKernel_localUni
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+          (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 :=
   lemmaC4_weighted_ordered_pair_integral_has_zero_rate_of_boundedKernel_localUniformNormalizedLogRateCertificate_nearRate_sets
     μ weight kernel phi hK_nonneg hweight_int hweight_nonneg hkernel_int
@@ -3599,30 +3599,30 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_boundedKernel_localUniformN
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hsource_kernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hnear_sets : ∀ targetRate : ℝ, 0 < targetRate →
       ∃ nearMinimizers : Set (ℝ × ℝ), ∃ c : ℝ, ∃ δ : ℝ,
         MeasurableSet nearMinimizers ∧
-          0 < ((μ.prod μ).restrict EconCSLib.strictUpperPairSet).real
+          0 < ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet).real
             nearMinimizers ∧
             0 < c ∧ 0 < δ ∧
               (∀ k : ℕ,
                 IntegrableOn
                   (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
                   nearMinimizers
-                  ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)) ∧
+                  ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) ∧
                 (∀ᵐ q ∂((μ.prod μ).restrict
-                    EconCSLib.strictUpperPairSet).restrict nearMinimizers,
+                    AppliedModelingLib.strictUpperPairSet).restrict nearMinimizers,
                   c ≤ weight q) ∧
                   (∀ q : ℝ × ℝ, q ∈ nearMinimizers →
                     phi q + δ ≤ targetRate) ∧
@@ -3631,11 +3631,11 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_boundedKernel_localUniformN
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ)) :
     HasExponentialRate sourceWbar 0 := by
   let integralError : ℕ → ℝ := fun k =>
-    ∫ q in EconCSLib.strictUpperPairSet,
+    ∫ q in AppliedModelingLib.strictUpperPairSet,
       weight q * sourcePbarKernel k q ∂(μ.prod μ)
   have hintegral :
       HasExponentialRate integralError 0 := by
@@ -3663,31 +3663,31 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_boundedKernel_localUniformN
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hnear_sets : ∀ targetRate : ℝ, 0 < targetRate →
       ∃ nearMinimizers : Set (ℝ × ℝ), ∃ c : ℝ, ∃ δ : ℝ,
         MeasurableSet nearMinimizers ∧
-          0 < ((μ.prod μ).restrict EconCSLib.strictUpperPairSet).real
+          0 < ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet).real
             nearMinimizers ∧
             0 < c ∧ 0 < δ ∧
               (∀ k : ℕ,
                 IntegrableOn
                   (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
                   nearMinimizers
-                  ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)) ∧
+                  ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) ∧
                 (∀ᵐ q ∂((μ.prod μ).restrict
-                    EconCSLib.strictUpperPairSet).restrict nearMinimizers,
+                    AppliedModelingLib.strictUpperPairSet).restrict nearMinimizers,
                   c ≤ weight q) ∧
                   (∀ q : ℝ × ℝ, q ∈ nearMinimizers →
                     phi q + δ ≤ targetRate) ∧
@@ -3696,17 +3696,17 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_boundedKernel_localUniformN
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ)) :
     HasExponentialRate sourceWbar 0 := by
   let integralError : ℕ → ℝ := fun k =>
-    ∫ q in EconCSLib.strictUpperPairSet,
+    ∫ q in AppliedModelingLib.strictUpperPairSet,
       weight q * sourcePbarKernel k q ∂(μ.prod μ)
   have hintegral :
       HasExponentialRate integralError 0 := by
     simpa [integralError] using
       lemmaC4_weighted_ordered_pair_integral_has_zero_rate_of_boundedKernel_localUniformNormalizedLogRateCertificate_nearRate_sets_of_measurableKernel
-        (cell := EconCSLib.strictUpperPairSet)
+        (cell := AppliedModelingLib.strictUpperPairSet)
         μ weight sourcePbarKernel phi hK_nonneg hsource_weight_int
         hsource_weight_nonneg hsource_kernel_meas hsource_kernel_bound
         hnear_sets
@@ -3729,30 +3729,30 @@ theorem lemmaC4_tieErasedSourceWbar_no_positive_exponential_rate_of_boundedKerne
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hsource_kernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hnear_sets : ∀ targetRate : ℝ, 0 < targetRate →
       ∃ nearMinimizers : Set (ℝ × ℝ), ∃ c : ℝ, ∃ δ : ℝ,
         MeasurableSet nearMinimizers ∧
-          0 < ((μ.prod μ).restrict EconCSLib.strictUpperPairSet).real
+          0 < ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet).real
             nearMinimizers ∧
             0 < c ∧ 0 < δ ∧
               (∀ k : ℕ,
                 IntegrableOn
                   (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
                   nearMinimizers
-                  ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)) ∧
+                  ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) ∧
                 (∀ᵐ q ∂((μ.prod μ).restrict
-                    EconCSLib.strictUpperPairSet).restrict nearMinimizers,
+                    AppliedModelingLib.strictUpperPairSet).restrict nearMinimizers,
                   c ≤ weight q) ∧
                   (∀ q : ℝ × ℝ, q ∈ nearMinimizers →
                     phi q + δ ≤ targetRate) ∧
@@ -3761,7 +3761,7 @@ theorem lemmaC4_tieErasedSourceWbar_no_positive_exponential_rate_of_boundedKerne
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ)) :
     ∀ rate : ℝ, 0 < rate → ¬ ExponentialRateCertificate sourceWbar rate :=
   lemmaC4_no_positive_exponential_rate_certificates_of_zero_rate sourceWbar
@@ -3783,31 +3783,31 @@ theorem lemmaC4_tieErasedSourceWbar_no_positive_exponential_rate_of_boundedKerne
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hnear_sets : ∀ targetRate : ℝ, 0 < targetRate →
       ∃ nearMinimizers : Set (ℝ × ℝ), ∃ c : ℝ, ∃ δ : ℝ,
         MeasurableSet nearMinimizers ∧
-          0 < ((μ.prod μ).restrict EconCSLib.strictUpperPairSet).real
+          0 < ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet).real
             nearMinimizers ∧
             0 < c ∧ 0 < δ ∧
               (∀ k : ℕ,
                 IntegrableOn
                   (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
                   nearMinimizers
-                  ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)) ∧
+                  ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) ∧
                 (∀ᵐ q ∂((μ.prod μ).restrict
-                    EconCSLib.strictUpperPairSet).restrict nearMinimizers,
+                    AppliedModelingLib.strictUpperPairSet).restrict nearMinimizers,
                   c ≤ weight q) ∧
                   (∀ q : ℝ × ℝ, q ∈ nearMinimizers →
                     phi q + δ ≤ targetRate) ∧
@@ -3816,7 +3816,7 @@ theorem lemmaC4_tieErasedSourceWbar_no_positive_exponential_rate_of_boundedKerne
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ)) :
     ∀ rate : ℝ, 0 < rate → ¬ ExponentialRateCertificate sourceWbar rate :=
   lemmaC4_no_positive_exponential_rate_certificates_of_zero_rate sourceWbar
@@ -3841,21 +3841,21 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hsource_kernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ))
     (hforward :
       isPiecewiseConstant →
@@ -3866,16 +3866,16 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
         ∀ targetRate : ℝ, 0 < targetRate →
           ∃ nearMinimizers : Set (ℝ × ℝ), ∃ c : ℝ, ∃ δ : ℝ,
             MeasurableSet nearMinimizers ∧
-              0 < ((μ.prod μ).restrict EconCSLib.strictUpperPairSet).real
+              0 < ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet).real
                 nearMinimizers ∧
               0 < c ∧ 0 < δ ∧
                 (∀ k : ℕ,
                   IntegrableOn
                     (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
                     nearMinimizers
-                    ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)) ∧
+                    ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) ∧
                 (∀ᵐ q ∂((μ.prod μ).restrict
-                    EconCSLib.strictUpperPairSet).restrict nearMinimizers,
+                    AppliedModelingLib.strictUpperPairSet).restrict nearMinimizers,
                   c ≤ weight q) ∧
                 (∀ q : ℝ × ℝ, q ∈ nearMinimizers →
                   phi q + δ ≤ targetRate) ∧
@@ -3911,22 +3911,22 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ))
     (hforward :
       isPiecewiseConstant →
@@ -3937,16 +3937,16 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
         ∀ targetRate : ℝ, 0 < targetRate →
           ∃ nearMinimizers : Set (ℝ × ℝ), ∃ c : ℝ, ∃ δ : ℝ,
             MeasurableSet nearMinimizers ∧
-              0 < ((μ.prod μ).restrict EconCSLib.strictUpperPairSet).real
+              0 < ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet).real
                 nearMinimizers ∧
               0 < c ∧ 0 < δ ∧
                 (∀ k : ℕ,
                   IntegrableOn
                     (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
                     nearMinimizers
-                    ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)) ∧
+                    ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) ∧
                 (∀ᵐ q ∂((μ.prod μ).restrict
-                    EconCSLib.strictUpperPairSet).restrict nearMinimizers,
+                    AppliedModelingLib.strictUpperPairSet).restrict nearMinimizers,
                   c ≤ weight q) ∧
                 (∀ q : ℝ × ℝ, q ∈ nearMinimizers →
                   phi q + δ ≤ targetRate) ∧
@@ -3980,37 +3980,37 @@ theorem lemmaC4_strictUpperPair_localUniformNormalizedLogRateCertificate_nearRat
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
     (hphi_x0 : phi (θ0, θ0) = 0)
     (hphi_cont : ContinuousAt phi (θ0, θ0))
     (hcert :
       UniformNormalizedLogRateCertificateOn kernel phi
-        EconCSLib.strictUpperPairSet) :
+        AppliedModelingLib.strictUpperPairSet) :
     ∀ targetRate : ℝ, 0 < targetRate →
       ∃ nearMinimizers : Set (ℝ × ℝ), ∃ c : ℝ, ∃ δ : ℝ,
         MeasurableSet nearMinimizers ∧
-          0 < ((μ.prod μ).restrict EconCSLib.strictUpperPairSet).real
+          0 < ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet).real
             nearMinimizers ∧
             0 < c ∧ 0 < δ ∧
               (∀ k : ℕ,
                 IntegrableOn
                   (fun q : ℝ × ℝ => weight q * kernel k q)
                   nearMinimizers
-                  ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)) ∧
+                  ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) ∧
                 (∀ᵐ q ∂((μ.prod μ).restrict
-                    EconCSLib.strictUpperPairSet).restrict nearMinimizers,
+                    AppliedModelingLib.strictUpperPairSet).restrict nearMinimizers,
                   c ≤ weight q) ∧
                   (∀ q : ℝ × ℝ, q ∈ nearMinimizers →
                     phi q + δ ≤ targetRate) ∧
                     UniformNormalizedLogRateCertificateOn
                       kernel phi nearMinimizers :=
   localUniformNormalizedLogRateCertificate_nearRate_sets_of_continuousAt_zero_weight_pos_restrict_closure_interior_of_cell_subset_certSet
-    (μ.prod μ) EconCSLib.isOpen_strictUpperPairSet.measurableSet
+    (μ.prod μ) AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet
     hkernel_int hcert (fun _q hq => hq) (θ0, θ0) hphi_x0
     hphi_cont hweight_cont hweight_x0_pos
-    (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
+    (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
 
 /--
 Lemma C.4 strict ordered-pair near-rate witnesses for the pairwise closed
@@ -4027,7 +4027,7 @@ theorem lemmaC4_strictUpperPair_pairwise_closed_rate_nearRate_sets_of_continuity
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
     (hβ_cont : ContinuousAt successProb θ0)
@@ -4043,20 +4043,20 @@ theorem lemmaC4_strictUpperPair_pairwise_closed_rate_nearRate_sets_of_continuity
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet) :
+        AppliedModelingLib.strictUpperPairSet) :
     ∀ targetRate : ℝ, 0 < targetRate →
       ∃ nearMinimizers : Set (ℝ × ℝ), ∃ c : ℝ, ∃ δ : ℝ,
         MeasurableSet nearMinimizers ∧
-          0 < ((μ.prod μ).restrict EconCSLib.strictUpperPairSet).real
+          0 < ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet).real
             nearMinimizers ∧
             0 < c ∧ 0 < δ ∧
               (∀ k : ℕ,
                 IntegrableOn
                   (fun q : ℝ × ℝ => weight q * kernel k q)
                   nearMinimizers
-                  ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)) ∧
+                  ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) ∧
                 (∀ᵐ q ∂((μ.prod μ).restrict
-                    EconCSLib.strictUpperPairSet).restrict nearMinimizers,
+                    AppliedModelingLib.strictUpperPairSet).restrict nearMinimizers,
                   c ≤ weight q) ∧
                   (∀ q : ℝ × ℝ, q ∈ nearMinimizers →
                     weightedBernoulliClosedThresholdRate
@@ -4106,17 +4106,17 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_continuity_point_boundedKer
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -4133,11 +4133,11 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_continuity_point_boundedKer
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ)) :
     HasExponentialRate sourceWbar 0 := by
   let phi : ℝ × ℝ → ℝ := fun q =>
@@ -4148,16 +4148,16 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_continuity_point_boundedKer
       ∀ targetRate : ℝ, 0 < targetRate →
         ∃ nearMinimizers : Set (ℝ × ℝ), ∃ c : ℝ, ∃ δ : ℝ,
           MeasurableSet nearMinimizers ∧
-            0 < ((μ.prod μ).restrict EconCSLib.strictUpperPairSet).real
+            0 < ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet).real
               nearMinimizers ∧
               0 < c ∧ 0 < δ ∧
                 (∀ k : ℕ,
                   IntegrableOn
                     (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
                     nearMinimizers
-                    ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)) ∧
+                    ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)) ∧
                   (∀ᵐ q ∂((μ.prod μ).restrict
-                      EconCSLib.strictUpperPairSet).restrict nearMinimizers,
+                      AppliedModelingLib.strictUpperPairSet).restrict nearMinimizers,
                     c ≤ weight q) ∧
                     (∀ q : ℝ × ℝ, q ∈ nearMinimizers →
                       phi q + δ ≤ targetRate) ∧
@@ -4191,18 +4191,18 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_continuity_point_boundedKer
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -4219,19 +4219,19 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_continuity_point_boundedKer
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ)) :
     HasExponentialRate sourceWbar 0 := by
   have hsource_kernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet) :=
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet) :=
     integrable_weight_mul_kernel_of_integrable_weight_of_ae_kernel_between_zero_const
-      ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       hsource_weight_int hsource_kernel_meas hsource_kernel_bound
   exact
     lemmaC4_tieErasedSourceWbar_has_zero_rate_of_continuity_point_boundedKernel_uniformNormalizedLogRateCertificate_on_strictUpperPair
@@ -4256,17 +4256,17 @@ theorem lemmaC4_tieErasedSourceWbar_no_positive_exponential_rate_of_continuity_p
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -4283,11 +4283,11 @@ theorem lemmaC4_tieErasedSourceWbar_no_positive_exponential_rate_of_continuity_p
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ)) :
     ∀ rate : ℝ, 0 < rate → ¬ ExponentialRateCertificate sourceWbar rate :=
   lemmaC4_no_positive_exponential_rate_certificates_of_zero_rate sourceWbar
@@ -4311,18 +4311,18 @@ theorem lemmaC4_tieErasedSourceWbar_no_positive_exponential_rate_of_continuity_p
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -4339,11 +4339,11 @@ theorem lemmaC4_tieErasedSourceWbar_no_positive_exponential_rate_of_continuity_p
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ)) :
     ∀ rate : ℝ, 0 < rate → ¬ ExponentialRateCertificate sourceWbar rate :=
   lemmaC4_no_positive_exponential_rate_certificates_of_zero_rate sourceWbar
@@ -4372,17 +4372,17 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
@@ -4390,11 +4390,11 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ))
     (hforward :
       isPiecewiseConstant →
@@ -4446,18 +4446,18 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
@@ -4465,11 +4465,11 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ))
     (hforward :
       isPiecewiseConstant →
@@ -4522,18 +4522,18 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
@@ -4541,11 +4541,11 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ))
     (hforward :
       isPiecewiseConstant →
@@ -4574,7 +4574,7 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
   rcases hnonpiecewise_point hnot_piecewise with
     ⟨θ0, hweight_cont, hweight_x0_pos, hsample_cont, hsample_pos,
       hβ_cont, hβ0, hβ1⟩
-  rcases EconCSLib.exists_pos_eventually_le_of_continuousAt hsample_cont with
+  rcases AppliedModelingLib.exists_pos_eventually_le_of_continuousAt hsample_cont with
     ⟨G, hG_pos, hg_le⟩
   have hg_pos : ∀ᶠ θ in 𝓝 θ0, 0 < sampleRate θ :=
     hsample_cont.eventually (Ioi_mem_nhds hsample_pos)
@@ -4602,18 +4602,18 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_tieErasedSour
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
@@ -4621,11 +4621,11 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_tieErasedSour
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ))
     (hforward :
       isStepwiseConstantOn successProb lo hi →
@@ -4677,15 +4677,15 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_const
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hkernel_nonneg :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * kernel k q)
     (hupper_const :
       ∀ᶠ k : ℕ in atTop,
         (∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict EconCSLib.strictUpperPairSet) ≤ B)
+          (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet) ≤ B)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
     (hβ_cont : ContinuousAt successProb θ0)
@@ -4701,11 +4701,11 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_const
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet) :
+        AppliedModelingLib.strictUpperPairSet) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+          (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 := by
   let phi : ℝ × ℝ → ℝ := fun q =>
     weightedBernoulliClosedThresholdRate
@@ -4723,11 +4723,11 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_const
     simpa [ContinuousAt, hphi_x0] using hphi_tendsto
   exact
     weightedKernelIntegral_hasExponentialRate_zero_of_eventually_le_const_and_uniformNormalizedLogRateCertificateOn_continuousAt_zero_weight_pos_restrict_closure_interior_of_ae_mem_certSet
-      (μ.prod μ) EconCSLib.isOpen_strictUpperPairSet.measurableSet
+      (μ.prod μ) AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet
       (θ0, θ0) hBpos hkernel_int hkernel_nonneg hupper_const hcert
-      (ae_restrict_mem EconCSLib.isOpen_strictUpperPairSet.measurableSet)
+      (ae_restrict_mem AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet)
       hphi_x0 hphi_cont hweight_cont hweight_x0_pos
-      (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
+      (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
 
 /--
 Lemma C.4 reverse-branch monotone-interval bridge using the constant-upper-bound
@@ -4745,15 +4745,15 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hkernel_nonneg :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * kernel k q)
     (hupper_const :
       ∀ᶠ k : ℕ in atTop,
         (∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict EconCSLib.strictUpperPairSet) ≤ B)
+          (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet) ≤ B)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
     (hweight_x0_pos :
@@ -4771,21 +4771,21 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet) :
+        AppliedModelingLib.strictUpperPairSet) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+          (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ _hθ
     exact ⟨hprob_pos θ, hprob_lt_one θ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0 hθ0)
   exact
     lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_constant_upper_bound_uniformNormalizedLogRateCertificate_on_strictUpperPair
@@ -4809,14 +4809,14 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_proba
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hkernel_unit :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ kernel k q ∧ kernel k q ≤ 1)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -4833,11 +4833,11 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_proba
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet) :
+        AppliedModelingLib.strictUpperPairSet) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+          (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 := by
   let phi : ℝ × ℝ → ℝ := fun q =>
     weightedBernoulliClosedThresholdRate
@@ -4855,11 +4855,11 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_proba
     simpa [ContinuousAt, hphi_x0] using hphi_tendsto
   exact
     weightedKernelIntegral_hasExponentialRate_zero_of_probabilityKernel_uniformNormalizedLogRateCertificateOn_continuousAt_zero_weight_pos_restrict_closure_interior_of_ae_mem_certSet
-      (μ.prod μ) EconCSLib.isOpen_strictUpperPairSet.measurableSet
+      (μ.prod μ) AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet
       (θ0, θ0) hweight_int hweight_nonneg hkernel_int hkernel_unit hcert
-      (ae_restrict_mem EconCSLib.isOpen_strictUpperPairSet.measurableSet)
+      (ae_restrict_mem AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet)
       hphi_x0 hphi_cont hweight_cont hweight_x0_pos
-      (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
+      (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
 
 /--
 Lemma C.4 strict ordered-pair zero-rate bridge at a diagonal continuity point
@@ -4876,14 +4876,14 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_bound
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hkernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ kernel k q ∧ kernel k q ≤ K)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -4900,11 +4900,11 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_bound
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet) :
+        AppliedModelingLib.strictUpperPairSet) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+          (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 := by
   let phi : ℝ × ℝ → ℝ := fun q =>
     weightedBernoulliClosedThresholdRate
@@ -4922,12 +4922,12 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_bound
     simpa [ContinuousAt, hphi_x0] using hphi_tendsto
   exact
     weightedKernelIntegral_hasExponentialRate_zero_of_boundedKernel_uniformNormalizedLogRateCertificateOn_continuousAt_zero_weight_pos_restrict_closure_interior_of_ae_mem_certSet
-      (μ.prod μ) EconCSLib.isOpen_strictUpperPairSet.measurableSet
+      (μ.prod μ) AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet
       (θ0, θ0) hK_nonneg hweight_int hweight_nonneg hkernel_int
       hkernel_bound hcert
-      (ae_restrict_mem EconCSLib.isOpen_strictUpperPairSet.measurableSet)
+      (ae_restrict_mem AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet)
       hphi_x0 hphi_cont hweight_cont hweight_x0_pos
-      (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
+      (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
 
 /--
 Lemma C.4 strict ordered-pair zero-rate bridge for bounded kernels, deriving
@@ -4941,16 +4941,16 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_bound
     {θ0 G K : ℝ}
     (hK_nonneg : 0 ≤ K)
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hkernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable (kernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hkernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ kernel k q ∧ kernel k q ≤ K)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -4967,11 +4967,11 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_bound
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet) :
+        AppliedModelingLib.strictUpperPairSet) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+          (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 := by
   let phi : ℝ × ℝ → ℝ := fun q =>
     weightedBernoulliClosedThresholdRate
@@ -4989,12 +4989,12 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_bound
     simpa [ContinuousAt, hphi_x0] using hphi_tendsto
   exact
     weightedKernelIntegral_hasExponentialRate_zero_of_boundedKernel_uniformNormalizedLogRateCertificateOn_continuousAt_zero_weight_pos_restrict_closure_interior_of_ae_mem_certSet_of_kernel_aestronglyMeasurable
-      (μ.prod μ) EconCSLib.isOpen_strictUpperPairSet.measurableSet
+      (μ.prod μ) AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet
       (θ0, θ0) hK_nonneg hweight_int hweight_nonneg hkernel_meas
       hkernel_bound hcert
-      (ae_restrict_mem EconCSLib.isOpen_strictUpperPairSet.measurableSet)
+      (ae_restrict_mem AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet)
       hphi_x0 hphi_cont hweight_cont hweight_x0_pos
-      (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
+      (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
 
 /--
 Lemma C.4 strict ordered-pair zero-rate bridge at a diagonal continuity point,
@@ -5009,19 +5009,19 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_bound
     (weight : ℝ × ℝ → ℝ) (kernel : ℕ → ℝ × ℝ → ℝ)
     {certSet : Set (ℝ × ℝ)} {θ0 G K L : ℝ}
     (hcertSet_compact : IsCompact certSet)
-    (hstrict_subset : EconCSLib.strictUpperPairSet ⊆ certSet)
+    (hstrict_subset : AppliedModelingLib.strictUpperPairSet ⊆ certSet)
     (hK_nonneg : 0 ≤ K)
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hkernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ kernel k q ∧ kernel k q ≤ K)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -5035,7 +5035,7 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_bound
     (hpos :
       ∀ᶠ k : ℕ in atTop,
         ∀ q : ℝ × ℝ,
-          q ∈ EconCSLib.strictUpperPairSet → 0 < kernel k q)
+          q ∈ AppliedModelingLib.strictUpperPairSet → 0 < kernel k q)
     (hcert :
       ∀ q : ℝ × ℝ, q ∈ certSet →
         ExponentialRateCertificate
@@ -5061,7 +5061,7 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_bound
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+          (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 := by
   have hcert_uniform :
       UniformNormalizedLogRateCertificateOn kernel
@@ -5069,7 +5069,7 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_bound
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet :=
+        AppliedModelingLib.strictUpperPairSet :=
     UniformNormalizedLogRateCertificateOn.of_pointwise_exponentialRateCertificate_eventually_lipschitz_on_compact_superset_of_rate_continuousAt
       hcertSet_compact hstrict_subset hpos hcert hrate_cont hL
       hlog_lipschitz
@@ -5095,14 +5095,14 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hkernel_unit :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ kernel k q ∧ kernel k q ≤ 1)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -5121,21 +5121,21 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet) :
+        AppliedModelingLib.strictUpperPairSet) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-      (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+      (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ _hθ
     exact ⟨hprob_pos θ, hprob_lt_one θ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0 hθ0)
   exact
     lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_probabilityKernel_uniformNormalizedLogRateCertificate_on_strictUpperPair
@@ -5160,14 +5160,14 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hkernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ kernel k q ∧ kernel k q ≤ K)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -5186,21 +5186,21 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet) :
+        AppliedModelingLib.strictUpperPairSet) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-      (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+      (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ _hθ
     exact ⟨hprob_pos θ, hprob_lt_one θ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0 hθ0)
   exact
     lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_boundedKernel_uniformNormalizedLogRateCertificate_on_strictUpperPair
@@ -5222,19 +5222,19 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
     (weight : ℝ × ℝ → ℝ) (kernel : ℕ → ℝ × ℝ → ℝ)
     {certSet : Set (ℝ × ℝ)} {a b K L : ℝ}
     (hcertSet_compact : IsCompact certSet)
-    (hstrict_subset : EconCSLib.strictUpperPairSet ⊆ certSet)
+    (hstrict_subset : AppliedModelingLib.strictUpperPairSet ⊆ certSet)
     (hK_nonneg : 0 ≤ K)
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hkernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ kernel k q ∧ kernel k q ≤ K)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -5250,7 +5250,7 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
     (hpos :
       ∀ᶠ k : ℕ in atTop,
         ∀ q : ℝ × ℝ,
-          q ∈ EconCSLib.strictUpperPairSet → 0 < kernel k q)
+          q ∈ AppliedModelingLib.strictUpperPairSet → 0 < kernel k q)
     (hcert :
       ∀ q : ℝ × ℝ, q ∈ certSet →
         ExponentialRateCertificate
@@ -5276,17 +5276,17 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-      (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+      (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ _hθ
     exact ⟨hprob_pos θ, hprob_lt_one θ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0 hθ0)
   exact
     lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_boundedKernel_pointwise_certificates_eventually_lipschitz_on_compact
@@ -5311,14 +5311,14 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hWpos : 0 < W)
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_bound :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, weight q ≤ W)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, weight q ≤ W)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
     (hβ_cont : ContinuousAt successProb θ0)
@@ -5329,7 +5329,7 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point
     (hg_pos : ∀ᶠ θ in 𝓝 θ0, 0 < sampleRate θ)
     (hg_le : ∀ᶠ θ in 𝓝 θ0, sampleRate θ ≤ G)
     (hrate_nonneg :
-      ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSet →
+      ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSet →
         0 ≤
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
@@ -5345,13 +5345,13 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂(μ.prod μ).restrict
-          EconCSLib.strictUpperPairSet)
+          AppliedModelingLib.strictUpperPairSet)
       0 :=
   lemmaC4_weighted_ordered_pair_integral_has_zero_rate_of_continuity_point
-    μ EconCSLib.isOpen_strictUpperPairSet.measurableSet
+    μ AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet
     successProb sampleRate weight kernel hkernel_int hweight_int hWpos
     hweight_nonneg hweight_bound hweight_cont hweight_x0_pos
-    (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
+    (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
     hβ_cont hβ0 hβ1 hg0 hG_pos hg_pos hg_le hrate_nonneg hkernel_pos
     huniform_log
 
@@ -5368,14 +5368,14 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_on_st
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hWpos : 0 < W)
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_bound :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, weight q ≤ W)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, weight q ≤ W)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
     (hβ_cont : ContinuousAt successProb θ0)
@@ -5386,7 +5386,7 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_on_st
     (hg_pos : ∀ᶠ θ in 𝓝 θ0, 0 < sampleRate θ)
     (hg_le : ∀ᶠ θ in 𝓝 θ0, sampleRate θ ≤ G)
     (hrate_nonneg :
-      ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSet →
+      ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSet →
         0 ≤
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
@@ -5394,7 +5394,7 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_on_st
     (hkernel_pos : ∀ k q, 0 < kernel k q)
     (huniform_log_on : ∀ ε > 0,
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSet →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSet →
           |(-Real.log (kernel k q) / (k : ℝ)) -
             weightedBernoulliClosedThresholdRate
               (sampleRate q.1) (sampleRate q.2)
@@ -5402,13 +5402,13 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_on_st
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂(μ.prod μ).restrict
-          EconCSLib.strictUpperPairSet)
+          AppliedModelingLib.strictUpperPairSet)
       0 :=
   lemmaC4_weighted_ordered_pair_integral_has_zero_rate_of_continuity_point_on_cell
-    μ EconCSLib.isOpen_strictUpperPairSet.measurableSet
+    μ AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet
     successProb sampleRate weight kernel hkernel_int hweight_int hWpos
     hweight_nonneg hweight_bound hweight_cont hweight_x0_pos
-    (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
+    (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
     hβ_cont hβ0 hβ1 hg0 hG_pos hg_pos hg_le hrate_nonneg hkernel_pos
     huniform_log_on
 
@@ -5426,14 +5426,14 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_of_gl
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hWpos : 0 < W)
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_bound :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, weight q ≤ W)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, weight q ≤ W)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
     (hprob_pos : ∀ θ, 0 < successProb θ)
@@ -5453,7 +5453,7 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_of_gl
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂(μ.prod μ).restrict
-          EconCSLib.strictUpperPairSet)
+          AppliedModelingLib.strictUpperPairSet)
       0 := by
   refine
     lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point
@@ -5482,14 +5482,14 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_of_gl
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hWpos : 0 < W)
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_bound :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, weight q ≤ W)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, weight q ≤ W)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
     (hprob_pos : ∀ θ, 0 < successProb θ)
@@ -5509,7 +5509,7 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_of_gl
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂(μ.prod μ).restrict
-          EconCSLib.strictUpperPairSet)
+          AppliedModelingLib.strictUpperPairSet)
       0 := by
   refine
     lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_of_global_interior
@@ -5533,14 +5533,14 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_of_gl
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hWpos : 0 < W)
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_bound :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, weight q ≤ W)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, weight q ≤ W)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
     (hprob_pos : ∀ θ, 0 < successProb θ)
@@ -5556,11 +5556,11 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_of_gl
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet) :
+        AppliedModelingLib.strictUpperPairSet) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂(μ.prod μ).restrict
-          EconCSLib.strictUpperPairSet)
+          AppliedModelingLib.strictUpperPairSet)
       0 := by
   refine
     lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_on_strictUpperPair
@@ -5593,14 +5593,14 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hWpos : 0 < W)
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_bound :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, weight q ≤ W)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, weight q ≤ W)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
     (hweight_x0_pos :
@@ -5623,17 +5623,17 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂(μ.prod μ).restrict
-          EconCSLib.strictUpperPairSet)
+          AppliedModelingLib.strictUpperPairSet)
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ _hθ
     exact ⟨hprob_pos θ, hprob_lt_one θ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0 hθ0)
   exact
     lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_of_global_interior
@@ -5657,14 +5657,14 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hWpos : 0 < W)
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_bound :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, weight q ≤ W)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, weight q ≤ W)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
     (hweight_x0_pos :
@@ -5687,17 +5687,17 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂(μ.prod μ).restrict
-          EconCSLib.strictUpperPairSet)
+          AppliedModelingLib.strictUpperPairSet)
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ _hθ
     exact ⟨hprob_pos θ, hprob_lt_one θ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0 hθ0)
   exact
     lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_of_global_interior_uniformNormalizedLogRateCertificate
@@ -5721,14 +5721,14 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hWpos : 0 < W)
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_bound :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, weight q ≤ W)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, weight q ≤ W)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
     (hweight_x0_pos :
@@ -5747,21 +5747,21 @@ theorem lemmaC4_strictUpperPair_integral_has_zero_rate_of_monotone_continuity_in
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet) :
+        AppliedModelingLib.strictUpperPairSet) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂(μ.prod μ).restrict
-          EconCSLib.strictUpperPairSet)
+          AppliedModelingLib.strictUpperPairSet)
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ _hθ
     exact ⟨hprob_pos θ, hprob_lt_one θ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0 hθ0)
   exact
     lemmaC4_strictUpperPair_integral_has_zero_rate_of_continuity_point_of_global_interior_uniformNormalizedLogRateCertificate_on_strictUpperPair
@@ -5791,9 +5791,9 @@ theorem lemmaC4_strictUpperPair_floorPkComplementError_has_zero_rate_of_monotone
     (weight : ℝ × ℝ → ℝ)
     {a b : ℝ}
     (hweight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
     (hweight_x0_pos :
@@ -5811,9 +5811,9 @@ theorem lemmaC4_strictUpperPair_floorPkComplementError_has_zero_rate_of_monotone
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+          ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       0 := by
-  let cell := EconCSLib.strictUpperPairSet
+  let cell := AppliedModelingLib.strictUpperPairSet
   let M := binaryRatingModel successProb hprob0 hprob1
   let kernel : ℕ → ℝ × ℝ → ℝ :=
     fun k q => twoSampleFloorPkComplementErrorProb M sampleRate q.1 q.2 k
@@ -5822,10 +5822,10 @@ theorem lemmaC4_strictUpperPair_floorPkComplementError_has_zero_rate_of_monotone
     intro θ _hθ
     exact ⟨hprob_pos θ, hprob_lt_one θ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0 hθ0)
   have hg_pos : ∀ᶠ θ in 𝓝 θ0, 0 < sampleRate θ :=
     Eventually.of_forall hsample_pos
@@ -5888,7 +5888,7 @@ theorem lemmaC4_strictUpperPair_floorPkComplementError_has_zero_rate_of_monotone
         hqord
   simpa [cell, kernel, M, rate] using
     weightedKernelIntegral_hasExponentialRate_zero_of_boundedKernel_pointwiseExponentialRateCertificate_continuousAt_zero_weight_pos_restrict_closure_interior_of_cell_subset_certSet
-      (μ.prod μ) EconCSLib.isOpen_strictUpperPairSet.measurableSet
+      (μ.prod μ) AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet
       (cell := cell) (certSet := cell) (weight := weight) (kernel := kernel)
       (rate := rate) (K := (2 : ℝ)) (θ0, θ0) (by norm_num)
       (by simpa [cell] using hweight_int)
@@ -5896,7 +5896,7 @@ theorem lemmaC4_strictUpperPair_floorPkComplementError_has_zero_rate_of_monotone
       hkernel_int hkernel_bound hkernel_meas (by intro q hq; exact hq)
       hcert hrate_x0 hrate_cont (hweight_cont θ0 hθ0)
       (hweight_x0_pos θ0 hθ0)
-      (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
+      (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSet θ0)
 
 /--
 Lemma C.4 bounded strict ordered-pair bridge at a diagonal continuity point.
@@ -5916,16 +5916,16 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hkernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+        ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
           0 ≤ kernel k q ∧ kernel k q ≤ K)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -5942,11 +5942,11 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        (EconCSLib.closedPairBox a b)) :
+        (AppliedModelingLib.closedPairBox a b)) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          (μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   let phi : ℝ × ℝ → ℝ := fun q =>
     weightedBernoulliClosedThresholdRate
@@ -5963,23 +5963,23 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
   have hphi_cont : ContinuousAt phi (θ0, θ0) := by
     simpa [ContinuousAt, hphi_x0] using hphi_tendsto
   have hcell_meas :
-      MeasurableSet (EconCSLib.strictUpperPairSetOn a b) := by
-    have hbox_closed : IsClosed (EconCSLib.closedPairBox a b) :=
-      (EconCSLib.isCompact_closedPairBox a b).isClosed
-    simpa [EconCSLib.strictUpperPairSetOn] using
-      EconCSLib.isOpen_strictUpperPairSet.measurableSet.inter
+      MeasurableSet (AppliedModelingLib.strictUpperPairSetOn a b) := by
+    have hbox_closed : IsClosed (AppliedModelingLib.closedPairBox a b) :=
+      (AppliedModelingLib.isCompact_closedPairBox a b).isClosed
+    simpa [AppliedModelingLib.strictUpperPairSetOn] using
+      AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet.inter
         hbox_closed.measurableSet
   have hcert_ae :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
-        q ∈ EconCSLib.closedPairBox a b :=
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
+        q ∈ AppliedModelingLib.closedPairBox a b :=
     (ae_restrict_mem hcell_meas).mono fun q hq =>
-      EconCSLib.strictUpperPairSetOn_subset_closedPairBox a b hq
+      AppliedModelingLib.strictUpperPairSetOn_subset_closedPairBox a b hq
   exact
     weightedKernelIntegral_hasExponentialRate_zero_of_boundedKernel_uniformNormalizedLogRateCertificateOn_continuousAt_zero_weight_pos_restrict_closure_interior_of_ae_mem_certSet
       (μ.prod μ) hcell_meas (θ0, θ0) hK_nonneg hweight_int
       hweight_nonneg hkernel_int hkernel_bound hcert hcert_ae hphi_x0
       hphi_cont hweight_cont hweight_x0_pos
-      (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSetOn hθ0)
+      (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSetOn hθ0)
 
 /--
 Lemma C.4 bounded strict ordered-pair bridge at a diagonal continuity point
@@ -5998,16 +5998,16 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hkernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+        ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
           0 ≤ kernel k q ∧ kernel k q ≤ K)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -6024,11 +6024,11 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        (EconCSLib.closedUpperPairSetOn a b)) :
+        (AppliedModelingLib.closedUpperPairSetOn a b)) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          (μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   let phi : ℝ × ℝ → ℝ := fun q =>
     weightedBernoulliClosedThresholdRate
@@ -6045,23 +6045,23 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
   have hphi_cont : ContinuousAt phi (θ0, θ0) := by
     simpa [ContinuousAt, hphi_x0] using hphi_tendsto
   have hcell_meas :
-      MeasurableSet (EconCSLib.strictUpperPairSetOn a b) := by
-    have hbox_closed : IsClosed (EconCSLib.closedPairBox a b) :=
-      (EconCSLib.isCompact_closedPairBox a b).isClosed
-    simpa [EconCSLib.strictUpperPairSetOn] using
-      EconCSLib.isOpen_strictUpperPairSet.measurableSet.inter
+      MeasurableSet (AppliedModelingLib.strictUpperPairSetOn a b) := by
+    have hbox_closed : IsClosed (AppliedModelingLib.closedPairBox a b) :=
+      (AppliedModelingLib.isCompact_closedPairBox a b).isClosed
+    simpa [AppliedModelingLib.strictUpperPairSetOn] using
+      AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet.inter
         hbox_closed.measurableSet
   have hcert_ae :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
-        q ∈ EconCSLib.closedUpperPairSetOn a b :=
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
+        q ∈ AppliedModelingLib.closedUpperPairSetOn a b :=
     (ae_restrict_mem hcell_meas).mono fun q hq =>
-      EconCSLib.strictUpperPairSetOn_subset_closedUpperPairSetOn a b hq
+      AppliedModelingLib.strictUpperPairSetOn_subset_closedUpperPairSetOn a b hq
   exact
     weightedKernelIntegral_hasExponentialRate_zero_of_boundedKernel_uniformNormalizedLogRateCertificateOn_continuousAt_zero_weight_pos_restrict_closure_interior_of_ae_mem_certSet
       (μ.prod μ) hcell_meas (θ0, θ0) hK_nonneg hweight_int
       hweight_nonneg hkernel_int hkernel_bound hcert hcert_ae hphi_x0
       hphi_cont hweight_cont hweight_x0_pos
-      (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSetOn hθ0)
+      (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSetOn hθ0)
 
 /--
 Lemma C.4 bounded strict ordered-pair bridge at a diagonal continuity point
@@ -6081,16 +6081,16 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hkernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+        ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
           0 ≤ kernel k q ∧ kernel k q ≤ K)
     (hkernel_meas : ∀ k : ℕ, Measurable (kernel k))
     (hweight_cont : ContinuousAt weight (θ0, θ0))
@@ -6104,7 +6104,7 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
     (hg_le : ∀ᶠ θ in 𝓝 θ0, sampleRate θ ≤ G)
     (hcert :
       ∀ q : ℝ × ℝ,
-        q ∈ EconCSLib.closedUpperPairSetOn a b →
+        q ∈ AppliedModelingLib.closedUpperPairSetOn a b →
           ExponentialRateCertificate
             (fun k : ℕ => kernel k q)
             (weightedBernoulliClosedThresholdRate
@@ -6113,7 +6113,7 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          (μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   let phi : ℝ × ℝ → ℝ := fun q =>
     weightedBernoulliClosedThresholdRate
@@ -6130,20 +6130,20 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
   have hphi_cont : ContinuousAt phi (θ0, θ0) := by
     simpa [ContinuousAt, hphi_x0] using hphi_tendsto
   have hcell_meas :
-      MeasurableSet (EconCSLib.strictUpperPairSetOn a b) := by
-    have hbox_closed : IsClosed (EconCSLib.closedPairBox a b) :=
-      (EconCSLib.isCompact_closedPairBox a b).isClosed
-    simpa [EconCSLib.strictUpperPairSetOn] using
-      EconCSLib.isOpen_strictUpperPairSet.measurableSet.inter
+      MeasurableSet (AppliedModelingLib.strictUpperPairSetOn a b) := by
+    have hbox_closed : IsClosed (AppliedModelingLib.closedPairBox a b) :=
+      (AppliedModelingLib.isCompact_closedPairBox a b).isClosed
+    simpa [AppliedModelingLib.strictUpperPairSetOn] using
+      AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet.inter
         hbox_closed.measurableSet
   exact
     weightedKernelIntegral_hasExponentialRate_zero_of_boundedKernel_pointwiseExponentialRateCertificate_continuousAt_zero_weight_pos_restrict_closure_interior_of_cell_subset_certSet
       (μ.prod μ) hcell_meas (θ0, θ0) hK_nonneg hweight_int
       hweight_nonneg hkernel_int hkernel_bound hkernel_meas
-      (EconCSLib.strictUpperPairSetOn_subset_closedUpperPairSetOn a b)
+      (AppliedModelingLib.strictUpperPairSetOn_subset_closedUpperPairSetOn a b)
       (by simpa [phi] using hcert) hphi_x0 hphi_cont hweight_cont
       hweight_x0_pos
-      (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSetOn hθ0)
+      (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSetOn hθ0)
 
 /--
 Lemma C.4 bounded strict ordered-pair bridge on the closed upper triangle,
@@ -6160,17 +6160,17 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
     (hK_nonneg : 0 ≤ K)
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hkernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable (kernel k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hkernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+        ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
           0 ≤ kernel k q ∧ kernel k q ≤ K)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -6187,11 +6187,11 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        (EconCSLib.closedUpperPairSetOn a b)) :
+        (AppliedModelingLib.closedUpperPairSetOn a b)) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          (μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   let phi : ℝ × ℝ → ℝ := fun q =>
     weightedBernoulliClosedThresholdRate
@@ -6208,23 +6208,23 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_poin
   have hphi_cont : ContinuousAt phi (θ0, θ0) := by
     simpa [ContinuousAt, hphi_x0] using hphi_tendsto
   have hcell_meas :
-      MeasurableSet (EconCSLib.strictUpperPairSetOn a b) := by
-    have hbox_closed : IsClosed (EconCSLib.closedPairBox a b) :=
-      (EconCSLib.isCompact_closedPairBox a b).isClosed
-    simpa [EconCSLib.strictUpperPairSetOn] using
-      EconCSLib.isOpen_strictUpperPairSet.measurableSet.inter
+      MeasurableSet (AppliedModelingLib.strictUpperPairSetOn a b) := by
+    have hbox_closed : IsClosed (AppliedModelingLib.closedPairBox a b) :=
+      (AppliedModelingLib.isCompact_closedPairBox a b).isClosed
+    simpa [AppliedModelingLib.strictUpperPairSetOn] using
+      AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet.inter
         hbox_closed.measurableSet
   have hcert_ae :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
-        q ∈ EconCSLib.closedUpperPairSetOn a b :=
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
+        q ∈ AppliedModelingLib.closedUpperPairSetOn a b :=
     (ae_restrict_mem hcell_meas).mono fun q hq =>
-      EconCSLib.strictUpperPairSetOn_subset_closedUpperPairSetOn a b hq
+      AppliedModelingLib.strictUpperPairSetOn_subset_closedUpperPairSetOn a b hq
   exact
     weightedKernelIntegral_hasExponentialRate_zero_of_boundedKernel_uniformNormalizedLogRateCertificateOn_continuousAt_zero_weight_pos_restrict_closure_interior_of_ae_mem_certSet_of_kernel_aestronglyMeasurable
       (μ.prod μ) hcell_meas (θ0, θ0) hK_nonneg hweight_int
       hweight_nonneg hkernel_meas hkernel_bound hcert hcert_ae
       hphi_x0 hphi_cont hweight_cont hweight_x0_pos
-      (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSetOn hθ0)
+      (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSetOn hθ0)
 
 /--
 Lemma C.4 bounded strict ordered-pair bridge for the concrete source
@@ -6247,9 +6247,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hθ0 : θ0 ∈ Set.Ioo a b)
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -6270,9 +6270,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
-  let cell := EconCSLib.strictUpperPairSetOn a b
+  let cell := AppliedModelingLib.strictUpperPairSetOn a b
   let M := binaryRatingModel successProb hprob0 hprob1
   let kernel : ℕ → ℝ × ℝ → ℝ :=
     fun k q => twoSampleFloorPkComplementErrorProb M sampleRate q.1 q.2 k
@@ -6306,7 +6306,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
       hkernel_bound
   have hcert :
       ∀ q : ℝ × ℝ,
-        q ∈ EconCSLib.closedUpperPairSetOn a b →
+        q ∈ AppliedModelingLib.closedUpperPairSetOn a b →
           ExponentialRateCertificate
             (fun k : ℕ => kernel k q)
             (weightedBernoulliClosedThresholdRate
@@ -6314,7 +6314,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
               (successProb q.1) (successProb q.2)) := by
     intro q hq
     have hqord : successProb q.2 ≤ successProb q.1 :=
-      hprob_mono (EconCSLib.closedUpperPairSetOn_snd_le_fst hq)
+      hprob_mono (AppliedModelingLib.closedUpperPairSetOn_snd_le_fst hq)
     simpa [kernel, M] using
       binaryRatingModel_floorPkComplementError_exponentialRateCertificate_of_weighted_common_threshold_pair
         successProb hprob0 hprob1 sampleRate q.1 q.2
@@ -6354,9 +6354,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hθ0 : θ0 ∈ Set.Ioo a b)
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -6372,9 +6372,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
-  let cell := EconCSLib.strictUpperPairSetOn a b
+  let cell := AppliedModelingLib.strictUpperPairSetOn a b
   let M := binaryRatingModel successProb hprob0 hprob1
   let kernel : ℕ → ℝ × ℝ → ℝ :=
     fun k q => twoSampleFloorPkComplementErrorProb M sampleRate q.1 q.2 k
@@ -6386,7 +6386,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
   have hg0 : 0 < sampleRate θ0 :=
     hsample_pos_on θ0 hθ0_Icc
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont_on θ0 hθ0_Icc)
   have hg_pos : ∀ᶠ θ in 𝓝 θ0, 0 < sampleRate θ :=
     (hsample_cont_on θ0 hθ0_Icc).eventually
@@ -6421,7 +6421,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
       hkernel_bound
   have hcert :
       ∀ q : ℝ × ℝ,
-        q ∈ EconCSLib.closedUpperPairSetOn a b →
+        q ∈ AppliedModelingLib.closedUpperPairSetOn a b →
           ExponentialRateCertificate
             (fun k : ℕ => kernel k q)
             (weightedBernoulliClosedThresholdRate
@@ -6429,11 +6429,11 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
               (successProb q.1) (successProb q.2)) := by
     intro q hq
     have hq1 : q.1 ∈ Set.Icc a b :=
-      EconCSLib.closedUpperPairSetOn_fst_mem_Icc hq
+      AppliedModelingLib.closedUpperPairSetOn_fst_mem_Icc hq
     have hq2 : q.2 ∈ Set.Icc a b :=
-      EconCSLib.closedUpperPairSetOn_snd_mem_Icc hq
+      AppliedModelingLib.closedUpperPairSetOn_snd_mem_Icc hq
     have hqord : successProb q.2 ≤ successProb q.1 :=
-      hprob_mono (EconCSLib.closedUpperPairSetOn_snd_le_fst hq)
+      hprob_mono (AppliedModelingLib.closedUpperPairSetOn_snd_le_fst hq)
     simpa [kernel, M] using
       binaryRatingModel_floorPkComplementError_exponentialRateCertificate_of_weighted_common_threshold_pair
         successProb hprob0 hprob1 sampleRate q.1 q.2
@@ -6472,9 +6472,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     {a b : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -6492,7 +6492,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
@@ -6500,7 +6500,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     have hθ_Icc : θ ∈ Set.Icc a b := ⟨hθ.1.le, hθ.2.le⟩
     exact ⟨hprob_pos_on θ hθ_Icc, hprob_lt_one_on θ hθ_Icc⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   exact
     lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_continuity_point_pointwise_on_closed_upper_box_of_Icc
@@ -6518,13 +6518,13 @@ bounded by the corresponding global error integral.
 -/
 theorem lemmaC4_strictUpperPairSetOn_integral_le_strictUpperPair_integral
     (μ : Measure ℝ) (f : ℝ × ℝ → ℝ) {a b : ℝ}
-    (hf_int : IntegrableOn f EconCSLib.strictUpperPairSet (μ.prod μ))
+    (hf_int : IntegrableOn f AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hf_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ f q) :
-    ∫ q in EconCSLib.strictUpperPairSetOn a b, f q ∂(μ.prod μ) ≤
-      ∫ q in EconCSLib.strictUpperPairSet, f q ∂(μ.prod μ) :=
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ f q) :
+    ∫ q in AppliedModelingLib.strictUpperPairSetOn a b, f q ∂(μ.prod μ) ≤
+      ∫ q in AppliedModelingLib.strictUpperPairSet, f q ∂(μ.prod μ) :=
   setIntegral_mono_subset_of_ae_nonneg hf_int hf_nonneg
-    (EconCSLib.strictUpperPairSetOn_subset_strictUpperPairSet a b)
+    (AppliedModelingLib.strictUpperPairSetOn_subset_strictUpperPairSet a b)
 
 /--
 Local-to-global C.4 source-kernel bridge.  If the paper's global error kernel
@@ -6544,33 +6544,33 @@ theorem lemmaC4_strictUpperPairSetOn_raw_integral_le_source_strictUpperPair_inte
     (hglobal_int :
       IntegrableOn
         (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-        EconCSLib.strictUpperPairSet (μ.prod μ))
+        AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hglobal_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q * sourceKernel k q)
     (hsource_eq_raw_on :
-      ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+      ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
         sourceKernel k q = rawKernel k q) :
-    (∫ q in EconCSLib.strictUpperPairSetOn a b,
+    (∫ q in AppliedModelingLib.strictUpperPairSetOn a b,
       weight q * rawKernel k q ∂(μ.prod μ)) ≤
-      ∫ q in EconCSLib.strictUpperPairSet,
+      ∫ q in AppliedModelingLib.strictUpperPairSet,
         weight q * sourceKernel k q ∂(μ.prod μ) := by
   have hlocal_meas :
-      MeasurableSet (EconCSLib.strictUpperPairSetOn a b) := by
-    have hbox_closed : IsClosed (EconCSLib.closedPairBox a b) :=
-      (EconCSLib.isCompact_closedPairBox a b).isClosed
-    simpa [EconCSLib.strictUpperPairSetOn] using
-      EconCSLib.isOpen_strictUpperPairSet.measurableSet.inter
+      MeasurableSet (AppliedModelingLib.strictUpperPairSetOn a b) := by
+    have hbox_closed : IsClosed (AppliedModelingLib.closedPairBox a b) :=
+      (AppliedModelingLib.isCompact_closedPairBox a b).isClosed
+    simpa [AppliedModelingLib.strictUpperPairSetOn] using
+      AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet.inter
         hbox_closed.measurableSet
   exact
     setIntegral_mono_subset_of_eqOn_of_ae_nonneg
       (μ := μ.prod μ)
-      (s := EconCSLib.strictUpperPairSetOn a b)
-      (t := EconCSLib.strictUpperPairSet)
+      (s := AppliedModelingLib.strictUpperPairSetOn a b)
+      (t := AppliedModelingLib.strictUpperPairSet)
       (localF := fun q : ℝ × ℝ => weight q * rawKernel k q)
       (globalF := fun q : ℝ × ℝ => weight q * sourceKernel k q)
       hlocal_meas hglobal_int hglobal_nonneg
-      (EconCSLib.strictUpperPairSetOn_subset_strictUpperPairSet a b)
+      (AppliedModelingLib.strictUpperPairSetOn_subset_strictUpperPairSet a b)
       (by
         intro q hq
         dsimp
@@ -6590,37 +6590,37 @@ theorem lemmaC4_strictUpperPairSetOn_raw_integral_le_source_strictUpperPair_inte
     (hlocal_int :
       IntegrableOn
         (fun q : ℝ × ℝ => weight q * rawKernel k q)
-        (EconCSLib.strictUpperPairSetOn a b) (μ.prod μ))
+        (AppliedModelingLib.strictUpperPairSetOn a b) (μ.prod μ))
     (hglobal_int :
       IntegrableOn
         (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-        EconCSLib.strictUpperPairSet (μ.prod μ))
+        AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hglobal_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q * sourceKernel k q)
     (hsource_raw_le_on :
-      ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+      ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
         weight q * rawKernel k q ≤ weight q * sourceKernel k q) :
-    (∫ q in EconCSLib.strictUpperPairSetOn a b,
+    (∫ q in AppliedModelingLib.strictUpperPairSetOn a b,
       weight q * rawKernel k q ∂(μ.prod μ)) ≤
-      ∫ q in EconCSLib.strictUpperPairSet,
+      ∫ q in AppliedModelingLib.strictUpperPairSet,
         weight q * sourceKernel k q ∂(μ.prod μ) := by
   have hlocal_meas :
-      MeasurableSet (EconCSLib.strictUpperPairSetOn a b) := by
-    have hbox_closed : IsClosed (EconCSLib.closedPairBox a b) :=
-      (EconCSLib.isCompact_closedPairBox a b).isClosed
-    simpa [EconCSLib.strictUpperPairSetOn] using
-      EconCSLib.isOpen_strictUpperPairSet.measurableSet.inter
+      MeasurableSet (AppliedModelingLib.strictUpperPairSetOn a b) := by
+    have hbox_closed : IsClosed (AppliedModelingLib.closedPairBox a b) :=
+      (AppliedModelingLib.isCompact_closedPairBox a b).isClosed
+    simpa [AppliedModelingLib.strictUpperPairSetOn] using
+      AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet.inter
         hbox_closed.measurableSet
   exact
-    EconCSLib.Probability.setIntegral_mono_subset_of_leOn_of_ae_nonneg
+    AppliedModelingLib.Probability.setIntegral_mono_subset_of_leOn_of_ae_nonneg
       (μ := μ.prod μ)
-      (s := EconCSLib.strictUpperPairSetOn a b)
-      (t := EconCSLib.strictUpperPairSet)
+      (s := AppliedModelingLib.strictUpperPairSetOn a b)
+      (t := AppliedModelingLib.strictUpperPairSet)
       (localF := fun q : ℝ × ℝ => weight q * rawKernel k q)
       (globalF := fun q : ℝ × ℝ => weight q * sourceKernel k q)
       hlocal_meas hlocal_int hglobal_int hglobal_nonneg
-      (EconCSLib.strictUpperPairSetOn_subset_strictUpperPairSet a b)
+      (AppliedModelingLib.strictUpperPairSetOn_subset_strictUpperPairSet a b)
       hsource_raw_le_on
 
 /--
@@ -6639,29 +6639,29 @@ theorem lemmaC4_sourceWError_eventually_raw_floorPk_local_le_of_eq_on_witness
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ))
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hsource_nonneg :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * sourceKernel k q)
     (hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           sourceKernel k q = rawKernel k q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ)) :
     ∀ᶠ k : ℕ in atTop,
-      (∫ q in EconCSLib.strictUpperPairSetOn a b,
+      (∫ q in AppliedModelingLib.strictUpperPairSetOn a b,
         weight q * rawKernel k q ∂(μ.prod μ)) ≤ sourceWError k := by
   filter_upwards [hsource_int, hsource_nonneg, hsource_eq_raw_on,
       hsourceWError_eq] with k hk_int hk_nonneg hk_eq hk_source
   calc
-    (∫ q in EconCSLib.strictUpperPairSetOn a b,
+    (∫ q in AppliedModelingLib.strictUpperPairSetOn a b,
         weight q * rawKernel k q ∂(μ.prod μ))
-        ≤ ∫ q in EconCSLib.strictUpperPairSet,
+        ≤ ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ) :=
       lemmaC4_strictUpperPairSetOn_raw_integral_le_source_strictUpperPair_integral_of_eq_on_witness
         μ weight rawKernel sourceKernel (a := a) (b := b) k
@@ -6682,35 +6682,35 @@ theorem lemmaC4_sourceWError_eventually_raw_floorPk_local_le_of_le_on_witness
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * rawKernel k q)
-          (EconCSLib.strictUpperPairSetOn a b) (μ.prod μ))
+          (AppliedModelingLib.strictUpperPairSetOn a b) (μ.prod μ))
     (hsource_int :
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ))
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hsource_nonneg :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * sourceKernel k q)
     (hsource_raw_le_on :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           weight q * rawKernel k q ≤ weight q * sourceKernel k q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ)) :
     ∀ᶠ k : ℕ in atTop,
-      (∫ q in EconCSLib.strictUpperPairSetOn a b,
+      (∫ q in AppliedModelingLib.strictUpperPairSetOn a b,
         weight q * rawKernel k q ∂(μ.prod μ)) ≤ sourceWError k := by
   filter_upwards [hlocal_int, hsource_int, hsource_nonneg,
       hsource_raw_le_on, hsourceWError_eq] with
     k hk_local_int hk_int hk_nonneg hk_le hk_source
   calc
-    (∫ q in EconCSLib.strictUpperPairSetOn a b,
+    (∫ q in AppliedModelingLib.strictUpperPairSetOn a b,
         weight q * rawKernel k q ∂(μ.prod μ))
-        ≤ ∫ q in EconCSLib.strictUpperPairSet,
+        ≤ ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ) :=
       lemmaC4_strictUpperPairSetOn_raw_integral_le_source_strictUpperPair_integral_of_le_on_witness
         μ weight rawKernel sourceKernel (a := a) (b := b) k
@@ -6728,15 +6728,15 @@ theorem lemmaC4_sourceWError_eventually_raw_local_le_of_eq_on_witness_cell
     (rawKernel sourceKernel : ℕ → ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ) {cell : Set (ℝ × ℝ)}
     (hcell_meas : MeasurableSet cell)
-    (hcell_subset_strict : cell ⊆ EconCSLib.strictUpperPairSet)
+    (hcell_subset_strict : cell ⊆ AppliedModelingLib.strictUpperPairSet)
     (hsource_int :
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ))
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hsource_nonneg :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * sourceKernel k q)
     (hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
@@ -6744,7 +6744,7 @@ theorem lemmaC4_sourceWError_eventually_raw_local_le_of_eq_on_witness_cell
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ)) :
     ∀ᶠ k : ℕ in atTop,
       (∫ q in cell, weight q * rawKernel k q ∂(μ.prod μ)) ≤
@@ -6753,12 +6753,12 @@ theorem lemmaC4_sourceWError_eventually_raw_local_le_of_eq_on_witness_cell
       hsourceWError_eq] with k hk_int hk_nonneg hk_eq hk_source
   calc
     (∫ q in cell, weight q * rawKernel k q ∂(μ.prod μ))
-        ≤ ∫ q in EconCSLib.strictUpperPairSet,
+        ≤ ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ) :=
       setIntegral_mono_subset_of_eqOn_of_ae_nonneg
         (μ := μ.prod μ)
         (s := cell)
-        (t := EconCSLib.strictUpperPairSet)
+        (t := AppliedModelingLib.strictUpperPairSet)
         (localF := fun q : ℝ × ℝ => weight q * rawKernel k q)
         (globalF := fun q : ℝ × ℝ => weight q * sourceKernel k q)
         hcell_meas hk_int hk_nonneg hcell_subset_strict
@@ -6779,7 +6779,7 @@ theorem lemmaC4_sourceWError_eventually_raw_local_le_of_le_on_witness_cell
     (rawKernel sourceKernel : ℕ → ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ) {cell : Set (ℝ × ℝ)}
     (hcell_meas : MeasurableSet cell)
-    (hcell_subset_strict : cell ⊆ EconCSLib.strictUpperPairSet)
+    (hcell_subset_strict : cell ⊆ AppliedModelingLib.strictUpperPairSet)
     (hlocal_int :
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
@@ -6789,10 +6789,10 @@ theorem lemmaC4_sourceWError_eventually_raw_local_le_of_le_on_witness_cell
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ))
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hsource_nonneg :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * sourceKernel k q)
     (hsource_raw_le_on :
       ∀ᶠ k : ℕ in atTop,
@@ -6801,7 +6801,7 @@ theorem lemmaC4_sourceWError_eventually_raw_local_le_of_le_on_witness_cell
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ)) :
     ∀ᶠ k : ℕ in atTop,
       (∫ q in cell, weight q * rawKernel k q ∂(μ.prod μ)) ≤
@@ -6811,12 +6811,12 @@ theorem lemmaC4_sourceWError_eventually_raw_local_le_of_le_on_witness_cell
     k hk_local_int hk_int hk_nonneg hk_le hk_source
   calc
     (∫ q in cell, weight q * rawKernel k q ∂(μ.prod μ))
-        ≤ ∫ q in EconCSLib.strictUpperPairSet,
+        ≤ ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ) :=
-      EconCSLib.Probability.setIntegral_mono_subset_of_leOn_of_ae_nonneg
+      AppliedModelingLib.Probability.setIntegral_mono_subset_of_leOn_of_ae_nonneg
         (μ := μ.prod μ)
         (s := cell)
-        (t := EconCSLib.strictUpperPairSet)
+        (t := AppliedModelingLib.strictUpperPairSet)
         (localF := fun q : ℝ × ℝ => weight q * rawKernel k q)
         (globalF := fun q : ℝ × ℝ => weight q * sourceKernel k q)
         hcell_meas hk_local_int hk_int hk_nonneg hcell_subset_strict hk_le
@@ -6840,7 +6840,7 @@ theorem lemmaC4_witnessCell_floorPkComplementError_has_zero_rate_of_continuity_p
     (weight : ℝ × ℝ → ℝ)
     {cell : Set (ℝ × ℝ)} {a b θ0 : ℝ}
     (hcell_meas : MeasurableSet cell)
-    (hcell_subset_closed_upper : cell ⊆ EconCSLib.closedUpperPairSetOn a b)
+    (hcell_subset_closed_upper : cell ⊆ AppliedModelingLib.closedUpperPairSetOn a b)
     (hθ0_Icc : θ0 ∈ Set.Icc a b)
     (hθ0_closure : (θ0, θ0) ∈ closure (interior cell))
     (hweight_int : Integrable weight ((μ.prod μ).restrict cell))
@@ -6874,7 +6874,7 @@ theorem lemmaC4_witnessCell_floorPkComplementError_has_zero_rate_of_continuity_p
   have hg0 : 0 < sampleRate θ0 :=
     hsample_pos_on θ0 hθ0_Icc
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont_on θ0 hθ0_Icc)
   have hg_pos : ∀ᶠ θ in 𝓝 θ0, 0 < sampleRate θ :=
     (hsample_cont_on θ0 hθ0_Icc).eventually
@@ -6919,17 +6919,17 @@ theorem lemmaC4_witnessCell_floorPkComplementError_has_zero_rate_of_continuity_p
       hkernel_bound
   have hcert :
       ∀ q : ℝ × ℝ,
-        q ∈ EconCSLib.closedUpperPairSetOn a b →
+        q ∈ AppliedModelingLib.closedUpperPairSetOn a b →
           ExponentialRateCertificate
             (fun k : ℕ => kernel k q)
             (rate q) := by
     intro q hq
     have hq1 : q.1 ∈ Set.Icc a b :=
-      EconCSLib.closedUpperPairSetOn_fst_mem_Icc hq
+      AppliedModelingLib.closedUpperPairSetOn_fst_mem_Icc hq
     have hq2 : q.2 ∈ Set.Icc a b :=
-      EconCSLib.closedUpperPairSetOn_snd_mem_Icc hq
+      AppliedModelingLib.closedUpperPairSetOn_snd_mem_Icc hq
     have hqord : successProb q.2 ≤ successProb q.1 :=
-      hprob_mono (EconCSLib.closedUpperPairSetOn_snd_le_fst hq)
+      hprob_mono (AppliedModelingLib.closedUpperPairSetOn_snd_le_fst hq)
     simpa [kernel, M, rate] using
       binaryRatingModel_floorPkComplementError_exponentialRateCertificate_of_weighted_common_threshold_pair
         successProb hprob0 hprob1 sampleRate q.1 q.2
@@ -6940,7 +6940,7 @@ theorem lemmaC4_witnessCell_floorPkComplementError_has_zero_rate_of_continuity_p
   simpa [kernel, M] using
     weightedKernelIntegral_hasExponentialRate_zero_of_boundedKernel_pointwiseExponentialRateCertificate_continuousAt_zero_weight_pos_restrict_closure_interior_of_cell_subset_certSet
       (μ.prod μ) hcell_meas (cell := cell)
-      (certSet := EconCSLib.closedUpperPairSetOn a b) (weight := weight)
+      (certSet := AppliedModelingLib.closedUpperPairSetOn a b) (weight := weight)
       (kernel := kernel) (rate := rate) (K := (2 : ℝ)) (θ0, θ0)
       (by norm_num) hweight_int hweight_nonneg hkernel_int
       hkernel_bound hkernel_meas hcell_subset_closed_upper hcert hrate_x0
@@ -6963,7 +6963,7 @@ theorem lemmaC4_witnessCell_floorPkComplementError_integral_pos_of_weight_pos_cl
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     {cell : Set (ℝ × ℝ)} {a b θ0 : ℝ}
-    (hcell_subset_closed_upper : cell ⊆ EconCSLib.closedUpperPairSetOn a b)
+    (hcell_subset_closed_upper : cell ⊆ AppliedModelingLib.closedUpperPairSetOn a b)
     (hθ0_closure : (θ0, θ0) ∈ closure (interior cell))
     (hweight_int : Integrable weight ((μ.prod μ).restrict cell))
     (hweight_nonneg : ∀ᵐ q ∂(μ.prod μ).restrict cell, 0 ≤ weight q)
@@ -7034,12 +7034,12 @@ theorem lemmaC4_witnessCell_floorPkComplementError_integral_pos_of_weight_pos_cl
           (fun q : ℝ × ℝ => weight q * kernel q) ∩ cell) := by
     refine lt_of_lt_of_le hμ_pos (measure_mono ?_)
     intro q hq
-    have hq_closed : q ∈ EconCSLib.closedUpperPairSetOn a b :=
+    have hq_closed : q ∈ AppliedModelingLib.closedUpperPairSetOn a b :=
       hcell_subset_closed_upper hq.1
     have hq1_Icc : q.1 ∈ Set.Icc a b :=
-      EconCSLib.closedUpperPairSetOn_fst_mem_Icc hq_closed
+      AppliedModelingLib.closedUpperPairSetOn_fst_mem_Icc hq_closed
     have hq2_Icc : q.2 ∈ Set.Icc a b :=
-      EconCSLib.closedUpperPairSetOn_snd_mem_Icc hq_closed
+      AppliedModelingLib.closedUpperPairSetOn_snd_mem_Icc hq_closed
     have hkpos : 0 < kernel q := by
       simpa [kernel, kernelFam, M, binaryRatingModel] using
         realBinaryRatingLDPModel_floorPkComplementErrorProb_pos_of_lt_one
@@ -7074,8 +7074,8 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
     (sourceWError : ℕ → ℝ)
     {cell : Set (ℝ × ℝ)} {a b θ0 B : ℝ}
     (hcell_meas : MeasurableSet cell)
-    (hcell_subset_closed_upper : cell ⊆ EconCSLib.closedUpperPairSetOn a b)
-    (hcell_subset_strict : cell ⊆ EconCSLib.strictUpperPairSet)
+    (hcell_subset_closed_upper : cell ⊆ AppliedModelingLib.closedUpperPairSetOn a b)
+    (hcell_subset_strict : cell ⊆ AppliedModelingLib.strictUpperPairSet)
     (hθ0_Icc : θ0 ∈ Set.Icc a b)
     (hθ0_closure : (θ0, θ0) ∈ closure (interior cell))
     (hweight_int : Integrable weight ((μ.prod μ).restrict cell))
@@ -7092,10 +7092,10 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ))
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hsource_nonneg :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * sourceKernel k q)
     (hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
@@ -7107,7 +7107,7 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ))
     (hlocal_pos :
       ∀ᶠ k : ℕ in atTop,
@@ -7170,8 +7170,8 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
     (sourceWError : ℕ → ℝ)
     {cell : Set (ℝ × ℝ)} {a b θ0 B : ℝ}
     (hcell_meas : MeasurableSet cell)
-    (hcell_subset_closed_upper : cell ⊆ EconCSLib.closedUpperPairSetOn a b)
-    (hcell_subset_strict : cell ⊆ EconCSLib.strictUpperPairSet)
+    (hcell_subset_closed_upper : cell ⊆ AppliedModelingLib.closedUpperPairSetOn a b)
+    (hcell_subset_strict : cell ⊆ AppliedModelingLib.strictUpperPairSet)
     (hθ0_Icc : θ0 ∈ Set.Icc a b)
     (hθ0_closure : (θ0, θ0) ∈ closure (interior cell))
     (hweight_int : Integrable weight ((μ.prod μ).restrict cell))
@@ -7188,10 +7188,10 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ))
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hsource_nonneg :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * sourceKernel k q)
     (hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
@@ -7203,7 +7203,7 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ))
     (hsource_upper_const : ∀ᶠ k : ℕ in atTop, sourceWError k ≤ B) :
     HasExponentialRate sourceWError 0 := by
@@ -7251,8 +7251,8 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
     (sourceWError : ℕ → ℝ)
     {cell : Set (ℝ × ℝ)} {a b θ0 K : ℝ}
     (hcell_meas : MeasurableSet cell)
-    (hcell_subset_closed_upper : cell ⊆ EconCSLib.closedUpperPairSetOn a b)
-    (hcell_subset_strict : cell ⊆ EconCSLib.strictUpperPairSet)
+    (hcell_subset_closed_upper : cell ⊆ AppliedModelingLib.closedUpperPairSetOn a b)
+    (hcell_subset_strict : cell ⊆ AppliedModelingLib.strictUpperPairSet)
     (hθ0_Icc : θ0 ∈ Set.Icc a b)
     (hθ0_closure : (θ0, θ0) ∈ closure (interior cell))
     (hweight_int : Integrable weight ((μ.prod μ).restrict cell))
@@ -7260,9 +7260,9 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hβ_cont : ContinuousAt successProb θ0)
     (hsample_pos_on : ∀ θ ∈ Set.Icc a b, 0 < sampleRate θ)
@@ -7274,10 +7274,10 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ))
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourceKernel k q ∧ sourceKernel k q ≤ K)
     (hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
@@ -7289,26 +7289,26 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ)) :
     HasExponentialRate sourceWError 0 := by
   have hsource_int_restrict :
       ∀ᶠ k : ℕ in atTop,
         Integrable
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet) := by
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet) := by
     filter_upwards [hsource_int] with k hk
     simpa [IntegrableOn] using hk
   have hsource_nonneg :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * sourceKernel k q := by
     filter_upwards [hsource_kernel_bound] with k hk_bound
     filter_upwards [hsource_weight_nonneg, hk_bound] with q hw hk
     exact mul_nonneg hw hk.1
   obtain ⟨B, hBpos, hsource_upper_const_restrict⟩ :=
     exists_pos_const_eventually_integral_weightedKernel_le_of_eventually_ae_kernel_between_zero_const
-      ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       (weight := weight) (kernel := sourceKernel) (K := K)
       hK_nonneg hsource_weight_int hsource_weight_nonneg
       hsource_int_restrict hsource_kernel_bound
@@ -7347,8 +7347,8 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
     (sourceWError : ℕ → ℝ)
     {cell : Set (ℝ × ℝ)} {a b θ0 K : ℝ}
     (hcell_meas : MeasurableSet cell)
-    (hcell_subset_closed_upper : cell ⊆ EconCSLib.closedUpperPairSetOn a b)
-    (hcell_subset_strict : cell ⊆ EconCSLib.strictUpperPairSet)
+    (hcell_subset_closed_upper : cell ⊆ AppliedModelingLib.closedUpperPairSetOn a b)
+    (hcell_subset_strict : cell ⊆ AppliedModelingLib.strictUpperPairSet)
     (hθ0_Icc : θ0 ∈ Set.Icc a b)
     (hθ0_closure : (θ0, θ0) ∈ closure (interior cell))
     (hweight_int : Integrable weight ((μ.prod μ).restrict cell))
@@ -7356,9 +7356,9 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hβ_cont : ContinuousAt successProb θ0)
     (hsample_pos_on : ∀ θ ∈ Set.Icc a b, 0 < sampleRate θ)
@@ -7370,10 +7370,10 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
       ∀ᶠ k : ℕ in atTop,
         AEStronglyMeasurable
           (sourceKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourceKernel k q ∧ sourceKernel k q ≤ K)
     (hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
@@ -7385,23 +7385,23 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ)) :
     HasExponentialRate sourceWError 0 := by
   have hsource_int_restrict :
       ∀ᶠ k : ℕ in atTop,
         Integrable
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet) :=
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet) :=
     eventually_integrable_weight_mul_kernel_of_integrable_weight_of_eventually_ae_kernel_between_zero_const
-      ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       (weight := weight) (kernel := sourceKernel) (K := K)
       hsource_weight_int hsource_kernel_meas hsource_kernel_bound
   have hsource_int :
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ) := by
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ) := by
     filter_upwards [hsource_int_restrict] with k hk
     simpa [IntegrableOn] using hk
   exact
@@ -7435,8 +7435,8 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_witnessCell_nonTie
     (sourceWbar : ℕ → ℝ)
     {cell : Set (ℝ × ℝ)} {a b θ0 K : ℝ}
     (hcell_meas : MeasurableSet cell)
-    (hcell_subset_closed_upper : cell ⊆ EconCSLib.closedUpperPairSetOn a b)
-    (hcell_subset_strict : cell ⊆ EconCSLib.strictUpperPairSet)
+    (hcell_subset_closed_upper : cell ⊆ AppliedModelingLib.closedUpperPairSetOn a b)
+    (hcell_subset_strict : cell ⊆ AppliedModelingLib.strictUpperPairSet)
     (hθ0_Icc : θ0 ∈ Set.Icc a b)
     (hθ0_closure : (θ0, θ0) ∈ closure (interior cell))
     (hweight_int : Integrable weight ((μ.prod μ).restrict cell))
@@ -7444,9 +7444,9 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_witnessCell_nonTie
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hβ_cont : ContinuousAt successProb θ0)
     (hsample_pos_on : ∀ θ ∈ Set.Icc a b, 0 < sampleRate θ)
@@ -7458,10 +7458,10 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_witnessCell_nonTie
       ∀ᶠ k : ℕ in atTop,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hsource_eq_raw_on_nonTie_cell :
       ∀ᶠ k : ℕ in atTop,
@@ -7473,7 +7473,7 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_witnessCell_nonTie
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ)) :
     HasExponentialRate sourceWbar 0 :=
   lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError_eq_on_witness_weight_pos_of_bounded_measurable_sourceKernel
@@ -7509,8 +7509,8 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_witnessCell_floorPkComplementEr
     (sourceWError : ℕ → ℝ)
     {cell : Set (ℝ × ℝ)} {a b θ0 : ℝ}
     (hcell_meas : MeasurableSet cell)
-    (hcell_subset_closed_upper : cell ⊆ EconCSLib.closedUpperPairSetOn a b)
-    (hcell_subset_strict : cell ⊆ EconCSLib.strictUpperPairSet)
+    (hcell_subset_closed_upper : cell ⊆ AppliedModelingLib.closedUpperPairSetOn a b)
+    (hcell_subset_strict : cell ⊆ AppliedModelingLib.strictUpperPairSet)
     (hθ0_Icc : θ0 ∈ Set.Icc a b)
     (hθ0_closure : (θ0, θ0) ∈ closure (interior cell))
     (hweight_int : Integrable weight ((μ.prod μ).restrict cell))
@@ -7518,9 +7518,9 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_witnessCell_floorPkComplementEr
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hβ_cont : ContinuousAt successProb θ0)
     (hsample_pos_on : ∀ θ ∈ Set.Icc a b, 0 < sampleRate θ)
@@ -7530,7 +7530,7 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_witnessCell_floorPkComplementEr
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -7543,15 +7543,15 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_witnessCell_floorPkComplementEr
       ∀ᶠ k : ℕ in atTop,
         AEStronglyMeasurable
           (sourceKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet) := by
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet) := by
     filter_upwards with k
     simpa [sourceKernel, binaryRatingModel] using
       realBinaryRatingLDPModel_twoSampleFloorPkComplementErrorProb_aestronglyMeasurable
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
         successProb sampleRate hprob0 hprob1 hprob_meas hsample_meas k
   have hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourceKernel k q ∧ sourceKernel k q ≤ (2 : ℝ) := by
     filter_upwards with k
     filter_upwards with q
@@ -7608,9 +7608,9 @@ theorem lemmaC4_source_strictUpperPair_integral_has_zero_rate_of_monotone_interv
     {a b : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -7627,14 +7627,14 @@ theorem lemmaC4_source_strictUpperPair_integral_has_zero_rate_of_monotone_interv
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ))
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hsource_nonneg :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * sourceKernel k q)
     (hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           sourceKernel k q =
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -7647,14 +7647,14 @@ theorem lemmaC4_source_strictUpperPair_integral_has_zero_rate_of_monotone_interv
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
                 q.1 q.2 k
-            ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+            ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
     (hsource_upper_const :
       ∀ᶠ k : ℕ in atTop,
-        (∫ q in EconCSLib.strictUpperPairSet,
+        (∫ q in AppliedModelingLib.strictUpperPairSet,
           weight q * sourceKernel k q ∂(μ.prod μ)) ≤ B) :
     HasExponentialRate
       (fun k : ℕ =>
-        ∫ q in EconCSLib.strictUpperPairSet,
+        ∫ q in AppliedModelingLib.strictUpperPairSet,
           weight q * sourceKernel k q ∂(μ.prod μ))
       0 := by
   let rawKernel : ℕ → ℝ × ℝ → ℝ := fun k q =>
@@ -7666,7 +7666,7 @@ theorem lemmaC4_source_strictUpperPair_integral_has_zero_rate_of_monotone_interv
         twoSampleFloorPkComplementErrorProb
           (binaryRatingModel successProb hprob0 hprob1) sampleRate
           q.1 q.2 k
-      ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)
+      ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)
   have hlocal_le_global :
       ∀ᶠ k : ℕ in atTop,
         (∫ q,
@@ -7674,8 +7674,8 @@ theorem lemmaC4_source_strictUpperPair_integral_has_zero_rate_of_monotone_interv
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
                 q.1 q.2 k
-            ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)) ≤
-          (∫ q in EconCSLib.strictUpperPairSet,
+            ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)) ≤
+          (∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ)) := by
     filter_upwards [hsource_int, hsource_nonneg, hsource_eq_raw_on] with
       k hk_int hk_nonneg hk_eq
@@ -7717,9 +7717,9 @@ theorem lemmaC4_source_strictUpperPair_integral_has_zero_rate_of_monotone_interv
     {a b : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -7736,25 +7736,25 @@ theorem lemmaC4_source_strictUpperPair_integral_has_zero_rate_of_monotone_interv
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ))
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hsource_nonneg :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * sourceKernel k q)
     (hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           sourceKernel k q =
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
     (hsource_upper_const :
       ∀ᶠ k : ℕ in atTop,
-        (∫ q in EconCSLib.strictUpperPairSet,
+        (∫ q in AppliedModelingLib.strictUpperPairSet,
           weight q * sourceKernel k q ∂(μ.prod μ)) ≤ B) :
     HasExponentialRate
       (fun k : ℕ =>
-        ∫ q in EconCSLib.strictUpperPairSet,
+        ∫ q in AppliedModelingLib.strictUpperPairSet,
           weight q * sourceKernel k q ∂(μ.prod μ))
       0 := by
   have hrange :
@@ -7763,28 +7763,28 @@ theorem lemmaC4_source_strictUpperPair_integral_has_zero_rate_of_monotone_interv
     have hθ_Icc : θ ∈ Set.Icc a b := ⟨hθ.1.le, hθ.2.le⟩
     exact ⟨hprob_pos_on θ hθ_Icc, hprob_lt_one_on θ hθ_Icc⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   have hθ0_Icc : θ0 ∈ Set.Icc a b := ⟨hθ0.1.le, hθ0.2.le⟩
   have hcell_meas :
-      MeasurableSet (EconCSLib.strictUpperPairSetOn a b) := by
-    have hbox_closed : IsClosed (EconCSLib.closedPairBox a b) :=
-      (EconCSLib.isCompact_closedPairBox a b).isClosed
-    simpa [EconCSLib.strictUpperPairSetOn] using
-      EconCSLib.isOpen_strictUpperPairSet.measurableSet.inter
+      MeasurableSet (AppliedModelingLib.strictUpperPairSetOn a b) := by
+    have hbox_closed : IsClosed (AppliedModelingLib.closedPairBox a b) :=
+      (AppliedModelingLib.isCompact_closedPairBox a b).isClosed
+    simpa [AppliedModelingLib.strictUpperPairSetOn] using
+      AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet.inter
         hbox_closed.measurableSet
   exact
     lemmaC4_sourceWError_has_zero_rate_of_witnessCell_floorPkComplementError_eq_on_witness_weight_pos
       μ successProb sampleRate hprob_mono hprob0 hprob1 hprob_meas
       hsample_meas weight sourceKernel
       (fun k : ℕ =>
-        ∫ q in EconCSLib.strictUpperPairSet,
+        ∫ q in AppliedModelingLib.strictUpperPairSet,
           weight q * sourceKernel k q ∂(μ.prod μ))
       hcell_meas
-      (EconCSLib.strictUpperPairSetOn_subset_closedUpperPairSetOn a b)
-      (EconCSLib.strictUpperPairSetOn_subset_strictUpperPairSet a b)
+      (AppliedModelingLib.strictUpperPairSetOn_subset_closedUpperPairSetOn a b)
+      (AppliedModelingLib.strictUpperPairSetOn_subset_strictUpperPairSet a b)
       hθ0_Icc
-      (EconCSLib.diagonal_mem_closure_interior_strictUpperPairSetOn hθ0)
+      (AppliedModelingLib.diagonal_mem_closure_interior_strictUpperPairSetOn hθ0)
       hweight_int hweight_nonneg (hweight_cont θ0 hθ0)
       (hweight_x0_pos θ0 hθ0) hβ_cont hsample_pos_on
       hprob_pos_on hprob_lt_one_on hsample_cont_on hBpos
@@ -7814,18 +7814,18 @@ theorem lemmaC4_source_strictUpperPair_integral_has_zero_rate_of_monotone_interv
     {a b K : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
     (hweight_x0_pos :
       ∀ θ ∈ Set.Ioo a b, 0 < weight (θ, θ))
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hab : a < b)
     (hsample_pos_on : ∀ θ ∈ Set.Icc a b, 0 < sampleRate θ)
@@ -7837,40 +7837,40 @@ theorem lemmaC4_source_strictUpperPair_integral_has_zero_rate_of_monotone_interv
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ))
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourceKernel k q ∧ sourceKernel k q ≤ K)
     (hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           sourceKernel k q =
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k) :
     HasExponentialRate
       (fun k : ℕ =>
-        ∫ q in EconCSLib.strictUpperPairSet,
+        ∫ q in AppliedModelingLib.strictUpperPairSet,
           weight q * sourceKernel k q ∂(μ.prod μ))
       0 := by
   have hsource_int_restrict :
       ∀ᶠ k : ℕ in atTop,
         Integrable
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet) := by
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet) := by
     filter_upwards [hsource_int] with k hk
     simpa [IntegrableOn] using hk
   have hsource_nonneg :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * sourceKernel k q := by
     filter_upwards [hsource_kernel_bound] with k hk_bound
     filter_upwards [hsource_weight_nonneg, hk_bound] with q hw hk
     exact mul_nonneg hw hk.1
   obtain ⟨B, hBpos, hsource_upper_const_restrict⟩ :=
     exists_pos_const_eventually_integral_weightedKernel_le_of_eventually_ae_kernel_between_zero_const
-      ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       (weight := weight) (kernel := sourceKernel) (K := K)
       hK_nonneg hsource_weight_int hsource_weight_nonneg
       hsource_int_restrict hsource_kernel_bound
@@ -7902,18 +7902,18 @@ theorem lemmaC4_source_strictUpperPair_integral_has_zero_rate_of_monotone_interv
     {a b K : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
     (hweight_x0_pos :
       ∀ θ ∈ Set.Ioo a b, 0 < weight (θ, θ))
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hab : a < b)
     (hsample_pos_on : ∀ θ ∈ Set.Icc a b, 0 < sampleRate θ)
@@ -7925,37 +7925,37 @@ theorem lemmaC4_source_strictUpperPair_integral_has_zero_rate_of_monotone_interv
       ∀ᶠ k : ℕ in atTop,
         AEStronglyMeasurable
           (sourceKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourceKernel k q ∧ sourceKernel k q ≤ K)
     (hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           sourceKernel k q =
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k) :
     HasExponentialRate
       (fun k : ℕ =>
-        ∫ q in EconCSLib.strictUpperPairSet,
+        ∫ q in AppliedModelingLib.strictUpperPairSet,
           weight q * sourceKernel k q ∂(μ.prod μ))
       0 := by
   have hsource_int_restrict :
       ∀ᶠ k : ℕ in atTop,
         Integrable
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet) :=
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet) :=
     eventually_integrable_weight_mul_kernel_of_integrable_weight_of_eventually_ae_kernel_between_zero_const
-      ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+      ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
       (weight := weight) (kernel := sourceKernel) (K := K)
       hsource_weight_int hsource_kernel_meas hsource_kernel_bound
   have hsource_int :
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourceKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ) := by
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ) := by
     filter_upwards [hsource_int_restrict] with k hk
     simpa [IntegrableOn] using hk
   exact
@@ -7990,18 +7990,18 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_monotone_interval_eq_on_witness_we
     {a b K : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
     (hweight_x0_pos :
       ∀ θ ∈ Set.Ioo a b, 0 < weight (θ, θ))
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hab : a < b)
     (hsample_pos_on : ∀ θ ∈ Set.Icc a b, 0 < sampleRate θ)
@@ -8013,14 +8013,14 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_monotone_interval_eq_on_witness_we
       ∀ᶠ k : ℕ in atTop,
         AEStronglyMeasurable
           (sourceKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourceKernel k q ∧ sourceKernel k q ≤ K)
     (hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           sourceKernel k q =
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -8028,11 +8028,11 @@ theorem lemmaC4_sourceWError_has_zero_rate_of_monotone_interval_eq_on_witness_we
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourceKernel k q ∂(μ.prod μ)) :
     HasExponentialRate sourceWError 0 := by
   let integralError : ℕ → ℝ := fun k =>
-    ∫ q in EconCSLib.strictUpperPairSet,
+    ∫ q in AppliedModelingLib.strictUpperPairSet,
       weight q * sourceKernel k q ∂(μ.prod μ)
   have hintegral :
       HasExponentialRate integralError 0 := by
@@ -8072,18 +8072,18 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_monotone_interval_nonTie_wi
     {a b K : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
     (hweight_x0_pos :
       ∀ θ ∈ Set.Ioo a b, 0 < weight (θ, θ))
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hab : a < b)
     (hsample_pos_on : ∀ θ ∈ Set.Icc a b, 0 < sampleRate θ)
@@ -8095,14 +8095,14 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_monotone_interval_nonTie_wi
       ∀ᶠ k : ℕ in atTop,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hsource_eq_raw_on_nonTie_witness :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           sourcePbarKernel k q =
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -8110,7 +8110,7 @@ theorem lemmaC4_tieErasedSourceWbar_has_zero_rate_of_monotone_interval_nonTie_wi
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ)) :
     HasExponentialRate sourceWbar 0 :=
   lemmaC4_sourceWError_has_zero_rate_of_monotone_interval_eq_on_witness_weight_pos_of_bounded_measurable_sourceKernel
@@ -8143,24 +8143,24 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
     (sourceWbar : ℕ → ℝ)
     {K : ℝ}
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hK_nonneg : 0 ≤ K)
     (hsource_kernel_meas :
       ∀ᶠ k : ℕ in atTop,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ))
     (hforward :
       isPiecewiseConstant →
@@ -8171,9 +8171,9 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
         ∃ a b : ℝ,
           a < b ∧
           Integrable weight
-            ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)) ∧
+            ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)) ∧
           (∀ᵐ q ∂(μ.prod μ).restrict
-              (EconCSLib.strictUpperPairSetOn a b),
+              (AppliedModelingLib.strictUpperPairSetOn a b),
             0 ≤ weight q) ∧
           (∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ)) ∧
           (∀ θ ∈ Set.Ioo a b, 0 < weight (θ, θ)) ∧
@@ -8182,7 +8182,7 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_tieEr
           (∀ θ ∈ Set.Icc a b, successProb θ < 1) ∧
           (∀ θ ∈ Set.Icc a b, ContinuousAt sampleRate θ) ∧
           (∀ᶠ k : ℕ in atTop,
-            ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+            ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
               sourcePbarKernel k q =
                 twoSampleFloorPkComplementErrorProb
                   (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -8232,18 +8232,18 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_monotone_interval_weight_pos
     {a b : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
     (hweight_x0_pos :
       ∀ θ ∈ Set.Ioo a b, 0 < weight (θ, θ))
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hab : a < b)
     (hsample_pos_on : ∀ θ ∈ Set.Icc a b, 0 < sampleRate θ)
@@ -8253,7 +8253,7 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_monotone_interval_weight_pos
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -8266,15 +8266,15 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_monotone_interval_weight_pos
       ∀ᶠ k : ℕ in atTop,
         AEStronglyMeasurable
           (sourceKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet) := by
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet) := by
     filter_upwards with k
     simpa [sourceKernel, binaryRatingModel] using
       realBinaryRatingLDPModel_twoSampleFloorPkComplementErrorProb_aestronglyMeasurable
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
         successProb sampleRate hprob0 hprob1 hprob_meas hsample_meas k
   have hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourceKernel k q ∧ sourceKernel k q ≤ (2 : ℝ) := by
     filter_upwards with k
     filter_upwards with q
@@ -8285,7 +8285,7 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_monotone_interval_weight_pos
           (binaryRatingModel successProb hprob0 hprob1) sampleRate q.1 q.2 k⟩
   have hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           sourceKernel k q =
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -8329,9 +8329,9 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_monotone_interval_global_weight
     (hweight_x0_pos :
       ∀ θ ∈ Set.Ioo a b, 0 < weight (θ, θ))
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hab : a < b)
     (hsample_pos_on : ∀ θ ∈ Set.Icc a b, 0 < sampleRate θ)
@@ -8341,7 +8341,7 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_monotone_interval_global_weight
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -8349,16 +8349,16 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_monotone_interval_global_weight
     HasExponentialRate sourceWError 0 := by
   have hweight_int_local :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)) :=
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)) :=
     hsource_weight_int.mono_measure
       (Measure.restrict_mono
-        (EconCSLib.strictUpperPairSetOn_subset_strictUpperPairSet a b)
+        (AppliedModelingLib.strictUpperPairSetOn_subset_strictUpperPairSet a b)
         le_rfl)
   have hweight_nonneg_local :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q :=
     ae_restrict_of_ae_restrict_of_subset
-      (EconCSLib.strictUpperPairSetOn_subset_strictUpperPairSet a b)
+      (AppliedModelingLib.strictUpperPairSetOn_subset_strictUpperPairSet a b)
       hsource_weight_nonneg
   exact
     lemmaC4_rawSourceWError_has_zero_rate_of_monotone_interval_weight_pos
@@ -8389,14 +8389,14 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_nonpiecewise_monotone_interval_
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -8454,7 +8454,7 @@ theorem lemmaC4_nonpiecewise_monotone_interval_witness_of_eventually_regular_con
         (∀ θ ∈ Set.Icc a b, ContinuousAt sampleRate θ) := by
   intro hnot_piecewise
   rcases hlocal hnot_piecewise with ⟨θ0, hθ0⟩
-  rcases EconCSLib.exists_Icc_subset_eventually_nhds hθ0 with
+  rcases AppliedModelingLib.exists_Icc_subset_eventually_nhds hθ0 with
     ⟨a, b, hab, _hθ0_mem, hgood⟩
   refine ⟨a, b, hab, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro θ hθ
@@ -8557,7 +8557,7 @@ theorem lemmaC4_nonpiecewise_continuity_point_witness_of_monotone_positive_inter
   intro hnot_piecewise
   rcases hinterval hnot_piecewise with ⟨a, b, hab, hpos⟩
   rcases
-      EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+      AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
         (f := successProb) hab hprob_mono
         (fun θ hθ => ⟨(hpos θ hθ).2.2.1, (hpos θ hθ).2.2.2⟩) with
     ⟨θ0, hθ0, hprob_cont, hprob_pos, hprob_lt_one⟩
@@ -8634,7 +8634,7 @@ theorem lemmaC4_nonstepwise_interior_continuity_point_witness_of_monotone_prob_i
   rcases hnot_step_to_prob_interval hnot_step with
     ⟨a, b, hloa, hab, hbhi, hprob_interval⟩
   rcases
-      EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+      AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
         (f := successProb) hab hprob_mono hprob_interval with
     ⟨θ0, hθ0, hcont, hprob_pos, hprob_lt_one⟩
   exact
@@ -8661,18 +8661,18 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_tieErasedSour
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
@@ -8680,11 +8680,11 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_tieErasedSour
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ))
     (hforward :
       isStepwiseConstantOn successProb lo hi →
@@ -8743,7 +8743,7 @@ theorem lemmaC4_nonstepwise_prob_interval_witness_of_monotone_two_interior_value
   rcases hnot_step_to_two_values hnot_step with
     ⟨x, y, hx, hy, hxy, hx_pos, hy_lt_one⟩
   exact
-    EconCSLib.exists_Ioo_subset_preimage_Ioo_of_monotone_two_points
+    AppliedModelingLib.exists_Ioo_subset_preimage_Ioo_of_monotone_two_points
       hprob_mono hx hy hxy hx_pos hy_lt_one
 
 /--
@@ -8801,7 +8801,7 @@ theorem lemmaC4_nonstepwise_monotone_variation_of_constant_on_interval_stepwise
         successProb x < successProb y := by
   intro hnot_step
   exact
-    EconCSLib.exists_ordered_strict_value_of_monotone_not_constant_on_Ioo
+    AppliedModelingLib.exists_ordered_strict_value_of_monotone_not_constant_on_Ioo
       hprob_mono
       (by
         intro hconst
@@ -8825,7 +8825,7 @@ theorem lemmaC4_ordered_strict_prob_values_near_of_monotone_not_locally_constant
       x ∈ Set.Ioo (θ0 - ε) (θ0 + ε) ∧
         y ∈ Set.Ioo (θ0 - ε) (θ0 + ε) ∧
           x < y ∧ successProb x < successProb y :=
-  EconCSLib.exists_ordered_strict_value_near_of_monotone_not_constant_on_nhds
+  AppliedModelingLib.exists_ordered_strict_value_near_of_monotone_not_constant_on_nhds
     hprob_mono hε hnot_const_nhds
 
 /--
@@ -8847,14 +8847,14 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_nonpiecewise_local_regularity_w
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -8897,14 +8897,14 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_nonpiecewise_continuity_point_w
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -8950,14 +8950,14 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_nonpiecewise_monotone_positive_
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -8996,7 +8996,7 @@ def lemmaC4RawStrictUpperPairSourceWError
     (hprob1 : ∀ θ, successProb θ ≤ 1)
     (weight : ℝ × ℝ → ℝ) : ℕ → ℝ :=
   fun k : ℕ =>
-    ∫ q in EconCSLib.strictUpperPairSet,
+    ∫ q in AppliedModelingLib.strictUpperPairSet,
       weight q *
         twoSampleFloorPkComplementErrorProb
           (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -9011,7 +9011,7 @@ theorem lemmaC4RawStrictUpperPairSourceWError_eventually_eq
     ∀ᶠ k : ℕ in atTop,
       lemmaC4RawStrictUpperPairSourceWError μ successProb sampleRate
           hprob0 hprob1 weight k =
-        ∫ q in EconCSLib.strictUpperPairSet,
+        ∫ q in AppliedModelingLib.strictUpperPairSet,
           weight q *
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -9037,9 +9037,9 @@ theorem lemmaC4RawStrictUpperPairSourceWError_has_zero_rate_of_nonpiecewise_mono
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hnot_piecewise : ¬ isPiecewiseConstant)
     (hnonpiecewise_witness :
@@ -9085,14 +9085,14 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_rawSo
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -9143,9 +9143,9 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_defin
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hforward :
       isPiecewiseConstant →
@@ -9196,14 +9196,14 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_rawSo
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -9254,14 +9254,14 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_rawSo
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -9314,14 +9314,14 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_rawSo
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -9375,9 +9375,9 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_defin
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hforward :
       isPiecewiseConstant →
@@ -9427,9 +9427,9 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_defin
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hforward :
       isPiecewiseConstant →
@@ -9481,9 +9481,9 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_defin
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hforward :
       isPiecewiseConstant →
@@ -9540,14 +9540,14 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_rawSourceWErr
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -9603,14 +9603,14 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_rawSourceWErr
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -9670,14 +9670,14 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_rawSourceWErr
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -9737,14 +9737,14 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_rawSourceWErr
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -9801,9 +9801,9 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_defined_rawSo
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hforward :
       isStepwiseConstantOn successProb lo hi →
@@ -9936,7 +9936,7 @@ def lemmaC4TieErasedSourceWbar
     (μ : Measure ℝ) (weight : ℝ × ℝ → ℝ)
     (sourcePbarKernel : ℕ → ℝ × ℝ → ℝ) : ℕ → ℝ :=
   fun k : ℕ =>
-    ∫ q in EconCSLib.strictUpperPairSet,
+    ∫ q in AppliedModelingLib.strictUpperPairSet,
       weight q * sourcePbarKernel k q ∂(μ.prod μ)
 
 /-- The source-defined tie-erased `Wbar_k` is eventually its displayed integral. -/
@@ -9945,7 +9945,7 @@ theorem lemmaC4TieErasedSourceWbar_eventually_eq
     (sourcePbarKernel : ℕ → ℝ × ℝ → ℝ) :
     ∀ᶠ k : ℕ in atTop,
       lemmaC4TieErasedSourceWbar μ weight sourcePbarKernel k =
-        ∫ q in EconCSLib.strictUpperPairSet,
+        ∫ q in AppliedModelingLib.strictUpperPairSet,
           weight q * sourcePbarKernel k q ∂(μ.prod μ) := by
   filter_upwards with k
   rfl
@@ -10017,7 +10017,7 @@ theorem theorem31SelectedSourceCoordinateMap_preimage_selectedSourceSupport_subs
     (μ : Measure ℝ) {m : ℕ} (cut : ℕ → ℝ) (hmono : Monotone cut) :
     theorem31SelectedSourceCoordinateMap ⁻¹'
         theorem31SelectedSourceSupport μ (m := m) cut hmono ⊆
-      EconCSLib.strictUpperPairSet := by
+      AppliedModelingLib.strictUpperPairSet := by
   intro q hq
   let P :=
     theorem31_ordered_quality_pair_partition μ (m + 2) cut hmono
@@ -10054,7 +10054,7 @@ theorem theorem31SelectedSourceCoordinateMap_preimage_selectedSourceSupport_subs
     hmono hindex
   have hstrict : q.2 < q.1 :=
     lt_of_le_of_lt (le_trans hlow.2 hcut_le) hhigh.1
-  simpa [EconCSLib.strictUpperPairSet] using hstrict
+  simpa [AppliedModelingLib.strictUpperPairSet] using hstrict
 
 /--
 Structured C.4 source-realization interface for identifying the paper's
@@ -10079,10 +10079,10 @@ structure LemmaC4TieErasedSelectedIntegralRealization
     MeasurePreserving sourceToTarget (μ.prod μ) (μ.prod μ)
   target_measurable : MeasurableSet targetSupport
   target_preimage_subset_strict :
-    sourceToTarget ⁻¹' targetSupport ⊆ EconCSLib.strictUpperPairSet
+    sourceToTarget ⁻¹' targetSupport ⊆ AppliedModelingLib.strictUpperPairSet
   integrand_indicator_ae :
     ∀ k : ℕ,
-      ∀ᵐ q ∂(μ.prod μ), q ∈ EconCSLib.strictUpperPairSet →
+      ∀ᵐ q ∂(μ.prod μ), q ∈ AppliedModelingLib.strictUpperPairSet →
         sourceWeight q * sourceKernel k q =
           (targetSupport.indicator
             (fun r : ℝ × ℝ => targetWeight r * targetKernel k r))
@@ -10107,13 +10107,13 @@ theorem lemmaC4TieErasedSelectedIntegralRealization_of_pointwise
       MeasurePreserving sourceToTarget (μ.prod μ) (μ.prod μ))
     (htarget_measurable : MeasurableSet targetSupport)
     (htarget_preimage_subset_strict :
-      sourceToTarget ⁻¹' targetSupport ⊆ EconCSLib.strictUpperPairSet)
+      sourceToTarget ⁻¹' targetSupport ⊆ AppliedModelingLib.strictUpperPairSet)
     (hon_target :
       ∀ k q, sourceToTarget q ∈ targetSupport →
         sourceWeight q * sourceKernel k q =
           targetWeight (sourceToTarget q) * targetKernel k (sourceToTarget q))
     (hoff_target :
-      ∀ k q, q ∈ EconCSLib.strictUpperPairSet →
+      ∀ k q, q ∈ AppliedModelingLib.strictUpperPairSet →
         sourceToTarget q ∉ targetSupport →
         sourceWeight q * sourceKernel k q = 0) :
     LemmaC4TieErasedSelectedIntegralRealization μ
@@ -10151,7 +10151,7 @@ theorem lemmaC4TieErasedSelectedIntegralRealization_theorem31_of_pointwise
             theorem31SelectedSourceKernel μ (m := m) cut hmono sampleRate
               levels hlevels k (theorem31SelectedSourceCoordinateMap q))
     (hoff_target :
-      ∀ k q, q ∈ EconCSLib.strictUpperPairSet →
+      ∀ k q, q ∈ AppliedModelingLib.strictUpperPairSet →
         theorem31SelectedSourceCoordinateMap q ∉
           theorem31SelectedSourceSupport μ (m := m) cut hmono →
         sourceWeight q * sourceKernel k q = 0) :
@@ -10349,17 +10349,17 @@ theorem lemmaC4TieErasedSourceWbar_eventually_eq_selectedIntegral_of_realization
           targetWeight q * targetKernel k q ∂(μ.prod μ)) := by
   filter_upwards with k
   have hstrict :
-      (∫ q in EconCSLib.strictUpperPairSet,
+      (∫ q in AppliedModelingLib.strictUpperPairSet,
         sourceWeight q * sourceKernel k q ∂(μ.prod μ)) =
-        ∫ q in EconCSLib.strictUpperPairSet,
+        ∫ q in AppliedModelingLib.strictUpperPairSet,
           targetSupport.indicator
             (fun r : ℝ × ℝ => targetWeight r * targetKernel k r)
             (sourceToTarget q) ∂(μ.prod μ) := by
     exact
-      setIntegral_congr_ae EconCSLib.isOpen_strictUpperPairSet.measurableSet
+      setIntegral_congr_ae AppliedModelingLib.isOpen_strictUpperPairSet.measurableSet
         (H.integrand_indicator_ae k)
   have hsupport :
-      (∫ q in EconCSLib.strictUpperPairSet,
+      (∫ q in AppliedModelingLib.strictUpperPairSet,
         targetSupport.indicator
           (fun r : ℝ × ℝ => targetWeight r * targetKernel k r)
           (sourceToTarget q) ∂(μ.prod μ)) =
@@ -10383,7 +10383,7 @@ theorem lemmaC4TieErasedSourceWbar_eventually_eq_selectedIntegral_of_realization
     rw [hcomp]
     rw [MeasureTheory.setIntegral_indicator hpre]
     have hset :
-        (EconCSLib.strictUpperPairSet ∩ sourceToTarget ⁻¹' targetSupport : Set (ℝ × ℝ))
+        (AppliedModelingLib.strictUpperPairSet ∩ sourceToTarget ⁻¹' targetSupport : Set (ℝ × ℝ))
           = sourceToTarget ⁻¹' targetSupport := by
       ext q
       constructor
@@ -10399,9 +10399,9 @@ theorem lemmaC4TieErasedSourceWbar_eventually_eq_selectedIntegral_of_realization
         targetSupport
   calc
     lemmaC4TieErasedSourceWbar μ sourceWeight sourceKernel k =
-        ∫ q in EconCSLib.strictUpperPairSet,
+        ∫ q in AppliedModelingLib.strictUpperPairSet,
           sourceWeight q * sourceKernel k q ∂(μ.prod μ) := rfl
-    _ = ∫ q in EconCSLib.strictUpperPairSet,
+    _ = ∫ q in AppliedModelingLib.strictUpperPairSet,
           targetSupport.indicator
             (fun r : ℝ × ℝ => targetWeight r * targetKernel k r)
             (sourceToTarget q) ∂(μ.prod μ) := hstrict
@@ -10478,7 +10478,7 @@ theorem lemmaC4_appropriate_finite_levels_weighted_pullback_source_rate_certific
     ∃ levels : Fin (S.m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (S.m + 2) → ℝ) → Prop)
             (fun candidate : Fin (S.m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate S.sampleRate)
@@ -10511,7 +10511,7 @@ theorem lemmaC4_appropriate_finite_levels_const_weight_pullback_source_rate_cert
     ∃ levels : Fin (S.m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (S.m + 2) → ℝ) → Prop)
             (fun candidate : Fin (S.m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate S.sampleRate)
@@ -10772,17 +10772,17 @@ theorem lemmaC4TieErasedSourceWbar_eventually_floorPk_local_le_of_eq_on_witness
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ))
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hsource_nonneg :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * sourcePbarKernel k q)
     (hsource_eq_raw_on :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           sourcePbarKernel k q = rawKernel k q) :
     ∀ᶠ k : ℕ in atTop,
-      (∫ q in EconCSLib.strictUpperPairSetOn a b,
+      (∫ q in AppliedModelingLib.strictUpperPairSetOn a b,
         weight q * rawKernel k q ∂(μ.prod μ)) ≤
         lemmaC4TieErasedSourceWbar μ weight sourcePbarKernel k :=
   lemmaC4_sourceWError_eventually_raw_floorPk_local_le_of_eq_on_witness
@@ -10805,22 +10805,22 @@ theorem lemmaC4TieErasedSourceWbar_eventually_floorPk_local_le_of_le_on_witness
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * rawKernel k q)
-          (EconCSLib.strictUpperPairSetOn a b) (μ.prod μ))
+          (AppliedModelingLib.strictUpperPairSetOn a b) (μ.prod μ))
     (hsource_int :
       ∀ᶠ k : ℕ in atTop,
         IntegrableOn
           (fun q : ℝ × ℝ => weight q * sourcePbarKernel k q)
-          EconCSLib.strictUpperPairSet (μ.prod μ))
+          AppliedModelingLib.strictUpperPairSet (μ.prod μ))
     (hsource_nonneg :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ weight q * sourcePbarKernel k q)
     (hsource_raw_le_on :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           weight q * rawKernel k q ≤ weight q * sourcePbarKernel k q) :
     ∀ᶠ k : ℕ in atTop,
-      (∫ q in EconCSLib.strictUpperPairSetOn a b,
+      (∫ q in AppliedModelingLib.strictUpperPairSetOn a b,
         weight q * rawKernel k q ∂(μ.prod μ)) ≤
         lemmaC4TieErasedSourceWbar μ weight sourcePbarKernel k :=
   lemmaC4_sourceWError_eventually_raw_floorPk_local_le_of_le_on_witness
@@ -10849,18 +10849,18 @@ theorem lemmaC4TieErasedSourceWbar_has_zero_rate_of_monotone_interval_nonTie_wit
     {a b K : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
     (hweight_x0_pos :
       ∀ θ ∈ Set.Ioo a b, 0 < weight (θ, θ))
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hab : a < b)
     (hsample_pos_on : ∀ θ ∈ Set.Icc a b, 0 < sampleRate θ)
@@ -10872,14 +10872,14 @@ theorem lemmaC4TieErasedSourceWbar_has_zero_rate_of_monotone_interval_nonTie_wit
       ∀ᶠ k : ℕ in atTop,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hsource_eq_raw_on_nonTie_witness :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           sourcePbarKernel k q =
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -10915,18 +10915,18 @@ theorem lemmaC4TieErasedSourceWbar_no_positive_exponential_rate_of_monotone_inte
     {a b K : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
     (hweight_x0_pos :
       ∀ θ ∈ Set.Ioo a b, 0 < weight (θ, θ))
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hab : a < b)
     (hsample_pos_on : ∀ θ ∈ Set.Icc a b, 0 < sampleRate θ)
@@ -10938,14 +10938,14 @@ theorem lemmaC4TieErasedSourceWbar_no_positive_exponential_rate_of_monotone_inte
       ∀ᶠ k : ℕ in atTop,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hsource_eq_raw_on_nonTie_witness :
       ∀ᶠ k : ℕ in atTop,
-        ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+        ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
           sourcePbarKernel k q =
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -10983,19 +10983,19 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_defin
     (sourcePbarKernel : ℕ → ℝ × ℝ → ℝ)
     {K : ℝ}
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hK_nonneg : 0 ≤ K)
     (hsource_kernel_meas :
       ∀ᶠ k : ℕ in atTop,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ᶠ k : ℕ in atTop,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hforward :
       isPiecewiseConstant →
@@ -11007,9 +11007,9 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_defin
         ∃ a b : ℝ,
           a < b ∧
           Integrable weight
-            ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)) ∧
+            ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)) ∧
           (∀ᵐ q ∂(μ.prod μ).restrict
-              (EconCSLib.strictUpperPairSetOn a b),
+              (AppliedModelingLib.strictUpperPairSetOn a b),
             0 ≤ weight q) ∧
           (∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ)) ∧
           (∀ θ ∈ Set.Ioo a b, 0 < weight (θ, θ)) ∧
@@ -11018,7 +11018,7 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_defin
           (∀ θ ∈ Set.Icc a b, successProb θ < 1) ∧
           (∀ θ ∈ Set.Icc a b, ContinuousAt sampleRate θ) ∧
           (∀ᶠ k : ℕ in atTop,
-            ∀ q : ℝ × ℝ, q ∈ EconCSLib.strictUpperPairSetOn a b →
+            ∀ q : ℝ × ℝ, q ∈ AppliedModelingLib.strictUpperPairSetOn a b →
               sourcePbarKernel k q =
                 twoSampleFloorPkComplementErrorProb
                   (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -11056,18 +11056,18 @@ theorem lemmaC4_locallyConstantOnIoo_iff_exists_positive_exponential_rate_of_tie
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
@@ -11075,11 +11075,11 @@ theorem lemmaC4_locallyConstantOnIoo_iff_exists_positive_exponential_rate_of_tie
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ))
     (hforward :
       lemmaC4LocallyConstantOnIoo successProb lo hi →
@@ -11136,18 +11136,18 @@ theorem lemmaC4_locallyConstantOnIoo_iff_exists_positive_exponential_rate_of_def
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
@@ -11155,7 +11155,7 @@ theorem lemmaC4_locallyConstantOnIoo_iff_exists_positive_exponential_rate_of_def
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hforward :
       lemmaC4LocallyConstantOnIoo successProb lo hi →
         ∃ rate : ℝ, 0 < rate ∧
@@ -11201,18 +11201,18 @@ theorem lemmaC4_tieErasedSourceWbar_no_positive_exponential_rate_of_not_locallyC
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
@@ -11220,11 +11220,11 @@ theorem lemmaC4_tieErasedSourceWbar_no_positive_exponential_rate_of_not_locallyC
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q * sourcePbarKernel k q ∂(μ.prod μ))
     (hnot_local :
       ¬ lemmaC4LocallyConstantOnIoo successProb lo hi)
@@ -11262,7 +11262,7 @@ theorem lemmaC4_tieErasedSourceWbar_no_positive_exponential_rate_of_not_locallyC
         hlohi isStepwiseConstantOn successProb hprob_mono
         hnot_step_to_prob_interval hnot_local with
     ⟨θ0, hθ0, hβ0, hβ1, hβ_cont⟩
-  rcases EconCSLib.exists_pos_eventually_le_of_continuousAt
+  rcases AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0) with
     ⟨G, hG_pos, hg_le⟩
   have hg_pos : ∀ᶠ θ in 𝓝 θ0, 0 < sampleRate θ :=
@@ -11291,18 +11291,18 @@ theorem lemmaC4TieErasedSourceWbar_no_positive_exponential_rate_of_not_locallyCo
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
@@ -11310,7 +11310,7 @@ theorem lemmaC4TieErasedSourceWbar_no_positive_exponential_rate_of_not_locallyCo
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hnot_local :
       ¬ lemmaC4LocallyConstantOnIoo successProb lo hi)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
@@ -11350,18 +11350,18 @@ theorem lemmaC4TieErasedSourceWbar_no_positive_exponential_rate_of_not_finiteRan
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
@@ -11369,7 +11369,7 @@ theorem lemmaC4TieErasedSourceWbar_no_positive_exponential_rate_of_not_finiteRan
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hnot_finite :
       ¬ lemmaC4FiniteRangeOnIoo successProb lo hi)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
@@ -11411,17 +11411,17 @@ theorem lemmaC4TieErasedSourceWbar_const_weight_uniform_sampleRate_no_positive_e
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
         (fun q : ℝ × ℝ =>
           weightedBernoulliClosedThresholdRate
             (1 : ℝ) (1 : ℝ) (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hnot_finite :
       ¬ lemmaC4FiniteRangeOnIoo successProb lo hi)
     (hprob_interior_on :
@@ -11437,7 +11437,7 @@ theorem lemmaC4TieErasedSourceWbar_const_weight_uniform_sampleRate_no_positive_e
       (by
         simpa using
           (integrable_const (μ :=
-            (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+            (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
             (c := (1 : ℝ))))
       (by
         filter_upwards with q
@@ -11475,17 +11475,17 @@ theorem lemmaC4TieErasedSourceWbar_const_weight_uniform_sampleRate_no_positive_e
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_unit :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ (1 : ℝ))
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
         (fun q : ℝ × ℝ =>
           weightedBernoulliClosedThresholdRate
             (1 : ℝ) (1 : ℝ) (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hnot_finite :
       ¬ lemmaC4FiniteRangeOnIoo successProb lo hi)
     (hprob_interior_on :
@@ -11514,17 +11514,17 @@ theorem lemmaC4TieErasedSourceWbar_const_weight_uniform_sampleRate_no_positive_e
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_unit :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ (1 : ℝ))
     (hcert :
       UniformExponentialRateCertificateOn sourcePbarKernel
         (fun q : ℝ × ℝ =>
           weightedBernoulliClosedThresholdRate
             (1 : ℝ) (1 : ℝ) (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hnot_finite :
       ¬ lemmaC4FiniteRangeOnIoo successProb lo hi)
     (hprob_interior_on :
@@ -11555,18 +11555,18 @@ theorem lemmaC4_finiteRangeOnIoo_iff_exists_positive_exponential_rate_of_defined
     (hK_nonneg : 0 ≤ K)
     (hsource_weight_int :
       Integrable weight
-        ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+        ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsource_kernel_meas :
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
@@ -11574,7 +11574,7 @@ theorem lemmaC4_finiteRangeOnIoo_iff_exists_positive_exponential_rate_of_defined
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hforward :
       lemmaC4FiniteRangeOnIoo successProb lo hi →
         ∃ rate : ℝ, 0 < rate ∧
@@ -11624,21 +11624,21 @@ theorem lemmaC4_tieErasedSourceWbar_const_weight_uniform_sampleRate_no_positive_
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
         (fun q : ℝ × ℝ =>
           weightedBernoulliClosedThresholdRate
             (1 : ℝ) (1 : ℝ) (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             (1 : ℝ) * sourcePbarKernel k q ∂(μ.prod μ))
     (hnot_local :
       ¬ lemmaC4LocallyConstantOnIoo successProb lo hi)
@@ -11654,7 +11654,7 @@ theorem lemmaC4_tieErasedSourceWbar_const_weight_uniform_sampleRate_no_positive_
       (by
         simpa using
           (integrable_const (μ :=
-            (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+            (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
             (c := (1 : ℝ))))
       (by
         filter_upwards with q
@@ -11693,17 +11693,17 @@ theorem lemmaC4TieErasedSourceWbar_const_weight_uniform_sampleRate_no_positive_e
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
         (fun q : ℝ × ℝ =>
           weightedBernoulliClosedThresholdRate
             (1 : ℝ) (1 : ℝ) (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hnot_local :
       ¬ lemmaC4LocallyConstantOnIoo successProb lo hi)
     (hprob_interior_on :
@@ -11738,17 +11738,17 @@ theorem lemmaC4TieErasedSourceWbar_const_weight_uniform_sampleRate_no_positive_e
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_unit :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ (1 : ℝ))
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
         (fun q : ℝ × ℝ =>
           weightedBernoulliClosedThresholdRate
             (1 : ℝ) (1 : ℝ) (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hnot_local :
       ¬ lemmaC4LocallyConstantOnIoo successProb lo hi)
     (hprob_interior_on :
@@ -11778,17 +11778,17 @@ theorem lemmaC4TieErasedSourceWbar_const_weight_uniform_sampleRate_no_positive_e
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_unit :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ (1 : ℝ))
     (hcert :
       UniformExponentialRateCertificateOn sourcePbarKernel
         (fun q : ℝ × ℝ =>
           weightedBernoulliClosedThresholdRate
             (1 : ℝ) (1 : ℝ) (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hnot_local :
       ¬ lemmaC4LocallyConstantOnIoo successProb lo hi)
     (hprob_interior_on :
@@ -11823,21 +11823,21 @@ theorem lemmaC4_locallyConstantOnIoo_iff_exists_positive_exponential_rate_of_tie
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
         (fun q : ℝ × ℝ =>
           weightedBernoulliClosedThresholdRate
             (1 : ℝ) (1 : ℝ) (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hsourceWbar_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWbar k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             (1 : ℝ) * sourcePbarKernel k q ∂(μ.prod μ))
     (hforward :
       lemmaC4LocallyConstantOnIoo successProb lo hi →
@@ -11856,7 +11856,7 @@ theorem lemmaC4_locallyConstantOnIoo_iff_exists_positive_exponential_rate_of_tie
       (by
         simpa using
           (integrable_const (μ :=
-            (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+            (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
             (c := (1 : ℝ))))
       (by
         filter_upwards with q
@@ -11895,17 +11895,17 @@ theorem lemmaC4_locallyConstantOnIoo_iff_exists_positive_exponential_rate_of_def
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
         (fun q : ℝ × ℝ =>
           weightedBernoulliClosedThresholdRate
             (1 : ℝ) (1 : ℝ) (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hforward :
       lemmaC4LocallyConstantOnIoo successProb lo hi →
         ∃ rate : ℝ, 0 < rate ∧
@@ -11943,17 +11943,17 @@ theorem lemmaC4_locallyConstantOnIoo_iff_exists_positive_exponential_rate_of_def
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_unit :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ (1 : ℝ))
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
         (fun q : ℝ × ℝ =>
           weightedBernoulliClosedThresholdRate
             (1 : ℝ) (1 : ℝ) (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hforward :
       lemmaC4LocallyConstantOnIoo successProb lo hi →
         ∃ rate : ℝ, 0 < rate ∧
@@ -11988,17 +11988,17 @@ theorem lemmaC4_locallyConstantOnIoo_iff_exists_positive_exponential_rate_of_def
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_unit :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ (1 : ℝ))
     (hcert :
       UniformExponentialRateCertificateOn sourcePbarKernel
         (fun q : ℝ × ℝ =>
           weightedBernoulliClosedThresholdRate
             (1 : ℝ) (1 : ℝ) (successProb q.1) (successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hforward :
       lemmaC4LocallyConstantOnIoo successProb lo hi →
         ∃ rate : ℝ, 0 < rate ∧
@@ -12035,9 +12035,9 @@ theorem lemmaC4RawStrictUpperPairSourceWError_has_zero_rate_of_not_locallyConsta
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hnot_local :
       ¬ lemmaC4LocallyConstantOnIoo successProb lo hi)
@@ -12122,9 +12122,9 @@ theorem lemmaC4RawStrictUpperPairSourceWError_has_zero_rate_of_not_finiteRangeOn
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hnot_finite :
       ¬ lemmaC4FiniteRangeOnIoo successProb lo hi)
@@ -12170,9 +12170,9 @@ theorem lemmaC4RawStrictUpperPairSourceWError_no_positive_exponential_rate_of_no
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hnot_finite :
       ¬ lemmaC4FiniteRangeOnIoo successProb lo hi)
@@ -12231,7 +12231,7 @@ theorem lemmaC4RawStrictUpperPairSourceWError_const_weight_uniform_sampleRate_ha
       (by
         simpa using
           (integrable_const (μ :=
-            (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+            (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
             (c := (1 : ℝ))))
       (by
         filter_upwards with q
@@ -12319,7 +12319,7 @@ theorem lemmaC4RawStrictUpperPairSourceWError_const_weight_uniform_sampleRate_ha
       (by
         simpa using
           (integrable_const (μ :=
-            (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+            (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
             (c := (1 : ℝ))))
       (by
         filter_upwards with q
@@ -12394,9 +12394,9 @@ theorem lemmaC4_finiteRangeOnIoo_iff_exists_positive_exponential_rate_of_defined
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hforward :
       lemmaC4FiniteRangeOnIoo successProb lo hi →
@@ -12473,9 +12473,9 @@ theorem lemmaC4_finiteRangeOnIoo_iff_exists_positive_exponential_rate_of_defined
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hforward :
       lemmaC4FiniteRangeOnIoo successProb lo hi →
@@ -12590,7 +12590,7 @@ theorem lemmaC4_finiteRangeOnIoo_iff_exists_positive_exponential_rate_of_defined
       (by
         simpa using
           (integrable_const (μ :=
-            (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+            (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
             (c := (1 : ℝ))))
       (by
         filter_upwards with q
@@ -12675,9 +12675,9 @@ theorem lemmaC4_locallyConstantOnIoo_iff_exists_positive_exponential_rate_of_def
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hforward :
       lemmaC4LocallyConstantOnIoo successProb lo hi →
@@ -12750,7 +12750,7 @@ theorem lemmaC4_locallyConstantOnIoo_iff_exists_positive_exponential_rate_const_
       (by
         simpa using
           (integrable_const (μ :=
-            (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+            (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
             (c := (1 : ℝ))))
       (by
         filter_upwards with q
@@ -12797,14 +12797,14 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_rawSourceWErr
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -12856,14 +12856,14 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_rawSourceWErr
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -12901,7 +12901,7 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_rawSourceWErr
   rcases hpoint hnot_step with
     ⟨θ0, hθ0_mem, hprob_pos, hprob_lt_one, hprob_cont⟩
   exact
-    EconCSLib.exists_Ioo_subset_preimage_Ioo_of_continuousAt_interior
+    AppliedModelingLib.exists_Ioo_subset_preimage_Ioo_of_continuousAt_interior
       hθ0_mem hprob_cont hprob_pos hprob_lt_one
 
 /--
@@ -12925,14 +12925,14 @@ theorem lemmaC4_stepwiseOn_iff_exists_positive_exponential_rate_of_rawSourceWErr
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -12986,14 +12986,14 @@ theorem lemmaC4_rawSourceWError_has_zero_rate_of_nonstepwise_positive_support_in
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -13043,14 +13043,14 @@ theorem lemmaC4_rawSourceWError_no_positive_exponential_rate_of_nonstepwise_posi
     (weight : ℝ × ℝ → ℝ)
     (sourceWError : ℕ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hsourceWError_eq :
       ∀ᶠ k : ℕ in atTop,
         sourceWError k =
-          ∫ q in EconCSLib.strictUpperPairSet,
+          ∫ q in AppliedModelingLib.strictUpperPairSet,
             weight q *
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
@@ -13093,9 +13093,9 @@ theorem lemmaC4RawStrictUpperPairSourceWError_has_zero_rate_of_nonstepwise_posit
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hnot_step : ¬ isStepwiseConstantOn successProb lo hi)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
@@ -13139,9 +13139,9 @@ theorem lemmaC4RawStrictUpperPairSourceWError_no_positive_exponential_rate_of_no
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
         0 ≤ weight q)
     (hnot_step : ¬ isStepwiseConstantOn successProb lo hi)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
@@ -13332,9 +13332,9 @@ theorem lemmaC4_exists_positiveSupportIntervalModel_and_not_finiteRange_of_nonpi
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -13854,10 +13854,10 @@ theorem lemmaC4_rawSourcePositiveSupportIntervalModel_finiteStep_iff_exists_posi
       ∀ k : ℕ,
         AEStronglyMeasurable
           (sourcePbarKernel k)
-          ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+          ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_kernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet,
+        ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet,
           0 ≤ sourcePbarKernel k q ∧ sourcePbarKernel k q ≤ K)
     (hcert :
       UniformNormalizedLogRateCertificateOn sourcePbarKernel
@@ -13865,7 +13865,7 @@ theorem lemmaC4_rawSourcePositiveSupportIntervalModel_finiteStep_iff_exists_posi
           weightedBernoulliClosedThresholdRate
             (R.sampleRate q.1) (R.sampleRate q.2)
             (R.successProb q.1) (R.successProb q.2))
-        EconCSLib.strictUpperPairSet)
+        AppliedModelingLib.strictUpperPairSet)
     (hrealization :
       ∀ (levels : Fin (S.m + 2) → ℝ)
         (hlevels : BinaryEndpointLevelVector levels),
@@ -13955,9 +13955,9 @@ theorem lemmaC4_global_monotone_nonfiniteRange_tieErasedWbar_no_positive_rate_of
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14029,9 +14029,9 @@ theorem lemmaC4_global_monotone_nonfiniteRange_tieErasedWbar_no_positive_rate_of
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14089,9 +14089,9 @@ theorem lemmaC4_global_monotone_nonfiniteRange_tieErasedWbar_has_zero_rate_of_po
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14149,9 +14149,9 @@ theorem lemmaC4_global_monotone_nonfiniteStep_tieErasedWbar_has_zero_rate_of_pos
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14193,9 +14193,9 @@ theorem lemmaC4_global_monotone_nonfiniteStep_tieErasedWbar_no_positive_rate_of_
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14241,9 +14241,9 @@ theorem lemmaC4_global_monotone_nonfiniteRange_tieErasedWbar_has_zero_rate_of_th
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14281,9 +14281,9 @@ theorem lemmaC4_global_monotone_nonfiniteRange_tieErasedWbar_no_positive_rate_of
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14338,7 +14338,7 @@ theorem lemmaC4_global_monotone_nonfiniteRange_tieErasedWbar_const_weight_unifor
       (by
         simpa using
           (integrable_const (μ :=
-            (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+            (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
             (c := (1 : ℝ))))
       (by
         filter_upwards with q
@@ -14413,9 +14413,9 @@ theorem lemmaC4_global_monotone_nonfiniteStep_tieErasedWbar_has_zero_rate_of_the
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14453,9 +14453,9 @@ theorem lemmaC4_global_monotone_nonfiniteStep_tieErasedWbar_no_positive_rate_of_
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14508,7 +14508,7 @@ theorem lemmaC4_global_monotone_nonfiniteStep_tieErasedWbar_const_weight_uniform
       (by
         simpa using
           (integrable_const (μ :=
-            (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+            (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
             (c := (1 : ℝ))))
       (by
         filter_upwards with q
@@ -14586,9 +14586,9 @@ theorem lemmaC4_global_monotone_nonpiecewise_tieErasedWbar_no_positive_rate_of_p
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14639,9 +14639,9 @@ theorem lemmaC4_global_monotone_nonpiecewise_tieErasedWbar_has_zero_rate_of_posi
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14693,9 +14693,9 @@ theorem lemmaC4_global_monotone_nonpiecewise_tieErasedWbar_has_zero_rate_of_thet
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14739,9 +14739,9 @@ theorem lemmaC4_global_monotone_nonpiecewise_tieErasedWbar_no_positive_rate_of_t
     (hsample_meas : Measurable sampleRate)
     (weight : ℝ × ℝ → ℝ)
     (hsource_weight_int :
-      Integrable weight ((μ.prod μ).restrict EconCSLib.strictUpperPairSet))
+      Integrable weight ((μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet))
     (hsource_weight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict EconCSLib.strictUpperPairSet, 0 ≤ weight q)
+      ∀ᵐ q ∂(μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet, 0 ≤ weight q)
     (hweight_cont : ∀ θ : ℝ, ContinuousAt weight (θ, θ))
     (hweight_diag_cont :
       ∀ θ : ℝ, ContinuousAt (fun x : ℝ => weight (x, x)) θ)
@@ -14806,7 +14806,7 @@ theorem lemmaC4_global_monotone_nonpiecewise_tieErasedWbar_const_weight_uniform_
       (by
         simpa using
           (integrable_const (μ :=
-            (μ.prod μ).restrict EconCSLib.strictUpperPairSet)
+            (μ.prod μ).restrict AppliedModelingLib.strictUpperPairSet)
             (c := (1 : ℝ))))
       (by
         filter_upwards with q
@@ -14896,9 +14896,9 @@ theorem lemmaC4_global_floorPkComplementError_has_zero_rate_of_monotone_interval
     {a b : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -14919,7 +14919,7 @@ theorem lemmaC4_global_floorPkComplementError_has_zero_rate_of_monotone_interval
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
                 q.1 q.2 k
-            ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+            ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
     (hlocal_le_global :
       ∀ᶠ k : ℕ in atTop,
         (∫ q,
@@ -14927,7 +14927,7 @@ theorem lemmaC4_global_floorPkComplementError_has_zero_rate_of_monotone_interval
               twoSampleFloorPkComplementErrorProb
                 (binaryRatingModel successProb hprob0 hprob1) sampleRate
                 q.1 q.2 k
-            ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)) ≤
+            ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)) ≤
           globalError k)
     (hglobal_upper_const : ∀ᶠ k : ℕ in atTop, globalError k ≤ B) :
     HasExponentialRate globalError 0 := by
@@ -14937,7 +14937,7 @@ theorem lemmaC4_global_floorPkComplementError_has_zero_rate_of_monotone_interval
         twoSampleFloorPkComplementErrorProb
           (binaryRatingModel successProb hprob0 hprob1) sampleRate
           q.1 q.2 k
-      ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)
+      ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)
   have hlocal_zero : HasExponentialRate localError 0 := by
     simpa [localError] using
       lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_monotone_continuity_interval_pointwise_on_closed_upper_box_of_Icc
@@ -14971,9 +14971,9 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_monot
     {a b : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -14995,7 +14995,7 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_monot
                     (binaryRatingModel successProb hprob0 hprob1)
                     sampleRate q.1 q.2 k
                 ∂(μ.prod μ).restrict
-                  (EconCSLib.strictUpperPairSetOn a b))
+                  (AppliedModelingLib.strictUpperPairSetOn a b))
             rate) :
     isPiecewiseConstant ↔
       ∃ rate : ℝ, 0 < rate ∧
@@ -15007,7 +15007,7 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_monot
                   (binaryRatingModel successProb hprob0 hprob1)
                   sampleRate q.1 q.2 k
               ∂(μ.prod μ).restrict
-                (EconCSLib.strictUpperPairSetOn a b))
+                (AppliedModelingLib.strictUpperPairSetOn a b))
           rate := by
   refine
     lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_zero_reverse
@@ -15019,7 +15019,7 @@ theorem lemmaC4_piecewise_constant_iff_exists_positive_exponential_rate_of_monot
               (binaryRatingModel successProb hprob0 hprob1)
               sampleRate q.1 q.2 k
           ∂(μ.prod μ).restrict
-            (EconCSLib.strictUpperPairSetOn a b))
+            (AppliedModelingLib.strictUpperPairSetOn a b))
       hforward ?_
   intro _hnot_piecewise
   exact
@@ -15052,12 +15052,12 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -15077,9 +15077,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hleft_tail_log_lipschitz :
       ∀ᶠ k : ℕ in atTop,
         ∀ q : ℝ × ℝ,
-          q ∈ EconCSLib.closedUpperPairSetOn a b →
+          q ∈ AppliedModelingLib.closedUpperPairSetOn a b →
             ∀ r : ℝ × ℝ,
-              r ∈ EconCSLib.closedUpperPairSetOn a b →
+              r ∈ AppliedModelingLib.closedUpperPairSetOn a b →
                 |normalizedLogKernelRate
                     (fun k q =>
                       twoSampleFloorScoreGapLeftTailProb
@@ -15099,10 +15099,10 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
-  let cell := EconCSLib.strictUpperPairSetOn a b
-  let certSet := EconCSLib.closedUpperPairSetOn a b
+  let cell := AppliedModelingLib.strictUpperPairSetOn a b
+  let certSet := AppliedModelingLib.closedUpperPairSetOn a b
   let M := binaryRatingModel successProb hprob0 hprob1
   let kernel : ℕ → ℝ × ℝ → ℝ :=
     fun k q => twoSampleFloorPkComplementErrorProb M sampleRate q.1 q.2 k
@@ -15136,14 +15136,14 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
         simpa [cell, kernel, M] using hkernel_meas k)
       hkernel_bound
   have hcertSet_compact : IsCompact certSet := by
-    simpa [certSet] using EconCSLib.isCompact_closedUpperPairSetOn a b
+    simpa [certSet] using AppliedModelingLib.isCompact_closedUpperPairSetOn a b
   have hprob_order :
       ∀ q : ℝ × ℝ, q ∈ certSet → successProb q.2 ≤ successProb q.1 := by
     intro q hq
-    have hqset : q ∈ EconCSLib.closedUpperPairSetOn a b := by
+    have hqset : q ∈ AppliedModelingLib.closedUpperPairSetOn a b := by
       simpa [certSet] using hq
-    have hqord : q ∈ EconCSLib.closedUpperPairSet := hqset.1
-    exact hprob_mono (by simpa [EconCSLib.closedUpperPairSet] using hqord)
+    have hqord : q ∈ AppliedModelingLib.closedUpperPairSet := hqset.1
+    exact hprob_mono (by simpa [AppliedModelingLib.closedUpperPairSet] using hqord)
   have hrate_cont :
       ∀ q : ℝ × ℝ, q ∈ certSet → ContinuousAt phi q := by
     intro q _hq
@@ -15214,12 +15214,12 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -15237,12 +15237,12 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hprob_cont : ∀ θ : ℝ, ContinuousAt successProb θ)
     (hleft_tail_log_local :
       ∀ q : ℝ × ℝ,
-        q ∈ EconCSLib.closedUpperPairSetOn a b → ∀ ε > 0,
+        q ∈ AppliedModelingLib.closedUpperPairSetOn a b → ∀ ε > 0,
           ∃ U : Set (ℝ × ℝ),
             IsOpen U ∧ q ∈ U ∧
               ∀ᶠ k : ℕ in atTop,
                 ∀ r : ℝ × ℝ,
-                  r ∈ EconCSLib.closedUpperPairSetOn a b → r ∈ U →
+                  r ∈ AppliedModelingLib.closedUpperPairSetOn a b → r ∈ U →
                     |normalizedLogKernelRate
                         (fun k q =>
                           twoSampleFloorScoreGapLeftTailProb
@@ -15262,10 +15262,10 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
-  let cell := EconCSLib.strictUpperPairSetOn a b
-  let certSet := EconCSLib.closedUpperPairSetOn a b
+  let cell := AppliedModelingLib.strictUpperPairSetOn a b
+  let certSet := AppliedModelingLib.closedUpperPairSetOn a b
   let M := binaryRatingModel successProb hprob0 hprob1
   let kernel : ℕ → ℝ × ℝ → ℝ :=
     fun k q => twoSampleFloorPkComplementErrorProb M sampleRate q.1 q.2 k
@@ -15299,14 +15299,14 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
         simpa [cell, kernel, M] using hkernel_meas k)
       hkernel_bound
   have hcertSet_compact : IsCompact certSet := by
-    simpa [certSet] using EconCSLib.isCompact_closedUpperPairSetOn a b
+    simpa [certSet] using AppliedModelingLib.isCompact_closedUpperPairSetOn a b
   have hprob_order :
       ∀ q : ℝ × ℝ, q ∈ certSet → successProb q.2 ≤ successProb q.1 := by
     intro q hq
-    have hqset : q ∈ EconCSLib.closedUpperPairSetOn a b := by
+    have hqset : q ∈ AppliedModelingLib.closedUpperPairSetOn a b := by
       simpa [certSet] using hq
-    have hqord : q ∈ EconCSLib.closedUpperPairSet := hqset.1
-    exact hprob_mono (by simpa [EconCSLib.closedUpperPairSet] using hqord)
+    have hqord : q ∈ AppliedModelingLib.closedUpperPairSet := hqset.1
+    exact hprob_mono (by simpa [AppliedModelingLib.closedUpperPairSet] using hqord)
   have hrate_cont :
       ∀ q : ℝ × ℝ, q ∈ certSet → ContinuousAt phi q := by
     intro q _hq
@@ -15370,9 +15370,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hθ0 : θ0 ∈ Set.Ioo a b)
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -15390,12 +15390,12 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hprob_cont : ∀ θ : ℝ, ContinuousAt successProb θ)
     (hleft_tail_log_local :
       ∀ q : ℝ × ℝ,
-        q ∈ EconCSLib.closedUpperPairSetOn a b → ∀ ε > 0,
+        q ∈ AppliedModelingLib.closedUpperPairSetOn a b → ∀ ε > 0,
           ∃ U : Set (ℝ × ℝ),
             IsOpen U ∧ q ∈ U ∧
               ∀ᶠ k : ℕ in atTop,
                 ∀ r : ℝ × ℝ,
-                  r ∈ EconCSLib.closedUpperPairSetOn a b → r ∈ U →
+                  r ∈ AppliedModelingLib.closedUpperPairSetOn a b → r ∈ U →
                     |normalizedLogKernelRate
                         (fun k q =>
                           twoSampleFloorScoreGapLeftTailProb
@@ -15415,7 +15415,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hprob_meas : Measurable successProb :=
     (continuous_iff_continuousAt.2 hprob_cont).measurable
@@ -15428,11 +15428,11 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)) := by
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)) := by
     intro k
     simpa [binaryRatingModel] using
       realBinaryRatingLDPModel_twoSampleFloorPkComplementErrorProb_aestronglyMeasurable
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
         successProb sampleRate hprob0 hprob1 hprob_meas hsample_meas k
   exact
     lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_continuity_point_measurableKernel_leftTail_locally_equicontinuous_on_closed_upper_box
@@ -15465,12 +15465,12 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -15484,12 +15484,12 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     (hprob_cont : ∀ θ : ℝ, ContinuousAt successProb θ)
     (hleft_tail_log_local :
       ∀ q : ℝ × ℝ,
-        q ∈ EconCSLib.closedUpperPairSetOn a b → ∀ ε > 0,
+        q ∈ AppliedModelingLib.closedUpperPairSetOn a b → ∀ ε > 0,
           ∃ U : Set (ℝ × ℝ),
             IsOpen U ∧ q ∈ U ∧
               ∀ᶠ k : ℕ in atTop,
                 ∀ r : ℝ × ℝ,
-                  r ∈ EconCSLib.closedUpperPairSetOn a b → r ∈ U →
+                  r ∈ AppliedModelingLib.closedUpperPairSetOn a b → r ∈ U →
                     |normalizedLogKernelRate
                         (fun k q =>
                           twoSampleFloorScoreGapLeftTailProb
@@ -15509,17 +15509,17 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ _hθ
     exact ⟨hprob_pos θ, hprob_lt_one θ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0)
   exact
     lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_continuity_point_measurableKernel_leftTail_locally_equicontinuous_on_closed_upper_box
@@ -15547,9 +15547,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     {a b : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -15563,12 +15563,12 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     (hprob_cont : ∀ θ : ℝ, ContinuousAt successProb θ)
     (hleft_tail_log_local :
       ∀ q : ℝ × ℝ,
-        q ∈ EconCSLib.closedUpperPairSetOn a b → ∀ ε > 0,
+        q ∈ AppliedModelingLib.closedUpperPairSetOn a b → ∀ ε > 0,
           ∃ U : Set (ℝ × ℝ),
             IsOpen U ∧ q ∈ U ∧
               ∀ᶠ k : ℕ in atTop,
                 ∀ r : ℝ × ℝ,
-                  r ∈ EconCSLib.closedUpperPairSetOn a b → r ∈ U →
+                  r ∈ AppliedModelingLib.closedUpperPairSetOn a b → r ∈ U →
                     |normalizedLogKernelRate
                         (fun k q =>
                           twoSampleFloorScoreGapLeftTailProb
@@ -15588,7 +15588,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hprob_meas : Measurable successProb :=
     (continuous_iff_continuousAt.2 hprob_cont).measurable
@@ -15601,11 +15601,11 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)) := by
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)) := by
     intro k
     simpa [binaryRatingModel] using
       realBinaryRatingLDPModel_twoSampleFloorPkComplementErrorProb_aestronglyMeasurable
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
         successProb sampleRate hprob0 hprob1 hprob_meas hsample_meas k
   exact
     lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_monotone_continuity_interval_measurableKernel_leftTail_locally_equicontinuous_on_closed_upper_box
@@ -15634,9 +15634,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hθ0 : θ0 ∈ Set.Ioo a b)
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -15647,12 +15647,12 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hprob_cont_on : ∀ θ ∈ Set.Icc a b, ContinuousAt successProb θ)
     (hleft_tail_log_local :
       ∀ q : ℝ × ℝ,
-        q ∈ EconCSLib.closedUpperPairSetOn a b → ∀ ε > 0,
+        q ∈ AppliedModelingLib.closedUpperPairSetOn a b → ∀ ε > 0,
           ∃ U : Set (ℝ × ℝ),
             IsOpen U ∧ q ∈ U ∧
               ∀ᶠ k : ℕ in atTop,
                 ∀ r : ℝ × ℝ,
-                  r ∈ EconCSLib.closedUpperPairSetOn a b → r ∈ U →
+                  r ∈ AppliedModelingLib.closedUpperPairSetOn a b → r ∈ U →
                     |normalizedLogKernelRate
                         (fun k q =>
                           twoSampleFloorScoreGapLeftTailProb
@@ -15672,10 +15672,10 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
-  let cell := EconCSLib.strictUpperPairSetOn a b
-  let certSet := EconCSLib.closedUpperPairSetOn a b
+  let cell := AppliedModelingLib.strictUpperPairSetOn a b
+  let certSet := AppliedModelingLib.closedUpperPairSetOn a b
   let M := binaryRatingModel successProb hprob0 hprob1
   let kernel : ℕ → ℝ × ℝ → ℝ :=
     fun k q => twoSampleFloorPkComplementErrorProb M sampleRate q.1 q.2 k
@@ -15695,7 +15695,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
   have hg0 : 0 < sampleRate θ0 :=
     hsample_pos_on θ0 hθ0_Icc
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont_on θ0 hθ0_Icc)
   have hg_pos : ∀ᶠ θ in 𝓝 θ0, 0 < sampleRate θ :=
     (hsample_cont_on θ0 hθ0_Icc).eventually
@@ -15735,18 +15735,18 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
         simpa [cell, kernel] using hkernel_meas k)
       hkernel_bound
   have hcertSet_compact : IsCompact certSet := by
-    simpa [certSet] using EconCSLib.isCompact_closedUpperPairSetOn a b
+    simpa [certSet] using AppliedModelingLib.isCompact_closedUpperPairSetOn a b
   have hprob_order :
       ∀ q : ℝ × ℝ, q ∈ certSet → successProb q.2 ≤ successProb q.1 := by
     intro q hq
-    exact hprob_mono (EconCSLib.closedUpperPairSetOn_snd_le_fst hq)
+    exact hprob_mono (AppliedModelingLib.closedUpperPairSetOn_snd_le_fst hq)
   have hrate_cont :
       ∀ q : ℝ × ℝ, q ∈ certSet → ContinuousAt phi q := by
     intro q hq
     have hq1 : q.1 ∈ Set.Icc a b :=
-      EconCSLib.closedUpperPairSetOn_fst_mem_Icc hq
+      AppliedModelingLib.closedUpperPairSetOn_fst_mem_Icc hq
     have hq2 : q.2 ∈ Set.Icc a b :=
-      EconCSLib.closedUpperPairSetOn_snd_mem_Icc hq
+      AppliedModelingLib.closedUpperPairSetOn_snd_mem_Icc hq
     simpa [phi] using
       lemmaC4_pairwise_closed_rate_continuousAt_of_coordinate_continuousAt
         successProb sampleRate q
@@ -15763,17 +15763,17 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
         (fun q : ℝ × ℝ => q.1) (fun q : ℝ × ℝ => q.2)
         hcertSet_compact (fun _ hq => hq)
         (fun q hq => hsample_pos_on q.1
-          (EconCSLib.closedUpperPairSetOn_fst_mem_Icc hq))
+          (AppliedModelingLib.closedUpperPairSetOn_fst_mem_Icc hq))
         (fun q hq => hsample_pos_on q.2
-          (EconCSLib.closedUpperPairSetOn_snd_mem_Icc hq))
+          (AppliedModelingLib.closedUpperPairSetOn_snd_mem_Icc hq))
         (fun q hq => hprob_pos_on q.1
-          (EconCSLib.closedUpperPairSetOn_fst_mem_Icc hq))
+          (AppliedModelingLib.closedUpperPairSetOn_fst_mem_Icc hq))
         (fun q hq => hprob_lt_one_on q.1
-          (EconCSLib.closedUpperPairSetOn_fst_mem_Icc hq))
+          (AppliedModelingLib.closedUpperPairSetOn_fst_mem_Icc hq))
         (fun q hq => hprob_pos_on q.2
-          (EconCSLib.closedUpperPairSetOn_snd_mem_Icc hq))
+          (AppliedModelingLib.closedUpperPairSetOn_snd_mem_Icc hq))
         (fun q hq => hprob_lt_one_on q.2
-          (EconCSLib.closedUpperPairSetOn_snd_mem_Icc hq))
+          (AppliedModelingLib.closedUpperPairSetOn_snd_mem_Icc hq))
         hprob_order
         (by simpa [phi, certSet] using hrate_cont)
         (by simpa [leftKernel, certSet, M, binaryRatingModel] using
@@ -15812,9 +15812,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     {a b : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -15828,12 +15828,12 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     (hprob_cont_on : ∀ θ ∈ Set.Icc a b, ContinuousAt successProb θ)
     (hleft_tail_log_local :
       ∀ q : ℝ × ℝ,
-        q ∈ EconCSLib.closedUpperPairSetOn a b → ∀ ε > 0,
+        q ∈ AppliedModelingLib.closedUpperPairSetOn a b → ∀ ε > 0,
           ∃ U : Set (ℝ × ℝ),
             IsOpen U ∧ q ∈ U ∧
               ∀ᶠ k : ℕ in atTop,
                 ∀ r : ℝ × ℝ,
-                  r ∈ EconCSLib.closedUpperPairSetOn a b → r ∈ U →
+                  r ∈ AppliedModelingLib.closedUpperPairSetOn a b → r ∈ U →
                     |normalizedLogKernelRate
                         (fun k q =>
                           twoSampleFloorScoreGapLeftTailProb
@@ -15853,7 +15853,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
@@ -15861,7 +15861,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     have hθ_Icc : θ ∈ Set.Icc a b := ⟨hθ.1.le, hθ.2.le⟩
     exact ⟨hprob_pos_on θ hθ_Icc, hprob_lt_one_on θ hθ_Icc⟩
   obtain ⟨θ0, hθ0, _hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   exact
     lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_continuity_point_leftTail_locally_equicontinuous_on_closed_upper_box_of_Icc
@@ -15888,9 +15888,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hθ0 : θ0 ∈ Set.Ioo a b)
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -15910,9 +15910,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hleft_tail_log_lipschitz :
       ∀ᶠ k : ℕ in atTop,
         ∀ q : ℝ × ℝ,
-          q ∈ EconCSLib.closedUpperPairSetOn a b →
+          q ∈ AppliedModelingLib.closedUpperPairSetOn a b →
             ∀ r : ℝ × ℝ,
-              r ∈ EconCSLib.closedUpperPairSetOn a b →
+              r ∈ AppliedModelingLib.closedUpperPairSetOn a b →
                 |normalizedLogKernelRate
                     (fun k q =>
                       twoSampleFloorScoreGapLeftTailProb
@@ -15932,7 +15932,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hprob_meas : Measurable successProb :=
     (continuous_iff_continuousAt.2 hprob_cont).measurable
@@ -15945,11 +15945,11 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)) := by
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)) := by
     intro k
     simpa [binaryRatingModel] using
       realBinaryRatingLDPModel_twoSampleFloorPkComplementErrorProb_aestronglyMeasurable
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
         successProb sampleRate hprob0 hprob1 hprob_meas hsample_meas k
   exact
     lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_continuity_point_measurableKernel_leftTail_eventually_lipschitz_on_closed_upper_box
@@ -15980,9 +15980,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hθ0 : θ0 ∈ Set.Ioo a b)
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -15995,9 +15995,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hleft_tail_log_lipschitz :
       ∀ᶠ k : ℕ in atTop,
         ∀ q : ℝ × ℝ,
-          q ∈ EconCSLib.closedUpperPairSetOn a b →
+          q ∈ AppliedModelingLib.closedUpperPairSetOn a b →
             ∀ r : ℝ × ℝ,
-              r ∈ EconCSLib.closedUpperPairSetOn a b →
+              r ∈ AppliedModelingLib.closedUpperPairSetOn a b →
                 |normalizedLogKernelRate
                     (fun k q =>
                       twoSampleFloorScoreGapLeftTailProb
@@ -16017,10 +16017,10 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
-  let cell := EconCSLib.strictUpperPairSetOn a b
-  let certSet := EconCSLib.closedUpperPairSetOn a b
+  let cell := AppliedModelingLib.strictUpperPairSetOn a b
+  let certSet := AppliedModelingLib.closedUpperPairSetOn a b
   let M := binaryRatingModel successProb hprob0 hprob1
   let kernel : ℕ → ℝ × ℝ → ℝ :=
     fun k q => twoSampleFloorPkComplementErrorProb M sampleRate q.1 q.2 k
@@ -16040,7 +16040,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
   have hg0 : 0 < sampleRate θ0 :=
     hsample_pos_on θ0 hθ0_Icc
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont_on θ0 hθ0_Icc)
   have hg_pos : ∀ᶠ θ in 𝓝 θ0, 0 < sampleRate θ :=
     (hsample_cont_on θ0 hθ0_Icc).eventually
@@ -16080,18 +16080,18 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
         simpa [cell, kernel] using hkernel_meas k)
       hkernel_bound
   have hcertSet_compact : IsCompact certSet := by
-    simpa [certSet] using EconCSLib.isCompact_closedUpperPairSetOn a b
+    simpa [certSet] using AppliedModelingLib.isCompact_closedUpperPairSetOn a b
   have hprob_order :
       ∀ q : ℝ × ℝ, q ∈ certSet → successProb q.2 ≤ successProb q.1 := by
     intro q hq
-    exact hprob_mono (EconCSLib.closedUpperPairSetOn_snd_le_fst hq)
+    exact hprob_mono (AppliedModelingLib.closedUpperPairSetOn_snd_le_fst hq)
   have hrate_cont :
       ∀ q : ℝ × ℝ, q ∈ certSet → ContinuousAt phi q := by
     intro q hq
     have hq1 : q.1 ∈ Set.Icc a b :=
-      EconCSLib.closedUpperPairSetOn_fst_mem_Icc hq
+      AppliedModelingLib.closedUpperPairSetOn_fst_mem_Icc hq
     have hq2 : q.2 ∈ Set.Icc a b :=
-      EconCSLib.closedUpperPairSetOn_snd_mem_Icc hq
+      AppliedModelingLib.closedUpperPairSetOn_snd_mem_Icc hq
     simpa [phi] using
       lemmaC4_pairwise_closed_rate_continuousAt_of_coordinate_continuousAt
         successProb sampleRate q
@@ -16108,17 +16108,17 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
         (fun q : ℝ × ℝ => q.1) (fun q : ℝ × ℝ => q.2)
         hcertSet_compact (fun _ hq => hq)
         (fun q hq => hsample_pos_on q.1
-          (EconCSLib.closedUpperPairSetOn_fst_mem_Icc hq))
+          (AppliedModelingLib.closedUpperPairSetOn_fst_mem_Icc hq))
         (fun q hq => hsample_pos_on q.2
-          (EconCSLib.closedUpperPairSetOn_snd_mem_Icc hq))
+          (AppliedModelingLib.closedUpperPairSetOn_snd_mem_Icc hq))
         (fun q hq => hprob_pos_on q.1
-          (EconCSLib.closedUpperPairSetOn_fst_mem_Icc hq))
+          (AppliedModelingLib.closedUpperPairSetOn_fst_mem_Icc hq))
         (fun q hq => hprob_lt_one_on q.1
-          (EconCSLib.closedUpperPairSetOn_fst_mem_Icc hq))
+          (AppliedModelingLib.closedUpperPairSetOn_fst_mem_Icc hq))
         (fun q hq => hprob_pos_on q.2
-          (EconCSLib.closedUpperPairSetOn_snd_mem_Icc hq))
+          (AppliedModelingLib.closedUpperPairSetOn_snd_mem_Icc hq))
         (fun q hq => hprob_lt_one_on q.2
-          (EconCSLib.closedUpperPairSetOn_snd_mem_Icc hq))
+          (AppliedModelingLib.closedUpperPairSetOn_snd_mem_Icc hq))
         hprob_order
         (by simpa [phi, certSet] using hrate_cont)
         hL
@@ -16163,12 +16163,12 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -16189,7 +16189,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        (EconCSLib.closedUpperPairSetOn a b)) :
+        (AppliedModelingLib.closedUpperPairSetOn a b)) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q,
@@ -16197,10 +16197,10 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
-  let cell := EconCSLib.strictUpperPairSetOn a b
-  let certSet := EconCSLib.closedUpperPairSetOn a b
+  let cell := AppliedModelingLib.strictUpperPairSetOn a b
+  let certSet := AppliedModelingLib.closedUpperPairSetOn a b
   let M := binaryRatingModel successProb hprob0 hprob1
   let kernel : ℕ → ℝ × ℝ → ℝ :=
     fun k q => twoSampleFloorPkComplementErrorProb M sampleRate q.1 q.2 k
@@ -16267,9 +16267,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
     (hθ0 : θ0 ∈ Set.Ioo a b)
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont : ContinuousAt weight (θ0, θ0))
     (hweight_x0_pos : 0 < weight (θ0, θ0))
@@ -16290,7 +16290,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        (EconCSLib.closedUpperPairSetOn a b)) :
+        (AppliedModelingLib.closedUpperPairSetOn a b)) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q,
@@ -16298,7 +16298,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hkernel_meas :
       ∀ k : ℕ,
@@ -16307,11 +16307,11 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_c
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)) := by
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)) := by
     intro k
     simpa [binaryRatingModel] using
       realBinaryRatingLDPModel_twoSampleFloorPkComplementErrorProb_aestronglyMeasurable
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
         successProb sampleRate hprob0 hprob1 hprob_meas hsample_meas k
   exact
     lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_continuity_point_measurableKernel_leftTail_uniformExponentialRateCertificate_on_closed_upper_box
@@ -16344,12 +16344,12 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -16365,9 +16365,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     (hleft_tail_log_lipschitz :
       ∀ᶠ k : ℕ in atTop,
         ∀ q : ℝ × ℝ,
-          q ∈ EconCSLib.closedUpperPairSetOn a b →
+          q ∈ AppliedModelingLib.closedUpperPairSetOn a b →
             ∀ r : ℝ × ℝ,
-              r ∈ EconCSLib.closedUpperPairSetOn a b →
+              r ∈ AppliedModelingLib.closedUpperPairSetOn a b →
                 |normalizedLogKernelRate
                     (fun k q =>
                       twoSampleFloorScoreGapLeftTailProb
@@ -16387,17 +16387,17 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ _hθ
     exact ⟨hprob_pos θ, hprob_lt_one θ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0)
   exact
     lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_continuity_point_measurableKernel_leftTail_eventually_lipschitz_on_closed_upper_box
@@ -16427,9 +16427,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     {a b L : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -16445,9 +16445,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     (hleft_tail_log_lipschitz :
       ∀ᶠ k : ℕ in atTop,
         ∀ q : ℝ × ℝ,
-          q ∈ EconCSLib.closedUpperPairSetOn a b →
+          q ∈ AppliedModelingLib.closedUpperPairSetOn a b →
             ∀ r : ℝ × ℝ,
-              r ∈ EconCSLib.closedUpperPairSetOn a b →
+              r ∈ AppliedModelingLib.closedUpperPairSetOn a b →
                 |normalizedLogKernelRate
                     (fun k q =>
                       twoSampleFloorScoreGapLeftTailProb
@@ -16467,7 +16467,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hprob_meas : Measurable successProb :=
     (continuous_iff_continuousAt.2 hprob_cont).measurable
@@ -16480,11 +16480,11 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)) := by
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)) := by
     intro k
     simpa [binaryRatingModel] using
       realBinaryRatingLDPModel_twoSampleFloorPkComplementErrorProb_aestronglyMeasurable
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
         successProb sampleRate hprob0 hprob1 hprob_meas hsample_meas k
   exact
     lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_monotone_continuity_interval_measurableKernel_leftTail_eventually_lipschitz_on_closed_upper_box
@@ -16512,9 +16512,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     {a b L : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -16530,9 +16530,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     (hleft_tail_log_lipschitz :
       ∀ᶠ k : ℕ in atTop,
         ∀ q : ℝ × ℝ,
-          q ∈ EconCSLib.closedUpperPairSetOn a b →
+          q ∈ AppliedModelingLib.closedUpperPairSetOn a b →
             ∀ r : ℝ × ℝ,
-              r ∈ EconCSLib.closedUpperPairSetOn a b →
+              r ∈ AppliedModelingLib.closedUpperPairSetOn a b →
                 |normalizedLogKernelRate
                     (fun k q =>
                       twoSampleFloorScoreGapLeftTailProb
@@ -16552,7 +16552,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
@@ -16560,7 +16560,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     have hθ_Icc : θ ∈ Set.Icc a b := ⟨hθ.1.le, hθ.2.le⟩
     exact ⟨hprob_pos_on θ hθ_Icc, hprob_lt_one_on θ hθ_Icc⟩
   obtain ⟨θ0, hθ0, _hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   exact
     lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_continuity_point_leftTail_eventually_lipschitz_on_closed_upper_box_of_Icc
@@ -16593,12 +16593,12 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -16622,7 +16622,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        (EconCSLib.closedUpperPairSetOn a b)) :
+        (AppliedModelingLib.closedUpperPairSetOn a b)) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q,
@@ -16630,17 +16630,17 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ hθ
     exact ⟨hprob_pos θ hθ, hprob_lt_one θ hθ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0 hθ0)
   exact
     lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_continuity_point_measurableKernel_leftTail_uniformExponentialRateCertificate_on_closed_upper_box
@@ -16671,9 +16671,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     {a b : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -16697,7 +16697,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        (EconCSLib.closedUpperPairSetOn a b)) :
+        (AppliedModelingLib.closedUpperPairSetOn a b)) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q,
@@ -16705,7 +16705,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hkernel_meas :
       ∀ k : ℕ,
@@ -16714,11 +16714,11 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)) := by
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)) := by
     intro k
     simpa [binaryRatingModel] using
       realBinaryRatingLDPModel_twoSampleFloorPkComplementErrorProb_aestronglyMeasurable
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
         successProb sampleRate hprob0 hprob1 hprob_meas hsample_meas k
   exact
     lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_monotone_continuity_interval_measurableKernel_leftTail_uniformExponentialRateCertificate_on_closed_upper_box
@@ -16745,9 +16745,9 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
     {a b : ℝ}
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -16771,7 +16771,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        (EconCSLib.closedUpperPairSetOn a b)) :
+        (AppliedModelingLib.closedUpperPairSetOn a b)) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q,
@@ -16779,7 +16779,7 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k
-          ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hkernel_meas :
       ∀ k : ℕ,
@@ -16788,21 +16788,21 @@ theorem lemmaC4_boundedStrictUpperPair_floorPkComplementError_has_zero_rate_of_m
             twoSampleFloorPkComplementErrorProb
               (binaryRatingModel successProb hprob0 hprob1) sampleRate
               q.1 q.2 k)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)) := by
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)) := by
     intro k
     simpa [binaryRatingModel] using
       realBinaryRatingLDPModel_twoSampleFloorPkComplementErrorProb_aestronglyMeasurable
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
         successProb sampleRate hprob0 hprob1 hprob_meas hsample_meas k
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ hθ
     exact ⟨hprob_pos θ hθ, hprob_lt_one θ hθ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0 hθ0)
   have hg_pos : ∀ᶠ θ in 𝓝 θ0, 0 < sampleRate θ :=
     (hsample_cont θ0 hθ0).eventually
@@ -16832,16 +16832,16 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_monotone_contin
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hkernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+        ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
           0 ≤ kernel k q ∧ kernel k q ≤ K)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -16860,21 +16860,21 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_monotone_contin
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        (EconCSLib.closedPairBox a b)) :
+        (AppliedModelingLib.closedPairBox a b)) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          (μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ _hθ
     exact ⟨hprob_pos θ, hprob_lt_one θ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0 hθ0)
   exact
     lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_continuity_point_boundedKernel_uniformNormalizedLogRateCertificate_on_closed_box
@@ -16899,16 +16899,16 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_monotone_contin
     (hkernel_int :
       ∀ k : ℕ,
         Integrable (fun q : ℝ × ℝ => weight q * kernel k q)
-          ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+          ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_int :
       Integrable weight
-        ((μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b)))
+        ((μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b)))
     (hweight_nonneg :
-      ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+      ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
         0 ≤ weight q)
     (hkernel_bound :
       ∀ k : ℕ,
-        ∀ᵐ q ∂(μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b),
+        ∀ᵐ q ∂(μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b),
           0 ≤ kernel k q ∧ kernel k q ≤ K)
     (hweight_cont :
       ∀ θ ∈ Set.Ioo a b, ContinuousAt weight (θ, θ))
@@ -16927,21 +16927,21 @@ theorem lemmaC4_boundedStrictUpperPair_integral_has_zero_rate_of_monotone_contin
           weightedBernoulliClosedThresholdRate
             (sampleRate q.1) (sampleRate q.2)
             (successProb q.1) (successProb q.2))
-        (EconCSLib.closedPairBox a b)) :
+        (AppliedModelingLib.closedPairBox a b)) :
     HasExponentialRate
       (fun k : ℕ =>
         ∫ q, weight q * kernel k q ∂
-          (μ.prod μ).restrict (EconCSLib.strictUpperPairSetOn a b))
+          (μ.prod μ).restrict (AppliedModelingLib.strictUpperPairSetOn a b))
       0 := by
   have hrange :
       ∀ θ ∈ Set.Ioo a b, 0 < successProb θ ∧ successProb θ < 1 := by
     intro θ hθ
     exact ⟨hprob_pos θ hθ, hprob_lt_one θ hθ⟩
   obtain ⟨θ0, hθ0, hβ_cont, _hβ0, _hβ1⟩ :=
-    EconCSLib.exists_interior_continuity_point_of_monotone_on_Ioo
+    AppliedModelingLib.exists_interior_continuity_point_of_monotone_on_Ioo
       (f := successProb) hab hprob_mono hrange
   obtain ⟨G, hG_pos, hg_le⟩ :=
-    EconCSLib.exists_pos_eventually_le_of_continuousAt
+    AppliedModelingLib.exists_pos_eventually_le_of_continuousAt
       (hsample_cont θ0 hθ0)
   have hg_pos : ∀ᶠ θ in 𝓝 θ0, 0 < sampleRate θ :=
     (hsample_cont θ0 hθ0).eventually

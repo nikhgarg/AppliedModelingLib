@@ -11,11 +11,8 @@ from scripts.theorem_realization_transition import MATERIAL_ARTIFACT_PATHS
 
 OPERATIONAL_WORKFLOW_PATHS = {
     "scripts/closeout_execution_state.py",
-    "scripts/closeout_wave_engine.py",
-    "scripts/closeout_legacy_adoption.py",
     "scripts/closeout_plan_receipt.py",
     "scripts/closeout_reuse_plan.py",
-    "scripts/refresh_closeout_manifest_cache.py",
     "scripts/run_paper_closeout.py",
     "scripts/sync_paper_status.py",
     "scripts/new_paper.py",
@@ -38,7 +35,6 @@ class CloseoutReceiptNeutralityTests(unittest.TestCase):
             ".review_traces/closeout_reuse_advisory.json",
             ".review_traces/closeout_execution_plan.json",
             ".review_traces/closeout_execution_plan.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
-            ".review_traces/closeout_legacy_adoption.json",
             ".review_traces/source_record_raw_reissues/raw_reissue_operation.json",
             "README.md",
             "docs/FORMALIZATION_PLAN.md",

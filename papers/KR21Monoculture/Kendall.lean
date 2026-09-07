@@ -1,11 +1,11 @@
 import KR21Monoculture.FirstChoice
-import EconCSLib.SocialChoice.Ranking.Kendall
+import AppliedModelingLib.SocialChoice.Ranking.Kendall
 
 open scoped BigOperators
 
 namespace KR21Monoculture
 
-export EconCSLib.SocialChoice.Ranking
+export AppliedModelingLib.SocialChoice.Ranking
   (invertedPair
     inversionFinset
     inversionFinsetInvolving
@@ -56,18 +56,18 @@ theorem center_valueGap_pos_of_strictlyOrderedBy {n : ℕ}
     {ρ : Ranking n} {value : Candidate n → ℝ}
     (hvalue : StrictlyOrderedBy ρ value) :
     0 < valueGap value ρ := by
-  simpa [valueGap, EconCSLib.SocialChoice.Ranking.valueGap,
-    EconCSLib.SocialChoice.Ranking.topTwoValueGap] using
-    EconCSLib.SocialChoice.Ranking.center_topTwoValueGap_pos_of_strictlyOrderedBy
+  simpa [valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap,
+    AppliedModelingLib.SocialChoice.Ranking.topTwoValueGap] using
+    AppliedModelingLib.SocialChoice.Ranking.center_topTwoValueGap_pos_of_strictlyOrderedBy
       (ρ := ρ) (value := value) hvalue
 
 theorem center_valueGap_nonneg_of_weaklyOrderedBy {n : ℕ}
     {ρ : Ranking n} {value : Candidate n → ℝ}
     (hvalue : WeaklyOrderedBy ρ value) :
     0 ≤ valueGap value ρ := by
-  simpa [valueGap, EconCSLib.SocialChoice.Ranking.valueGap,
-    EconCSLib.SocialChoice.Ranking.topTwoValueGap] using
-    EconCSLib.SocialChoice.Ranking.center_topTwoValueGap_nonneg_of_weaklyOrderedBy
+  simpa [valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap,
+    AppliedModelingLib.SocialChoice.Ranking.topTwoValueGap] using
+    AppliedModelingLib.SocialChoice.Ranking.center_topTwoValueGap_nonneg_of_weaklyOrderedBy
       (ρ := ρ) (value := value) hvalue
 
 end KR21Monoculture

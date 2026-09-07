@@ -1,8 +1,8 @@
 import KR21Monoculture.Simulation
 import KR21Monoculture.OuterConditional
-import EconCSLib.Foundations.Probability.RenewalReward
+import AppliedModelingLib.Foundations.Probability.RenewalReward
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter Function
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter Function
 open scoped Topology BigOperators
 
 namespace KR21Monoculture

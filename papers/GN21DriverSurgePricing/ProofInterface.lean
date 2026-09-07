@@ -15,10 +15,10 @@ open scoped ENNReal
 /-! ## Source-model definitions -/
 
 theorem review_definition_incentive_compatible_realizes_spec :
-    ((∀ R : SingleStateReward,
-      GN21DriverSurgePricing.ProofBridge.review_definition_single_state_ic (R := R)) ∧
-    (∀ R : DynamicReward,
-      GN21DriverSurgePricing.ProofBridge.review_definition_dynamic_ic (R := R))) ↔
+    ((fun R : SingleStateReward =>
+        GN21DriverSurgePricing.ProofBridge.review_definition_single_state_ic (R := R)),
+      (fun R : DynamicReward =>
+        GN21DriverSurgePricing.ProofBridge.review_definition_dynamic_ic (R := R))) =
       review_definition_incentive_compatibleSpec := by
   rfl
 
@@ -33,11 +33,25 @@ theorem review_definition_surge_state_realizes_spec
 /-! ## Main-text results -/
 
 theorem review_theorem1_single_state_threshold_best_response
-  (μ : MeasureTheory.Measure TripLength) (arrivalRate : ℝ) (w : PricingFunction)
-  (hrate_measurable : Measurable fun τ => w τ / τ) (hrate_nonneg : ∀ (τ : TripLength), 0 < τ → 0 ≤ w τ / τ)
-  (hfinite_acceptAll : μ acceptAllPolicy ≠ ⊤) (hw_integrable_acceptAll : MeasureTheory.IntegrableOn w acceptAllPolicy μ)
-  (htime_integrable_acceptAll : MeasureTheory.IntegrableOn (fun τ => τ) acceptAllPolicy μ) (hlambda : 0 < arrivalRate) : review_theorem1_single_state_threshold_best_responseSpec (μ := μ) (arrivalRate := arrivalRate) (w := w) (hrate_measurable := hrate_measurable) (hrate_nonneg := hrate_nonneg) (hfinite_acceptAll := hfinite_acceptAll) (hw_integrable_acceptAll := hw_integrable_acceptAll) (htime_integrable_acceptAll := htime_integrable_acceptAll) (hlambda := hlambda) := by
-  exact GN21DriverSurgePricing.ProofBridge.review_theorem1_single_state_threshold_best_response (μ := μ) (arrivalRate := arrivalRate) (w := w) (hrate_measurable := hrate_measurable) (hrate_nonneg := hrate_nonneg) (hfinite_acceptAll := hfinite_acceptAll) (hw_integrable_acceptAll := hw_integrable_acceptAll) (htime_integrable_acceptAll := htime_integrable_acceptAll) (hlambda := hlambda)
+  (μ : MeasureTheory.Measure TripLength) (arrivalRate : ℝ) (w : GN21PayoutFunction)
+  (hrate_measurable : Measurable fun τ => w.toPricingFunction τ / τ)
+  (hfinite_acceptAll : μ acceptAllPolicy ≠ ⊤)
+  (hw_integrable_acceptAll :
+    MeasureTheory.IntegrableOn w.toPricingFunction acceptAllPolicy μ)
+  (htime_integrable_acceptAll : MeasureTheory.IntegrableOn (fun τ => τ) acceptAllPolicy μ)
+  (hlambda : 0 < arrivalRate) :
+  review_theorem1_single_state_threshold_best_responseSpec
+    (μ := μ) (arrivalRate := arrivalRate) (w := w)
+    (hrate_measurable := hrate_measurable)
+    (hfinite_acceptAll := hfinite_acceptAll)
+    (hw_integrable_acceptAll := hw_integrable_acceptAll)
+    (htime_integrable_acceptAll := htime_integrable_acceptAll) (hlambda := hlambda) := by
+  exact GN21DriverSurgePricing.ProofBridge.review_theorem1_single_state_threshold_best_response
+    (μ := μ) (arrivalRate := arrivalRate) (w := w)
+    (hrate_measurable := hrate_measurable)
+    (hfinite_acceptAll := hfinite_acceptAll)
+    (hw_integrable_acceptAll := hw_integrable_acceptAll)
+    (htime_integrable_acceptAll := htime_integrable_acceptAll) (hlambda := hlambda)
 
 theorem review_proposition3_1_affine_single_state_ic (mu : MeasureTheory.Measure TripLength)
   (arrivalRate m a : ℝ)
@@ -83,6 +97,11 @@ theorem review_lemma1_measured_dynamic_reward_decomposition
       switchIJ switchJI wI wJ sigmaI sigmaJ) : review_lemma1_measured_dynamic_reward_decompositionSpec (Omega := Omega) (POmega := POmega) (muI := muI) (muJ := muJ) (arrivalI := arrivalI) (arrivalJ := arrivalJ) (switchIJ := switchIJ) (switchJI := switchJI) (wI := wI) (wJ := wJ) (sigmaI := sigmaI) (sigmaJ := sigmaJ) (C := C) := by
   exact GN21DriverSurgePricing.ProofBridge.review_lemma1_measured_dynamic_reward_decomposition (Omega := Omega) (POmega := POmega) (muI := muI) (muJ := muJ) (arrivalI := arrivalI) (arrivalJ := arrivalJ) (switchIJ := switchIJ) (switchJI := switchJI) (wI := wI) (wJ := wJ) (sigmaI := sigmaI) (sigmaJ := sigmaJ) (C := C)
 
+/-- Source-model Lemma 1 endpoint: the raw calendar itself constructs the
+successive IID renewal observations used by the convergence result. -/
+abbrev review_lemma1_measured_dynamic_reward_decomposition_of_actual_calendar :=
+  @GN21DriverSurgePricing.ProofBridge.review_lemma1_measured_dynamic_reward_decomposition_of_actual_calendar
+
 theorem review_lemma2_switch_probability_formula (lambdaIJ lambdaJI s : ℝ) : review_lemma2_switch_probability_formulaSpec (lambdaIJ := lambdaIJ) (lambdaJI := lambdaJI) (s := s) := by
   exact GN21DriverSurgePricing.ProofBridge.review_lemma2_switch_probability_formula (lambdaIJ := lambdaIJ) (lambdaJI := lambdaJI) (s := s)
 
@@ -96,16 +115,21 @@ theorem review_lemma3_measured_time_fraction_formula
       switchIJ switchJI sigmaI sigmaJ) : review_lemma3_measured_time_fraction_formulaSpec (Omega := Omega) (POmega := POmega) (muI := muI) (muJ := muJ) (arrivalI := arrivalI) (arrivalJ := arrivalJ) (switchIJ := switchIJ) (switchJI := switchJI) (sigmaI := sigmaI) (sigmaJ := sigmaJ) (C := C) := by
   exact GN21DriverSurgePricing.ProofBridge.review_lemma3_measured_time_fraction_formula (Omega := Omega) (POmega := POmega) (muI := muI) (muJ := muJ) (arrivalI := arrivalI) (arrivalJ := arrivalJ) (switchIJ := switchIJ) (switchJI := switchJI) (sigmaI := sigmaI) (sigmaJ := sigmaJ) (C := C)
 
+/-- Source-model Lemma 3 endpoint: the raw calendar itself constructs the
+successive IID time observations used by the convergence result. -/
+abbrev review_lemma3_measured_time_fraction_formula_of_actual_calendar :=
+  @GN21DriverSurgePricing.ProofBridge.review_lemma3_measured_time_fraction_formula_of_actual_calendar
+
 theorem review_theorem3_structured_pricing :
     review_theorem3_structured_pricingSpec := by
   constructor
-  · intro mu arrival R1 R2 switch12 switch21 _ _ _ _ hR1_nonneg hR1_lt_R2
+  · intro mu arrival R1 R2 switch12 switch21 _ _ _ _ hR1_lt_R2
       harrival1_pos harrival2_pos hswitch12_pos hswitch21_pos
       htime1_integrable htime2_integrable hmass1_eq_one hmass2_eq_one
     exact GN21DriverSurgePricing.ProofBridge.review_theorem3_structured_general_policy_source_claim
       (mu := mu) (arrival := arrival) (R1 := R1) (R2 := R2)
       (switch12 := switch12) (switch21 := switch21)
-      (hR1_nonneg := hR1_nonneg) (hR1_lt_R2 := hR1_lt_R2)
+      (hR1_lt_R2 := hR1_lt_R2)
       (harrival1_pos := harrival1_pos) (harrival2_pos := harrival2_pos)
       (hswitch12_pos := hswitch12_pos) (hswitch21_pos := hswitch21_pos)
       (htime1_integrable := htime1_integrable)

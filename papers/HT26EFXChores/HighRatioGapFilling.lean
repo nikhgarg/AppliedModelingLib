@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, lines 2224--3501.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- If no two-agent edge fibre has three chores, then the M₂ residue cannot
 have either of the exceptional shapes from the source.  Both shapes contain a

@@ -1,9 +1,9 @@
-import EconCSLib.Foundations.Probability.MeasureAtoms
-import EconCSLib.Foundations.Probability.RealIntervalPartition
-import EconCSLib.SocialChoice.FairDivision.MeasurePartition
+import AppliedModelingLib.Foundations.Probability.MeasureAtoms
+import AppliedModelingLib.Foundations.Probability.RealIntervalPartition
+import AppliedModelingLib.SocialChoice.FairDivision.MeasurePartition
 
 open MeasureTheory Set
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 namespace Lemma24
@@ -27,14 +27,14 @@ modeled interval; it is used with a support-zero assumption.
 -/
 def realIntervalResidualSet
     {ν : Measure ℝ} {α a b : ℝ} (H : Finset ℝ)
-    (P : EconCSLib.Probability.RealIntervalPartition ν α a b) :
+    (P : AppliedModelingLib.Probability.RealIntervalPartition ν α a b) :
     Option P.Piece → Set ℝ
   | none => (Ioc a b)ᶜ \ (H : Set ℝ)
   | some piece => P.pieceSet piece \ (H : Set ℝ)
 
 theorem realIntervalResidualSet_measurable
     {ν : Measure ℝ} {α a b : ℝ} (H : Finset ℝ)
-    (P : EconCSLib.Probability.RealIntervalPartition ν α a b) :
+    (P : AppliedModelingLib.Probability.RealIntervalPartition ν α a b) :
     ∀ piece, MeasurableSet (realIntervalResidualSet H P piece) := by
   intro piece
   cases piece with
@@ -45,7 +45,7 @@ theorem realIntervalResidualSet_measurable
 
 theorem realIntervalResidualSet_cover
     {ν : Measure ℝ} {α a b : ℝ} (H : Finset ℝ)
-    (P : EconCSLib.Probability.RealIntervalPartition ν α a b) :
+    (P : AppliedModelingLib.Probability.RealIntervalPartition ν α a b) :
     Set.iUnion (realIntervalResidualSet H P) = (H : Set ℝ)ᶜ := by
   ext x
   constructor
@@ -64,7 +64,7 @@ theorem realIntervalResidualSet_cover
 
 theorem realIntervalResidualSet_pairwiseDisjoint
     {ν : Measure ℝ} {α a b : ℝ} (H : Finset ℝ)
-    (P : EconCSLib.Probability.RealIntervalPartition ν α a b) :
+    (P : AppliedModelingLib.Probability.RealIntervalPartition ν α a b) :
     Set.PairwiseDisjoint Set.univ (realIntervalResidualSet H P) := by
   have hpiece_subset : ∀ piece, P.pieceSet piece ⊆ Ioc a b := by
     intro piece x hx
@@ -104,7 +104,7 @@ theorem realIntervalResidualSet_aggregate_le
     [Fintype Agent] {μ : Agent → Measure ℝ}
     [∀ agent, IsFiniteMeasure (μ agent)]
     {α a b : ℝ} (hα_nonneg : 0 ≤ α) (H : Finset ℝ)
-    (P : EconCSLib.Probability.RealIntervalPartition
+    (P : AppliedModelingLib.Probability.RealIntervalPartition
       ((aggregateMeasure μ).restrict (H : Set ℝ)ᶜ) α a b)
     (haggregate_support :
       (aggregateMeasure μ).real ((Ioc a b)ᶜ) = 0) :
@@ -143,7 +143,7 @@ Paper atom bound for a measure-valued utility: every atom has value at most
 `α`, matching the hypothesis used before Lemma 2.4.
 -/
 abbrev PaperAtomsBoundedBy (μ : Measure Ω) (α : ℝ) : Prop :=
-  EconCSLib.AtomsBoundedBy μ α
+  AppliedModelingLib.AtomsBoundedBy μ α
 
 /--
 The source proof first uses the atom bound to conclude that every point mass is
@@ -154,7 +154,7 @@ theorem paper_atom_bound_implies_point_mass_bound
     (μ : Measure Ω) {α : ℝ}
     (halpha_nonneg : 0 ≤ α) (hatoms : PaperAtomsBoundedBy μ α) :
     ∀ x : Ω, μ.real ({x} : Set Ω) ≤ α := by
-  exact EconCSLib.atomsBoundedBy_measureReal_singleton_le μ halpha_nonneg hatoms
+  exact AppliedModelingLib.atomsBoundedBy_measureReal_singleton_le μ halpha_nonneg hatoms
 
 /--
 Paper-facing certificate for the output of Lemma 2.4.  For the source theorem,
@@ -299,7 +299,7 @@ theorem theorem2_3_from_real_interval_residual_partition_atom_bound
     {α a b : ℝ} (halpha_nonneg : 0 ≤ α)
     (hatoms : ∀ agent, PaperAtomsBoundedBy (μ agent) α)
     (H : Finset ℝ)
-    (P : EconCSLib.Probability.RealIntervalPartition
+    (P : AppliedModelingLib.Probability.RealIntervalPartition
       ((aggregateMeasure μ).restrict (H : Set ℝ)ᶜ) α a b)
     (haggregate_support :
       (aggregateMeasure μ).real ((Ioc a b)ᶜ) = 0) :
@@ -343,7 +343,7 @@ theorem theorem2_3_real_interval_supported_atom_bound
     (haggregate_support :
       (aggregateMeasure μ).real ((Ioc a b)ᶜ) = 0) :
     ∃ H : Finset ℝ,
-      ∃ P : EconCSLib.Probability.RealIntervalPartition
+      ∃ P : AppliedModelingLib.Probability.RealIntervalPartition
         ((aggregateMeasure μ).restrict (H : Set ℝ)ᶜ) α a b,
         letI := P.instFintype
         letI := P.instDecidableEq
@@ -375,7 +375,7 @@ theorem theorem2_3_real_interval_supported_atom_bound
     dsimp [H]
     simpa using restrict_compl_highAggregatePointMasses_singleton_le μ hhalf x
   rcases
-      EconCSLib.Probability.exists_realIntervalPartition_of_singleton_le_half
+      AppliedModelingLib.Probability.exists_realIntervalPartition_of_singleton_le_half
         ((aggregateMeasure μ).restrict (H : Set ℝ)ᶜ) hα hsingleton_residual with
     ⟨P⟩
   refine ⟨H, P, ?_⟩

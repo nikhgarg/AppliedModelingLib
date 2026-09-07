@@ -43,6 +43,7 @@ try:  # Supports direct execution and package imports in tests.
     from scripts import audit_repository as REPOSITORY
     from scripts.source_record_freshness import SOURCE_RECORD_ITEM_DIGEST_SCHEMA
     from scripts.formalization_protocol import (
+        CURRENT_SOURCE_RECORD_PROMPT_VERSION,
         FORMALIZATION_REVIEW_PROTOCOL_FIELD,
         formalization_protocol_receipt_matches,
         formalization_review_protocol_digest,
@@ -51,6 +52,7 @@ try:  # Supports direct execution and package imports in tests.
         SOURCE_RECORD_REUSABLE_ITEM_SECTIONS,
         canonical_digest_payload,
         source_record_audit_receipt_error,
+        source_record_audit_surface_view,
         source_record_item_reuse_eligible,
         source_record_item_is_nonreusable_theorem_facing_mirror,
         source_record_raw_reusable_item_metadata_error,
@@ -73,15 +75,16 @@ try:  # Supports direct execution and package imports in tests.
         ConfiguredAssumptionFormalizationRegularityContext,
         load_configured_assumption_formalization_regularity_context,
     )
-    from scripts.source_record_differential_revalidation import (
-        _raw_item_groups,
-        source_record_differential_revalidation_overlay_path,
+    from scripts.source_record_obligation_groups import raw_source_record_obligation_groups
+    from scripts.source_record_overlay_protocol import (
+        SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_FILENAME,
     )
 except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
     import audit_evidence_integrity as EVIDENCE
     import audit_repository as REPOSITORY
     from source_record_freshness import SOURCE_RECORD_ITEM_DIGEST_SCHEMA
     from formalization_protocol import (
+        CURRENT_SOURCE_RECORD_PROMPT_VERSION,
         FORMALIZATION_REVIEW_PROTOCOL_FIELD,
         formalization_protocol_receipt_matches,
         formalization_review_protocol_digest,
@@ -90,6 +93,7 @@ except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
         SOURCE_RECORD_REUSABLE_ITEM_SECTIONS,
         canonical_digest_payload,
         source_record_audit_receipt_error,
+        source_record_audit_surface_view,
         source_record_item_reuse_eligible,
         source_record_item_is_nonreusable_theorem_facing_mirror,
         source_record_raw_reusable_item_metadata_error,
@@ -112,15 +116,13 @@ except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
         ConfiguredAssumptionFormalizationRegularityContext,
         load_configured_assumption_formalization_regularity_context,
     )
-    from source_record_differential_revalidation import (
-        _raw_item_groups,
-        source_record_differential_revalidation_overlay_path,
+    from source_record_obligation_groups import raw_source_record_obligation_groups
+    from source_record_overlay_protocol import (
+        SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_FILENAME,
     )
 
 
-SOURCE_RECORD_V10_PROMPT_VERSION = (
-    "source-record-v10-semantic-conclusion-boundary-contract"
-)
+SOURCE_RECORD_V10_PROMPT_VERSION = CURRENT_SOURCE_RECORD_PROMPT_VERSION
 CURRENT_REVALIDATION_SCHEMA = 1
 CURRENT_REVALIDATION_POLICY_VERSION = (
     "source-record-current-manual-semantic-revalidation-v3"
@@ -451,7 +453,11 @@ def _relative_path(path: Path, paper_dir: Path) -> str:
 
 
 def _raw_audit_error(
-    raw_audit: Mapping[str, Any], *, paper: str, paper_dir: Path | None = None
+    raw_audit: Mapping[str, Any],
+    *,
+    paper: str,
+    paper_dir: Path | None = None,
+    use_paper_local_semantic_contract_revalidation: bool = True,
 ) -> str:
     if raw_audit.get("paper") != paper:
         return (
@@ -474,8 +480,20 @@ def _raw_audit_error(
     # byte-pinned representation repairs; it does not treat an artifact or a
     # caller-supplied projection as a semantic judgment.
     raw_association_errors = raw_audit.get("source_contract_association_errors")
+    raw_coverage_errors = raw_audit.get("source_coverage_route_errors")
     association_count = raw_audit.get("source_contract_association_error_count")
-    if paper_dir is None:
+    if raw_association_errors not in (None, []) and not isinstance(
+        raw_association_errors, list
+    ):
+        return "current raw audit has malformed source-contract association errors"
+    if raw_coverage_errors not in (None, []) and not isinstance(
+        raw_coverage_errors, list
+    ):
+        return "current raw audit has malformed source-coverage route errors"
+    needs_structural_replay = bool(raw_association_errors) or bool(
+        raw_coverage_errors
+    )
+    if paper_dir is None or not use_paper_local_semantic_contract_revalidation:
         # Preserve the legacy, folder-free validation surface for archived
         # callers and focused unit tests.  Such callers cannot authenticate a
         # paper-local structural replay, so they receive no correction credit.
@@ -483,25 +501,29 @@ def _raw_audit_error(
             return "current raw audit recorded source-contract association errors"
         if raw_association_errors not in ([], None):
             return "current raw audit has nonempty source-contract association errors"
+        if raw_coverage_errors not in ([], None):
+            return "current raw audit has nonempty source-coverage route errors"
     else:
         if paper_dir.name != paper:
             return (
                 "current raw audit paper directory mismatch: "
                 f"expected folder for {paper!r}, found {paper_dir.name!r}"
             )
-        try:
-            projection, replay_error = (
-                EVIDENCE.source_record_semantic_contract_revalidation_context(
-                    paper_dir, raw_audit
+        projection = None
+        if needs_structural_replay:
+            try:
+                projection, replay_error = (
+                    EVIDENCE.source_record_semantic_contract_revalidation_context(
+                        paper_dir, raw_audit
+                    )
                 )
-            )
-        except Exception as exc:  # noqa: BLE001 - replay is a fail-closed gate.
-            return (
-                "could not validate current raw semantic-contract replay: "
-                f"{type(exc).__name__}: {exc}"
-            )
-        if replay_error:
-            return "current raw semantic-contract replay is invalid: " + replay_error
+            except Exception as exc:  # noqa: BLE001 - replay is a fail-closed gate.
+                return (
+                    "could not validate current raw semantic-contract replay: "
+                    f"{type(exc).__name__}: {exc}"
+                )
+            if replay_error:
+                return "current raw semantic-contract replay is invalid: " + replay_error
         semantic_error = EVIDENCE.source_record_effective_semantic_surface_error(
             raw_audit,
             semantic_contract_revalidation=projection,
@@ -513,10 +535,6 @@ def _raw_audit_error(
         # replay may suppress every listed association error, but never an
         # unpaired or malformed count.  This keeps the replay a correction of
         # exact raw diagnostics rather than a way to erase arbitrary metadata.
-        if raw_association_errors not in (None, []) and not isinstance(
-            raw_association_errors, list
-        ):
-            return "current raw audit has malformed source-contract association errors"
         if raw_association_errors:
             if association_count is not None and (
                 isinstance(association_count, bool)
@@ -990,7 +1008,7 @@ def _semantic_model_content_amendment_provenance_error(
     repairs = raw_provenance.get("content_repairs")
     if not isinstance(repairs, list):
         return "semantic-model content amendment provenance has no content-repair list"
-    groups, group_errors = _raw_item_groups(raw_audit)
+    groups, group_errors = raw_source_record_obligation_groups(raw_audit)
     seen: set[str] = set()
     for repair in repairs:
         if not isinstance(repair, Mapping):
@@ -1341,7 +1359,7 @@ def _attested_semantic_model_dimension_association_amendments(
         raise SourceRecordCurrentRevalidationError(
             "semantic-model dimension association amendments require the exact current raw descriptor ledger"
         )
-    groups, group_errors = _raw_item_groups(current_raw_audit)
+    groups, group_errors = raw_source_record_obligation_groups(current_raw_audit)
     if group_errors:
         raise SourceRecordCurrentRevalidationError(
             "current raw audit has malformed groups for semantic-model association amendments"
@@ -1472,7 +1490,7 @@ def _exact_descriptor_group_ledger(
     response slot.
     """
 
-    groups, group_errors = _raw_item_groups(raw_audit)
+    groups, group_errors = raw_source_record_obligation_groups(raw_audit)
     if group_errors:
         examples = ", ".join(sorted(group_errors)[:5])
         raise SourceRecordCurrentRevalidationError(
@@ -1977,7 +1995,7 @@ def _archived_raw_target_context(
     """
 
     errors: list[str] = []
-    surface = raw_audit.get("source_record_audit_surface")
+    surface = source_record_audit_surface_view(raw_audit)
     if not isinstance(surface, Mapping):
         return None, ["archived raw audit lacks source_record_audit_surface"]
     raw_map_digest = _sha256(raw_audit.get("paper_statement_map_sha256"))
@@ -2510,13 +2528,22 @@ def attestation_template(
     paper: str,
     paper_dir: Path,
     prior_sidecar_path: Path,
+    use_paper_local_semantic_contract_revalidation: bool = True,
 ) -> dict[str, Any]:
     """Return a non-evidence template a reviewer must explicitly complete."""
 
     prior_sidecar, prior_sidecar_sha256 = _loaded_snapshot_matches(
         prior_sidecar_path, prior_sidecar, label="prior sidecar"
     )
-    raw_error = _raw_audit_error(raw_audit, paper=paper, paper_dir=paper_dir)
+    raw_error_kwargs: dict[str, Any] = {}
+    if not use_paper_local_semantic_contract_revalidation:
+        raw_error_kwargs["use_paper_local_semantic_contract_revalidation"] = False
+    raw_error = _raw_audit_error(
+        raw_audit,
+        paper=paper,
+        paper_dir=paper_dir,
+        **raw_error_kwargs,
+    )
     if raw_error:
         raise SourceRecordCurrentRevalidationError(raw_error)
     items = _sidecar_items(prior_sidecar, paper=paper)
@@ -2568,7 +2595,7 @@ def _selected_current_group_descriptors(
     the descriptor hash generated from the complete raw semantic group.
     """
 
-    groups, errors = _raw_item_groups(raw_audit)
+    groups, errors = raw_source_record_obligation_groups(raw_audit)
     if errors:
         raise SourceRecordCurrentRevalidationError(
             "current raw audit has malformed differential group(s): "
@@ -2836,7 +2863,9 @@ def _selected_current_overlay(
 
     resolved_overlay_path = (
         overlay_path
-        or source_record_differential_revalidation_overlay_path(paper_dir)
+        or paper_dir
+        / "audit"
+        / SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_FILENAME
     )
     logical_overlay_path = overlay_provenance_path or resolved_overlay_path
     if (require_differential_overlay or overlay_path is not None) and not resolved_overlay_path.is_file():
@@ -3048,7 +3077,7 @@ def _attested_selected_judgment_replacements(
     if not raw:
         return {}
 
-    groups, group_errors = _raw_item_groups(current_raw_audit)
+    groups, group_errors = raw_source_record_obligation_groups(current_raw_audit)
     if group_errors:
         raise SourceRecordCurrentRevalidationError(
             "current raw audit has malformed groups for judgment replacements"
@@ -4420,6 +4449,10 @@ def main() -> int:
             paper=args.paper,
             paper_dir=paper_dir,
             prior_sidecar_path=prior_path,
+            use_paper_local_semantic_contract_revalidation=(
+                raw_path.resolve()
+                == (paper_dir / "audit" / "source_record_audit.json").resolve()
+            ),
         )
         args.write_attestation_template.write_text(
             json.dumps(template, indent=2, sort_keys=True) + "\n", encoding="utf-8"

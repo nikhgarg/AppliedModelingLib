@@ -63,9 +63,9 @@
   source-derived resampling and independent protocol fairness routes
 };
 
-\node[dag_conditional, text width=5.0cm] (Transport) at (22.7,-5.2) {
+\node[dag_result, text width=5.0cm] (Transport) at (22.7,-5.2) {
   \textbf{Reporting-conditioned transport}\\
-  support-only law transport; not a source-endpoint route
+  selected law-level generalization from access to reporting
 };
 
 \node[dag_unformalized, text width=5.4cm] (Open) at (30.0,-5.2) {
@@ -74,11 +74,12 @@
 };
 
 \node[dag_template_note, text width=31.5cm] (StatusNote) at (16.3,-9.7) {
-  \textbf{Status: formalized.}  The named theoretical surface is closed under
-  the explicit source-timed active-branch refinement; Theorem 3.1's regimes are
-  independent, and Section 4 uses actual-law routes without invented null-branch
-  payoffs. The scope comparison for Theorem 3.2 and the supporting
-  source-model clarifications are represented explicitly in the diagram.
+  \textbf{Current review state: final closeout pending.}  The selected source
+  claims are represented under the explicit source-timed active-branch
+  refinement; Theorem 3.1's regimes are independent, and Section 4 uses
+  actual-law routes without invented null-branch payoffs. The
+  reporting-conditioned generalization, Theorem 3.2 scope comparison, and
+  source-model clarifications are represented explicitly.
 };
 
 \draw[dag_arrow] (Model.east) -- (Defs.west);

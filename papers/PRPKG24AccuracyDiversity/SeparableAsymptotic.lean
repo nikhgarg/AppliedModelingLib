@@ -1,9 +1,9 @@
 import PRPKG24AccuracyDiversity.Exchange
 import PRPKG24AccuracyDiversity.Optimization
 import PRPKG24AccuracyDiversity.TopKOracle
-import EconCSLib.Applications.RecommenderSystems.AllocationSequence
-import EconCSLib.Foundations.Math.PowerComparisons
-import EconCSLib.Foundations.Probability.OrderStatistics
+import AppliedModelingLib.Applications.RecommenderSystems.AllocationSequence
+import AppliedModelingLib.Foundations.Math.PowerComparisons
+import AppliedModelingLib.Foundations.Probability.OrderStatistics
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Nat.Choose.Bounds
 
@@ -19,10 +19,10 @@ after a finite threshold: make the finitely many early errors deliberately
 large, and keep the original asymptotic schedule afterwards.
 -/
 theorem tendsToZero_if_lt_const
-    {ε : ℕ → ℝ} (hε : EconCSLib.Math.TendsToZero ε)
+    {ε : ℕ → ℝ} (hε : AppliedModelingLib.Math.TendsToZero ε)
     (threshold : ℕ) (C : ℝ) :
-    EconCSLib.Math.TendsToZero
-      (fun N => if N < threshold then C else ε N) :=  EconCSLib.Math.tendsToZero_if_lt_const hε threshold C
+    AppliedModelingLib.Math.TendsToZero
+      (fun N => if N < threshold then C else ε N) :=  AppliedModelingLib.Math.tendsToZero_if_lt_const hε threshold C
 
 /--
 Source Theorem 1(i) asymptotic algebra: an exact geometric tail has the
@@ -34,28 +34,28 @@ theorem finiteDiscrete_log_geometric_tail_ratio
       (fun N : ℕ =>
         Real.log (C * r ^ N) / (Real.log r * (N : ℝ)))
       atTop (nhds 1) :=
-  EconCSLib.Math.log_geometric_tail_ratio hC hr_pos hr_lt_one
+  AppliedModelingLib.Math.log_geometric_tail_ratio hC hr_pos hr_lt_one
 
 /-- `log N / N -> 0`, used by the finite-discrete polynomial tail factor. -/
 theorem tendsto_log_nat_div_nat_nhds_zero :
     Tendsto
       (fun N : ℕ => Real.log (N : ℝ) / (N : ℝ))
       atTop (nhds 0) :=
-  EconCSLib.Math.tendsto_log_nat_div_nat_nhds_zero
+  AppliedModelingLib.Math.tendsto_log_nat_div_nat_nhds_zero
 
 /-- Natural square root tends to infinity along natural numbers. -/
 theorem tendsto_nat_sqrt_atTop :
     Tendsto (fun N : ℕ => Nat.sqrt N) atTop atTop :=
-  EconCSLib.Math.tendsto_nat_sqrt_atTop
+  AppliedModelingLib.Math.tendsto_nat_sqrt_atTop
 
 /--
 The square-root integer gap is sublinear in the certificate sense:
 `(sqrt N + 1) / N -> 0`.
 -/
 theorem finiteDiscrete_nat_sqrt_gap_error_tendsToZero :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (fun N : ℕ => ((Nat.sqrt N + 1 : ℕ) : ℝ) / (N : ℝ)) :=
-  EconCSLib.Math.nat_sqrt_gap_error_tendsToZero
+  AppliedModelingLib.Math.nat_sqrt_gap_error_tendsToZero
 
 /--
 For any `0 < rho < 1`, the square-root integer gap kills every fixed
@@ -66,7 +66,7 @@ theorem finiteDiscrete_nat_sqrt_gap_polynomial_geometric_tends_to_zero
     Tendsto
       (fun N : ℕ => (N : ℝ) ^ k * rho ^ (Nat.sqrt N))
       atTop (nhds 0) :=
-  EconCSLib.Math.nat_sqrt_gap_polynomial_geometric_tends_to_zero
+  AppliedModelingLib.Math.nat_sqrt_gap_polynomial_geometric_tends_to_zero
     k hrho_pos hrho_lt_one
 
 /--
@@ -81,7 +81,7 @@ theorem finiteDiscrete_log_polynomial_geometric_tail_ratio
         Real.log (C * (N : ℝ) ^ d * r ^ N) /
           (Real.log r * (N : ℝ)))
       atTop (nhds 1) :=
-  EconCSLib.Math.log_polynomial_geometric_tail_ratio
+  AppliedModelingLib.Math.log_polynomial_geometric_tail_ratio
     d hC hr_pos hr_lt_one
 
 /--
@@ -101,7 +101,7 @@ theorem finiteDiscrete_log_tail_ratio_of_geometric_bounds
       (fun N : ℕ =>
         Real.log (gap N) / (Real.log r * (N : ℝ)))
       atTop (nhds 1) :=
-  EconCSLib.Math.log_tail_ratio_of_geometric_bounds
+  AppliedModelingLib.Math.log_tail_ratio_of_geometric_bounds
     d hlower_pos hupper_pos hr_pos hr_lt_one hlower hupper
 
 /--
@@ -520,7 +520,7 @@ sequence convergence.
 theorem convergesToProfile_of_eventual_approx {T : ℕ}
     (seq : AllocationSequence T) (G : GammaHomogeneityProfile T)
     (ε : ℕ → ℝ)
-    (hε : EconCSLib.Math.TendsToZero ε)
+    (hε : AppliedModelingLib.Math.TendsToZero ε)
     (happrox : ∀ᶠ N in atTop, G.Approx (seq.allocation N) (ε N)) :
     seq.ConvergesToProfile G := by
   intro t
@@ -581,7 +581,7 @@ theorem convergesToProfile_of_asymptoticHomogeneityTarget {T : ℕ}
     (seq : OptimalAllocationSequence Mseq)
     (h :
       ConsumptionModel.AsymptoticHomogeneityTarget
-        Mseq G EconCSLib.Math.TendsToZero) :
+        Mseq G AppliedModelingLib.Math.TendsToZero) :
     seq.toAllocationSequence.ConvergesToProfile G := by
   rcases h with ⟨ε, hε, happrox⟩
   apply AllocationSequence.convergesToProfile_of_eventual_approx
@@ -638,18 +638,18 @@ theorem convergesToProfile_of_unique_limit_objective_gap {T : ℕ}
                   limitObj G.targetShare - η) :
     seq.toAllocationSequence.ConvergesToProfile G := by
   let sharedSeq :
-      EconCSLib.Allocation.OptimalSequence
+      AppliedModelingLib.Allocation.OptimalSequence
         (fun N => (Mseq N).likelihood)
         (fun N => (Mseq N).valueOfCount) :=
     { allocation := seq.allocation
       optimal := by
         intro N
-        simpa [EconCSLib.Allocation.IsOptimalAtTotal,
+        simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal,
           ConsumptionModel.IsOptimalAtTotal, ConsumptionModel.FeasibleAtTotal,
           ConsumptionModel.objective] using seq.optimal N }
   have hshared :
       sharedSeq.toSequence.ConvergesToProfile G.targetShare :=
-    EconCSLib.Allocation.OptimalSequence.convergesToProfile_of_unique_limit_objective_gap
+    AppliedModelingLib.Allocation.OptimalSequence.convergesToProfile_of_unique_limit_objective_gap
       (seq := sharedSeq) finiteObj limitObj candidate hopt_le hcand_feas
       hcand_lower hupper (by
         intro ε hε
@@ -660,7 +660,7 @@ theorem convergesToProfile_of_unique_limit_objective_gap {T : ℕ}
   intro t
   have ht := hshared t
   simpa [AllocationSequence.representation, CountAllocation.representation,
-    EconCSLib.Allocation.Sequence.share, sharedSeq]
+    AppliedModelingLib.Allocation.Sequence.share, sharedSeq]
     using ht
 
 /--
@@ -704,13 +704,13 @@ theorem convergesToProfile_of_unique_limit_objective_gap_on_simplex {T : ℕ}
     finiteObj limitObj candidate hopt_le hcand_feas hcand_lower hupper ?_
   intro ε hε_pos
   rcases
-    EconCSLib.Allocation.exists_gap_on_stdSimplex_of_strict_unique_max
+    AppliedModelingLib.Allocation.exists_gap_on_stdSimplex_of_strict_unique_max
       limitObj G.targetShare htarget_simplex hlimit_cont hlimit_strict
       ε hε_pos with
     ⟨η, hη_pos, hgap_simplex⟩
   refine ⟨η, hη_pos, ?_⟩
   intro N a hNpos hfeas hnot
-  have htotal_ne : EconCSLib.Allocation.total a ≠ 0 := by
+  have htotal_ne : AppliedModelingLib.Allocation.total a ≠ 0 := by
     rw [hfeas]
     exact Nat.ne_of_gt hNpos
   have hshare_simplex :
@@ -751,11 +751,11 @@ structure TopKAsymptoticHomogeneityCertificate {T : ℕ}
 
 /--
 Bridge PRPKG's paper-local top-`k` oracle to the reusable probability
-order-statistic interface in `EconCSLib`.
+order-statistic interface in `AppliedModelingLib`.
 -/
 def topKExpectationOracleOfTopKValueOracle {T : ℕ}
     (O : TopKValueOracle T) :
-    EconCSLib.Probability.TopKExpectationOracle (ItemType T) where
+    AppliedModelingLib.Probability.TopKExpectationOracle (ItemType T) where
   expectedTopSum := O.expectedTopSum
 
 @[simp] theorem topKExpectationOracle_expectedTopSum {T : ℕ}
@@ -775,7 +775,7 @@ marginal has a common asymptotic scale and type weight.
 abbrev TopKScaledMarginalLimitCertificate {T : ℕ}
     (O : TopKValueOracle T) (k : ℕ)
     (scale : ℕ → ℝ) (weight : ItemType T → ℝ) :=
-  EconCSLib.Probability.TopKExpectationOracle.ScaledMarginalLimitCertificate
+  AppliedModelingLib.Probability.TopKExpectationOracle.ScaledMarginalLimitCertificate
     (topKExpectationOracleOfTopKValueOracle O) k scale weight
 
 namespace TopKScaledMarginalLimitCertificate
@@ -792,7 +792,7 @@ theorem eventually_marginal_sandwich {T : ℕ}
           O.expectedTopSum k t (q + 1) - O.expectedTopSum k t q ≤
             (1 + ε) * (scale q * weight t) := by
   simpa using
-    EconCSLib.Probability.TopKExpectationOracle.ScaledMarginalLimitCertificate.eventually_marginal_sandwich
+    AppliedModelingLib.Probability.TopKExpectationOracle.ScaledMarginalLimitCertificate.eventually_marginal_sandwich
       C hε
 
 /--
@@ -862,7 +862,7 @@ theorem eventually_same_count_marginal_lt_of_weight_gap {T : ℕ}
       O.expectedTopSum k src (q + 1) - O.expectedTopSum k src q <
         O.expectedTopSum k dst (q + 1) - O.expectedTopSum k dst q := by
   simpa using
-    EconCSLib.Probability.TopKExpectationOracle.ScaledMarginalLimitCertificate.eventually_same_count_marginal_lt_of_weight_gap
+    AppliedModelingLib.Probability.TopKExpectationOracle.ScaledMarginalLimitCertificate.eventually_same_count_marginal_lt_of_weight_gap
       C hε hgap
 
 /--
@@ -878,7 +878,7 @@ theorem marginal_tendsto_zero {T : ℕ}
       (fun q => O.expectedTopSum k t (q + 1) - O.expectedTopSum k t q)
       atTop (nhds 0) := by
   simpa [topKExpectationOracle_marginalTopK_eq] using
-    EconCSLib.Probability.TopKExpectationOracle.ScaledMarginalLimitCertificate.marginalTopK_tendsto_zero
+    AppliedModelingLib.Probability.TopKExpectationOracle.ScaledMarginalLimitCertificate.marginalTopK_tendsto_zero
       C hscale_zero t
 
 /--
@@ -890,10 +890,10 @@ theorem weightedLikelihood {T : ℕ}
     {scale : ℕ → ℝ} {weight likelihood : ItemType T → ℝ}
     (C : TopKScaledMarginalLimitCertificate O k scale weight)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
-    EconCSLib.Probability.TopKExpectationOracle.ScaledMarginalLimitCertificate
+    AppliedModelingLib.Probability.TopKExpectationOracle.ScaledMarginalLimitCertificate
       ((topKExpectationOracleOfTopKValueOracle O).weighted likelihood)
       k scale (fun t => likelihood t * weight t) :=
-  EconCSLib.Probability.TopKExpectationOracle.ScaledMarginalLimitCertificate.weighted
+  AppliedModelingLib.Probability.TopKExpectationOracle.ScaledMarginalLimitCertificate.weighted
     C hlike_pos
 
 end TopKScaledMarginalLimitCertificate
@@ -941,7 +941,7 @@ theorem topK_count_floor_eventually_of_marginal_tendsto_zero_and_positive_low_fo
       simpa [M, TopKValueOracle.toConsumptionModel,
         ConsumptionModel.weightedForwardMarginal,
         ConsumptionModel.marginalValue, TopKValueOracle.marginalTopK,
-        EconCSLib.Allocation.marginal] using
+        AppliedModelingLib.Allocation.marginal] using
         mul_pos (hlike_pos dst) hbase
     have hback_tend :
         Tendsto
@@ -979,7 +979,7 @@ theorem topK_count_floor_eventually_of_marginal_tendsto_zero_and_positive_low_fo
     simpa [TopKValueOracle.toConsumptionModel,
       ConsumptionModel.weightedForwardMarginal,
       ConsumptionModel.marginalValue, TopKValueOracle.marginalTopK,
-      EconCSLib.Allocation.marginal] using hltq
+      AppliedModelingLib.Allocation.marginal] using hltq
   rcases Filter.eventually_atTop.1 hdom_ev with ⟨marginal_threshold, hthreshold⟩
   let source_threshold := max marginal_threshold floor
   have hmarginal_le_source : marginal_threshold ≤ source_threshold := by
@@ -997,8 +997,8 @@ theorem topK_count_floor_eventually_of_marginal_tendsto_zero_and_positive_low_fo
     by_contra hnone
     push Not at hnone
     have hsum_le :
-        EconCSLib.Allocation.total a ≤ T * source_threshold := by
-      unfold EconCSLib.Allocation.total
+        AppliedModelingLib.Allocation.total a ≤ T * source_threshold := by
+      unfold AppliedModelingLib.Allocation.total
       calc
         (∑ t : ItemType T, a.count t)
             ≤ ∑ _t : ItemType T, source_threshold :=
@@ -1053,7 +1053,7 @@ noncomputable def toShared {T : ℕ} [NeZero T]
     {Mseq : ℕ → ConsumptionModel T} {weight : ItemType T → ℝ}
     {G : GammaHomogeneityProfile T}
     (hcert : PairwiseScaledHomogeneityCertificate Mseq weight G) :
-    EconCSLib.Allocation.PairwiseScaledBoundedProfileCertificate
+    AppliedModelingLib.Allocation.PairwiseScaledBoundedProfileCertificate
       (fun N => (Mseq N).likelihood)
       (fun N => (Mseq N).valueOfCount)
       weight G.targetShare where
@@ -1064,7 +1064,7 @@ noncomputable def toShared {T : ℕ} [NeZero T]
   pairwise_scaled := by
     intro N a hN hopt i j
     have hopt' : (Mseq N).IsOptimalAtTotal N a := by
-      simpa [EconCSLib.Allocation.IsOptimalAtTotal,
+      simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal,
         ConsumptionModel.IsOptimalAtTotal, ConsumptionModel.FeasibleAtTotal,
         ConsumptionModel.objective] using hopt
     exact hcert.pairwise_scaled N a hN hopt' i j
@@ -1074,24 +1074,24 @@ theorem asymptoticHomogeneityTarget {T : ℕ} [NeZero T]
     {G : GammaHomogeneityProfile T}
     (hcert : PairwiseScaledHomogeneityCertificate Mseq weight G) :
     ConsumptionModel.AsymptoticHomogeneityTarget Mseq G
-      EconCSLib.Math.ExactInvRate := by
+      AppliedModelingLib.Math.ExactInvRate := by
   have hgeneric :
-      EconCSLib.Allocation.AsymptoticProfileTarget
+      AppliedModelingLib.Allocation.AsymptoticProfileTarget
         (fun N => (Mseq N).likelihood)
         (fun N => (Mseq N).valueOfCount)
-        G.targetShare EconCSLib.Math.ExactInvRate :=
+        G.targetShare AppliedModelingLib.Math.ExactInvRate :=
     hcert.toShared.asymptoticProfileTarget
   rcases hgeneric with ⟨ε, hε, happrox⟩
   refine ⟨ε, hε, ?_⟩
   intro N a hN hopt
   have hopt' :
-      EconCSLib.Allocation.IsOptimalAtTotal
+      AppliedModelingLib.Allocation.IsOptimalAtTotal
         (Mseq N).likelihood (Mseq N).valueOfCount N a := by
-    simpa [EconCSLib.Allocation.IsOptimalAtTotal,
+    simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal,
       ConsumptionModel.IsOptimalAtTotal, ConsumptionModel.FeasibleAtTotal,
       ConsumptionModel.objective] using hopt
   have happ := happrox N a hN hopt'
-  simpa [EconCSLib.Allocation.HasApproxShare,
+  simpa [AppliedModelingLib.Allocation.HasApproxShare,
     GammaHomogeneityProfile.Approx, CountAllocation.HasApproxRepresentation,
     CountAllocation.representation] using happ
 
@@ -1120,7 +1120,7 @@ structure PairwiseScaledSublinearHomogeneityCertificate {T : ℕ} [NeZero T]
     ∀ t, G.targetShare t = weight t / ∑ i : ItemType T, weight i
   error : ℕ → ℝ
   error_nonneg : ∀ N, 0 ≤ error N
-  error_tends_to_zero : EconCSLib.Math.TendsToZero error
+  error_tends_to_zero : AppliedModelingLib.Math.TendsToZero error
   pairwise_scaled :
     ∀ N (a : CountAllocation T), 0 < N → (Mseq N).IsOptimalAtTotal N a →
       ∀ i j,
@@ -1133,7 +1133,7 @@ noncomputable def toShared {T : ℕ} [NeZero T]
     {Mseq : ℕ → ConsumptionModel T} {weight : ItemType T → ℝ}
     {G : GammaHomogeneityProfile T}
     (hcert : PairwiseScaledSublinearHomogeneityCertificate Mseq weight G) :
-    EconCSLib.Allocation.PairwiseScaledSublinearProfileCertificate
+    AppliedModelingLib.Allocation.PairwiseScaledSublinearProfileCertificate
       (fun N => (Mseq N).likelihood)
       (fun N => (Mseq N).valueOfCount)
       weight G.targetShare where
@@ -1145,7 +1145,7 @@ noncomputable def toShared {T : ℕ} [NeZero T]
   pairwise_scaled := by
     intro N a hN hopt i j
     have hopt' : (Mseq N).IsOptimalAtTotal N a := by
-      simpa [EconCSLib.Allocation.IsOptimalAtTotal,
+      simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal,
         ConsumptionModel.IsOptimalAtTotal, ConsumptionModel.FeasibleAtTotal,
         ConsumptionModel.objective] using hopt
     exact hcert.pairwise_scaled N a hN hopt' i j
@@ -1156,7 +1156,7 @@ theorem asymptoticHomogeneity {T : ℕ} [NeZero T]
     (hcert : PairwiseScaledSublinearHomogeneityCertificate Mseq weight G) :
     ConsumptionModel.AsymptoticHomogeneity Mseq G := by
   have hgeneric :
-      EconCSLib.Allocation.AsymptoticProfile
+      AppliedModelingLib.Allocation.AsymptoticProfile
         (fun N => (Mseq N).likelihood)
         (fun N => (Mseq N).valueOfCount)
         G.targetShare :=
@@ -1165,13 +1165,13 @@ theorem asymptoticHomogeneity {T : ℕ} [NeZero T]
   refine ⟨ε, hε, ?_⟩
   intro N a hN hopt
   have hopt' :
-      EconCSLib.Allocation.IsOptimalAtTotal
+      AppliedModelingLib.Allocation.IsOptimalAtTotal
         (Mseq N).likelihood (Mseq N).valueOfCount N a := by
-    simpa [EconCSLib.Allocation.IsOptimalAtTotal,
+    simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal,
       ConsumptionModel.IsOptimalAtTotal, ConsumptionModel.FeasibleAtTotal,
       ConsumptionModel.objective] using hopt
   have happ := happrox N a hN hopt'
-  simpa [EconCSLib.Allocation.HasApproxShare,
+  simpa [AppliedModelingLib.Allocation.HasApproxShare,
     GammaHomogeneityProfile.Approx, CountAllocation.HasApproxRepresentation,
     CountAllocation.representation] using happ
 
@@ -1194,7 +1194,7 @@ structure PairwiseScaledSublinearFOCCertificate {T : ℕ} [NeZero T]
     ∀ t, G.targetShare t = weight t / ∑ i : ItemType T, weight i
   error : ℕ → ℝ
   error_nonneg : ∀ N, 0 ≤ error N
-  error_tends_to_zero : EconCSLib.Math.TendsToZero error
+  error_tends_to_zero : AppliedModelingLib.Math.TendsToZero error
   large_gap_backward_lt_forward :
     ∀ N (a : CountAllocation T), 0 < N → (Mseq N).IsOptimalAtTotal N a →
       ∀ src dst,
@@ -1210,7 +1210,7 @@ noncomputable def toShared {T : ℕ} [NeZero T]
     {Mseq : ℕ → ConsumptionModel T} {weight : ItemType T → ℝ}
     {G : GammaHomogeneityProfile T}
     (hcert : PairwiseScaledSublinearFOCCertificate Mseq weight G) :
-    EconCSLib.Allocation.PairwiseScaledSublinearFOCCertificate
+    AppliedModelingLib.Allocation.PairwiseScaledSublinearFOCCertificate
       (fun N => (Mseq N).likelihood)
       (fun N => (Mseq N).valueOfCount)
       weight G.targetShare where
@@ -1222,16 +1222,16 @@ noncomputable def toShared {T : ℕ} [NeZero T]
   large_gap_backward_lt_forward := by
     intro N a hN hopt src dst hgap
     have hopt' : (Mseq N).IsOptimalAtTotal N a := by
-      simpa [EconCSLib.Allocation.IsOptimalAtTotal,
+      simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal,
         ConsumptionModel.IsOptimalAtTotal, ConsumptionModel.FeasibleAtTotal,
         ConsumptionModel.objective] using hopt
     have hdom :=
       hcert.large_gap_backward_lt_forward N a hN hopt' src dst hgap
     simpa [ConsumptionModel.weightedBackwardMarginal,
       ConsumptionModel.weightedForwardMarginal, ConsumptionModel.marginalValue,
-      EconCSLib.Allocation.weightedBackwardMarginal,
-      EconCSLib.Allocation.weightedForwardMarginal,
-      EconCSLib.Allocation.marginal] using hdom
+      AppliedModelingLib.Allocation.weightedBackwardMarginal,
+      AppliedModelingLib.Allocation.weightedForwardMarginal,
+      AppliedModelingLib.Allocation.marginal] using hdom
 
 noncomputable def toPairwiseScaledSublinearHomogeneityCertificate
     {T : ℕ} [NeZero T] {Mseq : ℕ → ConsumptionModel T}
@@ -1247,9 +1247,9 @@ noncomputable def toPairwiseScaledSublinearHomogeneityCertificate
     pairwise_scaled := by
       intro N a hN hopt i j
       have hopt' :
-          EconCSLib.Allocation.IsOptimalAtTotal
+          AppliedModelingLib.Allocation.IsOptimalAtTotal
             (Mseq N).likelihood (Mseq N).valueOfCount N a := by
-        simpa [EconCSLib.Allocation.IsOptimalAtTotal,
+        simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal,
           ConsumptionModel.IsOptimalAtTotal, ConsumptionModel.FeasibleAtTotal,
           ConsumptionModel.objective] using hopt
       exact hshared.pairwise_scaled N a hN hopt' i j }
@@ -1291,7 +1291,7 @@ theorem powerLawSublinearFOCError_nonneg {T : ℕ}
 theorem powerLawSublinearFOCError_tends_to_zero {T : ℕ}
     (likelihood : ItemType T → ℝ) (γ : ℝ)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (powerLawSublinearFOCError likelihood γ) := by
   let S : ℝ := (∑ t : ItemType T, 1 / (likelihood t ^ γ)) + 1
   have hsum_nonneg :
@@ -1302,7 +1302,7 @@ theorem powerLawSublinearFOCError_tends_to_zero {T : ℕ}
   have hS_pos : 0 < S := by
     dsimp [S]
     linarith
-  refine EconCSLib.Math.TendsToZero_of_nonneg_le_const_div
+  refine AppliedModelingLib.Math.TendsToZero_of_nonneg_le_const_div
     (powerLawSublinearFOCError likelihood γ) hS_pos
     (powerLawSublinearFOCError_nonneg likelihood γ hlike_pos) ?_
   intro N hN
@@ -1360,15 +1360,15 @@ theorem topKPowerLawAsymptoticSrcPerturbation_tends_to_zero {T : ℕ}
     (likelihood : ItemType T → ℝ) (γ : ℝ)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t)
     (t : ItemType T) :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t) := by
   change
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (fun q : ℕ =>
         |1 / (likelihood t ^ γ) -
           1 / ((likelihood t * (1 + C.uniformRatioError q)) ^ γ)|)
   simpa [one_div] using
-    EconCSLib.Math.reciprocal_rpow_one_add_perturb_tendsToZero
+    AppliedModelingLib.Math.reciprocal_rpow_one_add_perturb_tendsToZero
       C.uniformRatioError_tendsToZero (p := likelihood t) (γ := γ)
       (hlike_pos t)
 
@@ -1379,15 +1379,15 @@ theorem topKPowerLawAsymptoticDstPerturbation_tends_to_zero {T : ℕ}
     (likelihood : ItemType T → ℝ) (γ : ℝ)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t)
     (t : ItemType T) :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (topKPowerLawAsymptoticDstPerturbation C likelihood γ t) := by
   change
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (fun q : ℕ =>
         |1 / ((likelihood t * (1 - C.uniformRatioError q)) ^ γ) -
           1 / (likelihood t ^ γ)|)
   simpa [one_div] using
-    EconCSLib.Math.reciprocal_rpow_one_sub_perturb_tendsToZero
+    AppliedModelingLib.Math.reciprocal_rpow_one_sub_perturb_tendsToZero
       C.uniformRatioError_tendsToZero (p := likelihood t) (γ := γ)
       (hlike_pos t)
 
@@ -1403,12 +1403,12 @@ noncomputable def topKPowerLawAsymptoticFOCError {T : ℕ}
     {weight : ItemType T → ℝ}
     (C : TopKScaledMarginalLimitCertificate O k scale weight)
     (likelihood : ItemType T → ℝ) (γ : ℝ) (N : ℕ) : ℝ :=
-  EconCSLib.Math.invSqrtSuccError N +
+  AppliedModelingLib.Math.invSqrtSuccError N +
     2 * (∑ t : ItemType T,
-      EconCSLib.Math.prefixScaledError
+      AppliedModelingLib.Math.prefixScaledError
         (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t) N) +
     2 * (∑ t : ItemType T,
-      EconCSLib.Math.prefixScaledError
+      AppliedModelingLib.Math.prefixScaledError
         (topKPowerLawAsymptoticDstPerturbation C likelihood γ t) N)
 
 theorem topKPowerLawAsymptoticFOCError_nonneg {T : ℕ}
@@ -1421,27 +1421,27 @@ theorem topKPowerLawAsymptoticFOCError_nonneg {T : ℕ}
   have hsrc :
       0 ≤
         ∑ t : ItemType T,
-          EconCSLib.Math.prefixScaledError
+          AppliedModelingLib.Math.prefixScaledError
             (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t) N := by
     exact Finset.sum_nonneg
       (fun t _ =>
-        EconCSLib.Math.prefixScaledError_nonneg
+        AppliedModelingLib.Math.prefixScaledError_nonneg
           (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t)
           (topKPowerLawAsymptoticSrcPerturbation_nonneg
             C likelihood γ t) N)
   have hdst :
       0 ≤
         ∑ t : ItemType T,
-          EconCSLib.Math.prefixScaledError
+          AppliedModelingLib.Math.prefixScaledError
             (topKPowerLawAsymptoticDstPerturbation C likelihood γ t) N := by
     exact Finset.sum_nonneg
       (fun t _ =>
-        EconCSLib.Math.prefixScaledError_nonneg
+        AppliedModelingLib.Math.prefixScaledError_nonneg
           (topKPowerLawAsymptoticDstPerturbation C likelihood γ t)
           (topKPowerLawAsymptoticDstPerturbation_nonneg
             C likelihood γ t) N)
-  have hinv : 0 ≤ EconCSLib.Math.invSqrtSuccError N :=
-    EconCSLib.Math.invSqrtSuccError_nonneg N
+  have hinv : 0 ≤ AppliedModelingLib.Math.invSqrtSuccError N :=
+    AppliedModelingLib.Math.invSqrtSuccError_nonneg N
   nlinarith
 
 theorem topKPowerLawAsymptoticFOCError_tends_to_zero {T : ℕ}
@@ -1450,26 +1450,26 @@ theorem topKPowerLawAsymptoticFOCError_tends_to_zero {T : ℕ}
     (C : TopKScaledMarginalLimitCertificate O k scale weight)
     (likelihood : ItemType T → ℝ) (γ : ℝ)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (topKPowerLawAsymptoticFOCError C likelihood γ) := by
-  rw [EconCSLib.Math.TendsToZero]
+  rw [AppliedModelingLib.Math.TendsToZero]
   have hsrc :
       Tendsto
         (fun N : ℕ =>
           ∑ t : ItemType T,
-            EconCSLib.Math.prefixScaledError
+            AppliedModelingLib.Math.prefixScaledError
               (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t) N)
         atTop (nhds 0) := by
     have hsum :
         Tendsto
           (fun N : ℕ =>
             ∑ t : ItemType T,
-              EconCSLib.Math.prefixScaledError
+              AppliedModelingLib.Math.prefixScaledError
                 (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t) N)
           atTop (nhds (∑ _t : ItemType T, (0 : ℝ))) := by
       exact tendsto_finset_sum Finset.univ
         (fun t _ =>
-          EconCSLib.Math.prefixScaledError_tendsToZero
+          AppliedModelingLib.Math.prefixScaledError_tendsToZero
             (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t)
             (topKPowerLawAsymptoticSrcPerturbation_nonneg
               C likelihood γ t)
@@ -1480,19 +1480,19 @@ theorem topKPowerLawAsymptoticFOCError_tends_to_zero {T : ℕ}
       Tendsto
         (fun N : ℕ =>
           ∑ t : ItemType T,
-            EconCSLib.Math.prefixScaledError
+            AppliedModelingLib.Math.prefixScaledError
               (topKPowerLawAsymptoticDstPerturbation C likelihood γ t) N)
         atTop (nhds 0) := by
     have hsum :
         Tendsto
           (fun N : ℕ =>
             ∑ t : ItemType T,
-              EconCSLib.Math.prefixScaledError
+              AppliedModelingLib.Math.prefixScaledError
                 (topKPowerLawAsymptoticDstPerturbation C likelihood γ t) N)
           atTop (nhds (∑ _t : ItemType T, (0 : ℝ))) := by
       exact tendsto_finset_sum Finset.univ
         (fun t _ =>
-          EconCSLib.Math.prefixScaledError_tendsToZero
+          AppliedModelingLib.Math.prefixScaledError_tendsToZero
             (topKPowerLawAsymptoticDstPerturbation C likelihood γ t)
             (topKPowerLawAsymptoticDstPerturbation_nonneg
               C likelihood γ t)
@@ -1500,7 +1500,7 @@ theorem topKPowerLawAsymptoticFOCError_tends_to_zero {T : ℕ}
               C likelihood γ hlike_pos t))
     simpa using hsum
   simpa [topKPowerLawAsymptoticFOCError] using
-    (EconCSLib.Math.invSqrtSuccError_tendsToZero.add
+    (AppliedModelingLib.Math.invSqrtSuccError_tendsToZero.add
       (hsrc.const_mul 2)).add (hdst.const_mul 2)
 
 /--
@@ -1544,9 +1544,9 @@ theorem topKPowerLawAsymptotic_large_gap_count_eventually
       ∀ᶠ N in atTop,
         ∀ dst : ItemType T,
           1 / likelihood dst ^ γ <
-            EconCSLib.Math.invSqrtSuccError N * (N : ℝ) := by
+            AppliedModelingLib.Math.invSqrtSuccError N * (N : ℝ) := by
     simpa using
-      EconCSLib.Math.invSqrtSuccError_mul_nat_eventually_gt_fintype_pair
+      AppliedModelingLib.Math.invSqrtSuccError_mul_nat_eventually_gt_fintype_pair
         (fun _src : ItemType T => fun dst : ItemType T =>
           1 / likelihood dst ^ γ)
   filter_upwards [hshift_ev, eventually_gt_atTop 0] with
@@ -1615,10 +1615,10 @@ theorem topKPowerLawAsymptotic_large_gap_count_eventually
   let dstPert : ℝ :=
     topKPowerLawAsymptoticDstPerturbation C likelihood γ dst qdst
   let srcPrefix : ℝ :=
-    EconCSLib.Math.prefixScaledError
+    AppliedModelingLib.Math.prefixScaledError
       (topKPowerLawAsymptoticSrcPerturbation C likelihood γ src) N
   let dstPrefix : ℝ :=
-    EconCSLib.Math.prefixScaledError
+    AppliedModelingLib.Math.prefixScaledError
       (topKPowerLawAsymptoticDstPerturbation C likelihood γ dst) N
   have hsrcPert_nonneg : 0 ≤ srcPert := by
     dsimp [srcPert]
@@ -1632,14 +1632,14 @@ theorem topKPowerLawAsymptotic_large_gap_count_eventually
       srcPert * ((qsrc - 1 : ℕ) : ℝ) ≤ srcPrefix * (N : ℝ) := by
     dsimp [srcPert, srcPrefix]
     exact
-      EconCSLib.Math.le_prefixScaledError_mul_nat
+      AppliedModelingLib.Math.le_prefixScaledError_mul_nat
         (topKPowerLawAsymptoticSrcPerturbation C likelihood γ src)
         hN_pos hqsrc_pred_le_N
   have hdstPrefix_bound :
       dstPert * (qdst : ℝ) ≤ dstPrefix * (N : ℝ) := by
     dsimp [dstPert, dstPrefix]
     exact
-      EconCSLib.Math.le_prefixScaledError_mul_nat
+      AppliedModelingLib.Math.le_prefixScaledError_mul_nat
         (topKPowerLawAsymptoticDstPerturbation C likelihood γ dst)
         hN_pos hqdst_le_N
   have hsrcPert_count_bound :
@@ -1661,26 +1661,26 @@ theorem topKPowerLawAsymptotic_large_gap_count_eventually
   have hsrcPrefix_nonneg : 0 ≤ srcPrefix := by
     dsimp [srcPrefix]
     exact
-      EconCSLib.Math.prefixScaledError_nonneg
+      AppliedModelingLib.Math.prefixScaledError_nonneg
         (topKPowerLawAsymptoticSrcPerturbation C likelihood γ src)
         (topKPowerLawAsymptoticSrcPerturbation_nonneg
           C likelihood γ src) N
   have hdstPrefix_nonneg : 0 ≤ dstPrefix := by
     dsimp [dstPrefix]
     exact
-      EconCSLib.Math.prefixScaledError_nonneg
+      AppliedModelingLib.Math.prefixScaledError_nonneg
         (topKPowerLawAsymptoticDstPerturbation C likelihood γ dst)
         (topKPowerLawAsymptoticDstPerturbation_nonneg
           C likelihood γ dst) N
   have hsrcPrefix_le_sum :
       srcPrefix ≤
         ∑ t : ItemType T,
-          EconCSLib.Math.prefixScaledError
+          AppliedModelingLib.Math.prefixScaledError
             (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t) N := by
     dsimp [srcPrefix]
     exact Finset.single_le_sum
       (fun t _ =>
-        EconCSLib.Math.prefixScaledError_nonneg
+        AppliedModelingLib.Math.prefixScaledError_nonneg
           (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t)
           (topKPowerLawAsymptoticSrcPerturbation_nonneg
             C likelihood γ t) N)
@@ -1688,12 +1688,12 @@ theorem topKPowerLawAsymptotic_large_gap_count_eventually
   have hdstPrefix_le_sum :
       dstPrefix ≤
         ∑ t : ItemType T,
-          EconCSLib.Math.prefixScaledError
+          AppliedModelingLib.Math.prefixScaledError
             (topKPowerLawAsymptoticDstPerturbation C likelihood γ t) N := by
     dsimp [dstPrefix]
     exact Finset.single_le_sum
       (fun t _ =>
-        EconCSLib.Math.prefixScaledError_nonneg
+        AppliedModelingLib.Math.prefixScaledError_nonneg
           (topKPowerLawAsymptoticDstPerturbation C likelihood γ t)
           (topKPowerLawAsymptoticDstPerturbation_nonneg
             C likelihood γ t) N)
@@ -1708,22 +1708,22 @@ theorem topKPowerLawAsymptotic_large_gap_count_eventually
     have hsrc_sum_nonneg :
         0 ≤
           ∑ t : ItemType T,
-            EconCSLib.Math.prefixScaledError
+            AppliedModelingLib.Math.prefixScaledError
               (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t) N := by
       exact Finset.sum_nonneg
         (fun t _ =>
-          EconCSLib.Math.prefixScaledError_nonneg
+          AppliedModelingLib.Math.prefixScaledError_nonneg
             (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t)
             (topKPowerLawAsymptoticSrcPerturbation_nonneg
               C likelihood γ t) N)
     have hdst_sum_nonneg :
         0 ≤
           ∑ t : ItemType T,
-            EconCSLib.Math.prefixScaledError
+            AppliedModelingLib.Math.prefixScaledError
               (topKPowerLawAsymptoticDstPerturbation C likelihood γ t) N := by
       exact Finset.sum_nonneg
         (fun t _ =>
-          EconCSLib.Math.prefixScaledError_nonneg
+          AppliedModelingLib.Math.prefixScaledError_nonneg
             (topKPowerLawAsymptoticDstPerturbation C likelihood γ t)
             (topKPowerLawAsymptoticDstPerturbation_nonneg
               C likelihood γ t) N)
@@ -1731,13 +1731,13 @@ theorem topKPowerLawAsymptotic_large_gap_count_eventually
         srcPert * (qsrc : ℝ) ≤
           2 *
             (∑ t : ItemType T,
-              EconCSLib.Math.prefixScaledError
+              AppliedModelingLib.Math.prefixScaledError
                 (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t) N) *
               (N : ℝ) := by
       have hmul :
           srcPrefix * (N : ℝ) ≤
             (∑ t : ItemType T,
-              EconCSLib.Math.prefixScaledError
+              AppliedModelingLib.Math.prefixScaledError
                 (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t) N) *
               (N : ℝ) :=
         mul_le_mul_of_nonneg_right hsrcPrefix_le_sum hN_nonneg
@@ -1747,26 +1747,26 @@ theorem topKPowerLawAsymptotic_large_gap_count_eventually
         _ = 2 * (srcPrefix * (N : ℝ)) := by ring
         _ ≤ 2 *
             ((∑ t : ItemType T,
-              EconCSLib.Math.prefixScaledError
+              AppliedModelingLib.Math.prefixScaledError
                 (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t) N) *
               (N : ℝ)) :=
               mul_le_mul_of_nonneg_left hmul (by norm_num : (0 : ℝ) ≤ 2)
         _ = 2 *
             (∑ t : ItemType T,
-              EconCSLib.Math.prefixScaledError
+              AppliedModelingLib.Math.prefixScaledError
                 (topKPowerLawAsymptoticSrcPerturbation C likelihood γ t) N) *
               (N : ℝ) := by ring
     have hdst_to_sum :
         dstPert * (((qdst + 1 : ℕ) : ℝ)) ≤
           2 *
             (∑ t : ItemType T,
-              EconCSLib.Math.prefixScaledError
+              AppliedModelingLib.Math.prefixScaledError
                 (topKPowerLawAsymptoticDstPerturbation C likelihood γ t) N) *
               (N : ℝ) := by
       have hmul :
           dstPrefix * (N : ℝ) ≤
             (∑ t : ItemType T,
-              EconCSLib.Math.prefixScaledError
+              AppliedModelingLib.Math.prefixScaledError
                 (topKPowerLawAsymptoticDstPerturbation C likelihood γ t) N) *
               (N : ℝ) :=
         mul_le_mul_of_nonneg_right hdstPrefix_le_sum hN_nonneg
@@ -1776,13 +1776,13 @@ theorem topKPowerLawAsymptotic_large_gap_count_eventually
         _ = 2 * (dstPrefix * (N : ℝ)) := by ring
         _ ≤ 2 *
             ((∑ t : ItemType T,
-              EconCSLib.Math.prefixScaledError
+              AppliedModelingLib.Math.prefixScaledError
                 (topKPowerLawAsymptoticDstPerturbation C likelihood γ t) N) *
               (N : ℝ)) :=
               mul_le_mul_of_nonneg_left hmul (by norm_num : (0 : ℝ) ≤ 2)
         _ = 2 *
             (∑ t : ItemType T,
-              EconCSLib.Math.prefixScaledError
+              AppliedModelingLib.Math.prefixScaledError
                 (topKPowerLawAsymptoticDstPerturbation C likelihood γ t) N) *
               (N : ℝ) := by ring
     unfold topKPowerLawAsymptoticFOCError
@@ -1895,7 +1895,7 @@ theorem topKPowerLawAsymptotic_large_gap_count_eventually
       likelihood src * ((1 + esrc) * (qsrc : ℝ) ^ (-η)) <
         likelihood dst *
           ((1 - edst) * (((qdst + 1 : ℕ) : ℝ) ^ (-η))) :=
-    EconCSLib.Math.rpow_neg_marginal_lt_of_scaled_lt'
+    AppliedModelingLib.Math.rpow_neg_marginal_lt_of_scaled_lt'
       (p_src := likelihood src) (p_dst := likelihood dst)
       (c_src := 1 + esrc) (c_dst := 1 - edst)
       (eta := η) (x := (qsrc : ℝ))
@@ -2079,7 +2079,7 @@ noncomputable def topKPowerLawSublinearFOCCertificate
         likelihood src * (1 * (a.count src : ℝ) ^ (-η)) <
           likelihood dst *
             (1 * (((a.count dst + 1 : ℕ) : ℝ) ^ (-η))) :=
-      EconCSLib.Math.rpow_neg_marginal_lt_of_scaled_lt
+      AppliedModelingLib.Math.rpow_neg_marginal_lt_of_scaled_lt
         (c := 1) (eta := η)
         (hlike_pos src) (hlike_pos dst) zero_lt_one hη_pos
         hqsrc_real_pos hqdst_succ_pos hscaled_for_power
@@ -2090,7 +2090,7 @@ noncomputable def topKPowerLawSublinearFOCCertificate
       simpa using hmarginal_core
     unfold ConsumptionModel.weightedBackwardMarginal
       ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-      EconCSLib.Allocation.marginal TopKValueOracle.toConsumptionModel
+      AppliedModelingLib.Allocation.marginal TopKValueOracle.toConsumptionModel
     rw [dif_neg hsrc_pos.ne']
     rw [hback src hsrc_pos, hforw dst (a.count dst)]
     exact hmarginal
@@ -2112,7 +2112,7 @@ structure PairwiseScaledEventualSublinearFOCCertificate {T : ℕ} [NeZero T]
     ∀ t, G.targetShare t = weight t / ∑ i : ItemType T, weight i
   base_error : ℕ → ℝ
   base_error_nonneg : ∀ N, 0 ≤ base_error N
-  base_error_tends_to_zero : EconCSLib.Math.TendsToZero base_error
+  base_error_tends_to_zero : AppliedModelingLib.Math.TendsToZero base_error
   floor : ℕ
   count_floor_eventually :
     ∀ᶠ N in atTop,
@@ -2148,7 +2148,7 @@ noncomputable def of_count_gap {T : ℕ} [NeZero T]
       ∀ t, G.targetShare t = weight t / ∑ i : ItemType T, weight i)
     (base_error : ℕ → ℝ)
     (base_error_nonneg : ∀ N, 0 ≤ base_error N)
-    (base_error_tends_to_zero : EconCSLib.Math.TendsToZero base_error)
+    (base_error_tends_to_zero : AppliedModelingLib.Math.TendsToZero base_error)
     (floor : ℕ)
     (count_floor_eventually :
       ∀ᶠ N in atTop,
@@ -2177,11 +2177,11 @@ noncomputable def of_count_gap {T : ℕ} [NeZero T]
     filter_upwards [large_gap_count] with N hN a _hNpos hopt src dst
       hsrc_floor hdst_floor hgap
     have hsrc_count_le_N : a.count src ≤ N := by
-      have hle := EconCSLib.Allocation.count_le_total a src
+      have hle := AppliedModelingLib.Allocation.count_le_total a src
       rw [hopt.1] at hle
       exact hle
     have hdst_count_le_N : a.count dst ≤ N := by
-      have hle := EconCSLib.Allocation.count_le_total a dst
+      have hle := AppliedModelingLib.Allocation.count_le_total a dst
       rw [hopt.1] at hle
       exact hle
     exact hN src dst (a.count src) (a.count dst)
@@ -2191,7 +2191,7 @@ noncomputable def toShared {T : ℕ} [NeZero T]
     {Mseq : ℕ → ConsumptionModel T} {weight : ItemType T → ℝ}
     {G : GammaHomogeneityProfile T}
     (hcert : PairwiseScaledEventualSublinearFOCCertificate Mseq weight G) :
-    EconCSLib.Allocation.PairwiseScaledEventualSublinearFOCCertificate
+    AppliedModelingLib.Allocation.PairwiseScaledEventualSublinearFOCCertificate
       (fun N => (Mseq N).likelihood)
       (fun N => (Mseq N).valueOfCount)
       weight G.targetShare where
@@ -2204,7 +2204,7 @@ noncomputable def toShared {T : ℕ} [NeZero T]
   count_floor_eventually := by
     filter_upwards [hcert.count_floor_eventually] with N hN a hNpos hopt
     have hopt' : (Mseq N).IsOptimalAtTotal N a := by
-      simpa [EconCSLib.Allocation.IsOptimalAtTotal,
+      simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal,
         ConsumptionModel.IsOptimalAtTotal, ConsumptionModel.FeasibleAtTotal,
         ConsumptionModel.objective] using hopt
     exact hN a hNpos hopt'
@@ -2212,15 +2212,15 @@ noncomputable def toShared {T : ℕ} [NeZero T]
     filter_upwards [hcert.large_gap_backward_lt_forward_after_floor] with
       N hN a hNpos hopt src dst hsrc hdst hgap
     have hopt' : (Mseq N).IsOptimalAtTotal N a := by
-      simpa [EconCSLib.Allocation.IsOptimalAtTotal,
+      simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal,
         ConsumptionModel.IsOptimalAtTotal, ConsumptionModel.FeasibleAtTotal,
         ConsumptionModel.objective] using hopt
     have hdom := hN a hNpos hopt' src dst hsrc hdst hgap
     simpa [ConsumptionModel.weightedBackwardMarginal,
       ConsumptionModel.weightedForwardMarginal, ConsumptionModel.marginalValue,
-      EconCSLib.Allocation.weightedBackwardMarginal,
-      EconCSLib.Allocation.weightedForwardMarginal,
-      EconCSLib.Allocation.marginal] using hdom
+      AppliedModelingLib.Allocation.weightedBackwardMarginal,
+      AppliedModelingLib.Allocation.weightedForwardMarginal,
+      AppliedModelingLib.Allocation.marginal] using hdom
 
 noncomputable def toPairwiseScaledSublinearFOCCertificate
     {T : ℕ} [NeZero T] {Mseq : ℕ → ConsumptionModel T}
@@ -2236,18 +2236,18 @@ noncomputable def toPairwiseScaledSublinearFOCCertificate
     large_gap_backward_lt_forward := by
       intro N a hN hopt src dst hgap
       have hopt' :
-          EconCSLib.Allocation.IsOptimalAtTotal
+          AppliedModelingLib.Allocation.IsOptimalAtTotal
             (Mseq N).likelihood (Mseq N).valueOfCount N a := by
-        simpa [EconCSLib.Allocation.IsOptimalAtTotal,
+        simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal,
           ConsumptionModel.IsOptimalAtTotal, ConsumptionModel.FeasibleAtTotal,
           ConsumptionModel.objective] using hopt
       have hdom :=
         hshared.large_gap_backward_lt_forward N a hN hopt' src dst hgap
       simpa [ConsumptionModel.weightedBackwardMarginal,
         ConsumptionModel.weightedForwardMarginal, ConsumptionModel.marginalValue,
-        EconCSLib.Allocation.weightedBackwardMarginal,
-        EconCSLib.Allocation.weightedForwardMarginal,
-        EconCSLib.Allocation.marginal] using hdom }
+        AppliedModelingLib.Allocation.weightedBackwardMarginal,
+        AppliedModelingLib.Allocation.weightedForwardMarginal,
+        AppliedModelingLib.Allocation.marginal] using hdom }
 
 theorem asymptoticHomogeneity {T : ℕ} [NeZero T]
     {Mseq : ℕ → ConsumptionModel T} {weight : ItemType T → ℝ}
@@ -2255,7 +2255,7 @@ theorem asymptoticHomogeneity {T : ℕ} [NeZero T]
     (hcert : PairwiseScaledEventualSublinearFOCCertificate Mseq weight G) :
     ConsumptionModel.AsymptoticHomogeneity Mseq G := by
   have hgeneric :
-      EconCSLib.Allocation.AsymptoticProfile
+      AppliedModelingLib.Allocation.AsymptoticProfile
         (fun N => (Mseq N).likelihood)
         (fun N => (Mseq N).valueOfCount)
         G.targetShare :=
@@ -2264,13 +2264,13 @@ theorem asymptoticHomogeneity {T : ℕ} [NeZero T]
   refine ⟨ε, hε, ?_⟩
   intro N a hN hopt
   have hopt' :
-      EconCSLib.Allocation.IsOptimalAtTotal
+      AppliedModelingLib.Allocation.IsOptimalAtTotal
         (Mseq N).likelihood (Mseq N).valueOfCount N a := by
-    simpa [EconCSLib.Allocation.IsOptimalAtTotal,
+    simpa [AppliedModelingLib.Allocation.IsOptimalAtTotal,
       ConsumptionModel.IsOptimalAtTotal, ConsumptionModel.FeasibleAtTotal,
       ConsumptionModel.objective] using hopt
   have happ := happrox N a hN hopt'
-  simpa [EconCSLib.Allocation.HasApproxShare,
+  simpa [AppliedModelingLib.Allocation.HasApproxShare,
     GammaHomogeneityProfile.Approx, CountAllocation.HasApproxRepresentation,
     CountAllocation.representation] using happ
 
@@ -2290,7 +2290,7 @@ structure TopKUniformSublinearFOCCertificate {T : ℕ} [NeZero T]
     (O : TopKValueOracle T) (likelihood : ItemType T → ℝ) (k : ℕ) where
   error : ℕ → ℝ
   error_nonneg : ∀ N, 0 ≤ error N
-  error_tends_to_zero : EconCSLib.Math.TendsToZero error
+  error_tends_to_zero : AppliedModelingLib.Math.TendsToZero error
   large_gap_backward_lt_forward :
     ∀ N (a : CountAllocation T), 0 < N →
       (O.toConsumptionModel likelihood k).IsOptimalAtTotal N a →
@@ -2344,7 +2344,7 @@ noncomputable def toPairwiseScaledSublinearFOCCertificate {T : ℕ} [NeZero T]
       hcert.large_gap_backward_lt_forward N a hN hopt src dst hgap_unweighted
     unfold ConsumptionModel.weightedBackwardMarginal
       ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-      EconCSLib.Allocation.marginal TopKValueOracle.toConsumptionModel at *
+      AppliedModelingLib.Allocation.marginal TopKValueOracle.toConsumptionModel at *
     rw [dif_neg hsrc_pos.ne'] at *
     exact hdom
 
@@ -2386,14 +2386,14 @@ theorem exists_count_gt_source_threshold {T : ℕ} [NeZero T]
     {O : TopKValueOracle T} {likelihood : ItemType T → ℝ} {k : ℕ}
     (hcert : TopKUniformCountFloorCertificate O likelihood k)
     {N : ℕ} (a : CountAllocation T)
-    (htotal : EconCSLib.Allocation.total a = N)
+    (htotal : AppliedModelingLib.Allocation.total a = N)
     (hlarge : T * hcert.source_threshold < N) :
     ∃ src : ItemType T, hcert.source_threshold < a.count src := by
   by_contra hnone
   push Not at hnone
   have hsum_le :
-      EconCSLib.Allocation.total a ≤ T * hcert.source_threshold := by
-    unfold EconCSLib.Allocation.total
+      AppliedModelingLib.Allocation.total a ≤ T * hcert.source_threshold := by
+    unfold AppliedModelingLib.Allocation.total
     calc
       (∑ t : ItemType T, a.count t)
           ≤ ∑ _t : ItemType T, hcert.source_threshold :=
@@ -2434,7 +2434,7 @@ theorem count_floor_eventually {T : ℕ} [NeZero T]
       hsrc_large hdst_le_floor
   unfold ConsumptionModel.weightedBackwardMarginal
     ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-    EconCSLib.Allocation.marginal TopKValueOracle.toConsumptionModel at hfoc
+    AppliedModelingLib.Allocation.marginal TopKValueOracle.toConsumptionModel at hfoc
   rw [dif_neg hsrc_pos.ne'] at hfoc
   exact (not_lt_of_ge hfoc) hdom
 
@@ -2455,7 +2455,7 @@ structure TopKUniformEventualSublinearFOCCertificate {T : ℕ} [NeZero T]
     (O : TopKValueOracle T) (likelihood : ItemType T → ℝ) (k : ℕ) where
   base_error : ℕ → ℝ
   base_error_nonneg : ∀ N, 0 ≤ base_error N
-  base_error_tends_to_zero : EconCSLib.Math.TendsToZero base_error
+  base_error_tends_to_zero : AppliedModelingLib.Math.TendsToZero base_error
   floor : ℕ
   count_floor_eventually :
     ∀ᶠ N in atTop,
@@ -2502,11 +2502,11 @@ noncomputable def toPairwiseScaledEventualSublinearFOCCertificate
     filter_upwards [hcert.large_gap_backward_lt_forward_after_floor] with
       N hN a _hNpos hopt src dst hsrc hdst hgap
     have hsrc_count_le_N : a.count src ≤ N := by
-      have hle := EconCSLib.Allocation.count_le_total a src
+      have hle := AppliedModelingLib.Allocation.count_le_total a src
       rw [hopt.1] at hle
       exact hle
     have hdst_count_le_N : a.count dst ≤ N := by
-      have hle := EconCSLib.Allocation.count_le_total a dst
+      have hle := AppliedModelingLib.Allocation.count_le_total a dst
       rw [hopt.1] at hle
       exact hle
     have hgap_unweighted :
@@ -2519,7 +2519,7 @@ noncomputable def toPairwiseScaledEventualSublinearFOCCertificate
     have hsrc_pos : 0 < a.count src := Nat.zero_lt_of_lt hsrc
     unfold ConsumptionModel.weightedBackwardMarginal
       ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-      EconCSLib.Allocation.marginal TopKValueOracle.toConsumptionModel
+      AppliedModelingLib.Allocation.marginal TopKValueOracle.toConsumptionModel
     rw [dif_neg hsrc_pos.ne']
     exact hdom
 
@@ -2528,7 +2528,7 @@ noncomputable def of_count_floor_certificate {T : ℕ} [NeZero T]
     (hfloor : TopKUniformCountFloorCertificate O likelihood k)
     (base_error : ℕ → ℝ)
     (base_error_nonneg : ∀ N, 0 ≤ base_error N)
-    (base_error_tends_to_zero : EconCSLib.Math.TendsToZero base_error)
+    (base_error_tends_to_zero : AppliedModelingLib.Math.TendsToZero base_error)
     (large_gap_backward_lt_forward_after_floor :
       ∀ᶠ N in atTop,
         ∀ src dst qsrc qdst,
@@ -2585,7 +2585,7 @@ noncomputable def toTopKUniformSublinearFOCCertificate {T : ℕ} [NeZero T]
         exact (not_lt_of_ge hnonpos) (by simpa using hdiff_pos)
       unfold ConsumptionModel.weightedBackwardMarginal
         ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-        EconCSLib.Allocation.marginal TopKValueOracle.toConsumptionModel at hdom
+        AppliedModelingLib.Allocation.marginal TopKValueOracle.toConsumptionModel at hdom
       rw [dif_neg hsrc_pos.ne'] at hdom
       exact hdom }
 
@@ -2631,7 +2631,7 @@ structure TopKUniformGeometricMarginalBoundCertificate {T : ℕ} [NeZero T]
   degree : ℕ
   gap : ℕ → ℕ
   gap_error_tends_to_zero :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (fun N => ((gap N + 1 : ℕ) : ℝ) / (N : ℝ))
   gap_dominance_eventually :
     ∀ᶠ (N : ℕ) in atTop,
@@ -2795,7 +2795,7 @@ structure TopKUniformGeometricTailCertificate {T : ℕ} [NeZero T]
   degree : ℕ
   gap : ℕ → ℕ
   gap_error_tends_to_zero :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (fun N => ((gap N + 1 : ℕ) : ℝ) / (N : ℝ))
   gap_dominance_eventually :
     ∀ᶠ (N : ℕ) in atTop,
@@ -2838,7 +2838,7 @@ noncomputable def of_binomial_event_bounds {T : ℕ} [NeZero T]
     (forwardGain_pos : 0 < forwardGain)
     (gap : ℕ → ℕ)
     (gap_error_tends_to_zero :
-      EconCSLib.Math.TendsToZero
+      AppliedModelingLib.Math.TendsToZero
         (fun N => ((gap N + 1 : ℕ) : ℝ) / (N : ℝ)))
     (gap_dominance_eventually :
       ∀ᶠ (N : ℕ) in atTop,
@@ -2941,7 +2941,7 @@ noncomputable def of_unweighted_binomial_event_bounds {T : ℕ} [NeZero T]
     (forwardGain_pos : 0 < forwardGain)
     (gap : ℕ → ℕ)
     (gap_error_tends_to_zero :
-      EconCSLib.Math.TendsToZero
+      AppliedModelingLib.Math.TendsToZero
         (fun N => ((gap N + 1 : ℕ) : ℝ) / (N : ℝ)))
     (gap_dominance_eventually :
       ∀ᶠ (N : ℕ) in atTop,

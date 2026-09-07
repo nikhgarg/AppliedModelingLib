@@ -1,7 +1,7 @@
-import EconCSLib
+import AppliedModelingLib.Applications.RecommenderSystems.Policy
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace GCG24UserItemFairness
 
@@ -12,23 +12,23 @@ abbrev User (m : ℕ) := Fin m
 abbrev Item (n : ℕ) := Fin n
 
 /-- A recommendation policy maps each user to a PMF over items. -/
-abbrev Policy (m n : ℕ) := EconCSLib.Policy (User m) (Item n)
+abbrev Policy (m n : ℕ) := AppliedModelingLib.Policy (User m) (Item n)
 
 /-- The policy that recommends every item uniformly to every user. -/
 noncomputable def uniformPolicy {m n : ℕ} [NeZero n] : Policy m n :=
-  fun _ => EconCSLib.uniformPMF (Item n)
+  fun _ => AppliedModelingLib.uniformPMF (Item n)
 
 @[simp] theorem uniformPolicy_apply_toReal {m n : ℕ} [NeZero n]
     (u : User m) (j : Item n) :
     ((uniformPolicy (m := m) (n := n) u) j).toReal = (n : ℝ)⁻¹ := by
   simpa [uniformPolicy, Item] using
-    (EconCSLib.uniformPMF_apply_toReal (α := Item n) j)
+    (AppliedModelingLib.uniformPMF_apply_toReal (α := Item n) j)
 
 theorem uniformPolicy_apply_toReal_pos {m n : ℕ} [NeZero n]
     (u : User m) (j : Item n) :
     0 < ((uniformPolicy (m := m) (n := n) u) j).toReal := by
   simpa [uniformPolicy] using
-    (EconCSLib.uniformPMF_apply_toReal_pos (α := Item n) j)
+    (AppliedModelingLib.uniformPMF_apply_toReal_pos (α := Item n) j)
 
 /--
 A finite recommendation model with shared user/item utility matrix `w`.
@@ -79,7 +79,7 @@ theorem columnHasPositiveDemand_of_positive {m n : ℕ} [NeZero m]
 /-- Raw user utility `∑_j w_ij ρ_ij`. -/
 noncomputable def rawUserUtility {m n : ℕ}
     (W : RecommendationModel m n) (ρ : Policy m n) (u : User m) : ℝ :=
-  EconCSLib.Policy.agentScore ρ W.utility u
+  AppliedModelingLib.Policy.agentScore ρ W.utility u
 
 /-- The best achievable item for user `u`, i.e. `max_j w_ij`. -/
 noncomputable def bestItemUtility {m n : ℕ} [NeZero n]
@@ -101,22 +101,22 @@ theorem bestItemUtility_pos_of_rowHasPositiveItem {m n : ℕ} [NeZero n]
     (W : RecommendationModel m n) (hRow : W.RowHasPositiveItem) (u : User m) :
     0 < bestItemUtility W u := by
   obtain ⟨j, hj⟩ := hRow u
-  exact lt_of_lt_of_le hj (EconCSLib.le_finiteMax (W.utility u) j)
+  exact lt_of_lt_of_le hj (AppliedModelingLib.le_finiteMax (W.utility u) j)
 
 /-- Minimum user fairness is bounded above by every user's normalized utility. -/
 theorem userFairness_le_normalizedUserUtility {m n : ℕ} [NeZero m] [NeZero n]
     (W : RecommendationModel m n) (ρ : Policy m n) (u : User m) :
     userFairness W ρ ≤ normalizedUserUtility W ρ u := by
-  exact EconCSLib.finiteMin_le (normalizedUserUtility W ρ) u
+  exact AppliedModelingLib.finiteMin_le (normalizedUserUtility W ρ) u
 
 /-- A user's raw expected utility is at most that user's best item utility. -/
 theorem rawUserUtility_le_bestItemUtility {m n : ℕ} [NeZero n]
     (W : RecommendationModel m n) (ρ : Policy m n) (u : User m) :
     rawUserUtility W ρ u ≤ bestItemUtility W u := by
-  unfold rawUserUtility bestItemUtility EconCSLib.Policy.agentScore
-  exact EconCSLib.pmfExp_le_of_forall_le (ρ u) (W.utility u)
-    (EconCSLib.finiteMax (W.utility u))
-    (fun j => EconCSLib.le_finiteMax (W.utility u) j)
+  unfold rawUserUtility bestItemUtility AppliedModelingLib.Policy.agentScore
+  exact AppliedModelingLib.pmfExp_le_of_forall_le (ρ u) (W.utility u)
+    (AppliedModelingLib.finiteMax (W.utility u))
+    (fun j => AppliedModelingLib.le_finiteMax (W.utility u) j)
 
 /-- Positive row normalizers make every normalized user utility at most one. -/
 theorem normalizedUserUtility_le_one_of_rowHasPositiveItem {m n : ℕ} [NeZero n]
@@ -188,7 +188,7 @@ theorem rawItemUtility_le_itemNormalizer_of_nonnegative {m n : ℕ}
   exact Finset.sum_le_sum (by
     intro u _hu
     have hprob : ((ρ u) j).toReal ≤ 1 :=
-      EconCSLib.pmf_apply_toReal_le_one (ρ u) j
+      AppliedModelingLib.pmf_apply_toReal_le_one (ρ u) j
     calc
       W.utility u j * ((ρ u) j).toReal
           ≤ W.utility u j * 1 := by
@@ -227,7 +227,7 @@ theorem itemFairness_nonneg_of_nonnegative {m n : ℕ} [NeZero n]
     (W : RecommendationModel m n) (hNonneg : W.Nonnegative)
     (ρ : Policy m n) :
   0 ≤ itemFairness W ρ := by
-  exact EconCSLib.finiteMin_nonneg (normalizedItemUtility W ρ)
+  exact AppliedModelingLib.finiteMin_nonneg (normalizedItemUtility W ρ)
     (normalizedItemUtility_nonneg_of_nonnegative W hNonneg ρ)
 
 /-- Nonnegative utilities make minimum item fairness at most one. -/
@@ -236,7 +236,7 @@ theorem itemFairness_le_one_of_nonnegative {m n : ℕ} [NeZero n]
     (ρ : Policy m n) :
     itemFairness W ρ ≤ 1 := by
   let j0 : Item n := Classical.choice inferInstance
-  exact (EconCSLib.finiteMin_le (normalizedItemUtility W ρ) j0).trans
+  exact (AppliedModelingLib.finiteMin_le (normalizedItemUtility W ρ) j0).trans
     (normalizedItemUtility_le_one_of_nonnegative W hNonneg ρ j0)
 
 /-- Under the uniform policy, item raw utility is a uniform share of the item normalizer. -/
@@ -275,7 +275,7 @@ theorem itemFairness_uniformPolicy_pos_of_columnHasPositiveDemand
     {m n : ℕ} [NeZero n]
     (W : RecommendationModel m n) (hCol : W.ColumnHasPositiveDemand) :
     0 < itemFairness W (uniformPolicy (m := m) (n := n)) := by
-  exact EconCSLib.finiteMin_pos
+  exact AppliedModelingLib.finiteMin_pos
     (normalizedItemUtility W (uniformPolicy (m := m) (n := n)))
     (normalizedItemUtility_uniformPolicy_pos_of_columnHasPositiveDemand W hCol)
 

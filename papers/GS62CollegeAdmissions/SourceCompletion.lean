@@ -10,7 +10,7 @@ folder.  Algorithm-specific statements are kept in `BatchedProcedure.lean`.
 -/
 
 namespace GS62CollegeAdmissions
-open EconCSLib.Matching
+open AppliedModelingLib.Matching
 
 /-! ## Section 2 college-admissions model -/
 

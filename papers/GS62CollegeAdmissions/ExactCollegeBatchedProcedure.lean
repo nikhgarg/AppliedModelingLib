@@ -1,5 +1,5 @@
 import GS62CollegeAdmissions.ManyToOneOptimality
-import EconCSLib.Foundations.Math.FiniteChoice
+import AppliedModelingLib.Foundations.Math.FiniteChoice
 
 /-!
 # The literal Section 4 college waiting-list procedure
@@ -19,8 +19,8 @@ comparison with the repository's applicant-proposing many-to-one DA.
 namespace GS62CollegeAdmissions
 namespace ExactCollegeBatchedProcedure
 
-open EconCSLib.Matching
-open EconCSLib.FiniteChoice
+open AppliedModelingLib.Matching
+open AppliedModelingLib.FiniteChoice
 
 variable {Applicants Colleges : Type*}
   [Fintype Applicants] [Fintype Colleges]
@@ -727,13 +727,15 @@ decreasing_by
   apply untriedEligiblePairs_card_sourceStep_lt_of_active
   assumption
 
-/-- Terminal direct source state from the empty application history. -/
+/-- Terminal direct source state from the empty application history on strict applicant lists. -/
 noncomputable def sourceWaitingListFinalState
     (quota : Colleges -> Nat)
     (val_applicant : Applicants -> Colleges -> Real)
     (val_college : Colleges -> Applicants -> Real)
     (hcollegeStrict : forall c a a',
-      val_college c a = val_college c a' -> a = a') :
+      val_college c a = val_college c a' -> a = a')
+    (happlicantStrict : forall a c c',
+      val_applicant a c = val_applicant a c' -> c = c') :
     SourceWaitingListState Applicants Colleges :=
   sourceRunToTerminal quota val_applicant val_college hcollegeStrict
     (initialSourceState (Applicants := Applicants) (Colleges := Colleges))
@@ -743,10 +745,12 @@ theorem sourceWaitingListFinalState_reachable
     (val_applicant : Applicants -> Colleges -> Real)
     (val_college : Colleges -> Applicants -> Real)
     (hcollegeStrict : forall c a a',
-      val_college c a = val_college c a' -> a = a') :
+      val_college c a = val_college c a' -> a = a')
+    (happlicantStrict : forall a c c',
+      val_applicant a c = val_applicant a c' -> c = c') :
     SourceReachable quota val_applicant val_college hcollegeStrict
       (sourceWaitingListFinalState quota val_applicant val_college
-        hcollegeStrict) :=
+        hcollegeStrict happlicantStrict) :=
   sourceRunToTerminal_reachable quota val_applicant val_college
     hcollegeStrict _
 
@@ -755,10 +759,12 @@ theorem sourceWaitingListFinalState_invariant
     (val_applicant : Applicants -> Colleges -> Real)
     (val_college : Colleges -> Applicants -> Real)
     (hcollegeStrict : forall c a a',
-      val_college c a = val_college c a' -> a = a') :
+      val_college c a = val_college c a' -> a = a')
+    (happlicantStrict : forall a c c',
+      val_applicant a c = val_applicant a c' -> c = c') :
     SourceStateInvariant quota val_applicant val_college hcollegeStrict
       (sourceWaitingListFinalState quota val_applicant val_college
-        hcollegeStrict) :=
+        hcollegeStrict happlicantStrict) :=
   sourceRunToTerminal_preserves_invariant quota val_applicant val_college
     hcollegeStrict _
     (initialSourceState_invariant quota val_applicant val_college hcollegeStrict)
@@ -768,11 +774,13 @@ theorem sourceWaitingListFinalState_terminated
     (val_applicant : Applicants -> Colleges -> Real)
     (val_college : Colleges -> Applicants -> Real)
     (hcollegeStrict : forall c a a',
-      val_college c a = val_college c a' -> a = a') :
+      val_college c a = val_college c a' -> a = a')
+    (happlicantStrict : forall a c c',
+      val_applicant a c = val_applicant a c' -> c = c') :
     ¬ (exists a, SourceActive quota val_applicant val_college
       hcollegeStrict
       (sourceWaitingListFinalState quota val_applicant val_college
-        hcollegeStrict) a) :=
+        hcollegeStrict happlicantStrict) a) :=
   sourceRunToTerminal_terminated quota val_applicant val_college
     hcollegeStrict _
 
@@ -1123,7 +1131,7 @@ theorem sourceWaitingListFinalState_rejected_pair_impossible
     SourceRejectedPairImpossible quota val_applicant val_college
       hdomain.2.1
       (sourceWaitingListFinalState quota val_applicant val_college
-        hdomain.2.1) := by
+        hdomain.2.1 hdomain.1.1) := by
   exact sourceRunToTerminal_preserves_rejected_pair_impossible
     quota val_applicant val_college hdomain.1.1 hdomain.1.2
     hdomain.2.1 hdomain.2.2
@@ -1197,18 +1205,21 @@ theorem sourceAssignmentView_eq_sourceAssignmentFromState
   apply manyToOneAssignment_eq_of_app_match
   rfl
 
-/-- The assignment returned by the literal Section 4 runner. -/
+/-- The assignment returned by the literal Section 4 runner on strict applicant lists. -/
 noncomputable def sourceWaitingListFinalAssignment
     (quota : Colleges -> Nat)
     (val_applicant : Applicants -> Colleges -> Real)
     (val_college : Colleges -> Applicants -> Real)
     (hcollegeStrict : forall c a a',
-      val_college c a = val_college c a' -> a = a') :
+      val_college c a = val_college c a' -> a = a')
+    (happlicantStrict : forall a c c',
+      val_applicant a c = val_applicant a c' -> c = c') :
     ManyToOneAssignment Applicants Colleges :=
   sourceAssignmentFromState quota val_applicant val_college hcollegeStrict
-    (sourceWaitingListFinalState quota val_applicant val_college hcollegeStrict)
+    (sourceWaitingListFinalState quota val_applicant val_college hcollegeStrict
+      happlicantStrict)
     (sourceWaitingListFinalState_invariant quota val_applicant
-      val_college hcollegeStrict)
+      val_college hcollegeStrict happlicantStrict)
 
 theorem sourceAssignmentFromState_respects_quota
     (quota : Colleges -> Nat)
@@ -1377,14 +1388,15 @@ theorem paper_gs62_source_waiting_list_assignment_stable
       val_applicant val_college) :
     ManyToOne.IsStable val_applicant val_college quota
       (sourceWaitingListFinalAssignment quota val_applicant val_college
-        hdomain.2.1) := by
+        hdomain.2.1 hdomain.1.1) := by
   exact sourceAssignmentFromState_stable_of_terminated quota val_applicant
     val_college hdomain.2.1
-    (sourceWaitingListFinalState quota val_applicant val_college hdomain.2.1)
+    (sourceWaitingListFinalState quota val_applicant val_college hdomain.2.1
+      hdomain.1.1)
     (sourceWaitingListFinalState_invariant quota val_applicant
-      val_college hdomain.2.1)
+      val_college hdomain.2.1 hdomain.1.1)
     (sourceWaitingListFinalState_terminated quota val_applicant
-      val_college hdomain.2.1)
+      val_college hdomain.2.1 hdomain.1.1)
 
 theorem sourceAssignmentFromState_applicant_optimal_of_terminated_rejections
     (quota : Colleges -> Nat)
@@ -1485,14 +1497,15 @@ theorem paper_gs62_source_waiting_list_assignment_applicant_optimal
       val_applicant val_college) :
     gs_applicant_optimal_college_assignment quota val_applicant val_college
       (sourceWaitingListFinalAssignment quota val_applicant val_college
-        hdomain.2.1) := by
+        hdomain.2.1 hdomain.1.1) := by
   exact sourceAssignmentFromState_applicant_optimal_of_terminated_rejections
     quota val_applicant val_college hdomain
-    (sourceWaitingListFinalState quota val_applicant val_college hdomain.2.1)
+    (sourceWaitingListFinalState quota val_applicant val_college hdomain.2.1
+      hdomain.1.1)
     (sourceWaitingListFinalState_invariant quota val_applicant
-      val_college hdomain.2.1)
+      val_college hdomain.2.1 hdomain.1.1)
     (sourceWaitingListFinalState_terminated quota val_applicant
-      val_college hdomain.2.1)
+      val_college hdomain.2.1 hdomain.1.1)
     (sourceWaitingListFinalState_rejected_pair_impossible quota
       val_applicant val_college hdomain)
 
@@ -1537,11 +1550,11 @@ theorem paper_gs62_source_waiting_list_assignment_eq_applicant_da
     (hdomain : gs_strict_college_admissions_domain
       val_applicant val_college) :
     sourceWaitingListFinalAssignment quota val_applicant val_college
-        hdomain.2.1 =
+        hdomain.2.1 hdomain.1.1 =
       ManyToOneOptimality.refinedDeferredAcceptanceManyToOne
         quota val_applicant val_college hdomain.1.2 := by
   let sourceMu := sourceWaitingListFinalAssignment
-    quota val_applicant val_college hdomain.2.1
+    quota val_applicant val_college hdomain.2.1 hdomain.1.1
   let daMu := ManyToOneOptimality.refinedDeferredAcceptanceManyToOne
     quota val_applicant val_college hdomain.1.2
   have hsource : gs_applicant_optimal_college_assignment quota

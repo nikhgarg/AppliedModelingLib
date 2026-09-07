@@ -2,7 +2,7 @@ import KR21Monoculture.W11ScoreSpace
 import Mathlib.Analysis.Calculus.FDeriv.Bilinear
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
-open EconCSLib MeasureTheory Filter
+open AppliedModelingLib MeasureTheory Filter
 open scoped Topology ENNReal
 
 namespace KR21Monoculture

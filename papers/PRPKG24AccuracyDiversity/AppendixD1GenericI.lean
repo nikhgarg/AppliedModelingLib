@@ -20,7 +20,7 @@ open scoped BigOperators
 namespace PRPKG24AccuracyDiversity
 namespace AppendixD1GenericI
 
-open EconCSLib
+open AppliedModelingLib
 
 /-- The positive gap to the finite saturation value in corrected D.1(i). -/
 def saturationGap (A : ℝ) (h : ℕ → ℝ) (a : ℕ) : ℝ := A - h a
@@ -237,7 +237,7 @@ competitor.  No normalized objective is introduced.
 theorem weighted_saturationGap_sum_le_balanced_of_optimal
     {m : ℕ} [NeZero m] {A : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h)) (N : ℕ) :
     (∑ i : ItemType m,
       p i * saturationGap A h ((seq.allocation N).count i)) ≤
@@ -248,7 +248,7 @@ theorem weighted_saturationGap_sum_le_balanced_of_optimal
   have hgap_eq (a : CountAllocation m) :
       (∑ i : ItemType m, p i * saturationGap A h (a.count i)) =
         (∑ i : ItemType m, p i * A) -
-          EconCSLib.Allocation.objective a p (fun _ : ItemType m => h) := by
+          AppliedModelingLib.Allocation.objective a p (fun _ : ItemType m => h) := by
     calc
       (∑ i : ItemType m, p i * saturationGap A h (a.count i))
           = ∑ i : ItemType m, (p i * A - p i * h (a.count i)) := by
@@ -257,7 +257,7 @@ theorem weighted_saturationGap_sum_le_balanced_of_optimal
               simp only [saturationGap]
               ring
       _ = (∑ i : ItemType m, p i * A) -
-          EconCSLib.Allocation.objective a p (fun _ : ItemType m => h) := by
+          AppliedModelingLib.Allocation.objective a p (fun _ : ItemType m => h) := by
               rw [Finset.sum_sub_distrib]
               rfl
   rw [hgap_eq (seq.allocation N), hgap_eq (balancedAllocation m N)]
@@ -271,7 +271,7 @@ objective to the balanced integer competitor.
 theorem tendsto_optimalAllocation_count_atTop_of_log_tail
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -518,7 +518,7 @@ separation directly to the original finite integer objective.
 theorem eventually_optimalAllocation_count_gt_linear_of_log_tail
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -620,7 +620,7 @@ theorem eventually_optimalAllocation_count_gt_linear_of_log_tail
 theorem eventually_optimalAllocation_share_gt_of_log_tail
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -635,18 +635,18 @@ theorem eventually_optimalAllocation_share_gt_of_log_tail
     (t : ItemType m) {r : ℝ}
     (hr_nonneg : 0 ≤ r) (hr_uniform : r < 1 / (m : ℝ)) :
     ∀ᶠ N : ℕ in atTop,
-      r < EconCSLib.Allocation.share (seq.allocation N) t := by
+      r < AppliedModelingLib.Allocation.share (seq.allocation N) t := by
   have hcount :=
     eventually_optimalAllocation_count_gt_linear_of_log_tail
       p seq hp_pos hmono hB_neg hsigma_pos hgap_eventual_pos hlog t
       hr_nonneg hr_uniform
   filter_upwards [hcount, eventually_gt_atTop 0] with N hcountN hN_pos
-  have htotal : EconCSLib.Allocation.total (seq.allocation N) = N :=
+  have htotal : AppliedModelingLib.Allocation.total (seq.allocation N) = N :=
     (seq.optimal N).1
-  have htotal_ne : EconCSLib.Allocation.total (seq.allocation N) ≠ 0 := by
+  have htotal_ne : AppliedModelingLib.Allocation.total (seq.allocation N) ≠ 0 := by
     rw [htotal]
     exact Nat.ne_of_gt hN_pos
-  rw [EconCSLib.Allocation.share_eq_div_of_total_ne_zero
+  rw [AppliedModelingLib.Allocation.share_eq_div_of_total_ne_zero
     (a := seq.allocation N) (k := t) htotal_ne, htotal]
   exact (lt_div_iff₀ (by exact_mod_cast hN_pos)).mpr hcountN
 
@@ -657,9 +657,9 @@ give the complementary strict upper bound on the selected share.
 theorem share_lt_one_sub_other_lower_bounds
     {m : ℕ} [NeZero m] (a : CountAllocation m) (t : ItemType m) {r : ℝ}
     (hm_one_lt : 1 < m)
-    (hsum : ∑ i : ItemType m, EconCSLib.Allocation.share a i = 1)
-    (hother : ∀ i : ItemType m, i ≠ t -> r < EconCSLib.Allocation.share a i) :
-    EconCSLib.Allocation.share a t <
+    (hsum : ∑ i : ItemType m, AppliedModelingLib.Allocation.share a i = 1)
+    (hother : ∀ i : ItemType m, i ≠ t -> r < AppliedModelingLib.Allocation.share a i) :
+    AppliedModelingLib.Allocation.share a t <
       1 - ((m - 1 : ℕ) : ℝ) * r := by
   let s : Finset (ItemType m) := Finset.univ.erase t
   have hs_nonempty : s.Nonempty := by
@@ -668,7 +668,7 @@ theorem share_lt_one_sub_other_lower_bounds
     rw [Finset.card_erase_of_mem (Finset.mem_univ t)]
     simpa [ItemType, Fintype.card_fin] using Nat.sub_pos_of_lt hm_one_lt
   have hsum_lower :
-      (∑ i ∈ s, r) < ∑ i ∈ s, EconCSLib.Allocation.share a i := by
+      (∑ i ∈ s, r) < ∑ i ∈ s, AppliedModelingLib.Allocation.share a i := by
     refine Finset.sum_lt_sum_of_nonempty hs_nonempty ?_
     intro i hi
     apply hother i
@@ -682,15 +682,15 @@ theorem share_lt_one_sub_other_lower_bounds
     simp [Finset.card_erase_of_mem (Finset.mem_univ t), Fintype.card_fin,
       nsmul_eq_mul]
   have hsum_erase :
-      (∑ i ∈ s, EconCSLib.Allocation.share a i) +
-          EconCSLib.Allocation.share a t = 1 := by
+      (∑ i ∈ s, AppliedModelingLib.Allocation.share a i) +
+          AppliedModelingLib.Allocation.share a t = 1 := by
     calc
-      (∑ i ∈ s, EconCSLib.Allocation.share a i) +
-          EconCSLib.Allocation.share a t =
-            ∑ i : ItemType m, EconCSLib.Allocation.share a i := by
+      (∑ i ∈ s, AppliedModelingLib.Allocation.share a i) +
+          AppliedModelingLib.Allocation.share a t =
+            ∑ i : ItemType m, AppliedModelingLib.Allocation.share a i := by
               dsimp [s]
               exact Finset.sum_erase_add Finset.univ
-                (fun i => EconCSLib.Allocation.share a i) (Finset.mem_univ t)
+                (fun i => AppliedModelingLib.Allocation.share a i) (Finset.mem_univ t)
       _ = 1 := hsum
   rw [hconst] at hsum_lower
   linarith
@@ -704,7 +704,7 @@ and its balanced integer competitor throughout.
 theorem corrected_lemmaD1_i_uniform_optimizer_shares_of_log_tail
     {m : ℕ} [NeZero m] {A B sigma : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -726,7 +726,7 @@ theorem corrected_lemmaD1_i_uniform_optimizer_shares_of_log_tail
     exact one_div_pos.mpr hm
   intro t
   change Tendsto
-    (fun N : ℕ => EconCSLib.Allocation.share (seq.allocation N) t)
+    (fun N : ℕ => AppliedModelingLib.Allocation.share (seq.allocation N) t)
     atTop (nhds u)
   refine tendsto_order.2 ⟨?_, ?_⟩
   · intro lower hlower
@@ -737,23 +737,23 @@ theorem corrected_lemmaD1_i_uniform_optimizer_shares_of_log_tail
     · filter_upwards with N
       have hlower_zero : lower < 0 := lt_of_not_ge hlower_nonneg
       exact lt_of_lt_of_le hlower_zero
-        (EconCSLib.Allocation.share_nonneg (a := seq.allocation N) (k := t))
+        (AppliedModelingLib.Allocation.share_nonneg (a := seq.allocation N) (k := t))
   · intro upper hupper
     by_cases hm_one : m = 1
     · subst m
       filter_upwards [eventually_gt_atTop 0] with N hN_pos
-      have htotal : EconCSLib.Allocation.total (seq.allocation N) = N :=
+      have htotal : AppliedModelingLib.Allocation.total (seq.allocation N) = N :=
         (seq.optimal N).1
-      have htotal_ne : EconCSLib.Allocation.total (seq.allocation N) ≠ 0 := by
+      have htotal_ne : AppliedModelingLib.Allocation.total (seq.allocation N) ≠ 0 := by
         rw [htotal]
         exact Nat.ne_of_gt hN_pos
       have hsum :
-          ∑ i : ItemType 1, EconCSLib.Allocation.share (seq.allocation N) i = 1 :=
-        EconCSLib.Allocation.sum_share_eq_one_of_total_ne_zero
+          ∑ i : ItemType 1, AppliedModelingLib.Allocation.share (seq.allocation N) i = 1 :=
+        AppliedModelingLib.Allocation.sum_share_eq_one_of_total_ne_zero
           (a := seq.allocation N) htotal_ne
       have ht_zero : t = 0 := Fin.eq_zero t
       subst t
-      have hshare : EconCSLib.Allocation.share (seq.allocation N) 0 = 1 := by
+      have hshare : AppliedModelingLib.Allocation.share (seq.allocation N) 0 = 1 := by
         simpa using hsum
       have hu_one : u = 1 := by simp [u]
       rw [hshare, ← hu_one]
@@ -767,23 +767,23 @@ theorem corrected_lemmaD1_i_uniform_optimizer_shares_of_log_tail
           exact hu_pos
         have hall_lower :
             ∀ᶠ N : ℕ in atTop, ∀ i : ItemType m,
-              r < EconCSLib.Allocation.share (seq.allocation N) i :=
+              r < AppliedModelingLib.Allocation.share (seq.allocation N) i :=
           Filter.eventually_all.2 (fun i =>
             eventually_optimalAllocation_share_gt_of_log_tail
               p seq hp_pos hmono hB_neg hsigma_pos hgap_eventual_pos hlog i
               hr_nonneg hr_uniform)
         filter_upwards [hall_lower, eventually_gt_atTop 0] with N hallN hN_pos
-        have htotal : EconCSLib.Allocation.total (seq.allocation N) = N :=
+        have htotal : AppliedModelingLib.Allocation.total (seq.allocation N) = N :=
           (seq.optimal N).1
-        have htotal_ne : EconCSLib.Allocation.total (seq.allocation N) ≠ 0 := by
+        have htotal_ne : AppliedModelingLib.Allocation.total (seq.allocation N) ≠ 0 := by
           rw [htotal]
           exact Nat.ne_of_gt hN_pos
         have hsum :
-            ∑ i : ItemType m, EconCSLib.Allocation.share (seq.allocation N) i = 1 :=
-          EconCSLib.Allocation.sum_share_eq_one_of_total_ne_zero
+            ∑ i : ItemType m, AppliedModelingLib.Allocation.share (seq.allocation N) i = 1 :=
+          AppliedModelingLib.Allocation.sum_share_eq_one_of_total_ne_zero
             (a := seq.allocation N) htotal_ne
         have hshare_lt_one :
-            EconCSLib.Allocation.share (seq.allocation N) t < 1 := by
+            AppliedModelingLib.Allocation.share (seq.allocation N) t < 1 := by
           simpa [r] using
             (share_lt_one_sub_other_lower_bounds (a := seq.allocation N) t
               (r := r) hm_one_lt hsum (fun i _hi => hallN i))
@@ -818,20 +818,20 @@ theorem corrected_lemmaD1_i_uniform_optimizer_shares_of_log_tail
           linarith
         have hall_lower :
             ∀ᶠ N : ℕ in atTop, ∀ i : ItemType m,
-              r < EconCSLib.Allocation.share (seq.allocation N) i :=
+              r < AppliedModelingLib.Allocation.share (seq.allocation N) i :=
           Filter.eventually_all.2 (fun i =>
             eventually_optimalAllocation_share_gt_of_log_tail
               p seq hp_pos hmono hB_neg hsigma_pos hgap_eventual_pos hlog i
               hr_pos.le hr_uniform)
         filter_upwards [hall_lower, eventually_gt_atTop 0] with N hallN hN_pos
-        have htotal : EconCSLib.Allocation.total (seq.allocation N) = N :=
+        have htotal : AppliedModelingLib.Allocation.total (seq.allocation N) = N :=
           (seq.optimal N).1
-        have htotal_ne : EconCSLib.Allocation.total (seq.allocation N) ≠ 0 := by
+        have htotal_ne : AppliedModelingLib.Allocation.total (seq.allocation N) ≠ 0 := by
           rw [htotal]
           exact Nat.ne_of_gt hN_pos
         have hsum :
-            ∑ i : ItemType m, EconCSLib.Allocation.share (seq.allocation N) i = 1 :=
-          EconCSLib.Allocation.sum_share_eq_one_of_total_ne_zero
+            ∑ i : ItemType m, AppliedModelingLib.Allocation.share (seq.allocation N) i = 1 :=
+          AppliedModelingLib.Allocation.sum_share_eq_one_of_total_ne_zero
             (a := seq.allocation N) htotal_ne
         have hshare_bound :=
           share_lt_one_sub_other_lower_bounds (a := seq.allocation N) t

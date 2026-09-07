@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.ExponentialInterarrivalForwardPoisson
+import AppliedModelingLib.Foundations.Probability.ExponentialInterarrivalForwardPoisson
 
 /-!
 # Lemma 1: a coupled Poisson-thinning construction
@@ -13,14 +13,16 @@ joint interval-count factorization that expresses conditional binomial
 thinning.
 
 The endpoint `p = 1` is handled separately below by identifying the observed
-and latent processes.  Thus the paper's weak upper bound `p <= 1` is not
-strengthened to a strict inequality at the public interface.
+and latent processes.  The paper-facing result also separates the `p = 0`
+case, where the displayed observed rate is zero, from the positive-probability
+case in which the observed path is packaged as a positive-rate Poisson
+process.  Thus neither weak probability bound is silently strengthened.
 -/
 
 namespace LBG24SpatialUnderreporting
 
 open Filter MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section
@@ -560,7 +562,7 @@ structure MarkedPoissonReportingProcess
   latentProcess : ForwardHomogeneousPoissonCountingProcessByLaw Ω P
   /-- Common independent reporting probability. -/
   detectionProbability : ℝ
-  detectionProbability_pos : 0 < detectionProbability
+  detectionProbability_nonnegative : 0 ≤ detectionProbability
   detectionProbability_le_one : detectionProbability ≤ 1
   /-- Count of reported incidents. -/
   observedCount : ℝ≥0 → Ω → ℕ
@@ -850,7 +852,7 @@ def ofCanonicalSplit
   latentProcess := Lemma1MarkedPoissonThinning.latentProcess incidentRate
     detectionProbability hincident hdetection hdetection_lt
   detectionProbability := detectionProbability
-  detectionProbability_pos := hdetection
+  detectionProbability_nonnegative := hdetection.le
   detectionProbability_le_one := hdetection_lt.le
   observedCount := (observedProcess incidentRate detectionProbability hincident
     hdetection hdetection_lt).count
@@ -898,7 +900,7 @@ def ofDetectionOne
   refine
     { latentProcess := H
       detectionProbability := 1
-      detectionProbability_pos := zero_lt_one
+      detectionProbability_nonnegative := zero_le_one
       detectionProbability_le_one := le_rfl
       observedCount := H.count
       observedCount_measurable := H.count_measurable
@@ -961,10 +963,17 @@ theorem exists_markedPoissonReportingProcess
     exact ⟨Path, inferInstance, exponentialInterarrivalMeasure incidentRate,
       H, rfl, rfl⟩
 
-/-- The reported rate is strictly positive. -/
-theorem observedRate_pos (H : MarkedPoissonReportingProcess Ω P) :
+/-- The reported rate is nonnegative, including the source-valid zero-
+detection endpoint. -/
+theorem observedRate_nonnegative (H : MarkedPoissonReportingProcess Ω P) :
+    0 ≤ H.latentProcess.rate * H.detectionProbability :=
+  mul_nonneg H.latentProcess.rate_pos.le H.detectionProbability_nonnegative
+
+/-- In the positive-detection branch, the reported rate is strictly positive. -/
+theorem observedRate_pos (H : MarkedPoissonReportingProcess Ω P)
+    (hdetection : 0 < H.detectionProbability) :
     0 < H.latentProcess.rate * H.detectionProbability :=
-  mul_pos H.latentProcess.rate_pos H.detectionProbability_pos
+  mul_pos H.latentProcess.rate_pos hdetection
 
 /-- Observed increments are derived to be independent by projecting the
 independent marked increment pairs; this is not assumed in the model. -/
@@ -1082,7 +1091,7 @@ theorem observedIncrement_hasLaw
         (rateExposureParam
           (H.latentProcess.rate * H.detectionProbability)
           ((t : ℝ) - (s : ℝ))
-          (mul_nonneg H.observedRate_pos.le
+          (mul_nonneg H.observedRate_nonnegative
             (sub_nonneg.mpr (NNReal.coe_le_coe.mpr hst))))) P := by
   let increment : Ω → ℕ := fun ω =>
     H.observedCount t ω - H.observedCount s ω
@@ -1106,20 +1115,21 @@ theorem observedIncrement_hasLaw
           (rateExposureParam
             (H.latentProcess.rate * H.detectionProbability)
             ((t : ℝ) - (s : ℝ))
-            (mul_nonneg H.observedRate_pos.le
+            (mul_nonneg H.observedRate_nonnegative
               (sub_nonneg.mpr (NNReal.coe_le_coe.mpr hst))))).real
           {observed} :=
       countLikelihood_eq_poissonMeasure_real_singleton
-        (mul_nonneg H.observedRate_pos.le
+        (mul_nonneg H.observedRate_nonnegative
           (sub_nonneg.mpr (NNReal.coe_le_coe.mpr hst))) observed
 
 /-- The derived observed process at rate `latentRate * p`. -/
 def toObservedForwardPoissonProcess
-    (H : MarkedPoissonReportingProcess Ω P) :
+    (H : MarkedPoissonReportingProcess Ω P)
+    (hdetection : 0 < H.detectionProbability) :
     ForwardHomogeneousPoissonCountingProcessByLaw Ω P where
   isProbability := H.latentProcess.isProbability
   rate := H.latentProcess.rate * H.detectionProbability
-  rate_pos := H.observedRate_pos
+  rate_pos := H.observedRate_pos hdetection
   count := H.observedCount
   count_measurable := H.observedCount_measurable
   count_zero_ae := H.observedCount_zero_ae
@@ -1132,14 +1142,35 @@ def toObservedForwardPoissonProcess
 /-- Paper-facing Lemma 1 conclusion derived from latent Poisson arrivals and
 independent per-incident reporting. -/
 theorem observed_process_is_homogeneous_poisson
-    (H : MarkedPoissonReportingProcess Ω P) :
+    (H : MarkedPoissonReportingProcess Ω P)
+    (hdetection : 0 < H.detectionProbability) :
     ∃ observedProcess : ForwardHomogeneousPoissonCountingProcessByLaw Ω P,
       observedProcess.count = H.observedCount ∧
       observedProcess.rate =
         H.latentProcess.rate * H.detectionProbability := by
-  refine ⟨H.toObservedForwardPoissonProcess, ?_, ?_⟩
+  refine ⟨H.toObservedForwardPoissonProcess hdetection, ?_, ?_⟩
   · rfl
   · rfl
+
+/-- The source-valid zero-detection endpoint is kept separate from the branch
+that can be packaged in the library's strictly-positive-rate Poisson-process
+structure. -/
+theorem zero_detection_or_observed_process
+    (H : MarkedPoissonReportingProcess Ω P) :
+    (H.detectionProbability = 0 ∧
+        H.latentProcess.rate * H.detectionProbability = 0) ∨
+      (0 < H.detectionProbability ∧
+        ∃ observedProcess : ForwardHomogeneousPoissonCountingProcessByLaw Ω P,
+          observedProcess.count = H.observedCount ∧
+          observedProcess.rate =
+            H.latentProcess.rate * H.detectionProbability) := by
+  by_cases hzero : H.detectionProbability = 0
+  · left
+    exact ⟨hzero, by simp [hzero]⟩
+  · right
+    have hpos : 0 < H.detectionProbability :=
+      lt_of_le_of_ne H.detectionProbability_nonnegative (Ne.symm hzero)
+    exact ⟨hpos, H.observed_process_is_homogeneous_poisson hpos⟩
 
 /-- The constructed observed process has the standard almost-sure rate law.
 
@@ -1147,13 +1178,14 @@ This is deliberately a conclusion about `MarkedPoissonReportingProcess`, whose
 joint thinning law is part of the Lean model.  It is not a bridge from the
 paper's duration and first-report timing model. -/
 theorem observed_unitIntervalCount_real_strongLaw
-    (H : MarkedPoissonReportingProcess Ω P) :
+    (H : MarkedPoissonReportingProcess Ω P)
+    (hdetection : 0 < H.detectionProbability) :
     ∀ᵐ omega ∂P,
       Tendsto (fun n : ℕ =>
         (∑ i ∈ Finset.range n,
-          (H.toObservedForwardPoissonProcess.unitIntervalCount i omega : ℝ)) / n)
+          (H.toObservedForwardPoissonProcess hdetection |>.unitIntervalCount i omega : ℝ)) / n)
         atTop (nhds (H.latentProcess.rate * H.detectionProbability)) :=
-  H.toObservedForwardPoissonProcess.unitIntervalCount_real_strongLaw
+  (H.toObservedForwardPoissonProcess hdetection).unitIntervalCount_real_strongLaw
 
 end MarkedPoissonReportingProcess
 

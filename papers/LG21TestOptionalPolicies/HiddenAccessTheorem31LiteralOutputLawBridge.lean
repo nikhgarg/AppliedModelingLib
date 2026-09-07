@@ -23,7 +23,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-! ## Literal output functions -/
@@ -1686,9 +1686,40 @@ def lg21HiddenAccessOptionalLiteralOutputLawSurface
   fullFeatureLaw := fun E publicBase score =>
     Measure.dirac (lg21HiddenAccessOptionalBaseScoreOutput E (publicBase, score))
 
+/-- Definition 2 evaluated at one supplied optional-reporting equilibrium. -/
+def lg21HiddenAccessOptionalLatentSkillFairAt
+    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
+    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
+    (E : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature) : Prop :=
+  ∀ latentSkill publicBase,
+    lg21HiddenAccessOptionalLatentAccessOutputLaw E latentSkill publicBase =
+      lg21HiddenAccessOptionalNoAccessOutputLaw E publicBase
+
+/-- Definition 3 evaluated at one supplied optional-reporting equilibrium. -/
+def lg21HiddenAccessOptionalObservablyFairAt
+    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
+    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
+    (E : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature)
+    (baseMean : (LG21NonTestFeature Feature testFeature → ℝ) → ℝ)
+    (hbaseMean : Measurable baseMean) (baseVariance : ℝ) : Prop :=
+  ∀ publicBase,
+    (gaussianSignalJointKernel baseMean hbaseMean baseVariance
+      (M.noiseVariance testFeature : ℝ) publicBase).map
+        (fun scoreSkill =>
+          lg21HiddenAccessOptionalSourceOutput E scoreSkill.2 publicBase scoreSkill.1) =
+      lg21HiddenAccessOptionalNoAccessOutputLaw E publicBase
+
+/-- Definition 4 evaluated at one supplied optional-reporting equilibrium. -/
+def lg21HiddenAccessOptionalDemographicallyFairAt
+    {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
+    {M : LG21ContinuousGaussianPopulation Feature} {testFeature : Feature}
+    (E : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature) : Prop :=
+  lg21HiddenAccessOptionalActualDemographicAccessOutputLaw E =
+    lg21HiddenAccessOptionalActualDemographicNoAccessOutputLaw E
+
 /-- On the concrete optional source-law surface, a literal primitive strict
 gain yields a genuine observable-base output-law witness. -/
-theorem lg21HiddenAccessOptionalLiteralOutputLawSurface_not_observablyFair_of_literalSourceStability
+theorem lg21HiddenAccessOptionalLiteralOutputLawSurface_not_observablyFairAt_of_literalSourceStability
     {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
     (M : LG21ContinuousGaussianPopulation Feature)
     (haccess : 0 < M.accessLaw {true})
@@ -1710,9 +1741,8 @@ theorem lg21HiddenAccessOptionalLiteralOutputLawSurface_not_observablyFair_of_li
     (E : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature)
     (hreportBest : E.OptionalReportBestResponseAE)
     (hstable : LG21HiddenAccessSourceStableAgainstLocalCandidateEntry E hnoAccess) :
-    ¬ lg21SourceLawObservablyFair
-      (lg21HiddenAccessOptionalLiteralOutputLawSurface
-        M testFeature baseMean hbaseMean baseVariance) := by
+    ¬ lg21HiddenAccessOptionalObservablyFairAt E
+      baseMean hbaseMean baseVariance := by
   rcases lg21HiddenAccessOptional_primitiveOutput_benefit_of_literalSourceStability
       M haccess hnoAccess testFeature hpriorVariance hnonTestNoiseVariance
       htestNoiseVariance baseLaw baseMean hbaseMean baseVariance hbaseVariance
@@ -1720,22 +1750,23 @@ theorem lg21HiddenAccessOptionalLiteralOutputLawSurface_not_observablyFair_of_li
   rcases lg21HiddenAccessOptional_exists_observableStrictOutputWitness_of_primitive_strictGain
       M haccess testFeature baseLaw baseMean hbaseMean baseVariance hsourceFactor E
       hstrict with ⟨publicBase, hpositive⟩
-  apply lg21_not_lawObservablyFair_of_witness E publicBase
-  change (gaussianSignalJointKernel baseMean hbaseMean baseVariance
+  intro hfair
+  have hne : (gaussianSignalJointKernel baseMean hbaseMean baseVariance
       (M.noiseVariance testFeature : ℝ) publicBase).map
       (fun scoreSkill =>
         lg21HiddenAccessOptionalSourceOutput E scoreSkill.2 publicBase scoreSkill.1) ≠
-      Measure.dirac (E.noReportPayoff publicBase)
-  apply lg21_outputLaw_ne_dirac_of_positive_strict_above
-  · exact (lg21HiddenAccessOptionalSourceOutput_joint_measurable E).comp
-      (measurable_const.prodMk measurable_id)
-  · exact hpositive
+      Measure.dirac (E.noReportPayoff publicBase) := by
+    apply lg21_outputLaw_ne_dirac_of_positive_strict_above
+    · exact (lg21HiddenAccessOptionalSourceOutput_joint_measurable E).comp
+        (measurable_const.prodMk measurable_id)
+    · exact hpositive
+  exact hne (hfair publicBase)
 
 /-- On the concrete optional source-law surface, literal source stability has
 a fixed latent-skill and public-base witness against latent-skill fairness.
 The witness is obtained from the literal Gaussian source factorization, rather
 than being supplied as an equality between abstract policy fields. -/
-theorem lg21HiddenAccessOptionalLiteralOutputLawSurface_not_latentSkillFair_of_literalSourceStability
+theorem lg21HiddenAccessOptionalLiteralOutputLawSurface_not_latentSkillFairAt_of_literalSourceStability
     {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
     (M : LG21ContinuousGaussianPopulation Feature)
     (haccess : 0 < M.accessLaw {true})
@@ -1757,9 +1788,7 @@ theorem lg21HiddenAccessOptionalLiteralOutputLawSurface_not_latentSkillFair_of_l
     (E : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature)
     (hreportBest : E.OptionalReportBestResponseAE)
     (hstable : LG21HiddenAccessSourceStableAgainstLocalCandidateEntry E hnoAccess) :
-    ¬ lg21SourceLawLatentSkillFair
-      (lg21HiddenAccessOptionalLiteralOutputLawSurface
-        M testFeature baseMean hbaseMean baseVariance) := by
+    ¬ lg21HiddenAccessOptionalLatentSkillFairAt E := by
   rcases lg21HiddenAccessOptional_primitiveOutput_benefit_of_literalSourceStability
       M haccess hnoAccess testFeature hpriorVariance hnonTestNoiseVariance
       htestNoiseVariance baseLaw baseMean hbaseMean baseVariance hbaseVariance
@@ -1767,21 +1796,22 @@ theorem lg21HiddenAccessOptionalLiteralOutputLawSurface_not_latentSkillFair_of_l
   rcases lg21HiddenAccessOptional_exists_latentStrictOutputWitness_of_primitive_strictGain
       M haccess testFeature baseLaw baseMean hbaseMean baseVariance hsourceFactor E
       hstrict with ⟨publicBase, latentSkill, hpositive⟩
-  apply lg21_not_lawLatentSkillFair_of_witness E latentSkill publicBase
-  change (E.testLaw latentSkill publicBase).map
+  intro hfair
+  have hne : (E.testLaw latentSkill publicBase).map
       (lg21HiddenAccessOptionalSourceOutput E latentSkill publicBase) ≠
-    Measure.dirac (E.noReportPayoff publicBase)
-  exact lg21_outputLaw_ne_dirac_of_positive_strict_above
+      Measure.dirac (E.noReportPayoff publicBase) :=
+    lg21_outputLaw_ne_dirac_of_positive_strict_above
     (E.testLaw latentSkill publicBase)
     (lg21HiddenAccessOptionalSourceOutput E latentSkill publicBase)
     (lg21HiddenAccessOptionalSourceOutput_measurable E latentSkill publicBase)
     (E.noReportPayoff publicBase) hpositive
+  exact hne (hfair latentSkill publicBase)
 
 /-- On the concrete optional source-law surface, literal source stability
 refutes demographic fairness at the very equilibrium whose actions generated
 the compared laws.  There are no abstract surface-field equalities among the
 hypotheses. -/
-theorem lg21HiddenAccessOptionalLiteralOutputLawSurface_not_demographicallyFair_of_literalSourceStability
+theorem lg21HiddenAccessOptionalLiteralOutputLawSurface_not_demographicallyFairAt_of_literalSourceStability
     {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
     (M : LG21ContinuousGaussianPopulation Feature)
     (haccess : 0 < M.accessLaw {true})
@@ -1803,10 +1833,7 @@ theorem lg21HiddenAccessOptionalLiteralOutputLawSurface_not_demographicallyFair_
     (E : LG21HiddenAccessLiteralSourceEquilibriumAE M testFeature)
     (hreportBest : E.OptionalReportBestResponseAE)
     (hstable : LG21HiddenAccessSourceStableAgainstLocalCandidateEntry E hnoAccess) :
-    ¬ lg21SourceLawDemographicallyFair
-      (lg21HiddenAccessOptionalLiteralOutputLawSurface
-        M testFeature baseMean hbaseMean baseVariance) := by
-  apply lg21_not_lawDemographicallyFair_of_witness E
+    ¬ lg21HiddenAccessOptionalDemographicallyFairAt E := by
   exact lg21HiddenAccessOptional_actualDemographicOutputLaw_ne_of_literalSourceStability
     M haccess hnoAccess testFeature hpriorVariance hnonTestNoiseVariance
     htestNoiseVariance baseLaw baseMean hbaseMean baseVariance hbaseVariance

@@ -17,8 +17,8 @@ no identification with the source's printed unit-variance normalization is
 asserted or needed for this scale-invariant conclusion.
 -/
 
-open EconCSLib MeasureTheory ProbabilityTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 

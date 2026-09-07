@@ -2,7 +2,7 @@ import KR21Monoculture.MallowsOuterSource
 import KR21Monoculture.OuterConditional
 import KR21Monoculture.MallowsSupport
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
 
 namespace KR21Monoculture
 
@@ -196,19 +196,19 @@ type already contains at least two candidates. -/
 theorem concreteMallows_disagreementProb_pos
     {n : ℕ} (center : Ranking n) (theta : ℝ) :
     0 < disagreementProb (concreteMallowsSpec center theta).law := by
-  change 0 < EconCSLib.pmfPairExp (concreteMallowsSpec center theta).law
+  change 0 < AppliedModelingLib.pmfPairExp (concreteMallowsSpec center theta).law
     (concreteMallowsSpec center theta).law
     (fun pi sigma => if disagreementEvent (pi, sigma) then 1 else 0)
-  rw [← EconCSLib.pmfExp_pmfProd_eq_pairExp
+  rw [← AppliedModelingLib.pmfExp_pmfProd_eq_pairExp
     (concreteMallowsSpec center theta).law
     (concreteMallowsSpec center theta).law
     (fun pair => if disagreementEvent pair then 1 else 0)]
-  refine EconCSLib.pmfProb_pos_of_mass
-    (EconCSLib.pmfProd (concreteMallowsSpec center theta).law
+  refine AppliedModelingLib.pmfProb_pos_of_mass
+    (AppliedModelingLib.pmfProd (concreteMallowsSpec center theta).law
       (concreteMallowsSpec center theta).law)
     disagreementEvent (center, swapTopTwo center) ?_ ?_
   · exact (swapTopTwo_firstChoice_ne center).symm
-  · rw [EconCSLib.pmfProd_apply_toReal]
+  · rw [AppliedModelingLib.pmfProd_apply_toReal]
     exact mul_pos
       ((concreteMallowsSpec center theta).law_apply_toReal_pos center)
       ((concreteMallowsSpec center theta).law_apply_toReal_pos (swapTopTwo center))

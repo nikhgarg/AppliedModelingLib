@@ -17,7 +17,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- Under the literal mandatory-given-access protocol, the actual PBO output
 differs from the actual no-access PBO both conditionally on almost every

@@ -37,6 +37,7 @@ if str(ROOT) not in sys.path:
 try:  # Supports direct execution and package imports in focused tests.
     from scripts import source_record_current_revalidation as CURRENT
     from scripts import source_record_differential_revalidation as DIFFERENTIAL
+    from scripts import source_record_obligation_groups as OBLIGATIONS
     from scripts.formalization_protocol import (
         FORMALIZATION_REVIEW_PROTOCOL_FIELD,
         formalization_protocol_receipt_matches,
@@ -45,6 +46,7 @@ try:  # Supports direct execution and package imports in focused tests.
 except ModuleNotFoundError:  # pragma: no cover - direct-script fallback.
     import source_record_current_revalidation as CURRENT
     import source_record_differential_revalidation as DIFFERENTIAL
+    import source_record_obligation_groups as OBLIGATIONS
     from formalization_protocol import (
         FORMALIZATION_REVIEW_PROTOCOL_FIELD,
         formalization_protocol_receipt_matches,
@@ -289,7 +291,7 @@ def _descriptor_ledger(value: object, *, label: str) -> dict[str, str]:
 def _raw_descriptor_ledger(
     raw_audit: Mapping[str, Any], *, label: str
 ) -> tuple[dict[str, str], dict[str, dict[str, object]]]:
-    groups, errors = DIFFERENTIAL._raw_item_groups(raw_audit)
+    groups, errors = OBLIGATIONS.raw_source_record_obligation_groups(raw_audit)
     if errors:
         examples = ", ".join(sorted(errors)[:5])
         raise SourceRecordHistoricalCompositionAttestationError(

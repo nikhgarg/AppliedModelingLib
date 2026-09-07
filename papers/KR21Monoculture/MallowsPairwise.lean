@@ -1,13 +1,13 @@
 import KR21Monoculture.MallowsFiniteLemmas
-import EconCSLib.Foundations.Math.FiniteSum
-import EconCSLib.SocialChoice.Ranking.RankPower
-import EconCSLib.SocialChoice.Ranking.MallowsRankFactorization
+import AppliedModelingLib.Foundations.Math.FiniteSum
+import AppliedModelingLib.SocialChoice.Ranking.RankPower
+import AppliedModelingLib.SocialChoice.Ranking.MallowsRankFactorization
 import Mathlib.Algebra.Ring.GeomSum
 import Mathlib.Data.Fin.Tuple.Basic
 import Mathlib.Order.Fin.Basic
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -83,25 +83,25 @@ theorem candidateRankRemovalPowerSum_pos
     (n : ℕ) {q : ℝ} (hq_pos : 0 < q) (k : Candidate n) :
     0 < candidateRankRemovalPowerSum n q k := by
   simpa [candidateRankRemovalPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum_pos n hq_pos k
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum_pos n hq_pos k
 
 theorem candidateRankRemovalPowerSum_nonneg
     (n : ℕ) {q : ℝ} (hq_pos : 0 < q) (k : Candidate n) :
     0 ≤ candidateRankRemovalPowerSum n q k :=
   by
     simpa [candidateRankRemovalPowerSum,
-      EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
-      EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum_nonneg n hq_pos k
+      AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
+      AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum_nonneg n hq_pos k
 
 theorem candidateRankBestAfterRemovalWeight_nonneg
     (n : ℕ) {q : ℝ} (hq_pos : 0 < q) (k r : Candidate n) :
     0 ≤ candidateRankBestAfterRemovalWeight n q k r := by
   simpa [candidateRankBestAfterRemovalWeight,
-    EconCSLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight,
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight,
     candidateRankRemovalPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight_nonneg
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight_nonneg
       n hq_pos k r
 
 theorem candidateRankRemovalPowerSum_eq_range
@@ -109,24 +109,24 @@ theorem candidateRankRemovalPowerSum_eq_range
     candidateRankRemovalPowerSum n q k =
       ∑ m ∈ Finset.range (n + 1), q ^ m := by
   simpa [candidateRankRemovalPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum_eq_range n q k
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum_eq_range n q k
 
 theorem candidateRankRemovalPowerSum_mul_one_sub
     (n : ℕ) (q : ℝ) (k : Candidate n) :
     candidateRankRemovalPowerSum n q k * (1 - q) = 1 - q ^ (n + 1) := by
   simpa [candidateRankRemovalPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum_mul_one_sub n q k
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum_mul_one_sub n q k
 
 @[simp] theorem candidateRankBestAfterRemovalWeight_self
     (n : ℕ) (q : ℝ) (k : Candidate n) :
     candidateRankBestAfterRemovalWeight n q k k = 0 := by
   simpa [candidateRankBestAfterRemovalWeight,
-    EconCSLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight,
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight,
     candidateRankRemovalPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight_self n q k
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight_self n q k
 
 theorem candidateRankBestAfterRemovalWeight_of_lt
     (n : ℕ) (q : ℝ) {k r : Candidate n} (hrk : r < k) :
@@ -134,10 +134,10 @@ theorem candidateRankBestAfterRemovalWeight_of_lt
       q ^ (r : ℕ) *
         (candidateRankRemovalPowerSum n q k + q ^ (k : ℕ)) := by
   simpa [candidateRankBestAfterRemovalWeight,
-    EconCSLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight,
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight,
     candidateRankRemovalPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight_of_lt
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight_of_lt
       n q hrk
 
 theorem candidateRankBestAfterRemovalWeight_of_gt
@@ -146,10 +146,10 @@ theorem candidateRankBestAfterRemovalWeight_of_gt
       q ^ ((r : ℕ) - 1) *
         (q * candidateRankRemovalPowerSum n q k + q ^ (k : ℕ)) := by
   simpa [candidateRankBestAfterRemovalWeight,
-    EconCSLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight,
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight,
     candidateRankRemovalPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight_of_gt
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankBestAfterRemovalWeight_of_gt
       n q hkr
 
 /--
@@ -176,28 +176,28 @@ noncomputable def candidateRankConditionalGap
 theorem candidateRankPowerSum_pos (n : ℕ) {q : ℝ} (hq_pos : 0 < q) :
     0 < candidateRankPowerSum n q := by
   simpa [candidateRankPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankPowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankPowerSum_pos n hq_pos
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankPowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankPowerSum_pos n hq_pos
 
 theorem candidateRankReversePowerSum_pos (n : ℕ) {q : ℝ} (hq_pos : 0 < q) :
     0 < candidateRankReversePowerSum n q := by
   simpa [candidateRankReversePowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankReversePowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankReversePowerSum_pos n hq_pos
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankReversePowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankReversePowerSum_pos n hq_pos
 
 theorem candidateRankPowerSum_strict_mono
     (n : ℕ) {q₁ q₂ : ℝ} (hq₁_nonneg : 0 ≤ q₁) (hq_lt : q₁ < q₂) :
     candidateRankPowerSum n q₁ < candidateRankPowerSum n q₂ := by
   simpa [candidateRankPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankPowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankPowerSum_strict_mono
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankPowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankPowerSum_strict_mono
       n hq₁_nonneg hq_lt
 
 theorem natPower_mul_lt_mul_natPower
     {q₁ q₂ : ℝ} (hq₁_pos : 0 < q₁) (hq_lt : q₁ < q₂)
     {i j : ℕ} (hij : i < j) :
     q₁ ^ j * q₂ ^ i < q₁ ^ i * q₂ ^ j :=
-   EconCSLib.SocialChoice.Ranking.natPower_mul_lt_mul_natPower
+   AppliedModelingLib.SocialChoice.Ranking.natPower_mul_lt_mul_natPower
     hq₁_pos hq_lt hij
 
 theorem candidateRankRemovalBoundaryFactor_cross_nonneg
@@ -582,9 +582,9 @@ theorem pairPositionCorrectWrong_cross_pos
     intro correct _
     rw [← Finset.sum_sub_distrib]
   rw [hsum_eq]
-  apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
     (a₀ := correct₀)
-  · apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  · apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
       (a₀ := wrong₀)
     · exact pairPositionTerm_cross_pos m hq₁_pos hq_lt
         correct₀ wrong₀ hcorrect₀ hwrong₀
@@ -610,7 +610,7 @@ theorem pairPositionCorrectWeight_pos
     change (0 : ℕ) < m + 1
     omega
   unfold pairPositionCorrectWeight
-  apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
     (a₀ := correct₀)
   · simp [pairPositionCorrectTerm, hcorrect₀, pairPositionCorrectExp]
     exact pow_pos hq_pos _
@@ -632,7 +632,7 @@ theorem pairPositionWrongWeight_pos
     change (0 : ℕ) < m + 1
     omega
   unfold pairPositionWrongWeight
-  apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
     (a₀ := wrong₀)
   · simp [pairPositionWrongTerm, hwrong₀, pairPositionWrongExp]
     exact pow_pos hq_pos _
@@ -932,7 +932,7 @@ theorem candidateRankConditionalGap_succ_lt
   rw [← sub_pos]
   unfold candidateRankConditionalGap
   rw [← Finset.sum_sub_distrib]
-  apply EconCSLib.sum_univ_pos_of_pos_of_nonneg (a₀ := r0)
+  apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg (a₀ := r0)
   · have hr1_not_lt_r0 : ¬r1 < r0 := not_lt_of_gt hr01
     have hneg : q ^ (r0 : ℕ) * (value r1 - value r0) < 0 := by
       nlinarith [mul_pos (pow_pos hq_pos (r0 : ℕ)) hgap]
@@ -1011,8 +1011,8 @@ theorem candidateRankConditionalGap_strictAnti
 theorem candidateRankPowerSum_mul_one_sub (n : ℕ) (q : ℝ) :
     candidateRankPowerSum n q * (1 - q) = 1 - q ^ (n + 2) := by
   simpa [candidateRankPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankPowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankPowerSum_mul_one_sub n q
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankPowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankPowerSum_mul_one_sub n q
 
 theorem candidateRankPowerSum_inner_nonneg
     {n : ℕ} {q : ℝ} (hq_nonneg : 0 ≤ q) (hq_le_one : q ≤ 1)
@@ -1020,8 +1020,8 @@ theorem candidateRankPowerSum_inner_nonneg
     0 ≤ (candidateRankPowerSum n q - q ^ (r : ℕ)) -
       q * (candidateRankPowerSum n q - q ^ (s : ℕ)) := by
   simpa [candidateRankPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankPowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankPowerSum_inner_nonneg
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankPowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankPowerSum_inner_nonneg
       hq_nonneg hq_le_one hrs
 
 theorem candidateRankPowerSum_inner_pos_zero_one
@@ -1029,8 +1029,8 @@ theorem candidateRankPowerSum_inner_pos_zero_one
     0 < (candidateRankPowerSum n q - q ^ (0 : ℕ)) -
       q * (candidateRankPowerSum n q - q ^ (1 : ℕ)) := by
   simpa [candidateRankPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankPowerSum] using
-    EconCSLib.SocialChoice.Ranking.candidateRankPowerSum_inner_pos_zero_one
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankPowerSum] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankPowerSum_inner_pos_zero_one
       (n := n) hn hq_pos hq_lt_one
 
 /-- The fiber of rankings whose first center-rank is `r`, for the identity center. -/
@@ -4271,20 +4271,20 @@ noncomputable def RankFactorization.toShared (fac : M.RankFactorization) :
   firstSecondTail_pos := fac.firstSecondTail_pos
   partition_eq := by
     simpa [candidateRankPowerSum,
-      EconCSLib.SocialChoice.Ranking.candidateRankPowerSum] using
+      AppliedModelingLib.SocialChoice.Ranking.candidateRankPowerSum] using
       fac.partition_eq
   firstWeight_eq := by
     intro c
-    simpa [rankOf, EconCSLib.SocialChoice.Ranking.rankOf] using
+    simpa [rankOf, AppliedModelingLib.SocialChoice.Ranking.rankOf] using
       fac.firstWeight_eq c
   firstSecondWeight_eq_of_lt := by
     intro c d hcd
     exact fac.firstSecondWeight_eq_of_lt c d
-      (by simpa [rankOf, EconCSLib.SocialChoice.Ranking.rankOf] using hcd)
+      (by simpa [rankOf, AppliedModelingLib.SocialChoice.Ranking.rankOf] using hcd)
   firstSecondWeight_swap_eq_of_lt := by
     intro c d hcd
     exact fac.firstSecondWeight_swap_eq_of_lt c d
-      (by simpa [rankOf, EconCSLib.SocialChoice.Ranking.rankOf] using hcd)
+      (by simpa [rankOf, AppliedModelingLib.SocialChoice.Ranking.rankOf] using hcd)
 
 noncomputable def rankFactorization : M.RankFactorization where
   firstTail := M.firstWeight M.centerFirst
@@ -4309,8 +4309,8 @@ theorem firstTail_eq_firstSecondTail_mul_removalPowerSum
       fac.firstSecondTail *
         candidateRankRemovalPowerSum n M.q (rankOf M.center c) := by
   simpa [candidateRankRemovalPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankRemovalPowerSum,
-    rankOf, EconCSLib.SocialChoice.Ranking.rankOf] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankRemovalPowerSum,
+    rankOf, AppliedModelingLib.SocialChoice.Ranking.rankOf] using
     (M.toShared).firstTail_eq_firstSecondTail_mul_removalPowerSum
       (RankFactorization.toShared (M := M) fac) c
 
@@ -4323,10 +4323,10 @@ theorem firstWeightPrefix_eq_rankPrefixPowerSum_mul
     (fac : M.RankFactorization) (k : Fin (n + 1)) :
     M.firstWeightPrefix k = candidateRankPrefixPowerSum n M.q k * fac.firstTail := by
   simpa [firstWeightPrefix,
-    EconCSLib.SocialChoice.Ranking.MallowsSpec.firstWeightPrefix,
+    AppliedModelingLib.SocialChoice.Ranking.MallowsSpec.firstWeightPrefix,
     candidateRankPrefixPowerSum,
-    EconCSLib.SocialChoice.Ranking.candidateRankPrefixPowerSum,
-    rankOf, EconCSLib.SocialChoice.Ranking.rankOf] using
+    AppliedModelingLib.SocialChoice.Ranking.candidateRankPrefixPowerSum,
+    rankOf, AppliedModelingLib.SocialChoice.Ranking.rankOf] using
     (M.toShared).firstWeightPrefix_eq_rankPrefixPowerSum_mul
       (RankFactorization.toShared (M := M) fac) k
 
@@ -4537,10 +4537,10 @@ theorem firstChoiceGapWeight_eq_sum_firstSecondWeight
                   0)
                   = mallowsWeight M.q M.center π *
                       (value c - value (secondChoice π)) := by
-                    simp [hc, valueGap, EconCSLib.SocialChoice.Ranking.valueGap,
+                    simp [hc, valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap,
                       firstChoice, secondChoice,
-                      EconCSLib.SocialChoice.Ranking.firstChoice,
-                      EconCSLib.SocialChoice.Ranking.secondChoice]
+                      AppliedModelingLib.SocialChoice.Ranking.firstChoice,
+                      AppliedModelingLib.SocialChoice.Ranking.secondChoice]
               _ = ∑ d : Candidate n,
                     (if c = firstChoice π ∧ d = secondChoice π then
                       mallowsWeight M.q M.center π * (value c - value d)
@@ -4695,7 +4695,7 @@ theorem pair_sum_eq_ordered_swap_sum
     (∑ c : Candidate n, ∑ d : Candidate n, t c d) =
       ∑ c : Candidate n, ∑ d : Candidate n,
         if rankOf ρ c < rankOf ρ d then t c d + t d c else 0 :=
-    EconCSLib.FiniteSum.pair_sum_eq_ordered_swap_sum_of_injective_key
+    AppliedModelingLib.FiniteSum.pair_sum_eq_ordered_swap_sum_of_injective_key
       (fun c : Candidate n => rankOf ρ c)
       (by
         intro c d h
@@ -4741,14 +4741,14 @@ theorem independent_weight_sum_pos_of_pair_brackets
   rw [M.independent_weight_sum_eq_pair_sum value]
   rw [M.independent_pair_sum_eq_ordered_swap_sum value]
   rcases hbracket_pos with ⟨c₀, d₀, hlt₀, hbracket₀⟩
-  apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
     (f := fun c : Candidate n =>
       ∑ d : Candidate n,
         if rankOf M.center c < rankOf M.center d then
           M.independentPairTerm value c d + M.independentPairTerm value d c
         else 0)
     (a₀ := c₀)
-  · apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  · apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
       (f := fun d : Candidate n =>
         if rankOf M.center c₀ < rankOf M.center d then
           M.independentPairTerm value c₀ d + M.independentPairTerm value d c₀
@@ -4852,7 +4852,7 @@ theorem candidateRankWeightedAverage_strictAnti
       intro i
       simp [t]
       ring)]
-  apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
     (f := fun i : Candidate n =>
       ∑ j : Candidate n,
         if rankOf (Equiv.refl (Candidate n)) i <
@@ -4860,7 +4860,7 @@ theorem candidateRankWeightedAverage_strictAnti
           t i j + t j i
         else 0)
     (a₀ := (0 : Candidate n))
-  · apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  · apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
       (f := fun j : Candidate n =>
         if rankOf (Equiv.refl (Candidate n)) (0 : Candidate n) <
             rankOf (Equiv.refl (Candidate n)) j then
@@ -4967,7 +4967,7 @@ theorem candidateWeightedAverage_cross_nonneg_of_pairwise
           (∑ i : Candidate n, wA i * B i) -
         (∑ j : Candidate n, wA j) *
           (∑ i : Candidate n, wH i * B i) :=
-    EconCSLib.FiniteSum.weighted_average_cross_nonneg_of_pairwise
+    AppliedModelingLib.FiniteSum.weighted_average_cross_nonneg_of_pairwise
       (α := Candidate n) hpair hB
 
 /--
@@ -4990,7 +4990,7 @@ theorem candidateWeightedAverage_cross_pos_of_pairwise
           (∑ i : Candidate n, wA i * B i) -
         (∑ j : Candidate n, wA j) *
           (∑ i : Candidate n, wH i * B i) :=
-    EconCSLib.FiniteSum.weighted_average_cross_pos_of_pairwise
+    AppliedModelingLib.FiniteSum.weighted_average_cross_pos_of_pairwise
       (α := Candidate n) hpair_nonneg hpair_pos hB
 
 theorem candidateRankCollisionWeight_cross_pos
@@ -5046,7 +5046,7 @@ theorem candidateRankSquareWeightedConditionalGap_pos
   have hq_sq_pos : 0 < q * q := mul_pos hq_pos hq_pos
   have hq_sq_lt_q : q * q < q := by
     nlinarith [mul_lt_mul_of_pos_left hq_lt_one hq_pos]
-  apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
     (f := fun r : Candidate n =>
       ∑ s : Candidate n,
         if rankOf (Equiv.refl (Candidate n)) r <
@@ -5054,7 +5054,7 @@ theorem candidateRankSquareWeightedConditionalGap_pos
           t r s + t s r
         else 0)
     (a₀ := (0 : Candidate n))
-  · apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  · apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
       (f := fun s : Candidate n =>
         if rankOf (Equiv.refl (Candidate n)) (0 : Candidate n) <
             rankOf (Equiv.refl (Candidate n)) s then
@@ -5302,7 +5302,7 @@ theorem candidateRankPrefix_cross_pos
         ring
       · simp [t, hi])]
   let j₀ : Candidate n := ⟨k.val + 1, by omega⟩
-  apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
     (f := fun i : Candidate n =>
       ∑ j : Candidate n,
         if rankOf (Equiv.refl (Candidate n)) i <
@@ -5310,7 +5310,7 @@ theorem candidateRankPrefix_cross_pos
           t i j + t j i
         else 0)
     (a₀ := (0 : Candidate n))
-  · apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  · apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
       (f := fun j : Candidate n =>
         if rankOf (Equiv.refl (Candidate n)) (0 : Candidate n) <
             rankOf (Equiv.refl (Candidate n)) j then
@@ -5433,7 +5433,7 @@ theorem candidateRankWeightedPrefix_cross_pos
         simp [t, hi, hzero]
       · simp [t, hi])]
   let j₀ : Candidate n := ⟨k.val + 1, by omega⟩
-  apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
     (f := fun i : Candidate n =>
       ∑ j : Candidate n,
         if rankOf (Equiv.refl (Candidate n)) i <
@@ -5441,7 +5441,7 @@ theorem candidateRankWeightedPrefix_cross_pos
           t i j + t j i
         else 0)
     (a₀ := (0 : Candidate n))
-  · apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  · apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
       (f := fun j : Candidate n =>
         if rankOf (Equiv.refl (Candidate n)) (0 : Candidate n) <
             rankOf (Equiv.refl (Candidate n)) j then
@@ -5551,7 +5551,7 @@ theorem candidateRankCrossDelta_last_neg
       unfold candidateRankPowerSum
       rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib]
     rw [hsum]
-    apply EconCSLib.sum_univ_pos_of_pos_of_nonneg (a₀ := (0 : Candidate n))
+    apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg (a₀ := (0 : Candidate n))
     · have hlt : (0 : Candidate n) < last := by
         change (0 : ℕ) < n + 1
         omega
@@ -5622,7 +5622,7 @@ theorem candidateRankShiftedSuffixWeightSum_pos
   classical
   unfold candidateRankShiftedSuffixWeightSum
   let s₀ : Candidate n := ⟨k + 1, by omega⟩
-  apply EconCSLib.sum_univ_pos_of_pos_of_nonneg (a₀ := s₀)
+  apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg (a₀ := s₀)
   · have hs₀ : k < (s₀ : ℕ) := by
       simp [s₀]
     have hpow : 0 < q ^ ((s₀ : ℕ) - 1) :=
@@ -6444,14 +6444,14 @@ theorem cross_weight_sum_pos_of_pair_brackets
   rw [C.cross_weight_sum_eq_pair_sum value]
   rw [C.cross_pair_sum_eq_ordered_swap_sum value]
   rcases hbracket_pos with ⟨c₀, d₀, hlt₀, hbracket₀⟩
-  apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
     (f := fun c : Candidate n =>
       ∑ d : Candidate n,
         if rankOf C.human.center c < rankOf C.human.center d then
           C.crossPairTerm value c d + C.crossPairTerm value d c
         else 0)
     (a₀ := c₀)
-  · apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  · apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
       (f := fun d : Candidate n =>
         if rankOf C.human.center c₀ < rankOf C.human.center d then
           C.crossPairTerm value c₀ d + C.crossPairTerm value d c₀

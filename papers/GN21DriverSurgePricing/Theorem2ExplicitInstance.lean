@@ -9,7 +9,7 @@ Appendix-D aggregate primitives to rational bounds plus elementary CTMC switch
 probability estimates.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology ENNReal
 

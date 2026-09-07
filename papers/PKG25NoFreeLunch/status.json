@@ -14,9 +14,9 @@
     "proposition7_uniform_mixture": "papers/PKG25NoFreeLunch/Proposition7UniformMixture.lean",
     "proposition9_final_mixture": "papers/PKG25NoFreeLunch/Proposition9FinalMixture.lean",
     "readme": "papers/PKG25NoFreeLunch/README.md",
+    "source_archive": "papers/PKG25NoFreeLunch/cited publication",
     "source_audit": "papers/PKG25NoFreeLunch/SourceAudit.lean",
     "source_proof_fidelity": "papers/PKG25NoFreeLunch/audit/source_proof_fidelity.json",
-    "source_record_audit": "papers/PKG25NoFreeLunch/audit/source_record_audit.json",
     "statement_map": "papers/PKG25NoFreeLunch/audit/paper_statement_map.json"
   },
   "authors": "Kenny Peng, Nikhil Garg, Jon Kleinberg",
@@ -26,7 +26,7 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 20,
+    "total_rows": 5,
     "uncertain_rows": 0
   },
   "human_summary": "",
@@ -38,257 +38,58 @@
   "main_caveat": "",
   "paper_interface": {
     "declaration_rows": 68,
-    "line_count": 968,
-    "maintainability_issue": "The source-facing PaperInterface has 50 rows plus three separately audited Assumptions.lean model conditions, split by raw model, constructions, and named proof steps. Its current v10 sidecars use semantic source routes rather than declaration-name matching.",
-    "oversized": false,
+    "line_count": 1950,
+    "maintainability_issue": "The interface includes the transparent result Specs and the paper-local semantic declarations needed to inspect their model.",
+    "oversized": true,
     "path": "papers/PKG25NoFreeLunch/PaperInterface.lean",
-    "review_rows": 50
+    "review_rows": 5
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/PKG25NoFreeLunch/FINAL_VALIDATION_REPORT.md",
-  "review_scope": {
-    "closeout_blockers": [],
-    "closeout_receipt": [
-      "2026-07-24: 50 current statement judgments, 3 current assumption-provenance judgments, and 145 current source-record judgments are bound to the frozen PaperInterface.lean and Assumptions.lean surfaces.",
-      "2026-07-24: the source-first inventory contains 53 pinned items: 42 direct coverage rows, 3 user-approved formalized-note boundaries, 2 support-only rows, and 6 quarantined defects with exact semantic support.",
-      "2026-07-24: focused PKG25NoFreeLunch build, conclusion-provenance audit, source inventory, statement, source-to-Lean, assumption, coverage, and strict paper-closeout checks passed."
-    ],
-    "explicit_conventions": [
-      "The source's point-fiber calibration display is interpreted as calibration on every measurable reported-probability event; no conditional-label version is selected on null prediction fibers.",
-      "Predictors are measurable, and a strategy accuracy is used only when its induced correctness indicator is integrable.",
-      "Lean totalizes C to all real profiles, while source-facing uses are restricted to predictor profiles in [0,1]^n and Definition 4's interior domain where applicable.",
-      "Named reliability, Proposition 7, and Proposition 9 results require a nonempty Fin n because the source uses an agent minimum and an existential k in [n].",
-      "The partition construction is proved for finite measurable cells only; a zero-mass cell is assigned prediction 0."
-    ],
-    "kind": "review_complete",
-    "source_model": "Raw probability law on X x {0,1}, event-calibrated predictors, and actual joint-law classifier accuracies.",
-    "source_repairs_or_domain_clarifications": [
-      "The S1 probability/interior construction uses the implicit 0 < epsilon < 1/2 domain, not only the printed upper bound.",
-      "The S2 mass denominator is repaired from the source's free-index q-odds display to the common sum over both p- and q-odds families."
-    ]
-  },
+  "review_scope": null,
   "review_surface": {
-    "assumption_names": [
-      "source_assumption_predictor_measurability",
-      "source_assumption_event_calibration",
-      "source_assumption_strategy_expectation_well_formed"
-    ],
-    "assumption_policy": "strict",
-    "assumption_source_file": "papers/PKG25NoFreeLunch/Assumptions.lean",
-    "auxiliary_names": [
-      "source_definition_finite_collaboration_setting",
-      "source_formula_finite_calibration",
-      "source_partition_predictor_calibrated",
-      "source_probability_partition_predictor_calibrated",
-      "source_partition_collaboration_setting",
-      "source_formula_agent_classifier",
-      "source_formula_agent_accuracy",
-      "source_formula_strategy_classifier",
-      "source_formula_strategy_accuracy",
-      "source_definition_reliable_probability",
-      "source_definition_finite_reliability",
-      "source_finite_setting_embedding",
-      "source_definition_interior_prediction_profile",
-      "source_definition_non_collaborative",
-      "source_definition_correct_on",
-      "source_definition_incorrect_on",
-      "source_definition_agree_on",
-      "source_definition_disagree_on",
-      "source_proposition6_finite_linear_combination_settings",
-      "source_formula_proposition9_s1_specialization",
-      "source_proposition9_s1_accuracy_gap"
-    ],
     "include_names": [
-      "source_definition_predictorSpec",
-      "source_model_event_calibration_conventionSpec",
-      "source_definition_collaboration_settingSpec",
-      "source_definition_rounding_classifierSpec",
-      "source_formula_individual_accuracySpec",
-      "source_definition_collaboration_strategySpec",
-      "source_formula_induced_collaboration_classifierSpec",
-      "source_definition_strategy_accuracySpec",
-      "source_definition_non_collaborationSpec",
       "source_theorem1_no_free_lunchSpec",
-      "source_definition_correctSpec",
-      "source_definition_incorrectSpec",
-      "source_definition_agreeSpec",
-      "source_definition_disagreeSpec",
       "source_proposition6_linear_combinationSpec",
-      "source_partition_finite_measurable_repairSpec",
-      "source_unnumbered_iff_restatementSpec",
-      "source_formula_proposition7_average_mixtureSpec",
-      "source_formula_proposition9_s1_accuraciesSpec",
-      "source_formula_proposition9_final_mixtureSpec"
+      "source_proposition7_fixed_deferralSpec",
+      "source_lemma8_bad_tupleSpec",
+      "source_proposition9_constant_tie_labelSpec"
     ],
-    "llm_assumption_review": {
-      "assumption_judgment_file": "papers/PKG25NoFreeLunch/audit/assumption_match_llm.json",
-      "policy": "Judge the three Assumptions.lean conventions independently: predictor measurability, event calibration rather than positive point fibers, and integrability of the strategy correctness indicator. They are model-definedness conditions, not hidden proof conclusions. Also record the totalization/nonempty-n/S1-positivity/finite-partition boundaries in the source map even when they are expressed by theorem binders rather than standalone assumptions."
-    },
-    "llm_paper_coverage_review": {
-      "defect_support_judgment_file": "papers/PKG25NoFreeLunch/audit/defect_support_match_llm.json",
-      "paper_coverage_audit_file": "papers/PKG25NoFreeLunch/audit/paper_coverage_llm.json",
-      "policy": "Use audit/paper_statement_map.json as a source-first inventory. Route each source definition, formula, proposition, lemma, theorem, and local repair through a current reviewed PaperInterface row by expanded semantic content. Do not infer coverage from matching names. Keep the user-approved finite-measurable zero-cell partition convention visible, and require the strict raw Proposition 7 and Proposition 9 mixture rows for the two final contradiction steps.",
-      "required_prompt_version": "paper-coverage-v4-semantic-proof-and-pinned-defect-support"
-    },
-    "llm_source_record_review": {
-      "policy": "Run the code-backed recursive source-record audit against the current review rows and Assumptions.lean. Classify records and premises by expanded semantic content and exact source anchors. A conditional constructor may count only through its current checked_projection contract with exact source antecedents; names and free-form derivation text are not evidence.",
-      "required_prompt_version": "source-record-v8-qualified-corrected-contract",
-      "source_record_audit_file": "papers/PKG25NoFreeLunch/audit/source_record_audit.json",
-      "source_record_judgment_file": "papers/PKG25NoFreeLunch/audit/source_record_match_llm.json"
-    },
     "llm_statement_review": {
-      "assumption_judgment_file": "papers/PKG25NoFreeLunch/audit/assumption_match_llm.json",
-      "defect_support_judgment_file": "papers/PKG25NoFreeLunch/audit/defect_support_match_llm.json",
-      "lean_to_tex_file": "papers/PKG25NoFreeLunch/audit/lean_to_tex_llm.json",
-      "match_judgment_file": "papers/PKG25NoFreeLunch/audit/statement_match_llm.json",
-      "paper_coverage_audit_file": "papers/PKG25NoFreeLunch/audit/paper_coverage_llm.json",
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
-      "require_explicit_source_routes": true,
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
-      "review_surface_audit_file": "papers/PKG25NoFreeLunch/audit/review_surface_llm.json",
-      "surface_audit_threshold": 30,
-      "surface_warning_threshold": 120
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
     },
-    "paper_coverage_required": true,
+    "proof_file": "papers/PKG25NoFreeLunch/ProofInterface.lean",
+    "proof_module": "PKG25NoFreeLunch.ProofInterface",
     "proposition_spec_proofs": {
-      "source_definition_agreeSpec": "source_definition_agreeSpec_proof",
-      "source_definition_collaboration_settingSpec": "source_definition_collaboration_settingSpec_proof",
-      "source_definition_collaboration_strategySpec": "source_definition_collaboration_strategySpec_proof",
-      "source_definition_correctSpec": "source_definition_correctSpec_proof",
-      "source_definition_disagreeSpec": "source_definition_disagreeSpec_proof",
-      "source_definition_incorrectSpec": "source_definition_incorrectSpec_proof",
-      "source_definition_non_collaborationSpec": "source_definition_non_collaborationSpec_proof",
-      "source_definition_predictorSpec": "source_definition_predictorSpec_proof",
-      "source_definition_rounding_classifierSpec": "source_definition_rounding_classifierSpec_proof",
-      "source_definition_strategy_accuracySpec": "source_definition_strategy_accuracySpec_proof",
-      "source_formula_individual_accuracySpec": "source_formula_individual_accuracySpec_proof",
-      "source_formula_induced_collaboration_classifierSpec": "source_formula_induced_collaboration_classifierSpec_proof",
-      "source_formula_proposition7_average_mixtureSpec": "source_formula_proposition7_average_mixtureSpec_proof",
-      "source_formula_proposition9_final_mixtureSpec": "source_formula_proposition9_final_mixtureSpec_proof",
-      "source_formula_proposition9_s1_accuraciesSpec": "source_formula_proposition9_s1_accuraciesSpec_proof",
-      "source_model_event_calibration_conventionSpec": "source_model_event_calibration_conventionSpec_proof",
-      "source_partition_finite_measurable_repairSpec": "source_partition_finite_measurable_repairSpec_proof",
-      "source_proposition6_linear_combinationSpec": "source_proposition6_linear_combinationSpec_proof",
-      "source_theorem1_no_free_lunchSpec": "source_theorem1_no_free_lunchSpec_proof",
-      "source_unnumbered_iff_restatementSpec": "source_unnumbered_iff_restatementSpec_proof"
+      "source_lemma8_bad_tupleSpec": "source_lemma8_bad_tuple_provesSpec",
+      "source_proposition6_linear_combinationSpec": "source_proposition6_linear_combination_provesSpec",
+      "source_proposition7_fixed_deferralSpec": "source_proposition7_fixed_deferral_provesSpec",
+      "source_proposition9_constant_tie_labelSpec": "source_proposition9_constant_tie_label_provesSpec",
+      "source_theorem1_no_free_lunchSpec": "source_theorem1_no_free_lunch_provesSpec"
     },
     "require_source_spec_correspondence": true,
     "require_v11_raw_source_spec_screening": true,
-    "semantic_model_review": {
-      "policy": "For every reviewed row, compare the expanded source and Lean models before judging statement fidelity. The comparison must identify the raw joint-law carrier, predictor range and measurability, source probability endpoints, event calibration versus undefined null point fibers, strategy expectation definedness, totalized strategy domain, nonempty Fin n use, finite-measurable partition restriction, zero-mass-cell value, S1 positivity, and S2 normalizer. Each detected shape needs an exact source locator, expanded Lean evidence, and a checked bridge where required. Declaration names are routing only.",
-      "required_dimensions": [
-        "expanded_binders_and_domain",
-        "carrier_and_domain",
-        "probability_support_endpoints",
-        "joint_law_and_state_evolution",
-        "conditioning_and_calibration_semantics",
-        "expectation_definedness",
-        "null_cell_totalization_and_partition_scope",
-        "extended_rate_codomain"
-      ],
-      "schema": 2
-    },
     "slices": [
       {
-        "id": "source-model",
+        "id": "main_text",
         "names": [
-          "source_accuracy_loss_correction",
-          "source_definition_probability_collaboration_setting",
-          "source_formula_probability_predictor_range",
-          "source_formula_probability_calibration",
-          "source_definition_rounding_convention",
-          "source_formula_probability_agent_classifier",
-          "source_formula_probability_agent_accuracy",
-          "source_definition_collaboration_strategy",
-          "source_formula_probability_strategy_classifier",
-          "source_formula_probability_strategy_accuracy",
-          "source_formula_reliable_probability_iff",
-          "source_finite_embedding_preserves_agent_accuracy",
-          "source_finite_embedding_preserves_strategy_accuracy",
-          "source_bridge_probability_reliability_to_finite",
-          "source_formula_interior_prediction_profile_iff",
-          "source_formula_non_collaborative_iff",
-          "source_formula_correct_on_iff",
-          "source_formula_incorrect_on_iff",
-          "source_formula_agree_on_iff",
-          "source_formula_disagree_on_iff",
-          "source_correctness_strict_gap_half_tie_counterexample",
-          "source_correctness_strict_gap_corrected"
+          "source_theorem1_no_free_lunchSpec",
+          "source_proposition6_linear_combinationSpec",
+          "source_proposition7_fixed_deferralSpec",
+          "source_lemma8_bad_tupleSpec",
+          "source_proposition9_constant_tie_labelSpec"
         ],
-        "title": "Raw joint-law model, accuracy, reliability, and source conventions"
-      },
-      {
-        "id": "raw-constructions-and-main",
-        "names": [
-          "source_formula_probability_partition_induced_predictor",
-          "source_convention_probability_partition_zero_mass_prediction",
-          "source_probability_partition_predictor_calibrated_events",
-          "source_probability_partition_collaboration_setting",
-          "source_formula_mixture_components",
-          "source_proposition6_linear_combination_settings",
-          "source_theorem1_no_free_lunch",
-          "source_iff_converse_boundary_counterexample"
-        ],
-        "title": "Finite-measurable partitions, raw mixtures, and the main theorem"
-      },
-      {
-        "id": "proposition7-and-lemma8",
-        "names": [
-          "source_proposition7_reliability_forces_fixed_deferral",
-          "source_proposition7_uniform_mixture_strict_counterexample",
-          "source_lemma8_bad_tuple_counterexample_setting",
-          "source_formula_lemma8_masses",
-          "source_formula_lemma8_labels_and_predictions",
-          "source_lemma8_partition_realization",
-          "source_lemma8_witness_calibrated"
-        ],
-        "title": "Proposition 7 strict mixture and Lemma 8 witness"
-      },
-      {
-        "id": "proposition9",
-        "names": [
-          "source_formula_proposition9_s1_family",
-          "source_proposition9_s1_positive_parameter_validity",
-          "source_proposition9_s1_partition_realization",
-          "source_proposition9_s1_parameterized_accuracy_gap",
-          "source_formula_proposition9_s2_repaired_normalizer",
-          "source_proposition9_s2_repaired_mass_normalized",
-          "source_formula_proposition9_s2_construction",
-          "source_proposition9_s2_partition_realization",
-          "source_proposition9_s2_calibrated",
-          "source_proposition9_s2_strict_gap",
-          "source_proposition9_reliability_forces_fixed_tie_label",
-          "source_formula_proposition9_explicit_final_mixture",
-          "source_proposition9_explicit_final_mixture_strict_counterexample"
-        ],
-        "title": "Proposition 9 domain repair, S2 normalization, and strict final mixture"
+        "title": "Main-paper results"
       }
     ],
-    "source_definition_names": [],
     "source_file": "papers/PKG25NoFreeLunch/PaperInterface.lean",
     "source_proof_fidelity_review": {
-      "ledger_file": "papers/PKG25NoFreeLunch/audit/source_proof_fidelity.json",
-      "policy": "The current schema-2 ledger separately records loss, point-fiber calibration, half-tie, mixture-index, finite-measurable partition, accidental-iff, S1-positivity, and S2-normalizer findings. Keep it synchronized with this surface before closeout. The event-calibration and finite-partition readings are user-approved conventions and must remain explicit rather than hidden in a theorem statement."
+      "ledger_file": "papers/PKG25NoFreeLunch/audit/source_proof_fidelity.json"
     }
   },
   "schema": 1,
   "source_version": "Proceedings of the AAAI Conference on Artificial Intelligence 39(13), 14369-14376 (2025), cross-checked against arXiv 2411.15230 source archive SHA256 da7868015db272f3c61cdc88c4e8492b8888f8363332215aa59c509471831c56",
   "status": "formalized",
-  "title": "A No Free Lunch Theorem for Human-AI Collaboration",
-  "v10_audit_state": {
-    "reason": "Current source-first statement, coverage, assumption, source-record, and semantic-model judgments are bound to the raw joint-law PaperInterface and Assumptions surfaces. Exact source routes distinguish theorem endpoints from source-model conventions, construction components, proof support, and defect refutations.",
-    "receipt": {
-      "assumption_rows": 3,
-      "direct_coverage_rows": 42,
-      "formalized_note_boundaries": 3,
-      "quarantined_defects_supported": 6,
-      "review_rows": 50,
-      "source_inventory_rows": 53,
-      "source_record_judgments": 145,
-      "support_only_rows": 2
-    },
-    "semantic_model_schema": 2,
-    "statement_prompt_version": "statement-match-v10-semantic-fidelity-seat-stopping",
-    "status": "current_complete"
-  }
+  "title": "A No Free Lunch Theorem for Human-AI Collaboration"
 }

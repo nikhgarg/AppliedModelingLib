@@ -204,7 +204,7 @@ theorem part2S1ParamSourceCell_rawPartitionPredictor_eq {n : ℕ} {ε : ℝ}
 
 /-! ## Proposition 9 `S₂` cells -/
 
-/-- The source's `S₂` cell map (`cited publication:217`).  Agent
+/-- The source's `S₂` cell map (`source_tex/sections/proof.tex:217`).  Agent
 `k` pools the two central points; every other agent pools the two points in
 each branch that have its advertised `p_i` or `q_i` prediction. -/
 def part2S2SourceCell {n : ℕ} (k i : Fin n) : Part2S2Point n → Part2S2Point n

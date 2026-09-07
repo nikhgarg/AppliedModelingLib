@@ -126,7 +126,7 @@ class LegacyV10TrustLedgerTests(unittest.TestCase):
 
     def closure_provider(self, root: Path) -> WorktreeImportClosureProvider:
         def graph_loader(_root: Path, entry_module: str, _timeout: int):
-            return tuple(sorted((entry_module, "EconCSLib.FixtureBase"))), ""
+            return tuple(sorted((entry_module, "AppliedModelingLib.FixtureBase"))), ""
 
         return WorktreeImportClosureProvider(
             root,
@@ -223,18 +223,18 @@ class LegacyV10TrustLedgerTests(unittest.TestCase):
             self.write_artifacts(folder, completed)
             (folder / "paper.txt").write_bytes(source_bytes)
             (folder / "PaperInterface.lean").write_text(
-                "import EconCSLib.FixtureBase\n\n"
+                "import AppliedModelingLib.FixtureBase\n\n"
                 f"namespace {label}\n\n"
                 "theorem paperInterfaceFixture : True := by trivial\n\n"
                 f"end {label}\n",
                 encoding="utf-8",
             )
-        base = root / "EconCSLib/FixtureBase.lean"
+        base = root / "AppliedModelingLib/FixtureBase.lean"
         base.parent.mkdir(parents=True, exist_ok=True)
         base.write_text(
-            "namespace EconCSLib\n\n"
+            "namespace AppliedModelingLib\n\n"
             "theorem fixtureBase : True := by trivial\n\n"
-            "end EconCSLib\n",
+            "end AppliedModelingLib\n",
             encoding="utf-8",
         )
         (root / "Scratch.lean").write_text(
@@ -249,7 +249,8 @@ class LegacyV10TrustLedgerTests(unittest.TestCase):
             f'\n[[lean_lib]]\nname = "{label}"\nsrcDir = "papers"\n' for label in papers
         )
         (root / "lakefile.toml").write_text(
-            'name = "Fixture"\n\n[[lean_lib]]\nname = "EconCSLib"\n' + libraries
+            'name = "Fixture"\n\n[[lean_lib]]\nname = "AppliedModelingLib"\n'
+            + libraries
         )
         self.git(root, "add", ".")
         self.git(root, "commit", "-qm", "fixture baseline")
@@ -343,7 +344,7 @@ class LegacyV10TrustLedgerTests(unittest.TestCase):
                 root, {"Fixture": artifact_payloads()}
             )
             baseline = self.saved_status_reuse(root, "Fixture", protocol)
-            path = root / "EconCSLib/FixtureBase.lean"
+            path = root / "AppliedModelingLib/FixtureBase.lean"
             path.write_text(path.read_text() + "\n-- imported semantic change\n")
             changed = self.saved_status_reuse(root, "Fixture", protocol)
 

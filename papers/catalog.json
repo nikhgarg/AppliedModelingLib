@@ -50,6 +50,10 @@
       "publication": "American Mathematical Monthly, 1962",
       "year": 1962
     },
+    "JGS23SupplySideRecommenderSystems": {
+      "publication": "NeurIPS, 2023",
+      "year": 2023
+    },
     "KR21Monoculture": {
       "publication": "PNAS, 2021",
       "year": 2021
@@ -89,6 +93,58 @@
     "Roth82StableMatching": {
       "publication": "Mathematics of Operations Research, 1982",
       "year": 1982
+    },
+    "FreundSchapire1997Hedge": {
+      "publication": "Journal of Computer and System Sciences 55(1):119–139, 1997",
+      "year": 1997
+    },
+    "GHKR22BiasBounties": {
+      "publication": "ACM FAccT, 2022",
+      "year": 2022
+    },
+    "GeEtAl2024AlignmentAxioms": {
+      "publication": "NeurIPS, 2024",
+      "year": 2024
+    },
+    "NoothigattuEtAl2020PairwiseComparisons": {
+      "publication": "NeurIPS, 2020",
+      "year": 2020
+    },
+    "HT26EFXChores": {
+      "publication": "arXiv:2606.08872v2, 2026",
+      "year": 2026
+    },
+    "SeshadriUgander2020IIATesting": {
+      "publication": "ACM EC 2019; arXiv version (2020)",
+      "year": 2019
+    },
+    "FalahatgarEtAl2017MaxingRanking": {
+      "publication": "NeurIPS, 2017",
+      "year": 2017
+    },
+    "PG23MonocultureMatching": {
+      "publication": "NeurIPS, 2024",
+      "year": 2024
+    },
+    "MendelsonWhang1990PriorityPricing": {
+      "publication": "Operations Research 38(5), 1990",
+      "year": 1990
+    },
+    "PZMH20PerformativePrediction": {
+      "publication": "ICML, 2020",
+      "year": 2020
+    },
+    "LG24ServiceLevelAgreements": {
+      "publication": "ACM EC, 2024",
+      "year": 2024
+    },
+    "Naor1969QueueTolls": {
+      "publication": "Econometrica 37(1), 1969",
+      "year": 1969
+    },
+    "PG24NoisyMatchingMarkets": {
+      "publication": "ACM EC, 2024",
+      "year": 2024
     }
   },
   "source_url_overrides": {
@@ -104,6 +160,7 @@
     "GKGMM19IterativeLocalVoting": "https://www.jair.org/index.php/jair/article/view/11358",
     "GN21DriverSurgePricing": "https://arxiv.org/pdf/1905.07544",
     "GS62CollegeAdmissions": "https://www.jstor.org/stable/2312726",
+    "JGS23SupplySideRecommenderSystems": "https://arxiv.org/abs/2206.13489v3",
     "KR21Monoculture": "https://www.pnas.org/doi/10.1073/pnas.2018340118",
     "LG21TestOptionalPolicies": "https://arxiv.org/pdf/2107.08922",
     "LBG24SpatialUnderreporting": "https://www.nature.com/articles/s43588-023-00572-6",
@@ -113,24 +170,38 @@
     "MSVV07AdWords": "https://people.eecs.berkeley.edu/~vazirani/pubs/adwords.pdf",
     "PKG25NoFreeLunch": "https://ojs.aaai.org/index.php/AAAI/article/view/33574",
     "PRPKG24AccuracyDiversity": "https://arxiv.org/abs/2307.15142",
-    "Roth82StableMatching": "https://pubsonline.informs.org/doi/epdf/10.1287/moor.7.4.617"
+    "Roth82StableMatching": "https://pubsonline.informs.org/doi/epdf/10.1287/moor.7.4.617",
+    "FreundSchapire1997Hedge": "https://doi.org/10.1006/jcss.1997.1504",
+    "GHKR22BiasBounties": "https://arxiv.org/abs/2201.10408v4",
+    "GeEtAl2024AlignmentAxioms": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/9328208f88ec69420031647e6ff97727-Abstract-Conference.html",
+    "NoothigattuEtAl2020PairwiseComparisons": "https://proceedings.neurips.cc/paper_files/paper/2020/hash/cdaa9b682e10c291d3bbadca4c96f5de-Abstract.html",
+    "HT26EFXChores": "https://arxiv.org/abs/2606.08872v2",
+    "SeshadriUgander2020IIATesting": "https://arxiv.org/abs/2001.07042v1",
+    "FalahatgarEtAl2017MaxingRanking": "https://proceedings.neurips.cc/paper/2017/hash/db98dc0dbafde48e8f74c0de001d35e4-Abstract.html",
+    "PG23MonocultureMatching": "https://papers.nips.cc/paper_files/paper/2024/hash/95249d42f559a0cfaf282fdf26fe2e69-Abstract-Conference.html",
+    "MendelsonWhang1990PriorityPricing": "https://pubsonline.informs.org/doi/10.1287/opre.38.5.870",
+    "PZMH20PerformativePrediction": "https://proceedings.mlr.press/v119/perdomo20a.html",
+    "LG24ServiceLevelAgreements": "https://arxiv.org/abs/2410.14825",
+    "Naor1969QueueTolls": "https://www.jstor.org/stable/1909200",
+    "PG24NoisyMatchingMarkets": "https://arxiv.org/abs/2402.16771"
   },
   "readme_title_overrides": {
     "MSVV07AdWords": "MSVV07 AdWords"
   },
   "library_components": [
     {
-      "title": "Foundations: finite math and graph tools",
+      "title": "Foundations: mathematics and discrete structures",
       "paths": [
-        "EconCSLib/Foundations/Math.lean",
-        "EconCSLib/Foundations/Math",
-        "EconCSLib/Foundations/Graph.lean",
-        "EconCSLib/Foundations/Graph",
-        "EconCSLib/Foundations.lean",
-        "EconCSLib/Basic.lean",
-        "EconCSLib/LibraryDefinitionAudit.lean"
+        "AppliedModelingLib/Foundations/Math.lean",
+        "AppliedModelingLib/Foundations/Math",
+        "AppliedModelingLib/Foundations/Graph.lean",
+        "AppliedModelingLib/Foundations/Graph",
+        "AppliedModelingLib/Foundations/Combinatorics.lean",
+        "AppliedModelingLib/Foundations/Combinatorics",
+        "AppliedModelingLib/Foundations/Computation.lean",
+        "AppliedModelingLib/Foundations/Computation"
       ],
-      "examples": "Core finite mathematics used across the formalizations: finite-choice distances, ranking and order conversions, finite-sum algebra, threshold and interval certificates, asymptotic estimates, and graph-cycle extraction for local-improvement arguments.",
+      "examples": "Fixed-point theorems; convexity and finite-dimensional geometry; graphs, combinatorics, and counting; asymptotic analysis; Boolean circuits.",
       "papers": [
         "DSWG24DiscretizationBias",
         "LMMS04FairDivision",
@@ -143,10 +214,10 @@
     {
       "title": "Foundations: probability and stochastic processes",
       "paths": [
-        "EconCSLib/Foundations/Probability.lean",
-        "EconCSLib/Foundations/Probability"
+        "AppliedModelingLib/Foundations/Probability.lean",
+        "AppliedModelingLib/Foundations/Probability"
       ],
-      "examples": "Probability infrastructure for recommendation, ratings, pricing, and ranking papers: finite PMFs and expectations, conditional kernels, Gaussian and random-utility comparisons, large-deviation and method-of-types certificates, stochastic dominance, order statistics, Markov chains, MDPs, CTMCs, Poisson processes, and renewal-reward models.",
+      "examples": "Concentration and large deviations; coupling and Wasserstein distance; conditional laws and Bayesian updating; order statistics; Markov chains, martingales, Poisson and renewal processes.",
       "papers": [
         "DSWG24DiscretizationBias",
         "MBJG25ProducerFairness",
@@ -162,13 +233,12 @@
       ]
     },
     {
-      "title": "Foundations: optimization, certificates, and complexity",
+      "title": "Foundations: optimization",
       "paths": [
-        "EconCSLib/Foundations/Optimization.lean",
-        "EconCSLib/Foundations/Optimization",
-        "EconCSLib/Algorithms/Complexity"
+        "AppliedModelingLib/Foundations/Optimization.lean",
+        "AppliedModelingLib/Foundations/Optimization"
       ],
-      "examples": "Certificate-oriented optimization and complexity for paper-level endpoints: argmax, endpoint, and bisection principles; finite-search and output-check certificates; approximation and LP witnesses; binary-policy games; move-graph descent; strategic and choice equilibria; NP/ZPP consequence interfaces; and Yao-style lower-bound certificates.",
+      "examples": "Convex optimization and duality; gradient, subgradient, and mirror descent; stochastic optimization; proximal maps and projections; argmax stability and envelope theorems.",
       "papers": [
         "DSWG24DiscretizationBias",
         "MSVV07AdWords",
@@ -181,52 +251,40 @@
       ]
     },
     {
-      "title": "Social choice, rankings, voting, and fair division",
+      "title": "Learning and statistics",
       "paths": [
-        "EconCSLib/SocialChoice.lean",
-        "EconCSLib/SocialChoice"
+        "AppliedModelingLib/Learning.lean",
+        "AppliedModelingLib/Learning"
       ],
-      "examples": "Executable social-choice infrastructure: ranked ballots, next-active support counts, RCV/STV traces, quotas, coalition-safety lemmas, final-order structures, candidate-deletion reductions, Thiele-style proportionality, Mallows/Kendall ranking models, payoff interfaces, envy graphs, bounded-envy algorithms, and indivisible-goods fairness statements.",
-      "papers": [
-        "LMMS04FairDivision",
-        "GGSG19TopThree",
-        "GKGMM19IterativeLocalVoting",
-        "KR21Monoculture"
-      ]
+      "examples": "Generalization and sample complexity; calibration, multiaccuracy, and omniprediction; online learning and regret; bandits; reinforcement learning; preference learning and human feedback."
     },
     {
-      "title": "Auctions and mechanisms",
+      "title": "Algorithms and complexity",
       "paths": [
-        "EconCSLib/MechanismDesign/Auctions.lean",
-        "EconCSLib/MechanismDesign/Auctions"
+        "AppliedModelingLib/Algorithms.lean",
+        "AppliedModelingLib/Algorithms"
       ],
-      "examples": "Mechanism-design infrastructure for digital-goods, combinatorial, and position auctions: allocation and payment semantics, utility formulas, DSIC truthfulness, VCG-style welfare maximization, benchmark-competitive auctions, single-minded set packing, greedy mechanisms, and critical-value certificates.",
-      "papers": [
-        "GHW01DigitalGoods",
-        "LOS02CombinatorialAuctions"
-      ]
-    },
-    {
-      "title": "Online algorithms and regret",
-      "paths": [
-        "EconCSLib/Algorithms/Online.lean",
-        "EconCSLib/Algorithms/Online"
-      ],
-      "examples": "Online allocation infrastructure centered on AdWords and platform learning: matching/allocation state machines, primal-dual accounting, competitive-ratio certificates, regret interfaces, and hooks for randomized lower-bound arguments.",
+      "examples": "Online allocation and advertising; competitive analysis and regret reductions; primal-dual approximation arguments; computational complexity, reductions, and neural-network verification.",
       "papers": [
         "MSVV07AdWords",
         "MBJG25ProducerFairness"
       ]
     },
     {
-      "title": "Matching markets and admissions",
+      "title": "Game theory",
       "paths": [
-        "EconCSLib/Markets/Matching.lean",
-        "EconCSLib/Markets/Matching",
-        "EconCSLib/Applications/Admissions.lean",
-        "EconCSLib/Applications/Admissions"
+        "AppliedModelingLib/GameTheory.lean",
+        "AppliedModelingLib/GameTheory"
       ],
-      "examples": "Stable matching and admissions infrastructure: one-to-one and many-to-one assignments, blocking-pair stability, deferred-acceptance invariants, applicant/proposer optimality, quota admissions, strategic application cutoffs and payoffs, and two-group policy objective comparisons.",
+      "examples": "Best responses and Nash equilibrium; preference games; threshold strategies; multitask incentives; performative prediction and strategic responses."
+    },
+    {
+      "title": "Markets and matching",
+      "paths": [
+        "AppliedModelingLib/Markets.lean",
+        "AppliedModelingLib/Markets"
+      ],
+      "examples": "Stable and many-to-one matching; deferred acceptance and proposer optimality; continuum markets and admission cutoffs; manipulation and blocking; public decisions.",
       "papers": [
         "GS62CollegeAdmissions",
         "Roth82StableMatching",
@@ -235,15 +293,50 @@
       ]
     },
     {
-      "title": "Ratings and recommender systems",
+      "title": "Mechanism design and auctions",
       "paths": [
-        "EconCSLib/Foundations/Econometrics.lean",
-        "EconCSLib/Foundations/Econometrics/RatingModels",
-        "EconCSLib/Learning/Bandits",
-        "EconCSLib/Applications/RecommenderSystems.lean",
-        "EconCSLib/Applications/RecommenderSystems"
+        "AppliedModelingLib/MechanismDesign.lean",
+        "AppliedModelingLib/MechanismDesign"
       ],
-      "examples": "Ratings and recommendation infrastructure: Bayesian binary and ordinal signal models, posterior-mean rating formulas, prior-weighted updates, monotonicity and correction lemmas, Thompson-sampling entrypoints, exposure/allocation policies, classwise fairness constraints, top-k recommendation surfaces, policy averaging, and accuracy/diversity trade-off statements.",
+      "examples": "Incentive compatibility, truthfulness, and payments; VCG and generalized second-price auctions; position, digital-goods, and combinatorial auctions; welfare and revenue.",
+      "papers": [
+        "GHW01DigitalGoods",
+        "LOS02CombinatorialAuctions"
+      ]
+    },
+    {
+      "title": "Social choice and fair division",
+      "paths": [
+        "AppliedModelingLib/SocialChoice.lean",
+        "AppliedModelingLib/SocialChoice"
+      ],
+      "examples": "Preference rankings and aggregation; ranked-choice voting and proportionality; indivisible goods and chores; bounded envy and envy freeness up to any item (EFX); Pareto efficiency.",
+      "papers": [
+        "LMMS04FairDivision",
+        "GGSG19TopThree",
+        "GKGMM19IterativeLocalVoting",
+        "KR21Monoculture"
+      ]
+    },
+    {
+      "title": "Queueing",
+      "paths": [
+        "AppliedModelingLib/Queueing.lean",
+        "AppliedModelingLib/Queueing"
+      ],
+      "examples": "Single-server and many-server queues; priority service and processor sharing; waiting times, workloads, and stationary distributions; heavy-traffic limits; congestion externalities and pricing."
+    },
+    {
+      "title": "AI and applications",
+      "paths": [
+        "AppliedModelingLib/Applications.lean",
+        "AppliedModelingLib/Applications",
+        "AppliedModelingLib/Privacy.lean",
+        "AppliedModelingLib/Privacy",
+        "AppliedModelingLib/Alignment.lean",
+        "AppliedModelingLib/Alignment"
+      ],
+      "examples": "Alignment axioms and welfare; differential privacy and composition; algorithmic fairness; admissions policies; rating systems; recommender systems and producer/user fairness.",
       "papers": [
         "MBJG25ProducerFairness",
         "GJ18InformativeRatingSystems",
@@ -251,5 +344,46 @@
         "GCG24UserItemFairness"
       ]
     }
-  ]
+  ],
+  "preserve_partial_status": [
+    "LOS02CombinatorialAuctions",
+    "LMMS04FairDivision"
+  ],
+  "public_summary_overrides": {
+    "GS62CollegeAdmissions": "",
+    "Naor1969QueueTolls": "Few lines of code as much of machinery is in the shared library",
+    "Roth82StableMatching": "",
+    "MendelsonWhang1990PriorityPricing": "Few lines of code as much of machinery is in the shared library",
+    "FreundSchapire1997Hedge": "Few lines of code as much of machinery is in the shared library",
+    "GHW01DigitalGoods": "Formalizes the SODA paper; Theorem 8.2 uses the refined monotone-auction wording from the journal version. Formalization gap: Lemma 8.1 and Theorem 8.2 are proved for finite offer support; continuous-offer cases remain unproved.",
+    "MSVV07AdWords": "Formalization gap: Theorem 8's limit is proved when its finite-error term vanishes; deriving that condition from the paper's small-bid regime remains unproved.",
+    "EOS07GSP": "Formalization gap: Theorem 8 uniqueness is proved among common symmetric continuation plans; uniqueness among arbitrary bidder-specific plans remains unproved.",
+    "FalahatgarEtAl2017MaxingRanking": "",
+    "GJ19OptimalBinaryRatingSystems": "Formalization gap: Theorem 3.1 is proved for optimization of its displayed rate formula for at least three levels; identifying that formula with the actual ranking-quality exponent and proving Lemma C.4's same-objective equivalence remain unproved.",
+    "SeshadriUgander2020IIATesting": "",
+    "GKGMM19IterativeLocalVoting": "Theorem 3 is proved as a constrained alternative in general and as the original statement under the explicit full-space condition.",
+    "GGSG19TopThree": "",
+    "NoothigattuEtAl2020PairwiseComparisons": "",
+    "GJ18InformativeRatingSystems": "",
+    "PZMH20PerformativePrediction": "Formalization gap: Theorem 3.10 gives eventual high-probability containment in dimension > 2 with uniform moments and stronger regularity; the printed sample-count and burn-in bounds remain unproved.",
+    "KR21Monoculture": "",
+    "LG21TestOptionalPolicies": "Formalization gap: Theorem 3.1 assumes stability against profitable group entry; voluntary Lemma 4.1 assumes maximal participation. Deriving these refinements from the paper’s equilibrium definition remains unproved.",
+    "GHKR22BiasBounties": "",
+    "GN21DriverSurgePricing": "",
+    "GeEtAl2024AlignmentAxioms": "",
+    "PG23MonocultureMatching": "",
+    "LBG24SpatialUnderreporting": "",
+    "PRPKG24AccuracyDiversity": "",
+    "LG24ServiceLevelAgreements": "",
+    "GCG24UserItemFairness": "",
+    "PKG25NoFreeLunch": "",
+    "DSWG24DiscretizationBias": "",
+    "MBJG25ProducerFairness": "",
+    "DGD26AdmissionsPredictability": "",
+    "GGRS26CombattingGerrymanderingRCV": "",
+    "HT26EFXChores": "",
+    "LOS02CombinatorialAuctions": "Formalization gap: twelve selected auction-theoretic results are proved; Theorem 6.1's native NP-hardness and NP = ZPP consequences remain unproved.",
+    "LMMS04FairDivision": "Formalization gap: selected components of Theorems 2.1, 2.3, and 4.2 are proved; their remaining complexity and asymptotic clauses and Theorems 3.1-3.3 remain unproved.",
+    "PG24NoisyMatchingMarkets": "Formalization gap: Proposition 1 and Propositions 7(ii)-8 have their qualitative limits proved, while the source polynomial rates remain unproved."
+  }
 }

@@ -15,7 +15,7 @@ namespace LG21TestOptionalPolicies
 noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 open scoped ENNReal ProbabilityTheory
 
 /-- A literal positive-mass entry that changes a positive set of current
@@ -69,6 +69,23 @@ def LG21OptionalSourceStableAgainstPositiveMassRecalibratedReportEntry
     (hpublic : Measurable (fun omega => (base omega, (score omega, skill omega))))
     (currentTake : ℝ -> Base -> Bool) (currentReport : Base -> ℝ -> Bool) : Prop :=
   ∀ candidateTake candidateReport candidate,
+    ¬ LG21OptionalSourcePositiveMassRecalibratedReportEntry
+      sourceLaw base score skill hpublic currentTake currentReport
+        candidateTake candidateReport candidate
+
+/-- Report-branch recalibration stability restricted to candidates that keep
+the source equilibrium's fixed test law. -/
+def LG21OptionalSourceStableAgainstPositiveMassRecalibratedReportEntryForTestLaw
+    {Omega Base : Type*} [MeasurableSpace Omega] [MeasurableSpace Base]
+    (sourceLaw : Measure Omega) [IsProbabilityMeasure sourceLaw]
+    (base : Omega -> Base) (score skill : Omega -> ℝ)
+    (hpublic : Measurable (fun omega => (base omega, (score omega, skill omega))))
+    (fixedTestLaw : ℝ -> Base -> Measure ℝ)
+    (currentTake : ℝ -> Base -> Bool) (currentReport : Base -> ℝ -> Bool) : Prop :=
+  ∀ candidateTake candidateReport candidate,
+    (∀ latentSkill publicBase,
+      candidate.testLaw latentSkill publicBase =
+        fixedTestLaw latentSkill publicBase) ->
     ¬ LG21OptionalSourcePositiveMassRecalibratedReportEntry
       sourceLaw base score skill hpublic currentTake currentReport
         candidateTake candidateReport candidate

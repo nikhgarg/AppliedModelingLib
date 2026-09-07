@@ -31,10 +31,14 @@ abbrev audit_theorem2_positive_finite_cutoff_not_ic :=
   @PaperInterface.review_theorem2_multiplicative_positive_finite_cutoff_not_ic_both_states
 abbrev audit_lemma1_dynamic_reward_decomposition :=
   @PaperInterface.review_lemma1_measured_dynamic_reward_decomposition
+abbrev audit_lemma1_dynamic_reward_decomposition_actual_calendar :=
+  @PaperInterface.review_lemma1_measured_dynamic_reward_decomposition_of_actual_calendar
 abbrev audit_lemma2_switch_probability_formula :=
   @PaperInterface.review_lemma2_switch_probability_formula
 abbrev audit_lemma3_time_fraction_formula :=
   @PaperInterface.review_lemma3_measured_time_fraction_formula
+abbrev audit_lemma3_time_fraction_formula_actual_calendar :=
+  @PaperInterface.review_lemma3_measured_time_fraction_formula_of_actual_calendar
 abbrev audit_theorem3_structured_pricing :=
   @PaperInterface.review_theorem3_structured_pricing
 

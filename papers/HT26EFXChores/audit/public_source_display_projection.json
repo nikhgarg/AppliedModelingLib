@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "HT26EFXChores",
-  "private_source_map_sha256": "03f563c4efb5c02bce3cfb8bd7b2415c718ca178bec4a9698162951d1f7ad526",
+  "private_source_map_sha256": "c306918407fb20bebcf36bfe387134dbecf2958d40bc45c0559f7d2c243a6920",
   "public_manifest_path": "papers/HT26EFXChores/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "3a391e42c0ed6e83141010a490e973ec975b8c6a03073d27ee65f8660c9ce97e",
+  "public_source_map_sha256": "03223c911f7b702d0f456c41ab11b2d94fe05aac0bdf44c2432d172e08426fc2",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
@@ -16,6 +16,7 @@
     "canonical_short_long_labels_definition",
     "composition",
     "efx_for_chores_definition",
+    "efx_pareto_construction_has_efx",
     "efx_pareto_incompatibility",
     "efx_po_cost_lower_bounds",
     "efx_po_every_agent_large",
@@ -25,6 +26,7 @@
     "m2_efx_allocation",
     "m2_efx_allocation_properties",
     "m34_insertion",
+    "m34_insertion_general_agents",
     "pareto_optimality_definition",
     "supercanonical_allocation_definition",
     "tri_four_no_a_bundle_expensive",
@@ -121,6 +123,18 @@
               "quoted_text_sha256": "48295985bbf7e2aa1b185137b3e41a1b464263e733629aa1ec32e5c3d01f479e"
             }
           ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 558,
+              "line_start": 550,
+              "publication_locator": "cited publication",
+              "quoted_text": "be the set of agents for whom $g$ is small.  We partition the chores into\n\\[\nM_{01}=\\{g:|S(g)|\\le 1\\},\\qquad\nM_2=\\{g:|S(g)|=2\\},\\qquad\nM_{34}=\\{g:|S(g)|\\ge 3\\}.\n\\]\nFor an item in $M_2$, we write $(i,j)$ for an item small exactly for agents\n$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set\n$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.",
+              "quoted_text_sha256": "7c01478fa5bbf6755897ece1996e4845988a4ec3d7ba9b2733986d4fbe0d6668"
+            }
+          ]
         }
       ],
       "source_anchors": [
@@ -157,6 +171,30 @@
               "publication_locator": "cited publication",
               "quoted_text": "For each agent $i$, let\n\\[\n n_i=\\left|\\{g\\in M_{01}:S(g)=\\{i\\}\\}\\right|\n\\]\nbe the number of $M_{01}$ items uniquely small for $i$.  Items in $M_{01}$\nwith $S(g)=\\emptyset$ are all-large items.\nLet $|M_{01}|=4a+b$ with $b\\in\\{0,1,2,3\\}$.\nAs mentioned before, we will make sure each agent receives either $a$ items or $a+1$ items.\n\nFix quotas $q_i\\in\\{a,a+1\\}$ with $\\sum_i q_i=|M_{01}|$. \nWe consider allocations of $M_{01}$ with quotas $q=(q_1,q_2,q_3,q_4)$ in which each agent $i$ first receives as many of her uniquely-small items as possible, up to quota $q_i$, and the remaining slots are filled with the remaining items.\nWe will show that all such allocations satisfy EFX.\nIt is also important that we have the freedom to choose which agents receive $a$ items and which agents receive $a+1$ items.\nThis freedom enables us to append the allocation of $M_2$ after the allocation of $M_{01}$.\n\nWe begin by defining this type of allocations.\n",
               "quoted_text_sha256": "48295985bbf7e2aa1b185137b3e41a1b464263e733629aa1ec32e5c3d01f479e"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 558,
+              "line_start": 550,
+              "publication_locator": "cited publication",
+              "quoted_text": "be the set of agents for whom $g$ is small.  We partition the chores into\n\\[\nM_{01}=\\{g:|S(g)|\\le 1\\},\\qquad\nM_2=\\{g:|S(g)|=2\\},\\qquad\nM_{34}=\\{g:|S(g)|\\ge 3\\}.\n\\]\nFor an item in $M_2$, we write $(i,j)$ for an item small exactly for agents\n$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set\n$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.",
+              "quoted_text_sha256": "7c01478fa5bbf6755897ece1996e4845988a4ec3d7ba9b2733986d4fbe0d6668"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 756,
+              "line_start": 751,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{definition}\n    An allocation $P=(P_1,P_2,P_3,P_4)$ of $M_{01}$ is \\emph{canonical} if, for each agent $i$, $|P_i|\\in\\{a,a+1\\}$ and $P_i$ contains $\\min\\{|P_i|, n_i\\}$ items that are small for agent $i$.\n    In a canonical allocation with $b>0$, agents receiving $a$ items are called \\emph{short} agents, and agents receiving $a+1$ items are called \\emph{long} agents.\n    For $b=0$ and $a>0$, every agent in a canonical is both long and short.\n    For $b>0$, an allocation $P=(P_1,P_2,P_3,P_4)$ is \\emph{super-canonical} if it is canonical and satisfies $c_i(P_i)\\leq c_i(P_j)-r$ for every short agent $i$ and every long agent $j$.\n\\end{definition}",
+              "quoted_text_sha256": "edb1deddb1761bf32ebf1f55318b9816e35503712b10a614eeb5a2c1d551b6f5"
             }
           ]
         }
@@ -197,6 +235,18 @@
               "quoted_text_sha256": "ca419d7bdc5dc8e343dc2e2f088757860329b39d10ce76a026081ccec9bf41f9"
             }
           ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 558,
+              "line_start": 550,
+              "publication_locator": "cited publication",
+              "quoted_text": "be the set of agents for whom $g$ is small.  We partition the chores into\n\\[\nM_{01}=\\{g:|S(g)|\\le 1\\},\\qquad\nM_2=\\{g:|S(g)|=2\\},\\qquad\nM_{34}=\\{g:|S(g)|\\ge 3\\}.\n\\]\nFor an item in $M_2$, we write $(i,j)$ for an item small exactly for agents\n$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set\n$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.",
+              "quoted_text_sha256": "7c01478fa5bbf6755897ece1996e4845988a4ec3d7ba9b2733986d4fbe0d6668"
+            }
+          ]
         }
       ],
       "source_anchors": [
@@ -223,6 +273,18 @@
               "quoted_text_sha256": "5b71eb7251aea72ec86ccdbd30ef8e0250cecd2eee066c438d69b7738b098141"
             }
           ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 545,
+              "line_start": 545,
+              "publication_locator": "cited publication",
+              "quoted_text": "We will assume $r>2$ in the remaining part of this section.",
+              "quoted_text_sha256": "921db4c0cf4bc588ac861b34eaed905ee01641474ddfeeec6da84cbf6f1b3a15"
+            }
+          ]
         }
       ],
       "source_anchors": [
@@ -237,6 +299,20 @@
       "source_kind": "lemma"
     },
     "efx_for_chores_definition": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 250,
+              "line_start": 246,
+              "publication_locator": "cited publication",
+              "quoted_text": "We will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.\nEach agent $i$'s cost function $c_i:2^M\\to\\mathbb{R}_{\\geq0}$ is additive:\n$$c_i(S)=\\sum_{g\\in S}c_i(\\{g\\}).$$\nWe write $c_i(g_j)$ in short for $c_i(\\{g_j\\})$ for notation simplicity.\nWe will use ``cost function'' and ``disutility function'' interchangeably in this paper.",
+              "quoted_text_sha256": "aad212ca2b0b8e3292ce69ae6edce20dfa3d8c08bd54d7f0fdf341d10c8b6223"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 275,
@@ -248,7 +324,59 @@
       ],
       "source_kind": "definition"
     },
+    "efx_pareto_construction_has_efx": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 446,
+              "line_start": 423,
+              "publication_locator": "cited publication",
+              "quoted_text": "Agents are partitioned into two groups $T_1$ and $T_2$ with $|T_1|=t_1$ and $|T_2|=t_2$.\nThere are $m=2n+1$ items which are partitioned into three groups $A,B$, and $C$.\n$A$ is the set of large items containing $n-1$ items which have cost $r$ to every agent.\n$B$ contains $t_1+1$ items.\nEach agent in $T_1$ values each item in $B$ at $1$ and each item in $C$ at $r$.\n$C$ contains $t_2+1$ items.\nEach agent in $T_2$ values each item in $B$ at $r$ and each item in $C$ at $1$.\nRecall that $r$ can be any real number greater than $t_2+1$.\nTable~\\ref{tab:po} illustrates the instance.\n\n\\begin{table}[h]\n    \\centering\n    \\caption{A bi-valued instance where every EFX allocation fails to be Pareto-optimal.  Each entry is the cost of every item in the corresponding item class.}\n    \\begin{tabular}{cccc}\n    \\hline\n         & $A=\\{a_1,\\ldots,a_{n-1}\\}$ & $B=\\{b_1,\\ldots,b_{t_1+1}\\}$ & $C=\\{c_1,\\ldots,c_{t_2+1}\\}$\\\\\n    \\hline\n       Agents in $T_1$ & $r$ & $1$ & $r$\\\\\n       Agents in $T_2$ & $r$ & $r$ & $1$\\\\\n    \\hline\n    \\end{tabular}\n    \n    \\label{tab:po}\n\\end{table}",
+              "quoted_text_sha256": "9d10ab8022c3a4b73aa07174f59a03289c05e63476ec12321d51bd9319708e39"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 452,
+          "line_start": 448,
+          "publication_locator": "cited publication",
+          "quoted_text": "Notice that an EFX allocation exists in this instance.\nFor each agent $i\\in T_1$, she receives a large item from $A$ and a small item from $B$.\nFor all but one agent in $T_2$, each of them receives a large item from $A$ and a small item from $C$.\nThe remaining agent in $T_2$ receives one item from $B$ and two items from $C$.\nThe readers can easily verify this is an EFX allocation.",
+          "quoted_text_sha256": "47daccac2e1c45ffe819f924488ac696497d25a3d86bfe25f805467fef021cc9"
+        }
+      ],
+      "source_kind": "claim"
+    },
     "efx_pareto_incompatibility": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 250,
+              "line_start": 244,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\section{Preliminaries}\nA set $M$ of $m$ chores $g_1,\\ldots,g_m$ is allocated to a set $N$ of $n$ agents $1,\\ldots,n$.\nWe will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.\nEach agent $i$'s cost function $c_i:2^M\\to\\mathbb{R}_{\\geq0}$ is additive:\n$$c_i(S)=\\sum_{g\\in S}c_i(\\{g\\}).$$\nWe write $c_i(g_j)$ in short for $c_i(\\{g_j\\})$ for notation simplicity.\nWe will use ``cost function'' and ``disutility function'' interchangeably in this paper.",
+              "quoted_text_sha256": "f2840e0297a1fea40fae62e17a7e548a68748934b8bc6553f74053bca8e4fb48"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 296,
+              "line_start": 293,
+              "publication_locator": "cited publication",
+              "quoted_text": "We say that the cost function is tri-valued if there exist constants $p,q,r\\geq 0$ such that $c_i(g_j)\\in\\{p,q,r\\}$ for any $i\\in N$ and $g_j\\in M$.\nThe cost function is bi-valued if there exist constants $p,q\\geq 0$ such that $c_i(g_j)\\in\\{p,q\\}$ for any $i\\in N$ and $g_j\\in M$.\nFor bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\\in\\{1,r\\}$ (for any $i\\in N$ and $g_j\\in M$) instead.\nWe say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.",
+              "quoted_text_sha256": "5b71eb7251aea72ec86ccdbd30ef8e0250cecd2eee066c438d69b7738b098141"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 418,
@@ -385,6 +513,30 @@
               "quoted_text_sha256": "15a5f0ab498f98982ad6c8b3ff001b2a58de2b232d8fa27a96f7a09fc5aedd4b"
             }
           ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 1454,
+              "line_start": 1419,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\begin{lemma}[Properties of the EFX allocations in Lemma~\\ref{lem:M2}]\\label{lem:M2properties}\nThe EFX allocation $B=(B_1,\\ldots,B_4)$ ensured by Lemma~\\ref{lem:M2} can be chosen to satisfy the\nfollowing additional properties.\n\\begin{enumerate}[label=(\\roman*)]\n\\item Except in the two configurations described in~(ii), every possible envy is certified by removing a small item.  More precisely,\nwhenever $B_i$ contains an item that is small for agent $i$,\n\\[\n c_i(B_i)-1\\le c_i(B_j)\\qquad\\forall j\\in N,\n\\]\nwhereas every agent whose bundle contains only large items is envy-free:\n\\[\n c_i(B_i)\\le c_i(B_j)\\qquad\\forall j\\in N.\n\\]\n\n\\item Up to relabeling, the only configurations in which an agent whose\nbundle contains only large items may fail to be envy-free, and hence\nmust use a large item as the EFX-removal item, are the following.\n\\begin{enumerate}[label=(\\alph*)]\n\\item All items have type $(3,4)$ and\n\\[\n |R|=4q+3.\n\\]\nThen agents $1,2$ receive $q$ and $q+1$ items, respectively, in either\norder, while agents $3,4$ receive $q+1$ items each.  We are free to choose\nwhich of agents $1,2$ receives $q+1$ items, and this agent is the unique agent who use a large item as the EFX-removal item.\n\n\\item The multiset $R$ consists of one item of type $(1,2)$ and\n$4q+3$ items of type $(3,4)$.  One of agents $1,2$ receives the unique\ntype-$(1,2)$ item together with $q$ type-$(3,4)$ items, the other receives\n$q+1$ type-$(3,4)$ items, and agents $3,4$ receive $q+1$ type-$(3,4)$\nitems each.  We are free to choose which of agents $1,2$ receives the unique\ntype-$(1,2)$ item.  The other agent is the unique agent who must use a large\nitem as the EFX-removal item.\n\\end{enumerate}\n\n\\item If every edge of $R$ has type $(1,2)$ or $(3,4)$, with",
+              "quoted_text_sha256": "b3d03b997b1ea97a301a2a85e63dcd4d00e42edda17dc39b98eef206408ceb85"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 1705,
+              "line_start": 1699,
+              "publication_locator": "cited publication",
+              "quoted_text": "\nIf, after the gap-filling, the residual $M_2$ items form one of the two configurations in Lemma~\\ref{lem:M2properties}(ii), we will call this configuration \\emph{exceptional}.\nIn an exceptional configuration, one edge $(i,j)$ has multiplicity at least $3$, and, other than those $(i,j)$-items, there can be at most one other item of type $(i',j')$ where $(i',j')$ is disjoint from $(i,j)$.\nWe will call the two agents $i',j'$ \\emph{exceptional agents}.\nBy Lemma~\\ref{lem:M2properties}(ii), for the two exceptional agents $i',j'$, one of them receives only large item in the residual of $M_2$ and envies the other by a large item.\nWe call this agent the \\emph{disadvantageous agent}.\nLemma~\\ref{lem:M2properties}(ii) tells us we are free to choose the disadvantageous agent from the two exceptional agents.",
+              "quoted_text_sha256": "a2bd7d6ffa2a0b34e9e230aa5da21a54ac1738ddae2b1f4f72a60f94f7260504"
+            }
+          ]
         }
       ],
       "source_anchors": [
@@ -400,6 +552,18 @@
     },
     "four_agent_bi_valued_efx_exists": {
       "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 250,
+              "line_start": 244,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\section{Preliminaries}\nA set $M$ of $m$ chores $g_1,\\ldots,g_m$ is allocated to a set $N$ of $n$ agents $1,\\ldots,n$.\nWe will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.\nEach agent $i$'s cost function $c_i:2^M\\to\\mathbb{R}_{\\geq0}$ is additive:\n$$c_i(S)=\\sum_{g\\in S}c_i(\\{g\\}).$$\nWe write $c_i(g_j)$ in short for $c_i(\\{g_j\\})$ for notation simplicity.\nWe will use ``cost function'' and ``disutility function'' interchangeably in this paper.",
+              "quoted_text_sha256": "f2840e0297a1fea40fae62e17a7e548a68748934b8bc6553f74053bca8e4fb48"
+            }
+          ]
+        },
         {
           "semantic_role": "definition",
           "source_anchors": [
@@ -538,6 +702,44 @@
       ],
       "source_kind": "lemma"
     },
+    "m34_insertion_general_agents": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 296,
+              "line_start": 293,
+              "publication_locator": "cited publication",
+              "quoted_text": "We say that the cost function is tri-valued if there exist constants $p,q,r\\geq 0$ such that $c_i(g_j)\\in\\{p,q,r\\}$ for any $i\\in N$ and $g_j\\in M$.\nThe cost function is bi-valued if there exist constants $p,q\\geq 0$ such that $c_i(g_j)\\in\\{p,q\\}$ for any $i\\in N$ and $g_j\\in M$.\nFor bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\\in\\{1,r\\}$ (for any $i\\in N$ and $g_j\\in M$) instead.\nWe say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.",
+              "quoted_text_sha256": "5b71eb7251aea72ec86ccdbd30ef8e0250cecd2eee066c438d69b7738b098141"
+            }
+          ]
+        },
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 556,
+              "line_start": 528,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\section{EFX Allocations for Four Agents with Bi-Valued Disutilities}\nWe continue to study bi-valued instances.\nIn this section, we show that an EFX allocation always exists for four agents.\n\n\\begin{theorem}\\label{thm:four}\n    For four agents, there exists an EFX allocation in every bi-valued instance.\n\\end{theorem}\n\nFor $r=2$, \\citet{lin2025approximately} shows that EFX is compatible with Pareto-optimality for any number of agents.\nIf we only consider EFX, the case with $r\\leq 2$ can be handled by the following simple variant of the round-robin algorithm for any number of agents.\nLet $m=an+b$ for $b<n$.\nIf $b=0$, the standard round-robin algorithm outputs an EFX allocation $X=(X_1,\\ldots,X_n)$: for any pair of agents $i,j$ with $i<j$, $i$ will not envy $j$ as $i$ always picks first; we also have $c_j(X_j)-c_j(X_i)\\leq r-1$ (if in a round agent $j$ begins to receive an large item whereas agent $i$'s item in this round is small for agent $j$, then every item in the remaining process of this algorithm is large for agent $j$), $j$ will not envy $i$ up to removing any item from $j$'s bundle since $r-1\\leq1$.\nIf $b>0$, we introduce a special ``first reverse round'' of the round-robin algorithm where agents $b,b-1,\\ldots,1$ iteratively pick favorite items in the order.\nAfter that, we perform the standard round-robin algorithm in the standard order $1,\\ldots,n$.\nFor each pair of agents $i,j$ with $i<j$, agent $i$ will not envy agent $j$ after removing the item picked in the first special round. If this item is a small item for agent $i$, EFX condition holds; if this item is a large item, then $X_i$ only contains large items, and EFX condition also holds.\nThe reason agent $j$ will not strongly envy agent $i$ is similar as the $b=0$ case: agent $j$ has an advantage to agent $i$ in the first round, and after that the disadvantage is at most $r-1$.\n\nWe will assume $r>2$ in the remaining part of this section.\nFor a chore $g$, let\n\\[\n S(g)=\\{i\\in N:c_i(g)=1\\}\n\\]\nbe the set of agents for whom $g$ is small.  We partition the chores into\n\\[\nM_{01}=\\{g:|S(g)|\\le 1\\},\\qquad\nM_2=\\{g:|S(g)|=2\\},\\qquad\nM_{34}=\\{g:|S(g)|\\ge 3\\}.\n\\]\nFor an item in $M_2$, we write $(i,j)$ for an item small exactly for agents",
+              "quoted_text_sha256": "2c9286245ee7476ed2399c764ceac4cd232a5d1044eaec4b9d9c931d0af08655"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 677,
+          "line_start": 673,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{remark}\n    This idea also works for general numbers of agents.\n    If we have a partial EFX allocation such that each of the remaining unallocated items is valued as large for at most one agent, then we can always allocate the remaining items one by one until we get a complete EFX allocation.\n    Therefore, under bi-valued setting, items valued as large by at most one agent are never a real obstacle for EFX allocations.\n\\end{remark}",
+          "quoted_text_sha256": "8b23ada08fb2ff7293ea90cb6021d26c5af857af9bb917cd8de572cb6f5c52ec"
+        }
+      ],
+      "source_kind": "claim"
+    },
     "pareto_optimality_definition": {
       "source_anchors": [
         {
@@ -585,6 +787,18 @@
               "publication_locator": "cited publication",
               "quoted_text": "\\begin{definition}\n    An allocation $P=(P_1,P_2,P_3,P_4)$ of $M_{01}$ is \\emph{canonical} if, for each agent $i$, $|P_i|\\in\\{a,a+1\\}$ and $P_i$ contains $\\min\\{|P_i|, n_i\\}$ items that are small for agent $i$.\n    In a canonical allocation with $b>0$, agents receiving $a$ items are called \\emph{short} agents, and agents receiving $a+1$ items are called \\emph{long} agents.\n    For $b=0$ and $a>0$, every agent in a canonical is both long and short.",
               "quoted_text_sha256": "db1056a1b321e17633dfe011230553e8e58c379605c43653f7d5ba641ba395f8"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 558,
+              "line_start": 550,
+              "publication_locator": "cited publication",
+              "quoted_text": "be the set of agents for whom $g$ is small.  We partition the chores into\n\\[\nM_{01}=\\{g:|S(g)|\\le 1\\},\\qquad\nM_2=\\{g:|S(g)|=2\\},\\qquad\nM_{34}=\\{g:|S(g)|\\ge 3\\}.\n\\]\nFor an item in $M_2$, we write $(i,j)$ for an item small exactly for agents\n$i$ and $j$.  Thus the items in $M_2$ form a multigraph on the vertex set\n$N$, where an edge $(i,j)$ is a chore small for precisely agents $i$ and $j$.",
+              "quoted_text_sha256": "7c01478fa5bbf6755897ece1996e4845988a4ec3d7ba9b2733986d4fbe0d6668"
             }
           ]
         }
@@ -698,6 +912,32 @@
       "source_kind": "proposition"
     },
     "tri_valued_nonexistence": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 250,
+              "line_start": 244,
+              "publication_locator": "cited publication",
+              "quoted_text": "\\section{Preliminaries}\nA set $M$ of $m$ chores $g_1,\\ldots,g_m$ is allocated to a set $N$ of $n$ agents $1,\\ldots,n$.\nWe will use ``item'' and ``chore'' interchangeably in this paper to refer to an element in $M$.\nEach agent $i$'s cost function $c_i:2^M\\to\\mathbb{R}_{\\geq0}$ is additive:\n$$c_i(S)=\\sum_{g\\in S}c_i(\\{g\\}).$$\nWe write $c_i(g_j)$ in short for $c_i(\\{g_j\\})$ for notation simplicity.\nWe will use ``cost function'' and ``disutility function'' interchangeably in this paper.",
+              "quoted_text_sha256": "f2840e0297a1fea40fae62e17a7e548a68748934b8bc6553f74053bca8e4fb48"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 296,
+              "line_start": 293,
+              "publication_locator": "cited publication",
+              "quoted_text": "We say that the cost function is tri-valued if there exist constants $p,q,r\\geq 0$ such that $c_i(g_j)\\in\\{p,q,r\\}$ for any $i\\in N$ and $g_j\\in M$.\nThe cost function is bi-valued if there exist constants $p,q\\geq 0$ such that $c_i(g_j)\\in\\{p,q\\}$ for any $i\\in N$ and $g_j\\in M$.\nFor bi-valued cost functions, we will focus on the case $0<p<q$ (the case $0=p<q$ corresponds to the setting with binary cost functions and we know an allocation that is EFX and Pareto-optimal always exists), and we will assume $c_i(g_j)\\in\\{1,r\\}$ (for any $i\\in N$ and $g_j\\in M$) instead.\nWe say that the item $g_j$ is ``large'' for agent $i$ if $c_i(g_j)=r$ and it is ``small'' for agent $i$ if $c_i(g_j)=1$.",
+              "quoted_text_sha256": "5b71eb7251aea72ec86ccdbd30ef8e0250cecd2eee066c438d69b7738b098141"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 306,

@@ -1,5 +1,5 @@
 import GGSG19TopThree.AlmostSureDesignInvariance
-import EconCSLib.Foundations.Probability.IndependentProduct
+import AppliedModelingLib.Foundations.Probability.IndependentProduct
 import Mathlib.Probability.BorelCantelli
 import Mathlib.Probability.Distributions.Uniform
 import Mathlib.Probability.Martingale.BorelCantelli
@@ -8,8 +8,8 @@ open scoped BigOperators
 
 namespace GGSG19TopThree
 
-open EconCSLib.Probability
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib.Probability
+open AppliedModelingLib.SocialChoice.Ranking
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology
 
@@ -34,7 +34,7 @@ theorem iidPath_statistic_integral
     (law : PMF Signal) (statistic : Signal → ℝ) (voter : ℕ) :
     letI : MeasurableSpace Signal := ⊤
     (∫ path, statistic (path voter) ∂finitePMFIidPathMeasure law) =
-      EconCSLib.pmfExp law statistic := by
+      AppliedModelingLib.pmfExp law statistic := by
   letI : MeasurableSpace Signal := ⊤
   have hstat_meas : Measurable statistic := measurable_of_countable statistic
   have hcoord :
@@ -52,8 +52,8 @@ theorem iidPath_statistic_integral
   calc
     (∫ path, statistic (path voter) ∂finitePMFIidPathMeasure law) =
         ∫ signal, statistic signal ∂law.toMeasure := hcoord.integral_eq
-    _ = EconCSLib.pmfExp law statistic :=
-      (EconCSLib.pmfExp_eq_integral_toMeasure law statistic).symm
+    _ = AppliedModelingLib.pmfExp law statistic :=
+      (AppliedModelingLib.pmfExp_eq_integral_toMeasure law statistic).symm
 
 /-- Every coordinate of the canonical iid path lies in the PMF support almost surely. -/
 theorem ae_all_iidPath_of_forall_support
@@ -94,8 +94,8 @@ theorem ae_frequently_iidPath_eq_of_atom_pos
   letI : MeasurableSpace Signal := ⊤
   let indicator : Signal → ℝ := fun signal ↦ if signal = witness then 1 else 0
   have hindicator_mean :
-      EconCSLib.pmfExp law indicator = (law witness).toReal := by
-    unfold EconCSLib.pmfExp indicator
+      AppliedModelingLib.pmfExp law indicator = (law witness).toReal := by
+    unfold AppliedModelingLib.pmfExp indicator
     classical
     rw [Finset.sum_eq_single witness]
     · simp
@@ -114,7 +114,7 @@ theorem ae_frequently_iidPath_eq_of_atom_pos
   have haverage_zero := hindicator_zero.cesaro
   have hzero : (law witness).toReal = 0 := by
     calc
-      (law witness).toReal = EconCSLib.pmfExp law indicator :=
+      (law witness).toReal = AppliedModelingLib.pmfExp law indicator :=
         hindicator_mean.symm
       _ = 0 := tendsto_nhds_unique haverage (by
         simpa [div_eq_inv_mul] using haverage_zero)
@@ -124,7 +124,7 @@ theorem ae_frequently_iidPath_eq_of_atom_pos
 theorem iidPath_partialSum_martingale
     {Signal : Type*} [Fintype Signal] [DecidableEq Signal]
     (law : PMF Signal) (statistic : Signal → ℝ)
-    (hmean : EconCSLib.pmfExp law statistic = 0) :
+    (hmean : AppliedModelingLib.pmfExp law statistic = 0) :
     letI : MeasurableSpace Signal := ⊤
     let X : ℕ → (ℕ → Signal) → ℝ :=
       fun voter path ↦ statistic (path voter)
@@ -208,8 +208,8 @@ theorem ae_not_tendsto_iidPath_partialSum_of_support_ne_zero
   letI : MeasurableSpace Signal := ⊤
   let indicator : Signal → ℝ := fun signal ↦ if signal = witness then 1 else 0
   have hindicator_mean :
-      EconCSLib.pmfExp law indicator = (law witness).toReal := by
-    unfold EconCSLib.pmfExp indicator
+      AppliedModelingLib.pmfExp law indicator = (law witness).toReal := by
+    unfold AppliedModelingLib.pmfExp indicator
     classical
     rw [Finset.sum_eq_single witness]
     · simp
@@ -230,7 +230,7 @@ theorem ae_not_tendsto_iidPath_partialSum_of_support_ne_zero
     have haverage_zero := hindicator_zero.cesaro
     have hzero : (law witness).toReal = 0 := by
       calc
-        (law witness).toReal = EconCSLib.pmfExp law indicator :=
+        (law witness).toReal = AppliedModelingLib.pmfExp law indicator :=
           hindicator_mean.symm
         _ = 0 := tendsto_nhds_unique haverage (by
           simpa [div_eq_inv_mul] using haverage_zero)
@@ -263,7 +263,7 @@ theorem ae_not_tendsto_iidPath_partialSum_of_support_ne_zero
 theorem ae_not_eventually_nonneg_iidPath_partialSum_of_mean_zero_of_support_ne_zero
     {Signal : Type*} [Fintype Signal] [DecidableEq Signal]
     (law : PMF Signal) (statistic : Signal → ℝ)
-    (hmean : EconCSLib.pmfExp law statistic = 0)
+    (hmean : AppliedModelingLib.pmfExp law statistic = 0)
     (witness : Signal)
     (hwitness_mass : 0 < (law witness).toReal)
     (hwitness_ne : statistic witness ≠ 0) :
@@ -335,11 +335,11 @@ theorem ae_not_eventually_nonneg_iidPath_partialSum_of_mean_zero_of_support_ne_z
 
 /-- One iid election draw consists of a voter ranking and an independent tie ranking. -/
 noncomputable def rankingUniformTieSignalLaw {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n)) :
-    PMF (EconCSLib.SocialChoice.Ranking.Ranking n ×
-      EconCSLib.SocialChoice.Ranking.Ranking n) :=
-  EconCSLib.pmfProd law
-    (PMF.uniformOfFintype (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n)) :
+    PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n ×
+      AppliedModelingLib.SocialChoice.Ranking.Ranking n) :=
+  AppliedModelingLib.pmfProd law
+    (PMF.uniformOfFintype (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
 
 /-- Cumulative source score using the voter-ranking coordinate. -/
 def iidUniformTieCandidateScore
@@ -351,22 +351,22 @@ def iidUniformTieCandidateScore
 /-- Exact tier correctness when equal cumulative scores use the fresh tie ranking. -/
 def iidUniformTieTieredCorrect
     {n Stage : ℕ}
-    (score : EconCSLib.SocialChoice.Ranking.Candidate n →
-      EconCSLib.SocialChoice.Ranking.Ranking n → ℝ)
+    (score : AppliedModelingLib.SocialChoice.Ranking.Candidate n →
+      AppliedModelingLib.SocialChoice.Ranking.Ranking n → ℝ)
     (targetPrefix : Fin Stage →
-      Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
-    (path : ℕ → EconCSLib.SocialChoice.Ranking.Ranking n ×
-      EconCSLib.SocialChoice.Ranking.Ranking n)
+      Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
+    (path : ℕ → AppliedModelingLib.SocialChoice.Ranking.Ranking n ×
+      AppliedModelingLib.SocialChoice.Ranking.Ranking n)
     (N : ℕ) : Prop :=
   ∀ stage : Fin Stage,
-    ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+    ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
       hi ∈ targetPrefix stage → lo ∉ targetPrefix stage →
         iidUniformTieCandidateScore score path N lo <
             iidUniformTieCandidateScore score path N hi ∨
           (iidUniformTieCandidateScore score path N lo =
               iidUniformTieCandidateScore score path N hi ∧
-            EconCSLib.SocialChoice.Ranking.rankOf (path N).2 hi <
-              EconCSLib.SocialChoice.Ranking.rankOf (path N).2 lo)
+            AppliedModelingLib.SocialChoice.Ranking.rankOf (path N).2 hi <
+              AppliedModelingLib.SocialChoice.Ranking.rankOf (path N).2 lo)
 
 /--
 Named paper-local conclusion for Proposition 1.  The structure exposes the
@@ -391,11 +391,11 @@ structure PropositionOneUniformTieConsistency
 /-- A statistic of the voter coordinate has its original expectation. -/
 theorem pmfExp_rankingUniformTieSignalLaw_fst
     {n : ℕ} (law : PMF (Ranking n)) (statistic : Ranking n → ℝ) :
-    EconCSLib.pmfExp (rankingUniformTieSignalLaw law)
+    AppliedModelingLib.pmfExp (rankingUniformTieSignalLaw law)
         (fun signal ↦ statistic signal.1) =
-      EconCSLib.pmfExp law statistic := by
-  rw [rankingUniformTieSignalLaw, EconCSLib.pmfExp_pmfProd_eq_pairExp]
-  exact EconCSLib.pmfPairExp_ignore_right law
+      AppliedModelingLib.pmfExp law statistic := by
+  rw [rankingUniformTieSignalLaw, AppliedModelingLib.pmfExp_pmfProd_eq_pairExp]
+  exact AppliedModelingLib.pmfPairExp_ignore_right law
     (PMF.uniformOfFintype (Ranking n)) statistic
 
 /-- Strict source prefix dominance gives almost-sure recovery with uniform ties. -/
@@ -432,7 +432,7 @@ theorem rankingTieredStrictPrefixDominance_implies_almostSure_uniformTieCorrect
       rankingPrefixScore diff pair.hi ranking -
         rankingPrefixScore diff pair.lo ranking
     have hmean :
-        0 < EconCSLib.pmfExp (rankingUniformTieSignalLaw law)
+        0 < AppliedModelingLib.pmfExp (rankingUniformTieSignalLaw law)
           (fun signal : Ranking n × Ranking n ↦ gap signal.1) := by
       rw [pmfExp_rankingUniformTieSignalLaw_fst law gap]
       exact pmfExp_prefixScore_gap_pos_of_strictTopPrefixDominance
@@ -511,16 +511,16 @@ theorem rankingTieredStrictPrefixDominance_iff_almostSure_uniformTieCorrect
         rankingPrefixScore diff lo ranking -
           rankingPrefixScore diff hi ranking
       have hmeanReverse :
-          0 < EconCSLib.pmfExp (rankingUniformTieSignalLaw law)
+          0 < AppliedModelingLib.pmfExp (rankingUniformTieSignalLaw law)
             (fun signal ↦ reverseGap signal.1) := by
         rw [pmfExp_rankingUniformTieSignalLaw_fst law reverseGap]
         rw [show reverseGap = (fun ranking ↦
           rankingPrefixScore diff lo ranking -
             rankingPrefixScore diff hi ranking) by rfl,
-          EconCSLib.pmfExp_sub]
-        change 0 < EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp_sub]
+        change 0 < AppliedModelingLib.pmfExp law
             (prefixScoreFromEvent diff rankingInTopPrefix lo) -
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (prefixScoreFromEvent diff rankingInTopPrefix hi)
         rw [
           pmfExp_prefixScoreFromEvent_eq_prefixExpectedScore,
@@ -564,14 +564,14 @@ theorem rankingTieredStrictPrefixDominance_iff_almostSure_uniformTieCorrect
       let productGap : Ranking n × Ranking n → ℝ :=
         fun signal ↦ gap signal.1
       letI : MeasurableSpace (Ranking n × Ranking n) := ⊤
-      have hmeanGapLaw : EconCSLib.pmfExp law gap = 0 := by
+      have hmeanGapLaw : AppliedModelingLib.pmfExp law gap = 0 := by
         rw [show gap = (fun ranking ↦
           rankingPrefixScore diff hi ranking -
             rankingPrefixScore diff lo ranking) by rfl,
-          EconCSLib.pmfExp_sub]
-        change EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp_sub]
+        change AppliedModelingLib.pmfExp law
             (prefixScoreFromEvent diff rankingInTopPrefix hi) -
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (prefixScoreFromEvent diff rankingInTopPrefix lo) = 0
         rw [
           pmfExp_prefixScoreFromEvent_eq_prefixExpectedScore,
@@ -580,7 +580,7 @@ theorem rankingTieredStrictPrefixDominance_iff_almostSure_uniformTieCorrect
         simpa [gap, rankingPrefixScore, rankingTopPrefixProb,
           prefixExpectedScore, diff] using hequal
       have hmeanProduct :
-          EconCSLib.pmfExp (rankingUniformTieSignalLaw law) productGap = 0 := by
+          AppliedModelingLib.pmfExp (rankingUniformTieSignalLaw law) productGap = 0 := by
         rw [show productGap = (fun signal ↦ gap signal.1) by rfl,
           pmfExp_rankingUniformTieSignalLaw_fst law gap, hmeanGapLaw]
       have hconverges := hADI diff (ReasonablePrefixWeights.indicator cut)
@@ -601,7 +601,7 @@ theorem rankingTieredStrictPrefixDominance_iff_almostSure_uniformTieCorrect
         have hsignalMass :
             0 < ((rankingUniformTieSignalLaw law) signalWitness).toReal := by
           simp only [rankingUniformTieSignalLaw, signalWitness,
-            EconCSLib.pmfProd_apply_toReal]
+            AppliedModelingLib.pmfProd_apply_toReal]
           exact mul_pos hrankingMass htieMass
         have hsignalGap : productGap signalWitness ≠ 0 := by
           simpa [productGap, signalWitness] using hrankingGap
@@ -647,7 +647,7 @@ theorem rankingTieredStrictPrefixDominance_iff_almostSure_uniformTieCorrect
               0 < (law signal.1).toReal *
                 ((PMF.uniformOfFintype (Ranking n)) signal.2).toReal := by
             simpa [rankingUniformTieSignalLaw,
-              EconCSLib.pmfProd_apply_toReal] using hsignal
+              AppliedModelingLib.pmfProd_apply_toReal] using hsignal
           have hfirstNonneg : 0 ≤ (law signal.1).toReal := ENNReal.toReal_nonneg
           have hsecondNonneg :
               0 ≤ ((PMF.uniformOfFintype (Ranking n)) signal.2).toReal :=
@@ -691,7 +691,7 @@ theorem rankingTieredStrictPrefixDominance_iff_almostSure_uniformTieCorrect
         have hbadSignalMass :
             0 < ((rankingUniformTieSignalLaw law) badSignal).toReal := by
           simp only [rankingUniformTieSignalLaw, badSignal,
-            EconCSLib.pmfProd_apply_toReal]
+            AppliedModelingLib.pmfProd_apply_toReal]
           exact mul_pos hrankingMass hbadTieMass
         have hbadOccurs := ae_frequently_iidPath_eq_of_atom_pos
           (rankingUniformTieSignalLaw law) badSignal hbadSignalMass

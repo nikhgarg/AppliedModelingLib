@@ -1,6 +1,6 @@
 import PRPKG24AccuracyDiversity.DecayingBernoulli
-import EconCSLib.Foundations.Probability.IndependentProduct
-import EconCSLib.Foundations.Probability.BinaryRatingLDP
+import AppliedModelingLib.Foundations.Probability.IndependentProduct
+import AppliedModelingLib.Applications.RatingSystems.BinaryLargeDeviations
 import PRPKG24AccuracyDiversity.SourcePreferenceMixture
 
 /-!
@@ -8,7 +8,7 @@ import PRPKG24AccuracyDiversity.SourcePreferenceMixture
 
 This module gives the finite, literal probability model behind the two
 rank-Bernoulli count objectives used in Theorem 2.  Each rank has its own
-Bernoulli parameter, and `EconCSLib.pmfPi` supplies independence across ranks.
+Bernoulli parameter, and `AppliedModelingLib.pmfPi` supplies independence across ranks.
 The coordinate laws are deliberately not asserted to be identically
 distributed.
 -/
@@ -17,15 +17,15 @@ open scoped BigOperators
 
 namespace PRPKG24AccuracyDiversity
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 
 /-- The finite independent rank-varying Bernoulli law for the first `q` ranks. -/
 noncomputable def rankBernoulliFiniteLaw
     (success : ℕ → ℝ) (q : ℕ)
     (hvalid : ∀ i : Fin q, 0 ≤ success i.1 ∧ success i.1 ≤ 1) :
     PMF (Fin q → Bool) :=
-  EconCSLib.pmfPi (fun i : Fin q =>
+  AppliedModelingLib.pmfPi (fun i : Fin q =>
     realBernoulliPMF (success i.1) (hvalid i).1 (hvalid i).2)
 
 /-- The source law's atom formula, exposing the independent rank product directly. -/
@@ -36,7 +36,7 @@ theorem rankBernoulliFiniteLaw_apply_toReal
     (rankBernoulliFiniteLaw success q hvalid sample).toReal =
       ∏ i : Fin q,
         if sample i then success i.1 else 1 - success i.1 := by
-  rw [rankBernoulliFiniteLaw, EconCSLib.pmfPi_apply_toReal]
+  rw [rankBernoulliFiniteLaw, AppliedModelingLib.pmfPi_apply_toReal]
   refine Finset.prod_congr rfl ?_
   intro i _
   by_cases hsuccess : sample i
@@ -63,7 +63,7 @@ theorem rankBernoulliFiniteLaw_all_failure_mass
 theorem rankBernoulliFiniteTopOne_expected
     (success : ℕ → ℝ) (q : ℕ)
     (hvalid : ∀ i : Fin q, 0 ≤ success i.1 ∧ success i.1 ≤ 1) :
-    EconCSLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
+    AppliedModelingLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
       rankBernoulliFiniteTopOneSampleValue =
       1 - ∏ i : Fin q, (1 - success i.1) := by
   classical
@@ -82,10 +82,10 @@ theorem rankBernoulliFiniteTopOne_expected
         funext i
         simpa [failure] using hall i
       simp [rankBernoulliFiniteTopOneSampleValue, hsample, hnot_all_failure]
-  rw [EconCSLib.pmfExp_eq_prob_mul_add_one_sub_prob_mul_of_forall_eq_if
+  rw [AppliedModelingLib.pmfExp_eq_prob_mul_add_one_sub_prob_mul_of_forall_eq_if
     (rankBernoulliFiniteLaw success q hvalid) (fun sample => sample = failure)
     rankBernoulliFiniteTopOneSampleValue 0 1 hvalue]
-  rw [EconCSLib.pmfProb_singleton]
+  rw [AppliedModelingLib.pmfProb_singleton]
   rw [rankBernoulliFiniteLaw_all_failure_mass]
   ring
 
@@ -94,20 +94,20 @@ theorem rankBernoulliFiniteLaw_coordinate_expected
     (success : ℕ → ℝ) (q : ℕ)
     (hvalid : ∀ i : Fin q, 0 ≤ success i.1 ∧ success i.1 ≤ 1)
     (i : Fin q) :
-    EconCSLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
+    AppliedModelingLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
       (fun sample => binaryRatingScore (sample i)) = success i.1 := by
   classical
   let μ : Fin q → PMF Bool := fun j =>
     realBernoulliPMF (success j.1) (hvalid j).1 (hvalid j).2
-  change EconCSLib.pmfExp (EconCSLib.pmfPi μ)
+  change AppliedModelingLib.pmfExp (AppliedModelingLib.pmfPi μ)
       (fun sample => binaryRatingScore (sample i)) = success i.1
   have hcoord : ∀ j : Fin q, ∑ b : Bool, (μ j b).toReal = 1 := by
     intro j
-    exact EconCSLib.pmfToRealSum (μ j)
-  unfold EconCSLib.pmfExp
+    exact AppliedModelingLib.pmfToRealSum (μ j)
+  unfold AppliedModelingLib.pmfExp
   calc
     ∑ sample : Fin q → Bool,
-        (EconCSLib.pmfPi μ sample).toReal * binaryRatingScore (sample i)
+        (AppliedModelingLib.pmfPi μ sample).toReal * binaryRatingScore (sample i)
         =
       ∑ sample : Fin q → Bool,
         ∏ j : Fin q,
@@ -115,7 +115,7 @@ theorem rankBernoulliFiniteLaw_coordinate_expected
             (if j = i then binaryRatingScore (sample j) else 1) := by
           refine Finset.sum_congr rfl ?_
           intro sample _
-          rw [EconCSLib.pmfPi_apply_toReal, Finset.prod_mul_distrib,
+          rw [AppliedModelingLib.pmfPi_apply_toReal, Finset.prod_mul_distrib,
             Fintype.prod_ite_eq']
     _ =
       ∏ j : Fin q, ∑ b : Bool,
@@ -142,12 +142,12 @@ theorem rankBernoulliFiniteLaw_coordinate_expected
 theorem rankBernoulliFiniteAllConsumed_expected
     (success : ℕ → ℝ) (q : ℕ)
     (hvalid : ∀ i : Fin q, 0 ≤ success i.1 ∧ success i.1 ≤ 1) :
-    EconCSLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
+    AppliedModelingLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
       rankBernoulliFiniteAllConsumedSampleValue =
       ∑ i : Fin q, success i.1 := by
-  change EconCSLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
+  change AppliedModelingLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
       (fun sample => ∑ i : Fin q, binaryRatingScore (sample i)) = _
-  rw [EconCSLib.pmfExp_univ_sum]
+  rw [AppliedModelingLib.pmfExp_univ_sum]
   refine Finset.sum_congr rfl ?_
   intro i _
   exact rankBernoulliFiniteLaw_coordinate_expected success q hvalid i
@@ -157,7 +157,7 @@ theorem rankBernoulliTopOneValue_eq_expected_independent_source
     (success : ℕ → ℝ) (q : ℕ)
     (hvalid : ∀ i : Fin q, 0 ≤ success i.1 ∧ success i.1 ≤ 1) :
     rankBernoulliTopOneValue success q =
-      EconCSLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
+      AppliedModelingLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
         rankBernoulliFiniteTopOneSampleValue := by
   rw [rankBernoulliFiniteTopOne_expected]
   unfold rankBernoulliTopOneValue
@@ -168,7 +168,7 @@ theorem rankBernoulliAllConsumedValue_eq_expected_independent_source
     (success : ℕ → ℝ) (q : ℕ)
     (hvalid : ∀ i : Fin q, 0 ≤ success i.1 ∧ success i.1 ≤ 1) :
     rankBernoulliAllConsumedValue success q =
-      EconCSLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
+      AppliedModelingLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
         rankBernoulliFiniteAllConsumedSampleValue := by
   rw [rankBernoulliFiniteAllConsumed_expected]
   simp [rankBernoulliAllConsumedValue, Fin.sum_univ_eq_sum_range]
@@ -180,7 +180,7 @@ theorem rankBernoulliTopOneConsumptionModel_value_eq_expected_independent_source
     (hvalid : ∀ i : Fin q, 0 ≤ success i.1 ∧ success i.1 ≤ 1)
     (t : ItemType T) :
     (rankBernoulliTopOneConsumptionModel likelihood success).valueOfCount t q =
-      EconCSLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
+      AppliedModelingLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
         rankBernoulliFiniteTopOneSampleValue := by
   simpa [rankBernoulliTopOneConsumptionModel] using
     rankBernoulliTopOneValue_eq_expected_independent_source success q hvalid
@@ -192,7 +192,7 @@ theorem rankBernoulliAllConsumedConsumptionModel_value_eq_expected_independent_s
     (hvalid : ∀ i : Fin q, 0 ≤ success i.1 ∧ success i.1 ≤ 1)
     (t : ItemType T) :
     (rankBernoulliAllConsumedConsumptionModel likelihood success).valueOfCount t q =
-      EconCSLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
+      AppliedModelingLib.pmfExp (rankBernoulliFiniteLaw success q hvalid)
         rankBernoulliFiniteAllConsumedSampleValue := by
   simpa [rankBernoulliAllConsumedConsumptionModel] using
     rankBernoulliAllConsumedValue_eq_expected_independent_source success q hvalid
@@ -227,7 +227,7 @@ theorem decayingBernoulliTopOneConsumptionModel_value_eq_expected_source
     (hfirst_le_one : decayingBernoulliSuccess c d alpha 0 ≤ 1)
     (t : ItemType T) :
     (decayingBernoulliTopOneConsumptionModel likelihood c d alpha).valueOfCount t q =
-      EconCSLib.pmfExp
+      AppliedModelingLib.pmfExp
         (decayingBernoulliFiniteLaw c d alpha q hc_nonneg hd_nonneg
           halpha_nonneg hfirst_le_one)
         rankBernoulliFiniteTopOneSampleValue := by
@@ -243,7 +243,7 @@ theorem decayingBernoulliAllConsumedConsumptionModel_value_eq_expected_source
     (hfirst_le_one : decayingBernoulliSuccess c d alpha 0 ≤ 1)
     (t : ItemType T) :
     (decayingBernoulliAllConsumedConsumptionModel likelihood c d alpha).valueOfCount t q =
-      EconCSLib.pmfExp
+      AppliedModelingLib.pmfExp
         (decayingBernoulliFiniteLaw c d alpha q hc_nonneg hd_nonneg
           halpha_nonneg hfirst_le_one)
         rankBernoulliFiniteAllConsumedSampleValue := by
@@ -265,9 +265,9 @@ theorem decayingBernoulliTopOneModel_objective_eq_source_experiment
     (hfirst_le_one : decayingBernoulliSuccess c d alpha 0 ≤ 1) :
     (decayingBernoulliTopOneConsumptionModel
       (fun t => (preferenceLaw t).toReal) c d alpha).objective a =
-      EconCSLib.pmfExp preferenceLaw
+      AppliedModelingLib.pmfExp preferenceLaw
         (fun t =>
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_nonneg
               hd_nonneg halpha_nonneg hfirst_le_one)
             rankBernoulliFiniteTopOneSampleValue) := by
@@ -276,18 +276,18 @@ theorem decayingBernoulliTopOneModel_objective_eq_source_experiment
       (fun t => (preferenceLaw t).toReal) c d alpha
   calc
     M.objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t => M.valueOfCount t (a.count t)) :=
       ConsumptionModel.objective_eq_sourcePreferenceLaw_pmfExp M a
         preferenceLaw (by intro t; rfl)
     _ =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_nonneg
                 hd_nonneg halpha_nonneg hfirst_le_one)
               rankBernoulliFiniteTopOneSampleValue) := by
-      refine EconCSLib.pmfExp_congr preferenceLaw ?_
+      refine AppliedModelingLib.pmfExp_congr preferenceLaw ?_
       intro t
       simpa [M] using
         decayingBernoulliTopOneConsumptionModel_value_eq_expected_source
@@ -305,9 +305,9 @@ theorem decayingBernoulliAllConsumedModel_objective_eq_source_experiment
     (hfirst_le_one : decayingBernoulliSuccess c d alpha 0 ≤ 1) :
     (decayingBernoulliAllConsumedConsumptionModel
       (fun t => (preferenceLaw t).toReal) c d alpha).objective a =
-      EconCSLib.pmfExp preferenceLaw
+      AppliedModelingLib.pmfExp preferenceLaw
         (fun t =>
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_nonneg
               hd_nonneg halpha_nonneg hfirst_le_one)
             rankBernoulliFiniteAllConsumedSampleValue) := by
@@ -316,18 +316,18 @@ theorem decayingBernoulliAllConsumedModel_objective_eq_source_experiment
       (fun t => (preferenceLaw t).toReal) c d alpha
   calc
     M.objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t => M.valueOfCount t (a.count t)) :=
       ConsumptionModel.objective_eq_sourcePreferenceLaw_pmfExp M a
         preferenceLaw (by intro t; rfl)
     _ =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.pmfExp
+            AppliedModelingLib.pmfExp
               (decayingBernoulliFiniteLaw c d alpha (a.count t) hc_nonneg
                 hd_nonneg halpha_nonneg hfirst_le_one)
               rankBernoulliFiniteAllConsumedSampleValue) := by
-      refine EconCSLib.pmfExp_congr preferenceLaw ?_
+      refine AppliedModelingLib.pmfExp_congr preferenceLaw ?_
       intro t
       simpa [M] using
         decayingBernoulliAllConsumedConsumptionModel_value_eq_expected_source

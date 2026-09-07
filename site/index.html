@@ -3,91 +3,74 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>EconCSLib</title>
+    <title>Applied Modeling Lib</title>
     <meta
       name="description"
-      content="EconCSLib is a Lean 4 library and workflow for formalizing Economics and Computation research papers with language-model assistance."
+      content="Applied Modeling Lib is a Lean 4 library and workflow for formalizing applied mathematical research papers with language-model assistance."
     >
-    <link rel="icon" href="assets/econcslib-favicon.svg?v=2" type="image/svg+xml">
+    <link rel="icon" href="assets/appliedmodelinglib-favicon.svg?v=2" type="image/svg+xml">
     <link rel="stylesheet" href="styles/site.css">
   </head>
   <body>
     <header class="site-header">
       <nav class="nav" aria-label="Primary">
         <a class="brand" href=".">
-          <span class="brand-name">EconCSLib:</span>
-          <span class="brand-subtitle">AI-Assisted Lean Formalization for Economics &amp; Computation research</span>
+          <span class="brand-name">Applied Modeling Lib:</span>
+          <span class="brand-subtitle">AI-Assisted Lean Formalization for Applied Mathematical Research</span>
         </a>
+        <div class="section-links">
+          <a href="#library">Library</a>
+          <a href="#status">Papers</a>
+          <a href="#contribute">Contribute</a>
+        </div>
       </nav>
 
       <section class="hero">
-        <h1>A Lean library and workflow for formalizing EC research papers.</h1>
+        <h1>A Lean library and workflow for formalizing applied mathematical research papers.</h1>
         <p class="lede">
-          EconCSLib is an experimental human-AI-Lean workflow to formalize
-          EconCS papers: an LLM writes Lean code, Lean checks formal statements
-          and proofs, and humans review the translation boundary from paper
-          claims to formal statements.
+          Applied Modeling Lib is an experimental workflow for formalizing research
+          papers in the Lean 4 proof assistant. A large language model writes
+          definitions and proofs, Lean checks them, and the project produces
+          paper-to-Lean mappings for human review.
         </p>
         <p class="project-vision">
           Our vision is to enable researchers who don't know Lean to formalize
-          their own research papers, using commercially available LLMs and on
-          their laptop.
+          their own research papers, using commercially available LLMs on
+          their laptops.
         </p>
         <div class="actions">
           <a class="button primary" href="https://github.com/nikhgarg/EconCSLib">Repository</a>
           <a class="button" href="https://arxiv.org/abs/2606.13306">Paper</a>
-          <a class="button" href="https://join.slack.com/t/appliedmodelinglib/shared_invite/zt-42slirzxx-rEO8eEns7~4~i3Lbu7N~lA">Slack</a>
         </div>
-        <p class="project-summary" id="paper">
-          The project combines reusable EC Lean infrastructure with
-          paper-specific formalization. The reusable library covers
-          probability, optimization, matching, auctions, online algorithms,
-          recommender systems, and fair division. The paper layer keeps one
-          folder per source paper, preserving notation, theorem numbering,
-          formal statements, proof code, and validation artifacts. The project
-          also develops an LLM <code>skill.md</code> and formalization workflow
-          to support AI-assisted formalization.
-        </p>
+        <ul class="project-summary" id="paper">
+          <li><strong>Reusable library.</strong> Lean infrastructure for mathematical
+            and probabilistic foundations, optimization, learning, algorithms,
+            markets, social choice, queueing, privacy, and alignment, with models
+            for admissions, ratings, recommendations, and algorithmic fairness.</li>
+          <li><strong>Paper layer.</strong> One folder per source paper preserves
+            notation, theorem numbering, formal statements, proof code, and
+            validation artifacts.</li>
+          <li><strong>Formalization workflow layer.</strong> A key component of the project is <a href="https://github.com/nikhgarg/EconCSLib/blob/main/skills/econcs-formalizer/SKILL.md">scaffolding and workflow tooling</a>
+            to audit whether a paper has been truly formalized and to develop
+            human-friendly documentation.</li>
+        </ul>
         <!-- BEGIN GENERATED PROJECT STATS -->
         <p class="project-stats">
-          Currently, the project contains 20 formalized papers and 3 partially formalized papers, with 1,221,199 total lines of Lean code.
+          Currently, the project contains 34 formalized papers and 2 partially formalized papers, with 2,194,202 total lines of Lean code.
         </p>
         <!-- END GENERATED PROJECT STATS -->
-        <p class="project-slack">
-          <a href="https://join.slack.com/t/appliedmodelinglib/shared_invite/zt-42slirzxx-rEO8eEns7~4~i3Lbu7N~lA">Join our Slack workspace</a>
-          for people interested in Lean formalization of Applied
-          Math/Computation fields!
-        </p>
       </section>
     </header>
 
     <main>
-      <section class="band contact" id="contribute" aria-labelledby="contribute-title">
+      <section class="band" id="library" aria-labelledby="library-title">
         <div class="section-heading">
-          <p class="eyebrow">Contribute</p>
-          <h2 id="contribute-title">Interested in contributing or formalizing your own paper?</h2>
+          <p class="eyebrow">Library</p>
+          <h2 id="library-title">Reusable components</h2>
           <p>
-            To get started in formalizing your own paper, clone the repository
-            and open an LLM agent tool (I use Codex 5.5 or Codex 5.6 Terra,
-            with xhigh thinking). Give the agent the paper link, and ask it to
-            formalize the paper using the skill and workflow in the repository.
-            (And please let me know what your experience is like).
-          </p>
-          <p>
-            New paper formalizations should start in a private workflow and be
-            proposed to enter the library through a pull request when ready.
-            For questions or contributions, contact
-            <a href="mailto:ngarg@cornell.edu">ngarg@cornell.edu</a>.
-          </p>
-        </div>
-      </section>
-
-      <section class="band" id="library" aria-label="Library components">
-        <div class="section-heading">
-          <p class="eyebrow">Library: reusable components</p>
-          <p>
-            The shared library contains paper-independent Lean infrastructure
-            that current paper formalizations reuse.
+            The shared library separates mathematical foundations, research-area
+            tools, and application-specific models. The table summarizes the main
+            concepts covered; each area links to its Lean entry point.
           </p>
         </div>
 
@@ -95,52 +78,67 @@
           <table class="status-table library-table">
             <thead>
               <tr>
-                <th>Component</th>
-                <th>Content details</th>
+                <th>Area</th>
+                <th>Content</th>
                 <th>Lines of code</th>
               </tr>
             </thead>
             <tbody>
               <!-- BEGIN GENERATED LIBRARY COMPONENT ROWS -->
               <tr>
-                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/EconCSLib/Foundations/Math.lean">Foundations: finite math and graph tools</a></td>
-                <td>Core finite mathematics used across the formalizations: finite-choice distances, ranking and order conversions, finite-sum algebra, threshold and interval certificates, asymptotic estimates, and graph-cycle extraction for local-improvement arguments.</td>
-                <td>23,782</td>
+                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/AppliedModelingLib/Foundations/Math.lean">Foundations: mathematics and discrete structures</a></td>
+                <td>Fixed-point theorems; convexity and finite-dimensional geometry; graphs, combinatorics, and counting; asymptotic analysis; Boolean circuits.</td>
+                <td>54,640</td>
               </tr>
               <tr>
-                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/EconCSLib/Foundations/Probability.lean">Foundations: probability and stochastic processes</a></td>
-                <td>Probability infrastructure for recommendation, ratings, pricing, and ranking papers: finite PMFs and expectations, conditional kernels, Gaussian and random-utility comparisons, large-deviation and method-of-types certificates, stochastic dominance, order statistics, Markov chains, MDPs, CTMCs, Poisson processes, and renewal-reward models.</td>
-                <td>147,097</td>
+                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/AppliedModelingLib/Foundations/Probability.lean">Foundations: probability and stochastic processes</a></td>
+                <td>Concentration and large deviations; coupling and Wasserstein distance; conditional laws and Bayesian updating; order statistics; Markov chains, martingales, Poisson and renewal processes.</td>
+                <td>195,409</td>
               </tr>
               <tr>
-                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/EconCSLib/Foundations/Optimization.lean">Foundations: optimization, certificates, and complexity</a></td>
-                <td>Certificate-oriented optimization and complexity for paper-level endpoints: argmax, endpoint, and bisection principles; finite-search and output-check certificates; approximation and LP witnesses; binary-policy games; move-graph descent; strategic and choice equilibria; NP/ZPP consequence interfaces; and Yao-style lower-bound certificates.</td>
-                <td>7,203</td>
+                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/AppliedModelingLib/Foundations/Optimization.lean">Foundations: optimization</a></td>
+                <td>Convex optimization and duality; gradient, subgradient, and mirror descent; stochastic optimization; proximal maps and projections; argmax stability and envelope theorems.</td>
+                <td>19,955</td>
               </tr>
               <tr>
-                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/EconCSLib/SocialChoice.lean">Social choice, rankings, voting, and fair division</a></td>
-                <td>Executable social-choice infrastructure: ranked ballots, next-active support counts, RCV/STV traces, quotas, coalition-safety lemmas, final-order structures, candidate-deletion reductions, Thiele-style proportionality, Mallows/Kendall ranking models, payoff interfaces, envy graphs, bounded-envy algorithms, and indivisible-goods fairness statements.</td>
-                <td>31,378</td>
+                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/AppliedModelingLib/Learning.lean">Learning and statistics</a></td>
+                <td>Generalization and sample complexity; calibration, multiaccuracy, and omniprediction; online learning and regret; bandits; reinforcement learning; preference learning and human feedback.</td>
+                <td>59,476</td>
               </tr>
               <tr>
-                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/EconCSLib/MechanismDesign/Auctions.lean">Auctions and mechanisms</a></td>
-                <td>Mechanism-design infrastructure for digital-goods, combinatorial, and position auctions: allocation and payment semantics, utility formulas, DSIC truthfulness, VCG-style welfare maximization, benchmark-competitive auctions, single-minded set packing, greedy mechanisms, and critical-value certificates.</td>
-                <td>12,918</td>
+                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/AppliedModelingLib/Algorithms.lean">Algorithms and complexity</a></td>
+                <td>Online allocation and advertising; competitive analysis and regret reductions; primal-dual approximation arguments; computational complexity, reductions, and neural-network verification.</td>
+                <td>5,047</td>
               </tr>
               <tr>
-                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/EconCSLib/Algorithms/Online.lean">Online algorithms and regret</a></td>
-                <td>Online allocation infrastructure centered on AdWords and platform learning: matching/allocation state machines, primal-dual accounting, competitive-ratio certificates, regret interfaces, and hooks for randomized lower-bound arguments.</td>
-                <td>4,374</td>
+                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/AppliedModelingLib/GameTheory.lean">Game theory</a></td>
+                <td>Best responses and Nash equilibrium; preference games; threshold strategies; multitask incentives; performative prediction and strategic responses.</td>
+                <td>27,323</td>
               </tr>
               <tr>
-                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/EconCSLib/Markets/Matching.lean">Matching markets and admissions</a></td>
-                <td>Stable matching and admissions infrastructure: one-to-one and many-to-one assignments, blocking-pair stability, deferred-acceptance invariants, applicant/proposer optimality, quota admissions, strategic application cutoffs and payoffs, and two-group policy objective comparisons.</td>
-                <td>8,319</td>
+                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/AppliedModelingLib/Markets.lean">Markets and matching</a></td>
+                <td>Stable and many-to-one matching; deferred acceptance and proposer optimality; continuum markets and admission cutoffs; manipulation and blocking; public decisions.</td>
+                <td>10,958</td>
               </tr>
               <tr>
-                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/EconCSLib/Foundations/Econometrics.lean">Ratings and recommender systems</a></td>
-                <td>Ratings and recommendation infrastructure: Bayesian binary and ordinal signal models, posterior-mean rating formulas, prior-weighted updates, monotonicity and correction lemmas, Thompson-sampling entrypoints, exposure/allocation policies, classwise fairness constraints, top-k recommendation surfaces, policy averaging, and accuracy/diversity trade-off statements.</td>
-                <td>3,192</td>
+                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/AppliedModelingLib/MechanismDesign.lean">Mechanism design and auctions</a></td>
+                <td>Incentive compatibility, truthfulness, and payments; VCG and generalized second-price auctions; position, digital-goods, and combinatorial auctions; welfare and revenue.</td>
+                <td>12,942</td>
+              </tr>
+              <tr>
+                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/AppliedModelingLib/SocialChoice.lean">Social choice and fair division</a></td>
+                <td>Preference rankings and aggregation; ranked-choice voting and proportionality; indivisible goods and chores; bounded envy and envy freeness up to any item (EFX); Pareto efficiency.</td>
+                <td>31,379</td>
+              </tr>
+              <tr>
+                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/AppliedModelingLib/Queueing.lean">Queueing</a></td>
+                <td>Single-server and many-server queues; priority service and processor sharing; waiting times, workloads, and stationary distributions; heavy-traffic limits; congestion externalities and pricing.</td>
+                <td>151,201</td>
+              </tr>
+              <tr>
+                <td><a href="https://github.com/nikhgarg/EconCSLib/blob/main/AppliedModelingLib/Applications.lean">AI and applications</a></td>
+                <td>Alignment axioms and welfare; differential privacy and composition; algorithmic fairness; admissions policies; rating systems; recommender systems and producer/user fairness.</td>
+                <td>26,238</td>
               </tr>
               <!-- END GENERATED LIBRARY COMPONENT ROWS -->
             </tbody>
@@ -148,22 +146,36 @@
         </div>
       </section>
 
-      <section class="band" id="status" aria-label="Current status">
+      <section class="band" id="status" aria-labelledby="status-title">
         <div class="section-heading">
-          <p class="eyebrow">Current status</p>
+          <p class="eyebrow">Papers</p>
+          <h2 id="status-title">Current formalizations</h2>
           <p>
-            The public repository currently contains formalized papers and
-            selected public partial formalizations whose remaining assumptions
-            are explicit. Human review refers to a human certifying that a Lean
-            statement exactly corresponds to a paper statement. This is
-            augmented with substantial LLM-as-judge checks run for every public
-            paper, including for coverage of paper results, matches, and
-            holistic audits that statements match.
+            <strong>Formalized</strong> means the selected Lean statements have
+            checked proofs; reports explain their correspondence to the paper.
+            <strong>Partially formalized</strong> marks unfinished developments.
+            <strong>Formalization gap</strong> notes flag substantial extra
+            assumptions, simplifications, or missing conclusions in the current
+            formalization.
+          </p>
+          <p>
+            <strong>Human review</strong> shows how many paper-to-Lean statement
+            comparisons a human has reviewed, out of the selected results.
+            Automated comparisons and independent agent audits provide additional
+            checks; they do not count as human review.
           </p>
         </div>
 
-        <div class="table-wrap" role="region" aria-label="Paper status table" tabindex="0">
-          <table class="status-table paper-table">
+        <div class="paper-search" hidden>
+          <label for="paper-search">Find a paper</label>
+          <p id="paper-search-count" role="status" aria-live="polite" aria-atomic="true"></p>
+          <div class="search-controls">
+            <input id="paper-search" type="search" placeholder="Title, author, or year" aria-controls="paper-table" autocomplete="off">
+            <button id="paper-search-clear" class="button" type="button">Clear</button>
+          </div>
+        </div>
+        <div class="table-wrap paper-table-wrap" role="region" aria-label="Paper status table" tabindex="0">
+          <table class="status-table paper-table" id="paper-table">
             <colgroup>
               <col class="paper-col">
               <col class="status-col">
@@ -177,7 +189,7 @@
                 <th>Status</th>
                 <th>Human review</th>
                 <th>Lines of Code</th>
-                <th>Note</th>
+                <th>Notes</th>
               </tr>
             </thead>
             <tbody>
@@ -187,250 +199,436 @@
                   <a class="paper-source" href="https://www.jstor.org/stable/2312726"><cite>College Admissions and the Stability of Marriage</cite></a> by
                   D. Gale and L. S. Shapley; American Mathematical Monthly, 1962.
                 </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GS62CollegeAdmissions/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GS62CollegeAdmissions/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GS62CollegeAdmissions/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GS62CollegeAdmissions/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GS62CollegeAdmissions/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GS62CollegeAdmissions/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/5</td>
-                <td>5,979</td>
-                <td></td>
+                <td>Formalized</td>
+                <td>0/6</td>
+                <td>5,467</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GS62CollegeAdmissions/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GS62CollegeAdmissions/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GS62CollegeAdmissions/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/GS62CollegeAdmissions/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GS62CollegeAdmissions/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GS62CollegeAdmissions/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GS62CollegeAdmissions/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GS62CollegeAdmissions/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/GS62CollegeAdmissions">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://www.jstor.org/stable/1909200"><cite>The Regulation of Queue Size by Levying Tolls</cite></a> by
+                  P. Naor; Econometrica 37(1), 1969.
+                </td>
+                <td>Formalized</td>
+                <td>0/6</td>
+                <td>922</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/Naor1969QueueTolls/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/Naor1969QueueTolls/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/Naor1969QueueTolls/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/Naor1969QueueTolls/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/Naor1969QueueTolls/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/Naor1969QueueTolls/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/Naor1969QueueTolls/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/Naor1969QueueTolls/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/Naor1969QueueTolls">Repo</a></div><p class="paper-note">Few lines of code as much of machinery is in the shared library</p></td>
               </tr>
               <tr>
                 <td>
                   <a class="paper-source" href="https://pubsonline.informs.org/doi/epdf/10.1287/moor.7.4.617"><cite>The Economics of Matching: Stability and Incentives</cite></a> by
                   Alvin E. Roth; Mathematics of Operations Research, 1982.
                 </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/Roth82StableMatching/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/Roth82StableMatching/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/Roth82StableMatching/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/Roth82StableMatching/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/Roth82StableMatching/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/Roth82StableMatching/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/21</td>
-                <td>11,274</td>
-                <td></td>
+                <td>Formalized</td>
+                <td>0/10</td>
+                <td>11,294</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/Roth82StableMatching/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/Roth82StableMatching/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/Roth82StableMatching/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/Roth82StableMatching/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/Roth82StableMatching/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/Roth82StableMatching/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/Roth82StableMatching/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/Roth82StableMatching/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/Roth82StableMatching">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://pubsonline.informs.org/doi/10.1287/opre.38.5.870"><cite>Optimal Incentive-Compatible Priority Pricing for the M/M/1 Queue</cite></a> by
+                  Haim Mendelson and Seungjin Whang; Operations Research 38(5), 1990.
+                </td>
+                <td>Formalized</td>
+                <td>0/5</td>
+                <td>3,616</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MendelsonWhang1990PriorityPricing/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/MendelsonWhang1990PriorityPricing/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MendelsonWhang1990PriorityPricing/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/MendelsonWhang1990PriorityPricing/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MendelsonWhang1990PriorityPricing/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/MendelsonWhang1990PriorityPricing/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MendelsonWhang1990PriorityPricing/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/MendelsonWhang1990PriorityPricing/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/MendelsonWhang1990PriorityPricing">Repo</a></div><p class="paper-note">Few lines of code as much of machinery is in the shared library</p></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://doi.org/10.1006/jcss.1997.1504"><cite>A Decision-Theoretic Generalization of On-Line Learning and an Application to Boosting</cite></a> by
+                  Yoav Freund and Robert E. Schapire; Journal of Computer and System Sciences 55(1):119–139, 1997.
+                </td>
+                <td>Formalized</td>
+                <td>0/14</td>
+                <td>1,136</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/FreundSchapire1997Hedge/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/FreundSchapire1997Hedge/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/FreundSchapire1997Hedge/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/FreundSchapire1997Hedge/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/FreundSchapire1997Hedge/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/FreundSchapire1997Hedge/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/FreundSchapire1997Hedge/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/FreundSchapire1997Hedge/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/FreundSchapire1997Hedge">Repo</a></div><p class="paper-note">Few lines of code as much of machinery is in the shared library</p></td>
               </tr>
               <tr>
                 <td>
                   <a class="paper-source" href="https://www.cs.miami.edu/home/burt/learning/Csc597.052/docs/goldberg.pdf"><cite>Competitive Auctions and Digital Goods</cite></a> by
                   Andrew V. Goldberg, Jason D. Hartline, and Andrew Wright; SODA, 2001.
                 </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GHW01DigitalGoods/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GHW01DigitalGoods/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GHW01DigitalGoods/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GHW01DigitalGoods/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GHW01DigitalGoods/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GHW01DigitalGoods/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/49</td>
+                <td>Formalized</td>
+                <td>0/12</td>
                 <td>24,842</td>
-                <td>Formalizes the SODA paper; Theorem 8.2 uses the refined monotone-auction wording from the journal version <a href="https://www.sciencedirect.com/science/article/pii/S0899825606000303">Goldberg-Hartline-Karlin-Saks-Wright 2006</a>.</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GHW01DigitalGoods/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GHW01DigitalGoods/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GHW01DigitalGoods/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/GHW01DigitalGoods/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GHW01DigitalGoods/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GHW01DigitalGoods/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GHW01DigitalGoods/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GHW01DigitalGoods/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/GHW01DigitalGoods">Repo</a></div><p class="paper-note">Formalizes the SODA paper; Theorem 8.2 uses the refined monotone-auction wording from the journal version. Formalization gap: Lemma 8.1 and Theorem 8.2 are proved for finite offer support; continuous-offer cases remain unproved <a href="https://www.sciencedirect.com/science/article/pii/S0899825606000303">Goldberg-Hartline-Karlin-Saks-Wright 2006</a>.</p></td>
               </tr>
               <tr>
                 <td>
                   <a class="paper-source" href="https://people.eecs.berkeley.edu/~vazirani/pubs/adwords.pdf"><cite>AdWords and Generalized Online Matching</cite></a> by
                   Aranyak Mehta, Amin Saberi, Umesh Vazirani, and Vijay V. Vazirani; Journal of the ACM, 2007.
                 </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MSVV07AdWords/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/MSVV07AdWords/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MSVV07AdWords/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/MSVV07AdWords/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MSVV07AdWords/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/MSVV07AdWords/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/76</td>
-                <td>22,909</td>
-                <td></td>
+                <td>Formalized</td>
+                <td>0/50</td>
+                <td>22,118</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MSVV07AdWords/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/MSVV07AdWords/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MSVV07AdWords/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/MSVV07AdWords/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MSVV07AdWords/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/MSVV07AdWords/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MSVV07AdWords/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/MSVV07AdWords/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/MSVV07AdWords">Repo</a></div><p class="paper-note">Formalization gap: Theorem 8&#x27;s limit is proved when its finite-error term vanishes; deriving that condition from the paper&#x27;s small-bid regime remains unproved.</p></td>
               </tr>
               <tr>
                 <td>
                   <a class="paper-source" href="https://www.nber.org/papers/w11765"><cite>Internet Advertising and the Generalized Second-Price Auction</cite></a> by
                   Benjamin Edelman, Michael Ostrovsky, and Michael Schwarz; American Economic Review, 2007.
                 </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/EOS07GSP/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/EOS07GSP/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/EOS07GSP/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/EOS07GSP/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/EOS07GSP/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/EOS07GSP/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/24</td>
-                <td>136,433</td>
-                <td></td>
+                <td>Formalized</td>
+                <td>0/13</td>
+                <td>142,501</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/EOS07GSP/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/EOS07GSP/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/EOS07GSP/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/EOS07GSP/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/EOS07GSP/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/EOS07GSP/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/EOS07GSP/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/EOS07GSP/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/EOS07GSP">Repo</a></div><p class="paper-note">Formalization gap: Theorem 8 uniqueness is proved among common symmetric continuation plans; uniqueness among arbitrary bidder-specific plans remains unproved.</p></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://proceedings.neurips.cc/paper/2017/hash/db98dc0dbafde48e8f74c0de001d35e4-Abstract.html"><cite>Maxing and Ranking with Few Assumptions</cite></a> by
+                  Moein Falahatgar, Yi Hao, Alon Orlitsky, Venkatadheeraj Pichapati, and Vaishakh Ravindrakumar; NeurIPS, 2017.
+                </td>
+                <td>Formalized</td>
+                <td>0/23</td>
+                <td>33,818</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/FalahatgarEtAl2017MaxingRanking/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/FalahatgarEtAl2017MaxingRanking/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/FalahatgarEtAl2017MaxingRanking/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/FalahatgarEtAl2017MaxingRanking/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/FalahatgarEtAl2017MaxingRanking/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/FalahatgarEtAl2017MaxingRanking/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/FalahatgarEtAl2017MaxingRanking/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/FalahatgarEtAl2017MaxingRanking/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/FalahatgarEtAl2017MaxingRanking">Repo</a></div></td>
               </tr>
               <tr>
                 <td>
                   <a class="paper-source" href="https://proceedings.mlr.press/v89/garg19a/garg19a.pdf"><cite>Designing Optimal Binary Rating Systems</cite></a> by
                   Nikhil Garg, Ramesh Johari; AISTATS / PMLR 89, 2019.
                 </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ19OptimalBinaryRatingSystems/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GJ19OptimalBinaryRatingSystems/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ19OptimalBinaryRatingSystems/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GJ19OptimalBinaryRatingSystems/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ19OptimalBinaryRatingSystems/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GJ19OptimalBinaryRatingSystems/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/59</td>
-                <td>95,195</td>
-                <td></td>
+                <td>Formalized</td>
+                <td>0/33</td>
+                <td>96,123</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ19OptimalBinaryRatingSystems/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GJ19OptimalBinaryRatingSystems/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ19OptimalBinaryRatingSystems/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/GJ19OptimalBinaryRatingSystems/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ19OptimalBinaryRatingSystems/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GJ19OptimalBinaryRatingSystems/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ19OptimalBinaryRatingSystems/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GJ19OptimalBinaryRatingSystems/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/GJ19OptimalBinaryRatingSystems">Repo</a></div><p class="paper-note">Formalization gap: Theorem 3.1 is proved for optimization of its displayed rate formula for at least three levels; identifying that formula with the actual ranking-quality exponent and proving Lemma C.4&#x27;s same-objective equivalence remain unproved.</p></td>
               </tr>
               <tr>
                 <td>
-                  <a class="paper-source" href="https://arxiv.org/pdf/1906.08160"><cite>Who is in Your Top Three? Optimizing Learning in Elections with Many Candidates</cite></a> by
-                  Nikhil Garg; Lodewijk Gelauff; Sukolsak Sakshuwong; Ashish Goel; HCOMP, 2019.
+                  <a class="paper-source" href="https://arxiv.org/abs/2001.07042v1"><cite>Fundamental Limits of Testing the Independence of Irrelevant Alternatives in Discrete Choice</cite></a> by
+                  Arjun Seshadri and Johan Ugander; ACM EC 2019; arXiv version (2020).
                 </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGSG19TopThree/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GGSG19TopThree/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGSG19TopThree/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GGSG19TopThree/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGSG19TopThree/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GGSG19TopThree/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/23</td>
-                <td>37,985</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://doi.org/10.1287/msom.2020.0921"><cite>Designing Informative Rating Systems: Evidence from an Online Labor Market</cite></a> by
-                  Nikhil Garg, Ramesh Johari; Manufacturing &amp; Service Operations Management 23(3), 2020.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ18InformativeRatingSystems/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GJ18InformativeRatingSystems/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ18InformativeRatingSystems/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GJ18InformativeRatingSystems/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ18InformativeRatingSystems/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GJ18InformativeRatingSystems/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/18</td>
-                <td>9,718</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://www.pnas.org/doi/10.1073/pnas.2018340118"><cite>Algorithmic Monoculture and Social Welfare</cite></a> by
-                  Jon Kleinberg and Manish Raghavan; PNAS, 2021.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/KR21Monoculture/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/KR21Monoculture/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/KR21Monoculture/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/KR21Monoculture/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/KR21Monoculture/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/KR21Monoculture/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/57</td>
-                <td>115,540</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://arxiv.org/pdf/2107.08922"><cite>Test-optional Policies: Overcoming Strategic Behavior and Informational Gaps</cite></a> by
-                  Zhi Liu and Nikhil Garg; EAAMO, 2021.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LG21TestOptionalPolicies/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/LG21TestOptionalPolicies/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LG21TestOptionalPolicies/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/LG21TestOptionalPolicies/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LG21TestOptionalPolicies/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/LG21TestOptionalPolicies/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/9</td>
-                <td>212,419</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://arxiv.org/pdf/1905.07544"><cite>Driver Surge Pricing</cite></a> by
-                  Nikhil Garg and Hamid Nazerzadeh; Management Science, 2022.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GN21DriverSurgePricing/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GN21DriverSurgePricing/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GN21DriverSurgePricing/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GN21DriverSurgePricing/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GN21DriverSurgePricing/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GN21DriverSurgePricing/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/18</td>
-                <td>178,681</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://www.nature.com/articles/s43588-023-00572-6"><cite>Quantifying Spatial Under-reporting Disparities in Resident Crowdsourcing</cite></a> by
-                  Zhi Liu, Uma Bhandaram, Nikhil Garg; Nature Computational Science, 2024.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LBG24SpatialUnderreporting/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/LBG24SpatialUnderreporting/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LBG24SpatialUnderreporting/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/LBG24SpatialUnderreporting/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LBG24SpatialUnderreporting/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/LBG24SpatialUnderreporting/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/4</td>
-                <td>29,582</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://arxiv.org/abs/2307.15142"><cite>Reconciling the Accuracy-Diversity Trade-off in Recommendations</cite></a> by
-                  Kenny Peng, Manish Raghavan, Emma Pierson, Jon Kleinberg, and Nikhil Garg; The ACM Web Conference, 2024.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PRPKG24AccuracyDiversity/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/PRPKG24AccuracyDiversity/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PRPKG24AccuracyDiversity/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/PRPKG24AccuracyDiversity/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PRPKG24AccuracyDiversity/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/PRPKG24AccuracyDiversity/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/25</td>
-                <td>63,463</td>
-                <td>Proposition 2&#x27;s printed finite bound appears to miss a factor of 2; Lean proves the corrected finite bound, which is sufficient for the asymptotic 1/2-homogeneity result.</td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://openreview.net/pdf?id=ZOZjMs3JTs"><cite>User-item fairness tradeoffs in recommendations</cite></a> by
-                  Sophie Greenwood, Sudalakshmee Chiniah, and Nikhil Garg; NeurIPS, 2024.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GCG24UserItemFairness/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GCG24UserItemFairness/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GCG24UserItemFairness/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GCG24UserItemFairness/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GCG24UserItemFairness/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GCG24UserItemFairness/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/37</td>
-                <td>51,768</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://ojs.aaai.org/index.php/AAAI/article/view/33574"><cite>A No Free Lunch Theorem for Human-AI Collaboration</cite></a> by
-                  Kenny Peng, Nikhil Garg, Jon Kleinberg; AAAI, 2025.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PKG25NoFreeLunch/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/PKG25NoFreeLunch/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PKG25NoFreeLunch/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/PKG25NoFreeLunch/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PKG25NoFreeLunch/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/PKG25NoFreeLunch/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/20</td>
-                <td>7,939</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://arxiv.org/pdf/2405.16762"><cite>Addressing Discretization-Induced Bias in Demographic Prediction</cite></a> by
-                  Evan Dong, Aaron Schein, Yixin Wang, and Nikhil Garg; PNAS Nexus, 2025.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DSWG24DiscretizationBias/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/DSWG24DiscretizationBias/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DSWG24DiscretizationBias/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/DSWG24DiscretizationBias/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DSWG24DiscretizationBias/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/DSWG24DiscretizationBias/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/17</td>
-                <td>27,708</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://arxiv.org/pdf/2207.04369"><cite>Balancing Producer Fairness and Efficiency via Prior-Weighted Rating System Design</cite></a> by
-                  Thomas Ma, Michael S. Bernstein, Ramesh Johari, and Nikhil Garg; ICWSM, 2025.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MBJG25ProducerFairness/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/MBJG25ProducerFairness/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MBJG25ProducerFairness/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/MBJG25ProducerFairness/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MBJG25ProducerFairness/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/MBJG25ProducerFairness/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/28</td>
-                <td>1,233</td>
-                <td>Strict variance decrease is formalized with the explicit interior-quality assumption 0 &lt; q_v &lt; 1.</td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://arxiv.org/abs/2601.11513"><cite>Capacity Constraints Make Admissions Processes Less Predictable</cite></a> by
-                  Evan Dong; Nikhil Garg; Sarah Dean; AAAI-26 published version, DOI 10.1609/aaai.v40i45.41179.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DGD26AdmissionsPredictability/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/DGD26AdmissionsPredictability/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DGD26AdmissionsPredictability/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/DGD26AdmissionsPredictability/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DGD26AdmissionsPredictability/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/DGD26AdmissionsPredictability/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/63</td>
-                <td>14,988</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://doi.org/10.1287/opre.2024.1167"><cite>Combatting Gerrymandering with Ranked Choice Voting: an Experimental Analysis of Multi-member Districts in the United States</cite></a> by
-                  Nikhil Garg; Wes Gurnee; David Rothschild; David Shmoys; Operations Research, 2026, DOI 10.1287/opre.2024.1167.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGRS26CombattingGerrymanderingRCV/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GGRS26CombattingGerrymanderingRCV/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGRS26CombattingGerrymanderingRCV/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GGRS26CombattingGerrymanderingRCV/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGRS26CombattingGerrymanderingRCV/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GGRS26CombattingGerrymanderingRCV/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/2</td>
-                <td>15,883</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/HT26EFXChores"><cite>EFX for Additive Chores: Nonexistence, Pareto Incompatibility, and Bi-Valued Existence</cite></a> by
-                  Wentao He and Biaoshuai Tao; arXiv v2 (2026-07-09).
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/HT26EFXChores/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/HT26EFXChores/FINAL_VALIDATION_REPORT.md">Formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/HT26EFXChores/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/HT26EFXChores/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/HT26EFXChores/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/HT26EFXChores/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/22</td>
-                <td>40,237</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://jmvidal.cse.sc.edu/library/lehmann02a.pdf"><cite>Truth Revelation in Approximately Efficient Combinatorial Auctions</cite></a> by
-                  Daniel Lehmann, Liadan Ita O&#x27;Callaghan, and Yoav Shoham; Journal of the ACM, 2002.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LOS02CombinatorialAuctions/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/LOS02CombinatorialAuctions/FINAL_VALIDATION_REPORT.md">Partially formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LOS02CombinatorialAuctions/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/LOS02CombinatorialAuctions/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LOS02CombinatorialAuctions/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/LOS02CombinatorialAuctions/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/30</td>
-                <td>7,779</td>
-                <td>Greedy approximation, truthfulness, and Theorem 6.1 reductions are formalized. Full formalization requires computational complexity results that are out of scope.</td>
-              </tr>
-              <tr>
-                <td>
-                  <a class="paper-source" href="https://www.cs.cmu.edu/~arielpro/15896s15/docs/paper12a.pdf"><cite>On Approximately Fair Allocations of Indivisible Goods</cite></a> by
-                  Richard J. Lipton, Evangelos Markakis, Elchanan Mossel, and Amin Saberi; ACM EC, 2004.
-                </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LMMS04FairDivision/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/LMMS04FairDivision/FINAL_VALIDATION_REPORT.md">Partially formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LMMS04FairDivision/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/LMMS04FairDivision/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LMMS04FairDivision/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/LMMS04FairDivision/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/31</td>
-                <td>80,660</td>
-                <td>Sections 2 and 4 are fully formalized. Section 3 has query/descent/rounded-search support. The PTAS/FPTAS runtime layer needs reusable fixed-dimension IP complexity infrastructure.</td>
+                <td>Formalized</td>
+                <td>0/11</td>
+                <td>10,986</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/SeshadriUgander2020IIATesting/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/SeshadriUgander2020IIATesting/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/SeshadriUgander2020IIATesting/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/SeshadriUgander2020IIATesting/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/SeshadriUgander2020IIATesting/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/SeshadriUgander2020IIATesting/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/SeshadriUgander2020IIATesting/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/SeshadriUgander2020IIATesting/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/SeshadriUgander2020IIATesting">Repo</a></div></td>
               </tr>
               <tr>
                 <td>
                   <a class="paper-source" href="https://www.jair.org/index.php/jair/article/view/11358"><cite>Iterative Local Voting for Collective Decision-making in Continuous Spaces</cite></a> by
                   Nikhil Garg; Vijay Kamble; Ashish Goel; David Marn; Kamesh Munagala; JAIR 64, 2019.
                 </td>
-                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GKGMM19IterativeLocalVoting/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GKGMM19IterativeLocalVoting/FINAL_VALIDATION_REPORT.md">Partially formalized</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GKGMM19IterativeLocalVoting/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GKGMM19IterativeLocalVoting/docs/DependencyDAG.pdf">DAG</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GKGMM19IterativeLocalVoting/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GKGMM19IterativeLocalVoting/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a></div></td>
-                <td>0/44</td>
-                <td>28,984</td>
-                <td>Full formalization requires proving stochastic subgradient descent convergence. Theorem 3 is proved as a constrained alternative in general and as the original statement under the explicit full-space condition.</td>
+                <td>Formalized</td>
+                <td>0/12</td>
+                <td>54,809</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GKGMM19IterativeLocalVoting/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GKGMM19IterativeLocalVoting/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GKGMM19IterativeLocalVoting/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/GKGMM19IterativeLocalVoting/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GKGMM19IterativeLocalVoting/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GKGMM19IterativeLocalVoting/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GKGMM19IterativeLocalVoting/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GKGMM19IterativeLocalVoting/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/GKGMM19IterativeLocalVoting">Repo</a></div><p class="paper-note">Theorem 3 is proved as a constrained alternative in general and as the original statement under the explicit full-space condition.</p></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://arxiv.org/pdf/1906.08160"><cite>Who is in Your Top Three? Optimizing Learning in Elections with Many Candidates</cite></a> by
+                  Nikhil Garg; Lodewijk Gelauff; Sukolsak Sakshuwong; Ashish Goel; HCOMP, 2019.
+                </td>
+                <td>Formalized</td>
+                <td>0/15</td>
+                <td>38,678</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGSG19TopThree/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GGSG19TopThree/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGSG19TopThree/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/GGSG19TopThree/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGSG19TopThree/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GGSG19TopThree/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGSG19TopThree/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GGSG19TopThree/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/GGSG19TopThree">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://proceedings.neurips.cc/paper_files/paper/2020/hash/cdaa9b682e10c291d3bbadca4c96f5de-Abstract.html"><cite>Axioms for Learning from Pairwise Comparisons</cite></a> by
+                  Ritesh Noothigattu, Dominik Peters, and Ariel D. Procaccia; NeurIPS, 2020.
+                </td>
+                <td>Formalized</td>
+                <td>0/10</td>
+                <td>2,507</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/NoothigattuEtAl2020PairwiseComparisons/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/NoothigattuEtAl2020PairwiseComparisons/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/NoothigattuEtAl2020PairwiseComparisons/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/NoothigattuEtAl2020PairwiseComparisons/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/NoothigattuEtAl2020PairwiseComparisons/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/NoothigattuEtAl2020PairwiseComparisons/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/NoothigattuEtAl2020PairwiseComparisons/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/NoothigattuEtAl2020PairwiseComparisons/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/NoothigattuEtAl2020PairwiseComparisons">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://doi.org/10.1287/msom.2020.0921"><cite>Designing Informative Rating Systems: Evidence from an Online Labor Market</cite></a> by
+                  Nikhil Garg, Ramesh Johari; Manufacturing &amp; Service Operations Management 23(3), 2020.
+                </td>
+                <td>Formalized</td>
+                <td>0/3</td>
+                <td>9,718</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ18InformativeRatingSystems/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GJ18InformativeRatingSystems/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ18InformativeRatingSystems/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/GJ18InformativeRatingSystems/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ18InformativeRatingSystems/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GJ18InformativeRatingSystems/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GJ18InformativeRatingSystems/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GJ18InformativeRatingSystems/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/GJ18InformativeRatingSystems">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://proceedings.mlr.press/v119/perdomo20a.html"><cite>Performative Prediction</cite></a> by
+                  Juan C. Perdomo, Tijana Zrnic, Celestine Mendler-Dünner, and Moritz Hardt; ICML, 2020.
+                </td>
+                <td>Formalized</td>
+                <td>0/11</td>
+                <td>3,813</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PZMH20PerformativePrediction/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/PZMH20PerformativePrediction/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PZMH20PerformativePrediction/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/PZMH20PerformativePrediction/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PZMH20PerformativePrediction/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/PZMH20PerformativePrediction/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PZMH20PerformativePrediction/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/PZMH20PerformativePrediction/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/PZMH20PerformativePrediction">Repo</a></div><p class="paper-note">Formalization gap: Theorem 3.10 gives eventual high-probability containment in dimension &gt; 2 with uniform moments and stronger regularity; the printed sample-count and burn-in bounds remain unproved.</p></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://www.pnas.org/doi/10.1073/pnas.2018340118"><cite>Algorithmic Monoculture and Social Welfare</cite></a> by
+                  Jon Kleinberg and Manish Raghavan; PNAS, 2021.
+                </td>
+                <td>Formalized</td>
+                <td>0/49</td>
+                <td>116,134</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/KR21Monoculture/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/KR21Monoculture/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/KR21Monoculture/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/KR21Monoculture/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/KR21Monoculture/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/KR21Monoculture/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/KR21Monoculture/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/KR21Monoculture/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/KR21Monoculture">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://arxiv.org/pdf/2107.08922"><cite>Test-optional Policies: Overcoming Strategic Behavior and Informational Gaps</cite></a> by
+                  Zhi Liu and Nikhil Garg; EAAMO, 2021.
+                </td>
+                <td>Formalized</td>
+                <td>0/15</td>
+                <td>210,343</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LG21TestOptionalPolicies/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/LG21TestOptionalPolicies/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LG21TestOptionalPolicies/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/LG21TestOptionalPolicies/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LG21TestOptionalPolicies/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/LG21TestOptionalPolicies/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LG21TestOptionalPolicies/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/LG21TestOptionalPolicies/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/LG21TestOptionalPolicies">Repo</a></div><p class="paper-note">Formalization gap: Theorem 3.1 assumes stability against profitable group entry; voluntary Lemma 4.1 assumes maximal participation. Deriving these refinements from the paper’s equilibrium definition remains unproved.</p></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://arxiv.org/abs/2201.10408v4"><cite>An Algorithmic Framework for Bias Bounties</cite></a> by
+                  Ira Globus-Harris, Michael Kearns, and Aaron Roth; ACM FAccT, 2022.
+                </td>
+                <td>Formalized</td>
+                <td>0/15</td>
+                <td>14,755</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GHKR22BiasBounties/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GHKR22BiasBounties/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GHKR22BiasBounties/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/GHKR22BiasBounties/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GHKR22BiasBounties/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GHKR22BiasBounties/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GHKR22BiasBounties/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GHKR22BiasBounties/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/GHKR22BiasBounties">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://arxiv.org/pdf/1905.07544"><cite>Driver Surge Pricing</cite></a> by
+                  Nikhil Garg and Hamid Nazerzadeh; Management Science, 2022.
+                </td>
+                <td>Formalized</td>
+                <td>0/16</td>
+                <td>203,502</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GN21DriverSurgePricing/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GN21DriverSurgePricing/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GN21DriverSurgePricing/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/GN21DriverSurgePricing/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GN21DriverSurgePricing/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GN21DriverSurgePricing/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GN21DriverSurgePricing/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GN21DriverSurgePricing/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/GN21DriverSurgePricing">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://arxiv.org/abs/2206.13489v3"><cite>Supply-Side Equilibria in Recommender Systems</cite></a> by
+                  Meena Jagadeesan, Nikhil Garg, and Jacob Steinhardt; NeurIPS, 2023.
+                </td>
+                <td>Formalized</td>
+                <td>0/36</td>
+                <td>65,464</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/JGS23SupplySideRecommenderSystems/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/JGS23SupplySideRecommenderSystems/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/JGS23SupplySideRecommenderSystems/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/JGS23SupplySideRecommenderSystems/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/JGS23SupplySideRecommenderSystems/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/JGS23SupplySideRecommenderSystems/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/JGS23SupplySideRecommenderSystems/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/JGS23SupplySideRecommenderSystems/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/JGS23SupplySideRecommenderSystems">Repo</a></div><p class="paper-note">Formalization gap: Theorem 2 uses a specific two-dimensional user model; Theorems 3–4 cover user vectors at angles below 90°; Lemma 2 proves a restricted equilibrium characterization.</p></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://proceedings.neurips.cc/paper_files/paper/2024/hash/9328208f88ec69420031647e6ff97727-Abstract-Conference.html"><cite>Axioms for AI Alignment from Human Feedback</cite></a> by
+                  Luise Ge, Daniel Halpern, Evi Micha, Ariel D. Procaccia, Itai Shapira, Yevgeniy Vorobeychik, and Junlin Wu; NeurIPS, 2024.
+                </td>
+                <td>Formalized</td>
+                <td>0/27</td>
+                <td>9,919</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GeEtAl2024AlignmentAxioms/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GeEtAl2024AlignmentAxioms/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GeEtAl2024AlignmentAxioms/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/GeEtAl2024AlignmentAxioms/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GeEtAl2024AlignmentAxioms/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GeEtAl2024AlignmentAxioms/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GeEtAl2024AlignmentAxioms/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GeEtAl2024AlignmentAxioms/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/GeEtAl2024AlignmentAxioms">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://papers.nips.cc/paper_files/paper/2024/hash/95249d42f559a0cfaf282fdf26fe2e69-Abstract-Conference.html"><cite>Monoculture in Matching Markets</cite></a> by
+                  Kenny Peng, Nikhil Garg; NeurIPS, 2024.
+                </td>
+                <td>Formalized</td>
+                <td>0/13</td>
+                <td>27,861</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PG23MonocultureMatching/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/PG23MonocultureMatching/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PG23MonocultureMatching/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/PG23MonocultureMatching/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PG23MonocultureMatching/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/PG23MonocultureMatching/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PG23MonocultureMatching/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/PG23MonocultureMatching/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/PG23MonocultureMatching">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://www.nature.com/articles/s43588-023-00572-6"><cite>Quantifying Spatial Under-reporting Disparities in Resident Crowdsourcing</cite></a> by
+                  Zhi Liu, Uma Bhandaram, Nikhil Garg; Nature Computational Science, 2024.
+                </td>
+                <td>Formalized</td>
+                <td>0/17</td>
+                <td>30,584</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LBG24SpatialUnderreporting/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/LBG24SpatialUnderreporting/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LBG24SpatialUnderreporting/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/LBG24SpatialUnderreporting/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LBG24SpatialUnderreporting/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/LBG24SpatialUnderreporting/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LBG24SpatialUnderreporting/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/LBG24SpatialUnderreporting/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/LBG24SpatialUnderreporting">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://arxiv.org/abs/2307.15142"><cite>Reconciling the Accuracy-Diversity Trade-off in Recommendations</cite></a> by
+                  Kenny Peng, Manish Raghavan, Emma Pierson, Jon Kleinberg, and Nikhil Garg; The ACM Web Conference, 2024.
+                </td>
+                <td>Formalized</td>
+                <td>0/25</td>
+                <td>63,564</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PRPKG24AccuracyDiversity/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/PRPKG24AccuracyDiversity/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PRPKG24AccuracyDiversity/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/PRPKG24AccuracyDiversity/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PRPKG24AccuracyDiversity/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/PRPKG24AccuracyDiversity/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PRPKG24AccuracyDiversity/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/PRPKG24AccuracyDiversity/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/PRPKG24AccuracyDiversity">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://arxiv.org/abs/2410.14825"><cite>Redesigning Service Level Agreements: Equity and Efficiency in City Government Operations</cite></a> by
+                  Zhi Liu and Nikhil Garg; ACM EC, 2024.
+                </td>
+                <td>Formalized</td>
+                <td>0/10</td>
+                <td>70,448</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LG24ServiceLevelAgreements/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/LG24ServiceLevelAgreements/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LG24ServiceLevelAgreements/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/LG24ServiceLevelAgreements/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LG24ServiceLevelAgreements/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/LG24ServiceLevelAgreements/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LG24ServiceLevelAgreements/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/LG24ServiceLevelAgreements/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/LG24ServiceLevelAgreements">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://openreview.net/pdf?id=ZOZjMs3JTs"><cite>User-item fairness tradeoffs in recommendations</cite></a> by
+                  Sophie Greenwood, Sudalakshmee Chiniah, and Nikhil Garg; NeurIPS, 2024.
+                </td>
+                <td>Formalized</td>
+                <td>0/23</td>
+                <td>51,656</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GCG24UserItemFairness/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GCG24UserItemFairness/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GCG24UserItemFairness/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/GCG24UserItemFairness/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GCG24UserItemFairness/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GCG24UserItemFairness/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GCG24UserItemFairness/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GCG24UserItemFairness/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/GCG24UserItemFairness">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://arxiv.org/abs/2402.16771"><cite>Wisdom and Foolishness of Noisy Matching Markets</cite></a> by
+                  Kenny Peng, Nikhil Garg; ACM EC, 2024.
+                </td>
+                <td>Formalized</td>
+                <td>0/25</td>
+                <td>73,910</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PG24NoisyMatchingMarkets/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/PG24NoisyMatchingMarkets/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PG24NoisyMatchingMarkets/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/PG24NoisyMatchingMarkets/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PG24NoisyMatchingMarkets/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/PG24NoisyMatchingMarkets/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PG24NoisyMatchingMarkets/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/PG24NoisyMatchingMarkets/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/PG24NoisyMatchingMarkets">Repo</a></div><p class="paper-note">Formalization gap: Proposition 1 and Propositions 7(ii)-8 have their qualitative limits proved, while the source polynomial rates remain unproved.</p></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://ojs.aaai.org/index.php/AAAI/article/view/33574"><cite>A No Free Lunch Theorem for Human-AI Collaboration</cite></a> by
+                  Kenny Peng, Nikhil Garg, Jon Kleinberg; AAAI, 2025.
+                </td>
+                <td>Formalized</td>
+                <td>0/5</td>
+                <td>8,372</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PKG25NoFreeLunch/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/PKG25NoFreeLunch/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PKG25NoFreeLunch/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/PKG25NoFreeLunch/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PKG25NoFreeLunch/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/PKG25NoFreeLunch/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/PKG25NoFreeLunch/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/PKG25NoFreeLunch/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/PKG25NoFreeLunch">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://arxiv.org/pdf/2405.16762"><cite>Addressing Discretization-Induced Bias in Demographic Prediction</cite></a> by
+                  Evan Dong, Aaron Schein, Yixin Wang, and Nikhil Garg; PNAS Nexus, 2025.
+                </td>
+                <td>Formalized</td>
+                <td>0/9</td>
+                <td>27,842</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DSWG24DiscretizationBias/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/DSWG24DiscretizationBias/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DSWG24DiscretizationBias/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/DSWG24DiscretizationBias/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DSWG24DiscretizationBias/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/DSWG24DiscretizationBias/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DSWG24DiscretizationBias/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/DSWG24DiscretizationBias/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/DSWG24DiscretizationBias">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://arxiv.org/pdf/2207.04369"><cite>Balancing Producer Fairness and Efficiency via Prior-Weighted Rating System Design</cite></a> by
+                  Thomas Ma, Michael S. Bernstein, Ramesh Johari, and Nikhil Garg; ICWSM, 2025.
+                </td>
+                <td>Formalized</td>
+                <td>0/2</td>
+                <td>633</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MBJG25ProducerFairness/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/MBJG25ProducerFairness/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MBJG25ProducerFairness/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/MBJG25ProducerFairness/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MBJG25ProducerFairness/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/MBJG25ProducerFairness/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/MBJG25ProducerFairness/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/MBJG25ProducerFairness/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/MBJG25ProducerFairness">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://arxiv.org/abs/2601.11513"><cite>Capacity Constraints Make Admissions Processes Less Predictable</cite></a> by
+                  Evan Dong; Nikhil Garg; Sarah Dean; AAAI-26 published version, DOI 10.1609/aaai.v40i45.41179.
+                </td>
+                <td>Formalized</td>
+                <td>0/42</td>
+                <td>13,310</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DGD26AdmissionsPredictability/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/DGD26AdmissionsPredictability/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DGD26AdmissionsPredictability/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/DGD26AdmissionsPredictability/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DGD26AdmissionsPredictability/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/DGD26AdmissionsPredictability/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/DGD26AdmissionsPredictability/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/DGD26AdmissionsPredictability/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/DGD26AdmissionsPredictability">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://doi.org/10.1287/opre.2024.1167"><cite>Combatting Gerrymandering with Ranked Choice Voting: an Experimental Analysis of Multi-member Districts in the United States</cite></a> by
+                  Nikhil Garg; Wes Gurnee; David Rothschild; David Shmoys; Operations Research, 2026, DOI 10.1287/opre.2024.1167.
+                </td>
+                <td>Formalized</td>
+                <td>0/2</td>
+                <td>17,097</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGRS26CombattingGerrymanderingRCV/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/GGRS26CombattingGerrymanderingRCV/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGRS26CombattingGerrymanderingRCV/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/GGRS26CombattingGerrymanderingRCV/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGRS26CombattingGerrymanderingRCV/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/GGRS26CombattingGerrymanderingRCV/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/GGRS26CombattingGerrymanderingRCV/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/GGRS26CombattingGerrymanderingRCV/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/GGRS26CombattingGerrymanderingRCV">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://arxiv.org/abs/2606.08872v2"><cite>EFX for Additive Chores: Nonexistence, Pareto Incompatibility, and Bi-Valued Existence</cite></a> by
+                  Wentao He and Biaoshuai Tao; arXiv:2606.08872v2, 2026.
+                </td>
+                <td>Formalized</td>
+                <td>0/18</td>
+                <td>40,537</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/HT26EFXChores/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/HT26EFXChores/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/HT26EFXChores/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/HT26EFXChores/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/HT26EFXChores/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/HT26EFXChores/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/HT26EFXChores/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/HT26EFXChores/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/HT26EFXChores">Repo</a></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://jmvidal.cse.sc.edu/library/lehmann02a.pdf"><cite>Truth Revelation in Approximately Efficient Combinatorial Auctions</cite></a> by
+                  Daniel Lehmann, Liadan Ita O&#x27;Callaghan, and Yoav Shoham; Journal of the ACM, 2002.
+                </td>
+                <td>Partially formalized</td>
+                <td>0/12</td>
+                <td>7,978</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LOS02CombinatorialAuctions/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/LOS02CombinatorialAuctions/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LOS02CombinatorialAuctions/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/LOS02CombinatorialAuctions/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LOS02CombinatorialAuctions/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/LOS02CombinatorialAuctions/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LOS02CombinatorialAuctions/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/LOS02CombinatorialAuctions/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/LOS02CombinatorialAuctions">Repo</a></div><p class="paper-note">Formalization gap: twelve selected auction-theoretic results are proved; Theorem 6.1&#x27;s native NP-hardness and NP = ZPP consequences remain unproved.</p></td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="paper-source" href="https://www.cs.cmu.edu/~arielpro/15896s15/docs/paper12a.pdf"><cite>On Approximately Fair Allocations of Indivisible Goods</cite></a> by
+                  Richard J. Lipton, Evangelos Markakis, Elchanan Mossel, and Amin Saberi; ACM EC, 2004.
+                </td>
+                <td>Partially formalized</td>
+                <td>0/6</td>
+                <td>80,669</td>
+                <td><div class="artifact-links"><a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LMMS04FairDivision/FINAL_VALIDATION_REPORT.md" data-local-artifact-href="/artifacts/papers/LMMS04FairDivision/FINAL_VALIDATION_REPORT.md">Report</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LMMS04FairDivision/PaperInterface.lean" data-local-artifact-href="/artifacts/papers/LMMS04FairDivision/PaperInterface.lean">Lean statements</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LMMS04FairDivision/docs/DependencyDAG.pdf" data-local-artifact-href="/artifacts/papers/LMMS04FairDivision/docs/DependencyDAG.pdf">Dependency map</a> <a href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/LMMS04FairDivision/docs/HUMAN_REVIEW_PACKET.pdf" data-local-artifact-href="/artifacts/papers/LMMS04FairDivision/docs/HUMAN_REVIEW_PACKET.pdf">Review packet</a> <a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/LMMS04FairDivision">Repo</a></div><p class="paper-note">Formalization gap: selected components of Theorems 2.1, 2.3, and 4.2 are proved; their remaining complexity and asymptotic clauses and Theorems 3.1-3.3 remain unproved.</p></td>
               </tr>
               <!-- END GENERATED PAPER STATUS ROWS -->
             </tbody>
           </table>
         </div>
       </section>
+      <section class="band contact" id="contribute" aria-labelledby="contribute-title">
+        <div class="section-heading">
+          <p class="eyebrow">Contribute</p>
+          <h2 id="contribute-title">Interested in contributing or formalizing your own paper?</h2>
+          <p>
+            To get started in formalizing your own paper, clone the repository
+            and open an LLM agent tool (I use Codex 5.5 or Codex 5.6 Terra,
+            with xhigh thinking). Give the agent the paper link and exact source version, and ask it to
+            follow the repository’s <a href="https://github.com/nikhgarg/EconCSLib/blob/main/skills/econcs-formalizer/SKILL.md">formalization and validation workflow</a>.
+            (Please let me know what your experience is like.)
+          </p>
+          <p>
+            New paper formalizations should start in a private workflow and be
+            proposed to enter the library through a pull request when ready.
+            For questions or contributions, contact
+            <a href="mailto:ngarg@cornell.edu">ngarg@cornell.edu</a>.
+          </p>
+        </div>
+      </section>
+
     </main>
 
     <footer class="footer">
-      <p>EconCSLib is maintained by <a href="https://gargnikhil.com">Nikhil Garg</a>.</p>
+      <p>Applied Modeling Lib is maintained by <a href="https://gargnikhil.com">Nikhil Garg</a>.</p>
       <p>
+        This project was previously called EconCSLib.
         See also <a href="https://arxiv.org/abs/2606.16144">this paper</a>
         and <a href="https://github.com/gametheoryinlean/EconCSLib">Lean project</a>,
-        also called EconCSLib. The two projects are separate and independently
+        called EconCSLib. The two projects are separate and independently
         developed: this project focuses on AI-assisted formalization of research
         papers with human-in-the-loop validation, while the other project
         focuses on human curation, with LLM support, of an Economics and
         Computation concept library.
       </p>
     </footer>
+    <script>
+      // Search the existing citation text; no separate index or network request.
+      // Without JavaScript the complete table remains visible.
+      (() => {
+        const controls = document.querySelector(".paper-search");
+        const input = document.getElementById("paper-search");
+        const count = document.getElementById("paper-search-count");
+        const table = document.querySelector(".paper-table-wrap");
+        const normalize = (value) => value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const rows = Array.from(document.querySelectorAll(".paper-table tbody tr"), (row) => ({
+          row,
+          text: normalize(row.cells[0].textContent),
+        }));
+        const update = () => {
+          const terms = normalize(input.value).trim().split(/\s+/).filter(Boolean);
+          let visible = 0;
+          for (const entry of rows) {
+            entry.row.hidden = !terms.every((term) => entry.text.includes(term));
+            if (!entry.row.hidden) visible += 1;
+          }
+          count.textContent = visible === 0
+            ? `No papers found. Clear the search to show all ${rows.length} papers.`
+            : `Showing ${visible} of ${rows.length} papers.`;
+          table.scrollTop = 0;
+        };
+        input.addEventListener("input", update);
+        document.getElementById("paper-search-clear").addEventListener("click", () => {
+          input.value = "";
+          update();
+          input.focus();
+        });
+        update();
+        controls.hidden = false;
+      })();
+    </script>
     <script>
       // Generated artifact links remain public by default. The localhost
       // preview server exposes the current checkout through a neutral artifact
@@ -439,7 +637,7 @@
         const localHosts = new Set(["localhost", "127.0.0.1", "[::1]"]);
         if (!localHosts.has(window.location.hostname)) return;
         try {
-          const response = await fetch("/.econcslib-local-artifacts", {
+          const response = await fetch("/.local-artifact-capability", {
             method: "HEAD",
             cache: "no-store",
           });

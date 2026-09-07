@@ -1,7 +1,7 @@
 import LMMS04FairDivision.Theorem31QueryLowerBound
 import Mathlib.Data.Fintype.BigOperators
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 namespace Theorem31

@@ -1,4 +1,4 @@
-import EconCSLib.SocialChoice.FairDivision.Chores
+import AppliedModelingLib.SocialChoice.FairDivision.Chores
 import Mathlib.Tactic.FinCases
 
 /-!
@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, lines 548--560.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- Chores small for at most one of the four agents. -/
 noncomputable def m01ChorePool {Item : Type} [DecidableEq Item]

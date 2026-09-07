@@ -2,7 +2,7 @@ import KR21Monoculture.ThreeFirmMallowsBridge
 import Mathlib.Data.Fintype.EquivFin
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -21,7 +21,7 @@ iid-product, cardinal-value, arrival-order, or full three-firm experiment
 bridge.
 -/
 
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib.SocialChoice.Ranking
 
 /-- Distinct named source rows have distinct four-slot ranking actions. -/
 theorem sourceFourRankingToRanking_injective :

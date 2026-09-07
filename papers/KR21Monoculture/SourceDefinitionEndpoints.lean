@@ -2,8 +2,8 @@ import KR21Monoculture.MallowsDefinition1
 import KR21Monoculture.OuterConditional
 import KR21Monoculture.SourceModelEquations
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal NNReal Topology
 
 namespace KR21Monoculture
@@ -83,6 +83,25 @@ noncomputable def SourceDefinition2ConditionalAt {n : ℕ}
       Measurable fun value => F.dist theta value ranking) : Prop :=
   0 < F.jointLawDisagreementConditionalGain D theta hatom
 
+/--
+The full source Definition 2.  Its quantifier is over every positive accuracy,
+not a single chosen instance.  The conditioning event is required to have
+positive mass, as is necessary for the source conditional expectation to have
+its ordinary real-valued meaning.
+-/
+noncomputable def SourceDefinition2 {n : ℕ}
+    (F : DistributionalAccuracyFamily n) (D : Measure (ValueProfile n)) : Prop :=
+  ∀ theta : ℝ, 0 < theta → ∀ hatom : ∀ ranking : Ranking n,
+    Measurable fun value => F.dist theta value ranking,
+    let J := F.outerIndependentPairJointLaw D theta hatom
+    let numerator : ℝ := ∫ x : ValueProfile n × RankingPair n,
+      if firstChoice x.2.1 ≠ firstChoice x.2.2 then
+        x.1 (firstChoice x.2.1) - x.1 (secondChoice x.2.1)
+      else 0 ∂J
+    let denominator : ℝ := ∫ x : ValueProfile n × RankingPair n,
+      if firstChoice x.2.1 ≠ firstChoice x.2.2 then (1 : ℝ) else 0 ∂J
+    0 < denominator → 0 < numerator / denominator
+
 /-- The source Definition 2 conditional gain is equivalent to the outer
 second-mover payoff comparison when the actual joint experiment is regular and
 the source conditioning event has positive probability. -/
@@ -111,6 +130,20 @@ noncomputable def SourceDefinition3At {n : ℕ}
     DistributionalAccuracyFamily.outerExpected D (fun value =>
       expectedSecondMoverIndependent
         (F.dist thetaH value) (F.dist thetaH value) value)
+
+/--
+The full source Definition 3.  It quantifies over every ordered positive pair
+of algorithmic and human accuracies.
+-/
+noncomputable def SourceDefinition3 {n : ℕ}
+    (F : DistributionalAccuracyFamily n) (D : Measure (ValueProfile n)) : Prop :=
+  ∀ thetaA thetaH : ℝ, 0 < thetaH → thetaH < thetaA →
+    (∫ value : ValueProfile n,
+      pmfPairExp (F.dist thetaH value) (F.dist thetaA value)
+        (fun pi sigma => secondMoverUtility value pi sigma) ∂D) <
+    (∫ value : ValueProfile n,
+      pmfPairExp (F.dist thetaH value) (F.dist thetaH value)
+        (fun pi sigma => secondMoverUtility value pi sigma) ∂D)
 
 /-- The source Definition 3 expression is definitionally the formal outer-D
 weaker-competition predicate. -/

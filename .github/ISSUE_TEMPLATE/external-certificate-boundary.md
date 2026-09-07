@@ -17,7 +17,7 @@ assignees: ""
 
 - What fact is currently external?
 - Is it a source assumption, cited theorem, complexity-theory boundary, analytic theorem, solver guarantee, or library gap?
-- What would discharge it inside EconCSLib?
+- What would discharge it inside AppliedModelingLib?
 
 ## Current public status
 

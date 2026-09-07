@@ -16,7 +16,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- The two branches of an observed-access estimation policy.  The access
 branch is the literal realized school output; the no-access branch is the

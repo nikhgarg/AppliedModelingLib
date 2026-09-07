@@ -4,10 +4,17 @@
 % Do not hand-edit generated packets; annotate the PDF or reconcile notes into
 % the paper-local human-review log.
 \documentclass[10pt]{article}
-\usepackage[margin=0.43in]{geometry}
+\usepackage[margin=0.43in,footskip=0.2in]{geometry}
 \usepackage{fontspec}
-\setmainfont{Latin Modern Roman}
-\setmonofont{DejaVu Sans Mono}
+% Use a Unicode-complete main face as well as a Unicode-complete code face.
+% Reviewer reasons and source labels can contain exact Greek symbols outside
+% verbatim blocks; silently dropping one would corrupt the review packet.
+\setmainfont{DejaVu Serif}
+% The broad DejaVu Sans Unicode coverage preserves Lean's mathematical glyphs
+% (including U+2216 set difference and superscript identifiers) in verbatim
+% review blocks.  Its proportional metrics are preferable to silently missing
+% exact semantic text from a narrower monospace font.
+\setmonofont{DejaVu Sans}
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage{fvextra}
@@ -15,7 +22,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.15em}
 \linespread{0.92}
-\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,breaklinks=true}
 \DefineVerbatimEnvironment{ReviewVerbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\scriptsize}
 \newcommand{\reviewerbox}{%
   \par\noindent\fbox{\parbox{0.96\linewidth}{\rule{0pt}{0.38in}}}\par
@@ -36,13 +43,13 @@ specifications, and hash-bound raw-source-to-Spec screening records.
 
 \noindent\textbf{Paper:} PKG25NoFreeLunch\\
 \textbf{Paper id:} \texttt{PKG25NoFreeLunch}\\
-\textbf{Source version:} AAAI 2025, cross-checked against arXiv 2411.15230 source archive SHA256 da7868015db272f3c61cdc88c4e8492b8888f8363332215aa59c509471831c56\\
+\textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright AAAI 2025, cross-checked against arXiv 2411.15230 source archive SHA256 da7868015db272f3c61cdc88c4e8492b8888f8363332215aa59c509471831c56}\\
 \textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
-\textbf{Rows:} 20\\
-\textbf{Generated:} 2026-08-18\\
+\textbf{Rows:} 5\\
+\textbf{Generated:} 2026-09-06\\
 \textbf{Source URL:} \href{https://ojs.aaai.org/index.php/AAAI/article/view/33574/35729}{official source}
 
-\noindent\fbox{\parbox{0.96\linewidth}{\textbf{Review status:} 0/20 source-claim screens. This is a review worksheet while those direct checks remain pending; it is not a final validation receipt.}}\par
+
 
 
 
@@ -55,116 +62,62 @@ log.
 \section*{Open the interactive dashboard}
 The interactive dashboard is an optional alternative to using this PDF; it
 presents the same review surface rather than an additional review requirement.
-After forking and cloning (or pulling) EconCSLib, run the following from the
+After forking and cloning (or pulling) AppliedModelingLib, run the following from the
 repository root. The cache command is needed only the first time in a new clone.
 \begin{ReviewVerbatim}
-cd <your-EconCSLib-checkout>
+cd <your-repository-checkout>
 lake exe cache get
 python3 scripts/review_dashboard.py --paper PKG25NoFreeLunch --serve
 \end{ReviewVerbatim}
 Open \url{http://127.0.0.1:8765/} in a browser and keep that terminal running
-while reviewing. The dashboard records saved annotations in this paper's
+while reviewing. The dashboard records saved annotations in this paper's local
 reviewer-owned review record.
 
 \section*{Contents}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (20)}
+\item \hyperlink{paper-prerequisite-section-5ef5ef0364b6939c}{Paper-specific semantic prerequisites (21; not paper claims)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{source-claim-9384ebab7398c5e4}{source\_definition\_predictorSpec}
-\item \hyperlink{source-claim-05c0eaac9818a586}{source\_model\_event\_calibration\_conventionSpec}
-\item \hyperlink{source-claim-6ba03b9e70eacd50}{source\_definition\_collaboration\_settingSpec}
-\item \hyperlink{source-claim-b8bc36d9b34f3b29}{source\_definition\_rounding\_classifierSpec}
-\item \hyperlink{source-claim-9ca4c6ad86e89895}{source\_formula\_individual\_accuracySpec}
-\item \hyperlink{source-claim-ca1c9f8cb9fbae0b}{source\_definition\_collaboration\_strategySpec}
-\item \hyperlink{source-claim-075776b0c6d0a991}{source\_formula\_induced\_collaboration\_classifierSpec}
-\item \hyperlink{source-claim-825d56b262a72a57}{source\_definition\_strategy\_accuracySpec}
-\item \hyperlink{source-claim-8acfa10d61ca8cac}{source\_definition\_non\_collaborationSpec}
-\item \hyperlink{source-claim-bf0315dd1a18c70e}{source\_theorem1\_no\_free\_lunchSpec}
-\item \hyperlink{source-claim-76d57f8e8060f2fd}{source\_definition\_correctSpec}
-\item \hyperlink{source-claim-c2574ffc8255a71d}{source\_definition\_incorrectSpec}
-\item \hyperlink{source-claim-df70754e8844c37d}{source\_definition\_agreeSpec}
-\item \hyperlink{source-claim-b15831d5b4ce3fd5}{source\_definition\_disagreeSpec}
-\item \hyperlink{source-claim-bee3bb1dc601f6f9}{source\_proposition6\_linear\_combinationSpec}
-\item \hyperlink{source-claim-ca52c024caeea892}{source\_partition\_finite\_measurable\_repairSpec}
-\item \hyperlink{source-claim-1b69269ab69dfcc0}{source\_unnumbered\_iff\_restatementSpec}
-\item \hyperlink{source-claim-f706fa3b58e00679}{source\_formula\_proposition7\_average\_mixtureSpec}
-\item \hyperlink{source-claim-2c1cc7b2a1433aaa}{source\_formula\_proposition9\_s1\_accuraciesSpec}
-\item \hyperlink{source-claim-6680595ed06f984e}{source\_formula\_proposition9\_final\_mixtureSpec}
+\item \hyperlink{paper-prerequisite-2df878eb3e0dbb6c}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting}
+\item \hyperlink{paper-prerequisite-84af0bb2809cc6f7}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}agent\allowbreak{}Accuracy\_\allowbreak{}eq\_\allowbreak{}prediction\allowbreak{}Certainty}
+\item \hyperlink{paper-prerequisite-220441c661ffee1b}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}agent\allowbreak{}Classifier}
+\item \hyperlink{paper-prerequisite-b9f3281f3c9b6cca}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}source\allowbreak{}Prediction\allowbreak{}Profile}
+\item \hyperlink{paper-prerequisite-9bb2bbf635f9cd10}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}source\allowbreak{}Strategy\allowbreak{}Accuracy}
+\item \hyperlink{paper-prerequisite-f486e787b4ce5bbb}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}source\allowbreak{}Strategy\allowbreak{}Classifier}
+\item \hyperlink{paper-prerequisite-1c5a18642b851dc5}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Collaboration\allowbreak{}Strategy}
+\item \hyperlink{paper-prerequisite-c23dd9d92cc157c4}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Constant\allowbreak{}On\allowbreak{}Half\allowbreak{}Slice}
+\item \hyperlink{paper-prerequisite-88409412b52edd25}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Defers\allowbreak{}Away\allowbreak{}From\allowbreak{}Half}
+\item \hyperlink{paper-prerequisite-88a840f53df1cf52}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Non\allowbreak{}Collaborative}
+\item \hyperlink{paper-prerequisite-bc76ca245dd2495f}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Reliable\allowbreak{}Joint\allowbreak{}Law}
+\item \hyperlink{paper-prerequisite-cde5ac5fa1bdee72}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Strategy\allowbreak{}Well\allowbreak{}Formed}
+\item \hyperlink{paper-prerequisite-bdded92620cfbb62}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Unit\allowbreak{}Cube\allowbreak{}Profile}
+\item \hyperlink{paper-prerequisite-b970619f8c41551c}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}extend\allowbreak{}Source\allowbreak{}Strategy}
+\item \hyperlink{paper-prerequisite-e2c3eaace70952e5}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}joint\allowbreak{}Law\allowbreak{}Dependent\allowbreak{}Partition\allowbreak{}Setting}
+\item \hyperlink{paper-prerequisite-a7403850f72d70e1}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}joint\allowbreak{}Law\allowbreak{}Partition\allowbreak{}Predictor}
+\item \hyperlink{paper-prerequisite-728603a5bcbb8140}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}round\allowbreak{}Prob}
+\item \hyperlink{paper-prerequisite-4d6691bbd0af6579}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}source\_\allowbreak{}definition\_\allowbreak{}agree\_\allowbreak{}on}
+\item \hyperlink{paper-prerequisite-25b6f16dda3c73b9}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}source\_\allowbreak{}definition\_\allowbreak{}correct\_\allowbreak{}on}
+\item \hyperlink{paper-prerequisite-d753cda07d41e8d9}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}source\_\allowbreak{}definition\_\allowbreak{}disagree\_\allowbreak{}on}
+\item \hyperlink{paper-prerequisite-fe4554471890a87d}{PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}source\_\allowbreak{}definition\_\allowbreak{}incorrect\_\allowbreak{}on}
+\end{itemize}
+\item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (5)}
+\begin{itemize}[leftmargin=1.2em]
+\item \hyperlink{source-claim-bf0315dd1a18c70e}{source\_\allowbreak{}theorem1\_\allowbreak{}no\_\allowbreak{}free\_\allowbreak{}lunch\allowbreak{}Spec}
+\item \hyperlink{source-claim-bee3bb1dc601f6f9}{source\_\allowbreak{}proposition6\_\allowbreak{}linear\_\allowbreak{}combination\allowbreak{}Spec}
+\item \hyperlink{source-claim-11915345567afada}{source\_\allowbreak{}proposition7\_\allowbreak{}fixed\_\allowbreak{}deferral\allowbreak{}Spec}
+\item \hyperlink{source-claim-a888d560950f7c06}{source\_\allowbreak{}lemma8\_\allowbreak{}bad\_\allowbreak{}tuple\allowbreak{}Spec}
+\item \hyperlink{source-claim-1bdd0523bf302431}{source\_\allowbreak{}proposition9\_\allowbreak{}constant\_\allowbreak{}tie\_\allowbreak{}label\allowbreak{}Spec}
 \end{itemize}
 \end{itemize}
 
-
-
 \clearpage
-\hypertarget{source-claim-9384ebab7398c5e4}{}
-\hypertarget{source-section-f10b5f68e4acf3dc}{}
-\section*{Source claims}
-\subsection*{Review row 1}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 7-\allowbreak{}11\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-A \vocab{predictor} is a function $P: \XX\rightarrow [0,1]$. A predictor $P$ is \vocab{calibrated} on $\DD$ if
-\begin{equation}
-    \Pr_{(X,Y)\sim \DD}[Y=1\,|\,P(X)=p] = p
-\end{equation}
-for all $p\in [0,1]$ (more precisely, for all $p\in \text{Image}(P)$).
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {n : ℕ} (S : PKG25NoFreeLunch.JointLawCollaborationSetting n) (i : Fin n) (x : S.X), 0 ≤ S.pred i x ∧ S.pred i x ≤ 1
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_definition_predictorSpec_proof
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-05c0eaac9818a586}{}
-\section*{Review row 2}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 7-\allowbreak{}11\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-A \vocab{predictor} is a function $P: \XX\rightarrow [0,1]$. A predictor $P$ is \vocab{calibrated} on $\DD$ if
-\begin{equation}
-    \Pr_{(X,Y)\sim \DD}[Y=1\,|\,P(X)=p] = p
-\end{equation}
-for all $p\in [0,1]$ (more precisely, for all $p\in \text{Image}(P)$).
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {n : ℕ} (S : PKG25NoFreeLunch.JointLawCollaborationSetting n) (i : Fin n) (A : Set ℝ),
-  MeasurableSet A →
-    ∫ (z : S.X × PKG25NoFreeLunch.Label), {z | S.pred i z.1 ∈ A ∧ z.2 = true}.indicator (fun x => 1) z ∂S.joint =
-      ∫ (z : S.X × PKG25NoFreeLunch.Label), {z | S.pred i z.1 ∈ A}.indicator (fun z => S.pred i z.1) z ∂S.joint
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_model_event_calibration_conventionSpec_proof
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-6ba03b9e70eacd50}{}
-\section*{Review row 3}
+\hypertarget{paper-prerequisite-section-5ef5ef0364b6939c}{}
+\section*{Paper-specific semantic prerequisites}
+\hypertarget{paper-prerequisite-2df878eb3e0dbb6c}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting\par}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 13-\allowbreak{}19\par}
-\paragraph{Verbatim source input}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 We may now define collaboration settings.
 \begin{definition}A \textbf{collaboration setting} is an ordered tuple
@@ -173,30 +126,93 @@ We may now define collaboration settings.
 \end{equation}
 where $\DD$ is a probability distribution over $\XX\times \{0,1\}$ and $P_1,\cdots,P_n$ are each calibrated predictors on $\DD$.
 \end{definition}
+
+[Next verbatim source excerpt]
+
+A \vocab{predictor} is a function $P: \XX\rightarrow [0,1]$. A predictor $P$ is \vocab{calibrated} on $\DD$ if
+\begin{equation}
+    \Pr_{(X,Y)\sim \DD}[Y=1\,|\,P(X)=p] = p
+\end{equation}
+for all $p\in [0,1]$ (more precisely, for all $p\in \text{Image}(P)$).
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
+
+\paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
-∀ (n : ℕ), PKG25NoFreeLunch.source_definition_probability_collaboration_settingSpec n
+type:
+ℕ → Type 1
+
+constructor PKG25NoFreeLunch.JointLawCollaborationSetting.mk:
+{n : ℕ} →
+  (X : Type) →
+    [measurableSpaceX : MeasurableSpace X] →
+      (joint : MeasureTheory.Measure (X × PKG25NoFreeLunch.Label)) →
+        MeasureTheory.IsProbabilityMeasure joint →
+          (pred : Fin n → X → ℝ) →
+            (∀ (i : Fin n) (x : X), 0 ≤ pred i x ∧ pred i x ≤ 1) →
+              (∀ (i : Fin n), Measurable (pred i)) →
+                (∀ (i : Fin n) (A : Set ℝ),
+                    MeasurableSet A →
+                      ∫ (z : X × PKG25NoFreeLunch.Label),
+                          {z : X × PKG25NoFreeLunch.Label | pred i z.1 ∈ A ∧ z.2 = true}.indicator
+                            (fun (x : X × PKG25NoFreeLunch.Label) => 1) z ∂joint =
+                        ∫ (z : X × PKG25NoFreeLunch.Label),
+                          {z : X × PKG25NoFreeLunch.Label | pred i z.1 ∈ A}.indicator
+                            (fun (z : X × PKG25NoFreeLunch.Label) => pred i z.1) z ∂joint) →
+                  PKG25NoFreeLunch.JointLawCollaborationSetting n
+
+field X:
+{n : ℕ} → PKG25NoFreeLunch.JointLawCollaborationSetting n → Type
+
+field measurableSpaceX:
+{n : ℕ} → (self : PKG25NoFreeLunch.JointLawCollaborationSetting n) → MeasurableSpace self.X
+
+field joint:
+{n : ℕ} →
+  (self : PKG25NoFreeLunch.JointLawCollaborationSetting n) → MeasureTheory.Measure (self.X × PKG25NoFreeLunch.Label)
+
+field isProbability:
+∀ {n : ℕ} (self : PKG25NoFreeLunch.JointLawCollaborationSetting n), MeasureTheory.IsProbabilityMeasure self.joint
+
+field pred:
+{n : ℕ} → (self : PKG25NoFreeLunch.JointLawCollaborationSetting n) → Fin n → self.X → ℝ
+
+field pred_range:
+∀ {n : ℕ} (self : PKG25NoFreeLunch.JointLawCollaborationSetting n) (i : Fin n) (x : self.X),
+  0 ≤ self.pred i x ∧ self.pred i x ≤ 1
+
+field pred_measurable:
+∀ {n : ℕ} (self : PKG25NoFreeLunch.JointLawCollaborationSetting n) (i : Fin n), Measurable (self.pred i)
+
+field calibrated_events:
+∀ {n : ℕ} (self : PKG25NoFreeLunch.JointLawCollaborationSetting n) (i : Fin n) (A : Set ℝ),
+  MeasurableSet A →
+    ∫ (z : self.X × PKG25NoFreeLunch.Label),
+        {z : self.X × PKG25NoFreeLunch.Label | self.pred i z.1 ∈ A ∧ z.2 = true}.indicator
+          (fun (x : self.X × PKG25NoFreeLunch.Label) => 1) z ∂self.joint =
+      ∫ (z : self.X × PKG25NoFreeLunch.Label),
+        {z : self.X × PKG25NoFreeLunch.Label | self.pred i z.1 ∈ A}.indicator
+          (fun (z : self.X × PKG25NoFreeLunch.Label) => self.pred i z.1) z ∂self.joint
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_definition_collaboration_settingSpec_proof
-\end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The structure contains exactly an input space, a probability law on input-\allowbreak{}label pairs, and n measurable [0,1]-\allowbreak{}valued calibrated predictors.\allowbreak{} Its event identity is the measure-\allowbreak{}theoretic version of the source's conditional calibration formula, agreeing with that formula on positive-\allowbreak{}mass prediction fibers and avoiding an arbitrary conditional-\allowbreak{}probability choice on null fibers.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-b8bc36d9b34f3b29}{}
-\section*{Review row 4}
+\hypertarget{paper-prerequisite-84af0bb2809cc6f7}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}agent\allowbreak{}Accuracy\_\allowbreak{}eq\_\allowbreak{}prediction\allowbreak{}Certainty}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}agent\allowbreak{}Accuracy\_\allowbreak{}eq\_\allowbreak{}prediction\allowbreak{}Certainty\par}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 21-\allowbreak{}24\par}
-\paragraph{Verbatim source input}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 The predictor $P_i$ induces the classifier $\Yhat_i: x\mapsto \round{P_i(x)},$ where $\round{\cdot}$ is the rounding operator (without loss of generality, set $\round{0.5}=1$). $\Yhat_i$ achieves 0-1 accuracy
 \begin{equation}
@@ -205,59 +221,177 @@ The predictor $P_i$ induces the classifier $\Yhat_i: x\mapsto \round{P_i(x)},$ w
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_definition_rounding_conventionSpec ∧
-  ∀ {n : ℕ} (S : PKG25NoFreeLunch.JointLawCollaborationSetting n) (i : Fin n) (x : S.X),
-    S.agentClassifier i x = PKG25NoFreeLunch.roundProb (S.pred i x)
-\end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_definition_rounding_classifierSpec_proof
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-9ca4c6ad86e89895}{}
-\section*{Review row 5}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 21-\allowbreak{}24\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-The predictor $P_i$ induces the classifier $\Yhat_i: x\mapsto \round{P_i(x)},$ where $\round{\cdot}$ is the rounding operator (without loss of generality, set $\round{0.5}=1$). $\Yhat_i$ achieves 0-1 accuracy
-\begin{equation}
-    \acc_i(S) := \EE_{(X,Y)\sim \DD}[\max\{P_i(X), 1 - P_i(X)\}].
-\end{equation}
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
+\paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
 ∀ {n : ℕ} (S : PKG25NoFreeLunch.JointLawCollaborationSetting n) (i : Fin n),
   S.agentAccuracy i = ∫ (z : S.X × PKG25NoFreeLunch.Label), max (S.pred i z.1) (1 - S.pred i z.1) ∂S.joint
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_formula_individual_accuracySpec_proof
-\end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The theorem equates the 0-\allowbreak{}1 accuracy of the rounded predictor with the source's displayed expectation of max(P\_\allowbreak{}i(X), 1-\allowbreak{}P\_\allowbreak{}i(X)).\allowbreak{} It derives the identity from the separately reviewed calibration semantics and uses the source's tie-\allowbreak{}up rounding convention.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-ca1c9f8cb9fbae0b}{}
-\section*{Review row 6}
+\hypertarget{paper-prerequisite-220441c661ffee1b}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}agent\allowbreak{}Classifier}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}agent\allowbreak{}Classifier\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 21-\allowbreak{}24\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+The predictor $P_i$ induces the classifier $\Yhat_i: x\mapsto \round{P_i(x)},$ where $\round{\cdot}$ is the rounding operator (without loss of generality, set $\round{0.5}=1$). $\Yhat_i$ achieves 0-1 accuracy
+\begin{equation}
+    \acc_i(S) := \EE_{(X,Y)\sim \DD}[\max\{P_i(X), 1 - P_i(X)\}].
+\end{equation}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+{n : ℕ} → (S : PKG25NoFreeLunch.JointLawCollaborationSetting n) → Fin n → S.X → PKG25NoFreeLunch.Label
+
+value:
+fun {n : ℕ} (S : PKG25NoFreeLunch.JointLawCollaborationSetting n) (i : Fin n) (x : S.X) =>
+  PKG25NoFreeLunch.roundProb (S.pred i x)
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The declaration maps an input x to round(P\_\allowbreak{}i(x)), exactly the source-\allowbreak{}induced individual classifier.\allowbreak{} The referenced roundProb declaration separately fixes the source convention round(0.\allowbreak{}5)=1.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-b9f3281f3c9b6cca}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}source\allowbreak{}Prediction\allowbreak{}Profile}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}source\allowbreak{}Prediction\allowbreak{}Profile\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 31-\allowbreak{}35\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Here, $\CC$ should be interpreted as a function that takes in $n$ predicted probabilities and returns a 0-1 classification. Given a collaboration setting $S=(\DD, P_1, \cdots, P_n)$, a collaboration strategy $\CC$ induces the classifier
+\begin{equation}
+    \Yhat_\CC: \XX \rightarrow \{0,1\},\quad x \mapsto \CC(P_1(x),\cdots,P_n(x)).
+\end{equation}
+Let $\acc_\CC(S)$ denote the 0-1 accuracy of $\Yhat_\CC$ on $\DD$. In other words, for each $x\in \XX$, each agent $i$ produces a predicted probability $P_i(x).$ The collaboration strategy aggregates these predictions into a binary classification.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+{n : ℕ} → (S : PKG25NoFreeLunch.JointLawCollaborationSetting n) → S.X → PKG25NoFreeLunch.UnitCubeProfile n
+
+value:
+fun {n : ℕ} (S : PKG25NoFreeLunch.JointLawCollaborationSetting n) (x : S.X) =>
+  ⟨fun (i : Fin n) => S.pred i x, fun (i : Fin n) => S.pred_range i x⟩
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The target packages exactly the n displayed predictor values with their coordinatewise [0,1] bounds, which is the prediction profile supplied to the induced classifier.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-9bb2bbf635f9cd10}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}source\allowbreak{}Strategy\allowbreak{}Accuracy}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}source\allowbreak{}Strategy\allowbreak{}Accuracy\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 35\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Let $\acc_\CC(S)$ denote the 0-1 accuracy of $\Yhat_\CC$ on $\DD$. In other words, for each $x\in \XX$, each agent $i$ produces a predicted probability $P_i(x).$ The collaboration strategy aggregates these predictions into a binary classification.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+{n : ℕ} → PKG25NoFreeLunch.JointLawCollaborationSetting n → PKG25NoFreeLunch.SourceCollaborationStrategy n → ℝ
+
+value:
+fun {n : ℕ} (S : PKG25NoFreeLunch.JointLawCollaborationSetting n)
+    (C : PKG25NoFreeLunch.SourceCollaborationStrategy n) =>
+  S.classifierAccuracy (S.sourceStrategyClassifier C)
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The target is the 0-\allowbreak{}1 classifier accuracy of the displayed induced source-\allowbreak{}domain strategy classifier.\allowbreak{} Its expectation-\allowbreak{}definedness use is governed by the displayed approved integrability convention.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-f486e787b4ce5bbb}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}source\allowbreak{}Strategy\allowbreak{}Classifier}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Joint\allowbreak{}Law\allowbreak{}Collaboration\allowbreak{}Setting.\allowbreak{}source\allowbreak{}Strategy\allowbreak{}Classifier\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 31-\allowbreak{}35\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Here, $\CC$ should be interpreted as a function that takes in $n$ predicted probabilities and returns a 0-1 classification. Given a collaboration setting $S=(\DD, P_1, \cdots, P_n)$, a collaboration strategy $\CC$ induces the classifier
+\begin{equation}
+    \Yhat_\CC: \XX \rightarrow \{0,1\},\quad x \mapsto \CC(P_1(x),\cdots,P_n(x)).
+\end{equation}
+Let $\acc_\CC(S)$ denote the 0-1 accuracy of $\Yhat_\CC$ on $\DD$. In other words, for each $x\in \XX$, each agent $i$ produces a predicted probability $P_i(x).$ The collaboration strategy aggregates these predictions into a binary classification.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+{n : ℕ} →
+  (S : PKG25NoFreeLunch.JointLawCollaborationSetting n) →
+    PKG25NoFreeLunch.SourceCollaborationStrategy n → S.X → PKG25NoFreeLunch.Label
+
+value:
+fun {n : ℕ} (S : PKG25NoFreeLunch.JointLawCollaborationSetting n) (C : PKG25NoFreeLunch.SourceCollaborationStrategy n)
+    (x : S.X) =>
+  C (S.sourcePredictionProfile x)
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} For every input x, the target applies C to the exact source-\allowbreak{}domain profile of P\_\allowbreak{}1(x), .\allowbreak{}.\allowbreak{}.\allowbreak{}, P\_\allowbreak{}n(x), yielding the displayed induced binary classifier.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-1c5a18642b851dc5}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Collaboration\allowbreak{}Strategy}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Collaboration\allowbreak{}Strategy\par}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 27-\allowbreak{}35\par}
-\paragraph{Verbatim source input}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 A collaboration strategy is a way to combine the predicted probabilities of each agent to make a classification.
 \begin{definition}
@@ -271,87 +405,33 @@ Let $\acc_\CC(S)$ denote the 0-1 accuracy of $\Yhat_\CC$ on $\DD$. In other word
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
+
+\paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
-∀ (n : ℕ), PKG25NoFreeLunch.source_definition_collaboration_strategy n = PKG25NoFreeLunch.CollaborationStrategy n
+type:
+ℕ → Type
+
+value:
+fun (n : ℕ) => PKG25NoFreeLunch.UnitCubeProfile n → PKG25NoFreeLunch.Label
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_definition_collaboration_strategySpec_proof
-\end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} UnitCubeProfile is the displayed coordinatewise closed unit cube and Label is Bool, so the target is exactly a deterministic function [0,1]\textasciicircum{}n to \{0,1\}.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-075776b0c6d0a991}{}
-\section*{Review row 7}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 31-\allowbreak{}35\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Here, $\CC$ should be interpreted as a function that takes in $n$ predicted probabilities and returns a 0-1 classification. Given a collaboration setting $S=(\DD, P_1, \cdots, P_n)$, a collaboration strategy $\CC$ induces the classifier
-\begin{equation}
-    \Yhat_\CC: \XX \rightarrow \{0,1\},\quad x \mapsto \CC(P_1(x),\cdots,P_n(x)).
-\end{equation}
-Let $\acc_\CC(S)$ denote the 0-1 accuracy of $\Yhat_\CC$ on $\DD$. In other words, for each $x\in \XX$, each agent $i$ produces a predicted probability $P_i(x).$ The collaboration strategy aggregates these predictions into a binary classification.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {n : ℕ} (S : PKG25NoFreeLunch.JointLawCollaborationSetting n) (C : PKG25NoFreeLunch.CollaborationStrategy n)
-  (x : S.X), S.strategyClassifier C x = C fun i => S.pred i x
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_formula_induced_collaboration_classifierSpec_proof
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-825d56b262a72a57}{}
-\section*{Review row 8}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 35\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Let $\acc_\CC(S)$ denote the 0-1 accuracy of $\Yhat_\CC$ on $\DD$. In other words, for each $x\in \XX$, each agent $i$ produces a predicted probability $P_i(x).$ The collaboration strategy aggregates these predictions into a binary classification.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {n : ℕ} (S : PKG25NoFreeLunch.JointLawCollaborationSetting n) (C : PKG25NoFreeLunch.CollaborationStrategy n),
-  PKG25NoFreeLunch.source_assumption_strategy_expectation_well_formed S C →
-    S.strategyAccuracy C =
-      ∫ (z : S.X × PKG25NoFreeLunch.Label), if S.strategyClassifier C z.1 = z.2 then 1 else 0 ∂S.joint
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_definition_strategy_accuracySpec_proof
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-8acfa10d61ca8cac}{}
-\section*{Review row 9}
+\hypertarget{paper-prerequisite-c23dd9d92cc157c4}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Constant\allowbreak{}On\allowbreak{}Half\allowbreak{}Slice}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Constant\allowbreak{}On\allowbreak{}Half\allowbreak{}Slice\par}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 42-\allowbreak{}54\par}
-\paragraph{Verbatim source input}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
 \begin{definition}\label{def:non-collaborative}
     A collaboration strategy $\CC:[0,1]^n\rightarrow \{0,1\}$ is \textbf{non-collaborative} if there exists $k\in [n]$ and $\alpha\in \{0,1\}$ such that
@@ -369,27 +449,578 @@ A collaboration strategy is non-collaborative if it essentially always defers to
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
+
+\paragraph{Lean-elaborated paper signature}
 \begin{ReviewVerbatim}
-∀ {n : ℕ} (C : PKG25NoFreeLunch.CollaborationStrategy n),
-  PKG25NoFreeLunch.NonCollaborative C ↔
-    ∃ k α, PKG25NoFreeLunch.DefersAwayFromHalf C k ∧ PKG25NoFreeLunch.ConstantOnHalfSlice C k α
+type:
+{n : ℕ} → PKG25NoFreeLunch.SourceCollaborationStrategy n → Fin n → PKG25NoFreeLunch.Label → Prop
+
+value:
+fun {n : ℕ} (C : PKG25NoFreeLunch.SourceCollaborationStrategy n) (k : Fin n) (alpha : PKG25NoFreeLunch.Label) =>
+  ∀ (p : PKG25NoFreeLunch.UnitCubeProfile n), PKG25NoFreeLunch.Interior ↑p → ↑p k = 1 / 2 → C p = alpha
 \end{ReviewVerbatim}
 
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_definition_non_collaborationSpec_proof
-\end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The target quantifies exactly over interior cube profiles with p\_\allowbreak{}k = 1/\allowbreak{}2 and requires one fixed alpha, precisely the source half-\allowbreak{}slice clause.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
+\hypertarget{paper-prerequisite-88409412b52edd25}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Defers\allowbreak{}Away\allowbreak{}From\allowbreak{}Half}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Defers\allowbreak{}Away\allowbreak{}From\allowbreak{}Half\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 42-\allowbreak{}54\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\begin{definition}\label{def:non-collaborative}
+    A collaboration strategy $\CC:[0,1]^n\rightarrow \{0,1\}$ is \textbf{non-collaborative} if there exists $k\in [n]$ and $\alpha\in \{0,1\}$ such that
+    \begin{equation}
+    \CC(p_1,p_2,\cdots,p_n) =
+        \begin{cases}
+        \round{p_k} &\quad \text{$p_k\neq \frac{1}{2}$} \\
+            \alpha &\quad \text{$p_k=\frac{1}{2}$}
+        \end{cases}
+    \end{equation}
+    for all $(p_1,p_2,\cdots,p_n)\in (0,1)^n$.
+\end{definition}
+
+A collaboration strategy is non-collaborative if it essentially always defers to the classification of a single agent $k\in [n]$. The definition admits two exceptions. First, when $p_k = \frac{1}{2}$, the collaboration may select either $0$ or $1$, but must always select the same such value; this choice has no effect on the accuracy of the classifier, so this exception can be essentially ignored. Second, the collaboration strategy need not select $\round{p_k}$ when $(p_1,p_2,\cdots,p_n)\notin (0,1)^n$---i.e., when $p_i\in \{0,1\}$ for some $i\in [n]$; this exception is somewhat more interesting, and we will return to it after stating our main result.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+{n : ℕ} → PKG25NoFreeLunch.SourceCollaborationStrategy n → Fin n → Prop
+
+value:
+fun {n : ℕ} (C : PKG25NoFreeLunch.SourceCollaborationStrategy n) (k : Fin n) =>
+  ∀ (p : PKG25NoFreeLunch.UnitCubeProfile n),
+    PKG25NoFreeLunch.Interior ↑p → ↑p k ≠ 1 / 2 → C p = PKG25NoFreeLunch.roundProb (↑p k)
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The target quantifies exactly over interior cube profiles with p\_\allowbreak{}k != 1/\allowbreak{}2 and requires C(p) = round(p\_\allowbreak{}k), precisely the source off-\allowbreak{}half clause.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-88a840f53df1cf52}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Non\allowbreak{}Collaborative}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Non\allowbreak{}Collaborative\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 42-\allowbreak{}54\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\begin{definition}\label{def:non-collaborative}
+    A collaboration strategy $\CC:[0,1]^n\rightarrow \{0,1\}$ is \textbf{non-collaborative} if there exists $k\in [n]$ and $\alpha\in \{0,1\}$ such that
+    \begin{equation}
+    \CC(p_1,p_2,\cdots,p_n) =
+        \begin{cases}
+        \round{p_k} &\quad \text{$p_k\neq \frac{1}{2}$} \\
+            \alpha &\quad \text{$p_k=\frac{1}{2}$}
+        \end{cases}
+    \end{equation}
+    for all $(p_1,p_2,\cdots,p_n)\in (0,1)^n$.
+\end{definition}
+
+A collaboration strategy is non-collaborative if it essentially always defers to the classification of a single agent $k\in [n]$. The definition admits two exceptions. First, when $p_k = \frac{1}{2}$, the collaboration may select either $0$ or $1$, but must always select the same such value; this choice has no effect on the accuracy of the classifier, so this exception can be essentially ignored. Second, the collaboration strategy need not select $\round{p_k}$ when $(p_1,p_2,\cdots,p_n)\notin (0,1)^n$---i.e., when $p_i\in \{0,1\}$ for some $i\in [n]$; this exception is somewhat more interesting, and we will return to it after stating our main result.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+{n : ℕ} → PKG25NoFreeLunch.SourceCollaborationStrategy n → Prop
+
+value:
+fun {n : ℕ} (C : PKG25NoFreeLunch.SourceCollaborationStrategy n) =>
+  ∃ (k : Fin n) (alpha : PKG25NoFreeLunch.Label),
+    PKG25NoFreeLunch.SourceDefersAwayFromHalf C k ∧ PKG25NoFreeLunch.SourceConstantOnHalfSlice C k alpha
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} It existentially combines one agent k and one label alpha with the displayed exact off-\allowbreak{}half and half-\allowbreak{}slice clauses.\allowbreak{} The approved nonempty-\allowbreak{}agent convention governs the source-\allowbreak{}facing uses of this definition.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-bc76ca245dd2495f}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Reliable\allowbreak{}Joint\allowbreak{}Law}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Reliable\allowbreak{}Joint\allowbreak{}Law\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 37-\allowbreak{}40\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\begin{definition}
+    A collaboration strategy $\CC:[0,1]^n\rightarrow \{0,1\}$ is \textbf{reliable} if $\acc_\CC(S) \ge \min_{i\in [n]} \acc_i(S)$ for all collaboration settings $S$.
+\end{definition}
+In words, a collaboration strategy is reliable if and only if it always performs at least as well as the \textit{least accurate} agent.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+{n : ℕ} → [Nonempty (Fin n)] → PKG25NoFreeLunch.SourceCollaborationStrategy n → Prop
+
+value:
+fun {n : ℕ} [Nonempty (Fin n)] (C : PKG25NoFreeLunch.SourceCollaborationStrategy n) =>
+  ∀ (S : PKG25NoFreeLunch.JointLawCollaborationSetting n),
+    PKG25NoFreeLunch.SourceStrategyWellFormed S C → ∃ (i : Fin n), S.agentAccuracy i ≤ S.sourceStrategyAccuracy C
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} For every well-\allowbreak{}formed setting, existence of an agent accuracy no greater than strategy accuracy is equivalent to exceeding the minimum over the approved nonempty agent domain;\allowbreak{} the displayed joint-\allowbreak{}law and integrability conventions apply.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-cde5ac5fa1bdee72}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Strategy\allowbreak{}Well\allowbreak{}Formed}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Source\allowbreak{}Strategy\allowbreak{}Well\allowbreak{}Formed\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 35\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Let $\acc_\CC(S)$ denote the 0-1 accuracy of $\Yhat_\CC$ on $\DD$. In other words, for each $x\in \XX$, each agent $i$ produces a predicted probability $P_i(x).$ The collaboration strategy aggregates these predictions into a binary classification.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+{n : ℕ} → PKG25NoFreeLunch.JointLawCollaborationSetting n → PKG25NoFreeLunch.SourceCollaborationStrategy n → Prop
+
+value:
+fun {n : ℕ} (S : PKG25NoFreeLunch.JointLawCollaborationSetting n)
+    (C : PKG25NoFreeLunch.SourceCollaborationStrategy n) =>
+  MeasureTheory.Integrable
+    (fun (z : S.X × PKG25NoFreeLunch.Label) => if S.sourceStrategyClassifier C z.1 = z.2 then 1 else 0) S.joint
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The target is integrability of exactly the induced classifier's 0-\allowbreak{}1 correctness indicator under the joint law, which is the displayed approved expectation-\allowbreak{}definedness convention.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-bdded92620cfbb62}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Unit\allowbreak{}Cube\allowbreak{}Profile}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}Unit\allowbreak{}Cube\allowbreak{}Profile\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 27-\allowbreak{}35\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+A collaboration strategy is a way to combine the predicted probabilities of each agent to make a classification.
+\begin{definition}
+A \textbf{collaboration strategy} is a deterministic function $\CC: [0,1]^n \rightarrow \{0,1\}.$
+\end{definition}
+Here, $\CC$ should be interpreted as a function that takes in $n$ predicted probabilities and returns a 0-1 classification. Given a collaboration setting $S=(\DD, P_1, \cdots, P_n)$, a collaboration strategy $\CC$ induces the classifier
+\begin{equation}
+    \Yhat_\CC: \XX \rightarrow \{0,1\},\quad x \mapsto \CC(P_1(x),\cdots,P_n(x)).
+\end{equation}
+Let $\acc_\CC(S)$ denote the 0-1 accuracy of $\Yhat_\CC$ on $\DD$. In other words, for each $x\in \XX$, each agent $i$ produces a predicted probability $P_i(x).$ The collaboration strategy aggregates these predictions into a binary classification.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+ℕ → Type
+
+value:
+fun (n : ℕ) => { p : Fin n → ℝ // ∀ (i : Fin n), 0 ≤ p i ∧ p i ≤ 1 }
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The subtype imposes exactly 0 <= p\_\allowbreak{}i <= 1 for every coordinate, matching the source domain [0,1]\textasciicircum{}n used by every displayed source-\allowbreak{}facing strategy application.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-b970619f8c41551c}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}extend\allowbreak{}Source\allowbreak{}Strategy}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}extend\allowbreak{}Source\allowbreak{}Strategy\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 27-\allowbreak{}35\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+A collaboration strategy is a way to combine the predicted probabilities of each agent to make a classification.
+\begin{definition}
+A \textbf{collaboration strategy} is a deterministic function $\CC: [0,1]^n \rightarrow \{0,1\}.$
+\end{definition}
+Here, $\CC$ should be interpreted as a function that takes in $n$ predicted probabilities and returns a 0-1 classification. Given a collaboration setting $S=(\DD, P_1, \cdots, P_n)$, a collaboration strategy $\CC$ induces the classifier
+\begin{equation}
+    \Yhat_\CC: \XX \rightarrow \{0,1\},\quad x \mapsto \CC(P_1(x),\cdots,P_n(x)).
+\end{equation}
+Let $\acc_\CC(S)$ denote the 0-1 accuracy of $\Yhat_\CC$ on $\DD$. In other words, for each $x\in \XX$, each agent $i$ produces a predicted probability $P_i(x).$ The collaboration strategy aggregates these predictions into a binary classification.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+{n : ℕ} → PKG25NoFreeLunch.SourceCollaborationStrategy n → (Fin n → ℝ) → PKG25NoFreeLunch.Label
+
+value:
+fun {n : ℕ} (C : PKG25NoFreeLunch.SourceCollaborationStrategy n) (a : Fin n → ℝ) =>
+  if hp : ∀ (i : Fin n), 0 ≤ a i ∧ a i ≤ 1 then C ⟨a, hp⟩ else false
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} On every source-\allowbreak{}domain cube profile the target is exactly C;\allowbreak{} its false branch applies only outside [0,1]\textasciicircum{}n, where the selected source definition assigns no strategy behavior.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-e2c3eaace70952e5}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}joint\allowbreak{}Law\allowbreak{}Dependent\allowbreak{}Partition\allowbreak{}Setting}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}joint\allowbreak{}Law\allowbreak{}Dependent\allowbreak{}Partition\allowbreak{}Setting\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 127-\allowbreak{}132\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\paragraph{Building Calibrated Predictors from Partitions.}
+Finally, given a distribution $\DD$ over $\XX\times \{0,1\}$, we show how partitions of the input space $\XX$ induce calibrated predictors. Indeed, let $\AA_i$ be a partition of $\XX$. Then $\AA_i$ induces a calibrated predictor $P_i$, where for $x\in A \in \AA_i$,
+\begin{equation}
+    P_i(x) := \Pr_{(X,Y)\sim \DD}[Y=1\,|\,X\in A].
+\end{equation}
+Here $P_i$ is the Bayes-optimal predictor given a ``coarsening'' of the input space into the partitions $\XX.$ In this way, a collaboration setting may also be identified by an ordered tuple $(\DD, \AA_1, \cdots, \AA_n).$ This approach is central to the subsequent proofs.
+\end{ReviewVerbatim}
+
+% report-context-presentation-sha256: 5431204504d1f33434455d09b239baf50ceae397b2935834c26951392a3a6a30
+\paragraph{Settled source reading}
+The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+{n : ℕ} →
+  {Cell : Fin n → Type u_1} →
+    [(i : Fin n) → Fintype (Cell i)] →
+      [inst : (i : Fin n) → MeasurableSpace (Cell i)] →
+        [∀ (i : Fin n), MeasurableSingletonClass (Cell i)] →
+          {X : Type} →
+            [inst_2 : MeasurableSpace X] →
+              (joint : MeasureTheory.Measure (X × PKG25NoFreeLunch.Label)) →
+                [MeasureTheory.IsProbabilityMeasure joint] →
+                  (cell : (i : Fin n) → X → Cell i) →
+                    (∀ (i : Fin n), Measurable (cell i)) → PKG25NoFreeLunch.JointLawCollaborationSetting n
+
+value:
+fun {n : ℕ} {Cell : Fin n → Type u_1} [(i : Fin n) → Fintype (Cell i)] [(i : Fin n) → MeasurableSpace (Cell i)]
+    [∀ (i : Fin n), MeasurableSingletonClass (Cell i)] {X : Type} [MeasurableSpace X]
+    (joint : MeasureTheory.Measure (X × PKG25NoFreeLunch.Label)) [MeasureTheory.IsProbabilityMeasure joint]
+    (cell : (i : Fin n) → X → Cell i) (hcell : ∀ (i : Fin n), Measurable (cell i)) =>
+  { X := X, measurableSpaceX := inferInstance, joint := joint,
+    isProbability := PKG25NoFreeLunch.jointLawDependentPartitionSetting._proof_1 joint,
+    pred := fun (i : Fin n) => PKG25NoFreeLunch.jointLawPartitionPredictor joint (cell i),
+    pred_range := PKG25NoFreeLunch.jointLawDependentPartitionSetting._proof_2 joint cell,
+    pred_measurable := PKG25NoFreeLunch.jointLawDependentPartitionSetting._proof_3 joint cell hcell,
+    calibrated_events := PKG25NoFreeLunch.jointLawDependentPartitionSetting._proof_4 joint cell hcell }
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Given a probability law and one measurable finite partition map per agent, the declaration constructs the source collaboration setting whose predictor is each cell's conditional true-\allowbreak{}label probability and proves its range, measurability, and calibration.\allowbreak{} These are the explicit finite/\allowbreak{}measurable conditions needed to make the source partition construction well-\allowbreak{}defined.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-a7403850f72d70e1}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}joint\allowbreak{}Law\allowbreak{}Partition\allowbreak{}Predictor}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}joint\allowbreak{}Law\allowbreak{}Partition\allowbreak{}Predictor\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 127-\allowbreak{}132\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\paragraph{Building Calibrated Predictors from Partitions.}
+Finally, given a distribution $\DD$ over $\XX\times \{0,1\}$, we show how partitions of the input space $\XX$ induce calibrated predictors. Indeed, let $\AA_i$ be a partition of $\XX$. Then $\AA_i$ induces a calibrated predictor $P_i$, where for $x\in A \in \AA_i$,
+\begin{equation}
+    P_i(x) := \Pr_{(X,Y)\sim \DD}[Y=1\,|\,X\in A].
+\end{equation}
+Here $P_i$ is the Bayes-optimal predictor given a ``coarsening'' of the input space into the partitions $\XX.$ In this way, a collaboration setting may also be identified by an ordered tuple $(\DD, \AA_1, \cdots, \AA_n).$ This approach is central to the subsequent proofs.
+\end{ReviewVerbatim}
+
+% report-context-presentation-sha256: 5431204504d1f33434455d09b239baf50ceae397b2935834c26951392a3a6a30
+\paragraph{Settled source reading}
+The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} →
+  {Cell : Type u_2} →
+    [inst : MeasurableSpace X] → MeasureTheory.Measure (X × PKG25NoFreeLunch.Label) → (X → Cell) → X → ℝ
+
+value:
+fun {X : Type u_1} {Cell : Type u_2} [MeasurableSpace X] (joint : MeasureTheory.Measure (X × PKG25NoFreeLunch.Label))
+    (cell : X → Cell) (x : X) =>
+  PKG25NoFreeLunch.jointLawPartitionCellPrediction joint cell (cell x)
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The value is the conditional true-\allowbreak{}label mass divided by the mass of the partition cell containing x, exactly the source's partition-\allowbreak{}induced predictor formula.\allowbreak{} Lean assigns zero on a zero-\allowbreak{}mass cell, an observationally irrelevant convention where the printed conditional probability is undefined.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-728603a5bcbb8140}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}round\allowbreak{}Prob}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}round\allowbreak{}Prob\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 21-\allowbreak{}24\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+The predictor $P_i$ induces the classifier $\Yhat_i: x\mapsto \round{P_i(x)},$ where $\round{\cdot}$ is the rounding operator (without loss of generality, set $\round{0.5}=1$). $\Yhat_i$ achieves 0-1 accuracy
+\begin{equation}
+    \acc_i(S) := \EE_{(X,Y)\sim \DD}[\max\{P_i(X), 1 - P_i(X)\}].
+\end{equation}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+ℝ → PKG25NoFreeLunch.Label
+
+value:
+fun (p : ℝ) => decide (1 / 2 ≤ p)
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The declaration returns true exactly when p is at least one half, so it is the source's binary rounding operator with round(0.\allowbreak{}5)=1.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-4d6691bbd0af6579}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}source\_\allowbreak{}definition\_\allowbreak{}agree\_\allowbreak{}on}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}source\_\allowbreak{}definition\_\allowbreak{}agree\_\allowbreak{}on\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 83-\allowbreak{}92\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\begin{definition}\label{def:correct}
+For a collaboration setting $(\DD, P_1,\cdots,P_n)$ and $x\in \XX,$ we say that
+\begin{itemize}
+    \item agent $i$ is \textbf{correct} on $x$ if $$\Yhat_i(x) = \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
+    \item agent $i$ is \textbf{incorrect} on $x$ if $$\Yhat_i(x) \neq \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
+    \item agents $i$ and $j$ \textbf{agree} on $x$ if $$\Yhat_i(x) = \Yhat_j(x)$$
+    \item agents $i$ and $j$ \textbf{disagree} on $x$ if $$\Yhat_i(x) \neq \Yhat_j(x).$$
+\end{itemize}
+For each of these statements, we can replace $i$ or $j$ with a collaboration strategy $\CC$.
+\end{definition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+PKG25NoFreeLunch.Label → PKG25NoFreeLunch.Label → Prop
+
+value:
+fun (prediction1 prediction2 : PKG25NoFreeLunch.Label) => prediction1 = prediction2
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The predicate is equality of the two binary predictions, exactly the source definition of pointwise agreement for agents or a collaboration strategy.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-25b6f16dda3c73b9}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}source\_\allowbreak{}definition\_\allowbreak{}correct\_\allowbreak{}on}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}source\_\allowbreak{}definition\_\allowbreak{}correct\_\allowbreak{}on\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 83-\allowbreak{}92\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\begin{definition}\label{def:correct}
+For a collaboration setting $(\DD, P_1,\cdots,P_n)$ and $x\in \XX,$ we say that
+\begin{itemize}
+    \item agent $i$ is \textbf{correct} on $x$ if $$\Yhat_i(x) = \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
+    \item agent $i$ is \textbf{incorrect} on $x$ if $$\Yhat_i(x) \neq \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
+    \item agents $i$ and $j$ \textbf{agree} on $x$ if $$\Yhat_i(x) = \Yhat_j(x)$$
+    \item agents $i$ and $j$ \textbf{disagree} on $x$ if $$\Yhat_i(x) \neq \Yhat_j(x).$$
+\end{itemize}
+For each of these statements, we can replace $i$ or $j$ with a collaboration strategy $\CC$.
+\end{definition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+PKG25NoFreeLunch.Label → ℝ → Prop
+
+value:
+fun (prediction : PKG25NoFreeLunch.Label) (eta : ℝ) => prediction = PKG25NoFreeLunch.roundProb eta
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The predicate says that the supplied binary prediction equals the rounded conditional true-\allowbreak{}label probability, exactly the source definition of pointwise correctness.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-d753cda07d41e8d9}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}source\_\allowbreak{}definition\_\allowbreak{}disagree\_\allowbreak{}on}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}source\_\allowbreak{}definition\_\allowbreak{}disagree\_\allowbreak{}on\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 83-\allowbreak{}92\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\begin{definition}\label{def:correct}
+For a collaboration setting $(\DD, P_1,\cdots,P_n)$ and $x\in \XX,$ we say that
+\begin{itemize}
+    \item agent $i$ is \textbf{correct} on $x$ if $$\Yhat_i(x) = \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
+    \item agent $i$ is \textbf{incorrect} on $x$ if $$\Yhat_i(x) \neq \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
+    \item agents $i$ and $j$ \textbf{agree} on $x$ if $$\Yhat_i(x) = \Yhat_j(x)$$
+    \item agents $i$ and $j$ \textbf{disagree} on $x$ if $$\Yhat_i(x) \neq \Yhat_j(x).$$
+\end{itemize}
+For each of these statements, we can replace $i$ or $j$ with a collaboration strategy $\CC$.
+\end{definition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+PKG25NoFreeLunch.Label → PKG25NoFreeLunch.Label → Prop
+
+value:
+fun (prediction1 prediction2 : PKG25NoFreeLunch.Label) => prediction1 ≠ prediction2
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The predicate is inequality of the two binary predictions, exactly the source definition of pointwise disagreement for agents or a collaboration strategy.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-fe4554471890a87d}{}
+\subsection*{\small\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}source\_\allowbreak{}definition\_\allowbreak{}incorrect\_\allowbreak{}on}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright PKG25\allowbreak{}No\allowbreak{}Free\allowbreak{}Lunch.\allowbreak{}source\_\allowbreak{}definition\_\allowbreak{}incorrect\_\allowbreak{}on\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 83-\allowbreak{}92\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\begin{definition}\label{def:correct}
+For a collaboration setting $(\DD, P_1,\cdots,P_n)$ and $x\in \XX,$ we say that
+\begin{itemize}
+    \item agent $i$ is \textbf{correct} on $x$ if $$\Yhat_i(x) = \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
+    \item agent $i$ is \textbf{incorrect} on $x$ if $$\Yhat_i(x) \neq \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
+    \item agents $i$ and $j$ \textbf{agree} on $x$ if $$\Yhat_i(x) = \Yhat_j(x)$$
+    \item agents $i$ and $j$ \textbf{disagree} on $x$ if $$\Yhat_i(x) \neq \Yhat_j(x).$$
+\end{itemize}
+For each of these statements, we can replace $i$ or $j$ with a collaboration strategy $\CC$.
+\end{definition}
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+type:
+PKG25NoFreeLunch.Label → ℝ → Prop
+
+value:
+fun (prediction : PKG25NoFreeLunch.Label) (eta : ℝ) => prediction ≠ PKG25NoFreeLunch.roundProb eta
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The predicate says that the supplied binary prediction differs from the rounded conditional true-\allowbreak{}label probability, exactly the source definition of pointwise incorrectness.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+
+\clearpage
 \hypertarget{source-claim-bf0315dd1a18c70e}{}
-\section*{Review row 10}
+\hypertarget{source-section-f10b5f68e4acf3dc}{}
+\section*{Source claims}
+\subsection*{Review row 1}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 56-\allowbreak{}63\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -404,170 +1035,35 @@ PKG25NoFreeLunch.source_definition_non_collaborationSpec_proof
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {n : ℕ} [Nonempty (Fin n)] (C : PKG25NoFreeLunch.CollaborationStrategy n),
-  PKG25NoFreeLunch.ReliableJointLaw C → PKG25NoFreeLunch.NonCollaborative C
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_theorem1_no_free_lunchSpec_proof
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-76d57f8e8060f2fd}{}
-\section*{Review row 11}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 83-\allowbreak{}92\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-\begin{definition}\label{def:correct}
-For a collaboration setting $(\DD, P_1,\cdots,P_n)$ and $x\in \XX,$ we say that
-\begin{itemize}
-    \item agent $i$ is \textbf{correct} on $x$ if $$\Yhat_i(x) = \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
-    \item agent $i$ is \textbf{incorrect} on $x$ if $$\Yhat_i(x) \neq \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
-    \item agents $i$ and $j$ \textbf{agree} on $x$ if $$\Yhat_i(x) = \Yhat_j(x)$$
-    \item agents $i$ and $j$ \textbf{disagree} on $x$ if $$\Yhat_i(x) \neq \Yhat_j(x).$$
-\end{itemize}
-For each of these statements, we can replace $i$ or $j$ with a collaboration strategy $\CC$.
-\end{definition}
-\end{ReviewVerbatim}
-
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ (prediction : PKG25NoFreeLunch.Label) (eta : ℝ),
-  PKG25NoFreeLunch.source_definition_correct_on prediction eta ↔ prediction = PKG25NoFreeLunch.roundProb eta
+∀ {n : ℕ} [inst : Nonempty (Fin n)] (C : PKG25NoFreeLunch.SourceCollaborationStrategy n),
+  PKG25NoFreeLunch.SourceReliableJointLaw C →
+    ∃ (k : Fin n) (alpha : PKG25NoFreeLunch.Label),
+      (∀ (p : PKG25NoFreeLunch.UnitCubeProfile n),
+          PKG25NoFreeLunch.Interior ↑p → ↑p k ≠ 1 / 2 → C p = PKG25NoFreeLunch.roundProb (↑p k)) ∧
+        ∀ (p : PKG25NoFreeLunch.UnitCubeProfile n), PKG25NoFreeLunch.Interior ↑p → ↑p k = 1 / 2 → C p = alpha
 \end{ReviewVerbatim}
 
+
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_definition_correctSpec_proof
+PKG25NoFreeLunch.source_theorem1_no_free_lunch_provesSpec
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-c2574ffc8255a71d}{}
-\section*{Review row 12}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 83-\allowbreak{}92\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-\begin{definition}\label{def:correct}
-For a collaboration setting $(\DD, P_1,\cdots,P_n)$ and $x\in \XX,$ we say that
-\begin{itemize}
-    \item agent $i$ is \textbf{correct} on $x$ if $$\Yhat_i(x) = \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
-    \item agent $i$ is \textbf{incorrect} on $x$ if $$\Yhat_i(x) \neq \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
-    \item agents $i$ and $j$ \textbf{agree} on $x$ if $$\Yhat_i(x) = \Yhat_j(x)$$
-    \item agents $i$ and $j$ \textbf{disagree} on $x$ if $$\Yhat_i(x) \neq \Yhat_j(x).$$
-\end{itemize}
-For each of these statements, we can replace $i$ or $j$ with a collaboration strategy $\CC$.
-\end{definition}
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (prediction : PKG25NoFreeLunch.Label) (eta : ℝ),
-  PKG25NoFreeLunch.source_definition_incorrect_on prediction eta ↔ prediction ≠ PKG25NoFreeLunch.roundProb eta
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_definition_incorrectSpec_proof
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-df70754e8844c37d}{}
-\section*{Review row 13}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 83-\allowbreak{}92\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-\begin{definition}\label{def:correct}
-For a collaboration setting $(\DD, P_1,\cdots,P_n)$ and $x\in \XX,$ we say that
-\begin{itemize}
-    \item agent $i$ is \textbf{correct} on $x$ if $$\Yhat_i(x) = \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
-    \item agent $i$ is \textbf{incorrect} on $x$ if $$\Yhat_i(x) \neq \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
-    \item agents $i$ and $j$ \textbf{agree} on $x$ if $$\Yhat_i(x) = \Yhat_j(x)$$
-    \item agents $i$ and $j$ \textbf{disagree} on $x$ if $$\Yhat_i(x) \neq \Yhat_j(x).$$
-\end{itemize}
-For each of these statements, we can replace $i$ or $j$ with a collaboration strategy $\CC$.
-\end{definition}
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (prediction1 prediction2 : PKG25NoFreeLunch.Label),
-  PKG25NoFreeLunch.source_definition_agree_on prediction1 prediction2 ↔ prediction1 = prediction2
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_definition_agreeSpec_proof
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-b15831d5b4ce3fd5}{}
-\section*{Review row 14}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 83-\allowbreak{}92\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-\begin{definition}\label{def:correct}
-For a collaboration setting $(\DD, P_1,\cdots,P_n)$ and $x\in \XX,$ we say that
-\begin{itemize}
-    \item agent $i$ is \textbf{correct} on $x$ if $$\Yhat_i(x) = \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
-    \item agent $i$ is \textbf{incorrect} on $x$ if $$\Yhat_i(x) \neq \round{\Pr_{(X,Y)\sim \DD}[Y=1\,|\,X=x]}$$
-    \item agents $i$ and $j$ \textbf{agree} on $x$ if $$\Yhat_i(x) = \Yhat_j(x)$$
-    \item agents $i$ and $j$ \textbf{disagree} on $x$ if $$\Yhat_i(x) \neq \Yhat_j(x).$$
-\end{itemize}
-For each of these statements, we can replace $i$ or $j$ with a collaboration strategy $\CC$.
-\end{definition}
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ (prediction1 prediction2 : PKG25NoFreeLunch.Label),
-  PKG25NoFreeLunch.source_definition_disagree_on prediction1 prediction2 ↔ prediction1 ≠ prediction2
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_definition_disagreeSpec_proof
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} With the displayed source-\allowbreak{}domain, nonempty-\allowbreak{}agent, joint-\allowbreak{}law, and expectation conventions, the target expands non-\allowbreak{}collaboration into exactly one k and alpha with the source's off-\allowbreak{}half rounding and half-\allowbreak{}slice constancy clauses.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-bee3bb1dc601f6f9}{}
-\section*{Review row 15}
+\section*{Review row 2}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 100-\allowbreak{}107\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -582,250 +1078,158 @@ PKG25NoFreeLunch.source_definition_disagreeSpec_proof
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {n ell : ℕ} (S : Fin ell → PKG25NoFreeLunch.JointLawCollaborationSetting n) (w : Fin ell → ℝ),
   (∀ (r : Fin ell), 0 ≤ w r) →
-    ∑ r, w r = 1 →
-      ∃ Smix,
-        (∀ (i : Fin n), Smix.agentAccuracy i = ∑ r, w r * (S r).agentAccuracy i) ∧
-          ∀ (C : PKG25NoFreeLunch.CollaborationStrategy n),
-            (∀ (r : Fin ell), PKG25NoFreeLunch.source_assumption_strategy_expectation_well_formed (S r) C) →
-              PKG25NoFreeLunch.source_assumption_strategy_expectation_well_formed Smix C ∧
-                Smix.strategyAccuracy C = ∑ r, w r * (S r).strategyAccuracy C
+    ∑ r : Fin ell, w r = 1 →
+      ∃ (Smix : PKG25NoFreeLunch.JointLawCollaborationSetting n),
+        (∀ (i : Fin n), Smix.agentAccuracy i = ∑ r : Fin ell, w r * (S r).agentAccuracy i) ∧
+          ∀ (C : PKG25NoFreeLunch.SourceCollaborationStrategy n),
+            (∀ (r : Fin ell), PKG25NoFreeLunch.SourceStrategyWellFormed (S r) C) →
+              PKG25NoFreeLunch.SourceStrategyWellFormed Smix C ∧
+                Smix.sourceStrategyAccuracy C = ∑ r : Fin ell, w r * (S r).sourceStrategyAccuracy C
 \end{ReviewVerbatim}
 
+
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_proposition6_linear_combinationSpec_proof
+PKG25NoFreeLunch.source_proposition6_linear_combination_provesSpec
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Coordinatewise nonnegative weights summing to one express the source simplex.\allowbreak{} The displayed target gives exactly the source's weighted agent and strategy accuracies;\allowbreak{} its well-\allowbreak{}formedness premise is exactly the displayed approved expectation-\allowbreak{}definedness convention.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-ca52c024caeea892}{}
-\section*{Review row 16}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 127-\allowbreak{}132\par}
+\hypertarget{source-claim-11915345567afada}{}
+\section*{Review row 3}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 152-\allowbreak{}154\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
-\paragraph{Building Calibrated Predictors from Partitions.}
-Finally, given a distribution $\DD$ over $\XX\times \{0,1\}$, we show how partitions of the input space $\XX$ induce calibrated predictors. Indeed, let $\AA_i$ be a partition of $\XX$. Then $\AA_i$ induces a calibrated predictor $P_i$, where for $x\in A \in \AA_i$,
-\begin{equation}
-    P_i(x) := \Pr_{(X,Y)\sim \DD}[Y=1\,|\,X\in A].
-\end{equation}
-Here $P_i$ is the Bayes-optimal predictor given a ``coarsening'' of the input space into the partitions $\XX.$ In this way, a collaboration setting may also be identified by an ordered tuple $(\DD, \AA_1, \cdots, \AA_n).$ This approach is central to the subsequent proofs.
+\begin{proposition}\label{prop:part1}
+    For a collaboration strategy $\CC$, if $\acc_\CC(S)\ge \min_{i\in [n]}\acc_i(S)$ for all collaboration settings $S$, then there must exist $k\in [n]$ such that for all $(p_1,p_2,\cdots,p_n)\in (0,1)^n$ where $p_k\neq \frac{1}{2},$ $\CC(p_1,p_2,\cdots,p_n)=\round{p_k}.$
+\end{proposition}
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-(∀ {X : Type u_1} {Cell : Type u_2} [inst : MeasurableSpace X] [inst_1 : MeasurableSpace Cell]
-    [MeasurableSingletonClass Cell] (joint : MeasureTheory.Measure (X × PKG25NoFreeLunch.Label))
-    [MeasureTheory.IsProbabilityMeasure joint] (cell : X → Cell),
-    Measurable cell →
-      ∀ (x : X),
-        0 < PKG25NoFreeLunch.jointLawPartitionCellMass joint cell (cell x) →
-          PKG25NoFreeLunch.jointLawPartitionPredictor joint cell x =
-            PKG25NoFreeLunch.jointLawPartitionCellTrueMass joint cell (cell x) /
-              PKG25NoFreeLunch.jointLawPartitionCellMass joint cell (cell x)) ∧
-  (∀ {X : Type u_3} {Cell : Type u_4} [inst : MeasurableSpace X] [inst_1 : MeasurableSpace Cell]
-      [MeasurableSingletonClass Cell] (joint : MeasureTheory.Measure (X × PKG25NoFreeLunch.Label))
-      [MeasureTheory.IsProbabilityMeasure joint] (cell : X → Cell),
-      Measurable cell →
-        ∀ (x : X),
-          PKG25NoFreeLunch.jointLawPartitionCellMass joint cell (cell x) = 0 →
-            PKG25NoFreeLunch.jointLawPartitionPredictor joint cell x = 0) ∧
-    ∀ {X : Type u_5} {Cell : Type u_6} [inst : MeasurableSpace X] [Fintype Cell] [inst_2 : MeasurableSpace Cell]
-      [MeasurableSingletonClass Cell] (joint : MeasureTheory.Measure (X × PKG25NoFreeLunch.Label))
-      [MeasureTheory.IsProbabilityMeasure joint] (cell : X → Cell),
-      Measurable cell →
-        ∀ (A : Set ℝ),
-          MeasurableSet A →
-            ∫ (z : X × PKG25NoFreeLunch.Label),
-                {z | PKG25NoFreeLunch.jointLawPartitionPredictor joint cell z.1 ∈ A ∧ z.2 = true}.indicator (fun x => 1)
-                  z ∂joint =
-              ∫ (z : X × PKG25NoFreeLunch.Label),
-                {z | PKG25NoFreeLunch.jointLawPartitionPredictor joint cell z.1 ∈ A}.indicator
-                  (fun z => PKG25NoFreeLunch.jointLawPartitionPredictor joint cell z.1) z ∂joint
+∀ {n : ℕ} [inst : Nonempty (Fin n)] (C : PKG25NoFreeLunch.SourceCollaborationStrategy n),
+  PKG25NoFreeLunch.SourceReliableJointLaw C →
+    ∃ (k : Fin n),
+      ∀ (p : PKG25NoFreeLunch.UnitCubeProfile n),
+        PKG25NoFreeLunch.Interior ↑p → ↑p k ≠ 1 / 2 → C p = PKG25NoFreeLunch.roundProb (↑p k)
 \end{ReviewVerbatim}
 
+
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_partition_finite_measurable_repairSpec_proof
+PKG25NoFreeLunch.source_proposition7_fixed_deferral_provesSpec
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Under the displayed nonempty-\allowbreak{}agent convention, the target states reliability implies one k whose rounded prediction is followed at every interior unit-\allowbreak{}cube profile with p\_\allowbreak{}k != 1/\allowbreak{}2, exactly the selected source proposition.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-1b69269ab69dfcc0}{}
-\section*{Review row 17}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 135-\allowbreak{}148\par}
+\hypertarget{source-claim-a888d560950f7c06}{}
+\section*{Review row 4}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 162-\allowbreak{}169\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
-\subsection{Main Proof}
-In the remainder of this section, we prove \Cref{thm:main} in full. We first rewrite \Cref{thm:main} in an equivalent formulation.
-
-\setcounter{theorem}{0}
-\begin{theorem}
-For a collaboration strategy $\CC$, $\acc_\CC(S) \ge \min_{i\in [n]}\acc_i(S)$ for all collaboration settings $S$ if and only if there exists $k\in [n]$ and $\alpha \in \{0,1\}$ such that for all $(p_1,p_2,\cdots,p_n)\in (0,1)^n$:
-
-\begin{enumerate}
-    \item[(i)] If $p_k\neq \frac{1}{2},$ then
-    $\CC(p_1,p_2,\cdots,p_n)=\round{p_k}.$
-    \item[(ii)] If $p_k=\frac{1}{2}$, then
-        $\CC(p_1,p_2,\cdots,p_n) = \alpha.$
-\end{enumerate}
-\end{theorem}
+\begin{lemma}\label{lem:counterexample}
+    Consider a collaboration strategy $\CC$. Suppose that there exists a tuple $(p_1,p_2,\cdots,p_n)\in (0,1)^n$ where $p_k\neq \frac{1}{2}$ and $\CC(p_1,p_2,\cdots,p_n)\neq \round{p_k}.$ Then there exists a collaboration setting $S_k$ such that
+    \begin{itemize}
+        \item[(i)] $\acc_k(S_k)>\acc_\CC(S_k)$,
+        \item[(ii)]
+        $\acc_i(S_k)\ge \acc_\CC(S_k)$ for all $i\neq k$.
+    \end{itemize}
+\end{lemma}
 \end{ReviewVerbatim}
 
+% report-context-presentation-sha256: eee7e3a4b75ec93463accbd9395d5065be744f8f60175f97333e938762935d52
+\paragraph{Settled source reading}
+The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-PKG25NoFreeLunch.NonCollaborative PKG25NoFreeLunch.boundaryFlipStrategy ∧
-  ¬PKG25NoFreeLunch.ReliableJointLaw PKG25NoFreeLunch.boundaryFlipStrategy
+∀ {n : ℕ} {C : PKG25NoFreeLunch.SourceCollaborationStrategy n} {p : Fin n → ℝ} (hp : PKG25NoFreeLunch.Interior p)
+  {k : Fin n},
+  p k ≠ 1 / 2 →
+    C (PKG25NoFreeLunch.Interior.toUnitCubeProfile p hp) ≠ PKG25NoFreeLunch.roundProb (p k) →
+      ∃ (S : PKG25NoFreeLunch.JointLawCollaborationSetting n),
+        PKG25NoFreeLunch.SourceStrategyWellFormed S C ∧
+          S.sourceStrategyAccuracy C < S.agentAccuracy k ∧ ∀ (i : Fin n), S.sourceStrategyAccuracy C ≤ S.agentAccuracy i
 \end{ReviewVerbatim}
 
+
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_unnumbered_iff_restatementSpec_proof
+PKG25NoFreeLunch.source_lemma8_bad_tuple_provesSpec
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The interior bad-\allowbreak{}profile premise, off-\allowbreak{}half restriction, and differing rounded label are exact.\allowbreak{} The strict gap for k entails the source's weak inequality at k, so the displayed weak inequality for every i is equivalent to the source's i != k clause;\allowbreak{} the displayed finite-\allowbreak{}witness, joint-\allowbreak{}law, and expectation conventions apply.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-f706fa3b58e00679}{}
-\section*{Review row 18}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 156-\allowbreak{}160\par}
+\hypertarget{source-claim-1bdd0523bf302431}{}
+\section*{Review row 5}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 241-\allowbreak{}246\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
-To show \Cref{prop:part1}, suppose for sake of contradiction that there does not exist $k\in [n]$ satisfying this property. This means that for every $k\in [n]$, there must exist some tuple $(p_1,p_2,\cdots,p_n)\in (0,1)^n$ where $p_k\neq \frac{1}{2},$ such that $\CC(p_1,p_2,\cdots,p_n)\neq \round{p_k}.$ We show in  \Cref{lem:counterexample} below that the existence of such a tuple implies that there is a collaboration setting $S_k$ such that $\acc_k(S_k)>\acc_\CC(S_k)$ and $\acc_i(S_k)\ge \acc_\CC(S_k)$ for all $i\in [n]\setminus \{k\}.$ Since we can construct such an $S_k$ for all $k\in [n]$, \Cref{prop:linear-combination} implies the existence of a collaboration setting $S$ such that
-\begin{equation}
-     \acc_\CC(S) = \sum_{k=1}^n \frac{1}{n} \acc_\CC(S_k) < \sum_{k=1}^n \frac{1}{n} \acc_i(S_k) = \acc_i(S)
-\end{equation}
-for all $i\in [n],$ providing the desired contradiction. Therefore, it suffices to show \Cref{lem:counterexample}.
+\begin{proposition}\label{prop:part2}
+    Consider a collaboration strategy $\CC$ such that there exists $k\in [n]$ such that for all $(p_1,p_2,\cdots,p_n)\in (0,1)^n$ where $p_k\neq \frac{1}{2},$ $\CC(p_1,p_2,\cdots,p_n)=\round{p_k}.$ Then, if $\acc_\CC(S)\ge \min_{i\in [n]}\acc_i(S)$ for all collaboration settings $S$, there must exist $\alpha\in \{0,1\}$ such that for all $(p_1,p_2,\cdots,p_n)\in (0,1)^n$ where $p_k=\frac{1}{2},$
+    \begin{equation}\label{eq:horse}
+        \CC(p_1,p_2,\cdots,p_n)=\alpha.
+    \end{equation}
+\end{proposition}
 \end{ReviewVerbatim}
 
+% report-context-presentation-sha256: 7e35f36f55392da668f86d17880ee04be5a308bcdcb2d4dd3d1d2a2bf1db132b
+\paragraph{Settled source reading}
+The result-\allowbreak{}specific conditions and corrections are stated in the [clarification memo](docs/\allowbreak{}SOURCE\_\allowbreak{}CLARIFICATIONS.\allowbreak{}md).\allowbreak{}
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {n : ℕ} [Nonempty (Fin n)] (C : PKG25NoFreeLunch.CollaborationStrategy n),
-  (¬∃ k, PKG25NoFreeLunch.DefersAwayFromHalf C k) →
-    ∃ S,
-      PKG25NoFreeLunch.source_assumption_strategy_expectation_well_formed S C ∧
-        ∀ (i : Fin n), S.strategyAccuracy C < S.agentAccuracy i
+∀ {n : ℕ} [inst : Nonempty (Fin n)] (C : PKG25NoFreeLunch.SourceCollaborationStrategy n) (k : Fin n),
+  PKG25NoFreeLunch.SourceReliableJointLaw C →
+    (∀ (p : PKG25NoFreeLunch.UnitCubeProfile n),
+        PKG25NoFreeLunch.Interior ↑p → ↑p k ≠ 1 / 2 → C p = PKG25NoFreeLunch.roundProb (↑p k)) →
+      ∃ (alpha : PKG25NoFreeLunch.Label),
+        ∀ (p : PKG25NoFreeLunch.UnitCubeProfile n), PKG25NoFreeLunch.Interior ↑p → ↑p k = 1 / 2 → C p = alpha
 \end{ReviewVerbatim}
 
+
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_formula_proposition7_average_mixtureSpec_proof
+PKG25NoFreeLunch.source_proposition9_constant_tie_label_provesSpec
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-2c1cc7b2a1433aaa}{}
-\section*{Review row 19}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 255-\allowbreak{}256\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Now set $\AA_k = \{\{0,1\}\}$ and $\AA_i = \{\{0\}, \{1\}\}$ for all $i\neq k.$ Then $P_k(0)=P_k(1)=\frac{2}{3} - \frac{\epsilon}{3}$, while $P_i(0)=\epsilon$ and $P_i(1)=1-\epsilon$ for $i\neq k.$ Then $\Yhat_\CC(0) = \Yhat_k(0)$ and $\Yhat_\CC(1) = \Yhat_k(1)$ since $(P_1(0), \cdots, P_n(0)), (P_1(1), \cdots, P_n(1))\in (0,1)^n.$
-Then observe that $\acc_k(S_1)=\acc_\CC(S_1)=\frac{2}{3}-\frac{\epsilon}{3}$ (since $\CC$ always defers to agent $k$'s classification) and $\acc_i(S_1)=1 - \epsilon$ for $i\neq k$. For $\epsilon < \frac{1}{2}, \frac{2}{3}-\frac{\epsilon}{3} < 1 - \epsilon,$ giving the desired conclusion.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {n : ℕ} {ε : ℝ} (hε0 : 0 < ε) (hεhalf : ε < 1 / 2) {C : PKG25NoFreeLunch.CollaborationStrategy n} {k : Fin n},
-  PKG25NoFreeLunch.DefersAwayFromHalf C k →
-    PKG25NoFreeLunch.FiniteCollaborationSetting.strategyAccuracy C
-          (PKG25NoFreeLunch.part2S1ParamSetting ε hε0 hεhalf k) =
-        2 / 3 - ε / 3 ∧
-      (PKG25NoFreeLunch.part2S1ParamSetting ε hε0 hεhalf k).agentAccuracy k = 2 / 3 - ε / 3 ∧
-        ∀ (i : Fin n),
-          i ≠ k →
-            (PKG25NoFreeLunch.part2S1ParamSetting ε hε0 hεhalf k).agentAccuracy i = 1 - ε ∧
-              PKG25NoFreeLunch.FiniteCollaborationSetting.strategyAccuracy C
-                  (PKG25NoFreeLunch.part2S1ParamSetting ε hε0 hεhalf k) <
-                (PKG25NoFreeLunch.part2S1ParamSetting ε hε0 hεhalf k).agentAccuracy i
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_formula_proposition9_s1_accuraciesSpec_proof
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-6680595ed06f984e}{}
-\section*{Review row 20}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 302-\allowbreak{}311\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-The result follows by applying \Cref{prop:linear-combination} with $S_1$ and $S_2$, taking $\lambda_1$ sufficiently close to $1$. In particular, \Cref{prop:linear-combination} implies that for all $\lambda$, there exists a collaboration setting $S$ such that
-\begin{equation}
-    \acc_i(S) = \lambda \acc_i(S_1) + (1-\lambda) \acc_i(S_2)
-\end{equation}
-for all $i\in [n]$, and
-\begin{equation}
-    \acc_\CC(S) = \lambda \acc_\CC(S_1) + (1-\lambda) \acc_\CC(S_2).
-\end{equation}
-Then, for all $\lambda < 1$, since $\acc_k(S_1)=\acc_\CC(S_1)$ and $\acc_k(S_2)>\acc_\CC(S_2),$ we have that $\acc_k(S) > \acc_\CC(S).$
-Now, since $\acc_i(S_1)>\acc_\CC(S_1)$, regardless of $\acc_i(S_2), \acc_\CC(S_2),$ by taking $\lambda$ sufficiently close to $1$, $\acc_i(S) > \acc_\CC(S).$ This provides the desired contradiction.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-(∀ {n : ℕ} (S1 S2 : PKG25NoFreeLunch.FiniteCollaborationSetting n),
-    ∃ Smix,
-      (∀ (i : Fin n), Smix.agentAccuracy i = 7 / 8 * S1.agentAccuracy i + 1 / 8 * S2.agentAccuracy i) ∧
-        ∀ (C : PKG25NoFreeLunch.CollaborationStrategy n),
-          PKG25NoFreeLunch.source_assumption_strategy_expectation_well_formed Smix C ∧
-            Smix.strategyAccuracy C =
-              7 / 8 * PKG25NoFreeLunch.FiniteCollaborationSetting.strategyAccuracy C S1 +
-                1 / 8 * PKG25NoFreeLunch.FiniteCollaborationSetting.strategyAccuracy C S2) ∧
-  ∀ {n : ℕ} [Nonempty (Fin n)] {C : PKG25NoFreeLunch.CollaborationStrategy n} {k : Fin n} {p q : Fin n → ℝ},
-    PKG25NoFreeLunch.DefersAwayFromHalf C k →
-      PKG25NoFreeLunch.Interior p →
-        PKG25NoFreeLunch.Interior q →
-          p k = 1 / 2 →
-            q k = 1 / 2 →
-              C p = true →
-                C q = false →
-                  ∃ Smix,
-                    PKG25NoFreeLunch.source_assumption_strategy_expectation_well_formed Smix C ∧
-                      ∀ (i : Fin n), Smix.strategyAccuracy C < Smix.agentAccuracy i
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-PKG25NoFreeLunch.source_formula_proposition9_final_mixtureSpec_proof
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} Under the displayed nonempty-\allowbreak{}agent and expectation conventions, the target has the exact source premises—reliability and fixed off-\allowbreak{}half deferral to k—and concludes one alpha on every interior profile with p\_\allowbreak{}k = 1/\allowbreak{}2.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox

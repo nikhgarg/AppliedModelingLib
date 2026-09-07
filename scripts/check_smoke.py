@@ -3,7 +3,7 @@
 
 The smoke pass focuses on importability and visibility:
 
-1. Build `EconCSLib` with the shared prelude.
+1. Build `AppliedModelingLib` with the shared prelude.
 2. Compile a curated `SmokeChecks.lean` file that imports standard front-facing modules.
 3. Optionally, compile non-active paper root files.
 """
@@ -74,12 +74,12 @@ def main() -> int:
     args = parse_args()
     include_active = args.include_active
 
-    run(["lake", "build", "EconCSLib"])
+    run(["lake", "build", "+AppliedModelingLib"])
     run(["lake", "env", "lean", str(EXAMPLES / "SmokeChecks.lean")])
 
     if args.include_papers:
         for paper in paper_roots(include_active):
-            run(["lake", "build", paper])
+            run(["lake", "build", f"+{paper}"])
 
     return 0
 

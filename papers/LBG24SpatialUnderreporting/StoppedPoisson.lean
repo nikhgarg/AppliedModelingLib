@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.ForwardStoppedPoisson
+import AppliedModelingLib.Foundations.Probability.ForwardStoppedPoisson
 
 /-!
 # Forward stopped-Poisson bridge for spatial-underreporting Lemma 2
@@ -13,7 +13,7 @@ that fixed-time independent increments alone establish that certificate.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped NNReal
 
 noncomputable section
@@ -51,7 +51,7 @@ theorem lemma2_conditional_no_report_exponential_tail_after_forward_stopping
     ∀ᵐ ω ∂P,
       (ProbabilityTheory.condExpKernel P C.isStoppingTime.measurableSpace ω).real
           {ω' | forwardPostStopIntervalCount H.process C.stopTime u ω' = 0} =
-        ((EconCSLib.Probability.Exponential.Model.mk H.process.rate H.process.rate_pos).measure
+        ((AppliedModelingLib.Probability.Exponential.Model.mk H.process.rate H.process.rate_pos).measure
           (Set.Ioi (u : ℝ))).toReal :=
   C.conditional_postStop_zero_real_eq_exponential_tail u
 

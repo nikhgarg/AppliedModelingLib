@@ -14,8 +14,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
-open EconCSLib.Probability
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib.Probability
 open scoped ENNReal ProbabilityTheory
 
 /-- Replace only the report action of the all-take/high-score candidate while
@@ -713,6 +713,12 @@ noncomputable def lg21HiddenAccess_sourceLocalCandidateEntry_of_zeroReporterBase
     candidateTake := candidateTake
     candidateReport := candidateReport
     candidate := candidate
+    candidate_test_law := by
+      intro latentSkill publicBase
+      rw [E.raw_test_law]
+      simp [candidate,
+        lg21HiddenAccessAllTakeMeanGapScoreCandidateWithReportAction,
+        lg21HiddenAccessAllTakeMeanGapScoreCandidate, noiseVariance]
     candidate_report_action := rfl
     candidate_take_measurable := hcandidateTakeMeasurable
     candidate_report_measurable := hcandidateReportMeasurable

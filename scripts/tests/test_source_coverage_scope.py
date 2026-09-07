@@ -25,20 +25,27 @@ from source_coverage_scope import (  # noqa: E402
     DEEP_PAPER_WITH_ALL_PROSE_CLAIMS,
     LEGACY_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
     NAMED_THEORETICAL_STATEMENTS,
+    PREVIOUS_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
     SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
     deep_source_coverage_attestation_error,
+    explicit_raw_source_spec_screening_requested,
     filter_source_inventory_for_coverage,
     filter_source_map_items_for_coverage,
     source_named_result_environment_kinds_from_map,
     source_coverage_mode_from_map,
     source_coverage_modes_compatible,
     source_item_coverage_sha256,
+    source_item_coverage_receipt_matches,
     source_item_direct_status_policy_projection,
     source_item_effective_route_policy,
     source_item_is_named_theoretical_statement,
+    source_record_human_review_semantic_sha256,
     source_record_source_item_projection,
     source_record_source_item_record_sha256,
     source_record_source_item_semantic_sha256,
+    source_record_source_item_supported_identity_sha256s,
+    legacy_source_item_coverage_sha256_before_navigation_key_exclusion,
+    legacy_source_item_coverage_sha256_before_defect_cross_reference_exclusion,
     legacy_source_item_coverage_sha256_before_direct_source_status_exclusion,
     legacy_source_item_coverage_sha256_schema4_direct_source_status_excluded,
     legacy_source_map_cache_semantic_sha256,
@@ -50,6 +57,13 @@ from source_coverage_scope import (  # noqa: E402
     source_named_presentation_in_coverage_scope,
     source_presentation_aliases,
     source_map_uses_conditional_antecedent_subpart_selection,
+)
+from corrected_target_identity import (  # noqa: E402
+    CORRECTED_TARGET_APPROVAL_PROTOCOL,
+    CORRECTED_TARGET_ORIGINAL_ARTIFACT_PATH_FIELD,
+    corrected_target_approval_artifact_error,
+    corrected_target_record_digest,
+    corrected_target_review_digest,
 )
 import new_paper  # noqa: E402
 import review_dashboard  # noqa: E402
@@ -70,6 +84,189 @@ SOURCE_RECORD_AUDIT_SPEC.loader.exec_module(SOURCE_RECORD_AUDIT)
 
 
 class SourceCoverageScopeTests(unittest.TestCase):
+    def test_repeated_prose_alias_requires_current_independent_source_binding(self) -> None:
+        from tempfile import TemporaryDirectory
+
+        source = "Call a value positive when it exceeds zero.\nAgain, positive means exceeding zero.\n"
+        digest = hashlib.sha256(source.encode()).hexdigest()
+        lines = source.splitlines()
+
+        def anchor(line: int) -> dict:
+            return {
+                "path": "source.txt", "line_start": line, "line_end": line,
+                "quoted_text": lines[line - 1],
+                "quoted_text_sha256": hashlib.sha256(lines[line - 1].encode()).hexdigest(),
+            }
+
+        canonical = {
+            "schema": 1, "presentation_kind": "definition",
+            "defined_entity_kind": "predicate", "defined_object": "positive",
+            "definitional_clause": lines[0], "source_anchor": anchor(1),
+            "scope_disposition": "normal_named_theory_definition",
+        }
+        repeated = {
+            **canonical, "definitional_clause": lines[1], "source_anchor": anchor(2),
+            "scope_disposition": "repeated_normal_definition",
+            "canonical_presentation_sha256": coverage_scope.source_prose_definition_presentation_sha256(canonical),
+            "repetition_judgment": "semantically_equivalent_restatement",
+            "semantic_basis": "Both clauses define positivity by the identical strict comparison with zero.",
+            "validator": "independent repetition reviewer", "validator_type": "agent",
+            "validated_at": "2026-09-07T00:00:00Z",
+        }
+        repeated["repetition_judgment_source_sha256"] = coverage_scope.source_prose_definition_clause_sha256(repeated)
+        item = {
+            "source_kind": "definition", "statement": lines[0], "claim_bearing": True,
+            "source_location": "source.txt:1", "source_anchor_evidence": [anchor(1)],
+        }
+        item["source_prose_definition_reconciliation"] = {
+            "schema": 2, "relation": "source_item_represents_prose_definition",
+            "presentation_sha256": coverage_scope.source_prose_definition_presentation_sha256(canonical),
+            "source_item_statement_sha256": coverage_scope.source_item_statement_sha256(item),
+            "judgment": "semantically_equivalent",
+            "semantic_basis": "The source-map statement is exactly the first pinned source clause.",
+            "validator": "independent binding reviewer", "validator_type": "agent",
+            "validated_at": "2026-09-07T00:00:00Z",
+        }
+        alias = {
+            "source_kind": "definition", "statement": lines[1],
+            "source_location": "source.txt:2", "source_anchor_evidence": [anchor(2)],
+            "source_presentation_alias": {
+                "schema": 1, "relation": "repeated_source_presentation",
+                "canonical_source_item": "canonical", "semantic_basis": repeated["semantic_basis"],
+                "validator": "independent repetition reviewer", "validated_at": "2026-09-07T00:00:00Z",
+            },
+        }
+        payload = {
+            "source_artifact_path": "source.txt", "source_artifact_sha256": digest,
+            "items": {"canonical": item, "repeat": alias},
+            "source_named_result_inventory_review": {
+                "complete": True, "validator": "source-only extractor",
+                "source_artifact_sha256": digest,
+                "prose_definition_presentations": [canonical, repeated],
+            },
+        }
+
+        def refresh_inventory(value: dict) -> None:
+            review = value["source_named_result_inventory_review"]
+            review["discovered_prose_definition_sha256"] = coverage_scope.source_prose_definition_presentations_sha256(review["prose_definition_presentations"])
+
+        refresh_inventory(payload)
+        with TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir)
+            (folder / "source.txt").write_text(source)
+            self.assertEqual(coverage_scope.source_prose_definition_inventory_errors(folder, payload), [])
+            self.assertEqual(coverage_scope.source_prose_definition_alias_pairs(folder, payload), {"repeat": "canonical"})
+            # Neither a stale reading nor an unrelated source span can acquire
+            # the exemption from numbered-heading reconciliation.
+            for mutation in ("stale", "wrong_span", "self_review", "wrong_canonical"):
+                with self.subTest(mutation=mutation):
+                    changed = deepcopy(payload)
+                    record = changed["source_named_result_inventory_review"]["prose_definition_presentations"][1]
+                    if mutation == "stale":
+                        record["repetition_judgment_source_sha256"] = "0" * 64
+                    elif mutation == "wrong_span":
+                        changed["items"]["repeat"]["source_anchor_evidence"] = [anchor(1)]
+                    elif mutation == "self_review":
+                        record["validator"] = "source-only extractor"
+                    else:
+                        record["canonical_presentation_sha256"] = "0" * 64
+                    refresh_inventory(changed)
+                    self.assertEqual(coverage_scope.source_prose_definition_alias_pairs(folder, changed), {})
+
+    @staticmethod
+    def approved_corrected_target(
+        artifact_path: str = "docs/SOURCE_CLARIFICATIONS.md",
+    ) -> dict[str, object]:
+        excerpt = (
+            "The task owner approved this exact corrected mathematical target "
+            "for the formalization."
+        )
+        target: dict[str, object] = {
+            "schema": 1,
+            "statement": "For every x, the corrected conclusion holds.",
+            "governing_defect_ids": ["FIXTURE-DEFECT-1"],
+            "archival_equivalence_claimed": False,
+            "archival_source_locator": "sources/Fixture.txt:40-43",
+            "archival_source_quote_sha256": "b" * 64,
+            "approval": {
+                "kind": "explicit_user_instruction",
+                "recorded_at": "2026-09-05",
+                "reference": "Approved corrected target.",
+                "target_statement_sha256": hashlib.sha256(
+                    b"For every x, the corrected conclusion holds."
+                ).hexdigest(),
+                "artifact_path": artifact_path,
+                "artifact_protocol": CORRECTED_TARGET_APPROVAL_PROTOCOL,
+                "artifact_excerpt": excerpt,
+                "artifact_excerpt_sha256": hashlib.sha256(
+                    excerpt.encode("utf-8")
+                ).hexdigest(),
+            },
+        }
+        target["corrected_target_sha256"] = corrected_target_record_digest(target)
+        target["corrected_target_review_sha256"] = corrected_target_review_digest(
+            target
+        )
+        return target
+
+    def test_explicit_v11_activation_spellings_share_one_predicate(self) -> None:
+        statuses = (
+            {"review_surface": {"require_source_spec_correspondence": True}},
+            {"review_surface": {"require_v11_raw_source_spec_screening": True}},
+            {
+                "review_surface": {
+                    "llm_statement_review": {
+                        "require_theorem_realization_contract_schema": 1
+                    }
+                }
+            },
+        )
+        for status in statuses:
+            with self.subTest(status=status):
+                self.assertTrue(
+                    explicit_raw_source_spec_screening_requested(status)
+                )
+        self.assertTrue(
+            explicit_raw_source_spec_screening_requested(
+                {}, {"source_spec_correspondence_schema": 1}
+            )
+        )
+        self.assertFalse(
+            explicit_raw_source_spec_screening_requested(
+                {"review_surface": {"require_source_spec_correspondence": False}},
+                {"source_spec_correspondence_schema": True},
+            )
+        )
+
+    def test_named_open_problem_is_not_an_ordinary_proof_obligation(self) -> None:
+        quote = "Conjecture 1. Every admissible input has a witness."
+        item = {
+            "source_kind": "open_problem",
+            "claim_bearing": False,
+            "source_location": "source.txt:1",
+            "source_anchor_evidence": [
+                {
+                    "path": "source.txt",
+                    "line_start": 1,
+                    "line_end": 1,
+                    "quoted_text": quote,
+                    "quoted_text_sha256": hashlib.sha256(
+                        quote.encode("utf-8")
+                    ).hexdigest(),
+                }
+            ],
+            "source_scope_classification": (
+                "source_declared_open_nonresult_observation"
+            ),
+            "coverage_status": "source_declared_open",
+            "protocol_role": "source_declared_open",
+            "scope_reason": "The paper explicitly presents this as open.",
+            "source_evidence": "The byte-pinned source labels it Conjecture 1.",
+        }
+
+        self.assertFalse(source_item_is_named_theoretical_statement(item))
+        self.assertEqual(source_item_scope_classification_errors(item), [])
+
     @staticmethod
     def _valid_repeated_presentation_alias_items() -> dict[str, dict[str, object]]:
         """Minimal source metadata for one repeated named presentation."""
@@ -239,6 +436,94 @@ class SourceCoverageScopeTests(unittest.TestCase):
             )
             self.assertEqual(error, "")
             self.assertEqual(set(selected), {"canonical"})
+
+    def test_source_index_uses_one_reviewed_candidate_classification(self) -> None:
+        """Material candidates enter coverage; reviewed deep material does not."""
+
+        from tempfile import TemporaryDirectory
+
+        source_text = (
+            "Theorem 1. Every admissible input has a witness.\n"
+            "Remark 4. The witness is unique under strict preferences.\n"
+            "Note 5. This paragraph gives historical motivation only.\n"
+        )
+        source_digest = hashlib.sha256(source_text.encode("utf-8")).hexdigest()
+        with TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "ReviewedCandidatePaper"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            (folder / "source.txt").write_text(source_text, encoding="utf-8")
+
+            def anchor(line: int) -> dict[str, object]:
+                quoted = source_text.splitlines()[line - 1]
+                return {
+                    "path": "source.txt",
+                    "line_start": line,
+                    "line_end": line,
+                    "quoted_text": quoted,
+                    "quoted_text_sha256": hashlib.sha256(
+                        quoted.encode("utf-8")
+                    ).hexdigest(),
+                }
+
+            candidates = [
+                {
+                    "schema": 1,
+                    "id": "remark4",
+                    "presentation_label": "Remark 4",
+                    "visible_kind": "remark",
+                    "scope_disposition": "material_named_claim",
+                    "semantic_basis": (
+                        "The source presents a distinct uniqueness conclusion."
+                    ),
+                    "discovery_basis": "mechanical_labelled_heading",
+                    "source_anchor": anchor(2),
+                },
+                {
+                    "schema": 1,
+                    "id": "note5",
+                    "presentation_label": "Note 5",
+                    "visible_kind": "note",
+                    "scope_disposition": "deep_audit_material",
+                    "semantic_basis": (
+                        "The passage is historical motivation and states no paper claim."
+                    ),
+                    "discovery_basis": "mechanical_labelled_heading",
+                    "source_anchor": anchor(3),
+                },
+            ]
+            payload = {
+                "source_artifact_path": "source.txt",
+                "source_artifact_sha256": source_digest,
+                "source_coverage_mode": NAMED_THEORETICAL_STATEMENTS,
+                "source_named_result_inventory_review": {
+                    "candidate_presentations": candidates,
+                },
+                "items": {
+                    "theorem": {
+                        "source_kind": "theorem",
+                        "source_anchor_evidence": [anchor(1)],
+                    },
+                    "material_remark": {
+                        "source_kind": "claim",
+                        "source_anchor_evidence": [anchor(2)],
+                    },
+                    "deep_note": {
+                        "source_kind": "note",
+                        "source_anchor_evidence": [anchor(3)],
+                    },
+                },
+            }
+
+            self.assertEqual(
+                source_index_byte_pinned_anchor_item_ids(
+                    folder,
+                    payload,
+                    NAMED_THEORETICAL_STATEMENTS,
+                    repository_root=ROOT,
+                ),
+                {"theorem", "material_remark"},
+            )
 
     def test_repeated_presentation_alias_rejects_direct_lean_route(self) -> None:
         items = self._valid_repeated_presentation_alias_items()
@@ -633,6 +918,76 @@ class SourceCoverageScopeTests(unittest.TestCase):
                     any("claim_bearing: false" in error for error in errors)
                 )
 
+    def test_named_proof_support_role_does_not_decide_source_classification(self) -> None:
+        for label in ("Lemma 4.1", "Theorem 2", "Proposition A.1"):
+            with self.subTest(label=label):
+                item = {
+                    "source_kind": label.split()[0].lower(),
+                    "statement": f"{label}. Every feasible input has a witness.",
+                    "claim_bearing": True,
+                    "source_status": "support_only",
+                    "inventory_role": "proof_support",
+                    "support_lean_declarations": ["Fixture.downstreamTheoremSpec"],
+                }
+                errors = source_map_structural_errors({"intermediate": item})
+                self.assertEqual(errors, [])
+                self.assertTrue(source_item_is_named_theoretical_statement(item))
+                item["claim_bearing"] = False
+                self.assertTrue(any(
+                    "claim_bearing: false" in error
+                    for error in source_map_structural_errors({"intermediate": item})
+                ))
+
+    def test_unnumbered_proof_support_and_named_direct_routes_remain_valid(self) -> None:
+        support = {
+            "source_kind": "equation",
+            "statement": "An intermediate equality in the proof of Theorem 2.",
+            "claim_bearing": False,
+            "source_status": "support_only",
+            "inventory_role": "proof_support",
+            "support_lean_declarations": ["Fixture.downstreamTheoremSpec"],
+        }
+        result = {
+            "source_kind": "lemma",
+            "statement": "Lemma 1. Every feasible input has a witness.",
+            "claim_bearing": True,
+        }
+        for item in (support, result):
+            with self.subTest(item=item):
+                self.assertEqual(source_item_scope_classification_errors(item), [])
+
+    def test_typed_nonclaim_algorithm_prerequisite_stays_off_result_surface(self) -> None:
+        """A reviewable algorithm prerequisite is not a duplicate claim row."""
+
+        item = {
+            "source_kind": "model",
+            "claim_bearing": False,
+            "inventory_role": "source_semantic_declaration",
+            "lean_declarations": ["Fixture.sourceAlgorithm"],
+            "statement": "Algorithm 4.1 initializes the matching and repeats the stated proposal step.",
+        }
+        self.assertFalse(source_item_is_named_theoretical_statement(item))
+        self.assertEqual(source_item_scope_classification_errors(item), [])
+        self.assertEqual(
+            filter_source_inventory_for_coverage(
+                {"algorithm": item}, NAMED_THEORETICAL_STATEMENTS
+            ),
+            {},
+        )
+
+        disguised_result = {
+            **item,
+            "source_kind": "theorem",
+            "statement": "Theorem 4. Every feasible input has the asserted property.",
+        }
+        self.assertTrue(source_item_is_named_theoretical_statement(disguised_result))
+        self.assertTrue(
+            any(
+                "cannot set claim_bearing: false" in error
+                for error in source_item_scope_classification_errors(disguised_result)
+            )
+        )
+
     def test_standalone_formula_is_not_promoted_by_a_support_theorem_anchor(
         self,
     ) -> None:
@@ -1005,6 +1360,48 @@ class SourceCoverageScopeTests(unittest.TestCase):
         self.assertEqual(selection["source_coverage_unrouted_source_items"], [])
         self.assertEqual(selection["source_coverage_route_errors"], [])
 
+    def test_proof_obligations_preserve_but_do_not_select_excluded_correction(self) -> None:
+        """Keeping a clarification's provenance must not claim its deferred proof."""
+
+        item = {
+            "source_kind": "theorem",
+            "statement": "Theorem 2. Every input has a witness.",
+            "source_status": "corrected_source_statement",
+            "coverage_status": "user_approved_scope_exclusion",
+            "source_defect_ids": ["fixture-clarification"],
+            "corrected_target": {
+                "schema": 1,
+                "statement": "Every admissible input has a witness.",
+                "approval": {
+                    "kind": "explicit_user_instruction",
+                    "reference": "fixture corrected-target approval",
+                },
+            },
+            "user_approved_scope_exclusion": {
+                "schema": 1,
+                "approval_kind": "explicit_user_instruction",
+                "approval_reference": "fixture deferred-proof decision",
+            },
+        }
+        before = json.dumps(item, sort_keys=True)
+        # Independent source-index discovery cannot restore proof credit to
+        # this inventory item. Dedicated validators check its approval pins.
+        selected = coverage_scope.filter_source_map_items_for_proof_obligations(
+            {"deferred": item},
+            NAMED_THEORETICAL_STATEMENTS,
+            additional_selected_item_ids={"deferred"},
+        )
+        self.assertEqual(selected, {})
+        self.assertEqual(json.dumps(item, sort_keys=True), before)
+
+        # Removing only the scope decision restores the corrected obligation.
+        active_item = dict(item)
+        active_item.pop("user_approved_scope_exclusion")
+        selected = coverage_scope.filter_source_map_items_for_proof_obligations(
+            {"active": active_item}, NAMED_THEORETICAL_STATEMENTS
+        )
+        self.assertEqual(selected, {"active": active_item})
+
     def test_source_record_selector_adds_byte_pinned_index_match(self) -> None:
         """A broad anchor may select one indexed theorem without map-name hints."""
 
@@ -1354,6 +1751,10 @@ class SourceCoverageScopeTests(unittest.TestCase):
         changed_administrative_status["source_status"] = (
             "repository bookkeeping label only"
         )
+        changed_defect_cross_references = deepcopy(item)
+        changed_defect_cross_references["source_defect_ids"] = [
+            "FIXTURE-PROOF-ROUTE-01"
+        ]
         changed_source_note = deepcopy(item)
         changed_source_note["source_note"] = (
             "A source-model convention with mathematical content."
@@ -1431,6 +1832,12 @@ class SourceCoverageScopeTests(unittest.TestCase):
             ),
             original_digest,
         )
+        self.assertEqual(
+            source_item_coverage_sha256(
+                changed_defect_cross_references, NAMED_THEORETICAL_STATEMENTS
+            ),
+            original_digest,
+        )
         self.assertNotEqual(
             source_item_coverage_sha256(
                 changed_source_note, NAMED_THEORETICAL_STATEMENTS
@@ -1460,6 +1867,244 @@ class SourceCoverageScopeTests(unittest.TestCase):
                 item, DEEP_PAPER_WITH_ALL_PROSE_CLAIMS
             ),
             original_digest,
+        )
+
+    def test_item_digest_uses_corrected_target_authority_projection(self) -> None:
+        item = {
+            "source_kind": "theorem",
+            "statement": "The archival statement has a documented defect.",
+            "claim_bearing": True,
+            "corrected_target": self.approved_corrected_target(),
+        }
+        original_digest = source_item_coverage_sha256(
+            item, NAMED_THEORETICAL_STATEMENTS
+        )
+
+        moved = deepcopy(item)
+        moved["corrected_target"]["approval"]["artifact_path"] = (  # type: ignore[index]
+            "audit/SOURCE_TARGET_STATEMENTS.md"
+        )
+        self.assertEqual(
+            source_item_coverage_sha256(moved, NAMED_THEORETICAL_STATEMENTS),
+            original_digest,
+        )
+
+        # Locator-neutral identity does not waive the independent current-file
+        # check: the exact excerpt must still occur once at the resolved path.
+        approval = moved["corrected_target"]["approval"]  # type: ignore[index]
+        excerpt = approval["artifact_excerpt"]  # type: ignore[index]
+        self.assertEqual(
+            corrected_target_approval_artifact_error(
+                approval, f"Header\n\n{excerpt}\n\nFooter"
+            ),
+            "",
+        )
+        self.assertIn(
+            "found 0",
+            corrected_target_approval_artifact_error(
+                approval, "This artifact does not contain the approved excerpt."
+            ),
+        )
+
+        mutations: dict[str, dict[str, object]] = {}
+        changed_statement = deepcopy(item)
+        changed_statement["corrected_target"]["statement"] = (  # type: ignore[index]
+            "For every x, a different corrected conclusion holds."
+        )
+        mutations["corrected statement"] = changed_statement
+
+        changed_excerpt = deepcopy(item)
+        replacement_excerpt = (
+            "The task owner approved a different corrected mathematical target "
+            "for the formalization."
+        )
+        changed_excerpt["corrected_target"]["approval"][  # type: ignore[index]
+            "artifact_excerpt"
+        ] = replacement_excerpt
+        changed_excerpt["corrected_target"]["approval"][  # type: ignore[index]
+            "artifact_excerpt_sha256"
+        ] = hashlib.sha256(replacement_excerpt.encode("utf-8")).hexdigest()
+        mutations["approval excerpt"] = changed_excerpt
+
+        unknown_approval_field = deepcopy(item)
+        unknown_approval_field["corrected_target"]["approval"][  # type: ignore[index]
+            "future_semantic_condition"
+        ] = "new condition"
+        mutations["unknown approval field"] = unknown_approval_field
+
+        lookalike_locator = deepcopy(item)
+        lookalike_locator["corrected_target"]["approval"][  # type: ignore[index]
+            "Artifact_Path"
+        ] = "audit/first.md"
+        changed_lookalike_locator = deepcopy(lookalike_locator)
+        changed_lookalike_locator["corrected_target"]["approval"][  # type: ignore[index]
+            "Artifact_Path"
+        ] = "audit/second.md"
+        self.assertNotEqual(
+            source_item_coverage_sha256(
+                lookalike_locator, NAMED_THEORETICAL_STATEMENTS
+            ),
+            source_item_coverage_sha256(
+                changed_lookalike_locator, NAMED_THEORETICAL_STATEMENTS
+            ),
+        )
+
+        legacy_protocol = deepcopy(item)
+        legacy_protocol["corrected_target"]["approval"][  # type: ignore[index]
+            "artifact_protocol"
+        ] = "whole_artifact_sha256_v0"
+        moved_legacy_protocol = deepcopy(legacy_protocol)
+        moved_legacy_protocol["corrected_target"]["approval"][  # type: ignore[index]
+            "artifact_path"
+        ] = "audit/SOURCE_TARGET_STATEMENTS.md"
+        self.assertNotEqual(
+            source_item_coverage_sha256(
+                legacy_protocol, NAMED_THEORETICAL_STATEMENTS
+            ),
+            source_item_coverage_sha256(
+                moved_legacy_protocol, NAMED_THEORETICAL_STATEMENTS
+            ),
+        )
+
+        unrelated_locator = deepcopy(item)
+        unrelated_locator["review_material"] = {
+            "artifact_path": "audit/first.md"
+        }
+        moved_unrelated_locator = deepcopy(unrelated_locator)
+        moved_unrelated_locator["review_material"]["artifact_path"] = (  # type: ignore[index]
+            "audit/second.md"
+        )
+        self.assertNotEqual(
+            source_item_coverage_sha256(
+                unrelated_locator, NAMED_THEORETICAL_STATEMENTS
+            ),
+            source_item_coverage_sha256(
+                moved_unrelated_locator, NAMED_THEORETICAL_STATEMENTS
+            ),
+        )
+
+        for label, changed in mutations.items():
+            with self.subTest(change=label):
+                self.assertNotEqual(
+                    source_item_coverage_sha256(
+                        changed, NAMED_THEORETICAL_STATEMENTS
+                    ),
+                    original_digest,
+                )
+
+    def test_corrected_target_legacy_item_digests_replay_literal_old_shape(
+        self,
+    ) -> None:
+        item = {
+            "source_item_key": "fixture-key",
+            "source_kind": "theorem",
+            "statement": "The archival statement has a documented defect.",
+            "claim_bearing": True,
+            "source_status": "support_only",
+            "source_defect_ids": ["FIXTURE-DEFECT-1"],
+            "corrected_target": self.approved_corrected_target(),
+        }
+        self.assertEqual(
+            legacy_source_item_coverage_sha256_before_defect_cross_reference_exclusion(
+                item, NAMED_THEORETICAL_STATEMENTS
+            ),
+            "aaa587a6f2b73a794baf255f6f2d51cfcdcdaa67f067864d52513ed1759e23a1",
+        )
+        self.assertEqual(
+            legacy_source_item_coverage_sha256_before_navigation_key_exclusion(
+                item, NAMED_THEORETICAL_STATEMENTS
+            ),
+            "eceb75d2bf29b76fbba6d39a5e5acf6a92c51f01c398e7d0ac61ef4a29d40909",
+        )
+        self.assertEqual(
+            legacy_source_item_coverage_sha256_before_direct_source_status_exclusion(
+                item, NAMED_THEORETICAL_STATEMENTS
+            ),
+            "35756aafbdfba52161b67a518748dcb4a9304dc9cb9dd748ada50254a94b99c5",
+        )
+        self.assertEqual(
+            legacy_source_item_coverage_sha256_schema4_direct_source_status_excluded(
+                item, NAMED_THEORETICAL_STATEMENTS
+            ),
+            "71abd998c97289627a68797dabb976f213d4169ceaebbfb0b6831e7ac3cc7654",
+        )
+
+    def test_original_locator_replays_old_schema4_and_schema5_item_preimages(
+        self,
+    ) -> None:
+        old = {
+            "source_item_key": "fixture-key",
+            "source_kind": "theorem",
+            "statement": "The archival statement has a documented defect.",
+            "claim_bearing": True,
+            "source_status": "support_only",
+            "source_defect_ids": ["FIXTURE-DEFECT-1"],
+            "corrected_target": self.approved_corrected_target(
+                "docs/SOURCE_CLARIFICATIONS.md"
+            ),
+        }
+        current = deepcopy(old)
+        approval = current["corrected_target"]["approval"]  # type: ignore[index]
+        approval["artifact_path"] = "audit/SOURCE_TARGET_STATEMENTS.md"  # type: ignore[index]
+        approval[CORRECTED_TARGET_ORIGINAL_ARTIFACT_PATH_FIELD] = (  # type: ignore[index]
+            "docs/SOURCE_CLARIFICATIONS.md"
+        )
+        self.assertEqual(
+            source_item_coverage_sha256(current, NAMED_THEORETICAL_STATEMENTS),
+            source_item_coverage_sha256(old, NAMED_THEORETICAL_STATEMENTS),
+        )
+        historical_readers = (
+            legacy_source_item_coverage_sha256_before_defect_cross_reference_exclusion,
+            legacy_source_item_coverage_sha256_before_navigation_key_exclusion,
+            legacy_source_item_coverage_sha256_before_direct_source_status_exclusion,
+            legacy_source_item_coverage_sha256_schema4_direct_source_status_excluded,
+        )
+        for reader in historical_readers:
+            with self.subTest(reader=reader.__name__):
+                old_digest = reader(old, NAMED_THEORETICAL_STATEMENTS)
+                self.assertEqual(
+                    reader(current, NAMED_THEORETICAL_STATEMENTS), old_digest
+                )
+
+                forged = deepcopy(current)
+                forged["corrected_target"]["approval"][  # type: ignore[index]
+                    CORRECTED_TARGET_ORIGINAL_ARTIFACT_PATH_FIELD
+                ] = "docs/FORGED.md"
+                self.assertNotEqual(
+                    reader(forged, NAMED_THEORETICAL_STATEMENTS), old_digest
+                )
+
+                malformed = deepcopy(current)
+                malformed["corrected_target"]["approval"][  # type: ignore[index]
+                    CORRECTED_TARGET_ORIGINAL_ARTIFACT_PATH_FIELD
+                ] = "../docs/SOURCE_CLARIFICATIONS.md"
+                self.assertEqual(
+                    reader(malformed, NAMED_THEORETICAL_STATEMENTS), ""
+                )
+
+        self.assertTrue(
+            source_item_coverage_receipt_matches(
+                current,
+                NAMED_THEORETICAL_STATEMENTS,
+                digest_schema=PREVIOUS_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
+                digest=legacy_source_item_coverage_sha256_before_defect_cross_reference_exclusion(
+                    old, NAMED_THEORETICAL_STATEMENTS
+                ),
+            )
+        )
+        malformed = deepcopy(current)
+        malformed["corrected_target"]["approval"][  # type: ignore[index]
+            CORRECTED_TARGET_ORIGINAL_ARTIFACT_PATH_FIELD
+        ] = "../docs/SOURCE_CLARIFICATIONS.md"
+        self.assertFalse(
+            source_item_coverage_receipt_matches(
+                malformed,
+                NAMED_THEORETICAL_STATEMENTS,
+                digest_schema=PREVIOUS_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
+                digest=legacy_source_item_coverage_sha256_before_defect_cross_reference_exclusion(
+                    old, NAMED_THEORETICAL_STATEMENTS
+                ),
+            )
         )
 
     def test_item_digest_separates_source_kind_review_receipts_from_semantics(
@@ -1538,6 +2183,92 @@ class SourceCoverageScopeTests(unittest.TestCase):
                     original_digest,
                 )
 
+    def test_item_digest_excludes_normalized_map_key_with_exact_legacy_replay(
+        self,
+    ) -> None:
+        item = {
+            "source_item_key": "old-navigation-key",
+            "source_kind": "theorem",
+            "statement": "Every finite source object has a witness.",
+            "claim_bearing": True,
+        }
+        renamed = {**item, "source_item_key": "new-navigation-key"}
+
+        self.assertEqual(
+            source_item_coverage_sha256(item, NAMED_THEORETICAL_STATEMENTS),
+            source_item_coverage_sha256(renamed, NAMED_THEORETICAL_STATEMENTS),
+        )
+        self.assertNotEqual(
+            legacy_source_item_coverage_sha256_before_navigation_key_exclusion(
+                item, NAMED_THEORETICAL_STATEMENTS
+            ),
+            legacy_source_item_coverage_sha256_before_navigation_key_exclusion(
+                renamed, NAMED_THEORETICAL_STATEMENTS
+            ),
+        )
+
+    def test_defect_cross_reference_exclusion_is_schema_6_only(self) -> None:
+        """Schema 5 remains exact while schema 6 delegates proof links."""
+
+        item = {
+            "source_kind": "theorem",
+            "statement": "Every finite source object has a witness.",
+            "source_defect_ids": [],
+        }
+        linked = {**item, "source_defect_ids": ["FIXTURE-PROOF-ROUTE-01"]}
+        self.assertEqual(
+            source_item_coverage_sha256(item, NAMED_THEORETICAL_STATEMENTS),
+            source_item_coverage_sha256(linked, NAMED_THEORETICAL_STATEMENTS),
+        )
+        self.assertNotEqual(
+            legacy_source_item_coverage_sha256_before_defect_cross_reference_exclusion(
+                item, NAMED_THEORETICAL_STATEMENTS
+            ),
+            legacy_source_item_coverage_sha256_before_defect_cross_reference_exclusion(
+                linked, NAMED_THEORETICAL_STATEMENTS
+            ),
+        )
+
+    def test_corrected_target_spec_navigation_is_namespace_neutral(self) -> None:
+        """A unique paper-owned Spec need not live in PaperInterface."""
+
+        source_item = {
+            "semantic_contract": {
+                "spec_declaration": "FixturePaper.corrected_resultSpec",
+                "evidence_declaration": "FixturePaper.corrected_result",
+                "evidence_mode": "proves",
+                "semantic_shape": "plain",
+            }
+        }
+        self.assertTrue(
+            review_dashboard._corrected_target_contract_spec_navigation_matches(
+                source_item,
+                "FixturePaper.corrected_result",
+                ["corrected_resultSpec"],
+                {"source": source_item},
+                "FixturePaper",
+                semantic_contract_schema=2,
+            )
+        )
+        other = {
+            "semantic_contract": {
+                "spec_declaration": "FixturePaper.Nested.corrected_resultSpec",
+                "evidence_declaration": "FixturePaper.Nested.corrected_result",
+                "evidence_mode": "proves",
+                "semantic_shape": "plain",
+            }
+        }
+        self.assertFalse(
+            review_dashboard._corrected_target_contract_spec_navigation_matches(
+                source_item,
+                "FixturePaper.corrected_result",
+                ["corrected_resultSpec"],
+                {"source": source_item, "other": other},
+                "FixturePaper",
+                semantic_contract_schema=2,
+            )
+        )
+
     def test_direct_status_projection_is_a_versioned_schema_transition(self) -> None:
         """Only the direct bookkeeping field changes across schema 4 -> 5."""
 
@@ -1588,7 +2319,8 @@ class SourceCoverageScopeTests(unittest.TestCase):
             )
         )
 
-        self.assertEqual(SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA, 5)
+        self.assertEqual(SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA, 6)
+        self.assertEqual(PREVIOUS_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA, 5)
         self.assertEqual(LEGACY_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA, 4)
         self.assertNotEqual(current, legacy)
         self.assertEqual(current, current_direct)
@@ -1632,6 +2364,21 @@ class SourceCoverageScopeTests(unittest.TestCase):
         administrative = deepcopy(source_map)
         administrative["items"]["opaque_source_item"]["source_status"] = "resolved"
         self.assertEqual(source_map_cache_semantic_sha256(administrative), original)
+
+        defect_cross_reference = deepcopy(source_map)
+        defect_cross_reference["items"]["opaque_source_item"]["source_defect_ids"] = [
+            "FIXTURE-PROOF-ROUTE-01"
+        ]
+        self.assertEqual(
+            source_map_cache_semantic_sha256(defect_cross_reference), original
+        )
+        self.assertEqual(
+            source_item_coverage_sha256(
+                defect_cross_reference["items"]["opaque_source_item"],
+                NAMED_THEORETICAL_STATEMENTS,
+            ),
+            original_item,
+        )
 
         # Only the schema's exact field is administrative.  A misspelled or
         # whitespace/case-normalized lookalike is unknown source-map metadata
@@ -1706,10 +2453,58 @@ class SourceCoverageScopeTests(unittest.TestCase):
             with self.subTest(change=label):
                 self.assertNotEqual(source_map_cache_semantic_sha256(changed), original)
 
-    def test_raw_source_record_identity_omits_only_writer_derived_correspondence_hashes(
+    def test_closeout_scope_and_partition_do_not_rehash_unchanged_raw_items(self) -> None:
+        source_map = {
+            "source_coverage_mode": NAMED_THEORETICAL_STATEMENTS,
+            "items": {
+                "claim": {
+                    "source_kind": "theorem",
+                    "claim_bearing": True,
+                    "statement": "Every feasible input has a witness.",
+                }
+            },
+            "source_named_result_inventory_review": {
+                "source_region_partition": {
+                    "schema": 1,
+                    "source_item_regions": {"claim": "main"},
+                }
+            },
+            "closeout_review_policy": {
+                "schema": 1,
+                "source_scope": "all_named_theory",
+                "repeat_final_scope": "main_primary",
+                "required_final_adversary_count": 1,
+                "scheduling": {
+                    "initial_semantic_review": [],
+                    "final_adversarial_review": ["reviewer-a"],
+                },
+            },
+        }
+        original = source_map_cache_semantic_sha256(source_map)
+        changed_controls = deepcopy(source_map)
+        changed_controls["closeout_review_policy"][
+            "required_final_adversary_count"
+        ] = 2
+        changed_controls["closeout_review_policy"]["scheduling"][
+            "final_adversarial_review"
+        ] = ["reviewer-b"]
+        changed_controls["source_named_result_inventory_review"][
+            "source_region_partition"
+        ]["source_item_regions"] = {"claim": "renamed-main-region"}
+        self.assertEqual(
+            source_map_cache_semantic_sha256(changed_controls), original
+        )
+
+        changed_item = deepcopy(source_map)
+        changed_item["items"]["claim"]["statement"] = (
+            "Every feasible input has a unique witness."
+        )
+        self.assertNotEqual(source_map_cache_semantic_sha256(changed_item), original)
+
+    def test_raw_source_record_identity_separates_valid_correspondence_lane(
         self,
     ) -> None:
-        """Raw reuse ignores generated fingerprints, never correspondence meaning."""
+        """Raw reuse ignores correspondence owned by the strict lane."""
 
         derived_fields = (
             "source_atoms_sha256",
@@ -1772,16 +2567,86 @@ class SourceCoverageScopeTests(unittest.TestCase):
         original = raw_identity(item)
         projection = source_record_source_item_projection(item)
         self.assertIsInstance(projection, dict)
-        correspondence = projection["source_spec_correspondence"]
-        self.assertIsInstance(correspondence, dict)
+        self.assertNotIn("source_spec_correspondence", projection)
+
+        valid_correspondence_changes: dict[str, dict[str, object]] = {}
         for field in derived_fields:
-            with self.subTest(omitted_field=field):
-                self.assertNotIn(field, correspondence)
-                changed = deepcopy(item)
-                changed_correspondence = changed["source_spec_correspondence"]
-                assert isinstance(changed_correspondence, dict)
-                changed_correspondence[field] = "9" * 64
+            changed = deepcopy(item)
+            changed_correspondence = changed["source_spec_correspondence"]
+            assert isinstance(changed_correspondence, dict)
+            changed_correspondence[field] = "9" * 64
+            valid_correspondence_changes[field] = changed
+
+        changed_binding = deepcopy(item)
+        binding_correspondence = changed_binding["source_spec_correspondence"]
+        assert isinstance(binding_correspondence, dict)
+        bindings = binding_correspondence["source_atom_bindings"]
+        assert isinstance(bindings, list) and isinstance(bindings[0], dict)
+        bindings[0]["semantic_bridge"] = "The Spec has a different source meaning."
+        valid_correspondence_changes["source-atom binding"] = changed_binding
+
+        changed_disposition = deepcopy(item)
+        disposition_correspondence = changed_disposition[
+            "source_spec_correspondence"
+        ]
+        assert isinstance(disposition_correspondence, dict)
+        dispositions = disposition_correspondence["closure_node_dispositions"]
+        assert isinstance(dispositions, list) and isinstance(dispositions[0], dict)
+        basis = dispositions[0]["semantic_basis"]
+        assert isinstance(basis, dict)
+        basis["semantic_statement"] = "The closure node proves another endpoint."
+        valid_correspondence_changes["closure disposition"] = changed_disposition
+
+        for label, changed in valid_correspondence_changes.items():
+            with self.subTest(strict_lane_change=label):
                 self.assertEqual(raw_identity(changed), original)
+
+        whole_root = deepcopy(item)
+        whole_root_correspondence = whole_root["source_spec_correspondence"]
+        assert isinstance(whole_root_correspondence, dict)
+        whole_root_bindings = whole_root_correspondence["source_atom_bindings"]
+        assert isinstance(whole_root_bindings, list) and isinstance(
+            whole_root_bindings[0], dict
+        )
+        whole_root_bindings[0]["spec_component_sha256s"] = ["c" * 64]
+        whole_root_identity = raw_identity(whole_root)
+        supported_whole_root_identities = (
+            source_record_source_item_supported_identity_sha256s(whole_root, "")
+        )
+        self.assertEqual(len(supported_whole_root_identities), 3)
+        self.assertIn(whole_root_identity[:2], supported_whole_root_identities)
+        refreshed_whole_root = deepcopy(whole_root)
+        refreshed_correspondence = refreshed_whole_root[
+            "source_spec_correspondence"
+        ]
+        assert isinstance(refreshed_correspondence, dict)
+        refreshed_correspondence["spec_surface_sha256"] = "9" * 64
+        refreshed_bindings = refreshed_correspondence["source_atom_bindings"]
+        assert isinstance(refreshed_bindings, list) and isinstance(
+            refreshed_bindings[0], dict
+        )
+        refreshed_bindings[0]["spec_component_sha256s"] = ["9" * 64]
+        self.assertEqual(raw_identity(refreshed_whole_root), whole_root_identity)
+
+        changed_selected_component = deepcopy(whole_root)
+        selected_correspondence = changed_selected_component[
+            "source_spec_correspondence"
+        ]
+        assert isinstance(selected_correspondence, dict)
+        selected_bindings = selected_correspondence["source_atom_bindings"]
+        assert isinstance(selected_bindings, list) and isinstance(
+            selected_bindings[0], dict
+        )
+        selected_bindings[0]["spec_component_sha256s"] = ["8" * 64]
+        self.assertEqual(raw_identity(changed_selected_component), whole_root_identity)
+        self.assertEqual(
+            len(
+                source_record_source_item_supported_identity_sha256s(
+                    changed_selected_component, ""
+                )
+            ),
+            2,
+        )
 
         substantive_changes: dict[str, dict[str, object]] = {}
         changed_contract = deepcopy(item)
@@ -1795,24 +2660,6 @@ class SourceCoverageScopeTests(unittest.TestCase):
         assert isinstance(atoms, list) and isinstance(atoms[0], dict)
         atoms[0]["semantic_claim"] = "Every admissible allocation has a different witness."
         substantive_changes["source atom"] = changed_atoms
-
-        changed_binding = deepcopy(item)
-        binding_correspondence = changed_binding["source_spec_correspondence"]
-        assert isinstance(binding_correspondence, dict)
-        bindings = binding_correspondence["source_atom_bindings"]
-        assert isinstance(bindings, list) and isinstance(bindings[0], dict)
-        bindings[0]["semantic_bridge"] = "The Spec has a different source meaning."
-        substantive_changes["source-atom binding"] = changed_binding
-
-        changed_disposition = deepcopy(item)
-        disposition_correspondence = changed_disposition["source_spec_correspondence"]
-        assert isinstance(disposition_correspondence, dict)
-        dispositions = disposition_correspondence["closure_node_dispositions"]
-        assert isinstance(dispositions, list) and isinstance(dispositions[0], dict)
-        basis = dispositions[0]["semantic_basis"]
-        assert isinstance(basis, dict)
-        basis["semantic_statement"] = "The closure node proves a different endpoint."
-        substantive_changes["closure disposition"] = changed_disposition
 
         changed_unknown = deepcopy(item)
         unknown_correspondence = changed_unknown["source_spec_correspondence"]
@@ -1850,7 +2697,7 @@ class SourceCoverageScopeTests(unittest.TestCase):
     def test_raw_source_record_identity_fails_closed_for_malformed_correspondence(
         self,
     ) -> None:
-        """Only a structurally valid correspondence permits derived-field omission."""
+        """Only a structurally valid correspondence permits lane separation."""
 
         item: dict[str, object] = {
             "source_kind": "theorem",
@@ -1904,6 +2751,62 @@ class SourceCoverageScopeTests(unittest.TestCase):
                 self.assertNotEqual(changed_identity[0], original[0])
                 self.assertNotEqual(changed_identity[1], original[1])
                 self.assertNotEqual(changed_identity[2], original[2])
+
+    def test_human_review_identity_separates_exact_correspondence_receipts(self) -> None:
+        item: dict[str, object] = {
+            "source_kind": "theorem",
+            "statement": "Every admissible allocation has the stated witness.",
+            "source_spec_correspondence": {
+                "schema": 1,
+                "source_atoms_sha256": "a" * 64,
+                "spec_closure_sha256": "b" * 64,
+                "spec_surface_sha256": "c" * 64,
+                "closure_environment_sha256": "d" * 64,
+                "item_identity_sha256": "e" * 64,
+                "source_atom_bindings": [
+                    {
+                        "source_atom_sha256": "f" * 64,
+                        "spec_component_sha256s": ["1" * 64],
+                        "semantic_bridge": "The Spec is the source endpoint.",
+                    }
+                ],
+                "closure_node_dispositions": [],
+            },
+        }
+        original_raw = source_record_source_item_semantic_sha256(item, "")
+        original_review = source_record_human_review_semantic_sha256(item, "")
+
+        refreshed = deepcopy(item)
+        correspondence = refreshed["source_spec_correspondence"]
+        assert isinstance(correspondence, dict)
+        correspondence["spec_closure_sha256"] = "9" * 64
+        bindings = correspondence["source_atom_bindings"]
+        assert isinstance(bindings, list) and isinstance(bindings[0], dict)
+        bindings[0]["semantic_bridge"] = "A refreshed exact correspondence explanation."
+        self.assertEqual(
+            source_record_source_item_semantic_sha256(refreshed, ""), original_raw
+        )
+        self.assertEqual(
+            source_record_human_review_semantic_sha256(refreshed, ""), original_review
+        )
+
+        changed_source = deepcopy(refreshed)
+        changed_source["statement"] = "Every admissible allocation has another witness."
+        self.assertNotEqual(
+            source_record_human_review_semantic_sha256(changed_source, ""),
+            original_review,
+        )
+
+        future_correspondence = deepcopy(refreshed)
+        future = future_correspondence["source_spec_correspondence"]
+        assert isinstance(future, dict)
+        future["future_semantic_field"] = "unrecognized"
+        self.assertNotEqual(
+            source_record_human_review_semantic_sha256(
+                future_correspondence, ""
+            ),
+            original_review,
+        )
 
     def test_raw_cache_map_receipt_pins_coverage_protocol_only(self) -> None:
         source_map = {
@@ -2154,6 +3057,23 @@ class SourceCoverageScopeTests(unittest.TestCase):
         self.assertTrue(dependency_policy["allows_direct_route"])
         self.assertFalse(dependency_policy["allows_source_model_convention_route"])
 
+    def test_resolved_conjecture_is_inventory_not_unresolved_open_debt(self) -> None:
+        item = {
+            "source_kind": "open_problem",
+            "claim_bearing": False,
+            "source_scope_classification": (
+                "source_resolved_within_paper_observation"
+            ),
+            "coverage_status": "subsumed_by_selected_result",
+            "protocol_role": "subsumed_by_selected_result",
+            "subsumed_by_source_item": "theorem_3_1",
+        }
+
+        policy = source_item_effective_route_policy(item)
+
+        self.assertTrue(policy["is_source_resolved_within_paper"])
+        self.assertFalse(policy["allows_direct_route"])
+
     def test_map_key_rename_reopens_aggregate_discovery_not_item_judgment(self) -> None:
         item = {
             "title": "Theorem 3",
@@ -2340,8 +3260,32 @@ class SourceCoverageScopeTests(unittest.TestCase):
             NAMED_THEORETICAL_STATEMENTS,
         )
         self.assertFalse(cheap_summary["needs_attention"])
-        self.assertTrue(full_summary["stale_inventory"])
+        self.assertFalse(full_summary["stale_inventory"])
         self.assertTrue(full_summary["stale_surface"])
+        for field in (
+            "missing_coverage",
+            "extra_coverage",
+            "out_of_mode_coverage",
+            "missing_statement_digest",
+            "stale_statement",
+            "stale_source_items",
+            "unverified_reused_source_items",
+            "semantic_reuse_source_anchor_errors",
+            "legacy_unpinned_items",
+        ):
+            self.assertEqual(
+                cheap_summary[field],
+                full_summary[field],
+                f"fast and full coverage consumers diverged on {field}",
+            )
+        self.assertEqual(
+            cheap_summary["source_artifact_current"],
+            full_summary["source_artifact_current"],
+        )
+        self.assertEqual(
+            cheap_summary["source_coverage_mode_mismatch"],
+            full_summary["source_coverage_mode_mismatch"],
+        )
         self.assertEqual(full_summary["semantic_item_rebinding_count"], 1)
         self.assertEqual(
             full_summary["semantic_item_rebindings"],

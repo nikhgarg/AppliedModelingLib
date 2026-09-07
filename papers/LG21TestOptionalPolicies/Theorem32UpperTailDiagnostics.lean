@@ -12,8 +12,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 
 /--
 Optional-reporting upper-tail source models fail pointwise source equilibrium at

@@ -1,0 +1,149 @@
+{
+  "artifacts": {
+    "assumptions": "papers/MendelsonWhang1990PriorityPricing/Assumptions.lean",
+    "dependency_dag_pdf": "papers/MendelsonWhang1990PriorityPricing/docs/DependencyDAG.pdf",
+    "dependency_dag_tex": "papers/MendelsonWhang1990PriorityPricing/docs/DependencyDAG.tex",
+    "final_validation_report": "papers/MendelsonWhang1990PriorityPricing/FINAL_VALIDATION_REPORT.md",
+    "human_review_packet_pdf": "papers/MendelsonWhang1990PriorityPricing/docs/HUMAN_REVIEW_PACKET.pdf",
+    "human_review_packet_tex": "papers/MendelsonWhang1990PriorityPricing/docs/HUMAN_REVIEW_PACKET.tex",
+    "library_semantic_review": "papers/MendelsonWhang1990PriorityPricing/audit/library_semantic_review.json",
+    "paper_interface": "papers/MendelsonWhang1990PriorityPricing/PaperInterface.lean",
+    "proof_interface": "papers/MendelsonWhang1990PriorityPricing/ProofInterface.lean",
+    "source_pdf": "papers/MendelsonWhang1990PriorityPricing/cited publication",
+    "source_proof_fidelity": "papers/MendelsonWhang1990PriorityPricing/audit/source_proof_fidelity.json",
+    "source_text": "papers/MendelsonWhang1990PriorityPricing/cited publication",
+    "v11_raw_source_spec_screening": "papers/MendelsonWhang1990PriorityPricing/audit/v11_raw_source_spec_screening.json"
+  },
+  "authors": "Haim Mendelson and Seungjin Whang",
+  "build_target": "lake build +MendelsonWhang1990PriorityPricing",
+  "human_review": {
+    "mismatch_rows": 0,
+    "reviewed_rows": 0,
+    "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
+    "stale_rows": 0,
+    "total_rows": 5,
+    "uncertain_rows": 0
+  },
+  "human_summary": "Formalizes finite-class stationary queueing, externality pricing, priority incentives, and cheating penalties on the stated positive-flow domains. Theorem 3 jointly compares stable flow vectors and priority schedules, rather than extending a stationary welfare formula to unstable queues.",
+  "human_summary_review": {
+    "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction.",
+    "status": "draft"
+  },
+  "id": "MendelsonWhang1990PriorityPricing",
+  "main_caveat": "Theorem 1 uses a selected positive optimal-flow coordinate; Theorems 2 and 4 use full-positive stationary class flows for their strict conclusions. Theorem 3's welfare comparison is restricted to stable priority queues, the source's stationary domain. See docs/SOURCE_CLARIFICATIONS.md.",
+  "paper_interface": {
+    "declaration_rows": 11,
+    "line_count": 303,
+    "maintainability_issue": null,
+    "oversized": false,
+    "path": "papers/MendelsonWhang1990PriorityPricing/PaperInterface.lean",
+    "review_rows": 5
+  },
+  "repository_visibility": "public",
+  "review_entrypoint": "papers/MendelsonWhang1990PriorityPricing/FINAL_VALIDATION_REPORT.md",
+  "review_surface": {
+    "assumption_names": [],
+    "assumption_policy": "strict",
+    "assumption_source_file": "papers/MendelsonWhang1990PriorityPricing/Assumptions.lean",
+    "include_names": [
+      "theoremOneExternalityPricingSpec",
+      "appendixPriorityQueueingTimeSpec",
+      "theoremTwoPriorityIncentiveCompatibilitySpec",
+      "theoremThreePriorityTimeDependentPricingSpec",
+      "theoremFourCheatingPenaltyMonotonicitySpec"
+    ],
+    "llm_assumption_review": {
+      "assumption_judgment_file": "papers/MendelsonWhang1990PriorityPricing/audit/assumption_match_llm.json",
+      "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
+    },
+    "llm_paper_coverage_review": {
+      "defect_support_judgment_file": "papers/MendelsonWhang1990PriorityPricing/audit/defect_support_match_llm.json",
+      "paper_coverage_audit_file": "papers/MendelsonWhang1990PriorityPricing/audit/paper_coverage_llm.json",
+      "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. If coverage uses a reusable library declaration, it must route through an audited paper-local semantic bridge/equivalence row; matching by Lean/library/source names is not semantic evidence. Quarantined source defects require a separate exact-hash semantic judgment binding each candidate counterexample/refutation theorem to the validated defect record and every elaborated signature atom. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
+    },
+    "llm_source_record_review": {
+      "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt.",
+      "source_record_audit_file": "papers/MendelsonWhang1990PriorityPricing/audit/source_record_audit.json",
+      "source_record_judgment_file": "papers/MendelsonWhang1990PriorityPricing/audit/source_record_match_llm.json"
+    },
+    "llm_statement_review": {
+      "assumption_judgment_file": "papers/MendelsonWhang1990PriorityPricing/audit/assumption_match_llm.json",
+      "defect_support_judgment_file": "papers/MendelsonWhang1990PriorityPricing/audit/defect_support_match_llm.json",
+      "lean_to_tex_file": "papers/MendelsonWhang1990PriorityPricing/audit/lean_to_tex_llm.json",
+      "library_semantic_review_file": "papers/MendelsonWhang1990PriorityPricing/audit/library_semantic_review.json",
+      "match_judgment_file": "papers/MendelsonWhang1990PriorityPricing/audit/statement_match_llm.json",
+      "paper_coverage_audit_file": "papers/MendelsonWhang1990PriorityPricing/audit/paper_coverage_llm.json",
+      "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
+      "require_direct_expression_semantics_review": "v1",
+      "require_explicit_source_routes": true,
+      "require_source_claim_atoms": true,
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+      "review_surface_audit_file": "papers/MendelsonWhang1990PriorityPricing/audit/review_surface_llm.json",
+      "surface_audit_threshold": 30,
+      "surface_warning_threshold": 120,
+      "v11_screening_file": "papers/MendelsonWhang1990PriorityPricing/audit/v11_raw_source_spec_screening.json"
+    },
+    "paper_coverage_required": true,
+    "proof_file": "papers/MendelsonWhang1990PriorityPricing/ProofInterface.lean",
+    "proof_module": "MendelsonWhang1990PriorityPricing.ProofInterface",
+    "proposition_spec_proofs": {
+      "appendixPriorityQueueingTimeSpec": "appendixPriorityQueueingTime",
+      "theoremFourCheatingPenaltyMonotonicitySpec": "theoremFourCheatingPenaltyMonotonicity",
+      "theoremOneExternalityPricingSpec": "theoremOneExternalityPricing",
+      "theoremThreePriorityTimeDependentPricingSpec": "theoremThreePriorityTimeDependentPricing",
+      "theoremTwoPriorityIncentiveCompatibilitySpec": "theoremTwoPriorityIncentiveCompatibility"
+    },
+    "require_source_spec_correspondence": true,
+    "require_v11_raw_source_spec_screening": true,
+    "semantic_model_review": {
+      "policy": "For every reviewed row, preserve an alpha-normalized expanded binder/domain surface, including transparent local type aliases, record parameter domains, and model records reached only in result quantifiers. An unexpanded local opaque/constant type requires a checked carrier/refinement bridge rather than being silently treated as an ordinary carrier. When an expanded finite carrier uses index arithmetic such as Fin (n + c), record the source cardinal parameter, the expanded Lean expression, and a proved parameter translation; then explicitly compare it with pinned source text. Review endpoint support/cutoffs, product or iid laws versus source state evolution, conditioning/calibration semantics, expectation definedness, null-cell totalization and finite/countable/arbitrary partition scope, and Real versus extended-rate codomains when the expanded model makes them relevant. For a probability-law surface, state whether conditioning is pointwise, a.e., positive-fiber, or event-calibrated; state measurability/integrability or extended-value conventions for every expectation; and expose every zero-mass-cell branch. Local declaration and binder names are routing only; detected probability/rate shapes need a checked bridge from source primitives. Because this scaffold enables explicit v10 source routes, every full closeout requires current source-record semantic-model judgments for every generated row; an unresolved model dimension blocks both full statuses.",
+      "required_dimensions": [
+        "expanded_binders_and_domain",
+        "carrier_and_domain",
+        "probability_support_endpoints",
+        "joint_law_and_state_evolution",
+        "conditioning_and_calibration_semantics",
+        "expectation_definedness",
+        "null_cell_totalization_and_partition_scope",
+        "extended_rate_codomain"
+      ],
+      "schema": 2
+    },
+    "slices": [
+      {
+        "id": "main_text",
+        "names": [
+          "theoremOneExternalityPricingSpec",
+          "theoremTwoPriorityIncentiveCompatibilitySpec",
+          "theoremFourCheatingPenaltyMonotonicitySpec"
+        ],
+        "title": "Main-paper results"
+      },
+      {
+        "id": "appendix",
+        "names": [
+          "appendixPriorityQueueingTimeSpec"
+        ],
+        "title": "Appendix results"
+      },
+      {
+        "id": "additional_source_results",
+        "names": [
+          "theoremThreePriorityTimeDependentPricingSpec"
+        ],
+        "title": "Additional source results"
+      }
+    ],
+    "source_definition_names": [],
+    "source_file": "papers/MendelsonWhang1990PriorityPricing/PaperInterface.lean",
+    "source_proof_fidelity_review": {
+      "ledger_file": "papers/MendelsonWhang1990PriorityPricing/audit/source_proof_fidelity.json",
+      "policy": "Audit source proof steps by source locator and mathematical claim, not by Lean declaration name. Completed papers use ledger schema 2. Every defect records status_impact as formalized_note, formalized_with_caveat, or partially_formalized plus a semantic rationale. Minor repairs with an unchanged substantive endpoint are notes; formalized with caveat is reserved for a substantial central source-paper error with a fully proved corrected endpoint; weaker Lean targets and added non-source assumptions are partial. Keep this configured ledger whenever explicit source routes or source-defect links are present; a formalized note cannot waive an added non-source assumption or a partial boundary."
+    }
+  },
+  "schema": 1,
+  "source_inventory_review_required": true,
+  "source_version": "Operations Research 38(5), September--October 1990, pp. 870--883",
+  "status": "formalized",
+  "title": "Optimal Incentive-Compatible Priority Pricing for the M/M/1 Queue"
+}

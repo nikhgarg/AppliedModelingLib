@@ -1,6 +1,6 @@
 import KR21Monoculture.Theorem1
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 namespace AccuracyFamily
@@ -35,14 +35,14 @@ theorem exists_positive_mass_firstChoice_ne_centerFirst_of_prefersIndependent
     exact hexists ⟨pi, hmass, hne⟩
   have hmiss_center : firstChoiceMissProb mu (firstChoice center) = 0 := by
     rw [firstChoiceMissProb_eq_pmfProb_ne]
-    apply EconCSLib.pmfProb_eq_zero_of_no_mass
+    apply AppliedModelingLib.pmfProb_eq_zero_of_no_mass
     intro pi hpi
     by_cases hmass : 0 < (mu pi).toReal
     · exact False.elim (hpi (hsupport pi hmass).symm)
     · exact le_antisymm (le_of_not_gt hmass) ENNReal.toReal_nonneg
   have hgain_zero : expectedRerankingGain mu value = 0 := by
     rw [expectedRerankingGain_eq_expect_missProb_mul_gap]
-    unfold EconCSLib.pmfExp
+    unfold AppliedModelingLib.pmfExp
     refine Finset.sum_eq_zero ?_
     intro pi _
     by_cases hmass : (mu pi).toReal = 0
@@ -80,7 +80,7 @@ theorem expected_human_against_pureCenter_lt_pureCenter_payoff_of_positive_top_e
             value (firstChoice sigma) +
               value (bestRemainingAfter sigma (firstChoice center))) <
         value (firstChoice center) + value (secondChoice center) := by
-    refine EconCSLib.pmfExp_lt_of_forall_le_exists_lt mu
+    refine AppliedModelingLib.pmfExp_lt_of_forall_le_exists_lt mu
       (fun sigma =>
         value (firstChoice sigma) +
           value (bestRemainingAfter sigma (firstChoice center)))

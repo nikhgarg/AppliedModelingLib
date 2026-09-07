@@ -1,1 +1,2 @@
 import PKG25NoFreeLunch.PaperInterface
+import PKG25NoFreeLunch.ProofInterface

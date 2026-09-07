@@ -1,5 +1,5 @@
 import PRPKG24AccuracyDiversity.MainTheorems
-import EconCSLib.Foundations.Probability.BinaryRatingLDP
+import AppliedModelingLib.Applications.RatingSystems.BinaryLargeDeviations
 
 /-!
 # Corollary 1 Source-IID Witnesses
@@ -24,8 +24,8 @@ noncomputable def corollary1FiniteTwoPointBernoulliSourceIidModel {T : ℕ}
     (hq_nonneg : 0 ≤ q) (hq_le_one : q ≤ 1) : ConsumptionModel T :=
   (TopKValueOracle.common T
     (finiteDiscreteIidTopKExpected Bool
-      (EconCSLib.Probability.realBernoulliPMF q hq_nonneg hq_le_one)
-      k EconCSLib.Probability.binaryRatingScore)).toConsumptionModel
+      (AppliedModelingLib.Probability.realBernoulliPMF q hq_nonneg hq_le_one)
+      k AppliedModelingLib.Probability.binaryRatingScore)).toConsumptionModel
         likelihood k
 
 /--
@@ -52,17 +52,17 @@ theorem paper_corollary1_finite_discrete_bernoulli_top_k_gamma_zero_sequence_for
           ((likelihood t) ^ (0 : ℝ) /
             ∑ i : ItemType T, (likelihood i) ^ (0 : ℝ))) := by
   let itemLaw : PMF Bool :=
-    EconCSLib.Probability.realBernoulliPMF q hq_pos.le hq_lt_one.le
+    AppliedModelingLib.Probability.realBernoulliPMF q hq_pos.le hq_lt_one.le
   have htop_mass :
-      EconCSLib.pmfProb itemLaw
-          (fun b => EconCSLib.Probability.binaryRatingScore b = (1 : ℝ)) = q := by
+      AppliedModelingLib.pmfProb itemLaw
+          (fun b => AppliedModelingLib.Probability.binaryRatingScore b = (1 : ℝ)) = q := by
     simpa [itemLaw] using
-      EconCSLib.Probability.realBernoulliPMF_binaryRatingScore_one_prob q
+      AppliedModelingLib.Probability.realBernoulliPMF_binaryRatingScore_one_prob q
         hq_pos.le hq_lt_one.le
   have hnontop_mass :
-      0 < EconCSLib.pmfProb itemLaw
-          (fun b => ¬ EconCSLib.Probability.binaryRatingScore b = (1 : ℝ)) := by
-    rw [EconCSLib.pmfProb_compl]
+      0 < AppliedModelingLib.pmfProb itemLaw
+          (fun b => ¬ AppliedModelingLib.Probability.binaryRatingScore b = (1 : ℝ)) := by
+    rw [AppliedModelingLib.pmfProb_compl]
     rw [htop_mass]
     linarith
   have hconv :
@@ -70,14 +70,14 @@ theorem paper_corollary1_finite_discrete_bernoulli_top_k_gamma_zero_sequence_for
     simpa [corollary1FiniteTwoPointBernoulliSourceIidModel, itemLaw] using
       paper_theorem1_i_finite_discrete_sequence_homogeneity_of_iid_top_split
         (xTop := 1) (xSecond := 0)
-        itemLaw EconCSLib.Probability.binaryRatingScore likelihood k seq hk_pos
+        itemLaw AppliedModelingLib.Probability.binaryRatingScore likelihood k seq hk_pos
         (by norm_num) (by norm_num) (by norm_num) (by norm_num)
         (by
           intro b
-          cases b <;> simp [EconCSLib.Probability.binaryRatingScore])
+          cases b <;> simp [AppliedModelingLib.Probability.binaryRatingScore])
         (by
           intro b
-          cases b <;> simp [EconCSLib.Probability.binaryRatingScore])
+          cases b <;> simp [AppliedModelingLib.Probability.binaryRatingScore])
         (by rw [htop_mass]; exact hq_pos)
         hnontop_mass hlike_pos
   intro t

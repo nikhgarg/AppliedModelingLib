@@ -12,7 +12,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- The literal source-timed optional protocol satisfies the two fairness
 claims of Theorem 4.4 for the actual Definition 6 resampling policy.  The

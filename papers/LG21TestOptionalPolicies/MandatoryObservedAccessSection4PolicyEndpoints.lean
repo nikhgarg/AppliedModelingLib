@@ -21,7 +21,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- A source-derived Definition 6 experiment.  The witness keeps the
 full-base Gaussian factorization, the actual positive-access base/score law,

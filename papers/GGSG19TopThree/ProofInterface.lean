@@ -8,8 +8,8 @@ namespace GGSG19TopThree
 
 namespace PaperInterface
 
-open EconCSLib.SocialChoice.Ranking
-open EconCSLib.Probability
+open AppliedModelingLib.SocialChoice.Ranking
+open AppliedModelingLib.Probability
 open MeasureTheory
 open scoped ProbabilityTheory
 open GGSG19TopThree.ProofBridge
@@ -60,7 +60,7 @@ theorem source_proposition2_thm_pairwiselearning_finite_support
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) : source_proposition2_thm_pairwiselearning_finite_supportSpec (Signal := Signal) (law := law) (hiScore := hiScore) (loScore := loScore) (hmean := hmean) := by
   exact GGSG19TopThree.ProofBridge.source_proposition2_thm_pairwiselearning_finite_support (Signal := Signal) (law := law) (hiScore := hiScore) (loScore := loScore) (hmean := hmean)
 
@@ -75,15 +75,15 @@ theorem source_proposition3_lem_pairwiselearning_approval_finite_ternary
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     (hZeroProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         pZero) : source_proposition3_lem_pairwiselearning_approval_finite_ternarySpec (Signal := Signal) (law := law) (hiScore := hiScore) (loScore := loScore) (pUp := pUp) (pDown := pDown) (pZero := pZero) (hle := hle) (hscore := hscore) (hUpProb := hUpProb) (hDownProb := hDownProb) (hZeroProb := hZeroProb) := by
   exact GGSG19TopThree.ProofBridge.source_proposition3_lem_pairwiselearning_approval_finite_ternary (Signal := Signal) (law := law) (hiScore := hiScore) (loScore := loScore) (pUp := pUp) (pDown := pDown) (pZero := pZero) (hle := hle) (hscore := hscore) (hUpProb := hUpProb) (hDownProb := hDownProb) (hZeroProb := hZeroProb)
@@ -95,16 +95,9 @@ theorem source_proposition4_thm_goal_learning_exact_minimum_rate
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
-          (fun signal => score (hi pair) signal - score (lo pair) signal))
-    (aPos aNeg : Pair → Signal)
-    (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
-    (hgapPos :
-      ∀ pair, 0 < score (hi pair) (aPos pair) - score (lo pair) (aPos pair))
-    (hmassNeg : ∀ pair, 0 < (law (aNeg pair)).toReal)
-    (hgapNeg :
-      ∀ pair, score (hi pair) (aNeg pair) - score (lo pair) (aNeg pair) < 0) : source_proposition4_thm_goal_learning_exact_minimum_rateSpec (Pair := Pair) (Candidate := Candidate) (Signal := Signal) (law := law) (score := score) (hi := hi) (lo := lo) (hmean := hmean) (aPos := aPos) (aNeg := aNeg) (hmassPos := hmassPos) (hgapPos := hgapPos) (hmassNeg := hmassNeg) (hgapNeg := hgapNeg) := by
-  exact GGSG19TopThree.ProofBridge.source_proposition4_thm_goal_learning_exact_minimum_rate (Pair := Pair) (Candidate := Candidate) (Signal := Signal) (law := law) (score := score) (hi := hi) (lo := lo) (hmean := hmean) (aPos := aPos) (aNeg := aNeg) (hmassPos := hmassPos) (hgapPos := hgapPos) (hmassNeg := hmassNeg) (hgapNeg := hgapNeg)
+        0 ≤ AppliedModelingLib.pmfExp law
+          (fun signal => score (hi pair) signal - score (lo pair) signal)) : source_proposition4_thm_goal_learning_exact_minimum_rateSpec (Pair := Pair) (Candidate := Candidate) (Signal := Signal) (law := law) (score := score) (hi := hi) (lo := lo) (hmean := hmean) := by
+  exact GGSG19TopThree.ProofBridge.source_proposition4_thm_goal_learning_exact_minimum_rate (Pair := Pair) (Candidate := Candidate) (Signal := Signal) (law := law) (score := score) (hi := hi) (lo := lo) (hmean := hmean)
 
 theorem source_proposition4_thm_goal_learning_finite_sample_M_sq_bound
     {Pair Candidate Signal : Type*} [Fintype Pair] [Nonempty Pair]
@@ -113,18 +106,11 @@ theorem source_proposition4_thm_goal_learning_finite_sample_M_sq_bound
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score (hi pair) signal - score (lo pair) signal))
-    {aPos aNeg : Pair → Signal}
-    (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
-    (hgapPos :
-      ∀ pair, 0 < score (hi pair) (aPos pair) - score (lo pair) (aPos pair))
-    (hmassNeg : ∀ pair, 0 < (law (aNeg pair)).toReal)
-    (hgapNeg :
-      ∀ pair, score (hi pair) (aNeg pair) - score (lo pair) (aNeg pair) < 0)
     (hcard : Fintype.card Pair ≤ Fintype.card Candidate ^ 2)
-    (n : ℕ) : source_proposition4_thm_goal_learning_finite_sample_M_sq_boundSpec (Pair := Pair) (Candidate := Candidate) (Signal := Signal) (law := law) (score := score) (hi := hi) (lo := lo) (hmean := hmean) (aPos := aPos) (aNeg := aNeg) (hmassPos := hmassPos) (hgapPos := hgapPos) (hmassNeg := hmassNeg) (hgapNeg := hgapNeg) (hcard := hcard) (n := n) := by
-  exact GGSG19TopThree.ProofBridge.source_proposition4_thm_goal_learning_finite_sample_M_sq_bound (Pair := Pair) (Candidate := Candidate) (Signal := Signal) (law := law) (score := score) (hi := hi) (lo := lo) (hmean := hmean) (aPos := aPos) (aNeg := aNeg) (hmassPos := hmassPos) (hgapPos := hgapPos) (hmassNeg := hmassNeg) (hgapNeg := hgapNeg) (hcard := hcard) (n := n)
+    (n : ℕ) : source_proposition4_thm_goal_learning_finite_sample_M_sq_boundSpec (Pair := Pair) (Candidate := Candidate) (Signal := Signal) (law := law) (score := score) (hi := hi) (lo := lo) (hmean := hmean) (hcard := hcard) (n := n) := by
+  exact GGSG19TopThree.ProofBridge.source_proposition4_thm_goal_learning_finite_sample_M_sq_bound (Pair := Pair) (Candidate := Candidate) (Signal := Signal) (law := law) (score := score) (hi := hi) (lo := lo) (hmean := hmean) (hcard := hcard) (n := n)
 
 theorem source_theorem1_lem_randomizebetterscoring_arbitrary_goal
     {Pair Rule Signal : Type*} [Fintype Pair] [Nonempty Pair]

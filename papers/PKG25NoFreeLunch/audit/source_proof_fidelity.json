@@ -4,28 +4,28 @@
       "checked_conclusion": "The raw joint-law mixture scales every measurable embedded input-label event by its component weight, preserves predictors on that component, preserves each agent accuracy, and preserves strategy accuracy when the source expectation is well formed.",
       "id": "PKG25-P6-FULL-JOINT-MIXTURE-01",
       "scope": "This is an event-level full-joint-law statement; it deliberately does not assert a nonexistent pointwise conditional-label equality on arbitrary null fibers.",
-      "source_locator": "cited publication:123-144",
+      "source_locator": "audit/cited publication:100-120",
       "source_step": "Form the disjoint-union mixture of collaboration settings and obtain the two displayed componentwise accuracy equations."
     },
     {
       "checked_conclusion": "For each of the three source finite witnesses, Lean defines the exact cell map, constructs its predictor from the raw finite input-label PMF, and proves pointwise equality with the witness predictor used in the calibration and strict-gap arguments.",
       "id": "PKG25-FINITE-WITNESS-PARTITION-REALIZATION-01",
       "scope": "This closes construction provenance for every finite partition actually used by the proof. It does not extend the separate generic partition paragraph beyond finite measurable cell maps.",
-      "source_locator": "cited publication:198-247; cited publication:283-292; cited publication:314-340",
+      "source_locator": "audit/cited publication:173-233; audit/cited publication:248-256; audit/cited publication:263-300",
       "source_step": "Use the displayed agent-dependent finite partitions in Lemma 8 and in both Proposition 9 settings to obtain the advertised predictors as conditional label-one probabilities of their cells."
     },
     {
       "checked_conclusion": "From the negation of fixed off-half deferral, the checked construction chooses one interior bad tuple per agent, forms the literal uniform finite mixture, and embeds it as a raw joint-law setting on which strategy accuracy is strictly below every agent accuracy.",
       "id": "PKG25-P7-UNIFORM-STRICT-MIXTURE-01",
       "scope": "This closes the strict uniform-mixture inequality itself, rather than relying only on a later reliability conclusion.",
-      "source_locator": "cited publication:176-184",
+      "source_locator": "audit/cited publication:152-160",
       "source_step": "Average one Lemma 8 setting per agent with weight 1/n and infer that every agent strictly beats the strategy."
     },
     {
       "checked_conclusion": "The checked construction uses the concrete weights 7/8 for S1 and 1/8 for S2, proves both componentwise accuracy equations, and proves the resulting raw joint-law setting has strategy accuracy strictly below every agent accuracy.",
       "id": "PKG25-P9-EXPLICIT-STRICT-MIXTURE-01",
       "scope": "This closes the source's existential close-enough argument with one explicit rational witness.",
-      "source_locator": "cited publication:341-351",
+      "source_locator": "audit/cited publication:302-311",
       "source_step": "Take lambda sufficiently close to one when mixing S1 and S2 so that every agent strictly beats the strategy."
     }
   ],
@@ -33,8 +33,8 @@
     {
       "acceptance_condition": "Lean defines both pointwise quantities and proves expected correctness equals one minus expected 0-1 loss for each binary prediction and conditional label probability.",
       "affected_source_locators": [
-        "cited publication:27-30",
-        "cited publication:45-48"
+        "audit/cited publication:3-6",
+        "audit/cited publication:21-24"
       ],
       "defect_kind": "normalization_or_scaling",
       "id": "PKG25-ACCURACY-LOSS-01",
@@ -42,7 +42,7 @@
       "resolution": "corrected_source_statement",
       "resolution_evidence": "The checked source-facing correction proves the complement identity by cases on the binary prediction; the model and all witness accuracies use expected correctness.",
       "source_claim": "The source labels E[|Yhat(X)-Y|] as 0-1 accuracy, although this expectation is 0-1 loss; the later agent formula and proof use expected correctness.",
-      "source_locator": "cited publication:27-30",
+      "source_locator": "audit/cited publication:3-6",
       "statement_impact": "source_statement",
       "status_impact": "formalized_note",
       "status_impact_rationale": "This is a local terminology/complement typo. Replacing the opening quantity by one minus the displayed loss agrees with the subsequent individual-accuracy formula and leaves every advertised result unchanged."
@@ -50,8 +50,8 @@
     {
       "acceptance_condition": "The report identifies event calibration as the accepted source reading, and Lean proves calibration and accuracy from that exact model.",
       "affected_source_locators": [
-        "cited publication:31-42",
-        "cited publication:151-156"
+        "audit/cited publication:7-19",
+        "audit/cited publication:127-132"
       ],
       "defect_kind": "event_or_measure",
       "id": "PKG25-CALIBRATION-NULL-FIBERS-01",
@@ -59,7 +59,7 @@
       "resolution": "corrected_source_statement",
       "resolution_evidence": "The current raw model makes the event identity explicit and proves the agent-accuracy formula. The report records the user-approved interpretation rather than claiming a selected conditional version on every null fiber.",
       "source_claim": "Calibration is written as a point-conditioned equality for every p in Image(P), without defining a conditional probability on a zero-probability prediction fiber.",
-      "source_locator": "cited publication:31-35",
+      "source_locator": "audit/cited publication:7-11",
       "statement_impact": "source_statement",
       "status_impact": "formalized_note",
       "status_impact_rationale": "The source wording is under-specified on null prediction fibers, but the user approved the event-calibration reading as the formal source model. Lean proves calibration and the advertised accuracy formula in that explicit model."
@@ -67,7 +67,7 @@
     {
       "acceptance_condition": "Lean checks equal point accuracies for the paper's correct and incorrect labels at eta=1/2, and separately derives a strict gap from correctness, incorrectness, and eta not equal to 1/2.",
       "affected_source_locators": [
-        "cited publication:104-117"
+        "audit/cited publication:83-94"
       ],
       "defect_kind": "domain_or_endpoint",
       "id": "PKG25-CORRECTNESS-TIE-01",
@@ -75,7 +75,7 @@
       "resolution": "corrected_source_statement",
       "resolution_evidence": "The checked interface contains both the half-tie counterexample and the repaired strict-gap statement; the Lemma 8 witness proves its strict comparisons directly rather than using the defective unrestricted sentence.",
       "source_claim": "The proof preliminaries claim that one positive-mass point where classifier i is correct and classifier j is incorrect always makes i strictly more accurate than j.",
-      "source_locator": "cited publication:104-117",
+      "source_locator": "audit/cited publication:83-94",
       "statement_impact": "source_statement",
       "status_impact": "formalized_note",
       "status_impact_rationale": "At conditional label probability one half, the tie convention names one label correct and the other incorrect although both have accuracy one half. Adding the omitted non-tie condition repairs the observation, and later witness cells that use strict correctness have conditional label probability zero or one."
@@ -83,7 +83,7 @@
     {
       "acceptance_condition": "The checked mixture uses one nonnegative weight per component, proves that the weights sum to one, and derives both displayed accuracy equations with the same component index.",
       "affected_source_locators": [
-        "cited publication:123-144"
+        "audit/cited publication:100-120"
       ],
       "defect_kind": "index_or_integrality",
       "id": "PKG25-P6-MIXTURE-INDEX-01",
@@ -91,7 +91,7 @@
       "resolution": "repaired_in_lean",
       "resolution_evidence": "The raw mixture is defined by the component weight at the sampled component, proves measurable embedded joint-event scaling by that weight, and derives the agent and strategy linearity equations.",
       "source_claim": "After defining the component law with lambda_m in the displayed equation, the prose says to sample component m with probability lambda_ell.",
-      "source_locator": "cited publication:123-144",
+      "source_locator": "audit/cited publication:100-120",
       "statement_impact": "proof_only",
       "status_impact": "formalized_note",
       "status_impact_rationale": "The componentwise displayed equations unambiguously use lambda_m, so this is a one-symbol prose typo and does not change the mixture theorem or its use later in the proof."
@@ -99,9 +99,9 @@
     {
       "acceptance_condition": "Lean proves the finite raw-law partition construction and the exact Lemma 8 and Proposition 9 source cell maps under the accepted totalization.",
       "affected_source_locators": [
-        "cited publication:151-156",
-        "cited publication:197-264",
-        "cited publication:280-340"
+        "audit/cited publication:127-132",
+        "audit/cited publication:162-233",
+        "audit/cited publication:248-300"
       ],
       "defect_kind": "event_or_measure",
       "id": "PKG25-PARTITION-MEASURABLE-FINITE-01",
@@ -109,7 +109,7 @@
       "resolution": "corrected_source_statement",
       "resolution_evidence": "The current direct raw-law construction proves event calibration for finite measurable cell maps, assigns zero to a null cell, and proves that every source witness partition yields its displayed predictor. The report records this user-approved scope convention.",
       "source_claim": "The source says that an arbitrary partition induces a calibrated predictor by assigning every cell its conditional label-one probability, without measurability, null-cell, or finiteness conditions.",
-      "source_locator": "cited publication:151-156",
+      "source_locator": "audit/cited publication:127-132",
       "statement_impact": "source_statement",
       "status_impact": "formalized_note",
       "status_impact_rationale": "The source does not spell out measurability or a null-cell value, but the user approved the finite measurable, zero-cell totalization used by every source witness as the formal source reading."
@@ -117,8 +117,8 @@
     {
       "acceptance_condition": "Lean proves the forward theorem under the explicit raw joint-law event-calibration convention and constructs a finite calibrated one-agent setting on which an interior-non-collaborative boundary-flipping strategy has agent accuracy one and strategy accuracy zero.",
       "affected_source_locators": [
-        "cited publication:66-83",
-        "cited publication:159-172"
+        "audit/cited publication:42-54",
+        "audit/cited publication:135-148"
       ],
       "defect_kind": "logical_dependency",
       "id": "PKG25-IFF-BOUNDARY-01",
@@ -126,7 +126,7 @@
       "resolution": "corrected_source_statement",
       "resolution_evidence": "The checked interface proves the forward implication and an explicit raw joint-law refutation of the converse by embedding the calibrated finite boundary setting.",
       "source_claim": "The proof section restates Theorem 1 as an if-and-only-if between reliability and the interior fixed-agent/fixed-tie condition, although Definition 4 constrains no boundary profile.",
-      "source_locator": "cited publication:159-172",
+      "source_locator": "audit/cited publication:135-148",
       "statement_impact": "source_statement",
       "status_impact": "formalized_note",
       "status_impact_rationale": "The advertised Theorem 1 is only the forward implication and the source proof establishes that direction. Removing the accidental converse leaves the main theorem and proof route unchanged; the failure is confined to unconstrained boundary behavior already acknowledged by Definition 4."
@@ -134,7 +134,7 @@
     {
       "acceptance_condition": "Lean formalizes the entire S1 family for 0 < epsilon < 1/2, proves the displayed masses, predictors, calibration, and strict gap for every other agent.",
       "affected_source_locators": [
-        "cited publication:280-288"
+        "audit/cited publication:248-256"
       ],
       "defect_kind": "domain_or_endpoint",
       "id": "PKG25-P9-S1-EPSILON-DOMAIN-01",
@@ -142,7 +142,7 @@
       "resolution": "repaired_in_lean",
       "resolution_evidence": "The checked parameterized S1 construction uses exactly 0 < epsilon < 1/2; its epsilon=1/4 instance is retained only as a regression specialization.",
       "source_claim": "The first Proposition 9 setting says only epsilon < 1/2 while using epsilon and 1-epsilon as conditional probabilities and asserting that both induced profiles lie in (0,1)^n.",
-      "source_locator": "cited publication:280-288",
+      "source_locator": "audit/cited publication:248-256",
       "statement_impact": "proof_only",
       "status_impact": "formalized_note",
       "status_impact_rationale": "The missing lower bound is an ordinary implicit probability/interiority condition. The repaired family 0 < epsilon < 1/2 preserves the source construction and all displayed formulas."
@@ -150,7 +150,7 @@
     {
       "acceptance_condition": "Lean defines the S2 law using exactly that normalized denominator, proves its calibration and center profiles, and proves the source strict gap for agent k from opposite strategy outputs on the two half-slice profiles.",
       "affected_source_locators": [
-        "cited publication:300-340"
+        "audit/cited publication:263-300"
       ],
       "defect_kind": "index_or_integrality",
       "id": "PKG25-P9-S2-DENOMINATOR-01",
@@ -158,7 +158,7 @@
       "resolution": "repaired_in_lean",
       "resolution_evidence": "The checked S2 construction normalizes the p-copy and q-copy odds by the sum of their two finite denominators, which expands to the repaired displayed D, and proves the required calibration and strict agent-k comparison.",
       "source_claim": "The displayed S2 mass denominator writes a sum over j of p_j/(1-p_j) followed by a free-index term (1-q_j)/q_j, so as printed it does not define one normalized distribution.",
-      "source_locator": "cited publication:300-340",
+      "source_locator": "audit/cited publication:263-300",
       "statement_impact": "proof_only",
       "status_impact": "formalized_note",
       "status_impact_rationale": "The intended paired-copy construction is clear from the two mass families and is repaired by putting both odds terms under the sum. This changes a free-index typo, not the construction's advertised strict-gap role."
@@ -170,7 +170,7 @@
       "classification": "explicit_formalization_convention",
       "formal_meaning": "A collaboration setting is represented by one probability law on X x {0,1}, rather than by an input marginal plus a selected pointwise conditional-label function. Predictors are measurable [0,1]-valued functions and calibration means, for every measurable A, E[1_{P_i(X) in A,Y=1}] = E[P_i(X) 1_{P_i(X) in A}].",
       "id": "PKG25-RAW-JOINT-LAW-01",
-      "source_locator": "cited publication:27-42",
+      "source_locator": "audit/cited publication:2-19",
       "unresolved_relation_to_literal_source": "User-approved formalization convention: the paper's calibration display is read through this event-calibration semantics. The report records that this does not select a pointwise conditional version on every arbitrary input space.",
       "why_needed": "The source writes conditioning on P_i(X)=p for every reported p, but a raw joint law does not canonically specify conditional probabilities on zero-probability prediction fibers. The event identity is meaningful for both atomic and atomless prediction laws."
     },
@@ -179,7 +179,7 @@
       "classification": "explicit_formalization_convention",
       "formal_meaning": "Predictors are measurable, and a strategy is used in an accuracy comparison only when its induced binary-correctness indicator is integrable under the joint law. On finite witnesses this condition is automatic.",
       "id": "PKG25-MEASURABILITY-AND-EXPECTATION-01",
-      "source_locator": "cited publication:27-59; cited publication:123-130",
+      "source_locator": "audit/cited publication:2-35; audit/cited publication:109-120",
       "unresolved_relation_to_literal_source": "This is an analytic well-formedness convention, not a claim that every set-theoretic deterministic function [0,1]^n -> {0,1} is measurable on every possible input space.",
       "why_needed": "The source uses P_i(X), calibration events, and expected strategy accuracy while allowing an arbitrary deterministic C. Those expressions need measurability and integrability on an arbitrary measurable input space."
     },
@@ -188,9 +188,18 @@
       "classification": "explicit_formalization_convention",
       "formal_meaning": "The checked partition construction takes a finite measurable cell map for each agent. A positive-mass cell receives true-label mass divided by total cell mass; a null cell is assigned zero.",
       "id": "PKG25-FINITE-MEASURABLE-PARTITION-01",
-      "source_locator": "cited publication:151-156",
+      "source_locator": "audit/cited publication:127-132",
       "unresolved_relation_to_literal_source": "User-approved formalization convention: the source partition sentence is read as the finite measurable cell construction used by its proof, with zero on a null cell. The report retains this scope choice without treating arbitrary atomless partitions as an open proof obligation.",
       "why_needed": "The source says only 'partition'. Measurability is needed to form the events, and finiteness is needed for the checked zero-cell totalization to remain expectation-irrelevant and for the calibrated event identity to follow by a finite sum."
+    },
+    {
+      "checked_scope": "SourceReliableJointLaw and every source-facing Theorem 1, Proposition 7, and Proposition 9 endpoint carry [Nonempty (Fin n)]. The source-domain strategy bridge never presents the zero-agent false extension as part of the paper.",
+      "classification": "maintainer_approved_source_domain_convention",
+      "formal_meaning": "The source's use of min over i in [n] in reliability and its existential k in [n] in non-collaboration is read as requiring at least one agent: Nonempty (Fin n).",
+      "id": "PKG25-NONEMPTY-AGENT-DOMAIN-01",
+      "source_locator": "audit/cited publication:37-54",
+      "unresolved_relation_to_literal_source": "Maintainer-approved 2026-09-03 source reading in response to the current-protocol preflight clarification request.",
+      "why_needed": "The paper never defines a zero-agent semantics. The earlier totalized Lean predicate was false at n = 0 merely because no Fin 0 witness exists; that implementation behavior is not a source assertion."
     }
   ],
   "paper": "PKG25NoFreeLunch",
@@ -199,31 +208,31 @@
     "A checked finite witness may establish the source proof step that uses that finite witness, but it cannot silently close a broader arbitrary-space, atomless, or nonmeasurable source statement.",
     "An explicit event-calibration or well-formed-expectation convention must remain visible as a model convention. It cannot be hidden by relabeling it as a literal source theorem.",
     "The finite measurable partition and zero-cell totalization are user-approved source-reading conventions for this formalization; they remain visible in the report and are not open proof obligations.",
-    "No LLM/source-record semantic judgment is asserted by this ledger; current v10 sidecars must be regenerated against the current PaperInterface before any formalized closeout claim."
+    "This ledger records mathematical findings and their checked dispositions. Current semantic-review authority comes from the typed source routes, direct source-to-expanded-Spec screening, prerequisite reviews, and accepted obligation graph."
   ],
   "review_status": "defects_recorded",
   "reviewed_proof_scopes": [
     {
       "outcome": "defect_recorded",
       "semantic_scope": "The raw input-label probability model, calibration, classifier and strategy accuracies, reliability, non-collaboration, and the advertised forward Theorem 1.",
-      "source_locator": "cited publication:27-96"
+      "source_locator": "audit/cited publication:2-71"
     },
     {
       "outcome": "defect_recorded",
       "semantic_scope": "Correctness vocabulary, the linear-combination construction, and the partition-induced-predictor recipe.",
-      "source_locator": "cited publication:104-156"
+      "source_locator": "audit/cited publication:81-132"
     },
     {
       "outcome": "no_defect",
       "semantic_scope": "Proposition 7, Lemma 8, its finite odds-ratio witness, and the uniform strict-mixture contradiction.",
-      "source_locator": "cited publication:159-264"
+      "source_locator": "audit/cited publication:135-233"
     },
     {
       "outcome": "defect_recorded",
       "semantic_scope": "Proposition 9, both auxiliary settings, their calibration and strict-gap arguments, and the final strict-mixture step.",
-      "source_locator": "cited publication:271-351"
+      "source_locator": "audit/cited publication:240-314"
     }
   ],
   "schema": 2,
-  "source_artifact_sha256": "b4d5ad11d5f94069db886214bfcaa72eb9928c70b20585ace6238351925da2b9"
+  "source_artifact_sha256": "50352a0df5c4722ad67ac01ec17d3fa4c9a79687453b8751587664092fe573cc"
 }

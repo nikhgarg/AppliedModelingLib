@@ -6,5 +6,7 @@
 *.fls
 *.fdb_latexmk
 *.synctex.gz
-source_arxiv.tar
+# Byte-pinned private source archive required by the canonical source-surface
+# audit and strict closeout validator.
+!source_arxiv.tar
 source_tex/

@@ -22,7 +22,7 @@ repairs, while `AppendixDCorrectedMallowsMLR` is the exact all-subset target.
 -/
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 

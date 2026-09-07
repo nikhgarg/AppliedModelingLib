@@ -3,8 +3,8 @@ import KR21Monoculture.W11ScoreTransport
 import KR21Monoculture.W11SourceLawTransport
 import Mathlib.MeasureTheory.Integral.Pi
 
-open EconCSLib MeasureTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal Topology
 
 namespace KR21Monoculture

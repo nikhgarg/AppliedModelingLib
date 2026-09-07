@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, lines 2241--2470.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The B.2.1(b) gap-fill/residual schedules transport back across the only
 prefix relabelling used in that case.  The source's canonical-prefix

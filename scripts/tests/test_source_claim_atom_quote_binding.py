@@ -195,6 +195,54 @@ class SourceClaimAtomQuoteBindingTests(unittest.TestCase):
         self.write_map(self.strict_payload())
         self.assertEqual(self.strict_messages(), [])
 
+    def test_strict_atom_quote_uses_the_authenticated_visual_transcription(self) -> None:
+        visual_text = "Theorem A states the visually checked equality.\n"
+        visual = self.paper / "visual-review.md"
+        primary_scan = self.paper / "visual-source.pdf"
+        ocr_input = self.paper / "ocr-input.pdf"
+        visual.write_text(visual_text, encoding="utf-8")
+        primary_scan.write_bytes(b"%PDF-fixture-primary\n")
+        ocr_input.write_bytes(b"%PDF-fixture-ocr\n")
+        payload = self.strict_payload(
+            self.atom(locator="visual-review.md:1", quote=visual_text.rstrip("\n"))
+        )
+        payload["source_text_companion"] = {
+            "schema": 1,
+            "canonical_text": {
+                "path": "source.txt",
+                "sha256": sha256_bytes(self.source.read_bytes()),
+            },
+            "visual_primary_scan": {
+                "path": "visual-source.pdf",
+                "sha256": sha256_bytes(primary_scan.read_bytes()),
+            },
+            "transcript_input_scan": {
+                "path": "ocr-input.pdf",
+                "sha256": sha256_bytes(ocr_input.read_bytes()),
+            },
+            "extraction": {"tool": "pdftotext", "options": ["-layout"]},
+            "page_map": [
+                {"line_start": 1, "line_end": 2, "pdf_page": 1, "printed_page": 1}
+            ],
+            "visual_comparison_attestation": {
+                "complete": True,
+                "method": "Checked the semantic transcription against the primary scan.",
+            },
+            "semantic_review_transcription": {
+                "schema": 1,
+                "path": "visual-review.md",
+                "sha256": sha256_bytes(visual.read_bytes()),
+                "controlling_visual_source": {
+                    "path": "visual-source.pdf",
+                    "sha256": sha256_bytes(primary_scan.read_bytes()),
+                },
+                "complete_for_selected_semantic_surface": True,
+                "method": "Visually transcribed the selected theorem passage.",
+            },
+        }
+        self.write_map(payload)
+        self.assertEqual(self.strict_messages(), [])
+
     def test_strict_atom_quote_mismatch_is_rejected_even_with_a_fresh_correspondence_digest(
         self,
     ) -> None:
@@ -209,6 +257,45 @@ class SourceClaimAtomQuoteBindingTests(unittest.TestCase):
                 for message in messages
             ),
             messages,
+        )
+
+    def test_exact_clause_is_accepted_only_when_unique_in_current_quote(self) -> None:
+        exact_clause = self.atom()
+        exact_clause.update(
+            {
+                "identity_schema": 3,
+                "verbatim_source_clause": (
+                    "Its stated boundary condition is part of the same result."
+                ),
+            }
+        )
+        self.write_map(self.strict_payload(exact_clause))
+        self.assertEqual(self.strict_messages(), [])
+
+        absent_clause = dict(exact_clause)
+        absent_clause["verbatim_source_clause"] = "A clause absent from the source."
+        self.write_map(self.strict_payload(absent_clause))
+        absent_messages = self.strict_messages()
+        self.assertTrue(
+            any(
+                "verbatim_source_clause must occur exactly once" in message
+                and "found 0 occurrence(s)" in message
+                for message in absent_messages
+            ),
+            absent_messages,
+        )
+
+        repeated_clause = dict(exact_clause)
+        repeated_clause["verbatim_source_clause"] = "the"
+        self.write_map(self.strict_payload(repeated_clause))
+        repeated_messages = self.strict_messages()
+        self.assertTrue(
+            any(
+                "verbatim_source_clause must occur exactly once" in message
+                and "found 2 occurrence(s)" in message
+                for message in repeated_messages
+            ),
+            repeated_messages,
         )
 
     def test_strict_atom_quote_cannot_bind_a_different_paper_local_file(self) -> None:

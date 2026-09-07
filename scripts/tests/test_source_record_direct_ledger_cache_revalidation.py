@@ -20,7 +20,6 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts import review_dashboard as DASHBOARD  # noqa: E402
-from scripts import source_record_partial_to_formalized_transition as TRANSITION  # noqa: E402
 from scripts.source_record_integrity import stamp_source_record_audit_receipts  # noqa: E402
 
 
@@ -528,7 +527,7 @@ class DirectStatementLedgerCacheRevalidationTests(unittest.TestCase):
             )
         self.assertIsNone(self._reusable(raw))
 
-    def test_partial_to_formalized_v3_transition_reuses_direct_evidence_only_when_current(
+    def test_retired_partial_transition_artifact_does_not_override_fingerprint(
         self,
     ) -> None:
         self._write_status("partially formalized")
@@ -544,71 +543,26 @@ class DirectStatementLedgerCacheRevalidationTests(unittest.TestCase):
         }
         raw = copy.deepcopy(raw)
         raw["source_record_input_fingerprint"] = partial_fingerprint
-        raw["precloseout_exact_contract_projection"] = {
-            "schema": 1,
-            "status": "partially formalized",
-            "items": [],
-            "covered_boundary_input_keys": [],
-            "covered_boundary_input_keys_sha256": TRANSITION._payload_sha256([]),
-        }
         stamp_source_record_audit_receipts(raw)
         self.raw_path.write_text(
             json.dumps(raw, indent=2, sort_keys=True) + "\n", encoding="utf-8"
         )
-        with patch.object(
-            DASHBOARD, "semantic_obligation_ledger_error", return_value=""
-        ):
-            self.assertEqual(
-                AUDIT.current_direct_statement_ledger_covered_boundary_input_keys_without_lean(
-                    self.root, self.paper_dir, raw
-                ),
-                {KEY},
-            )
-
-        engine_identity = dict(
-            AUDIT.PARTIAL_TO_FORMALIZED_STATUS_TRANSITION_ENGINE_IDENTITY
-        )
-        engine_path = (
-            self.root
-            / "skills"
-            / "econcs-formalizer"
-            / "scripts"
-            / "source_record_audit.py"
-        )
-        engine_path.parent.mkdir(parents=True, exist_ok=True)
-        engine_path.write_text(
-            "PARTIAL_TO_FORMALIZED_STATUS_TRANSITION_ENGINE_IDENTITY = "
-            + repr(engine_identity)
-            + "\n",
+        (self.audit_dir / "source_record_partial_to_formalized_transition.json").write_text(
+            json.dumps(
+                {
+                    "schema": 2,
+                    "paper": PAPER,
+                    "historical_only": True,
+                }
+            ),
             encoding="utf-8",
-        )
-        prior_status = json.loads(
-            (self.paper_dir / "status.json").read_text(encoding="utf-8")
-        )
-        receipt, transition_error = (
-            TRANSITION.build_source_record_partial_to_formalized_transition(
-                paper=PAPER,
-                raw_audit=raw,
-                raw_relative_path="audit/source_record_audit.json",
-                prior_status_payload=prior_status,
-                current_input_fingerprint=partial_fingerprint,
-                transition_engine_identity=engine_identity,
-                current_direct_ledger_covered_keys={KEY},
-            )
-        )
-        self.assertEqual(transition_error, "")
-        assert receipt is not None
-        (
-            self.audit_dir
-            / TRANSITION.SOURCE_RECORD_PARTIAL_TO_FORMALIZED_TRANSITION_BASENAME
-        ).write_text(
-            json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8"
         )
         self._write_status("formalized")
 
-        self.assertEqual(
-            self._reusable(raw, fingerprint=formalized_fingerprint),
-            {"reused": True},
+        # A historical filename is inert provenance. The changed current
+        # fingerprint must follow the normal current-engine path.
+        self.assertIsNone(
+            self._reusable(raw, fingerprint=formalized_fingerprint)
         )
         with patch.object(
             AUDIT,

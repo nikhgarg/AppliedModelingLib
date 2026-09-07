@@ -29,12 +29,12 @@ private theorem boundedIidOrderStatisticConsumptionModel_value_eq_expectedSample
     (h_finite_mean : MeasureTheory.Integrable (fun x : ℝ => x) baseMeasure)
     (t : ItemType T) (q : ℕ) :
     (boundedIidOrderStatisticConsumptionModel likelihood k baseMeasure).valueOfCount t q =
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
         (definition3IidSampleMeasure baseMeasure q) k := by
   change
-    EconCSLib.Probability.orderStatisticTopKSumFromMean
+    AppliedModelingLib.Probability.orderStatisticTopKSumFromMean
         (boundedIidOrderStatisticMeanSeq baseMeasure) k q =
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
         (definition3IidSampleMeasure baseMeasure q) k
   simpa [boundedIidOrderStatisticMeanSeq, definition3IidOrderStatisticMean,
     definition3IidSampleMeasure] using
@@ -47,33 +47,33 @@ private theorem exponentialTopKOrderStatisticConsumptionModel_value_eq_expectedS
     (hlambda_pos : 0 < lambda) (k : ℕ) (t : ItemType T) (q : ℕ) :
     ((exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
       likelihood k).valueOfCount t q =
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
         ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q) k := by
   change exponentialTopKOrderStatisticValue lambda k q =
-    EconCSLib.Probability.expectedSampleTopKSum
+    AppliedModelingLib.Probability.expectedSampleTopKSum
       ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure q) k
   cases q with
   | zero =>
       have hzero :
           (fun sample : Fin 0 → ℝ =>
-            EconCSLib.Probability.sampleTopKSum sample k) = fun _ => 0 := by
+            AppliedModelingLib.Probability.sampleTopKSum sample k) = fun _ => 0 := by
         funext sample
-        unfold EconCSLib.Probability.sampleTopKSum
+        unfold AppliedModelingLib.Probability.sampleTopKSum
         apply Finset.sum_eq_zero
         intro i _
         exact False.elim ((Nat.not_lt_zero i.val)
           (lt_of_lt_of_le i.isLt (min_le_right k 0)))
-      simp [EconCSLib.Probability.expectedSampleTopKSum, hzero]
+      simp [AppliedModelingLib.Probability.expectedSampleTopKSum, hzero]
   | succ q =>
       let M := exponentialDistributionModel lambda hlambda_pos
       letI : NeZero (q + 1) := ⟨Nat.add_one_ne_zero q⟩
       symm
       calc
-        EconCSLib.Probability.expectedSampleTopKSum (M.iidProductMeasure (q + 1)) k =
+        AppliedModelingLib.Probability.expectedSampleTopKSum (M.iidProductMeasure (q + 1)) k =
             ∫ sample, exponentialFiniteSampleTopKSum k sample
               ∂M.iidProductMeasure (q + 1) := by
             simpa [M, exponentialFiniteSampleTopKSum] using
-              EconCSLib.Probability.expectedSampleTopKSum_eq_integral_topKSumOn_of_ae_nonneg
+              AppliedModelingLib.Probability.expectedSampleTopKSum_eq_integral_topKSumOn_of_ae_nonneg
                 (M.iidProductMeasure (q + 1)) k
                 (M.iidProductMeasure_all_nonnegative_ae (q + 1))
         _ = exponentialTopKOrderStatisticValue lambda k (q + 1) := by
@@ -86,30 +86,30 @@ private theorem paretoIidOrderStatisticConsumptionModel_value_eq_expectedSampleT
     {T : ℕ} (likelihood : ItemType T → ℝ) {k : ℕ} {alpha : ℝ}
     (halpha : 1 < alpha) (t : ItemType T) (q : ℕ) :
     (paretoIidOrderStatisticConsumptionModel likelihood k alpha).valueOfCount t q =
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
         (paretoIidSampleMeasure alpha q) k := by
   change
-    EconCSLib.Probability.orderStatisticTopKSumFromMean
+    AppliedModelingLib.Probability.orderStatisticTopKSumFromMean
         (paretoIidOrderStatisticMeanSeq alpha) k q =
-      EconCSLib.Probability.expectedSampleTopKSum
+      AppliedModelingLib.Probability.expectedSampleTopKSum
         (paretoIidSampleMeasure alpha q) k
   simpa [paretoIidOrderStatisticMeanSeq] using
-    EconCSLib.Probability.expectedOrderStatisticMeanSeq_topKSum_eq_expectedSampleTopKSum
+    AppliedModelingLib.Probability.expectedOrderStatisticMeanSeq_topKSum_eq_expectedSampleTopKSum
       (paretoIidSampleMeasure alpha) k q (by
         intro i hi
         have hi_lt : i < min k q := Finset.mem_range.mp hi
         have hiq : i < q := lt_of_lt_of_le hi_lt (min_le_right k q)
         have hvalue :
             (fun sample : Fin q → ℝ =>
-              EconCSLib.Probability.sampleOrderStatisticValue sample (q - i)) =
+              AppliedModelingLib.Probability.sampleOrderStatisticValue sample (q - i)) =
               fun sample =>
-                EconCSLib.Probability.upperOrderStatistic sample ⟨i, hiq⟩ := by
+                AppliedModelingLib.Probability.upperOrderStatistic sample ⟨i, hiq⟩ := by
             funext sample
-            exact EconCSLib.Probability.sampleOrderStatisticValue_eq_upperOrderStatistic_of_rank_from_top
+            exact AppliedModelingLib.Probability.sampleOrderStatisticValue_eq_upperOrderStatistic_of_rank_from_top
               sample hiq
         rw [hvalue]
         simpa [paretoIidSampleMeasure] using
-          EconCSLib.Probability.Pareto.iidProductMeasure_one_upperOrderStatistic_integrable
+          AppliedModelingLib.Probability.Pareto.iidProductMeasure_one_upperOrderStatistic_integrable
             halpha (rankFromTop := ⟨i, hiq⟩))
 
 /--
@@ -151,9 +151,9 @@ theorem theorem1_ii_bounded_iid_pmf_source_model_endpoint
     (∀ a : CountAllocation T,
       (boundedIidOrderStatisticConsumptionModel
           (fun t => (preferenceLaw t).toReal) k baseMeasure).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.Probability.expectedSampleTopKSum
+            AppliedModelingLib.Probability.expectedSampleTopKSum
               (definition3IidSampleMeasure baseMeasure (a.count t)) k)) ∧
       ∀ t : ItemType T,
         Tendsto
@@ -168,7 +168,7 @@ theorem theorem1_ii_bounded_iid_pmf_source_model_endpoint
     calc
       (boundedIidOrderStatisticConsumptionModel
           (fun t => (preferenceLaw t).toReal) k baseMeasure).objective a =
-          EconCSLib.pmfExp preferenceLaw
+          AppliedModelingLib.pmfExp preferenceLaw
             (fun t =>
               (boundedIidOrderStatisticConsumptionModel
                 (fun i => (preferenceLaw i).toReal) k baseMeasure).valueOfCount
@@ -179,9 +179,9 @@ theorem theorem1_ii_bounded_iid_pmf_source_model_endpoint
           a preferenceLaw (by
             intro t
             rfl)
-      _ = EconCSLib.pmfExp preferenceLaw
+      _ = AppliedModelingLib.pmfExp preferenceLaw
             (fun t =>
-              EconCSLib.Probability.expectedSampleTopKSum
+              AppliedModelingLib.Probability.expectedSampleTopKSum
                 (definition3IidSampleMeasure baseMeasure (a.count t)) k) := by
         congr 1
         funext t
@@ -211,9 +211,9 @@ theorem theorem1_iii_exponential_iid_pmf_source_model_endpoint
     (∀ a : CountAllocation T,
       ((exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
           (fun t => (preferenceLaw t).toReal) k).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.Probability.expectedSampleTopKSum
+            AppliedModelingLib.Probability.expectedSampleTopKSum
               ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure
                 (a.count t)) k)) ∧
       ∀ t : ItemType T,
@@ -228,7 +228,7 @@ theorem theorem1_iii_exponential_iid_pmf_source_model_endpoint
     calc
       ((exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
           (fun t => (preferenceLaw t).toReal) k).objective a =
-          EconCSLib.pmfExp preferenceLaw
+          AppliedModelingLib.pmfExp preferenceLaw
             (fun t =>
               ((exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
                 (fun i => (preferenceLaw i).toReal) k).valueOfCount
@@ -239,9 +239,9 @@ theorem theorem1_iii_exponential_iid_pmf_source_model_endpoint
           a preferenceLaw (by
             intro t
             rfl)
-      _ = EconCSLib.pmfExp preferenceLaw
+      _ = AppliedModelingLib.pmfExp preferenceLaw
             (fun t =>
-              EconCSLib.Probability.expectedSampleTopKSum
+              AppliedModelingLib.Probability.expectedSampleTopKSum
                 ((exponentialDistributionModel lambda hlambda_pos).iidProductMeasure
                   (a.count t)) k) := by
         congr 1
@@ -270,9 +270,9 @@ theorem theorem1_iv_pareto_iid_pmf_source_model_endpoint
     (∀ a : CountAllocation T,
       (paretoIidOrderStatisticConsumptionModel
           (fun t => (preferenceLaw t).toReal) k alpha).objective a =
-        EconCSLib.pmfExp preferenceLaw
+        AppliedModelingLib.pmfExp preferenceLaw
           (fun t =>
-            EconCSLib.Probability.expectedSampleTopKSum
+            AppliedModelingLib.Probability.expectedSampleTopKSum
               (paretoIidSampleMeasure alpha (a.count t)) k)) ∧
       ∀ t : ItemType T,
         Tendsto
@@ -287,7 +287,7 @@ theorem theorem1_iv_pareto_iid_pmf_source_model_endpoint
     calc
       (paretoIidOrderStatisticConsumptionModel
           (fun t => (preferenceLaw t).toReal) k alpha).objective a =
-          EconCSLib.pmfExp preferenceLaw
+          AppliedModelingLib.pmfExp preferenceLaw
             (fun t =>
               (paretoIidOrderStatisticConsumptionModel
                 (fun i => (preferenceLaw i).toReal) k alpha).valueOfCount
@@ -298,9 +298,9 @@ theorem theorem1_iv_pareto_iid_pmf_source_model_endpoint
           a preferenceLaw (by
             intro t
             rfl)
-      _ = EconCSLib.pmfExp preferenceLaw
+      _ = AppliedModelingLib.pmfExp preferenceLaw
             (fun t =>
-              EconCSLib.Probability.expectedSampleTopKSum
+              AppliedModelingLib.Probability.expectedSampleTopKSum
                 (paretoIidSampleMeasure alpha (a.count t)) k) := by
         congr 1
         funext t

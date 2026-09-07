@@ -1,6 +1,6 @@
 # Validation Model
 
-Updated: 2026-07-31
+Public status guidance updated: 2026-09-06
 
 `config/formalization_audit_protocol.json` is the normative machine-readable
 source for current audit versions, coverage scope, reuse identity, build
@@ -8,7 +8,7 @@ selection, and correction/assumption categories. This document explains the
 validation model and defers to that protocol when older prose or historical
 artifact labels conflict with it.
 
-EconCSLib separates three questions that are easy to conflate.
+AppliedModelingLib separates three questions that are easy to conflate.
 
 ## 1. What Lean Checks
 
@@ -25,9 +25,9 @@ source-shaped type and a temporary `by sorry` body. That establishes only a
 **statement-audited skeleton**: Lean has elaborated the target, but has not
 checked a proof. The canonical declaration-manifest digest freezes the reviewed
 type, definition/abbreviation values, and name-free repository-local reducible
-dependency closure so proof work cannot silently change them. Current v10
-statement review binds that manifest to expanded semantic-scope, numeric,
-discrete-container, fidelity-risk, and operational-complexity judgments. A
+dependency closure so proof work cannot silently change them. Current v11
+review compares verbatim source anchors with Lean's expanded transparent Spec,
+including its assumptions, conclusions, and source-connected prerequisites. A
 paper is Lean-closed only after every such
 body is replaced and the dependency closure contains no `sorryAx`.
 
@@ -69,20 +69,19 @@ bridge. Names, ids, and raw pretty-printed declaration spelling only route or
 document entries; renaming a theorem, field, wrapper, or record must not change
 the verdict after a unique elaborated semantic match.
 
-The current semantic lanes are statement match v10 and recursive source-record
-v10. Theorem-realization correspondence is v11 for new papers and explicit
-v11 upgrades; a legacy material repair receives current item-level v10
-evidence unless it opts in. Paper-coverage and declaration-manifest schemas have their own
-independent schema numbers; for example, a schema-6 declaration manifest is
-not a "v6 statement audit." Earlier sidecars remain historical evidence. A
-version-label edit is not a migration: reuse is item-level and requires every
-identity in the normative protocol, including the transitive elaborated
-dependency graph and exact opaque imported-terminal artifact context. Whole
-review-module artifacts and theorem proof bodies are excluded from statement
-identity, so closing `sorry` reopens proof-closure evidence without discarding
-an unchanged statement judgment.
+The current semantic lane is source-to-expanded-Spec review v11. Lean's
+builder-issued graph separately checks the Spec/proof relation, dependency
+closure, and endpoint safety. The closeout planner first validates any retained
+accepted receipt; otherwise it requires the current graph-native contract or
+returns a migration action. Earlier v10 sidecars remain historical evidence.
+Their version labels must never be changed to manufacture a migration.
 
-The legacy-v10 transition can use either the original trusted-Git-tree
+Paper-coverage and declaration-manifest schemas have independent version
+numbers. Reuse requires the exact applicable semantic and source identities,
+not matching names or a prior successful build. A proof-body change requires
+current proof-closure evidence even when the semantic statement is unchanged.
+
+Historical legacy-v10 transition evidence used either the original trusted-Git-tree
 authority or a centrally configured immutable material-identity manifest. The
 portable manifest contains no paper-name or declaration-name credit: those
 strings are navigation labels only. A current closeout is grandfathered only
@@ -160,29 +159,22 @@ human review and should not be counted as human dashboard sign-off.
 
 ## 4. Public Status Reading
 
-The public status vocabulary is in [`STATUS.md`](STATUS.md). Status is about
-mathematical closure and substantial source-paper correctness; it is not a
-generic warning level.
+The public display policy is in
+[`STATUS.md`](STATUS.md#public-website-display). Public labels summarize checked
+coverage; the report gives the exact source comparison and remaining scope.
+Technical mathematical status and closeout acceptance remain separate.
 
 Read public paper status as:
 
-- `Formalized`: Lean proves the exposed paper endpoints under the displayed
-  Lean statements at the intended semantic level, with no remaining central
-  mathematical boundary. Minor source corrections, standard implicit
-  conditions, repaired auxiliary lemmas, and alternative proof routes are
-  compatible with plain `Formalized` when the substantive advertised endpoint
-  is fully proved; document them as source/proof notes. A materially weaker
-  target or non-source additional assumption is not compatible with this
-  status.
-- `Formalized with caveat`: the source paper contains a substantial error in a
-  central advertised claim, and Lean fully proves a corrected endpoint that
-  materially changes the claim. This status should be rare. It is not used for
-  an incomplete Lean formalization, a routine source correction, or an
-  additional non-source restriction.
-- `Partially formalized`: some paper endpoints are Lean-checked, but a central
-  source claim, intended semantic layer, assumption derivation, or theorem-level
-  proof remains open. A materially weaker/narrower Lean result or an added
-  non-source assumption belongs here rather than under a caveat.
+- `Formalized`: the repository contains checked formalized results. Read the
+  report's named-result comparisons for their precise coverage.
+- `Formalization gap:` in a note: substantial additional assumptions,
+  simplifications, or unproved bridges or conclusions in the formalization.
+  The note names the affected theorem and remaining scope. It does not claim
+  that the paper needs a correction. Minor source clarifications and conditions
+  implied by the source do not need a public table note.
+- `Partially formalized`: the retained public designation for LOS02 and LMMS04,
+  whose broader formalizations remain unfinished.
 - `Human review`: saved dashboard rows reviewed by a human.
 - `LLM audit`: tracked machine-readable sidecars checking statement matching,
   coverage, assumption provenance, source records, and holistic coverage.
@@ -197,13 +189,15 @@ issue judgments agree with the paper status. The field distinguishes the
 severity of the mathematical issue from `statement_impact`, which only records
 whether the source proof line or source statement is affected.
 
-For release certification, plain `Formalized` is not enough. The exact source
+For source certification, plain `Formalized` is not enough. The exact source
 artifact must be pinned by digest, every source item and theorem premise must
 have a resolvable locator, independent producer/judge attestations must be
-recorded, and the source-to-Lean review surface must have complete human review.
+recorded. A claim of complete human statement review additionally requires
+complete saved human judgments. A zero human-review count is not itself a
+machine-closeout or public-release blocker; the report must disclose it.
 Because source artifacts are normally untracked, this byte attestation is
 available when CI securely provisions or reproducibly fetches and hash-checks
 the exact artifact, or redistribution review permits tracking it. A normal fresh
 checkout without those bytes is structurally testable but not source-certified.
-Until then, describe the result as Lean-closed with source translation pending
-human certification.
+State unavailable source-byte verification and incomplete human review on
+their respective evidence axes rather than treating them as mathematical gaps.

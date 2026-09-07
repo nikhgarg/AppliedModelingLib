@@ -15,4 +15,4 @@ elab "#econcslib_import_closure" : command => do
     ("schema", Json.str "econcslib.lean-loaded-module-closure/v1"),
     ("modules", Json.arr modules)
   ]
-  liftIO <| IO.println s!"ECONCSLIB_LEAN_IMPORT_CLOSURE {payload.compress}"
+  liftIO <| IO.println s!"APPLIEDMODELINGLIB_LEAN_IMPORT_CLOSURE {payload.compress}"

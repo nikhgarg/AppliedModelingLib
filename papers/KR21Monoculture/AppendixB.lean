@@ -1,7 +1,7 @@
 import KR21Monoculture.RUM
-import EconCSLib.Foundations.Probability.Weighted
+import AppliedModelingLib.Foundations.Probability.Weighted
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -117,7 +117,7 @@ theorem appendixBRankingAtomOfScores_toRanking
     (appendixBRankingAtomOfScores s0 s1 s2).toRanking =
       rum3RankByScores s0 s1 s2 := by
   unfold appendixBRankingAtomOfScores rum3RankByScores
-    EconCSLib.SocialChoice.Ranking.rum3RankByScores
+    AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores
   split_ifs <;> rfl
 
 /-! ## Appendix B.1: violation of Definition 2 -/
@@ -224,7 +224,7 @@ private theorem appendixB1RankingWeight_sum_pos :
 
 /-- The six-atom source enumeration before mapping atoms to rankings. -/
 noncomputable def appendixB1AtomPMF : PMF AppendixBRankingAtom :=
-  EconCSLib.finiteWeightedPMF
+  AppliedModelingLib.finiteWeightedPMF
     appendixB1RankingWeight appendixB1RankingWeight_nonneg
     appendixB1RankingWeight_sum_pos
 
@@ -241,9 +241,9 @@ theorem appendixB1_expectedSecondMoverShared_eq :
     expectedSecondMoverShared appendixB1RankingPMF appendixB1Value =
       7373 / 16000 := by
   unfold expectedSecondMoverShared appendixB1RankingPMF
-  rw [EconCSLib.pmfExp_map]
+  rw [AppliedModelingLib.pmfExp_map]
   unfold appendixB1AtomPMF
-  rw [EconCSLib.finiteWeightedPMF_pmfExp_eq_sum_div]
+  rw [AppliedModelingLib.finiteWeightedPMF_pmfExp_eq_sum_div]
   simp_rw [AppendixBRankingAtom.sum_six]
   norm_num [appendixB1RankingWeight, AppendixBRankingAtom.toRanking,
     appendixB1Value, secondChoice, Fin.ext_iff]
@@ -254,10 +254,10 @@ theorem appendixB1_expectedSecondMoverIndependent_eq :
         appendixB1RankingPMF appendixB1RankingPMF appendixB1Value =
       5888651 / 12800000 := by
   unfold expectedSecondMoverIndependent pmfPairExp appendixB1RankingPMF
-  rw [EconCSLib.pmfExp_map]
-  simp_rw [EconCSLib.pmfExp_map]
+  rw [AppliedModelingLib.pmfExp_map]
+  simp_rw [AppliedModelingLib.pmfExp_map]
   unfold appendixB1AtomPMF
-  simp_rw [EconCSLib.finiteWeightedPMF_pmfExp_eq_sum_div]
+  simp_rw [AppliedModelingLib.finiteWeightedPMF_pmfExp_eq_sum_div]
   simp_rw [AppendixBRankingAtom.sum_six]
   norm_num [appendixB1RankingWeight, AppendixBRankingAtom.toRanking,
     appendixB1Value, secondMoverUtility, bestRemainingAfter, firstChoice,
@@ -282,7 +282,7 @@ theorem appendixB1_not_prefersIndependentReranking :
       appendixB1RankingPMF appendixB1Value := by
   intro h
   unfold Model.PrefersIndependentReranking
-    EconCSLib.SocialChoice.Ranking.PrefersIndependentReranking at h
+    AppliedModelingLib.SocialChoice.Ranking.PrefersIndependentReranking at h
   rw [appendixB1_expectedSecondMoverShared_eq,
     appendixB1_expectedSecondMoverIndependent_eq] at h
   norm_num at h
@@ -444,12 +444,12 @@ private theorem appendixB2HumanRankingWeight_sum_pos :
   norm_num
 
 noncomputable def appendixB2AlgorithmAtomPMF : PMF AppendixBRankingAtom :=
-  EconCSLib.finiteWeightedPMF
+  AppliedModelingLib.finiteWeightedPMF
     appendixB2AlgorithmRankingWeight appendixB2AlgorithmRankingWeight_nonneg
     appendixB2AlgorithmRankingWeight_sum_pos
 
 noncomputable def appendixB2HumanAtomPMF : PMF AppendixBRankingAtom :=
-  EconCSLib.finiteWeightedPMF
+  AppliedModelingLib.finiteWeightedPMF
     appendixB2HumanRankingWeight appendixB2HumanRankingWeight_nonneg
     appendixB2HumanRankingWeight_sum_pos
 
@@ -468,11 +468,11 @@ def appendixB2Value (c : Candidate 1) : ℝ :=
 theorem appendixB2_algorithm_firstChoice_x1_eq :
     firstChoiceProb appendixB2AlgorithmRankingPMF (0 : Candidate 1) =
       67 / 100 := by
-  unfold firstChoiceProb EconCSLib.SocialChoice.Ranking.firstChoiceProb
-    EconCSLib.pmfProb appendixB2AlgorithmRankingPMF
-  rw [EconCSLib.pmfExp_map]
+  unfold firstChoiceProb AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb
+    AppliedModelingLib.pmfProb appendixB2AlgorithmRankingPMF
+  rw [AppliedModelingLib.pmfExp_map]
   unfold appendixB2AlgorithmAtomPMF
-  rw [EconCSLib.finiteWeightedPMF_pmfExp_eq_sum_div]
+  rw [AppliedModelingLib.finiteWeightedPMF_pmfExp_eq_sum_div]
   simp_rw [AppendixBRankingAtom.sum_six]
   norm_num [appendixB2AlgorithmRankingWeight,
     AppendixBRankingAtom.toRanking, firstChoice, Fin.ext_iff]
@@ -480,11 +480,11 @@ theorem appendixB2_algorithm_firstChoice_x1_eq :
 theorem appendixB2_human_firstChoice_x1_eq :
     firstChoiceProb appendixB2HumanRankingPMF (0 : Candidate 1) =
       67 / 100 := by
-  unfold firstChoiceProb EconCSLib.SocialChoice.Ranking.firstChoiceProb
-    EconCSLib.pmfProb appendixB2HumanRankingPMF
-  rw [EconCSLib.pmfExp_map]
+  unfold firstChoiceProb AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb
+    AppliedModelingLib.pmfProb appendixB2HumanRankingPMF
+  rw [AppliedModelingLib.pmfExp_map]
   unfold appendixB2HumanAtomPMF
-  rw [EconCSLib.finiteWeightedPMF_pmfExp_eq_sum_div]
+  rw [AppliedModelingLib.finiteWeightedPMF_pmfExp_eq_sum_div]
   simp_rw [AppendixBRankingAtom.sum_six]
   norm_num [appendixB2HumanRankingWeight,
     AppendixBRankingAtom.toRanking, firstChoice, Fin.ext_iff]
@@ -499,11 +499,11 @@ theorem appendixB2_equation_B1 :
 theorem appendixB2_algorithm_firstChoice_x2_eq :
     firstChoiceProb appendixB2AlgorithmRankingPMF (1 : Candidate 1) =
       2261 / 8000 := by
-  unfold firstChoiceProb EconCSLib.SocialChoice.Ranking.firstChoiceProb
-    EconCSLib.pmfProb appendixB2AlgorithmRankingPMF
-  rw [EconCSLib.pmfExp_map]
+  unfold firstChoiceProb AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb
+    AppliedModelingLib.pmfProb appendixB2AlgorithmRankingPMF
+  rw [AppliedModelingLib.pmfExp_map]
   unfold appendixB2AlgorithmAtomPMF
-  rw [EconCSLib.finiteWeightedPMF_pmfExp_eq_sum_div]
+  rw [AppliedModelingLib.finiteWeightedPMF_pmfExp_eq_sum_div]
   simp_rw [AppendixBRankingAtom.sum_six]
   norm_num [appendixB2AlgorithmRankingWeight,
     AppendixBRankingAtom.toRanking, firstChoice, Fin.ext_iff]
@@ -511,11 +511,11 @@ theorem appendixB2_algorithm_firstChoice_x2_eq :
 theorem appendixB2_human_firstChoice_x2_eq :
     firstChoiceProb appendixB2HumanRankingPMF (1 : Candidate 1) =
       109 / 400 := by
-  unfold firstChoiceProb EconCSLib.SocialChoice.Ranking.firstChoiceProb
-    EconCSLib.pmfProb appendixB2HumanRankingPMF
-  rw [EconCSLib.pmfExp_map]
+  unfold firstChoiceProb AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb
+    AppliedModelingLib.pmfProb appendixB2HumanRankingPMF
+  rw [AppliedModelingLib.pmfExp_map]
   unfold appendixB2HumanAtomPMF
-  rw [EconCSLib.finiteWeightedPMF_pmfExp_eq_sum_div]
+  rw [AppliedModelingLib.finiteWeightedPMF_pmfExp_eq_sum_div]
   simp_rw [AppendixBRankingAtom.sum_six]
   norm_num [appendixB2HumanRankingWeight,
     AppendixBRankingAtom.toRanking, firstChoice, Fin.ext_iff]
@@ -536,9 +536,9 @@ theorem appendixB2_human_expectedBestAfter_x2_eq :
         appendixB2HumanRankingPMF appendixB2Value (1 : Candidate 1) =
       1089 / 400 := by
   unfold AccuracyFamily.expectedBestAfterRemoval appendixB2HumanRankingPMF
-  rw [EconCSLib.pmfExp_map]
+  rw [AppliedModelingLib.pmfExp_map]
   unfold appendixB2HumanAtomPMF
-  rw [EconCSLib.finiteWeightedPMF_pmfExp_eq_sum_div]
+  rw [AppliedModelingLib.finiteWeightedPMF_pmfExp_eq_sum_div]
   simp_rw [AppendixBRankingAtom.sum_six]
   norm_num [appendixB2HumanRankingWeight, AppendixBRankingAtom.toRanking,
     appendixB2Value, bestRemainingAfter, Fin.ext_iff]
@@ -551,9 +551,9 @@ theorem appendixB2_human_expectedBestAfter_x3_eq :
         appendixB2HumanRankingPMF appendixB2Value (2 : Candidate 1) =
       541 / 200 := by
   unfold AccuracyFamily.expectedBestAfterRemoval appendixB2HumanRankingPMF
-  rw [EconCSLib.pmfExp_map]
+  rw [AppliedModelingLib.pmfExp_map]
   unfold appendixB2HumanAtomPMF
-  rw [EconCSLib.finiteWeightedPMF_pmfExp_eq_sum_div]
+  rw [AppliedModelingLib.finiteWeightedPMF_pmfExp_eq_sum_div]
   simp_rw [AppendixBRankingAtom.sum_six]
   norm_num [appendixB2HumanRankingWeight, AppendixBRankingAtom.toRanking,
     appendixB2Value, bestRemainingAfter, Fin.ext_iff]
@@ -585,10 +585,10 @@ theorem appendixB2_expectedSecondMover_human_human_eq :
       294739 / 160000 := by
   unfold expectedSecondMoverIndependent pmfPairExp
     appendixB2HumanRankingPMF
-  rw [EconCSLib.pmfExp_map]
-  simp_rw [EconCSLib.pmfExp_map]
+  rw [AppliedModelingLib.pmfExp_map]
+  simp_rw [AppliedModelingLib.pmfExp_map]
   unfold appendixB2HumanAtomPMF
-  simp_rw [EconCSLib.finiteWeightedPMF_pmfExp_eq_sum_div]
+  simp_rw [AppliedModelingLib.finiteWeightedPMF_pmfExp_eq_sum_div]
   simp_rw [AppendixBRankingAtom.sum_six]
   norm_num [appendixB2HumanRankingWeight, AppendixBRankingAtom.toRanking,
     appendixB2Value, secondMoverUtility, bestRemainingAfter, firstChoice,
@@ -601,10 +601,10 @@ theorem appendixB2_expectedSecondMover_human_algorithm_eq :
       5895347 / 3200000 := by
   unfold expectedSecondMoverIndependent pmfPairExp
     appendixB2HumanRankingPMF appendixB2AlgorithmRankingPMF
-  rw [EconCSLib.pmfExp_map]
-  simp_rw [EconCSLib.pmfExp_map]
+  rw [AppliedModelingLib.pmfExp_map]
+  simp_rw [AppliedModelingLib.pmfExp_map]
   unfold appendixB2HumanAtomPMF appendixB2AlgorithmAtomPMF
-  simp_rw [EconCSLib.finiteWeightedPMF_pmfExp_eq_sum_div]
+  simp_rw [AppliedModelingLib.finiteWeightedPMF_pmfExp_eq_sum_div]
   simp_rw [AppendixBRankingAtom.sum_six]
   norm_num [appendixB2HumanRankingWeight, appendixB2AlgorithmRankingWeight,
     AppendixBRankingAtom.toRanking, appendixB2Value, secondMoverUtility,
@@ -630,7 +630,7 @@ theorem appendixB2_not_prefersWeakerCompetition :
       appendixB2AlgorithmRankingPMF appendixB2HumanRankingPMF appendixB2Value := by
   intro h
   unfold Model.PrefersWeakerCompetition
-    EconCSLib.SocialChoice.Ranking.PrefersWeakerCompetition at h
+    AppliedModelingLib.SocialChoice.Ranking.PrefersWeakerCompetition at h
   rw [appendixB2_expectedSecondMover_human_algorithm_eq,
     appendixB2_expectedSecondMover_human_human_eq] at h
   norm_num at h

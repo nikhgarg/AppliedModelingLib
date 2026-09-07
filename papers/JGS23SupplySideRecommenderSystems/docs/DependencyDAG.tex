@@ -1,0 +1,110 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+
+\begin{tikzpicture}[
+  x=1.2cm,
+  y=1cm,
+  every node/.append style={outer sep=4pt}
+]
+
+\dagPaperMetadata{Supply-Side Equilibria\\in Recommender Systems}{Jagadeesan, Garg, Steinhardt}{NeurIPS}{2023}{arXiv:2206.13489v3}
+
+\dagPaperLegendRightOfMetadata{
+\node[dag_result, dag_template_legend] (legExact) at (0,0) {exact\\paper result};
+\node[dag_lemma, dag_template_legend] (legTypo) at (4.2,0) {corrected\\source text};
+\node[dag_conditional, dag_template_legend] (legScope) at (8.4,0) {limited-scope\\paper result};
+\node[dag_model, dag_template_legend] (legModel) at (12.6,0) {paper model\\or definition};
+}
+\daglegend{(legExact)(legTypo)(legScope)(legModel)}{Reader status}
+
+\begin{dagPaperBody}
+
+\node[dag_model] (market) at (0,-4.1) {
+  \textbf{Finite market model}\\
+  content, uniform ties, norm-power cost\\
+  symmetric mixed equilibrium
+};
+
+\node[dag_model] (genre) at (6.5,-4.1) {
+  \textbf{Quality and genre}\\
+  nonzero support directions\\
+  single- and multi-genre regimes
+};
+
+\node[dag_model] (twomodel) at (13,-4.1) {
+  \textbf{Two-user and limit models}\\
+  score coordinates, producer payoff\\
+  Definition 1
+};
+
+\node[dag_result] (foundations) at (0,-7.5) {
+  \textbf{Equilibrium foundations}\\
+  Propositions 1--3
+};
+
+\node[dag_conditional] (onepop) at (6.5,-7.5) {
+  \textbf{One-population law}\\
+  Example 1; Corollary 1; Lemma 3\\
+  corrected CDF; uniqueness not asserted
+};
+
+\node[dag_conditional] (characterization) at (13,-7.5) {
+  \textbf{Best-response characterization}\\
+  Lemma 2; Claim 1; Proposition 4\\
+  tie-aware endpoint
+};
+
+\node[dag_conditional] (single) at (0,-10.9) {
+  \textbf{Single-genre results}\\
+  Theorem 1; Lemmas 1, 4--8\\
+  Corollaries 2--6
+};
+
+\node[dag_conditional] (calculus) at (6.5,-10.9) {
+  \textbf{Two-user score calculus}\\
+  Lemmas 9--12\\
+  fibre cost and graph conditions
+};
+
+\node[dag_result] (closedforms) at (13,-10.9) {
+  \textbf{Two-user closed forms}\\
+  Propositions 5--6; Corollary 7\\
+  Lemma 13
+};
+
+\node[dag_conditional] (profit) at (0,-14.3) {
+  \textbf{Producer profit}\\
+  Propositions 7--8\\
+  support-action conclusions
+};
+
+\node[dag_conditional] (phase) at (6.5,-14.3) {
+  \textbf{Phase transition}\\
+  Theorem 2; Propositions 9--10\\
+  canonical two-dimensional endpoint
+};
+
+\node[dag_conditional] (infinite) at (13,-14.3) {
+  \textbf{Infinite-producer construction}\\
+  Theorems 3--4\\
+  corrected strictly acute endpoint
+};
+
+\draw[dag_arrow] (market.south) -- (foundations.north);
+\draw[dag_arrow] (market.east) -- (genre.west);
+\draw[dag_arrow] (genre.south) -- (onepop.north);
+\draw[dag_arrow] (onepop.south west) -- (single.north east);
+\draw[dag_arrow] (genre.east) -- (twomodel.west);
+\draw[dag_arrow] (twomodel.south) -- (characterization.north);
+\draw[dag_arrow] (characterization.south west) -- (calculus.north east);
+\draw[dag_arrow] (twomodel.east) -- ++(0.9,0) |- (closedforms.east);
+\draw[dag_arrow] (single.south) -- (profit.north);
+\draw[dag_arrow] (calculus.south) -- (phase.north);
+\draw[dag_arrow] (closedforms.south west) -- (phase.north east);
+\draw[dag_arrow] (phase.east) -- (infinite.west);
+
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+from scripts.source_record_legacy_contract import SOURCE_RECORD_ITEM_DIGEST_SCHEMA
 
-# Schema 5 binds the item-specific expanded premise/result surface.  Schema 4
+# Schema 5 binds the item-specific expanded premise/result surface. Schema 4
 # omitted those fields, so several materially different premises of one
-# theorem could receive the same reusable digest.
-SOURCE_RECORD_ITEM_DIGEST_SCHEMA = 5
+# theorem could receive the same reusable digest. The value lives in the
+# data-only legacy contract so current-v11 callers need not import this reader.
 
 
 def source_record_item_judgment_current(

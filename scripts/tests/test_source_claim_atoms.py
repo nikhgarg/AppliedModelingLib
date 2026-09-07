@@ -165,6 +165,122 @@ class SourceClaimAtomsTests(unittest.TestCase):
         )
         self.assertEqual(self.route_findings(), [])
 
+    def test_exact_quote_identity_ignores_locator_and_curator_wording(self) -> None:
+        first = self.valid_atoms()[0]
+        first["identity_schema"] = 2
+        first["source_quote_sha256"] = "a" * 64
+        moved = dict(first)
+        moved["source_locator"] = "renamed-source.txt:40-41"
+        moved["semantic_claim"] = (
+            "A clearer human annotation for the same exact verbatim source component."
+        )
+
+        self.assertEqual(
+            GATE.source_claim_atom_semantic_sha256(first),
+            GATE.source_claim_atom_semantic_sha256(moved),
+        )
+        changed_quote = dict(moved)
+        changed_quote["source_quote_sha256"] = "b" * 64
+        self.assertNotEqual(
+            GATE.source_claim_atom_semantic_sha256(first),
+            GATE.source_claim_atom_semantic_sha256(changed_quote),
+        )
+
+    def test_exact_quote_identity_requires_quote_and_rejects_mixed_schema(self) -> None:
+        exact = self.valid_atoms()[0]
+        exact["identity_schema"] = 2
+        missing_quote = GATE.source_claim_atoms_validation_errors([exact])
+        self.assertTrue(
+            any("exact-quote atom identity" in error for error in missing_quote),
+            missing_quote,
+        )
+
+        exact["source_quote_sha256"] = "a" * 64
+        legacy = self.valid_atoms()[1]
+        mixed = GATE.source_claim_atoms_validation_errors([exact, legacy])
+        self.assertIn(
+            "source_claim_atoms in one source item must use one identity schema",
+            mixed,
+        )
+
+    def test_exact_clause_identity_distinguishes_atoms_in_one_source_quote(self) -> None:
+        first = self.valid_atoms()[0]
+        first.update(
+            {
+                "identity_schema": 3,
+                "source_quote_sha256": "a" * 64,
+                "verbatim_source_clause": "The general cutoff conclusion.",
+            }
+        )
+        second = self.valid_atoms()[1]
+        second.update(
+            {
+                "identity_schema": 3,
+                "source_quote_sha256": "a" * 64,
+                "verbatim_source_clause": "The high-ratio uniqueness conclusion.",
+            }
+        )
+
+        first_sha = GATE.source_claim_atom_semantic_sha256(first)
+        second_sha = GATE.source_claim_atom_semantic_sha256(second)
+        self.assertTrue(first_sha)
+        self.assertTrue(second_sha)
+        self.assertNotEqual(first_sha, second_sha)
+        self.assertTrue(GATE.source_claim_atoms_semantic_sha256([first, second]))
+
+        renamed = dict(first)
+        renamed.update(
+            {
+                "id": "renamed-navigation-id",
+                "source_locator": "renamed-source.txt:40-41",
+                "semantic_claim": "Different curator wording for the same exact clause.",
+                "reviewed_lean_route": "Renamed.Namespace.Proof",
+            }
+        )
+        self.assertEqual(
+            first_sha,
+            GATE.source_claim_atom_semantic_sha256(renamed),
+        )
+
+        changed_clause = dict(first)
+        changed_clause["verbatim_source_clause"] = "A materially different clause."
+        self.assertNotEqual(
+            first_sha,
+            GATE.source_claim_atom_semantic_sha256(changed_clause),
+        )
+
+    def test_exact_clause_identity_requires_clause_and_forbids_it_in_schema_two(
+        self,
+    ) -> None:
+        exact_clause = self.valid_atoms()[0]
+        exact_clause.update(
+            {
+                "identity_schema": 3,
+                "source_quote_sha256": "a" * 64,
+            }
+        )
+        missing_clause = GATE.source_claim_atoms_validation_errors([exact_clause])
+        self.assertTrue(
+            any(
+                "verbatim_source_clause is required for exact-clause atom identity"
+                in error
+                for error in missing_clause
+            ),
+            missing_clause,
+        )
+
+        whole_quote = dict(exact_clause)
+        whole_quote["identity_schema"] = 2
+        whole_quote["verbatim_source_clause"] = "A clause is not valid in schema two."
+        wrong_schema = GATE.source_claim_atoms_validation_errors([whole_quote])
+        self.assertTrue(
+            any(
+                "verbatim_source_clause requires identity_schema 3" in error
+                for error in wrong_schema
+            ),
+            wrong_schema,
+        )
+
     def test_compound_theorem_fails_when_general_cutoff_atom_omits_route(self) -> None:
         atoms = self.valid_atoms()
         atoms[0].pop("reviewed_lean_route")
@@ -383,6 +499,45 @@ class SourceClaimAtomsTests(unittest.TestCase):
                     "source_claim_atoms": self.valid_atoms()[:1],
                 },
             )
+        )
+        self.assertFalse(
+            SOURCE_RECORD.source_claim_atom_authoritative_for_item(
+                statement_map,
+                {
+                    "source_kind": "theorem",
+                    "source_status": "support_only",
+                },
+            )
+        )
+
+    def test_support_only_theorem_is_not_forced_into_a_direct_claim_route(self) -> None:
+        """Support inventory is provenance, not a second source result endpoint."""
+
+        payload = self.map_payload(self.valid_atoms())
+        items = payload["items"]
+        assert isinstance(items, dict)
+        items["proof_support"] = {
+            "source_kind": "proposition",
+            "source_status": "support_only",
+            "source_location": "source.txt:1",
+            "statement": "An intermediate source proposition used only in the proof route.",
+            # Historic navigation must not become a direct theorem/Spec
+            # obligation simply because the source passage is byte-pinned.
+            "support_lean_declarations": ["Fixture.historic_support_name"],
+        }
+        self.write_map(payload)
+
+        messages = [finding.message for finding in self.route_findings()]
+        self.assertFalse(
+            any(
+                "proof_support" in message
+                and (
+                    "source inventory names" in message
+                    or "source-claim atom contract is malformed" in message
+                )
+                for message in messages
+            ),
+            messages,
         )
 
 

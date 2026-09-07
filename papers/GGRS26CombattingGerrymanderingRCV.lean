@@ -1,1 +1,2 @@
+import GGRS26CombattingGerrymanderingRCV.ProofInterface
 import GGRS26CombattingGerrymanderingRCV.PaperInterface

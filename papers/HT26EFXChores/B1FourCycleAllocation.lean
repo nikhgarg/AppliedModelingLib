@@ -12,7 +12,7 @@ Source: `EFXadditivechores.tex`, Case B.2.2(b), lines 2525--2542.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- Source Case B.2.2(b)'s four-cycle schedule with agent `0` long.  The
 four chores have types `(0,1)`, `(1,2)`, `(2,3)`, and `(0,3)` respectively.

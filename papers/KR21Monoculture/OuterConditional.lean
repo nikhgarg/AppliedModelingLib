@@ -1,9 +1,9 @@
 import KR21Monoculture.Distributional
 import KR21Monoculture.ConditionalForm
-import EconCSLib.Foundations.Probability.IndependentProduct
+import AppliedModelingLib.Foundations.Probability.IndependentProduct
 import Mathlib.Probability.Kernel.Composition.Prod
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 
 namespace KR21Monoculture
 namespace DistributionalAccuracyFamily
@@ -29,7 +29,7 @@ identity as an assumption.
 /-- The conditional pair law at one realized profile: two independent draws. -/
 noncomputable def independentPairLaw {n : ℕ} (F : DistributionalAccuracyFamily n)
     (theta : ℝ) (value : ValueProfile n) : PMF (RankingPair n) :=
-  EconCSLib.pmfProd (F.dist theta value) (F.dist theta value)
+  AppliedModelingLib.pmfProd (F.dist theta value) (F.dist theta value)
 
 /-- The iterated expectation in the outer-profile and conditional-pair experiment. -/
 noncomputable def outerPairExpected {n : ℕ} (F : DistributionalAccuracyFamily n)
@@ -66,7 +66,7 @@ theorem outerPairExpected_dirac {n : ℕ}
     (F : DistributionalAccuracyFamily n) (value : ValueProfile n)
     (theta : ℝ) (u : ValueProfile n → RankingPair n → ℝ) :
     F.outerPairExpected (Measure.dirac value) theta u =
-      EconCSLib.pmfPairExp (F.dist theta value) (F.dist theta value)
+      AppliedModelingLib.pmfPairExp (F.dist theta value) (F.dist theta value)
         (fun pi sigma => u value (pi, sigma)) := by
   unfold outerPairExpected outerExpected
   simp
@@ -105,7 +105,7 @@ theorem outerDisagreementConditionalGain_dirac {n : ℕ}
   rw [outerDisagreementProbability_dirac,
     outerDisagreementGainNumerator_dirac]
   rw [expectedRerankingGain_eq_pairIndicatorExp]
-  unfold EconCSLib.SocialChoice.Ranking.disagreementConditionalGain
+  unfold AppliedModelingLib.SocialChoice.Ranking.disagreementConditionalGain
   rfl
 
 /--
@@ -144,7 +144,7 @@ theorem measurable_independentPairLaw_toMeasure {n : ℕ}
   simp_rw [hmeasure]
   change Measurable (fun value =>
     ∑ pair : RankingPair n,
-      s.indicator (EconCSLib.pmfProd (F.dist theta value) (F.dist theta value)) pair)
+      s.indicator (AppliedModelingLib.pmfProd (F.dist theta value) (F.dist theta value)) pair)
   refine Finset.measurable_sum Finset.univ ?_
   intro pair _
   by_cases hpair : pair ∈ s
@@ -233,8 +233,8 @@ theorem integral_outerIndependentPairJointLaw_eq_outerPairExpected {n : ℕ}
   apply integral_congr_ae
   filter_upwards [] with value
   rw [independentPairKernel_apply]
-  rw [← EconCSLib.pmfExp_eq_integral_toMeasure]
-  exact EconCSLib.pmfExp_pmfProd_eq_pairExp
+  rw [← AppliedModelingLib.pmfExp_eq_integral_toMeasure]
+  exact AppliedModelingLib.pmfExp_pmfProd_eq_pairExp
     (F.dist theta value) (F.dist theta value) (u value)
 
 /-- The raw second-mover payoff when the two rankings are shared. -/
@@ -443,7 +443,7 @@ theorem outerPairExpected_eq_outerExpected_pairLaw {n : ℕ}
   unfold outerPairExpected outerExpected
   apply integral_congr_ae
   filter_upwards [] with value
-  exact (EconCSLib.pmfExp_pmfProd_eq_pairExp
+  exact (AppliedModelingLib.pmfExp_pmfProd_eq_pairExp
     (F.dist theta value) (F.dist theta value) (u value)).symm
 
 /-- The joint disagreement probability is the outer mean of the fiber probabilities. -/
@@ -464,7 +464,7 @@ theorem outerDisagreementGainNumerator_eq_outerExpected {n : ℕ}
   unfold outerDisagreementGainNumerator outerPairExpected outerExpected
   apply integral_congr_ae
   filter_upwards [] with value
-  simpa [EconCSLib.pmfPairIndicatorExp] using
+  simpa [AppliedModelingLib.pmfPairIndicatorExp] using
     (expectedRerankingGain_eq_pairIndicatorExp
       (μ := F.dist theta value) (value := value)).symm
 

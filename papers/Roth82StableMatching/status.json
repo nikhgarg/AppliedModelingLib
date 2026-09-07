@@ -16,7 +16,7 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 21,
+    "total_rows": 10,
     "uncertain_rows": 0
   },
   "human_summary": "",
@@ -29,11 +29,11 @@
   "open_source_boundaries": [],
   "paper_interface": {
     "declaration_rows": 121,
-    "line_count": 1666,
+    "line_count": 1676,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/Roth82StableMatching/PaperInterface.lean",
-    "review_rows": 42
+    "review_rows": 10
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/Roth82StableMatching/FINAL_VALIDATION_REPORT.md",
@@ -126,13 +126,6 @@
       "womenOptimal_formula"
     ],
     "include_names": [
-      "preferenceProfile_eq_source_definitionSpec",
-      "completeMarriageOutcome_iff_source_definitionSpec",
-      "sourceStableMarriage_iff_source_definitionSpec",
-      "fillsIndividualQuotas_iff_source_definitionSpec",
-      "sourceStableMatchingProcedure_iff_source_definitionSpec",
-      "truthfulForAllAgents_iff_source_definitionSpec",
-      "efficientMatchingProcedure_iff_source_definitionSpec",
       "theorem1_stable_outcome_existsSpec",
       "theorem2_side_optimal_stable_outcomesSpec",
       "theorem3_no_stable_truthful_procedureSpec",
@@ -142,11 +135,7 @@
       "lemma1_simple_report_same_partnerSpec",
       "lemma2_simple_report_harms_no_manSpec",
       "theorem6_no_outcome_strictly_better_for_all_menSpec",
-      "theorem7_later_choice_manipulation_unavoidableSpec",
-      "manReportStrictlyRanksPartnerFirst_iff_source_definitionSpec",
-      "matchingProcedure_eq_source_definitionSpec",
-      "sideOptimalStableOutcome_iff_source_definitionSpec",
-      "sourceMarriageModel_iff_source_definitionSpec"
+      "theorem7_later_choice_manipulation_unavoidableSpec"
     ],
     "llm_assumption_review": {
       "assumption_judgment_file": "papers/Roth82StableMatching/audit/assumption_match_llm.json",
@@ -171,34 +160,23 @@
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
       "require_explicit_source_routes": true,
       "require_source_claim_atoms": true,
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
       "review_surface_audit_file": "papers/Roth82StableMatching/audit/review_surface_llm.json",
       "surface_audit_threshold": 60,
       "surface_warning_threshold": 140
     },
     "paper_coverage_required": true,
     "proposition_spec_proofs": {
-      "completeMarriageOutcome_iff_source_definitionSpec": "completeMarriageOutcome_iff_source_definition",
       "corollary5_1_first_choice_need_not_be_misrepresentedSpec": "corollary5_1_first_choice_need_not_be_misrepresented",
-      "efficientMatchingProcedure_iff_source_definitionSpec": "efficientMatchingProcedure_iff_source_definition",
-      "fillsIndividualQuotas_iff_source_definitionSpec": "fillsIndividualQuotas_iff_source_definition",
       "lemma1_simple_report_same_partnerSpec": "lemma1_simple_report_same_partner",
       "lemma2_simple_report_harms_no_manSpec": "lemma2_simple_report_harms_no_man",
-      "manReportStrictlyRanksPartnerFirst_iff_source_definitionSpec": "manReportStrictlyRanksPartnerFirst_iff_source_definition",
-      "matchingProcedure_eq_source_definitionSpec": "matchingProcedure_eq_source_definition",
-      "preferenceProfile_eq_source_definitionSpec": "preferenceProfile_eq_source_definition",
-      "sideOptimalStableOutcome_iff_source_definitionSpec": "sideOptimalStableOutcome_iff_source_definition",
-      "sourceMarriageModel_iff_source_definitionSpec": "sourceMarriageModel_iff_source_definition",
-      "sourceStableMarriage_iff_source_definitionSpec": "sourceStableMarriage_iff_source_definition",
-      "sourceStableMatchingProcedure_iff_source_definitionSpec": "sourceStableMatchingProcedure_iff_source_definition",
       "theorem1_stable_outcome_existsSpec": "theorem1_stable_outcome_exists",
       "theorem2_side_optimal_stable_outcomesSpec": "theorem2_side_optimal_stable_outcomes",
       "theorem3_no_stable_truthful_procedureSpec": "theorem3_no_stable_truthful_procedure",
       "theorem4_efficient_truthful_procedure_existsSpec": "theorem4_efficient_truthful_procedure_exists",
       "theorem5_optimal_side_truthfulSpec": "theorem5_optimal_side_truthful",
       "theorem6_no_outcome_strictly_better_for_all_menSpec": "theorem6_no_outcome_strictly_better_for_all_men",
-      "theorem7_later_choice_manipulation_unavoidableSpec": "theorem7_later_choice_manipulation_unavoidable",
-      "truthfulForAllAgents_iff_source_definitionSpec": "truthfulForAllAgents_iff_source_definition"
+      "theorem7_later_choice_manipulation_unavoidableSpec": "theorem7_later_choice_manipulation_unavoidable"
     },
     "quarantined_auxiliary_names": [
       "ManyToManyQuotaAssignment",
@@ -296,52 +274,20 @@
     },
     "slices": [
       {
-        "id": "all",
+        "id": "additional_source_results",
         "names": [
-          "preferenceProfile_eq_source_definitionSpec",
-          "preferenceProfile_eq_source_definition",
-          "matchingProcedure_eq_source_definitionSpec",
-          "matchingProcedure_eq_source_definition",
-          "sourceMarriageModel_iff_source_definitionSpec",
-          "sourceMarriageModel_iff_source_definition",
-          "completeMarriageOutcome_iff_source_definitionSpec",
-          "completeMarriageOutcome_iff_source_definition",
-          "sourceStableMarriage_iff_source_definitionSpec",
-          "sourceStableMarriage_iff_source_definition",
-          "sideOptimalStableOutcome_iff_source_definitionSpec",
-          "sideOptimalStableOutcome_iff_source_definition",
-          "fillsIndividualQuotas_iff_source_definitionSpec",
-          "fillsIndividualQuotas_iff_source_definition",
-          "sourceStableMatchingProcedure_iff_source_definitionSpec",
-          "sourceStableMatchingProcedure_iff_source_definition",
-          "truthfulForAllAgents_iff_source_definitionSpec",
-          "truthfulForAllAgents_iff_source_definition",
-          "efficientMatchingProcedure_iff_source_definitionSpec",
-          "efficientMatchingProcedure_iff_source_definition",
-          "manReportStrictlyRanksPartnerFirst_iff_source_definitionSpec",
-          "manReportStrictlyRanksPartnerFirst_iff_source_definition",
           "theorem1_stable_outcome_existsSpec",
-          "theorem1_stable_outcome_exists",
           "theorem2_side_optimal_stable_outcomesSpec",
-          "theorem2_side_optimal_stable_outcomes",
           "theorem3_no_stable_truthful_procedureSpec",
-          "theorem3_no_stable_truthful_procedure",
           "theorem4_efficient_truthful_procedure_existsSpec",
-          "theorem4_efficient_truthful_procedure_exists",
           "theorem5_optimal_side_truthfulSpec",
-          "theorem5_optimal_side_truthful",
           "corollary5_1_first_choice_need_not_be_misrepresentedSpec",
-          "corollary5_1_first_choice_need_not_be_misrepresented",
           "lemma1_simple_report_same_partnerSpec",
-          "lemma1_simple_report_same_partner",
           "lemma2_simple_report_harms_no_manSpec",
-          "lemma2_simple_report_harms_no_man",
           "theorem6_no_outcome_strictly_better_for_all_menSpec",
-          "theorem6_no_outcome_strictly_better_for_all_men",
-          "theorem7_later_choice_manipulation_unavoidableSpec",
-          "theorem7_later_choice_manipulation_unavoidable"
+          "theorem7_later_choice_manipulation_unavoidableSpec"
         ],
-        "title": "Twenty-one normal source items as closed specification/proof pairs"
+        "title": "Additional source results"
       }
     ],
     "source_definition_names": [],

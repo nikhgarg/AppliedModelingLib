@@ -1,5 +1,6 @@
 import LBG24SpatialUnderreporting.PaperInterface
-import LBG24SpatialUnderreporting.ProofSupport
+import LBG24SpatialUnderreporting.ProofInterface
+import LBG24SpatialUnderreporting.ObservationEndpointFormulas
 import LBG24SpatialUnderreporting.StoppedPoisson
 import LBG24SpatialUnderreporting.CanonicalFirstReport
 import LBG24SpatialUnderreporting.CanonicalSelectedStart

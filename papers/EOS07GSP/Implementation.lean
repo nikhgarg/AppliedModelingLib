@@ -14,7 +14,7 @@ documentation.
 namespace EOS07GSP
 namespace PaperInterface
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 
 noncomputable section
 
@@ -35,9 +35,35 @@ def sourceDefinition4LocallyEnvyFree
       E.clickThroughRate (slotAtRank rank) *
           (values (bidderAtRank (rank + 1)) -
             (M bids).paymentPerClick (bidderAtRank rank)) ≤
-        E.clickThroughRate (slotAtRank (rank + 1)) *
-          (values (bidderAtRank (rank + 1)) -
-            (M bids).paymentPerClick (bidderAtRank (rank + 1)))
+            E.clickThroughRate (slotAtRank (rank + 1)) *
+              (values (bidderAtRank (rank + 1)) -
+                (M bids).paymentPerClick (bidderAtRank (rank + 1)))
+
+/--
+Project-approved corrected form of Definition 4 for markets with unassigned
+bidders.  The pinned source's displayed adjacent-rank condition is retained
+verbatim in `sourceDefinition4LocallyEnvyFree`.  The added final conjunct says
+that every unassigned bidder weakly prefers remaining unassigned (utility
+zero) to taking the bottom allocated slot at that slot's recorded payment.
+
+The universal quantifier is deliberate: merely checking the first unassigned
+bidder is insufficient without an independently established value ordering of
+all later unassigned bidders.  This is a formalization correction recorded in
+the validation materials, not a claim that the printed archival definition
+already contains this condition.
+-/
+def correctedDefinition4LocallyEnvyFree
+    {Bidder Slot : Type*} [DecidableEq Bidder]
+    (E : PositionEnvironment Slot) (M : PositionMechanism Bidder Slot)
+    (values bids : Bidder → ℝ) (allocatedPositions : ℕ)
+    (bidderAtRank : ℕ → Bidder) (slotAtRank : ℕ → Slot) : Prop :=
+  sourceDefinition4LocallyEnvyFree E M values bids allocatedPositions
+      bidderAtRank slotAtRank ∧
+    ∀ bidder : Bidder, (M bids).slotOf bidder = none →
+      ∀ rank : ℕ, rank + 1 = allocatedPositions →
+        E.clickThroughRate (slotAtRank rank) *
+            (values bidder -
+              (M bids).paymentPerClick (bidderAtRank rank)) ≤ 0
 
 /-- The paper's GSP truthfulness target for the concrete three-bidder/two-slot witness. -/
 abbrev gspDominantStrategyTruthful : Prop :=
@@ -57,6 +83,26 @@ abbrev stableAssignment {Bidder Slot : Type*}
     (values : Bidder → ℝ)
     (outcome : PositionOutcome Bidder Slot) : Prop :=
   outcome.StableAssignment environment values
+
+/--
+Project-approved Lemma 6 domain clarification.  The printed stable-assignment
+predicate permits a matched bidder to have zero utility.  At that boundary the
+Appendix bid construction can yield equal consecutive bids, although its
+random-tie implementation argument requires strict bids.  This amended
+predicate retains stability and requires every assigned bidder to have strictly
+positive realized utility.
+
+It is deliberately distinct from `stableAssignment`: this is a disclosed
+nondegeneracy condition for the repaired Lemma 6 route, not an assertion that
+the archival Shapley--Shubik stable-assignment definition was strict.
+-/
+def correctedLemma6StableAssignment {Bidder Slot : Type*}
+    (environment : PositionEnvironment Slot)
+    (values : Bidder → ℝ)
+    (outcome : PositionOutcome Bidder Slot) : Prop :=
+  outcome.StableAssignment environment values ∧
+    ∀ (bidder : Bidder) (slot : Slot), outcome.slotOf bidder = some slot →
+      0 < outcome.utility environment values bidder
 
 /-- The ranked `B*` bid displayed in Theorem 7. -/
 abbrev theorem7BStarBid

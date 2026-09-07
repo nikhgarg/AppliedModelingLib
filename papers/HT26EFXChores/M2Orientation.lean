@@ -1,4 +1,5 @@
-import EconCSLib
+import Mathlib
+import AppliedModelingLib.SocialChoice.FairDivision.Chores
 import HT26EFXChores.BalancedOrientation
 
 /-!
@@ -15,7 +16,7 @@ Source: `EFXadditivechores.tex`, Case 1 of Lemma M2, lines 1053--1080.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The small-item certificate in the M2-properties lemma is an immediate
 additive form of EFX: removing any owned small chore subtracts one. -/

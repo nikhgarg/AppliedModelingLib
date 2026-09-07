@@ -3,7 +3,7 @@ import KR21Monoculture.OuterRUMSourceConcentration
 import KR21Monoculture.OuterRUMTheorem1Positive
 import KR21Monoculture.OuterRUMSourceMonotonicity
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
 open scoped Topology
 
 namespace KR21Monoculture
@@ -27,9 +27,9 @@ theorem gaussianThreeCandidateRankingLaw_neg
   simp [gaussianThreeCandidateRankingLaw,
     theorem8GaussianDefinition2ScoreMeasureStd,
     theorem8GaussianPairMeasureStd,
-    EconCSLib.Probability.independentGaussianPairMeasureWithStd,
+    AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd,
     theorem8GaussianVarianceFromStd,
-    EconCSLib.Probability.gaussianVarianceFromStd]
+    AppliedModelingLib.Probability.gaussianVarianceFromStd]
 
 /-- At the totalized zero Gaussian accuracy, all scores equal their value
 coordinates and the induced PMF is the deterministic score ranking. -/
@@ -38,12 +38,12 @@ theorem gaussianThreeCandidateRankingLaw_zero
     gaussianThreeCandidateRankingLaw 0 x1 x2 x3 =
       PMF.pure (rum3RankByScores x1 x2 x3) := by
   unfold gaussianThreeCandidateRankingLaw rumRankingPMFOfMeasure
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
   simp [theorem8GaussianDefinition2ScoreMeasureStd,
     theorem8GaussianPairMeasureStd,
-    EconCSLib.Probability.independentGaussianPairMeasureWithStd,
+    AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd,
     theorem8GaussianVarianceFromStd,
-    EconCSLib.Probability.gaussianVarianceFromStd,
+    AppliedModelingLib.Probability.gaussianVarianceFromStd,
     Measure.dirac_prod_dirac]
   congr 1
 

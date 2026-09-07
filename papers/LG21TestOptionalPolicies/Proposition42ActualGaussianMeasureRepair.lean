@@ -1,4 +1,5 @@
 import LG21TestOptionalPolicies.ContinuousResampling
+import AppliedModelingLib.Foundations.Probability.GaussianSignalRCD
 import Mathlib.Probability.Kernel.Composition.Prod
 
 /-!
@@ -23,34 +24,168 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
+open AppliedModelingLib.Probability
 open MeasureTheory
 open ProbabilityTheory
 
 /--
-Conditional observed-score data for Proposition 4.2.
+Source Gaussian observed-score data for Proposition 4.2.
 
 `noAccessEstimateKernel` has domain `Base`, not `Base × ℝ`.  This makes the
 paper's information restriction explicit while allowing arbitrary randomized
-no-access policies.  The access-side construction below is only the
-mandatory/observed-score protocol; no theorem here asserts that a general
-optional-reporting equilibrium supplies that protocol.
+no-access policies.  Conditional on the first `K - 1` features, latent skill is
+Gaussian with the displayed base posterior mean and positive variance.  The
+test is an independent additive Gaussian observation with positive variance.
+The PBO coefficients and the two skill-indexed access estimate laws below are
+therefore derived from these source parameters rather than supplied as an
+arbitrary affine carrier.
 -/
 structure LG21P42ObservedScoreGaussianPBOModel (Base : Type*)
     [MeasurableSpace Base] where
+  /-- Posterior mean after the first `K - 1` Gaussian features. -/
+  basePosteriorMean : Base → ℝ
+  basePosteriorMean_measurable : Measurable basePosteriorMean
+  /-- Posterior variance after the first `K - 1` Gaussian features. -/
+  basePosteriorVariance : NNReal
+  basePosteriorVariance_pos : 0 < (basePosteriorVariance : ℝ)
+  latentSkillGivenBaseLaw : Base → Measure ℝ
+  latentSkillGivenBaseLaw_eq_gaussian :
+    forall base,
+      latentSkillGivenBaseLaw base =
+        gaussianReal (basePosteriorMean base) basePosteriorVariance
   /-- Variance of the independent test noise `epsilon_K`. -/
   testNoiseVariance : NNReal
   testNoiseVariance_pos : 0 < (testNoiseVariance : ℝ)
-  /-- Base-dependent intercept in the Gaussian posterior mean. -/
-  pboIntercept : Base → ℝ
-  pboIntercept_measurable : Measurable pboIntercept
-  /-- Coefficient on the observed test score in the Gaussian posterior mean. -/
-  pboSlope : Base → ℝ
-  pboSlope_measurable : Measurable pboSlope
-  /-- The optional test is informative in the source Gaussian model. -/
-  pboSlope_pos : ∀ base, 0 < pboSlope base
+  testScoreGivenSkillLaw : ℝ → Measure ℝ
+  testScoreGivenSkillLaw_eq_gaussian :
+    forall skill,
+      testScoreGivenSkillLaw skill = gaussianReal skill testNoiseVariance
   /-- Any deterministic or randomized no-access estimation policy. -/
   noAccessEstimateKernel : Kernel Base ℝ
   noAccessEstimateKernel_isMarkov : IsMarkovKernel noAccessEstimateKernel
+
+/-- Coefficient on the base posterior mean in the source Gaussian update. -/
+def LG21P42ObservedScoreGaussianPBOModel.pboIntercept
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base) : Base → ℝ :=
+  fun base =>
+    gaussianSignalPriorWeight (M.basePosteriorVariance : ℝ)
+      (M.testNoiseVariance : ℝ) * M.basePosteriorMean base
+
+/-- Coefficient on the observed score in the source Gaussian update. -/
+def LG21P42ObservedScoreGaussianPBOModel.pboSlope
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base) (_base : Base) : ℝ :=
+  gaussianSignalWeight (M.basePosteriorVariance : ℝ)
+    (M.testNoiseVariance : ℝ)
+
+theorem LG21P42ObservedScoreGaussianPBOModel.pboIntercept_measurable
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base) :
+    Measurable M.pboIntercept := by
+  unfold LG21P42ObservedScoreGaussianPBOModel.pboIntercept
+  exact measurable_const.mul M.basePosteriorMean_measurable
+
+theorem LG21P42ObservedScoreGaussianPBOModel.pboSlope_measurable
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base) :
+    Measurable M.pboSlope := measurable_const
+
+theorem LG21P42ObservedScoreGaussianPBOModel.pboSlope_pos
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base) (base : Base) :
+    0 < M.pboSlope base := by
+  unfold LG21P42ObservedScoreGaussianPBOModel.pboSlope gaussianSignalWeight
+  exact div_pos M.basePosteriorVariance_pos
+    (add_pos M.basePosteriorVariance_pos M.testNoiseVariance_pos)
+
+/-- Exact Gaussian law of latent skill after the first `K - 1` features. -/
+def lg21P42LatentSkillGivenBaseLaw
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base) (base : Base) : Measure ℝ :=
+  M.latentSkillGivenBaseLaw base
+
+/-- Exact Gaussian test law `theta_K | q = N(q, sigma_K^2)`. -/
+def lg21P42TestScoreGivenSkillLaw
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base) (skill : ℝ) : Measure ℝ :=
+  M.testScoreGivenSkillLaw skill
+
+/-- The paper's displayed conditional mean for an access student's estimate. -/
+def lg21P42SourceAccessEstimateMean
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base)
+    (base : Base) (skill : ℝ) : ℝ :=
+  (M.basePosteriorMean base / (M.basePosteriorVariance : ℝ) +
+      skill / (M.testNoiseVariance : ℝ)) /
+    (1 / (M.basePosteriorVariance : ℝ) +
+      1 / (M.testNoiseVariance : ℝ))
+
+/--
+The common variance printed for the two access groups in Proposition 4.2,
+written after the first `K - 1` features have been summarized by their
+posterior variance.
+-/
+def lg21P42SourceDisplayedAccessEstimateVariance
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base) : NNReal :=
+  NNReal.mk
+    ((1 / (M.basePosteriorVariance : ℝ) +
+        2 / (M.testNoiseVariance : ℝ)) /
+      (1 / (M.basePosteriorVariance : ℝ) +
+        1 / (M.testNoiseVariance : ℝ)) ^ 2)
+    (div_nonneg
+      (add_nonneg
+        (one_div_nonneg.mpr (le_of_lt M.basePosteriorVariance_pos))
+        (div_nonneg (by norm_num)
+          (le_of_lt M.testNoiseVariance_pos)))
+      (sq_nonneg _))
+
+/--
+The two source-displayed access-side estimate laws at a fixed base profile and
+latent skill.  Both use the same displayed variance, while their exact
+Gaussian-posterior means depend on skill.
+-/
+def lg21P42SourceAccessEstimateLaw
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base)
+    (base : Base) (skill : ℝ) : Measure ℝ :=
+  gaussianReal
+    (lg21P42SourceAccessEstimateMean M base skill)
+    (lg21P42SourceDisplayedAccessEstimateVariance M)
+
+/-- The displayed source mean is the usual affine Gaussian update. -/
+theorem lg21P42SourceAccessEstimateMean_eq_affine
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base)
+    (base : Base) (skill : ℝ) :
+    lg21P42SourceAccessEstimateMean M base skill =
+      M.pboIntercept base + M.pboSlope base * skill := by
+  unfold lg21P42SourceAccessEstimateMean
+    LG21P42ObservedScoreGaussianPBOModel.pboIntercept
+    LG21P42ObservedScoreGaussianPBOModel.pboSlope
+    gaussianSignalPriorWeight gaussianSignalWeight
+  have hv : (M.basePosteriorVariance : ℝ) ≠ 0 :=
+    ne_of_gt M.basePosteriorVariance_pos
+  have hn : (M.testNoiseVariance : ℝ) ≠ 0 :=
+    ne_of_gt M.testNoiseVariance_pos
+  have hsum : (M.basePosteriorVariance : ℝ) +
+      (M.testNoiseVariance : ℝ) ≠ 0 :=
+    ne_of_gt (add_pos M.basePosteriorVariance_pos M.testNoiseVariance_pos)
+  field_simp
+  ring
+
+/-- The displayed access estimate mean is strictly increasing in true skill. -/
+theorem lg21P42SourceAccessEstimateMean_strictMono
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base) (base : Base) :
+    StrictMono (lg21P42SourceAccessEstimateMean M base) := by
+  intro skillLow skillHigh hskill
+  rw [lg21P42SourceAccessEstimateMean_eq_affine,
+    lg21P42SourceAccessEstimateMean_eq_affine]
+  simpa [add_comm] using add_lt_add_left
+    (mul_lt_mul_of_pos_left hskill (M.pboSlope_pos base))
+    (M.pboIntercept base)
 
 /-- State after conditioning on a base profile and latent skill. -/
 abbrev LG21P42ApplicantState (Base : Type*) := Base × ℝ
@@ -254,6 +389,18 @@ theorem lg21P42AccessEstimateLaws_ne_of_skill_lt
         (M.pboIntercept base)
   exact (ne_of_lt hstrict) hmeans
 
+/-- Distinct skills yield distinct source Gaussian access estimate laws. -/
+theorem lg21P42SourceAccessEstimateLaws_ne_of_skill_lt
+    {Base : Type*} [MeasurableSpace Base]
+    (M : LG21P42ObservedScoreGaussianPBOModel Base) (base : Base)
+    {skillLow skillHigh : ℝ} (hskill : skillLow < skillHigh) :
+    lg21P42SourceAccessEstimateLaw M base skillLow ≠
+      lg21P42SourceAccessEstimateLaw M base skillHigh := by
+  intro hEq
+  have hmeans := (gaussianReal_ext_iff.mp hEq).1
+  exact (ne_of_lt (lg21P42SourceAccessEstimateMean_strictMono M base hskill))
+    hmeans
+
 /--
 Actual-kernel form of latent-skill fairness for the observed-score protocol.
 No-access output is deliberately independent of latent skill.
@@ -262,7 +409,7 @@ def lg21P42ObservedScoreLatentSkillFair
     {Base : Type*} [MeasurableSpace Base]
     (M : LG21P42ObservedScoreGaussianPBOModel Base) : Prop :=
   ∀ base skill,
-    lg21P42AccessEstimateKernel M (base, skill) =
+    lg21P42SourceAccessEstimateLaw M base skill =
       M.noAccessEstimateKernel base
 
 /-- The observed-score Gaussian PBO protocol is not latent-skill fair. -/
@@ -272,7 +419,7 @@ theorem paper_proposition4_2_actual_observed_score_not_latent_skill_fair_at
     {skillLow skillHigh : ℝ} (hskill : skillLow < skillHigh) :
     ¬ lg21P42ObservedScoreLatentSkillFair M := by
   intro hfair
-  apply lg21P42AccessEstimateLaws_ne_of_skill_lt M base hskill
+  apply lg21P42SourceAccessEstimateLaws_ne_of_skill_lt M base hskill
   exact (hfair base skillLow).trans (hfair base skillHigh).symm
 
 /--

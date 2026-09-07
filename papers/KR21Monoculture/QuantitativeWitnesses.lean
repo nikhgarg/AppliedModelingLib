@@ -2,7 +2,7 @@ import KR21Monoculture.Kendall
 import KR21Monoculture.WelfareDecomposition
 import Mathlib.Tactic.NormNum
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -1239,17 +1239,17 @@ theorem expectedWelfareShared_add_const {n : ℕ}
     expectedWelfareShared mu (fun c => value c + shift) =
       expectedWelfareShared mu value + 2 * shift := by
   unfold expectedWelfareShared
-    EconCSLib.SocialChoice.Ranking.expectedWelfareShared
+    AppliedModelingLib.SocialChoice.Ranking.expectedWelfareShared
   rw [show
     (fun pi =>
-      EconCSLib.SocialChoice.Ranking.welfareOrdered
+      AppliedModelingLib.SocialChoice.Ranking.welfareOrdered
         (fun c => value c + shift) pi pi) =
       (fun pi =>
-        EconCSLib.SocialChoice.Ranking.welfareOrdered value pi pi +
+        AppliedModelingLib.SocialChoice.Ranking.welfareOrdered value pi pi +
           2 * shift) by
       funext pi
-      simp [EconCSLib.SocialChoice.Ranking.welfareOrdered,
-        EconCSLib.SocialChoice.Ranking.secondMoverUtility]
+      simp [AppliedModelingLib.SocialChoice.Ranking.welfareOrdered,
+        AppliedModelingLib.SocialChoice.Ranking.secondMoverUtility]
       ring]
   rw [pmfExp_add]
   simp
@@ -1261,7 +1261,7 @@ theorem expectedWelfareOrdered_add_const {n : ℕ}
     expectedWelfareOrdered muSecond muFirst (fun c => value c + shift) =
       expectedWelfareOrdered muSecond muFirst value + 2 * shift := by
   unfold expectedWelfareOrdered
-    EconCSLib.SocialChoice.Ranking.welfareOrdered
+    AppliedModelingLib.SocialChoice.Ranking.welfareOrdered
   have hintegrand :
       (fun pi sigma =>
         (value (firstChoice sigma) + shift) +

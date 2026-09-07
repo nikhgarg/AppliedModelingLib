@@ -1,8 +1,8 @@
 import KR21Monoculture.Distributional
 import KR21Monoculture.MallowsFamily
-import EconCSLib.Foundations.Probability.IndependentProduct
+import AppliedModelingLib.Foundations.Probability.IndependentProduct
 
-open EconCSLib MeasureTheory
+open AppliedModelingLib MeasureTheory
 
 namespace KR21Monoculture
 
@@ -70,9 +70,9 @@ theorem integrable_pmfPairExp_valueSelection
     (select : α → β → Candidate n)
     (hvalue : ∀ c : Candidate n, Integrable (fun value : ValueProfile n => value c) D) :
     Integrable (fun value => pmfPairExp mu nu (fun a b => value (select a b))) D := by
-  have h := integrable_pmfExp_valueSelection D (EconCSLib.pmfProd mu nu)
+  have h := integrable_pmfExp_valueSelection D (AppliedModelingLib.pmfProd mu nu)
     (fun pair => select pair.1 pair.2) hvalue
-  simpa only [EconCSLib.pmfExp_pmfProd_eq_pairExp, Prod.fst, Prod.snd] using h
+  simpa only [AppliedModelingLib.pmfExp_pmfProd_eq_pairExp, Prod.fst, Prod.snd] using h
 
 /-- Finite independent-pair PMF expectation commutes with the outer integral
 for a selected candidate coordinate. -/
@@ -84,9 +84,9 @@ theorem integral_pmfPairExp_valueSelection_eq_outerMean
     (hvalue : ∀ c : Candidate n, Integrable (fun value : ValueProfile n => value c) D) :
     (∫ value, pmfPairExp mu nu (fun a b => value (select a b)) ∂D) =
       pmfPairExp mu nu (fun a b => outerMeanValue D (select a b)) := by
-  have h := integral_pmfExp_valueSelection_eq_outerMean D (EconCSLib.pmfProd mu nu)
+  have h := integral_pmfExp_valueSelection_eq_outerMean D (AppliedModelingLib.pmfProd mu nu)
     (fun pair => select pair.1 pair.2) hvalue
-  simpa only [EconCSLib.pmfExp_pmfProd_eq_pairExp, Prod.fst, Prod.snd] using h
+  simpa only [AppliedModelingLib.pmfExp_pmfProd_eq_pairExp, Prod.fst, Prod.snd] using h
 
 /-- The outer first-mover payoff under a fixed ranking law is exactly the
 first-mover payoff of the coordinatewise mean profile. -/
@@ -144,8 +144,8 @@ theorem integrable_pmfPairExp_outerValueSelection
     Integrable (fun omega =>
       pmfPairExp mu nu (fun a b => value omega (select a b))) D := by
   have h := integrable_pmfExp_outerValueSelection D value
-    (EconCSLib.pmfProd mu nu) (fun pair => select pair.1 pair.2) hvalue
-  simpa only [EconCSLib.pmfExp_pmfProd_eq_pairExp, Prod.fst, Prod.snd] using h
+    (AppliedModelingLib.pmfProd mu nu) (fun pair => select pair.1 pair.2) hvalue
+  simpa only [AppliedModelingLib.pmfExp_pmfProd_eq_pairExp, Prod.fst, Prod.snd] using h
 
 /-- A source-faithful outer-D Mallows condition bridge.  Fixed Mallows laws are
 independent of the realized cardinal value profile, so coordinatewise
@@ -169,7 +169,7 @@ theorem theorem3_mallows_outer_conditions_of_coordinate_integrable
         ∫ omega, expectedSecondMoverIndependent
           C.human.law C.human.law (value omega) ∂D := by
   constructor
-  · exact EconCSLib.integral_lt_integral_of_forall_lt D
+  · exact AppliedModelingLib.integral_lt_integral_of_forall_lt D
       (integrable_pmfExp_outerValueSelection D value C.algorithm.law secondChoice hvalue)
       (integrable_pmfPairExp_outerValueSelection D value C.algorithm.law
         C.algorithm.law
@@ -178,7 +178,7 @@ theorem theorem3_mallows_outer_conditions_of_coordinate_integrable
         (C.theorem3_pointwise_of_rankFactorization
           (hstrict omega) hn C.algorithm.rankFactorization C.human.rankFactorization
           halg_q_lt_one hhuman_q_lt_one hq_lt).1)
-  · exact EconCSLib.integral_lt_integral_of_forall_lt D
+  · exact AppliedModelingLib.integral_lt_integral_of_forall_lt D
       (integrable_pmfPairExp_outerValueSelection D value C.human.law
         C.algorithm.law
         (fun second first => bestRemainingAfter second (firstChoice first)) hvalue)

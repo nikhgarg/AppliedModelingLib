@@ -358,7 +358,7 @@ theorem strictQuasiConvex_positiveZero_eq_left_or_right
   rcases lt_trichotomy point left with hpoint_left | hpoint_eq_left | hleft_point
   · exfalso
     have hstrict :=
-      EconCSLib.StrictQuasiConvexOnPositive.lt_of_between hquasi
+      AppliedModelingLib.StrictQuasiConvexOnPositive.lt_of_between hquasi
         hpoint.1 hpoint_left hleft_right
     rw [hleft.2, hright.2, hpoint.2] at hstrict
     norm_num at hstrict
@@ -366,14 +366,14 @@ theorem strictQuasiConvex_positiveZero_eq_left_or_right
   · rcases lt_trichotomy point right with hpoint_right | hpoint_eq_right | hright_point
     · exfalso
       have hstrict :=
-        EconCSLib.StrictQuasiConvexOnPositive.lt_of_between hquasi
+        AppliedModelingLib.StrictQuasiConvexOnPositive.lt_of_between hquasi
           hleft.1 hleft_point hpoint_right
       rw [hleft.2, hright.2, hpoint.2] at hstrict
       norm_num at hstrict
     · exact Or.inr hpoint_eq_right
     · exfalso
       have hstrict :=
-        EconCSLib.StrictQuasiConvexOnPositive.lt_of_between hquasi
+        AppliedModelingLib.StrictQuasiConvexOnPositive.lt_of_between hquasi
           hleft.1 hleft_right hright_point
       rw [hleft.2, hright.2, hpoint.2] at hstrict
       norm_num at hstrict
@@ -391,7 +391,7 @@ theorem strictQuasiConcave_positiveZero_eq_left_or_right
   rcases lt_trichotomy point left with hpoint_left | hpoint_eq_left | hleft_point
   · exfalso
     have hstrict :=
-      EconCSLib.StrictQuasiConcaveOnPositive.lt_between hquasi
+      AppliedModelingLib.StrictQuasiConcaveOnPositive.lt_between hquasi
         hpoint.1 hpoint_left hleft_right
     rw [hleft.2, hright.2, hpoint.2] at hstrict
     norm_num at hstrict
@@ -399,14 +399,14 @@ theorem strictQuasiConcave_positiveZero_eq_left_or_right
   · rcases lt_trichotomy point right with hpoint_right | hpoint_eq_right | hright_point
     · exfalso
       have hstrict :=
-        EconCSLib.StrictQuasiConcaveOnPositive.lt_between hquasi
+        AppliedModelingLib.StrictQuasiConcaveOnPositive.lt_between hquasi
           hleft.1 hleft_point hpoint_right
       rw [hleft.2, hright.2, hpoint.2] at hstrict
       norm_num at hstrict
     · exact Or.inr hpoint_eq_right
     · exfalso
       have hstrict :=
-        EconCSLib.StrictQuasiConcaveOnPositive.lt_between hquasi
+        AppliedModelingLib.StrictQuasiConcaveOnPositive.lt_between hquasi
           hleft.1 hleft_right hright_point
       rw [hleft.2, hright.2, hpoint.2] at hstrict
       norm_num at hstrict
@@ -1119,7 +1119,7 @@ theorem ordConnected_lemma5PositiveResponsePolicy_of_strictQuasiConcave
   intro left hleft right hright hleft_right point hpoint
   refine ⟨lt_trans hleft.1 hpoint.1, ?_⟩
   have hstrict :=
-    EconCSLib.StrictQuasiConcaveOnPositive.lt_between hquasi
+    AppliedModelingLib.StrictQuasiConcaveOnPositive.lt_between hquasi
       hleft.1 hpoint.1 hpoint.2
   exact lt_trans (lt_min hleft.2 hright.2) hstrict
 
@@ -1150,7 +1150,7 @@ theorem ordConnected_lemma5NonpositiveResponsePolicy_of_strictQuasiConvex
   intro left hleft right hright hleft_right point hpoint
   refine ⟨lt_trans hleft.1 hpoint.1, ?_⟩
   have hstrict :=
-    EconCSLib.StrictQuasiConvexOnPositive.lt_of_between hquasi
+    AppliedModelingLib.StrictQuasiConvexOnPositive.lt_of_between hquasi
       hleft.1 hpoint.1 hpoint.2
   exact le_trans (le_of_lt hstrict) (max_le hleft.2 hright.2)
 

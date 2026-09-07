@@ -17,7 +17,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib Probability MeasureTheory ProbabilityTheory Set
 
 /-- A report-required candidate's no-take branch satisfies the literal
 best-response condition only when almost every member of that positive branch

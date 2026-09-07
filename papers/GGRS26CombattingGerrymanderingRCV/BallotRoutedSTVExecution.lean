@@ -10,7 +10,7 @@ terminal execution needed to make universal outcome theorems nonvacuous.
 
 namespace GGRS26CombattingGerrymanderingRCV
 
-open EconCSLib.SocialChoice.Voting
+open AppliedModelingLib.SocialChoice.Voting
 
 variable {Voter Candidate : Type*} [DecidableEq Voter] [DecidableEq Candidate]
 variable {voters : Finset Voter} {initialCandidates : Finset Candidate}

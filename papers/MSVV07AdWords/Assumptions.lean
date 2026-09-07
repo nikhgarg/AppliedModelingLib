@@ -10,7 +10,7 @@ Theorem 8 and Sections 6/8, not proof certificates.
 
 open scoped BigOperators
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Online
 namespace MSVV07PaperFacing
 
@@ -19,14 +19,6 @@ namespace MSVV07PaperFacing
 abbrev assumption_nonnegative_bids
     {Advertiser Query : Type*} (I : Proof.PaperInstance Advertiser Query) : Prop :=
   I.NonnegativeBids
-
-/-- The finite query history enumerates the finite query set exactly once. -/
--- audit-premise: hnodup : history.Nodup
--- audit-premise: hcover : AdWordsInstance.historyFinset history = Finset.univ
-abbrev assumption_full_distinct_query_history
-    {Query : Type*} [Fintype Query] [DecidableEq Query]
-    (history : List Query) : Prop :=
-  history.Nodup ∧ AdWordsInstance.historyFinset history = Finset.univ
 
 /-- The explicit finite-error theorem uses an epsilon in `[0,1]`. -/
 -- audit-premise: hepsilon : 0 ≤ epsilon
@@ -85,4 +77,4 @@ abbrev assumption_weighted_effective_small_bids
 
 end MSVV07PaperFacing
 end Online
-end EconCSLib
+end AppliedModelingLib

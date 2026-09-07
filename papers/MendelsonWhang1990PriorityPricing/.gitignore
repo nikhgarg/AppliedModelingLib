@@ -1,0 +1,14 @@
+source-audited*
+*.pdf
+!docs/DependencyDAG.pdf
+!docs/HUMAN_REVIEW_PACKET.pdf
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+# The byte-pinned private source record below is the exact PDF and retained
+# layout transcript used by the source-first review.
+!sources/
+!sources/mendelson_whang_1990_priority_pricing.pdf
+!sources/mendelson_whang_1990_priority_pricing.txt

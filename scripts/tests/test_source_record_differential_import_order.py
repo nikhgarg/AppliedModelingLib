@@ -49,8 +49,8 @@ class SourceRecordDifferentialImportOrderTests(unittest.TestCase):
             ["scripts.source_record_current_revalidation", "scripts.audit_repository"]
         )
 
-    def test_audit_consumers_bind_canonical_differential_module(self) -> None:
-        """A prior direct-script import must not split authenticated item types."""
+    def test_overlay_union_ignores_prior_direct_script_import(self) -> None:
+        """A prior direct import cannot redirect the canonical lazy loader."""
 
         environment = dict(os.environ)
         existing = environment.get("PYTHONPATH")
@@ -65,9 +65,13 @@ from scripts import source_record_differential_revalidation as canonical
 from scripts import audit_conclusion_provenance
 from scripts import audit_evidence_integrity
 from scripts import audit_repository
+from scripts import source_record_authenticated_overlay_union as overlay_union
 for consumer in (audit_conclusion_provenance, audit_evidence_integrity, audit_repository):
-    assert consumer.load_current_source_record_differential_revalidation_items is canonical.load_current_source_record_differential_revalidation_items
-    assert consumer.is_loaded_source_record_differential_revalidation_item is canonical.is_loaded_source_record_differential_revalidation_item
+    assert not hasattr(consumer, 'load_current_source_record_differential_revalidation_items')
+    assert not hasattr(consumer, 'is_loaded_source_record_differential_revalidation_item')
+modules = overlay_union._overlay_modules(('differential',))
+assert modules['differential'] is canonical
+assert modules['differential'] is not source_record_differential_revalidation
 """
         result = subprocess.run(
             [sys.executable, "-c", script],

@@ -350,14 +350,10 @@ class ManualComplementTests(unittest.TestCase):
 
     def _overlays(self, *keys: str) -> dict[str, dict[str, dict[str, object]]]:
         return {
-            "scoped_receipt": {},
-            "attested_selected": {
+            "differential": {
                 key: {"classification": "validated_source_assumption"}
                 for key in keys
             },
-            "schema4_to5": {},
-            "differential": {},
-            "historical_descriptor": {},
             "semantic_rebind": {},
         }
 
@@ -522,12 +518,8 @@ class ManualComplementTests(unittest.TestCase):
         self.assertEqual(
             template["authenticated_overlay_current_keys"],
             {
-                "attested_selected": ["current_overlay : P"],
-                "differential": [],
-                "historical_descriptor": [],
+                "differential": ["current_overlay : P"],
                 "semantic_rebind": [],
-                "schema4_to5": [],
-                "scoped_receipt": [],
             },
         )
 
@@ -561,10 +553,6 @@ class ManualComplementTests(unittest.TestCase):
 
         overlays = self._overlays()
         key = "current_overlay : P"
-        overlays["scoped_receipt"][key] = {"classification": "scoped"}
-        overlays["attested_selected"][key] = {"classification": "selected"}
-        overlays["historical_descriptor"][key] = {"classification": "historical"}
-        overlays["schema4_to5"][key] = {"classification": "migration"}
         overlays["differential"][key] = {"classification": "differential"}
         overlays["semantic_rebind"][key] = {"classification": "rebind"}
 
@@ -574,10 +562,10 @@ class ManualComplementTests(unittest.TestCase):
         ):
             COMPLEMENT._effective_overlay_items(overlays)
 
-    def test_new_component_projection_lane_is_included_without_lane_policy(self) -> None:
+    def test_new_authenticated_lane_is_included_without_lane_policy(self) -> None:
         overlays = self._overlays()
-        overlays["component_projection"] = {
-            "current_overlay : P": {"classification": "projected_component"}
+        overlays["fixture_extra"] = {
+            "current_overlay : P": {"classification": "fixture_extra"}
         }
         with patch.object(
             COMPLEMENT,
@@ -593,7 +581,7 @@ class ManualComplementTests(unittest.TestCase):
             set(records), {"current_manual_a : P", "current_manual_b : P"}
         )
         self.assertEqual(
-            template["authenticated_overlay_current_keys"]["component_projection"],
+            template["authenticated_overlay_current_keys"]["fixture_extra"],
             ["current_overlay : P"],
         )
 
@@ -640,27 +628,6 @@ class ManualComplementTests(unittest.TestCase):
                 ),
                 "manual-complement template does not equal the live current queue",
             )
-
-    def test_authenticated_scoped_receipt_is_excluded_from_manual_complement(self) -> None:
-        overlays = self._overlays()
-        overlays["scoped_receipt"] = {
-            "current_overlay : P": {"classification": "validated_source_assumption"}
-        }
-        with patch.object(
-            COMPLEMENT,
-            "_authenticated_overlay_items",
-            return_value=overlays,
-        ):
-            template = COMPLEMENT.manual_current_complement_template(
-                self.raw, paper=PAPER, paper_dir=self.paper_dir
-            )
-        records = template["manual_current_groups"]
-        assert isinstance(records, dict)
-        self.assertNotIn("current_overlay : P", records)
-        self.assertEqual(
-            template["authenticated_overlay_current_keys"]["scoped_receipt"],
-            ["current_overlay : P"],
-        )
 
     def test_strict_full_spec_runtime_coverage_removes_only_complete_raw_groups(
         self,
@@ -1830,6 +1797,39 @@ class ManualComplementTests(unittest.TestCase):
         self.assertIn("semantic-model::fixture-direct-model", records)
         self.assertIn("Fixture.DirectSourceModel.kernel", records)
         self.assertIn("Fixture.DirectSourceModel.kernel_isMarkov", records)
+
+    def test_explicit_parent_classification_is_complete_before_materialization(
+        self,
+    ) -> None:
+        raw = closure_candidate_raw_audit(explicit_parent_route_field=True)
+        with patch.object(
+            COMPLEMENT,
+            "_authenticated_overlay_items",
+            return_value=self._overlays(),
+        ):
+            template = COMPLEMENT.manual_current_complement_template(
+                raw, paper=PAPER, paper_dir=self.paper_dir
+            )
+            completed = self._complete(template)
+        entry = completed["manual_current_groups"]["Fixture.DirectSourceModel.kernel"]
+        response = entry["response"]
+        response["classification"] = "approved_source_convention"
+        self.assertIn(
+            "lacks its exact convention id/hash",
+            COMPLEMENT._completed_review_entry_error(
+                entry, label="explicit parent fixture"
+            ),
+        )
+        response["model_convention_ids"] = ["fixture-convention"]
+        response["model_convention_sha256_by_id"] = {
+            "fixture-convention": digest("9")
+        }
+        self.assertEqual(
+            COMPLEMENT._completed_review_entry_error(
+                entry, label="explicit parent fixture"
+            ),
+            "",
+        )
 
     def test_closure_template_rejects_missing_attestation_and_ambiguous_parent(self) -> None:
         raw = closure_candidate_raw_audit()

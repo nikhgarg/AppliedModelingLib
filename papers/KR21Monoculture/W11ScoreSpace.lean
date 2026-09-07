@@ -5,7 +5,7 @@ import Mathlib.MeasureTheory.Integral.Prod
 import Mathlib.MeasureTheory.Function.AEEqOfIntegral
 import Mathlib.Analysis.Convolution
 
-open EconCSLib MeasureTheory Filter
+open AppliedModelingLib MeasureTheory Filter
 open scoped Topology ENNReal
 
 namespace KR21Monoculture

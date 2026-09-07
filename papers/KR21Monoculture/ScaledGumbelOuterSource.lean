@@ -1,7 +1,7 @@
 import KR21Monoculture.GumbelPlackettLuceExact
 import KR21Monoculture.PlackettLuceOuterSource
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 
 namespace KR21Monoculture
 

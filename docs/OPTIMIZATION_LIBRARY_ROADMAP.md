@@ -2,12 +2,12 @@
 
 This tracks reusable optimization work suggested by the current paper queue.
 The goal is the same as the probability roadmap: move recurring proof seams
-into `EconCSLib` once they are plausibly useful for a second paper, while
+into `AppliedModelingLib` once they are plausibly useful for a second paper, while
 leaving source-specific objectives and notation in `papers/`.
 
 ## Current Entrypoint
 
-- `EconCSLib.Foundations.Optimization`
+- `AppliedModelingLib.Foundations.Optimization`
   - `Approximation`: primal-dual/benchmark sandwich certificates for
     approximation and competitive-ratio proofs, including additive-error
     variants.
@@ -123,7 +123,7 @@ Auction-specific notes:
   `UpperBoundCertificate`, `LowerBoundCertificate`, finite-search, and
   threshold-prefix lemmas than as a generic BFS framework.
 - MSVV Theorem 9 and similar auction lower bounds should use the generic Yao
-  layer in `EconCSLib.Algorithms.Complexity.Yao`, especially
+  layer in `AppliedModelingLib.Algorithms.Complexity.Yao`, especially
   `RandomizedUpperPayoffCertificate`, before adding paper-specific permutation
   or layer-count fields.
 - LOS combinatorial auctions likely need monotonicity/critical-value and greedy

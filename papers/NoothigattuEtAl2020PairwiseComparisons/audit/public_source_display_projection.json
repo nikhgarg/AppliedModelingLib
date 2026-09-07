@@ -1,0 +1,254 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "NoothigattuEtAl2020PairwiseComparisons",
+  "private_source_map_sha256": "e61a5977e09201b46b71e95aa32e8f1e953efdb304102595ac380fe34694e661",
+  "public_manifest_path": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "591642ce96184762473ff7f815ee4b93504300d69a5215ce91c914485d31036f",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "claimA_1",
+    "claimC_1",
+    "definition3_1",
+    "definition4_1",
+    "definition5_1",
+    "definition6_1",
+    "lemma2_1",
+    "lemma2_2",
+    "lemma2_3",
+    "lemma2_4",
+    "theorem3_2",
+    "theorem4_2",
+    "theorem5_3",
+    "theorem6_3"
+  ],
+  "selected_source_items": {
+    "claimA_1": {
+      "source_anchors": [
+        {
+          "line_end": 784,
+          "line_start": 780,
+          "publication_locator": "cited publication",
+          "quoted_text": "Claim A.1 (Coin flip likelihood). For h, t > 0 and p 2 (0, 1), the function f (p) = h · log(p) + t ·\nlog(1 p) is strictly concave with the maximum uniquely attained at\n                                                                  h\n                                                          p̂ =\n                                                                 h+t",
+          "quoted_text_sha256": "5b46f9f2e8980537e2cc7c2a73d0d329a54075a727dbcff64bd932301b053cb4"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "claimC_1": {
+      "source_anchors": [
+        {
+          "line_end": 1055,
+          "line_start": 1055,
+          "publication_locator": "cited publication",
+          "quoted_text": "Claim C.1. Let c, d, e, f > 0 such that c > d and e > f . Then ce + df > cf + de.",
+          "quoted_text_sha256": "82a346db3e3ba45710e7375c9ba863dcce9aae9050ca94f99be02dd3bd0d669e"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "definition3_1": {
+      "source_anchors": [
+        {
+          "line_end": 265,
+          "line_start": 256,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 3.1 (Pareto efficiency). Suppose a, b 2 X satisfy #{a          b} > #{b      a}, and are such\nthat for every other alternative x 2 X \\ {a, b}, we have\n                     #{a        x} > #{b    x}    and     #{x    a} < #{x         b}.\n\nThen, for every MLE ˆ, Pareto efficiency requires that ˆa       ˆb .\n\nTo see that this definition captures the desired behavior in the multi-agent case, note that if ai > bi ,\nthen the dataset #i satisfies the condition of Definition 3.1 with high probability as weP     grow the\nnumber of comparisons in #i , and similarly the condition holds for the pooled dataset # = i2R #i .\nThis version of Pareto efficiency is feasible; in fact, it is satisfied by most random utility models.",
+          "quoted_text_sha256": "5021125efb41532a66ebe8cf809492acfb10d7ac6da1295dc8e105817aed5fcf"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition4_1": {
+      "source_anchors": [
+        {
+          "line_end": 308,
+          "line_start": 280,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 4.1 (Monotonicity). Suppose that # and #̃ are two datasets with unique MLEs ˆ and ˜.\nSuppose that #̃{x y} = #{x y} for all x, y 2 X except that #̃{a                   b} > #{a     b}. Then,\nmonotonicity requires that for all x 2 X ,\n                           ˜a     ˜x   ˆa    ˆx    and    ˜b    ˜x  ˆb    ˆx .\n\nEquivalently, monotonicity requires that if #{a b} decreases, then a becomes weaker relative to\nother alternatives, and b becomes stronger. We can interpret monotonicity as guaranteeing a kind of\nparticipation incentive: If we ask an agent to compare a to b, the agent is assured that the answer can\nonly influence our inferred utilities in the desired direction.\n\n\n                                                    5\n\f \u0001\u0002\u0006\n                                                      d     \u0001\u0002\u0007                                                  d     \u0001\u0002\u0006\n \u0001\u0002\u0003\n                                                            \u0001\u0002\u0001                                                  a     \u0001\u0002\u0001                                                   a\n \u0001\u0002\u0004\n                                                           -\u0001\u0002\u0007                                                       -\u0001\u0002\u0006                                                   c#\n \u0001\u0002\u0005\n                                                           -\u0001\u0002\u0006                                                  b\"                                                          b\"\n \u0001\u0002\u0001                                                  a    -\u0001\u0002\u0005\n                                                                                                                      -\u0001\u0002\u0005\n                                                                                                                                                                             d\n-\u0001\u0002\u0005\n                                                      b\"   -\u0001\u0002\u0004                                                  c#   -\u0001\u0002\u0004\n-\u0001\u0002\u0004\n                                                           -\u0001\u0002\u0003                                                       -\u0001\u0002\u0003\n-\u0001\u0002\u0003                                                  c#\n       (17, 86, 38, 56, , 4, 19, 89, 1, 67, 83, 34)               (95, 74, 36, 53, , 39, 62, 48, 1, 30, 77, 8)               (63, 54, 12, 19, , 54, 57, 80, 49, 7, 50, 20)",
+          "quoted_text_sha256": "42024ee058fc03d87e348d1d40afeb7c45a66f63c62753e2da29ed9098626a55"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition5_1": {
+      "source_anchors": [
+        {
+          "line_end": 387,
+          "line_start": 380,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 5.1. Suppose it is possible to label alternatives as X = {x1 , . . . , xm } such that whenever\ni < j, it holds that #{xi       xj } > #{xj        xi }. Then, pairwise majority consistency (PMC)\n                              ˆ\nrequires that for every MLE , it holds that xiˆ       ˆx for all i < j.\n                                                        j\n\n\nIn contrast to our previous properties, PMC is violated by random utility models.",
+          "quoted_text_sha256": "9d25a9171f8d9a7675babd4807099c0b966014442764bab32374288969cd31a3"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition6_1": {
+      "source_anchors": [
+        {
+          "line_end": 467,
+          "line_start": 459,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 6.1. Consider two datasets #1 and #2 , and let ˆ1 and ˆ2 be MLEs. Suppose there exist\ntwo alternatives a, b 2 X such that ˆa1 > ˆb1 and ˆa2 > ˆb2 . Separability requires that for every\nMLE ˆ for the pooled dataset # = #1 + #2 , it also holds that ˆa > ˆb .\n\nSeparability is also called consistency, and seems particularly desirable in cases where we combine\npairwise comparisons from different sources. While perhaps on first glance innocuous, separability is\nan extremely strong requirement, and few rules satisfy it; one can prove in general that separability\nconstrains rules to be linear [Myerson, 1995]. Since likelihood maximization is not linear, it is no\nsurprise that MLEs for random utility models fail separability.",
+          "quoted_text_sha256": "491c92112c2d5c61be671849a26a0fd47b258607c86a0fd1bebfc82874c3085a"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "lemma2_1": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 193,
+              "line_start": 126,
+              "publication_locator": "cited publication",
+              "quoted_text": "2       Model\n\nLet X be a finite set of alternatives. For notational simplicity, we let X 2 = {(x, y) : x, y 2 X , x 6= y}\ndenote the set of distinct pairs of alternatives. Let # : X 2 ! N be a dataset of pairwise comparisons\nbetween alternatives: For x, y 2 X , #{x y} is the number of times x beat y in the dataset.\nThe (pairwise) comparison graph G# = (X , E) with respect to dataset # is the directed graph with\nthe alternatives X as the vertices, and edges E such that there exists a directed edge (u, v) 2 E iff\n#{u      v} > 0. We say that G# is connected if its undirected form is connected, and we call it\nstrongly connected if for all (x, y) 2 X 2 , there is a directed path from x to y in G# .\nGiven a dataset, our goal is to learn a random utility model (RUM). A random utility model specifies,\nfor any two distinct alternatives x, y 2 X , the probability that when asking the decision maker to\ncompare x and y, the answer will be x > y. (Due to noise, when repeatedly querying the same\npair, we may see different answers.) For us, a random utility model is parameterized by a vector\n  2 RX , where x is an unknown utility value for x 2 X . When we ask for a comparison between\ntwo alternatives x, y 2 X , we model the decision maker as sampling noisy utilities u(x) and u(y)\nfrom distributions parameterized by (and typically centered at) x and y . Then, the decision maker\nreports the comparison x > y iff u(x) > u(y).\nIn this paper, we focus on random utility models with i.i.d. noise, so that u(x) = x + ⇣(x), where\n⇣(x) ⇠ P is i.i.d. across all alternatives. Let F be the CDF of a random variable which is the\ndifference between two independent random variables with distribution P. Then the probability that\nalternative x beats y when they are compared is2\n\n              Pr(x     y) = Pr(u(x) > u(y)) = Pr(⇣(y)           ⇣(x) <    x      y) = F ( x        y ).   (1)\n\nWe derived Equation (1) from a specific noise model, but it makes sense for any function F : R !\n[0, 1] with CDF-like properties, even if it does not correspond to a noise distribution P. Indeed, we\ncan take any F which is non-decreasing, satisfies F ( u) + F (        u) = 1 for all u 2 R, and is\nsuch that lim u! 1 F ( u) = 0 and lim u!1 F ( u) = 1. We adopt Equation (1) as the general\ndefinition of a random utility model for our technical results.\nTwo of the most common random utility models are\n\n    • the Thurstone–Mosteller (TM) model: We sample utility as u(x) = x + ⇣(x), with i.i.d. noise\n      ⇣(x) ⇠ N (0, 1/2). This is equivalent to Equation (1) with F as the Gaussian CDF .\n    • the Bradley–Terry model (equivalent to the Plackett–Luce model restricted to pairwise compar-\n                                    eu(x)\n      isons), where Pr(x y) = eu(x)   +eu(y)\n                                             . This is Equation (1) with F as the logistic function.\n\nWe usually assume that F is strictly log-concave, and that it is strictly monotonic and continuous,3 so\nthat F has an inverse on (0, 1). These conditions hold for Thurstone–Mosteller and Bradley–Terry.\n\n    2\n        We assume P to be a continuous distribution, and so we do not have to worry about ties.\n    3\n        Continuity of F is guaranteed when the corresponding noise distribution P is continuous.\n\n\n                                                         3\n\fFor a random utility model, given a dataset #, our goal is to find parameters ( x )x2X that best fit #.\nWe find these parameters by maximum likelihood estimation. The log-likelihood is given by\n                                      X\n                           L( ) =            #{x y} log F ( x          y ).\n                                     (x,y)2X 2\n\nWhen the dataset # is clear from the context, we write ˆ 2 RX for a parameter vector that maximizes\nlog-likelihood, and say that ˆ is the MLE. Note that if c 2 R is a scalar, then L( ) = L( + c) for\nall 2 RX (since Pr(x y) depends only on the difference x              y ), so the MLE is only defined\nup to an additive shift. For concreteness, we pick some r 2 X , call it the reference alternative, and\nfix r = 0; then, we maximize L over D = { 2 RX : r = 0}.\nA random utility model is particularly appropriate when the dataset # consists of pairwise com-\nparisons which are all reported by a single decision maker. However, in many cases the dataset is\nobtained by pooling reports from many agents, for instance to minimize the labeling effort of each\nindividual agent, or if we have the explicit aim to aggregate preferencesP from different agents. Some\nof the axioms we study are explicitly motivated by cases where # = i2R #i , i.e., the dataset is\nobtained by pooling individual datasets, where R is the set of agents. It then seems natural to assume\nthat each agent behaves in accordance with some random utility model with unknown parameters i\nand unknown CDF-like function Fi . Then the dataset #i is generated by repeatedly querying the\nagent’s random utility model for a comparison.",
+              "quoted_text_sha256": "4b03f9d580b0beab3d87ec2f1349f048e1a7be3e98a08d59a22fcbb144a7e11e"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 216,
+          "line_start": 207,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 2.1 (MLE exists). Suppose F is strictly monotonic and continuous. Then the MLE exists if\nand only if every connected component of the comparison graph G# is strongly connected.\nFor alternative x, y 2 X , we define the perfect-fit distance between x and y as\n                                            ✓                           ◆\n                                                       #{x y}\n                             (x, y) := F 1                                .\n                                              #{x y} + #{y x}\nThis is the difference in utilities of x and y required for the model to exactly match the observed\nfrequencies of #{x y} and #{y x} in the data. We can check that the MLE will respect this\nperfect-fit distance when an alternative has only a single neighbor in the comparison graph.",
+          "quoted_text_sha256": "1d15ea9fdc4cefaaced5396e5bf5533b8110bc5bdab6ee90111861c5e9bd05f2"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma2_2": {
+      "source_anchors": [
+        {
+          "line_end": 223,
+          "line_start": 217,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 2.2. Let F be strictly monotonic and continuous. Suppose that for alternative a there is\nexactly one alternative b for which #{a         b} + #{b      a} > 0. If both #{a       b} > 0 and\n                                  ˆ\n#{b a} > 0, then any MLE satisfies a        ˆ     ˆb = (a, b).\n\nWe can use this result to provide a stronger bound on the MLE than the one from Lemma 2.1, which\nholds under slightly stronger conditions.",
+          "quoted_text_sha256": "0a0c2c09dd80bd2a526d63a15416b3137b582a14883aa6c014dbf04cc7ca2b87"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma2_3": {
+      "source_anchors": [
+        {
+          "line_end": 227,
+          "line_start": 224,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 2.3. Suppose that #{x            y} > 0 and #{y      x} > 0 for all x and y, and that F is\ncontinuous and strictly monotonic. Then for every MLE ˆ we have the bound\n                                   k ˆk1  |X | · max (x, y).\n                                                   (x,y)2X 2",
+          "quoted_text_sha256": "6a92338ad66fd2bceea9ebd74a413ba0febacb98f1e0587498ccf2cad62abf59"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma2_4": {
+      "source_anchors": [
+        {
+          "line_end": 240,
+          "line_start": 239,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 2.4. Suppose that F is strictly log-concave. Then L( ) is strictly concave and the MLE is\nunique (assuming it exists), if and only if the comparison graph G# is connected.",
+          "quoted_text_sha256": "9e7cb91063c5eaada978a5e4344dca713dbe594a806a157b3f9e19c742d4db81"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "theorem3_2": {
+      "source_anchors": [
+        {
+          "line_end": 271,
+          "line_start": 266,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3.2. Maximum likelihood estimation satisfies Pareto efficiency if F is strictly monotonic.\n\nThe key idea behind the proof (given in Appendix C) is that if a, b 2 X satisfy the condition of\nDefinition 3.1 but some MLE ˆ puts ˆa < ˆb , then the parameter vector equal to ˆ except that\n      ˆ             ˆ\n a = b and b = a has strictly higher log-likelihood.",
+          "quoted_text_sha256": "384b9b70bc8880f2b5bd5fc400f3262026fc1694b9805cb468e63eef7be60554"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem4_2": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 308,
+              "line_start": 280,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 4.1 (Monotonicity). Suppose that # and #̃ are two datasets with unique MLEs ˆ and ˜.\nSuppose that #̃{x y} = #{x y} for all x, y 2 X except that #̃{a                   b} > #{a     b}. Then,\nmonotonicity requires that for all x 2 X ,\n                           ˜a     ˜x   ˆa    ˆx    and    ˜b    ˜x  ˆb    ˆx .\n\nEquivalently, monotonicity requires that if #{a b} decreases, then a becomes weaker relative to\nother alternatives, and b becomes stronger. We can interpret monotonicity as guaranteeing a kind of\nparticipation incentive: If we ask an agent to compare a to b, the agent is assured that the answer can\nonly influence our inferred utilities in the desired direction.\n\n\n                                                    5\n\f \u0001\u0002\u0006\n                                                      d     \u0001\u0002\u0007                                                  d     \u0001\u0002\u0006\n \u0001\u0002\u0003\n                                                            \u0001\u0002\u0001                                                  a     \u0001\u0002\u0001                                                   a\n \u0001\u0002\u0004\n                                                           -\u0001\u0002\u0007                                                       -\u0001\u0002\u0006                                                   c#\n \u0001\u0002\u0005\n                                                           -\u0001\u0002\u0006                                                  b\"                                                          b\"\n \u0001\u0002\u0001                                                  a    -\u0001\u0002\u0005\n                                                                                                                      -\u0001\u0002\u0005\n                                                                                                                                                                             d\n-\u0001\u0002\u0005\n                                                      b\"   -\u0001\u0002\u0004                                                  c#   -\u0001\u0002\u0004\n-\u0001\u0002\u0004\n                                                           -\u0001\u0002\u0003                                                       -\u0001\u0002\u0003\n-\u0001\u0002\u0003                                                  c#\n       (17, 86, 38, 56, , 4, 19, 89, 1, 67, 83, 34)               (95, 74, 36, 53, , 39, 62, 48, 1, 30, 77, 8)               (63, 54, 12, 19, , 54, 57, 80, 49, 7, 50, 20)",
+              "quoted_text_sha256": "42024ee058fc03d87e348d1d40afeb7c45a66f63c62753e2da29ed9098626a55"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 371,
+          "line_start": 324,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 4.2. Maximum likelihood estimation satisfies monotonicity if F is strictly monotonic,\nlog-concave, and differentiable.\nThe proof, given in Appendix D, is relatively unwieldy. For intuition, let us provide an outline of\na proof for the special case of three alternatives a, b, c. Let # and #̃ be datasets that are identical\nexcept that #{a b} < #̃{a b}, and let ˆ and ˜ be the respective MLEs, which are unique by\nLemma 2.4. We take a as reference, so ˆa = ˜a = 0. It is easy to see that ˆb       ˜b , since otherwise\n ˆ would have greater log-likelihood than ˜ for the dataset #̃, as ˆ performs better on the a vs b\ncomparisons, and performs no worse on other comparisons by optimality for #. To see that also\n ˆc    ˜c , consider first the dataset # and associated log-likelihood L( b , c ) (with a fixed to 0).\nNow, for x 2 R, let (x) denote the value of c that maximizes L(x, c ), i.e., maximizes likelihood\namong parameters with a = 0 and b = x. One can show that, since F is strictly log-concave,\n  (x) is increasing in x.5 Notice that the number of comparisons between a and b in a dataset does\nnot influence the optimum position of c , once a and b are fixed. Hence, the function is the same\nwhether defined for # or for #̃, since they only differ in a vs b comparisons. We have already seen\nthat ˜b  ˆb . Since is increasing, we have ˜c = ( ˜b )  ( ˆb ) = ˆc , proving monotonicity.\nTo visualize monotonicity, consider the three examples in Figure 1. For four alternatives, we generated\nrandom datasets by choosing #{x y} uniformly at random between 1 and 100, and picked three\nexamples. In each case, we let #{b           c} vary from 0 to 100 (going horizontally from left to\nright), and show how the MLE of the Thurstone–Mosteller model changes as the number of b c\ncomparisons grows; we fix ˆa = 0 as reference. As predicted by Theorem 4.2, the orange line of ˆb\nis increasing, while the green line of ˆc is decreasing. Note that the change in #{b c} can affect\nother alternatives; in the middle figure, the relative positions of a and d swap.\n                            P\nIn the pooled setting # = i2R #i of Section 2, where each agent i 2 R is described by a random\nutility model with parameters i that generates #i , a natural notion of monotonicity is this: Suppose\nwe calculate the MLE ˆ for # and suppose we increase the utility ai for some agent i and some\nalternative a while keeping all other parameters fixed. Then the updated MLE ˜ should satisfy\n ˜a ˜x       ˆa ˆx for all x 2 X : the learned utility of a increases relative to other alternatives.\n    4\n      For the Bradley–Terry model, monotonicity is easier to check, since the first-order conditions of likelihood\nmaximization in that model are well-behaved [González-Díaz et al., 2014, Prop. 6.3]; that proof does not\ngeneralize to other models.\n    5\n      Assume that F is twice differentiable. Since log F is strictly concave, its second derivative is strictly\nnegative. A straightforward calculation shows that then @ 2 L/@ c @ c < 0 and that @ 2 L/@ c @ b > 0. By\ndefinition of , for each x, (@L/@ c )(x, (x)) = 0. Since @ 2 L/@ c @ b > 0, the function @L/@ c is\nincreasing in its first argument, and so (@L/@ c )(x + , (x)) > 0 for all > 0. Since @ 2 L/@ c @ c < 0,\nthe function @L/@ c is decreasing in its second argument, and hence (x + ) > (x), as desired.\n\n\n                                                                                        6\n\fTheorem 4.2 implies that random utility models (subject to the theorem’s conditions) satisfy this\npooled monotonicity notion with high probability, when #i consists of many samples and when the\nnumber of comparisons is uniform across pairs. The reason is this: with high probability, the increase\nof ai increases the number of a x comparisons in #i for all x. Assuming for now that no other\ndataset #j and no other pairs in #i are affected, then successively invoking Theorem 4.2 on a x\npairs yields the result. Now, with some probability, other parts will be affected, but not too much.\nSince the MLE is continuous in # (see Appendix E), this noise will not invalidate monotonicity.",
+          "quoted_text_sha256": "8a463f1cfb548e8ddb3d51dfe1e078b280030ae02cfa275c45812803c35a8c96"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem5_3": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 387,
+              "line_start": 380,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 5.1. Suppose it is possible to label alternatives as X = {x1 , . . . , xm } such that whenever\ni < j, it holds that #{xi       xj } > #{xj        xi }. Then, pairwise majority consistency (PMC)\n                              ˆ\nrequires that for every MLE , it holds that xiˆ       ˆx for all i < j.\n                                                        j\n\n\nIn contrast to our previous properties, PMC is violated by random utility models.",
+              "quoted_text_sha256": "9d25a9171f8d9a7675babd4807099c0b966014442764bab32374288969cd31a3"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 416,
+          "line_start": 406,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 5.3. Maximum likelihood estimation violates pairwise majority consistency whenever F is\nstrictly monotonic, strictly log-concave, and differentiable.\n\nHow frequent are PMC violations? Write %{x y} = #{x y}/(#{x y} + #{y x}) for\nthe fraction of x vs y comparisons that x wins. For X = {a, b, c}, let T be the space of datasets with\n                            0.5 < %{a       b}, %{a     c}, %{b    c}  1.\n\nFor all datasets in T , PMC requires that ˆa > ˆb > ˆc . In Figure 2, we draw the cube T and show\nthe regions where the MLE for Thurstone–Mosteller fails PMC. Example 5.2, suitably normalized,\nfalls in the upper orange region. Sampling uniformly over T , we find that Thurstone–Mosteller fails\nPMC in 17.8% of datasets, while Bradley–Terry fails in 16.6% of datasets.",
+          "quoted_text_sha256": "a753432c1745bdff9018c651b4fe7796696f5d7637be8616f3b6bb524e386fa9"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem6_3": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 467,
+              "line_start": 459,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 6.1. Consider two datasets #1 and #2 , and let ˆ1 and ˆ2 be MLEs. Suppose there exist\ntwo alternatives a, b 2 X such that ˆa1 > ˆb1 and ˆa2 > ˆb2 . Separability requires that for every\nMLE ˆ for the pooled dataset # = #1 + #2 , it also holds that ˆa > ˆb .\n\nSeparability is also called consistency, and seems particularly desirable in cases where we combine\npairwise comparisons from different sources. While perhaps on first glance innocuous, separability is\nan extremely strong requirement, and few rules satisfy it; one can prove in general that separability\nconstrains rules to be linear [Myerson, 1995]. Since likelihood maximization is not linear, it is no\nsurprise that MLEs for random utility models fail separability.",
+              "quoted_text_sha256": "491c92112c2d5c61be671849a26a0fd47b258607c86a0fd1bebfc82874c3085a"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 496,
+          "line_start": 485,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 6.3. Maximum likelihood estimation violates separability whenever F is strictly monotonic,\nstrictly log-concave, and differentiable.\n\nLike for PMC, we can again ask on what percentage of (pairs of) datasets the MLE fails separately.\nSince we sample over pairs, we might guess the answer to be of lower order than in the case of PMC,\nand this is borne out by the data. For m = 3 alternatives, sampling uniformly over the space of\ndatasets for which each pair of distinct alternatives is compared equally often, we find that on about\n1.5% of dataset pairs, Thurstone–Mosteller fails separability. This fraction increases as m increases,\nsince there are more pairs of alternatives for which separability can be violated.\n\n\n                                                                    8",
+          "quoted_text_sha256": "afa9af715cc96eddec1301db9827ff9c2ba1980952479a27593ca4a4cd712b28"
+        }
+      ],
+      "source_kind": "theorem"
+    }
+  },
+  "source_artifact_sha256": "4fb2747b73e16ea3f73e3739b6b6e0e231820384225d3094ed0fb5f057a68e82",
+  "source_coverage_mode": "named_theoretical_statements"
+}

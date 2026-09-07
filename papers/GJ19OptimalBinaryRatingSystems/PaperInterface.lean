@@ -4,7 +4,7 @@ namespace GJ19OptimalBinaryRatingSystems
 
 namespace PaperInterface
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 open Filter
 open Topology
 open MeasureTheory
@@ -74,17 +74,19 @@ def lemmaC7_uniform_doubled_objective_rate_ge_one_fifth_old_objectiveSpec
 
 /-- Source-facing semantic target for `corollaryC3_monotone_scaled_first_level_ge_half_inv_adjacent_count_sq`. -/
 def corollaryC3_monotone_scaled_first_level_ge_half_inv_adjacent_count_sqSpec
-    {m : ℕ} (hm : 0 < m)
-    {levels sampleRate : Fin (m + 2) → ℝ}
-    (hlevels : BinaryEndpointLevelVector levels)
-    (heq : BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate)
-    (hsample_pos : ∀ idx : Fin (m + 2), 0 < sampleRate idx)
-    (hsample_mono :
-      ∀ {a b : Fin (m + 2)}, a.val ≤ b.val → sampleRate a ≤ sampleRate b)
-    (hfirst_sample :
-      sampleRate (adjacentHighIndex (firstAdjacentIndex : Fin (m + 1))) = 1) : Prop :=
-  ((1 / ((m + 1 : ℕ) : ℝ)) ^ 2) / 2 ≤
-    levels (adjacentHighIndex (firstAdjacentIndex : Fin (m + 1)))
+    (levels sampleRate : (m : ℕ) → Fin (m + 2) → ℝ)
+    (hlevels : ∀ m : ℕ, 0 < m → BinaryEndpointLevelVector (levels m))
+    (heq : ∀ m : ℕ, 0 < m →
+      BinaryEndpointAwareAdjacentRatesEqualize (levels m) (sampleRate m))
+    (hsample_pos : ∀ m : ℕ, 0 < m →
+      ∀ idx : Fin (m + 2), 0 < sampleRate m idx)
+    (hsample_mono : ∀ m : ℕ, 0 < m →
+      ∀ {a b : Fin (m + 2)}, a.val ≤ b.val → sampleRate m a ≤ sampleRate m b)
+    (hfirst_sample : ∀ m : ℕ, 0 < m →
+      sampleRate m (adjacentHighIndex (firstAdjacentIndex : Fin (m + 1))) = 1) : Prop :=
+  ∃ C : ℝ, 0 < C ∧ ∀ m : ℕ, 0 < m →
+    C / (((m + 2 : ℕ) : ℝ) ^ 3) ≤
+      levels m (adjacentHighIndex (firstAdjacentIndex : Fin (m + 1)))
 
 /-- Source-facing semantic target for `paper_theoremB1_uniform_subsequence_principle_to_of_quantile_floor_tendstoUniformlyOn_geometric_mesh`. -/
 def paper_theoremB1_uniform_subsequence_principle_to_of_quantile_floor_tendstoUniformlyOn_geometric_meshSpec
@@ -95,7 +97,7 @@ def paper_theoremB1_uniform_subsequence_principle_to_of_quantile_floor_tendstoUn
     (hrepr : ∀ (m : ℕ) (θ : ℝ), betaSeq (m + 2) θ = levels m (levelIndex m θ))
     (hoptimal :
       ∀ m : ℕ,
-        EconCSLib.Optimization.IsMaximizerOn BinaryEndpointLevelVector
+        AppliedModelingLib.Optimization.IsMaximizerOn BinaryEndpointLevelVector
           (fun xs => binaryEndpointAwareAdjacentRateObjective xs (fun _ => (1 : ℝ)))
           (levels m))
     (hlevelIndex_val :
@@ -175,7 +177,8 @@ def appendixB1_state_updateSpec : Prop :=
 
 /-- Source-facing semantic target for `SourceQuestionDistribution`. -/
 def section4_question_distributionSpec {Y : Type*} [Fintype Y] (H : Y → ℝ) : Prop :=
-  (∀ y : Y, 0 ≤ H y) ∧ ∑ y : Y, H y = 1
+  GJ19OptimalBinaryRatingSystems.ProofBridge.section4_question_distribution H =
+    ((∀ y : Y, 0 ≤ H y) ∧ ∑ y : Y, H y = 1)
 
 /-- Source-facing semantic target for `sourceInducedBinaryResponse`. -/
 def section4_induced_binary_responseSpec {Y : Type*} [Fintype Y]
@@ -197,7 +200,9 @@ def section4_question_design_solutionSpec
     {Representative Y : Type*} [Fintype Representative] [Fintype Y]
     (quality : Representative → ℝ) (β : ℝ → ℝ)
     (ψHat : Representative → Y → ℝ) (H : Y → ℝ) : Prop :=
-  EconCSLib.Optimization.IsMinimizerOn
+  GJ19OptimalBinaryRatingSystems.ProofBridge.section4_question_design_solution
+      quality β ψHat H =
+    AppliedModelingLib.Optimization.IsMinimizerOn
       (SourceQuestionDistribution : (Y → ℝ) → Prop)
       (sourceQuestionDesignL1Objective quality β ψHat) H
 
@@ -248,41 +253,24 @@ def theorem31_source_cell_matching_rate_eq_lower_cutpointSpec
     (hg : MonotoneOn g (Set.Icc (cut i.val) (cut (i.val + 1)))) : Prop :=
   sourceCellMatchingRate cut g i = g (cut i.val)
 
-/-- Source-facing semantic target for `theorem31_source_matching_function_unique_value_argmax_lexicographic`. -/
-def theorem31_source_matching_function_unique_value_argmax_lexicographicSpec
-    (μ : Measure ℝ) [IsFiniteMeasure (μ.prod μ)]
-    [Measure.IsOpenPosMeasure (μ.prod μ)]
-    (S : Theorem31SourceFiniteDiscretizationWeightedModel μ)
-    (limitingValue : (ℕ → ℝ) → ℝ)
-    (rate : (ℕ → ℝ) → (Fin (S.m + 2) → ℝ) → ℝ)
-    (hcut_value :
-      EconCSLib.Optimization.IsMaximizerOn
-        (monotoneIntervalCutpointsEndpointFeasible (S.m + 2))
-        limitingValue S.cut)
-    (hcut_value_unique :
-      ∀ cut : ℕ → ℝ,
-        monotoneIntervalCutpointsEndpointFeasible (S.m + 2) cut →
-          limitingValue cut = limitingValue S.cut → cut = S.cut)
-    (hrate_cut :
-      ∀ levels : Fin (S.m + 2) → ℝ, BinaryEndpointLevelVector levels →
-        rate S.cut levels =
-          binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) : Prop :=
-  ∃ levels : Fin (S.m + 2) → ℝ,
-    ∃ hlevels : BinaryEndpointLevelVector levels,
-      BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate ∧
-        ExponentialRateCertificate
-          (theorem31SourceWbar μ S.cut S.hcut_mono S.sampleRate levels
-            hlevels S.weight)
-          (binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) ∧
-        EconCSLib.Optimization.IsLexicographicMaximizerOn
-          (fun design : (ℕ → ℝ) × (Fin (S.m + 2) → ℝ) =>
-            monotoneIntervalCutpointsEndpointFeasible (S.m + 2) design.1 ∧
-              BinaryEndpointLevelVector design.2)
-          (fun design : (ℕ → ℝ) × (Fin (S.m + 2) → ℝ) =>
-            limitingValue design.1)
-          (fun design : (ℕ → ℝ) × (Fin (S.m + 2) → ℝ) =>
-            rate design.1 design.2)
-          (S.cut, levels)
+/-- Theorem 3.1 formula optimization for strict source partitions with at least
+three cells. Matching-rate infima and value integrals use the same disjoint cells;
+the identification with the exponent of `W - W_k` remains separate. -/
+def theorem31_source_matching_function_lexicographic_formulaSpec {m : ℕ} (hm : 0 < m)
+    (weight : ℝ × ℝ → ℝ)
+    (hweight_pos : ∀ q ∈ sourceOrderedQualityPairs, 0 < weight q)
+    (hweight_norm : ∫ q in sourceOrderedQualityPairs, weight q ∂(volume.prod volume) = 1)
+    (g : ℝ → ℝ) (hg : SourceMatchingFunction g) : Prop :=
+  ∃ s : Fin ((m + 2) + 1) → ℝ, ∃ levels : Fin (m + 2) → ℝ,
+      s ∈ sourceStrictCutpointSet (m + 2) ∧
+      BinaryEndpointLevelVector levels ∧
+      BinaryEndpointAwareAdjacentRatesEqualize levels (sourceFiniteSampleRate g s) ∧
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
+        (fun design : (Fin ((m + 2) + 1) → ℝ) × (Fin (m + 2) → ℝ) =>
+          design.1 ∈ sourceStrictCutpointSet (m + 2) ∧ BinaryEndpointLevelVector design.2)
+        (fun design => sourceAllCrossCellValue weight design.1)
+        (fun design => binaryEndpointAwareAdjacentRateObjective design.2
+          (sourceFiniteSampleRate g design.1)) (s, levels)
 
 /-- Source-facing semantic target for `lemmaB1_matching_rate_shift`. -/
 def lemmaB1_matching_rate_shiftSpec
@@ -437,7 +425,7 @@ def theorem32_weighted_nested_bisection_outputSpec
       let above : ℝ → Bool := fun lastLow =>
         theorem32OuterSourceWeightedRateAbove (candidate lastLow) sampleRate
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun above outerSteps
+        (AppliedModelingLib.Optimization.realBisectionRun above outerSteps
           (1 - 1 / ((m + 1 : ℕ) : ℝ)) (1 - grid)).2
       candidate lastLow
 
@@ -469,7 +457,7 @@ def theorem32_weighted_nested_bisection_loss_and_runtimeSpec
               (theorem32WeightedNestedBisectionOutput
                 m (L + 1) L sampleRate grid) sampleRate ≤ eps ∧
           nestedBisectionOperationCount (m + 2) (L + 1) L ≤
-            EconCSLib.Optimization.nestedBisectionStepBound (m + 2) L ∧
+            AppliedModelingLib.Optimization.nestedBisectionStepBound (m + 2) L ∧
           ((nestedBisectionOperationCount
               (m + 2) (L + 1) L : ℕ) : ℝ) ≤
             ((m + 2 : ℕ) : ℝ) * runtimeLog ^ 2
@@ -480,7 +468,16 @@ def source_definition_pairwise_accuracy_eq1Spec : Prop :=
 
 /-- Source-facing semantic target for the bundled definition `source_definition_weighted_objective_eq2`. -/
 def source_definition_weighted_objective_eq2Spec : Prop :=
-  (∀ (weight pairwiseAccuracy : ℝ → ℝ → ℝ) (Wk : ℝ), GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_weighted_objective_eq2 (weight := weight) (pairwiseAccuracy := pairwiseAccuracy) (Wk := Wk) = (∀ θ1 ∈ Set.Icc (0 : ℝ) 1, ∀ θ2 ∈ Set.Ico (0 : ℝ) θ1,       0 < weight θ1 θ2) ∧     (∫ θ1 in Set.Icc (0 : ℝ) 1,       ∫ θ2 in Set.Ico (0 : ℝ) θ1, weight θ1 θ2) = 1 ∧     Wk = ∫ θ1 in Set.Icc (0 : ℝ) 1,       ∫ θ2 in Set.Ico (0 : ℝ) θ1,         weight θ1 θ2 * pairwiseAccuracy θ1 θ2)
+  (∀ (weight pairwiseAccuracy : ℝ → ℝ → ℝ) (Wk : ℝ),
+    GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_weighted_objective_eq2
+      (weight := weight) (pairwiseAccuracy := pairwiseAccuracy) (Wk := Wk) =
+      ((∀ θ1 ∈ Set.Icc (0 : ℝ) 1, ∀ θ2 ∈ Set.Ico (0 : ℝ) θ1,
+          0 < weight θ1 θ2) ∧
+        (∫ θ1 in Set.Icc (0 : ℝ) 1,
+          ∫ θ2 in Set.Ico (0 : ℝ) θ1, weight θ1 θ2) = 1 ∧
+        Wk = ∫ θ1 in Set.Icc (0 : ℝ) 1,
+          ∫ θ2 in Set.Ico (0 : ℝ) θ1,
+            weight θ1 θ2 * pairwiseAccuracy θ1 θ2))
 
 /-- Source-facing semantic target for the bundled definition `source_definition_large_deviation_rate`. -/
 def source_definition_large_deviation_rateSpec : Prop :=
@@ -488,12 +485,18 @@ def source_definition_large_deviation_rateSpec : Prop :=
 
 /-- Source-facing semantic target for the bundled definition `source_definition_step_rule_partition_levels`. -/
 def source_definition_step_rule_partition_levelsSpec : Prop :=
-  (∀ (m : ℕ) (cutpoints : ℕ → ℝ) (levels : Fin (m + 2) → ℝ), GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_step_rule_partition_levels (m := m) (cutpoints := cutpoints) (levels := levels) = intervalCutpointsEndpointFeasible m cutpoints ∧     BinaryEndpointLevelVector levels)
+  (∀ (m : ℕ) (cutpoints : Fin ((m + 2) + 1) → ℝ) (levels : Fin (m + 2) → ℝ),
+    GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_step_rule_partition_levels
+      (m := m) (cutpoints := cutpoints) (levels := levels) =
+        (cutpoints ∈ sourceStrictCutpointSet (m + 2) ∧
+          BinaryEndpointLevelVector levels))
 
 def source_definition_lexicographic_optimalitySpec {α : Type*} (feasible : α → Prop) (primary secondary : α → ℝ) (x : α) : Prop :=
-  feasible x ∧ ∀ y, feasible y →
-    primary y < primary x ∨
-      (primary y = primary x ∧ secondary y ≤ secondary x)
+  GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_lexicographic_optimality
+      feasible primary secondary x =
+    (feasible x ∧ ∀ y, feasible y →
+      primary y < primary x ∨
+        (primary y = primary x ∧ secondary y ≤ secondary x))
 
 /-- Source-facing semantic target for `source_theorem31_adjacent_rate_eq3`. -/
 def source_theorem31_adjacent_rate_eq3Spec
@@ -523,7 +526,7 @@ def source_lemma31_equalization_eq4Spec
   ∃! levels : Fin (m + 2) → ℝ,
     BinaryEndpointLevelVector levels ∧
       BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs sampleRate)
@@ -532,7 +535,12 @@ def source_lemma31_equalization_eq4Spec
 /-- Source-facing semantic target for the bundled definition `source_theoremB1_quantile_representation`. -/
 def source_theoremB1_quantile_representationSpec : Prop :=
   (∀ (M : ℕ) (cellIndex : ℝ → Fin M) (levels : Fin M → ℝ)
-    (quantile beta : ℝ → ℝ), GJ19OptimalBinaryRatingSystems.ProofBridge.source_theoremB1_quantile_representation (M := M) (cellIndex := cellIndex) (levels := levels) (quantile := quantile) (beta := beta) = (∀ θ : ℝ,       quantile θ = ((cellIndex θ).val : ℝ) / (M : ℝ)) ∧     ∀ θ : ℝ, beta θ = levels (cellIndex θ))
+    (quantile beta : ℝ → ℝ),
+    GJ19OptimalBinaryRatingSystems.ProofBridge.source_theoremB1_quantile_representation
+      (M := M) (cellIndex := cellIndex) (levels := levels)
+      (quantile := quantile) (beta := beta) =
+      ((∀ θ : ℝ, quantile θ = ((cellIndex θ).val : ℝ) / (M : ℝ)) ∧
+        ∀ θ : ℝ, beta θ = levels (cellIndex θ)))
 
 /-- Source-facing semantic target for `paper_lemmaB2_knownTypeExperiment_uniform_convergence_of_lipschitz_tracking`. -/
 def paper_lemmaB2_knownTypeExperiment_uniform_convergence_of_lipschitz_trackingSpec
@@ -853,7 +861,7 @@ def paper_lemmaC4_finite_selected_pullback_positive_rate_and_nonfiniteStep_sourc
   ((lemmaC4FiniteRangeOnIoo (cutpointStepSuccessProb cut levels) lo hi ∧
     (∃ rate : ℝ,
         0 < rate ∧
-          EconCSLib.Probability.ExponentialRateCertificate
+          AppliedModelingLib.Probability.ExponentialRateCertificate
             (lemmaC4TieErasedSourceWbar μ
               (theorem31SelectedPullbackSourceWeight weight)
               (theorem31SelectedPullbackSourceKernel μ (m := m) cut hmono
@@ -862,7 +870,7 @@ def paper_lemmaC4_finite_selected_pullback_positive_rate_and_nonfiniteStep_sourc
         (lemmaC4TieErasedSourceWbar μ R.weight
           (lemmaC4RawSourcePbarKernel R)) 0 ∧
       ∀ rate : ℝ, 0 < rate →
-        ¬ EconCSLib.Probability.ExponentialRateCertificate
+        ¬ AppliedModelingLib.Probability.ExponentialRateCertificate
           (lemmaC4TieErasedSourceWbar μ R.weight
             (lemmaC4RawSourcePbarKernel R)) rate))
 
@@ -917,7 +925,7 @@ def source_lemmaC5_uniform_doubled_chainSpec
     BinaryEndpointAwareAdjacentRatesEqualize
       (uniformDoubledEndpointLevels oldLevels)
       (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ∧
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector :
         (Fin ((2 * m + 1) + 2) → ℝ) → Prop)
       (fun xs : Fin ((2 * m + 1) + 2) → ℝ =>
@@ -939,14 +947,69 @@ def source_lemmaC5_refinement_equations24_25Spec : Prop :=
 
 /-- Source-facing semantic target for `source_lemmaC8_uniform_first_level_polynomial_lower_bound`. -/
 def source_lemmaC8_uniform_first_level_polynomial_lower_boundSpec
-    {m : ℕ} (hm : 0 < m)
-    {levels : Fin (m + 2) → ℝ}
-    (hlevels : BinaryEndpointLevelVector levels)
-    (heq :
-      BinaryEndpointAwareAdjacentRatesEqualize levels
+    (levels : (m : ℕ) → Fin (m + 2) → ℝ)
+    (hlevels : ∀ m : ℕ, 0 < m → BinaryEndpointLevelVector (levels m))
+    (heq : ∀ m : ℕ, 0 < m →
+      BinaryEndpointAwareAdjacentRatesEqualize (levels m)
         (fun _ : Fin (m + 2) => (1 : ℝ))) : Prop :=
-  ((1 / ((m + 1 : ℕ) : ℝ)) ^ 2) / 2 ≤
-    levels (adjacentHighIndex (firstAdjacentIndex : Fin (m + 1)))
+  ∃ C : ℝ, 0 < C ∧ ∀ m : ℕ, 0 < m →
+    C / (((m + 2 : ℕ) : ℝ) ^ 3) ≤
+      levels m (adjacentHighIndex (firstAdjacentIndex : Fin (m + 1)))
+
+/-- The quadratic first-level certificate proves the source's weaker uniform
+`C M⁻³` bound once `M` is represented by the endpoint-vector size `m + 2`. -/
+private lemma source_cubic_first_level_bound_of_quadratic
+    (m : ℕ) (x : ℝ)
+    (hquadratic : ((1 / ((m + 1 : ℕ) : ℝ)) ^ 2) / 2 ≤ x) :
+    (1 / 2 : ℝ) / (((m + 2 : ℕ) : ℝ) ^ 3) ≤ x := by
+  have hm0 : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+  have hsmall : 0 < (((m + 1 : ℕ) : ℝ) ^ 2) := by positivity
+  have hdenom : (((m + 1 : ℕ) : ℝ) ^ 2) ≤ (((m + 2 : ℕ) : ℝ) ^ 3) := by
+    norm_num [Nat.cast_add, Nat.cast_one]
+    nlinarith [pow_nonneg hm0 3]
+  calc
+    (1 / 2 : ℝ) / (((m + 2 : ℕ) : ℝ) ^ 3) ≤
+        (1 / 2 : ℝ) / (((m + 1 : ℕ) : ℝ) ^ 2) :=
+      div_le_div_of_nonneg_left (by norm_num) hsmall hdenom
+    _ = ((1 / ((m + 1 : ℕ) : ℝ)) ^ 2) / 2 := by
+      field_simp [ne_of_gt hsmall]
+    _ ≤ x := hquadratic
+
+/-- Corollary C.3 in its printed uniform-polynomial form. The stronger
+quadratic certificate is used only to establish this source claim. -/
+theorem corollaryC3_monotone_scaled_first_level_ge_half_inv_adjacent_count_sq
+    (levels sampleRate : (m : ℕ) → Fin (m + 2) → ℝ)
+    (hlevels : ∀ m : ℕ, 0 < m → BinaryEndpointLevelVector (levels m))
+    (heq : ∀ m : ℕ, 0 < m →
+      BinaryEndpointAwareAdjacentRatesEqualize (levels m) (sampleRate m))
+    (hsample_pos : ∀ m : ℕ, 0 < m →
+      ∀ idx : Fin (m + 2), 0 < sampleRate m idx)
+    (hsample_mono : ∀ m : ℕ, 0 < m →
+      ∀ {a b : Fin (m + 2)}, a.val ≤ b.val → sampleRate m a ≤ sampleRate m b)
+    (hfirst_sample : ∀ m : ℕ, 0 < m →
+      sampleRate m (adjacentHighIndex (firstAdjacentIndex : Fin (m + 1))) = 1) :
+    corollaryC3_monotone_scaled_first_level_ge_half_inv_adjacent_count_sqSpec
+      levels sampleRate hlevels heq hsample_pos hsample_mono hfirst_sample := by
+  refine ⟨(1 / 2 : ℝ), by norm_num, ?_⟩
+  intro m hm
+  apply source_cubic_first_level_bound_of_quadratic
+  exact ProofBridge.corollaryC3_monotone_scaled_first_level_ge_half_inv_adjacent_count_sq
+    hm (hlevels m hm) (heq m hm) (hsample_pos m hm) (hsample_mono m hm)
+    (hfirst_sample m hm)
+
+/-- Lemma C.8 in its printed uniform-polynomial form. -/
+theorem source_lemmaC8_uniform_first_level_polynomial_lower_bound
+    (levels : (m : ℕ) → Fin (m + 2) → ℝ)
+    (hlevels : ∀ m : ℕ, 0 < m → BinaryEndpointLevelVector (levels m))
+    (heq : ∀ m : ℕ, 0 < m →
+      BinaryEndpointAwareAdjacentRatesEqualize (levels m)
+        (fun _ : Fin (m + 2) => (1 : ℝ))) :
+    source_lemmaC8_uniform_first_level_polynomial_lower_boundSpec levels hlevels heq := by
+  refine ⟨(1 / 2 : ℝ), by norm_num, ?_⟩
+  intro m hm
+  apply source_cubic_first_level_bound_of_quadratic
+  exact ProofBridge.source_lemmaC8_uniform_first_level_polynomial_lower_bound
+    hm (hlevels m hm) (heq m hm)
 
 /-- Source-facing semantic target for `source_lemmaC9_nested_bisection_runtime_log_squared`. -/
 def source_lemmaC9_nested_bisection_runtime_log_squaredSpec
@@ -972,13 +1035,13 @@ def source_theoremB1_proof_selector_nestingSpec
 def source_corollaryC4_kendall_spearman_subsequenceSpec
     (C : ℕ) : Prop :=
   (∀ M : ℕ, Nonempty (Fin M) → 0 < M →
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (theorem31KendallFiniteDesignFeasible M)
       (theorem31KendallFiniteDesignValue M)
       (theorem31FiniteDesignEndpointRate M)
       (theorem31CanonicalUniformEndpointDesign M)) ∧
     (∀ M : ℕ, Nonempty (Fin M) → 0 < M →
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (theorem31SpearmanFiniteDesignFeasible M)
         (theorem31SpearmanFiniteDesignValue M)
         (theorem31FiniteDesignEndpointRate M)

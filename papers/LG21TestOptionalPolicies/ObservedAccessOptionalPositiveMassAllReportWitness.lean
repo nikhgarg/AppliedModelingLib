@@ -21,8 +21,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
-open EconCSLib.Probability
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib.Probability
 open scoped ENNReal NNReal ProbabilityTheory
 
 /-- The source-timed all-take/all-report actions paired with the literal
@@ -254,13 +254,14 @@ def lg21ObservedAccessOptionalPositiveMassRefinedEquilibrium_allTakeAllReport_of
           (measurable_const : Measurable (fun _ :
             (LG21NonTestFeature Feature testFeature -> ℝ) × ℝ => true))
       local_recalibrated_entry_stable := by
-        simpa [law, base, score, skill] using
-          (lg21_optional_allTakeAllReport_local_recalibrated_entry_stable
-            law base score skill hpublic)
+        intro region candidateTake candidateReport candidate _hfixedLaw hentry
+        exact (lg21_optional_allTakeAllReport_local_recalibrated_entry_stable
+          law base score skill hpublic) region candidateTake candidateReport
+            candidate hentry
       recalibrated_report_entry_stable := by
-        simpa [law, base, score, skill] using
-          (lg21_optional_allTakeAllReport_recalibrated_report_entry_stable
-            law base score skill hpublic)
+        intro candidateTake candidateReport candidate _hfixedLaw hentry
+        exact (lg21_optional_allTakeAllReport_recalibrated_report_entry_stable
+          law base score skill hpublic) candidateTake candidateReport candidate hentry
       test_law_gaussian := by
         intro publicBase latentSkill
         rfl

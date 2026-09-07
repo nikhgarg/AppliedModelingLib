@@ -1,5 +1,5 @@
 import LG21TestOptionalPolicies.MainTheorems
-import EconCSLib.Foundations.Optimization.BinaryChoiceAE
+import AppliedModelingLib.GameTheory.Choice.BinaryAE
 import Mathlib.Probability.Distributions.Gaussian.Real
 
 /-!
@@ -34,8 +34,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 open MeasureTheory
 open ProbabilityTheory
 

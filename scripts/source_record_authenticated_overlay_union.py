@@ -17,8 +17,30 @@ therefore import this module only after their shared v10 surface is available.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from importlib import import_module
 from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping
+
+try:
+    from scripts.source_record_archived_transports import (
+        archived_source_record_transport_artifacts,
+    )
+    from scripts.source_record_overlay_protocol import (
+        SOURCE_RECORD_OVERLAY_PROTOCOL_BY_LABEL,
+        SOURCE_RECORD_OVERLAY_PROTOCOLS,
+        serialized_source_record_overlay_labels,
+        source_record_overlay_labels_with_artifacts,
+    )
+except ModuleNotFoundError:  # pragma: no cover - direct-script fallback.
+    from source_record_archived_transports import (
+        archived_source_record_transport_artifacts,
+    )
+    from source_record_overlay_protocol import (
+        SOURCE_RECORD_OVERLAY_PROTOCOL_BY_LABEL,
+        SOURCE_RECORD_OVERLAY_PROTOCOLS,
+        serialized_source_record_overlay_labels,
+        source_record_overlay_labels_with_artifacts,
+    )
 
 
 class SourceRecordAuthenticatedOverlayUnionError(ValueError):
@@ -41,36 +63,35 @@ class AuthenticatedCurrentOverlayLane:
     label: str
     items: dict[str, Mapping[str, Any]]
     _loader_token: object = field(repr=False, compare=False)
+    _is_loaded: Callable[[object], bool] = field(repr=False, compare=False)
+    _copy_loaded: Callable[
+        [Mapping[str, Any], Mapping[str, Any] | None], dict[str, Any]
+    ] = field(repr=False, compare=False)
+    _issued_items: list[Mapping[str, Any]] = field(repr=False, compare=False)
 
 
-def _overlay_modules() -> dict[str, Any]:
-    """Import transport modules only while replaying a current union."""
+def _overlay_modules(lane_labels: Iterable[str] | None = None) -> dict[str, Any]:
+    """Import only the transport modules selected for current replay."""
 
-    try:
-        from scripts import source_record_attested_selected_reuse as attested
-        from scripts import source_record_differential_revalidation as differential
-        from scripts import source_record_historical_descriptor_migration as historical
-        from scripts import source_record_semantic_rebind as semantic_rebind
-        from scripts import source_record_schema4_to5_migration as migration
-        from scripts import source_record_scoped_receipt_rebind as scoped_rebind
-        from scripts import source_record_component_projection as component_projection
-    except ModuleNotFoundError:  # pragma: no cover - direct-script fallback.
-        import source_record_attested_selected_reuse as attested
-        import source_record_differential_revalidation as differential
-        import source_record_historical_descriptor_migration as historical
-        import source_record_semantic_rebind as semantic_rebind
-        import source_record_schema4_to5_migration as migration
-        import source_record_scoped_receipt_rebind as scoped_rebind
-        import source_record_component_projection as component_projection
-    return {
-        "attested_selected": attested,
-        "schema4_to5": migration,
-        "differential": differential,
-        "historical_descriptor": historical,
-        "semantic_rebind": semantic_rebind,
-        "scoped_receipt": scoped_rebind,
-        "component_projection": component_projection,
-    }
+    selected = (
+        set(SOURCE_RECORD_OVERLAY_PROTOCOL_BY_LABEL)
+        if lane_labels is None
+        else {str(label or "").strip() for label in lane_labels}
+    )
+    modules: dict[str, Any] = {}
+    for label in selected:
+        protocol = SOURCE_RECORD_OVERLAY_PROTOCOL_BY_LABEL[label]
+        qualified = f"scripts.{protocol.module_name}"
+        try:
+            module = import_module(qualified)
+        except ModuleNotFoundError as exc:  # pragma: no cover - direct-script fallback.
+            # Fall back only when the package path itself is unavailable.  A
+            # missing transitive dependency remains a real loader failure.
+            if exc.name not in {"scripts", qualified}:
+                raise
+            module = import_module(protocol.module_name)
+        modules[label] = module
+    return modules
 
 
 def _evidence_module() -> Any:
@@ -114,160 +135,6 @@ def _validated_lane_items(
     return out
 
 
-def _lane_specs(
-    modules: Mapping[str, Any],
-    *,
-    paper_dir: Path,
-    paper: str,
-    current_raw_audit: Mapping[str, Any],
-    differential_overlay_path: Path | None,
-    differential_current_raw_audit_path: Path | None,
-    differential_current_raw_audit_provenance_path: Path | None,
-    source_record_identity_context: object | None,
-) -> tuple[tuple[str, Callable[[], object], Callable[[object], bool]], ...]:
-    """Return the fixed loader registry and its exact current replay inputs."""
-
-    attested = modules["attested_selected"]
-    migration = modules["schema4_to5"]
-    differential = modules["differential"]
-    historical = modules["historical_descriptor"]
-    semantic_rebind = modules["semantic_rebind"]
-    scoped_rebind = modules["scoped_receipt"]
-    identity_context_prepared = False
-    identity_context = source_record_identity_context
-
-    def current_identity_context() -> object | None:
-        """Issue or revalidate exactly one opaque context for optional lanes."""
-
-        nonlocal identity_context, identity_context_prepared
-        if identity_context_prepared:
-            return identity_context
-        evidence = _evidence_module()
-        if identity_context is not None:
-            error = evidence.current_source_record_identity_context_error(
-                identity_context,
-                paper_dir=paper_dir,
-                paper=paper,
-                current_raw_audit=current_raw_audit,
-            )
-            if error:
-                raise SourceRecordAuthenticatedOverlayUnionError(
-                    "authenticated overlay identity context is invalid: " + error
-                )
-        else:
-            # This invokes the external identity helper at most once per union
-            # invocation.  ``None`` means the raw surface failed closed; the
-            # optional lanes below remain empty rather than replaying it.
-            identity_context = evidence.prepare_current_source_record_identity_context(
-                paper_dir,
-                paper,
-                current_raw_audit,
-            )
-        identity_context_prepared = True
-        return identity_context
-
-    semantic_specs: tuple[
-        tuple[str, Callable[[], object], Callable[[object], bool]], ...
-    ] = ()
-    # Schema-2 sidecars and component projection share the same neutral live
-    # identity capability.  It is recreated for every union invocation and
-    # never becomes a serialized authority.  The legacy historical lane is
-    # explicitly told not to re-load schema 2 below.
-    if semantic_rebind.source_record_semantic_rebind_overlay_path(paper_dir).is_file():
-        def load_semantic_rebind() -> object:
-            current_context = current_identity_context()
-            if current_context is None:
-                return {}
-            return semantic_rebind.load_current_source_record_semantic_rebind_items(
-                paper_dir,
-                paper,
-                current_raw_audit,
-                source_record_identity_context=current_context,
-            )
-
-        semantic_specs = (
-            (
-                "semantic_rebind",
-                load_semantic_rebind,
-                semantic_rebind.is_loaded_source_record_semantic_rebind_item,
-            ),
-        )
-    base_specs = (
-        (
-            "scoped_receipt",
-            lambda: scoped_rebind.load_current_source_record_scoped_receipt_rebind_items(
-                paper_dir, paper, current_raw_audit
-            ),
-            scoped_rebind.is_loaded_source_record_scoped_receipt_rebind_item,
-        ),
-        (
-            "attested_selected",
-            lambda: attested.load_current_attested_selected_semantic_reuse_items(
-                paper_dir, paper, current_raw_audit
-            ),
-            attested.is_loaded_source_record_attested_selected_reuse_item,
-        ),
-        *semantic_specs,
-        (
-            "schema4_to5",
-            lambda: migration.load_current_source_record_schema4_to5_migration_items(
-                paper_dir, paper, current_raw_audit
-            ),
-            migration.is_loaded_source_record_schema4_to5_migration_item,
-        ),
-        (
-            "differential",
-            lambda: differential.load_current_source_record_differential_revalidation_items(
-                paper_dir,
-                paper,
-                current_raw_audit,
-                path=differential_overlay_path,
-                current_raw_audit_path=differential_current_raw_audit_path,
-                current_raw_audit_provenance_path=(
-                    differential_current_raw_audit_provenance_path
-                ),
-            ),
-            differential.is_loaded_source_record_differential_revalidation_item,
-        ),
-        (
-            "historical_descriptor",
-            lambda: historical.load_current_source_record_historical_descriptor_migration_items(
-                paper_dir,
-                paper,
-                current_raw_audit,
-                include_semantic_rebind=False,
-            ),
-            historical.is_loaded_source_record_historical_descriptor_migration_item,
-        ),
-    )
-    # No optional receipt means no lane at all.  This preserves the exact
-    # five-lane descriptor partition recorded by every existing selected-v2
-    # attestation, instead of making old papers appear stale solely because a
-    # new generic transport exists in the codebase.
-    component_projection = modules["component_projection"]
-    if not component_projection.component_projection_artifact_path(paper_dir).is_file():
-        return base_specs
-
-    def load_component_projection() -> object:
-        current_context = current_identity_context()
-        if current_context is None:
-            return {}
-        return component_projection.load_current_source_record_component_projection_items(
-            paper_dir,
-            paper,
-            current_raw_audit,
-            source_record_identity_context=current_context,
-        )
-
-    return base_specs + (
-        (
-            "component_projection",
-            load_component_projection,
-            component_projection.is_loaded_source_record_component_projection_item,
-        ),
-    )
-
-
 def load_authenticated_current_overlay_lanes(
     paper_dir: Path,
     paper: str,
@@ -287,52 +154,256 @@ def load_authenticated_current_overlay_lanes(
     including the fact that a registered lane supplied no current slots.
     """
 
-    modules = _overlay_modules()
-    specs = _lane_specs(
-        modules,
-        paper_dir=paper_dir,
-        paper=paper,
-        current_raw_audit=current_raw_audit,
-        differential_overlay_path=differential_overlay_path,
-        differential_current_raw_audit_path=differential_current_raw_audit_path,
-        differential_current_raw_audit_provenance_path=(
-            differential_current_raw_audit_provenance_path
-        ),
-        source_record_identity_context=source_record_identity_context,
+    archived_artifacts = archived_source_record_transport_artifacts(paper_dir)
+    if archived_artifacts:
+        rendered = ", ".join(str(path) for path in archived_artifacts)
+        raise SourceRecordAuthenticatedOverlayUnionError(
+            "retired source-record transport artifact requires fresh current evidence: "
+            + rendered
+        )
+    known_labels = set(SOURCE_RECORD_OVERLAY_PROTOCOL_BY_LABEL)
+    artifact_labels = set(source_record_overlay_labels_with_artifacts(paper_dir))
+    default_labels = tuple(
+        protocol.label
+        for protocol in SOURCE_RECORD_OVERLAY_PROTOCOLS
+        if protocol.replay_without_artifact or protocol.label in artifact_labels
     )
-    available = {label for label, _load, _capability in specs}
     requested = (
-        tuple(label for label, _load, _capability in specs)
+        default_labels
         if lane_labels is None
         else tuple(str(label or "").strip() for label in lane_labels)
     )
-    if not requested or any(not label or label not in available for label in requested):
+    if (
+        not requested
+        or any(not label or label not in known_labels for label in requested)
+        or any(
+            not SOURCE_RECORD_OVERLAY_PROTOCOL_BY_LABEL[label].replay_without_artifact
+            and label not in artifact_labels
+            for label in requested
+            if label in known_labels
+        )
+    ):
         raise SourceRecordAuthenticatedOverlayUnionError(
-            "authenticated overlay lane selection names an unknown or empty lane"
+            "authenticated overlay lane selection names an unknown, absent, or empty lane"
         )
     if len(set(requested)) != len(requested):
         raise SourceRecordAuthenticatedOverlayUnionError(
             "authenticated overlay lane selection repeats a lane"
         )
-    selected = {label for label in requested}
+    modules = _overlay_modules(requested)
+    selected = set(requested)
+    identity_context = source_record_identity_context
+    identity_context_prepared = False
+
+    def current_identity_context() -> object | None:
+        """Issue or revalidate one opaque identity for the lanes that need it."""
+
+        nonlocal identity_context, identity_context_prepared
+        if identity_context_prepared:
+            return identity_context
+        evidence = _evidence_module()
+        if identity_context is None:
+            identity_context = evidence.prepare_current_source_record_identity_context(
+                paper_dir, paper, current_raw_audit
+            )
+        else:
+            error = evidence.current_source_record_identity_context_error(
+                identity_context,
+                paper_dir=paper_dir,
+                paper=paper,
+                current_raw_audit=current_raw_audit,
+            )
+            if error:
+                raise SourceRecordAuthenticatedOverlayUnionError(
+                    "authenticated overlay identity context is invalid: " + error
+                )
+        identity_context_prepared = True
+        return identity_context
+
     lanes: list[AuthenticatedCurrentOverlayLane] = []
-    for label, load, is_loaded in specs:
+    for protocol in SOURCE_RECORD_OVERLAY_PROTOCOLS:
+        label = protocol.label
         if label not in selected:
             continue
+        module = modules[label]
+        loader = getattr(module, protocol.loader_function)
         try:
-            loaded = load()
+            if label == "semantic_rebind":
+                context = current_identity_context()
+                loaded = (
+                    {}
+                    if context is None
+                    else loader(
+                        paper_dir,
+                        paper,
+                        current_raw_audit,
+                        source_record_identity_context=context,
+                    )
+                )
+            elif label == "differential":
+                loaded = loader(
+                    paper_dir,
+                    paper,
+                    current_raw_audit,
+                    path=differential_overlay_path,
+                    current_raw_audit_path=differential_current_raw_audit_path,
+                    current_raw_audit_provenance_path=(
+                        differential_current_raw_audit_provenance_path
+                    ),
+                )
+            else:
+                loaded = loader(paper_dir, paper, current_raw_audit)
         except Exception as exc:  # noqa: BLE001 - fail closed across transport boundaries.
             raise SourceRecordAuthenticatedOverlayUnionError(
                 f"authenticated {label} overlay loader raised {type(exc).__name__}: {exc}"
             ) from exc
+        is_loaded = getattr(module, protocol.capability_function)
+        copy_loaded = getattr(module, protocol.copy_function)
+        validated_items = _validated_lane_items(label, loaded, is_loaded=is_loaded)
         lanes.append(
             AuthenticatedCurrentOverlayLane(
                 label=label,
-                items=_validated_lane_items(label, loaded, is_loaded=is_loaded),
+                items=validated_items,
                 _loader_token=_LOADED_LANE_SENTINEL,
+                _is_loaded=is_loaded,
+                _copy_loaded=copy_loaded,
+                _issued_items=list(validated_items.values()),
             )
         )
     return tuple(lanes)
+
+
+def _authenticated_lane_error(lane: object) -> str:
+    if not isinstance(lane, AuthenticatedCurrentOverlayLane):
+        return "authenticated overlay operation received an untyped lane"
+    if lane._loader_token is not _LOADED_LANE_SENTINEL:
+        return "authenticated overlay operation received a lane without loader authority"
+    if lane.label not in SOURCE_RECORD_OVERLAY_PROTOCOL_BY_LABEL:
+        return "authenticated overlay operation received a lane with an unknown label"
+    return ""
+
+
+def authenticated_current_overlay_item(
+    lane: AuthenticatedCurrentOverlayLane,
+    value: object,
+) -> bool:
+    """Whether ``value`` is an exact item issued in ``lane``'s replay."""
+
+    if _authenticated_lane_error(lane):
+        return False
+    return bool(
+        any(candidate is value for candidate in lane._issued_items)
+        and lane._is_loaded(value)
+    )
+
+
+def copy_authenticated_current_overlay_item(
+    lane: AuthenticatedCurrentOverlayLane,
+    value: Mapping[str, Any],
+    updates: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Normalize one exact lane item while retaining its private capability."""
+
+    error = _authenticated_lane_error(lane)
+    if error:
+        raise SourceRecordAuthenticatedOverlayUnionError(error)
+    if not authenticated_current_overlay_item(lane, value):
+        raise SourceRecordAuthenticatedOverlayUnionError(
+            f"authenticated {lane.label} overlay copy received an item outside its loaded lane"
+        )
+    copied = lane._copy_loaded(value, updates)
+    if not lane._is_loaded(copied):
+        raise SourceRecordAuthenticatedOverlayUnionError(
+            f"authenticated {lane.label} overlay copy discarded its private capability"
+        )
+    lane._issued_items.append(copied)
+    return copied
+
+
+def authenticated_current_overlay_lane_for_item(
+    lanes: Iterable[AuthenticatedCurrentOverlayLane],
+    value: object,
+) -> AuthenticatedCurrentOverlayLane | None:
+    """Return the unique loader lane that issued ``value``."""
+
+    matches = [
+        lane for lane in lanes if authenticated_current_overlay_item(lane, value)
+    ]
+    if len(matches) > 1:
+        raise SourceRecordAuthenticatedOverlayUnionError(
+            "authenticated overlay item is owned by more than one loader lane"
+        )
+    return matches[0] if matches else None
+
+
+def copy_authenticated_or_plain_current_item(
+    lanes: Iterable[AuthenticatedCurrentOverlayLane],
+    value: Mapping[str, Any],
+    updates: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Copy a current response without trusting a serialized overlay marker."""
+
+    retained_lanes = tuple(lanes)
+    lane = authenticated_current_overlay_lane_for_item(retained_lanes, value)
+    if lane is not None:
+        return copy_authenticated_current_overlay_item(lane, value, updates)
+    if serialized_source_record_overlay_labels(value):
+        raise SourceRecordAuthenticatedOverlayUnionError(
+            "serialized overlay provenance has no loader-owned current lane"
+        )
+    copied = dict(value)
+    if updates is not None:
+        copied.update(updates)
+    return copied
+
+
+def loader_authenticated_current_overlay_label(value: object) -> str | None:
+    """Return the private-capability transport label for an in-memory item.
+
+    This is a process-local capability check only. It does not establish that
+    the item is current for a paper; that remains the loader transaction's
+    responsibility. It exists for downstream consumers that must preserve the
+    capability after the current lanes have already been composed.
+    """
+
+    labels = serialized_source_record_overlay_labels(value)
+    if len(labels) != 1:
+        return None
+    label = labels[0]
+    protocol = SOURCE_RECORD_OVERLAY_PROTOCOL_BY_LABEL[label]
+    module = _overlay_modules((label,))[label]
+    capability = getattr(module, protocol.capability_function)
+    return label if capability(value) else None
+
+
+def copy_loader_authenticated_or_plain_current_item(
+    value: Mapping[str, Any],
+    updates: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Preserve a valid loader capability or copy an ordinary response.
+
+    A serialized overlay marker without its loader's private token is rejected
+    rather than silently normalized into ordinary evidence.
+    """
+
+    label = loader_authenticated_current_overlay_label(value)
+    if label is not None:
+        protocol = SOURCE_RECORD_OVERLAY_PROTOCOL_BY_LABEL[label]
+        module = _overlay_modules((label,))[label]
+        copied = getattr(module, protocol.copy_function)(value, updates)
+        if loader_authenticated_current_overlay_label(copied) != label:
+            raise SourceRecordAuthenticatedOverlayUnionError(
+                f"authenticated {label} overlay copy discarded its private capability"
+            )
+        return copied
+    if serialized_source_record_overlay_labels(value):
+        raise SourceRecordAuthenticatedOverlayUnionError(
+            "serialized overlay provenance has no loader-owned current capability"
+        )
+    copied = dict(value)
+    if updates is not None:
+        copied.update(updates)
+    return copied
 
 
 def strict_authenticated_current_overlay_union(
@@ -349,15 +420,13 @@ def strict_authenticated_current_overlay_union(
     out: dict[str, Mapping[str, Any]] = {}
     owners: dict[str, str] = {}
     for lane in lanes:
-        if not isinstance(lane, AuthenticatedCurrentOverlayLane):
-            raise SourceRecordAuthenticatedOverlayUnionError(
-                "authenticated overlay union contains an untyped lane"
-            )
-        if lane._loader_token is not _LOADED_LANE_SENTINEL:
-            raise SourceRecordAuthenticatedOverlayUnionError(
-                "authenticated overlay union contains a lane without loader authority"
-            )
+        if error := _authenticated_lane_error(lane):
+            raise SourceRecordAuthenticatedOverlayUnionError(error)
         for key, value in lane.items.items():
+            if not authenticated_current_overlay_item(lane, value):
+                raise SourceRecordAuthenticatedOverlayUnionError(
+                    f"authenticated {lane.label} overlay union contains an item outside its loaded lane"
+                )
             if key in out:
                 raise SourceRecordAuthenticatedOverlayUnionError(
                     "authenticated overlay lanes overlap at current semantic group "

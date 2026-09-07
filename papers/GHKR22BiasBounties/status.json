@@ -1,0 +1,201 @@
+{
+  "schema": 1,
+  "id": "GHKR22BiasBounties",
+  "repository_visibility": "public",
+  "title": "An Algorithmic Framework for Bias Bounties",
+  "authors": "Ira Globus-Harris, Michael Kearns, and Aaron Roth",
+  "source_version": "arXiv:2201.10408v4 (governing mathematical source); ACM FAccT 2022, DOI 10.1145/3531146.3533172",
+  "source_inventory_review_required": true,
+  "build_target": "lake build GHKR22BiasBounties",
+  "status": "formalized",
+  "main_caveat": "",
+  "human_summary": "The development formalizes the paper's complete named theoretical surface: arbitrary-population definitions, certificate characterization, list-update progress and termination, adaptive checking, falsify-and-update procedures, VC-based training, ternary cost-sensitive reductions, and repaired coordinate ascent. It preserves executable finite-population counterparts, proves stronger arbitrary-label almost-everywhere semantics for Observation 4, and includes machine-checked counterexamples and corrected endpoints where the source needs repair.",
+  "human_summary_review": {
+    "status": "draft",
+    "note": "Set to human_approved only after explicit human approval; do not rewrite a human_approved summary without authorization."
+  },
+  "review_entrypoint": "papers/GHKR22BiasBounties/FINAL_VALIDATION_REPORT.md",
+  "human_review": {
+    "reviewed_rows": 0,
+    "total_rows": 15,
+    "stale_rows": 0,
+    "mismatch_rows": 0,
+    "uncertain_rows": 0,
+    "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
+  },
+  "paper_interface": {
+    "path": "papers/GHKR22BiasBounties/PaperInterface.lean",
+    "line_count": 855,
+    "declaration_rows": 46,
+    "review_rows": 15,
+    "oversized": false,
+    "maintainability_issue": "The canonical review surface has eighteen source-facing semantic specifications: fourteen named results, three algorithms, and the certificate-optimization objective. Finite and arbitrary-law theorem variants are auxiliary proof support; definitions and other algorithms use direct semantic-declaration routes in the source map."
+  },
+  "artifacts": {
+    "readme": "papers/GHKR22BiasBounties/README.md",
+    "paper_interface": "papers/GHKR22BiasBounties/PaperInterface.lean",
+    "proof_interface": "papers/GHKR22BiasBounties/ProofInterface.lean",
+    "assumptions": "papers/GHKR22BiasBounties/Assumptions.lean",
+    "final_validation_report": "papers/GHKR22BiasBounties/FINAL_VALIDATION_REPORT.md",
+    "dependency_dag_tex": "papers/GHKR22BiasBounties/docs/DependencyDAG.tex",
+    "dependency_dag_pdf": "papers/GHKR22BiasBounties/docs/DependencyDAG.pdf",
+    "source_clarifications": "papers/GHKR22BiasBounties/docs/SOURCE_CLARIFICATIONS.md",
+    "statement_map": "papers/GHKR22BiasBounties/audit/paper_statement_map.json",
+    "human_review_packet_tex": "papers/GHKR22BiasBounties/docs/HUMAN_REVIEW_PACKET.tex",
+    "human_review_packet_pdf": "papers/GHKR22BiasBounties/docs/HUMAN_REVIEW_PACKET.pdf",
+    "source_proof_fidelity": "papers/GHKR22BiasBounties/audit/source_proof_fidelity.json",
+    "library_semantic_review": "papers/GHKR22BiasBounties/audit/library_semantic_review.json",
+    "v11_raw_source_spec_screening": "papers/GHKR22BiasBounties/audit/v11_raw_source_spec_screening.json"
+  },
+  "review_surface": {
+    "source_file": "papers/GHKR22BiasBounties/PaperInterface.lean",
+    "proof_module": "GHKR22BiasBounties.ProofInterface",
+    "proof_file": "papers/GHKR22BiasBounties/ProofInterface.lean",
+    "assumption_source_file": "papers/GHKR22BiasBounties/Assumptions.lean",
+    "require_source_spec_correspondence": true,
+    "require_v11_raw_source_spec_screening": true,
+    "llm_statement_review": {
+      "lean_to_tex_file": "papers/GHKR22BiasBounties/audit/lean_to_tex_llm.json",
+      "match_judgment_file": "papers/GHKR22BiasBounties/audit/statement_match_llm.json",
+      "library_semantic_review_file": "papers/GHKR22BiasBounties/audit/library_semantic_review.json",
+      "v11_screening_file": "papers/GHKR22BiasBounties/audit/v11_raw_source_spec_screening.json",
+      "review_surface_audit_file": "papers/GHKR22BiasBounties/audit/review_surface_llm.json",
+      "paper_coverage_audit_file": "papers/GHKR22BiasBounties/audit/paper_coverage_llm.json",
+      "defect_support_judgment_file": "papers/GHKR22BiasBounties/audit/defect_support_match_llm.json",
+      "assumption_judgment_file": "papers/GHKR22BiasBounties/audit/assumption_match_llm.json",
+      "surface_audit_threshold": 30,
+      "surface_warning_threshold": 120,
+      "require_explicit_source_routes": true,
+      "require_source_claim_atoms": true,
+      "require_direct_expression_semantics_review": "v1",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+      "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim."
+    },
+    "llm_paper_coverage_review": {
+      "paper_coverage_audit_file": "papers/GHKR22BiasBounties/audit/paper_coverage_llm.json",
+      "defect_support_judgment_file": "papers/GHKR22BiasBounties/audit/defect_support_match_llm.json",
+      "required_prompt_version": "paper-coverage-v4-semantic-proof-and-pinned-defect-support",
+      "policy": "Inventory every claim-bearing named definition, observation, remark, theorem, lemma, optimization objective, and algorithm in the governing arXiv source, including repeated appendix presentations. Each main presentation must route to a canonical Spec or an exact direct semantic declaration; appendix repetitions must be presentation aliases. Quarantined source defects require exact-hash support judgments over the formal counterexample or repaired endpoint."
+    },
+    "llm_assumption_review": {
+      "assumption_judgment_file": "papers/GHKR22BiasBounties/audit/assumption_match_llm.json",
+      "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and independently judged to be a genuine source/model assumption rather than proof debt."
+    },
+    "llm_source_record_review": {
+      "source_record_audit_file": "papers/GHKR22BiasBounties/audit/source_record_audit.json",
+      "source_record_judgment_file": "papers/GHKR22BiasBounties/audit/source_record_match_llm.json",
+      "required_prompt_version": "source-record-v7-semantic-world-refinement",
+      "policy": "Recursively inspect any visible record, certificate, replay, process, bridge, oracle, or broad package premise. Classify each boundary-shaped input and field by exact source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
+    },
+    "semantic_model_review": {
+      "schema": 2,
+      "required_dimensions": [
+        "expanded_binders_and_domain",
+        "carrier_and_domain",
+        "probability_support_endpoints",
+        "joint_law_and_state_evolution",
+        "conditioning_and_calibration_semantics",
+        "expectation_definedness",
+        "null_cell_totalization_and_partition_scope",
+        "extended_rate_codomain"
+      ],
+      "policy": "For every reviewed row, compare the expanded feature, label, model, group, loss, sample-law, transcript, and oracle domains with the pinned source. Expose measurability and integrability premises, almost-everywhere versus pointwise conditional semantics, zero-mass-group totalization, iid sampling, adaptive state evolution, integer rounding, and finite versus arbitrary-population scope whenever present."
+    },
+    "source_proof_fidelity_review": {
+      "ledger_file": "papers/GHKR22BiasBounties/audit/source_proof_fidelity.json",
+      "policy": "Use schema 2. Minor source typos and corrected proof routes with unchanged substantive endpoints are formalized_note. Reserve formalized_with_caveat for a substantial source error with a fully proved corrected endpoint; weaker targets or added non-source assumptions are partially_formalized."
+    },
+    "assumption_policy": "strict",
+    "assumption_names": [],
+    "source_definition_names": [],
+    "proposition_spec_proofs": {
+      "source_observation4Spec": "source_observation4",
+      "source_theorem8Spec": "source_theorem8",
+      "source_theorem9Spec": "source_theorem9",
+      "source_theorem10Spec": "source_theorem10",
+      "source_theorem11Spec": "source_theorem11",
+      "source_theorem12Spec": "source_theorem12",
+      "source_remark13Spec": "source_remark13",
+      "source_theorem14Spec": "source_theorem14",
+      "certificateOptimizationObjectiveSpec": "certificateOptimizationObjective",
+      "source_lemma15Spec": "source_lemma15",
+      "source_theorem16Spec": "source_theorem16",
+      "source_theorem20Spec": "source_theorem20",
+      "source_lemma21Spec": "source_lemma21",
+      "source_lemma22Spec": "source_lemma22",
+      "source_theorem23Spec": "source_theorem23"
+    },
+    "paper_coverage_required": true,
+    "include_names": [
+      "source_observation4Spec",
+      "source_theorem8Spec",
+      "source_theorem9Spec",
+      "source_theorem10Spec",
+      "source_theorem11Spec",
+      "source_theorem12Spec",
+      "source_remark13Spec",
+      "source_theorem14Spec",
+      "certificateOptimizationObjectiveSpec",
+      "source_lemma15Spec",
+      "source_theorem16Spec",
+      "source_theorem20Spec",
+      "source_lemma21Spec",
+      "source_lemma22Spec",
+      "source_theorem23Spec"
+    ],
+    "auxiliary_names": [
+      "definition1_subgroupsSpec",
+      "definition2_modelLossSpec",
+      "definition3_bayesOptimalSpec",
+      "definition5_approxBayesOptimalSpec",
+      "definition7_certificateSpec",
+      "observation4_bayes_groupwiseSpec",
+      "observation4_arbitraryDistribution_counterexampleSpec",
+      "observation4_arbitraryDistribution_aeSpec",
+      "theorem8_certificate_characterizationSpec",
+      "algorithm1_listUpdateSpec",
+      "theorem9_listUpdate_progressSpec",
+      "theorem10_update_countSpec",
+      "algorithm2_certificateCheckerSpec",
+      "theorem11_adaptive_certificate_checkerSpec",
+      "algorithm3_falsifyAndUpdateSpec",
+      "theorem12_falsifyAndUpdateSpec",
+      "remark13_logarithmic_submission_dependenceSpec",
+      "theorem14_monotoneBountySpec",
+      "lemma15_vc_uniform_convergenceSpec",
+      "theorem16_trainByOptSpec",
+      "definition17_derivedCertificateSpec",
+      "definition18_costSensitiveMinimizerSpec",
+      "definition19_inducedCostSpec",
+      "theorem20_ternary_cost_sensitive_reductionSpec",
+      "lemma21_group_erm_reductionSpec",
+      "lemma22_disagreement_erm_reductionSpec",
+      "algorithm6_twoGapCoordinateAscentSpec",
+      "theorem23_coordinate_ascentSpec",
+      "theorem23_source_claim_counterexampleSpec"
+    ],
+    "slices": [
+      {
+        "id": "all",
+        "title": "All canonical source-result rows",
+        "names": [
+          "source_observation4Spec",
+          "source_theorem8Spec",
+          "source_theorem9Spec",
+          "source_theorem10Spec",
+          "source_theorem11Spec",
+          "source_theorem12Spec",
+          "source_remark13Spec",
+          "source_theorem14Spec",
+          "source_lemma15Spec",
+          "certificateOptimizationObjectiveSpec",
+          "source_theorem16Spec",
+          "source_theorem20Spec",
+          "source_lemma21Spec",
+          "source_lemma22Spec",
+          "source_theorem23Spec"
+        ]
+      }
+    ]
+  }
+}

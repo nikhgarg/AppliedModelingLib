@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, Appendix A, lines 2036--2067.
 namespace HT26EFXChores
 
 open scoped BigOperators
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 private theorem appendix_partition_bundle {Item : Type} [DecidableEq Item]
     (A B C chores bundle : Finset Item)

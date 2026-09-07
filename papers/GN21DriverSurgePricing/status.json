@@ -25,7 +25,7 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 18,
+    "total_rows": 16,
     "uncertain_rows": 0
   },
   "human_summary": "",
@@ -33,62 +33,22 @@
   "main_caveat": "",
   "paper_interface": {
     "declaration_rows": 18,
-    "line_count": 506,
+    "line_count": 511,
     "maintainability_issue": "The semantic interface has one transparent source-facing Spec for each of the 18 selected source claims; proof routes are kept separately in ProofInterface.lean.",
     "oversized": false,
     "path": "papers/GN21DriverSurgePricing/PaperInterface.lean",
     "proof_interface_line_count": 349,
     "proof_interface_path": "papers/GN21DriverSurgePricing/ProofInterface.lean",
-    "review_rows": 18
+    "review_rows": 16
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/GN21DriverSurgePricing/FINAL_VALIDATION_REPORT.md",
   "review_surface": {
-    "assumption_names": [
-      "assumption_affine_single_state_parameter_domain",
-      "assumption_single_state_defined_reward_domain",
-      "assumption_dynamic_time_fraction_denominators",
-      "assumption_switch_rate_domain",
-      "assumption_fixed_response_policy_form_conditions",
-      "assumption_upper_endpoint_derivative_domain",
-      "assumption_affine_response_shape_domains",
-      "assumption_surge_derivative_source_bounds",
-      "assumption_nonsurge_derivative_source_bounds",
-      "assumption_theorem3_source_data_domain",
-      "assumption_policy_equalities_modulo_null_sets"
-    ],
+    "assumption_names": [],
     "assumption_policy": "strict",
     "assumption_source_file": "papers/GN21DriverSurgePricing/Assumptions.lean",
-    "auxiliary_names": [
-      "review_definition_threshold_policy",
-      "review_definition_dynamic_defined_reward",
-      "theorem2_multiplicative_policy_shape_ae_quotient_domain",
-      "theorem2_multiplicative_policy_shape_ae_measurable_auxiliary",
-      "theorem2_multiplicative_policy_shape_ae_of_open_optimal_exists_auxiliary",
-      "theorem2_multiplicative_policy_shape_source_statement",
-      "gn21_multiplicative_open_optimal_policy_shapes",
-      "theorem3_defined_reward_ic_of_uniform_current_bounds_auxiliary",
-      "review_theorem3_positive_mass_ic_small_surge_gap_subcase",
-      "theorem4_one_threshold_structured_component_of_explicit_brackets",
-      "lemma5_policy_form_of_explicit_positive_response_shape",
-      "review_section2_single_state_renewal_reward_iid_bridge",
-      "review_remark1_switch_probability_per_time_strictAntiOn",
-      "review_remark2_structured_scaled_earning_algebra",
-      "review_remark2_structured_derivative_kernel_algebra",
-      "review_remark3_switch_probability_per_time_tendsto_at_zero",
-      "review_remark4_switch_time_minus_switch_probability_nonneg",
-      "review_lemma5_null_interval_reward_invariance",
-      "GN21Lemma5EndpointSignRealization",
-      "GN21Lemma5AENullEndpointVariation",
-      "GN21Lemma5AENullEndpointVariation.zero_density_interval_reward_eq",
-      "GN21Theorem4EndpointSignRealization",
-      "GN21Theorem4AENullEndpointVariation",
-      "GN21Theorem4AENullEndpointVariation.zero_density_interval_reward_eq",
-      "theorem4_full_structural_policy_forms_open_corrected_raw_endpoint_engine",
-      "theorem4_full_structural_policy_forms_open_corrected"
-    ],
+    "auxiliary_names": [],
     "include_names": [
-      "review_definition_surge_stateSpec",
       "review_lemma10_nonsurge_derivative_positive_of_acceptAll_boundsSpec",
       "review_lemma1_measured_dynamic_reward_decompositionSpec",
       "review_lemma2_switch_probability_formulaSpec",
@@ -104,7 +64,6 @@
       "review_theorem4_full_structural_policy_forms_directSpec",
       "review_theorem2_multiplicative_policy_shape_source_claimSpec",
       "lemma5_full_variational_policy_formsSpec",
-      "review_definition_incentive_compatibleSpec",
       "review_theorem3_structured_pricingSpec"
     ],
     "llm_assumption_review": {
@@ -134,7 +93,7 @@
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
       "require_explicit_source_routes": true,
       "require_source_claim_atoms": true,
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
       "review_surface_audit_file": "papers/GN21DriverSurgePricing/audit/review_surface_llm.json",
       "surface_audit_threshold": 30,
       "surface_warning_threshold": 120,
@@ -142,13 +101,6 @@
     },
     "paper_coverage_required": true,
     "presentation_sections": [
-      {
-        "names": [
-          "review_definition_incentive_compatibleSpec",
-          "review_definition_surge_stateSpec"
-        ],
-        "title": "Source-model definitions"
-      },
       {
         "names": [
           "review_theorem1_single_state_threshold_best_responseSpec",
@@ -176,10 +128,9 @@
         "title": "Appendix source claims"
       }
     ],
+    "proof_file": "papers/GN21DriverSurgePricing/ProofInterface.lean",
     "proposition_spec_proofs": {
       "lemma5_full_variational_policy_formsSpec": "lemma5_full_variational_policy_forms",
-      "review_definition_incentive_compatibleSpec": "review_definition_incentive_compatible_realizes_spec",
-      "review_definition_surge_stateSpec": "review_definition_surge_state_realizes_spec",
       "review_lemma10_nonsurge_derivative_positive_of_acceptAll_boundsSpec": "review_lemma10_nonsurge_derivative_positive_of_acceptAll_bounds",
       "review_lemma1_measured_dynamic_reward_decompositionSpec": "review_lemma1_measured_dynamic_reward_decomposition",
       "review_lemma2_switch_probability_formulaSpec": "review_lemma2_switch_probability_formula",
@@ -216,8 +167,6 @@
       {
         "id": "all",
         "names": [
-          "review_definition_incentive_compatibleSpec",
-          "review_definition_surge_stateSpec",
           "review_theorem1_single_state_threshold_best_responseSpec",
           "review_proposition3_1_affine_single_state_icSpec",
           "review_theorem2_multiplicative_policy_shape_source_claimSpec",
@@ -239,8 +188,8 @@
       }
     ],
     "source_definition_names": [
-      "review_definition_incentive_compatible",
-      "review_definition_surge_state"
+      "review_definition_incentive_compatibleSpec",
+      "review_definition_surge_stateSpec"
     ],
     "source_file": "papers/GN21DriverSurgePricing/PaperInterface.lean",
     "source_proof_fidelity_review": {

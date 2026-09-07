@@ -14,7 +14,6 @@ from unittest import mock
 from scripts.check_formalization_engine_revision import (
     BOUNDARY_ID,
     RELATION_COMPATIBLE,
-    RELATION_SEMANTIC,
     CandidateBlob,
     EngineRevisionError,
     GitCandidateView,
@@ -25,6 +24,7 @@ from scripts.check_formalization_engine_revision import (
     updated_payload,
     validate_append_only_history,
     validate_revision_ledger,
+    validated_recorded_engine_revision_ledger,
     validate_runtime_engine_registration,
 )
 from scripts.formalization_protocol import (
@@ -144,8 +144,18 @@ class FormalizationEngineRevisionTests(unittest.TestCase):
             )
         )
         self.assertTrue(is_engine_source_path("scripts/helper.lean"))
+        self.assertTrue(
+            is_engine_source_path("AppliedModelingLib/Audit/SignatureManifest.lean")
+        )
+        self.assertTrue(is_engine_source_path("lakefile.toml"))
         self.assertFalse(
             is_engine_source_path("scripts/tests/test_formalization_engine_revision.py")
+        )
+        self.assertFalse(
+            is_engine_source_path("scripts/public_release_candidate_guard.py")
+        )
+        self.assertFalse(
+            is_engine_source_path("scripts/public_release_projection.py")
         )
         self.assertFalse(is_engine_source_path("docs/audit_repository.py"))
 
@@ -171,6 +181,23 @@ class FormalizationEngineRevisionTests(unittest.TestCase):
         for candidate in variants:
             with self.subTest(candidate=candidate):
                 self.assertNotEqual(engine_tree_digest(candidate)[0], original_digest)
+
+    def test_paper_lake_target_does_not_change_engine_identity(self) -> None:
+        common = b'''[leanOptions]\nrelaxedAutoImplicit = false\n\n[[require]]\nname = "mathlib"\nrev = "v1"\n\n[[lean_lib]]\nname = "AppliedModelingLib"\n\n[[lean_lib]]\nname = "AppliedModelingLibAuditScripts"\nsrcDir = "scripts"\n\n'''
+        first = common + b'''[[lean_lib]]\nname = "PaperOne"\nsrcDir = "papers"\n'''
+        second = first + b'''\n[[lean_lib]]\nname = "PaperTwo"\nsrcDir = "papers"\n'''
+        self.assertEqual(
+            engine_tree_digest([blob("lakefile.toml", first)]),
+            engine_tree_digest([blob("lakefile.toml", second)]),
+        )
+
+    def test_audit_lake_configuration_changes_engine_identity(self) -> None:
+        original = b'''[leanOptions]\nrelaxedAutoImplicit = false\n\n[[require]]\nname = "mathlib"\nrev = "v1"\n\n[[lean_lib]]\nname = "AppliedModelingLib"\n\n[[lean_lib]]\nname = "AppliedModelingLibAuditScripts"\nsrcDir = "scripts"\n'''
+        changed = original.replace(b'rev = "v1"', b'rev = "v2"')
+        self.assertNotEqual(
+            engine_tree_digest([blob("lakefile.toml", original)]),
+            engine_tree_digest([blob("lakefile.toml", changed)]),
+        )
 
     def test_protocol_projection_matches_authoritative_digest(self) -> None:
         payload = json.loads(
@@ -245,7 +272,7 @@ class FormalizationEngineRevisionTests(unittest.TestCase):
                         current_protocol_sha256=protocol,
                     )
 
-    def test_compatible_transition_requires_engine_only_change(self) -> None:
+    def test_engine_only_change_gets_an_independent_registration(self) -> None:
         updated = updated_payload(
             self.bootstrap(),
             engine_sha256=self.engine_v2,
@@ -256,7 +283,8 @@ class FormalizationEngineRevisionTests(unittest.TestCase):
             verification=["focused compatibility regression"],
         )
         revision = updated["revisions"][-1]
-        self.assertEqual(revision["relation_to_previous"], RELATION_COMPATIBLE)
+        self.assertNotIn("relation_to_previous", revision)
+        self.assertNotIn("previous_engine_tree_sha256", revision)
         validate_revision_ledger(
             updated,
             current_engine_sha256=self.engine_v2,
@@ -264,17 +292,15 @@ class FormalizationEngineRevisionTests(unittest.TestCase):
         )
 
         invalid = copy.deepcopy(updated)
-        invalid["revisions"][-1]["formalization_review_protocol_sha256"] = (
-            self.protocol_v2
-        )
-        with self.assertRaisesRegex(EngineRevisionError, "unchanged review protocol"):
+        invalid["revisions"][-1]["previous_engine_tree_sha256"] = self.engine_v1
+        with self.assertRaisesRegex(EngineRevisionError, "fields are malformed"):
             validate_revision_ledger(
                 invalid,
                 current_engine_sha256=self.engine_v2,
-                current_protocol_sha256=self.protocol_v2,
+                current_protocol_sha256=self.protocol_v1,
             )
 
-    def test_raw_producer_compatibility_grant_is_checked_and_compatible_only(
+    def test_independent_registration_rejects_pairwise_raw_producer_grant(
         self,
     ) -> None:
         updated = updated_payload(
@@ -287,43 +313,16 @@ class FormalizationEngineRevisionTests(unittest.TestCase):
         updated["revisions"][-1]["raw_producer_compatibility"] = (
             raw_producer_compatibility_grant()
         )
-        validate_revision_ledger(
-            updated,
-            current_engine_sha256=self.engine_v2,
-            current_protocol_sha256=self.protocol_v1,
-        )
-
-        duplicate = copy.deepcopy(updated)
-        grant = duplicate["revisions"][-1]["raw_producer_compatibility"]
-        assert isinstance(grant, dict)
-        grant["predecessor_raw_producer_code_identity_sets"].append(
-            raw_producer_identities("1")
-        )
-        with self.assertRaisesRegex(EngineRevisionError, "repeats a predecessor"):
+        with self.assertRaisesRegex(
+            EngineRevisionError, "cannot carry a pairwise raw-producer"
+        ):
             validate_revision_ledger(
-                duplicate,
+                updated,
                 current_engine_sha256=self.engine_v2,
                 current_protocol_sha256=self.protocol_v1,
             )
 
-        semantic = updated_payload(
-            self.bootstrap(),
-            engine_sha256=self.engine_v2,
-            protocol_sha256=self.protocol_v2,
-            rationale="The fixture changes the canonical semantic review protocol.",
-            verification=["semantic raw-grant rejection regression"],
-        )
-        semantic["revisions"][-1]["raw_producer_compatibility"] = (
-            raw_producer_compatibility_grant()
-        )
-        with self.assertRaisesRegex(EngineRevisionError, "requires a review-compatible"):
-            validate_revision_ledger(
-                semantic,
-                current_engine_sha256=self.engine_v2,
-                current_protocol_sha256=self.protocol_v2,
-            )
-
-    def test_semantic_transition_requires_canonical_protocol_change(self) -> None:
+    def test_protocol_change_gets_an_independent_registration(self) -> None:
         updated = updated_payload(
             self.bootstrap(),
             engine_sha256=self.engine_v2,
@@ -332,7 +331,10 @@ class FormalizationEngineRevisionTests(unittest.TestCase):
             verification=["semantic transition regression"],
         )
         revision = updated["revisions"][-1]
-        self.assertEqual(revision["relation_to_previous"], RELATION_SEMANTIC)
+        self.assertNotIn("relation_to_previous", revision)
+        self.assertEqual(
+            revision["formalization_review_protocol_sha256"], self.protocol_v2
+        )
         validate_revision_ledger(
             updated,
             current_engine_sha256=self.engine_v2,
@@ -340,24 +342,42 @@ class FormalizationEngineRevisionTests(unittest.TestCase):
         )
 
         invalid = copy.deepcopy(updated)
+        invalid["revisions"][-1]["engine_tree_sha256"] = self.engine_v1
         invalid["revisions"][-1]["formalization_review_protocol_sha256"] = (
             self.protocol_v1
         )
-        with self.assertRaisesRegex(EngineRevisionError, "requires a changed"):
+        with self.assertRaisesRegex(EngineRevisionError, "duplicates an existing"):
             validate_revision_ledger(
                 invalid,
                 current_engine_sha256=self.engine_v2,
                 current_protocol_sha256=self.protocol_v1,
             )
 
-    def test_chain_link_and_second_bootstrap_fail_closed(self) -> None:
-        updated = updated_payload(
-            self.bootstrap(),
-            engine_sha256=self.engine_v2,
-            protocol_sha256=self.protocol_v1,
-            rationale="The implementation changes but review meaning is preserved.",
-            verification=["focused compatibility regression"],
-        )
+    def test_legacy_chain_link_and_second_bootstrap_fail_closed(self) -> None:
+        updated = {
+            "schema": 1,
+            "boundary": BOUNDARY_ID,
+            "revisions": [
+                {
+                    "sequence": 1,
+                    "engine_tree_sha256": self.engine_v1,
+                    "formalization_review_protocol_sha256": self.protocol_v1,
+                    "relation_to_previous": "bootstrap",
+                    "rationale": "Legacy bootstrap remains immutable provenance.",
+                    "verification": ["legacy bootstrap regression"],
+                },
+                {
+                    "sequence": 2,
+                    "engine_tree_sha256": self.engine_v2,
+                    "formalization_review_protocol_sha256": self.protocol_v1,
+                    "relation_to_previous": RELATION_COMPATIBLE,
+                    "previous_engine_tree_sha256": self.engine_v1,
+                    "previous_formalization_review_protocol_sha256": self.protocol_v1,
+                    "rationale": "Legacy linked history remains strictly validated.",
+                    "verification": ["legacy link regression"],
+                },
+            ],
+        }
         broken = copy.deepcopy(updated)
         broken["revisions"][-1]["previous_engine_tree_sha256"] = "c" * 64
         with self.assertRaisesRegex(EngineRevisionError, "does not link"):
@@ -408,6 +428,38 @@ class FormalizationEngineRevisionTests(unittest.TestCase):
 
         placeholder = {"schema": 1, "boundary": BOUNDARY_ID, "revisions": []}
         validate_append_only_history(base, placeholder)
+
+    def test_legacy_history_migrates_once_to_independent_authorities(self) -> None:
+        legacy = {
+            "schema": 1,
+            "boundary": BOUNDARY_ID,
+            "revisions": [
+                {
+                    "sequence": 1,
+                    "engine_tree_sha256": self.engine_v1,
+                    "formalization_review_protocol_sha256": self.protocol_v1,
+                    "relation_to_previous": "bootstrap",
+                    "rationale": "Legacy bootstrap remains immutable provenance.",
+                    "verification": ["legacy bootstrap regression"],
+                }
+            ],
+        }
+        migrated = updated_payload(
+            legacy,
+            engine_sha256=self.engine_v2,
+            protocol_sha256=self.protocol_v1,
+            rationale="The next engine is registered without a version-pair bridge.",
+            verification=["independent registration migration regression"],
+        )
+        self.assertEqual(migrated["revisions"][:1], legacy["revisions"])
+        self.assertEqual(migrated["independent_registration_start_sequence"], 2)
+        self.assertNotIn("relation_to_previous", migrated["revisions"][1])
+        validate_append_only_history(migrated, legacy)
+        validate_revision_ledger(
+            migrated,
+            current_engine_sha256=self.engine_v2,
+            current_protocol_sha256=self.protocol_v1,
+        )
 
     def test_index_and_tree_views_ignore_unstaged_bytes_exactly(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -594,11 +646,27 @@ class FormalizationEngineRevisionTests(unittest.TestCase):
             subprocess.run(["git", "commit", "-qm", "compatible"], cwd=root, check=True)
             after = validate_runtime_engine_registration(root)
             self.assertEqual(after.revision_sequence, 2)
-            self.assertEqual(after.relation_to_previous, RELATION_COMPATIBLE)
+            self.assertEqual(after.registration_kind, "independent")
             self.assertEqual(
                 after.review_semantic_class_sha256,
                 before.review_semantic_class_sha256,
             )
+
+    def test_recorded_issuer_history_is_readable_during_uncommitted_engine_work(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            source, _protocol = self.initialize_runtime_repository(root)
+            baseline = validated_recorded_engine_revision_ledger(root)
+
+            source.write_text("value = 2\n", encoding="utf-8")
+            with self.assertRaisesRegex(EngineRevisionError, "differs from clean HEAD"):
+                validate_runtime_engine_registration(root)
+
+            recorded = validated_recorded_engine_revision_ledger(root)
+            self.assertEqual(recorded, baseline)
+            self.assertEqual(len(recorded["revisions"]), 1)
 
 
 if __name__ == "__main__":

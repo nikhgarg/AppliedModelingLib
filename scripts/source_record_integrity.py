@@ -21,30 +21,26 @@ import re
 from copy import deepcopy
 from typing import Any, Mapping
 
+from scripts.source_record_legacy_contract import SOURCE_RECORD_REUSABLE_ITEM_SECTIONS
+
 
 SOURCE_RECORD_AUDIT_INTEGRITY_SCHEMA = 1
 SOURCE_RECORD_AUDIT_INTEGRITY_DIGEST_FIELD = "source_record_audit_integrity_sha256"
 SOURCE_RECORD_AUDIT_INTEGRITY_SCHEMA_FIELD = "source_record_audit_integrity_schema"
-SOURCE_RECORD_AUDIT_SURFACE_SCHEMA = 1
+LEGACY_SOURCE_RECORD_AUDIT_SURFACE_SCHEMA = 1
+SOURCE_RECORD_AUDIT_SURFACE_SCHEMA = 2
 SOURCE_RECORD_AUDIT_SURFACE_FIELD = "source_record_audit_surface"
 SOURCE_RECORD_AUDIT_SURFACE_SCHEMA_FIELD = "source_record_audit_surface_schema"
 SOURCE_RECORD_AUDIT_SURFACE_PROJECTION_FIELD = "raw_evidence_projection"
+SOURCE_RECORD_AUDIT_SURFACE_RAW_SHA256_FIELD = "raw_evidence_projection_sha256"
+SOURCE_RECORD_AUDIT_SURFACE_GENERATOR_SHA256_FIELD = "generator_surface_sha256"
+SOURCE_RECORD_AUDIT_SURFACE_TOP_LEVEL_FIELDS = "generator_surface_top_level_fields"
+SOURCE_RECORD_AUDIT_SURFACE_EXTENSIONS = "generator_surface_extensions"
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 
-# These sections are the generator-owned item surfaces whose narrow digests
-# may be reused by a judgment sidecar.  Keep the list here rather than in each
-# consumer: an item-level receipt is meaningful only under one shared
-# eligibility contract, regardless of whether the consumer is the cache, the
-# fast evidence gate, repository hygiene, or conclusion provenance.
-SOURCE_RECORD_REUSABLE_ITEM_SECTIONS = (
-    "boundary_input_items",
-    "theorem_facing_input_items",
-    "conclusion_dependency_items",
-    "type_valued_certificate_result_items",
-    "recursive_field_items",
-    "semantic_model_items",
-    "source_premise_consistency_items",
-)
+# These are the generator-owned item surfaces whose narrow digests may be
+# reused by a judgment sidecar. The canonical tuple lives in the data-only
+# legacy contract so current-v11 callers do not import this historical reader.
 THEOREM_FACING_INPUT_MIRROR_REUSE_BLOCKER = (
     "canonical theorem-facing mirror of an existing reusable input"
 )
@@ -71,6 +67,32 @@ SOURCE_RECORD_TARGET_ROUTE_ERROR_FIELDS = (
     "semantic_model_explicit_source_target_generated_item_errors",
     "semantic_model_target_route_errors",
 )
+
+# These one-time repair transports have no tracked paper consumer. Their exact
+# implementations remain recoverable from Git history, but a raw receipt that
+# still embeds either capability must be reissued through the current producer
+# instead of silently losing the validator that once authenticated it.
+ARCHIVED_SOURCE_RECORD_TRANSPORT_FIELDS = frozenset(
+    {
+        "source_record_direct_route_diagnostic_rebind",
+        "source_record_assumption_route_diagnostic_rebind",
+    }
+)
+
+
+def source_record_archived_transport_error(payload: object) -> str:
+    """Reject raw receipts that depend on an archived exceptional transport."""
+
+    if not isinstance(payload, Mapping):
+        return "source-record audit is not an object"
+    retained = sorted(ARCHIVED_SOURCE_RECORD_TRANSPORT_FIELDS.intersection(payload))
+    if not retained:
+        return ""
+    return (
+        "source-record audit uses archived transport field(s): "
+        + ", ".join(retained)
+        + "; reissue the raw receipt with the current producer"
+    )
 
 
 def source_record_target_route_error(payload: Mapping[str, Any]) -> str:
@@ -233,6 +255,128 @@ def source_record_audit_surface_sha256(surface: Mapping[str, Any]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _compact_source_record_audit_surface(
+    payload: Mapping[str, Any], surface: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Bind one generator surface without copying the complete raw carrier.
+
+    Most generator-owned surface fields are already serialized at top level.
+    The former schema copied those fields and the entire raw-evidence
+    projection into a second nested object, roughly doubling large receipts.
+    Keep the exact field inventory, store only genuine extensions, and bind
+    both reconstructed projections by their canonical digests.
+    """
+
+    top_level_fields = sorted(
+        str(key)
+        for key, value in surface.items()
+        if str(key) in payload
+        and canonical_digest_payload(payload[str(key)])
+        == canonical_digest_payload(value)
+    )
+    extensions = {
+        str(key): deepcopy(value)
+        for key, value in surface.items()
+        if str(key) not in top_level_fields
+    }
+    return {
+        SOURCE_RECORD_AUDIT_SURFACE_TOP_LEVEL_FIELDS: top_level_fields,
+        SOURCE_RECORD_AUDIT_SURFACE_EXTENSIONS: extensions,
+        SOURCE_RECORD_AUDIT_SURFACE_GENERATOR_SHA256_FIELD: (
+            source_record_audit_surface_sha256(surface)
+        ),
+        SOURCE_RECORD_AUDIT_SURFACE_RAW_SHA256_FIELD: (
+            source_record_audit_surface_sha256(
+                source_record_raw_evidence_projection(payload)
+            )
+        ),
+    }
+
+
+def _reconstructed_compact_source_record_audit_surface(
+    payload: Mapping[str, Any], surface: object
+) -> tuple[dict[str, Any] | None, str]:
+    """Reconstruct and authenticate a schema-2 generator surface."""
+
+    required = {
+        SOURCE_RECORD_AUDIT_SURFACE_TOP_LEVEL_FIELDS,
+        SOURCE_RECORD_AUDIT_SURFACE_EXTENSIONS,
+        SOURCE_RECORD_AUDIT_SURFACE_GENERATOR_SHA256_FIELD,
+        SOURCE_RECORD_AUDIT_SURFACE_RAW_SHA256_FIELD,
+    }
+    if not isinstance(surface, Mapping) or set(surface) != required:
+        return None, "source-record audit compact aggregate surface is malformed"
+    raw_fields = surface.get(SOURCE_RECORD_AUDIT_SURFACE_TOP_LEVEL_FIELDS)
+    extensions = surface.get(SOURCE_RECORD_AUDIT_SURFACE_EXTENSIONS)
+    if (
+        not isinstance(raw_fields, list)
+        or any(not isinstance(field, str) or not field for field in raw_fields)
+        or len(raw_fields) != len(set(raw_fields))
+        or raw_fields != sorted(raw_fields)
+        or not isinstance(extensions, Mapping)
+        or any(not isinstance(key, str) or not key for key in extensions)
+        or set(raw_fields).intersection(extensions)
+    ):
+        return None, "source-record audit compact generator surface is malformed"
+    missing = [field for field in raw_fields if field not in payload]
+    if missing:
+        return None, (
+            "source-record audit compact generator surface lacks top-level field: "
+            + ", ".join(missing[:3])
+        )
+    reconstructed = {
+        field: deepcopy(payload[field])
+        for field in raw_fields
+    }
+    reconstructed.update(
+        {str(key): deepcopy(value) for key, value in extensions.items()}
+    )
+    generator_digest = str(
+        surface.get(SOURCE_RECORD_AUDIT_SURFACE_GENERATOR_SHA256_FIELD) or ""
+    ).strip().lower()
+    if not SHA256_RE.fullmatch(generator_digest) or generator_digest != (
+        source_record_audit_surface_sha256(reconstructed)
+    ):
+        return None, "source-record audit compact generator-surface digest is stale"
+    raw_digest = str(
+        surface.get(SOURCE_RECORD_AUDIT_SURFACE_RAW_SHA256_FIELD) or ""
+    ).strip().lower()
+    if not SHA256_RE.fullmatch(raw_digest) or raw_digest != (
+        source_record_audit_surface_sha256(
+            source_record_raw_evidence_projection(payload)
+        )
+    ):
+        return None, "source-record audit compact raw-evidence digest is stale"
+    return reconstructed, ""
+
+
+def source_record_audit_surface_view(
+    payload: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Return the authenticated logical surface for either receipt schema.
+
+    Schema 2 omits the large raw projection from serialized JSON, but callers
+    must not need receipt-schema branches.  Reconstruct the same logical view
+    that schema 1 exposed after authenticating both compact digests.
+    """
+
+    schema = payload.get(SOURCE_RECORD_AUDIT_SURFACE_SCHEMA_FIELD)
+    surface = payload.get(SOURCE_RECORD_AUDIT_SURFACE_FIELD)
+    if schema == LEGACY_SOURCE_RECORD_AUDIT_SURFACE_SCHEMA:
+        return dict(surface) if isinstance(surface, Mapping) else None
+    if schema != SOURCE_RECORD_AUDIT_SURFACE_SCHEMA:
+        return None
+    reconstructed, error = _reconstructed_compact_source_record_audit_surface(
+        payload, surface
+    )
+    if error or reconstructed is None:
+        return None
+    reconstructed[SOURCE_RECORD_AUDIT_SURFACE_PROJECTION_FIELD] = deepcopy(
+        source_record_raw_evidence_projection(payload)
+    )
+    return reconstructed
+
+
 def attach_source_record_audit_surface(
     payload: dict[str, Any],
     surface: dict[str, Any],
@@ -244,18 +388,13 @@ def attach_source_record_audit_surface(
     the raw receipt is stamped.  Callers must not edit the payload afterward.
     """
 
-    # Keep an independent snapshot.  A shallow projection would share nested
-    # item objects with ``payload`` in memory, allowing a caller to mutate both
-    # sides of the comparison before serializing either one.
-    surface[SOURCE_RECORD_AUDIT_SURFACE_PROJECTION_FIELD] = deepcopy(
-        source_record_raw_evidence_projection(payload)
-    )
-    aggregate_digest = source_record_audit_surface_sha256(surface)
+    compact_surface = _compact_source_record_audit_surface(payload, surface)
+    aggregate_digest = source_record_audit_surface_sha256(compact_surface)
     payload["source_record_audit_sha256"] = aggregate_digest
     payload[SOURCE_RECORD_AUDIT_SURFACE_SCHEMA_FIELD] = (
         SOURCE_RECORD_AUDIT_SURFACE_SCHEMA
     )
-    payload[SOURCE_RECORD_AUDIT_SURFACE_FIELD] = surface
+    payload[SOURCE_RECORD_AUDIT_SURFACE_FIELD] = compact_surface
     return aggregate_digest
 
 
@@ -283,33 +422,43 @@ def source_record_audit_surface_error(payload: object) -> str:
 
     if not isinstance(payload, Mapping):
         return "source-record audit payload is not an object"
-    if payload.get(SOURCE_RECORD_AUDIT_SURFACE_SCHEMA_FIELD) != (
-        SOURCE_RECORD_AUDIT_SURFACE_SCHEMA
-    ):
+    schema = payload.get(SOURCE_RECORD_AUDIT_SURFACE_SCHEMA_FIELD)
+    if schema not in {
+        LEGACY_SOURCE_RECORD_AUDIT_SURFACE_SCHEMA,
+        SOURCE_RECORD_AUDIT_SURFACE_SCHEMA,
+    }:
         return (
-            "source-record audit lacks the current recomputable aggregate-surface "
-            f"schema {SOURCE_RECORD_AUDIT_SURFACE_SCHEMA}"
+            "source-record audit lacks a supported recomputable aggregate-surface "
+            f"schema ({LEGACY_SOURCE_RECORD_AUDIT_SURFACE_SCHEMA} or "
+            f"{SOURCE_RECORD_AUDIT_SURFACE_SCHEMA})"
         )
     surface = payload.get(SOURCE_RECORD_AUDIT_SURFACE_FIELD)
     if not isinstance(surface, Mapping):
         return "source-record audit aggregate surface is missing or malformed"
-    recorded_projection = surface.get(SOURCE_RECORD_AUDIT_SURFACE_PROJECTION_FIELD)
-    if not isinstance(recorded_projection, Mapping):
-        return "source-record audit aggregate surface lacks its raw-evidence projection"
-    # Older authenticated surfaces may retain fields that were subsequently
-    # classified as presentation-only.  Apply today's explicit volatile-field
-    # projection to both sides: this preserves those historical receipts while
-    # still rejecting every unknown added, removed, or changed evidence field.
-    normalized_recorded_projection = source_record_raw_evidence_projection(
-        recorded_projection
-    )
-    if canonical_digest_payload(
-        normalized_recorded_projection
-    ) != canonical_digest_payload(source_record_raw_evidence_projection(payload)):
-        return (
-            "source-record audit aggregate surface does not match its serialized "
-            "raw-evidence projection"
+    if schema == LEGACY_SOURCE_RECORD_AUDIT_SURFACE_SCHEMA:
+        recorded_projection = surface.get(SOURCE_RECORD_AUDIT_SURFACE_PROJECTION_FIELD)
+        if not isinstance(recorded_projection, Mapping):
+            return "source-record audit aggregate surface lacks its raw-evidence projection"
+        # Older authenticated surfaces may retain fields that were subsequently
+        # classified as presentation-only.  Apply today's explicit volatile-field
+        # projection to both sides: this preserves those historical receipts while
+        # still rejecting every unknown added, removed, or changed evidence field.
+        normalized_recorded_projection = source_record_raw_evidence_projection(
+            recorded_projection
         )
+        if canonical_digest_payload(
+            normalized_recorded_projection
+        ) != canonical_digest_payload(source_record_raw_evidence_projection(payload)):
+            return (
+                "source-record audit aggregate surface does not match its serialized "
+                "raw-evidence projection"
+            )
+    else:
+        _reconstructed, compact_error = (
+            _reconstructed_compact_source_record_audit_surface(payload, surface)
+        )
+        if compact_error:
+            return compact_error
     recorded_digest = str(payload.get("source_record_audit_sha256") or "").strip()
     if not SHA256_RE.fullmatch(recorded_digest):
         return "source_record_audit_sha256 is missing or malformed"
@@ -325,6 +474,9 @@ def source_record_audit_surface_error(payload: object) -> str:
 def source_record_audit_receipt_error(payload: object) -> str:
     """Validate both the aggregate semantic surface and raw serialization receipt."""
 
+    archived_transport_error = source_record_archived_transport_error(payload)
+    if archived_transport_error:
+        return archived_transport_error
     surface_error = source_record_audit_surface_error(payload)
     if surface_error:
         return surface_error

@@ -8,7 +8,7 @@ namespace GHW01DigitalGoods
 
 namespace PaperInterface
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 open scoped BigOperators
 open GHW01DigitalGoods.ProofBridge
 noncomputable section

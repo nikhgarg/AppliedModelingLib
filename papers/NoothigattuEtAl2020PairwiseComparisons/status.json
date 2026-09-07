@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "id": "NoothigattuEtAl2020PairwiseComparisons",
+  "title": "Axioms for Learning from Pairwise Comparisons",
+  "authors": "Ritesh Noothigattu, Dominik Peters, and Ariel D. Procaccia",
+  "source_version": "NeurIPS 2020 published conference paper and official supplement",
+  "intake_freeze_required": true,
+  "repository_visibility": "public",
+  "build_target": "lake build +NoothigattuEtAl2020PairwiseComparisons",
+  "status": "formalized",
+  "main_caveat": "",
+  "human_summary": "",
+  "human_summary_review": {
+    "status": "draft",
+    "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+  },
+  "review_entrypoint": "papers/NoothigattuEtAl2020PairwiseComparisons/FINAL_VALIDATION_REPORT.md",
+  "human_review": {
+    "reviewed_rows": 0,
+    "total_rows": 10,
+    "stale_rows": 0,
+    "mismatch_rows": 0,
+    "uncertain_rows": 0,
+    "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
+  },
+  "paper_interface": {
+    "path": "papers/NoothigattuEtAl2020PairwiseComparisons/PaperInterface.lean",
+    "line_count": 304,
+    "declaration_rows": 14,
+    "review_rows": 10,
+    "oversized": false,
+    "maintainability_issue": null
+  },
+  "artifacts": {
+    "paper_interface": "papers/NoothigattuEtAl2020PairwiseComparisons/PaperInterface.lean",
+    "proof_interface": "papers/NoothigattuEtAl2020PairwiseComparisons/ProofInterface.lean",
+    "assumptions": "papers/NoothigattuEtAl2020PairwiseComparisons/Assumptions.lean",
+    "final_validation_report": "papers/NoothigattuEtAl2020PairwiseComparisons/FINAL_VALIDATION_REPORT.md",
+    "dependency_dag_tex": "papers/NoothigattuEtAl2020PairwiseComparisons/docs/DependencyDAG.tex",
+    "dependency_dag_pdf": "papers/NoothigattuEtAl2020PairwiseComparisons/docs/DependencyDAG.pdf",
+    "source_proof_fidelity": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/source_proof_fidelity.json",
+    "defect_support_match": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/defect_support_match_llm.json",
+    "library_semantic_review": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/library_semantic_review.json",
+    "v11_raw_source_spec_screening": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/v11_raw_source_spec_screening.json",
+    "human_review_packet_pdf": "papers/NoothigattuEtAl2020PairwiseComparisons/docs/HUMAN_REVIEW_PACKET.pdf",
+    "human_review_packet_tex": "papers/NoothigattuEtAl2020PairwiseComparisons/docs/HUMAN_REVIEW_PACKET.tex"
+  },
+  "review_surface": {
+    "source_file": "papers/NoothigattuEtAl2020PairwiseComparisons/PaperInterface.lean",
+    "proof_module": "NoothigattuEtAl2020PairwiseComparisons.ProofInterface",
+    "proof_file": "papers/NoothigattuEtAl2020PairwiseComparisons/ProofInterface.lean",
+    "assumption_source_file": "papers/NoothigattuEtAl2020PairwiseComparisons/Assumptions.lean",
+    "require_source_spec_correspondence": true,
+    "llm_statement_review": {
+      "lean_to_tex_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/lean_to_tex_llm.json",
+      "match_judgment_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/statement_match_llm.json",
+      "library_semantic_review_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/library_semantic_review.json",
+      "v11_screening_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/v11_raw_source_spec_screening.json",
+      "review_surface_audit_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/review_surface_llm.json",
+      "paper_coverage_audit_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/paper_coverage_llm.json",
+      "defect_support_judgment_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/defect_support_match_llm.json",
+      "assumption_judgment_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/assumption_match_llm.json",
+      "surface_audit_threshold": 30,
+      "surface_warning_threshold": 120,
+      "require_explicit_source_routes": true,
+      "require_source_claim_atoms": true,
+      "require_direct_expression_semantics_review": "v1",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+      "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim."
+    },
+    "llm_paper_coverage_review": {
+      "paper_coverage_audit_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/paper_coverage_llm.json",
+      "defect_support_judgment_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/defect_support_match_llm.json",
+      "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. If coverage uses a reusable library declaration, it must route through an audited paper-local semantic bridge/equivalence row; matching by Lean/library/source names is not semantic evidence. Quarantined source defects require a separate exact-hash semantic judgment binding each candidate counterexample/refutation theorem to the validated defect record and every elaborated signature atom. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
+    },
+    "llm_assumption_review": {
+      "assumption_judgment_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/assumption_match_llm.json",
+      "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
+    },
+    "llm_source_record_review": {
+      "source_record_audit_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/source_record_audit.json",
+      "source_record_judgment_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/source_record_match_llm.json",
+      "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
+    },
+    "semantic_model_review": {
+      "schema": 2,
+      "required_dimensions": [
+        "expanded_binders_and_domain",
+        "carrier_and_domain",
+        "probability_support_endpoints",
+        "joint_law_and_state_evolution",
+        "conditioning_and_calibration_semantics",
+        "expectation_definedness",
+        "null_cell_totalization_and_partition_scope",
+        "extended_rate_codomain"
+      ],
+      "policy": "For every reviewed row, preserve an alpha-normalized expanded binder/domain surface, including transparent local type aliases, record parameter domains, and model records reached only in result quantifiers. An unexpanded local opaque/constant type requires a checked carrier/refinement bridge rather than being silently treated as an ordinary carrier. When an expanded finite carrier uses index arithmetic such as Fin (n + c), record the source cardinal parameter, the expanded Lean expression, and a proved parameter translation; then explicitly compare it with pinned source text. Review endpoint support/cutoffs, product or iid laws versus source state evolution, conditioning/calibration semantics, expectation definedness, null-cell totalization and finite/countable/arbitrary partition scope, and Real versus extended-rate codomains when the expanded model makes them relevant. For a probability-law surface, state whether conditioning is pointwise, a.e., positive-fiber, or event-calibrated; state measurability/integrability or extended-value conventions for every expectation; and expose every zero-mass-cell branch. Local declaration and binder names are routing only; detected probability/rate shapes need a checked bridge from source primitives. Because this scaffold enables explicit v10 source routes, every full closeout requires current source-record semantic-model judgments for every generated row; an unresolved model dimension blocks both full statuses."
+    },
+    "source_proof_fidelity_review": {
+      "ledger_file": "papers/NoothigattuEtAl2020PairwiseComparisons/audit/source_proof_fidelity.json",
+      "policy": "Audit source proof steps by source locator and mathematical claim, not by Lean declaration name. Completed papers use ledger schema 2. Every defect records status_impact as formalized_note, formalized_with_caveat, or partially_formalized plus a semantic rationale. Minor repairs with an unchanged substantive endpoint are notes; formalized with caveat is reserved for a substantial central source-paper error with a fully proved corrected endpoint; weaker Lean targets and added non-source assumptions are partial. Keep this configured ledger whenever explicit source routes or source-defect links are present; a formalized note cannot waive an added non-source assumption or a partial boundary."
+    },
+    "assumption_policy": "strict",
+    "assumption_names": [],
+    "source_definition_names": [
+      "definition3_1_pareto_efficiency",
+      "definition4_1_monotonicitySpec",
+      "definition5_1_pairwise_majority_consistencySpec",
+      "definition6_1_separabilitySpec"
+    ],
+    "proposition_spec_proofs": {
+      "lemma2_1_mle_existsSpec": "lemma2_1_mle_exists_proof",
+      "lemma2_2_one_neighbor_perfect_fitSpec": "lemma2_2_one_neighbor_perfect_fit_proof",
+      "lemma2_3_mle_supNorm_boundSpec": "lemma2_3_mle_supNorm_bound_proof",
+      "lemma2_4_strictConcavity_and_unique_mleSpec": "lemma2_4_strictConcavity_and_unique_mle_proof",
+      "theorem3_2_mle_satisfies_pareto_efficiencySpec": "theorem3_2_mle_satisfies_pareto_efficiency_proof",
+      "theorem4_2_mle_satisfies_monotonicitySpec": "theorem4_2_mle_satisfies_monotonicity_proof",
+      "theorem5_3_mle_violates_pairwise_majority_consistencySpec": "theorem5_3_mle_violates_pairwise_majority_consistency_proof",
+      "theorem6_3_mle_violates_separabilitySpec": "theorem6_3_mle_violates_separability_proof",
+      "claimA1_coin_flip_likelihoodSpec": "claimA1_coin_flip_likelihood_proof",
+      "claimC1_strict_crossed_productSpec": "claimC1_strict_crossed_product_proof"
+    },
+    "paper_coverage_required": true,
+    "include_names": [
+      "lemma2_1_mle_existsSpec",
+      "lemma2_2_one_neighbor_perfect_fitSpec",
+      "lemma2_3_mle_supNorm_boundSpec",
+      "lemma2_4_strictConcavity_and_unique_mleSpec",
+      "theorem3_2_mle_satisfies_pareto_efficiencySpec",
+      "theorem4_2_mle_satisfies_monotonicitySpec",
+      "theorem5_3_mle_violates_pairwise_majority_consistencySpec",
+      "theorem6_3_mle_violates_separabilitySpec",
+      "claimA1_coin_flip_likelihoodSpec",
+      "claimC1_strict_crossed_productSpec"
+    ],
+    "slices": [
+      {
+        "id": "main_text",
+        "title": "Main-text definitions and results",
+        "names": [
+          "lemma2_1_mle_existsSpec",
+          "lemma2_2_one_neighbor_perfect_fitSpec",
+          "lemma2_3_mle_supNorm_boundSpec",
+          "lemma2_4_strictConcavity_and_unique_mleSpec",
+          "theorem3_2_mle_satisfies_pareto_efficiencySpec",
+          "theorem4_2_mle_satisfies_monotonicitySpec",
+          "theorem5_3_mle_violates_pairwise_majority_consistencySpec",
+          "theorem6_3_mle_violates_separabilitySpec"
+        ]
+      },
+      {
+        "id": "appendix",
+        "title": "Supplementary proof claims",
+        "names": [
+          "claimA1_coin_flip_likelihoodSpec",
+          "claimC1_strict_crossed_productSpec"
+        ]
+      }
+    ],
+    "require_v11_raw_source_spec_screening": true
+  }
+}

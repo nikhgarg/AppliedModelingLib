@@ -28,13 +28,13 @@ noncomputable def sourceFourRankValueJointLaw
 noncomputable def sourceFourSelectedUniformUtility
     (outcome : SourceFourCandidate × (Fin 4 → ℝ)) : ℝ :=
   if outcome.1 = 0 then
-    EconCSLib.Probability.upperOrderStatistic outcome.2 0
+    AppliedModelingLib.Probability.upperOrderStatistic outcome.2 0
   else if outcome.1 = 1 then
-    EconCSLib.Probability.upperOrderStatistic outcome.2 1
+    AppliedModelingLib.Probability.upperOrderStatistic outcome.2 1
   else if outcome.1 = 2 then
-    EconCSLib.Probability.upperOrderStatistic outcome.2 2
+    AppliedModelingLib.Probability.upperOrderStatistic outcome.2 2
   else
-    EconCSLib.Probability.upperOrderStatistic outcome.2 3
+    AppliedModelingLib.Probability.upperOrderStatistic outcome.2 3
 
 /-- The true-rank coordinate and the four iid Uniform cardinal-value sample
 are independent because the joint source law is their actual product measure. -/
@@ -50,7 +50,7 @@ theorem sourceFourRankValue_indepFun
 theorem sourceFourSelectedUniformUtility_eq_upperOrderStatistic
     (outcome : SourceFourCandidate × (Fin 4 → ℝ)) :
     sourceFourSelectedUniformUtility outcome =
-      EconCSLib.Probability.upperOrderStatistic outcome.2 outcome.1 := by
+      AppliedModelingLib.Probability.upperOrderStatistic outcome.2 outcome.1 := by
   rcases outcome with ⟨rank, sample⟩
   fin_cases rank <;>
     simp [sourceFourSelectedUniformUtility, Fin.ext_iff]
@@ -60,14 +60,14 @@ private theorem sourceFourSelectedUniformUtility_measurable :
   unfold sourceFourSelectedUniformUtility
   apply Measurable.ite
   · exact measurableSet_eq_fun measurable_fst measurable_const
-  · exact (EconCSLib.Probability.upperOrderStatistic_measurable 0).comp measurable_snd
+  · exact (AppliedModelingLib.Probability.upperOrderStatistic_measurable 0).comp measurable_snd
   · apply Measurable.ite
     · exact measurableSet_eq_fun measurable_fst measurable_const
-    · exact (EconCSLib.Probability.upperOrderStatistic_measurable 1).comp measurable_snd
+    · exact (AppliedModelingLib.Probability.upperOrderStatistic_measurable 1).comp measurable_snd
     · apply Measurable.ite
       · exact measurableSet_eq_fun measurable_fst measurable_const
-      · exact (EconCSLib.Probability.upperOrderStatistic_measurable 2).comp measurable_snd
-      · exact (EconCSLib.Probability.upperOrderStatistic_measurable 3).comp measurable_snd
+      · exact (AppliedModelingLib.Probability.upperOrderStatistic_measurable 2).comp measurable_snd
+      · exact (AppliedModelingLib.Probability.upperOrderStatistic_measurable 3).comp measurable_snd
 
 /-- The independent true-rank/cardinal-value utility is integrable under the
 explicit finite-PMF times iid-Uniform product law. -/
@@ -92,7 +92,7 @@ theorem sourceFourSelectedUniformUtility_integral_eq_pmfExp
     (rankLaw : PMF SourceFourCandidate) :
     (∫ outcome, sourceFourSelectedUniformUtility outcome
       ∂sourceFourRankValueJointLaw rankLaw) =
-      EconCSLib.pmfExp rankLaw
+      AppliedModelingLib.pmfExp rankLaw
         (fun candidate => (sourceExpectedOrderStatisticValue candidate : ℝ)) := by
   unfold sourceFourRankValueJointLaw sourceFourUniformValueLaw
   letI : SFinite sourceFourUniformValueLaw := by
@@ -115,10 +115,10 @@ theorem sourceFourSelectedUniformUtility_integral_eq_pmfExp
           calc
             (∫ sample, sourceFourSelectedUniformUtility (candidate, sample)
               ∂Measure.pi (fun _ : Fin 4 => PRPKG24AccuracyDiversity.uniform01Measure)) =
-                EconCSLib.Probability.expectedUpperOrderStatistic
+                AppliedModelingLib.Probability.expectedUpperOrderStatistic
                   (Measure.pi (fun _ : Fin 4 => PRPKG24AccuracyDiversity.uniform01Measure))
                   candidate := by
-                    unfold EconCSLib.Probability.expectedUpperOrderStatistic
+                    unfold AppliedModelingLib.Probability.expectedUpperOrderStatistic
                     apply MeasureTheory.integral_congr_ae
                     filter_upwards with sample
                     exact sourceFourSelectedUniformUtility_eq_upperOrderStatistic
@@ -127,10 +127,10 @@ theorem sourceFourSelectedUniformUtility_integral_eq_pmfExp
               exact
                 (sourceExpectedOrderStatisticValue_eq_uniform01_expectedUpperOrderStatistic
                   candidate).symm
-    _ = EconCSLib.pmfExp rankLaw
+    _ = AppliedModelingLib.pmfExp rankLaw
           (fun candidate => (sourceExpectedOrderStatisticValue candidate : ℝ)) := by
           symm
-          exact EconCSLib.pmfExp_eq_integral_toMeasure rankLaw _
+          exact AppliedModelingLib.pmfExp_eq_integral_toMeasure rankLaw _
 
 /-- The preceding product-law expectation written as the finite weighted
 true-rank table.  The weights are the atom probabilities of `rankLaw`. -/
@@ -164,7 +164,7 @@ theorem sourceFourSelectedUniformUtilityOf_eq_upperOrderStatistic
     (select : Outcome → SourceFourCandidate)
     (outcome : Outcome × (Fin 4 → ℝ)) :
     sourceFourSelectedUniformUtilityOf select outcome =
-      EconCSLib.Probability.upperOrderStatistic outcome.2 (select outcome.1) := by
+      AppliedModelingLib.Probability.upperOrderStatistic outcome.2 (select outcome.1) := by
   exact sourceFourSelectedUniformUtility_eq_upperOrderStatistic
     (select outcome.1, outcome.2)
 
@@ -211,7 +211,7 @@ theorem sourceFourSelectedUniformUtilityOf_integral_eq_pmfExp
     (select : Outcome → SourceFourCandidate) :
     (∫ outcome, sourceFourSelectedUniformUtilityOf select outcome
       ∂outcomeLaw.toMeasure.prod sourceFourUniformValueLaw) =
-      EconCSLib.pmfExp outcomeLaw
+      AppliedModelingLib.pmfExp outcomeLaw
         (fun outcome => (sourceExpectedOrderStatisticValue (select outcome) : ℝ)) := by
   letI : SFinite sourceFourUniformValueLaw := by
     unfold sourceFourUniformValueLaw
@@ -233,9 +233,9 @@ theorem sourceFourSelectedUniformUtilityOf_integral_eq_pmfExp
             (∫ sample,
               sourceFourSelectedUniformUtilityOf select (finiteOutcome, sample)
               ∂sourceFourUniformValueLaw) =
-                EconCSLib.Probability.expectedUpperOrderStatistic
+                AppliedModelingLib.Probability.expectedUpperOrderStatistic
                   sourceFourUniformValueLaw (select finiteOutcome) := by
-                    unfold EconCSLib.Probability.expectedUpperOrderStatistic
+                    unfold AppliedModelingLib.Probability.expectedUpperOrderStatistic
                     apply MeasureTheory.integral_congr_ae
                     filter_upwards with sample
                     exact sourceFourSelectedUniformUtilityOf_eq_upperOrderStatistic
@@ -244,11 +244,11 @@ theorem sourceFourSelectedUniformUtilityOf_integral_eq_pmfExp
               exact
                 (sourceExpectedOrderStatisticValue_eq_uniform01_expectedUpperOrderStatistic
                   (select finiteOutcome)).symm
-    _ = EconCSLib.pmfExp outcomeLaw
+    _ = AppliedModelingLib.pmfExp outcomeLaw
           (fun finiteOutcome =>
             (sourceExpectedOrderStatisticValue (select finiteOutcome) : ℝ)) := by
           symm
-          exact EconCSLib.pmfExp_eq_integral_toMeasure outcomeLaw _
+          exact AppliedModelingLib.pmfExp_eq_integral_toMeasure outcomeLaw _
 
 /-- The generic finite-outcome product-law identity written as an explicit
 weighted sum of deterministic true-rank choices. -/

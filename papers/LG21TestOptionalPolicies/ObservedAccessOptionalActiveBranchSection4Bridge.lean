@@ -19,7 +19,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- Under the declared fibrewise active-branch selection, the selected
 optional profile's actual PBO output is neither observably fair (outside null

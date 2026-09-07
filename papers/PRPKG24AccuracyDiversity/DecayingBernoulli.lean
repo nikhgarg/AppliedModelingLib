@@ -429,7 +429,7 @@ theorem rankBernoulliTopOneConsumptionModel_weightedForwardMarginal {T : ℕ}
       likelihood t *
         (success q * ∏ i ∈ Finset.range q, (1 - success i)) := by
   unfold ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-    EconCSLib.Allocation.marginal rankBernoulliTopOneConsumptionModel
+    AppliedModelingLib.Allocation.marginal rankBernoulliTopOneConsumptionModel
   dsimp only
   rw [rankBernoulliTopOneValue_succ_sub]
 
@@ -450,7 +450,7 @@ theorem rankBernoulliAllConsumedConsumptionModel_weightedForwardMarginal {T : �
     (rankBernoulliAllConsumedConsumptionModel likelihood success).weightedForwardMarginal t q =
       likelihood t * success q := by
   unfold ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-    EconCSLib.Allocation.marginal rankBernoulliAllConsumedConsumptionModel
+    AppliedModelingLib.Allocation.marginal rankBernoulliAllConsumedConsumptionModel
   dsimp only
   rw [rankBernoulliAllConsumedValue_succ_sub]
 
@@ -660,7 +660,7 @@ theorem decayingBernoulliSuccess_tendsto_zero
   have hpow :
       Tendsto (fun i : ℕ => (((i + 1 : ℕ) : ℝ) + d) ^ (-α))
         atTop (nhds 0) :=
-    EconCSLib.Math.tendsto_nat_succ_cast_add_const_rpow_neg_nhds_zero d hα
+    AppliedModelingLib.Math.tendsto_nat_succ_cast_add_const_rpow_neg_nhds_zero d hα
   refine Tendsto.congr'
     (f₁ := fun i : ℕ => c * ((((i + 1 : ℕ) : ℝ) + d) ^ (-α))) ?_ ?_
   · filter_upwards with i
@@ -2839,12 +2839,12 @@ noncomputable def
   intro N a hlarge hopt dst
   by_contra hnot_pos
   have hdst_zero : a.count dst = 0 := Nat.eq_zero_of_not_pos hnot_pos
-  have htotal_gt : T * K < EconCSLib.Allocation.total a := by
+  have htotal_gt : T * K < AppliedModelingLib.Allocation.total a := by
     rw [hopt.1]
     exact Nat.lt_of_succ_le hlarge
   obtain ⟨src, hsrc_gt⟩ :=
     CountAllocation.exists_count_gt_of_card_mul_lt_total a htotal_gt
-  have hcan : EconCSLib.Allocation.CanMoveOne a src :=
+  have hcan : AppliedModelingLib.Allocation.CanMoveOne a src :=
     Nat.lt_of_le_of_lt (Nat.zero_le K) hsrc_gt
   have hne : src ≠ dst := by
     intro hsd
@@ -2922,12 +2922,12 @@ noncomputable def
   have hdst_le : a.count dst ≤ floor := le_of_not_gt hnot_floor
   let qdst : Fin (floor + 1) :=
     ⟨a.count dst, Nat.lt_succ_of_le hdst_le⟩
-  have htotal_gt : T * K < EconCSLib.Allocation.total a := by
+  have htotal_gt : T * K < AppliedModelingLib.Allocation.total a := by
     rw [hopt.1]
     exact Nat.lt_of_succ_le hlarge
   obtain ⟨src, hsrc_gt⟩ :=
     CountAllocation.exists_count_gt_of_card_mul_lt_total a htotal_gt
-  have hcan : EconCSLib.Allocation.CanMoveOne a src :=
+  have hcan : AppliedModelingLib.Allocation.CanMoveOne a src :=
     Nat.lt_of_le_of_lt (Nat.zero_le K) hsrc_gt
   have hfloor_le_K : floor ≤ K := by
     dsimp [K]
@@ -3114,7 +3114,7 @@ structure DecayingBernoulliTopOneSublinearFOCCertificate
     ∀ t, G.targetShare t = weight t / ∑ i : ItemType T, weight i
   error : ℕ → ℝ
   error_nonneg : ∀ N, 0 ≤ error N
-  error_tends_to_zero : EconCSLib.Math.TendsToZero error
+  error_tends_to_zero : AppliedModelingLib.Math.TendsToZero error
   large_gap_marginal_dominance :
     ∀ N (a : CountAllocation T), 0 < N →
       (decayingBernoulliTopOneConsumptionModel likelihood c d α).IsOptimalAtTotal
@@ -3229,7 +3229,7 @@ structure DecayingBernoulliTopOneEventualSublinearFOCCertificate
     ∀ t, G.targetShare t = weight t / ∑ i : ItemType T, weight i
   base_error : ℕ → ℝ
   base_error_nonneg : ∀ N, 0 ≤ base_error N
-  base_error_tends_to_zero : EconCSLib.Math.TendsToZero base_error
+  base_error_tends_to_zero : AppliedModelingLib.Math.TendsToZero base_error
   floor : ℕ
   large_gap_marginal_dominance_after_floor :
     ∀ᶠ N in atTop,
@@ -3336,7 +3336,7 @@ noncomputable def toSublinearFOCCertificate
         simpa [hsmall] using hgap
       have hsrc_count_le_total :
           a.count src ≤ N := by
-        have hle := EconCSLib.Allocation.count_le_total a src
+        have hle := AppliedModelingLib.Allocation.count_le_total a src
         rw [hopt.1] at hle
         exact hle
       have hsrc_count_le_total_real :
@@ -3407,11 +3407,11 @@ noncomputable def toSublinearFOCCertificate
       have hdomN :=
         hasymThreshold N hasymThreshold_le_N
       have hsrc_count_le_N : a.count src ≤ N := by
-        have hle := EconCSLib.Allocation.count_le_total a src
+        have hle := AppliedModelingLib.Allocation.count_le_total a src
         rw [hopt.1] at hle
         exact hle
       have hdst_count_le_N : a.count dst ≤ N := by
-        have hle := EconCSLib.Allocation.count_le_total a dst
+        have hle := AppliedModelingLib.Allocation.count_le_total a dst
         rw [hopt.1] at hle
         exact hle
       have hgap_base :
@@ -3481,15 +3481,15 @@ theorem decayingBernoulliTopOneSubunitError_nonneg
 
 theorem decayingBernoulliTopOneSubunitError_tends_to_zero
     {α : ℝ} (hα_lt_one : α < 1) :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (decayingBernoulliTopOneSubunitError α) := by
   have hβ : 0 < (1 - α) / 2 := by linarith
   have hpow :
       Tendsto
         (fun N : ℕ => (((N + 1 : ℕ) : ℝ)) ^ (-((1 - α) / 2)))
         atTop (nhds 0) :=
-    EconCSLib.Math.tendsto_nat_succ_cast_rpow_neg_nhds_zero hβ
-  rw [EconCSLib.Math.TendsToZero]
+    AppliedModelingLib.Math.tendsto_nat_succ_cast_rpow_neg_nhds_zero hβ
+  rw [AppliedModelingLib.Math.TendsToZero]
   refine Tendsto.congr' ?_ hpow
   filter_upwards with N
   unfold decayingBernoulliTopOneSubunitError
@@ -3571,14 +3571,14 @@ theorem decayingBernoulliTopOneSubunitGrowth_tendsto_atTop
     positivity
   have hβpow :
       Tendsto (fun N : ℕ => (((N + 1 : ℕ) : ℝ) ^ β)) atTop atTop :=
-    EconCSLib.Math.tendsto_nat_succ_cast_rpow_atTop hβ
+    AppliedModelingLib.Math.tendsto_nat_succ_cast_rpow_atTop hβ
   have hKβpow :
       Tendsto (fun N : ℕ => K * (((N + 1 : ℕ) : ℝ) ^ β))
         atTop atTop :=
     Filter.Tendsto.const_mul_atTop hK hβpow
   have hγpow :
       Tendsto (fun N : ℕ => (((N + 1 : ℕ) : ℝ) ^ γ)) atTop atTop :=
-    EconCSLib.Math.tendsto_nat_succ_cast_rpow_atTop hγ
+    AppliedModelingLib.Math.tendsto_nat_succ_cast_rpow_atTop hγ
   have hhalfγpow :
       Tendsto
         (fun N : ℕ => (1 / 2 : ℝ) * (((N + 1 : ℕ) : ℝ) ^ γ))
@@ -3683,11 +3683,11 @@ theorem decayingBernoulliTopOneInvSqrtError_nonneg (N : ℕ) :
   positivity
 
 theorem decayingBernoulliTopOneInvSqrtError_tends_to_zero :
-    EconCSLib.Math.TendsToZero decayingBernoulliTopOneInvSqrtError := by
+    AppliedModelingLib.Math.TendsToZero decayingBernoulliTopOneInvSqrtError := by
   have hsqrt :
       Tendsto (fun N : ℕ => Real.sqrt (((N + 1 : ℕ) : ℝ))) atTop atTop :=
-    EconCSLib.Math.tendsto_sqrt_nat_succ_cast_atTop
-  rw [EconCSLib.Math.TendsToZero]
+    AppliedModelingLib.Math.tendsto_sqrt_nat_succ_cast_atTop
+  rw [AppliedModelingLib.Math.TendsToZero]
   refine Tendsto.congr' ?_ (Filter.Tendsto.const_div_atTop hsqrt (1 : ℝ))
   filter_upwards with N
   simp [decayingBernoulliTopOneInvSqrtError, one_div, Nat.cast_add]
@@ -3698,7 +3698,7 @@ theorem decayingBernoulliTopOneInvSqrtError_mul_nat_tendsto_atTop :
       atTop atTop := by
   have hsqrt :
       Tendsto (fun N : ℕ => Real.sqrt (((N + 1 : ℕ) : ℝ))) atTop atTop :=
-    EconCSLib.Math.tendsto_sqrt_nat_succ_cast_atTop
+    AppliedModelingLib.Math.tendsto_sqrt_nat_succ_cast_atTop
   have hhalf_sqrt :
       Tendsto
         (fun N : ℕ => (1 / 2 : ℝ) * Real.sqrt (((N + 1 : ℕ) : ℝ)))
@@ -3752,7 +3752,7 @@ theorem decayingBernoulliTopOneQuarterError_le_one (N : ℕ) :
   exact Real.rpow_le_one_of_one_le_of_nonpos hbase (by norm_num)
 
 theorem decayingBernoulliTopOneQuarterError_tends_to_zero :
-    EconCSLib.Math.TendsToZero decayingBernoulliTopOneQuarterError := by
+    AppliedModelingLib.Math.TendsToZero decayingBernoulliTopOneQuarterError := by
   have hbase :
       Tendsto (fun N : ℕ => (((N + 1 : ℕ) : ℝ))) atTop atTop :=
     tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 1)
@@ -3760,7 +3760,7 @@ theorem decayingBernoulliTopOneQuarterError_tends_to_zero :
       Tendsto (fun N : ℕ =>
         (((N + 1 : ℕ) : ℝ)) ^ (-(1 / 4 : ℝ))) atTop (nhds 0) :=
     (tendsto_rpow_neg_atTop (by norm_num : (0 : ℝ) < 1 / 4)).comp hbase
-  rw [EconCSLib.Math.TendsToZero]
+  rw [AppliedModelingLib.Math.TendsToZero]
   refine Tendsto.congr' ?_ hpow
   filter_upwards with N
   simp [decayingBernoulliTopOneQuarterError, Nat.cast_add]
@@ -3881,7 +3881,7 @@ structure DecayingBernoulliTopOneAlphaOneGrowthCertificate
   likelihood_pos : ∀ t, 0 < likelihood t
   error : ℕ → ℝ
   error_nonneg : ∀ N, 0 ≤ error N
-  error_tends_to_zero : EconCSLib.Math.TendsToZero error
+  error_tends_to_zero : AppliedModelingLib.Math.TendsToZero error
   floor : ℕ
   floor_large : 2 * c - d ≤ (floor : ℝ)
   raw_shift_growth :
@@ -4759,7 +4759,7 @@ theorem decayingBernoulliTopOneSuperunitError_nonneg
 
 theorem decayingBernoulliTopOneSuperunitError_tends_to_zero
     {α : ℝ} (hα_gt_one : 1 < α) :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (decayingBernoulliTopOneSuperunitError α) := by
   have hβ : 0 < decayingBernoulliTopOneSuperunitBeta α :=
     decayingBernoulliTopOneSuperunitBeta_pos hα_gt_one
@@ -4768,8 +4768,8 @@ theorem decayingBernoulliTopOneSuperunitError_tends_to_zero
         (fun N : ℕ =>
           (((N + 1 : ℕ) : ℝ)) ^ (-(decayingBernoulliTopOneSuperunitBeta α)))
         atTop (nhds 0) :=
-    EconCSLib.Math.tendsto_nat_succ_cast_rpow_neg_nhds_zero hβ
-  rw [EconCSLib.Math.TendsToZero]
+    AppliedModelingLib.Math.tendsto_nat_succ_cast_rpow_neg_nhds_zero hβ
+  rw [AppliedModelingLib.Math.TendsToZero]
   refine Tendsto.congr' ?_ hpow
   filter_upwards with N
   simp [decayingBernoulliTopOneSuperunitError]
@@ -4827,7 +4827,7 @@ theorem decayingBernoulliTopOneSuperunitError_mul_nat_tendsto_atTop
     linarith
   have hpow :
       Tendsto (fun N : ℕ => (((N + 1 : ℕ) : ℝ) ^ γ)) atTop atTop :=
-    EconCSLib.Math.tendsto_nat_succ_cast_rpow_atTop hγ_pos
+    AppliedModelingLib.Math.tendsto_nat_succ_cast_rpow_atTop hγ_pos
   have hhalf :
       Tendsto
         (fun N : ℕ => (1 / 2 : ℝ) * (((N + 1 : ℕ) : ℝ) ^ γ))
@@ -4877,7 +4877,7 @@ theorem decayingBernoulliTopOneSuperunit_arg_tends_to_zero
     have hpow :
         Tendsto (fun N : ℕ => (((N + 1 : ℕ) : ℝ) ^ (-δ)))
           atTop (nhds 0) :=
-      EconCSLib.Math.tendsto_nat_succ_cast_rpow_neg_nhds_zero hδ_pos
+      AppliedModelingLib.Math.tendsto_nat_succ_cast_rpow_neg_nhds_zero hδ_pos
     simpa using hpow.const_mul K
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hbound_tendsto ?_ ?_
   · filter_upwards [eventually_ge_atTop 1] with N hN
@@ -5031,7 +5031,7 @@ structure DecayingBernoulliTopOneSuperunitGrowthCertificate
   likelihood_pos : ∀ t, 0 < likelihood t
   error : ℕ → ℝ
   error_nonneg : ∀ N, 0 ≤ error N
-  error_tends_to_zero : EconCSLib.Math.TendsToZero error
+  error_tends_to_zero : AppliedModelingLib.Math.TendsToZero error
   floor : ℕ
   floor_half :
     ∀ i, floor ≤ i → decayingBernoulliSuccess c d α i ≤ 1 / 2
@@ -5306,7 +5306,7 @@ structure DecayingBernoulliTopOneSubunitGrowthCertificate
   likelihood_pos : ∀ t, 0 < likelihood t
   error : ℕ → ℝ
   error_nonneg : ∀ N, 0 ≤ error N
-  error_tends_to_zero : EconCSLib.Math.TendsToZero error
+  error_tends_to_zero : AppliedModelingLib.Math.TendsToZero error
   floor : ℕ
   growth :
     ∀ᶠ N in atTop,
@@ -5554,7 +5554,7 @@ theorem asymptoticHomogeneityTarget
       DecayingBernoulliAllConsumedPairwiseScaledCertificate likelihood c d α) :
     ConsumptionModel.AsymptoticHomogeneityTarget
       (fun _ => decayingBernoulliAllConsumedConsumptionModel likelihood c d α)
-      (gammaLikelihoodProfile likelihood (1 / α)) EconCSLib.Math.ExactInvRate :=
+      (gammaLikelihoodProfile likelihood (1 / α)) AppliedModelingLib.Math.ExactInvRate :=
   hcert.toPairwiseScaledHomogeneityCertificate.asymptoticHomogeneityTarget
 
 theorem asymptoticHomogeneity

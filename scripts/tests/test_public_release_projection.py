@@ -6,10 +6,127 @@ import unittest
 from pathlib import Path
 
 from scripts import public_release_projection as projection
+from scripts.corrected_target_identity import (
+    CORRECTED_TARGET_RECORD_SHA256_FIELD,
+    CORRECTED_TARGET_REVIEW_SHA256_FIELD,
+    corrected_target_record_digest,
+    corrected_target_review_digest,
+)
 from scripts.source_coverage_scope import source_map_structural_errors
 
 
+def _corrected_target(
+    statement: str = "For every feasible allocation, welfare is at most the displayed benchmark.",
+) -> dict[str, object]:
+    excerpt = (
+        "Private approval record quoted a user instruction and identified a local "
+        "source.tar.gz file; none of this prose belongs in the public source map."
+    )
+    approval = {
+        "artifact_path": "docs/PRIVATE_APPROVAL_MEMO.md",
+        "artifact_protocol": "unique_normalized_artifact_excerpt_v1",
+        "artifact_excerpt": excerpt,
+        "artifact_excerpt_sha256": hashlib.sha256(excerpt.encode()).hexdigest(),
+        "kind": "recorded_user_direction",
+        "recorded_at": "2026-09-07",
+        "reference": "/home/reviewer/private approval notes",
+        "target_statement_sha256": hashlib.sha256(statement.encode()).hexdigest(),
+    }
+    target: dict[str, object] = {
+        "schema": 1,
+        "statement": statement,
+        "archival_equivalence_claimed": False,
+        "archival_source_locator": "Theorem 1",
+        "archival_source_quote_sha256": "a" * 64,
+        "governing_defect_ids": ["D1"],
+        "approval": approval,
+    }
+    target[CORRECTED_TARGET_RECORD_SHA256_FIELD] = corrected_target_record_digest(target)
+    target[CORRECTED_TARGET_REVIEW_SHA256_FIELD] = corrected_target_review_digest(target)
+    return target
+
+
 class PublicReleaseProjectionTests(unittest.TestCase):
+    def test_status_omits_historical_review_surface_but_preserves_current_route(self):
+        payload = {"artifacts": {
+            "legacy_review_surface": "LegacyReviewSurface.lean",
+            "review_surface": "PaperInterface.lean",
+        }}
+        self.assertEqual(
+            projection.project_json_payload(payload, relative_path="papers/Fixture/status.json"),
+            {"artifacts": {"review_surface": "PaperInterface.lean"}},
+        )
+        self.assertEqual(
+            projection.project_json_payload(payload, relative_path="config/fixture.json"),
+            payload,
+        )
+
+    def test_report_evidence_links_use_current_closeout_without_changing_claims(self):
+        raw = (
+            "Theorem 1: **Exact.**\n"
+            "[Source review](audit/v11_raw_source_spec_screening.json)\n"
+            "[Statement map](audit/paper_statement_map.json)\n"
+            "[Clarification](docs/SOURCE_CLARIFICATIONS.md#theorem-2)\n"
+        )
+        public = projection.project_text(
+            raw, relative_path="papers/Fixture/FINAL_VALIDATION_REPORT.md"
+        )
+        self.assertEqual(
+            public,
+            raw.replace(
+                "](audit/v11_raw_source_spec_screening.json)",
+                "](FINAL_CLOSURE_RECEIPT.md)",
+            ),
+        )
+        self.assertEqual(
+            projection.project_text(raw, relative_path="papers/Fixture/docs/MEMO.md"),
+            raw,
+        )
+        receipt = (
+            '+++\nschema = 6\n[accepted_graph]\n'
+            'pointer = "papers/Fixture/audit/obligation_evidence/current_accepted_graph.json"\n'
+            '+++\n\n# Final closure receipt\n\nCurrent accepted graph.\n'
+        )
+        exported = projection.project_text(
+            receipt, relative_path="papers/Fixture/FINAL_CLOSURE_RECEIPT.md"
+        )
+        self.assertTrue(exported.startswith(receipt))
+        self.assertIn(
+            "[Accepted review and proof record](audit/obligation_evidence/current_accepted_graph.json)",
+            exported,
+        )
+        self.assertEqual(
+            projection.project_text(exported, relative_path="papers/Fixture/FINAL_CLOSURE_RECEIPT.md"),
+            exported,
+        )
+
+    def test_scope_and_support_approval_history_is_withheld_without_changing_scope(self):
+        payload = {"items": {"claim": {
+            "coverage_status": "out_of_scope",
+            "user_approved_scope_exclusion": {
+                "approval_kind": "explicit_user_instruction",
+                "approval_reference": "Private user exchange: leave this result for later.",
+                "reason": "The numerical example is outside the selected theorem scope.",
+            },
+            "deep_support_repair": {
+                "statement": "For every feasible allocation, the displayed bound holds.",
+                "approval": {"reference": "Private user quotation", "recorded_at": "2026-01-01"},
+            },
+        }}}
+        projected = json.loads(projection.project_bytes(
+            "papers/Fixture/audit/paper_statement_map.json", json.dumps(payload).encode()
+        ))
+        row = projected["items"]["claim"]
+        self.assertEqual(row["coverage_status"], "out_of_scope")
+        self.assertEqual(row["user_approved_scope_exclusion"]["reason"],
+                         payload["items"]["claim"]["user_approved_scope_exclusion"]["reason"])
+        self.assertEqual(row["user_approved_scope_exclusion"]["approval_reference"],
+                         projection.PUBLIC_WITHHELD_APPROVAL_REFERENCE)
+        self.assertEqual(row["deep_support_repair"]["statement"],
+                         payload["items"]["claim"]["deep_support_repair"]["statement"])
+        self.assertNotIn("Private user", json.dumps(projected))
+        self.assertIn("private_record_sha256", row["deep_support_repair"]["approval"])
+
     def test_json_projection_preserves_source_evidence_without_private_workflow(self) -> None:
         source_sha256 = "a" * 64
         quote = "Verbatim source excerpt: each allocation assigns each item."
@@ -244,6 +361,192 @@ class PublicReleaseProjectionTests(unittest.TestCase):
             }
         }
         with self.assertRaisesRegex(projection.ProjectionError, "local /tmp or /home path"):
+            projection.project_bytes(
+                "papers/Fixture/audit/paper_statement_map.json",
+                json.dumps(payload).encode("utf-8"),
+            )
+
+    def test_source_item_id_suffix_does_not_change_nested_anchor_projection(self) -> None:
+        quote = "Algorithm 5 selects the current comparison pivot."
+        payload = {
+            "items": {
+                "algorithm5_pick_anchor": {
+                    "source_kind": "algorithm",
+                    "source_anchor_evidence": [
+                        {
+                            "path": "sources/fixture.txt",
+                            "line_start": 5,
+                            "line_end": 5,
+                            "quoted_text": quote,
+                            "quoted_text_sha256": hashlib.sha256(
+                                quote.encode("utf-8")
+                            ).hexdigest(),
+                        }
+                    ],
+                }
+            }
+        }
+
+        projected = json.loads(
+            projection.project_bytes(
+                "papers/Fixture/audit/paper_statement_map.json",
+                json.dumps(payload).encode("utf-8"),
+            )
+        )
+        item = projected["items"]["algorithm5_pick_anchor"]
+        self.assertEqual(item["source_kind"], "algorithm")
+        anchor = item["source_anchor_evidence"][0]
+        self.assertNotIn("path", anchor)
+        self.assertEqual(anchor["publication_locator"], projection.PUBLICATION_LOCATOR)
+        self.assertEqual(anchor["quoted_text"], quote)
+
+    def test_source_item_id_suffix_does_not_grant_excerpt_safety_privileges(self) -> None:
+        quote = "The record refers to source.tar.gz."
+        payload = {
+            "items": {
+                "algorithm5_pick_anchor": {
+                    "path": "source.txt",
+                    "line_start": 1,
+                    "line_end": 1,
+                    "quoted_text": quote,
+                    "quoted_text_sha256": hashlib.sha256(
+                        quote.encode("utf-8")
+                    ).hexdigest(),
+                }
+            }
+        }
+
+        with self.assertRaisesRegex(
+            projection.ProjectionError, "non-public source artifact locator"
+        ):
+            projection.project_bytes(
+                "papers/Fixture/audit/paper_statement_map.json",
+                json.dumps(payload).encode("utf-8"),
+            )
+
+    def test_corrected_target_projection_withholds_approval_and_preserves_identities(
+        self,
+    ) -> None:
+        target = _corrected_target()
+        payload = {
+            "items": {
+                "claim": {
+                    "coverage_status": "subsumed_by_selected_result",
+                    "corrected_target": target,
+                }
+            }
+        }
+
+        projected_bytes = projection.project_bytes(
+            "papers/Fixture/audit/paper_statement_map.json",
+            json.dumps(payload).encode("utf-8"),
+            include_source_display_marker=True,
+        )
+        projected = json.loads(projected_bytes)
+        public_target = projected["items"]["claim"]["corrected_target"]
+        self.assertNotIn("approval", public_target)
+        self.assertEqual(public_target["statement"], target["statement"])
+        self.assertEqual(
+            public_target[CORRECTED_TARGET_RECORD_SHA256_FIELD],
+            target[CORRECTED_TARGET_RECORD_SHA256_FIELD],
+        )
+        self.assertEqual(
+            public_target[CORRECTED_TARGET_REVIEW_SHA256_FIELD],
+            target[CORRECTED_TARGET_REVIEW_SHA256_FIELD],
+        )
+        self.assertEqual(
+            projected[projection.PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD],
+            {
+                "schema": projection.PUBLIC_CORRECTED_TARGET_PROJECTION_SCHEMA,
+                "approval_material_included": False,
+            },
+        )
+        self.assertIn(projection.PUBLIC_SOURCE_DISPLAY_PROJECTION_FIELD, projected)
+        self.assertNotIn("Private approval record", projected_bytes.decode("utf-8"))
+        self.assertNotIn("PRIVATE_APPROVAL_MEMO", projected_bytes.decode("utf-8"))
+
+    def test_corrected_target_projection_rejects_stale_private_bindings(self) -> None:
+        cases = {
+            "record": (
+                lambda target: target.__setitem__(
+                    CORRECTED_TARGET_RECORD_SHA256_FIELD, "0" * 64
+                ),
+                CORRECTED_TARGET_RECORD_SHA256_FIELD,
+            ),
+            "review": (
+                lambda target: target.__setitem__(
+                    CORRECTED_TARGET_REVIEW_SHA256_FIELD, "0" * 64
+                ),
+                CORRECTED_TARGET_REVIEW_SHA256_FIELD,
+            ),
+            "excerpt": (
+                lambda target: (
+                    target["approval"].__setitem__("artifact_excerpt_sha256", "0" * 64),
+                    target.__setitem__(
+                        CORRECTED_TARGET_RECORD_SHA256_FIELD,
+                        corrected_target_record_digest(target),
+                    ),
+                ),
+                "approval excerpt authority",
+            ),
+            "statement": (
+                lambda target: (
+                    target["approval"].__setitem__("target_statement_sha256", "0" * 64),
+                    target.__setitem__(
+                        CORRECTED_TARGET_RECORD_SHA256_FIELD,
+                        corrected_target_record_digest(target),
+                    ),
+                ),
+                "target_statement_sha256",
+            ),
+            "artifact_path": (
+                lambda target: (
+                    target["approval"].__setitem__(
+                        "artifact_path", "docs/../PRIVATE_APPROVAL.md"
+                    ),
+                    target.__setitem__(
+                        CORRECTED_TARGET_RECORD_SHA256_FIELD,
+                        corrected_target_record_digest(target),
+                    ),
+                ),
+                "noncanonical private approval artifact_path",
+            ),
+            "original_artifact_path": (
+                lambda target: (
+                    target["approval"].__setitem__(
+                        "original_artifact_path",
+                        target["approval"]["artifact_path"],
+                    ),
+                    target.__setitem__(
+                        CORRECTED_TARGET_RECORD_SHA256_FIELD,
+                        corrected_target_record_digest(target),
+                    ),
+                ),
+                "original_artifact_path",
+            ),
+        }
+        for name, (mutate, expected) in cases.items():
+            with self.subTest(name=name):
+                target = _corrected_target()
+                mutate(target)
+                payload = {"items": {"claim": {"corrected_target": target}}}
+                with self.assertRaisesRegex(projection.ProjectionError, expected):
+                    projection.project_bytes(
+                        "papers/Fixture/audit/paper_statement_map.json",
+                        json.dumps(payload).encode("utf-8"),
+                    )
+
+    def test_corrected_target_projection_never_rewrites_mathematical_statement(
+        self,
+    ) -> None:
+        target = _corrected_target(
+            "The formal claim refers literally to source.tar.gz as part of its proposition."
+        )
+        payload = {"items": {"claim": {"corrected_target": target}}}
+
+        with self.assertRaisesRegex(
+            projection.ProjectionError, "would change corrected target statement"
+        ):
             projection.project_bytes(
                 "papers/Fixture/audit/paper_statement_map.json",
                 json.dumps(payload).encode("utf-8"),
@@ -556,9 +859,17 @@ class PublicReleaseProjectionTests(unittest.TestCase):
             "GHW01DigitalGoods",
         ):
             relative = f"papers/{paper}/audit/paper_statement_map.json"
-            projected = json.loads(
-                projection.project_bytes(relative, (root / relative).read_bytes())
-            )
+            raw = (root / relative).read_bytes()
+            payload = json.loads(raw)
+            if projection.PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD in payload:
+                # The public checkout contains the exported map. It must still
+                # satisfy the same structural checks, while the exporter must
+                # reject it as an unauthenticated private source for a new run.
+                with self.assertRaises(projection.ProjectionError):
+                    projection.project_bytes(relative, raw)
+                projected = payload
+            else:
+                projected = json.loads(projection.project_bytes(relative, raw))
             self.assertFalse(
                 any(
                     "source_standard_term_interpretation" in item
@@ -580,23 +891,96 @@ class PublicReleaseProjectionTests(unittest.TestCase):
             with self.subTest(relative=relative):
                 self.assertEqual(projection.project_bytes(relative, raw), raw)
 
-    def test_formalizer_skill_keeps_its_complete_public_workflow_entrypoint(self) -> None:
+    def test_contributor_shell_example_is_preserved_without_approving_nearby_path(
+        self,
+    ) -> None:
+        root = Path(__file__).resolve().parents[2]
+        relative = "docs/contributing/README.md"
+        raw = (root / relative).read_bytes()
+
+        self.assertEqual(projection.project_bytes(relative, raw), raw)
+        text = raw.decode("utf-8")
+        self.assertIn('SOURCE_ARTIFACT=".scratch/$PAPER/source.pdf"', text)
+        self.assertIn('STATEMENT_SPEC=".scratch/$PAPER/statement-spec.json"', text)
+        self.assertIn('mkdir -p ".scratch/$PAPER"', text)
+
+        with self.assertRaises(projection.ProjectionError):
+            projection.project_bytes(
+                "docs/contributing/PRIVATE_NOTES.md",
+                b"private source cache at /tmp/unreviewed.txt\n",
+            )
+
+    def test_formalizer_skill_and_stage_references_are_byte_preserved(self) -> None:
         root = Path(__file__).resolve().parents[2]
         relative = "skills/econcs-formalizer/SKILL.md"
-        projected = projection.project_bytes(relative, (root / relative).read_bytes()).decode(
-            "utf-8"
-        )
+        raw = (root / relative).read_bytes()
+        projected = projection.project_bytes(relative, raw)
 
-        self.assertIn("EconCSLib-private", projected)
-        self.assertIn("references/formalization-handbook.md", projected)
-        self.assertIn("references/public-private-sync.md", projected)
-        self.assertIn("private source review", projected.lower())
-        self.assertIn(".review_traces", projected)
-        self.assertIn("raw-source-to-expanded-Spec", projected)
-        self.assertEqual(
-            projection.project_bytes(relative, projected.encode("utf-8")).decode("utf-8"),
-            projected,
-        )
+        self.assertEqual(projected, raw)
+        router = projected.decode("utf-8")
+        self.assertIn("references/audit-and-closeout.md", router)
+        self.assertIn("references/release-and-sync.md", router)
+        self.assertIn("references/formalization-handbook.md", router)
+        self.assertIn("references/public-private-sync.md", router)
+
+        expected_stage_text = {
+            "skills/econcs-formalizer/references/intake-and-source-surface.md": (
+                "private source review"
+            ),
+            "skills/econcs-formalizer/references/audit-and-closeout.md": (
+                "raw-source-to-expanded-Spec"
+            ),
+            "skills/econcs-formalizer/references/public-private-sync.md": (
+                ".review_traces"
+            ),
+        }
+        for stage_relative, marker in expected_stage_text.items():
+            with self.subTest(stage=stage_relative):
+                stage_raw = (root / stage_relative).read_bytes()
+                self.assertIn(stage_relative, projection.PUBLIC_CONTRIBUTOR_WORKFLOW_PATHS)
+                self.assertEqual(
+                    projection.project_bytes(stage_relative, stage_raw), stage_raw
+                )
+                self.assertIn(marker.lower(), stage_raw.decode("utf-8").lower())
+
+    def test_readme_wiki_boundary_guidance_is_preserved_only_at_root(self) -> None:
+        raw = (projection.PUBLIC_README_PRIVATE_WORKFLOW_GUIDANCE + "\n").encode()
+        self.assertEqual(projection.project_bytes("README.md", raw), raw)
+        self.assertNotEqual(projection.project_bytes("docs/reader.md", raw), raw)
+
+    def test_source_presentation_metadata_projects_locators_without_changing_claims(self) -> None:
+        digest = "a" * 64
+        claim = "For every feasible allocation, welfare is at most 1."
+        payload = {
+            "source_artifact": {"path": "sources/arxiv_source/main.tex", "sha256": digest},
+            "source_pdf_artifact": {
+                "path": "papers/Fixture/sources/paper.pdf", "sha256": digest,
+                "text_extraction": "source.txt produced with pdftotext",
+            },
+            "cited_source_artifacts": [{"path": "sources/related.txt", "sha256": digest}],
+            "items": {"lemma": {
+                "aliases": ["Footnote 10 (source.txt:527-532)"],
+                "statement": claim,
+                "semantic_source_anchor_evidence": [{"path": "source.txt", "sha256": digest, "line_start": 527, "line_end": 532}],
+            }},
+            "source_named_result_inventory_review": {"candidate_presentations": [
+                {"presentation_label": "Lemma 1 (sources/paper.txt:20-30)"}
+            ]},
+        }
+        result = json.loads(projection.project_bytes(
+            "papers/Fixture/audit/paper_statement_map.json", json.dumps(payload).encode()
+        ))
+        self.assertEqual(result["items"]["lemma"]["statement"], claim)
+        self.assertEqual(result["source_artifact"]["sha256"], digest)
+        self.assertEqual(result["items"]["lemma"]["semantic_source_anchor_evidence"][0]["line_start"], 527)
+        self.assertIn("Footnote 10", result["items"]["lemma"]["aliases"][0])
+        self.assertNotIn("source.txt", json.dumps(result))
+        self.assertNotIn("text_extraction", result["source_pdf_artifact"])
+        status = json.loads(projection.project_bytes(
+            "papers/Fixture/status.json",
+            json.dumps({"artifacts": {"source_transcript": "sources/paper.tex", "paper_interface": "papers/Fixture/PaperInterface.lean"}}).encode(),
+        ))
+        self.assertEqual(status["artifacts"], {"paper_interface": "papers/Fixture/PaperInterface.lean"})
 
 
 if __name__ == "__main__":

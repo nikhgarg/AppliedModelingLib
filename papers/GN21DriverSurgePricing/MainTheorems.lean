@@ -1,13 +1,13 @@
-import EconCSLib.Foundations.Math.QuasiConvex
-import EconCSLib.Foundations.Optimization.Endpoint
-import EconCSLib.Foundations.Probability.CTMC
-import EconCSLib.Foundations.Probability.ContinuousReward
-import EconCSLib.Foundations.Probability.MeasureInequalities
+import AppliedModelingLib.Foundations.Math.QuasiConvex
+import AppliedModelingLib.Foundations.Optimization.Endpoint
+import AppliedModelingLib.Foundations.Probability.CTMC
+import AppliedModelingLib.Foundations.Probability.ContinuousReward
+import AppliedModelingLib.Foundations.Probability.MeasureInequalities
 import Mathlib.MeasureTheory.Measure.RegularityCompacts
 import Mathlib.MeasureTheory.Measure.WithDensity
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open Filter
 open scoped Function ProbabilityTheory Topology ENNReal symmDiff
@@ -14342,7 +14342,7 @@ theorem endpoint_path_le_of_hasDerivAt_nonneg_on_Icc
     (hderiv : ∀ x ∈ Set.Ioo a b, HasDerivAt f (f' x) x)
     (hderiv_nonneg : ∀ x ∈ Set.Ioo a b, 0 ≤ f' x) :
     f a ≤ f b :=
-  EconCSLib.Optimization.endpoint_path_le_of_hasDerivAt_nonneg_on_Icc
+  AppliedModelingLib.Optimization.endpoint_path_le_of_hasDerivAt_nonneg_on_Icc
     hab hf hderiv hderiv_nonneg
 
 /--
@@ -14358,7 +14358,7 @@ theorem endpoint_path_lt_of_hasDerivAt_pos_on_Icc
     (hderiv : ∀ x ∈ Set.Ioo a b, HasDerivAt f (f' x) x)
     (hderiv_pos : ∀ x ∈ Set.Ioo a b, 0 < f' x) :
     f a < f b :=
-  EconCSLib.Optimization.endpoint_path_lt_of_hasDerivAt_pos_on_Icc
+  AppliedModelingLib.Optimization.endpoint_path_lt_of_hasDerivAt_pos_on_Icc
     hab hf hderiv hderiv_pos
 
 /--
@@ -14397,7 +14397,7 @@ theorem endpoint_path_ge_of_hasDerivAt_nonpos_on_Icc
     (hderiv : ∀ x ∈ Set.Ioo a b, HasDerivAt f (f' x) x)
     (hderiv_nonpos : ∀ x ∈ Set.Ioo a b, f' x ≤ 0) :
     f b ≤ f a :=
-  EconCSLib.Optimization.endpoint_path_ge_of_hasDerivAt_nonpos_on_Icc
+  AppliedModelingLib.Optimization.endpoint_path_ge_of_hasDerivAt_nonpos_on_Icc
     hab hf hderiv hderiv_nonpos
 
 /--
@@ -14411,7 +14411,7 @@ theorem endpoint_path_gt_of_hasDerivAt_neg_on_Icc
     (hderiv : ∀ x ∈ Set.Ioo a b, HasDerivAt f (f' x) x)
     (hderiv_neg : ∀ x ∈ Set.Ioo a b, f' x < 0) :
     f b < f a :=
-  EconCSLib.Optimization.endpoint_path_gt_of_hasDerivAt_neg_on_Icc
+  AppliedModelingLib.Optimization.endpoint_path_gt_of_hasDerivAt_neg_on_Icc
     hab hf hderiv hderiv_neg
 
 /--
@@ -14428,7 +14428,7 @@ theorem continuousOn_endpoint_positive_or_exists_zero
     (hga : 0 < g a) :
     (∀ x ∈ Set.Icc a b, 0 < g x) ∨
       ∃ c ∈ Set.Icc a b, g c = 0 :=
-  EconCSLib.Optimization.continuousOn_endpoint_positive_or_exists_zero
+  AppliedModelingLib.Optimization.continuousOn_endpoint_positive_or_exists_zero
     hab hg hga
 
 /--
@@ -14441,7 +14441,7 @@ theorem continuousOn_endpoint_negative_or_exists_zero
     (hga : g a < 0) :
     (∀ x ∈ Set.Icc a b, g x < 0) ∨
       ∃ c ∈ Set.Icc a b, g c = 0 :=
-  EconCSLib.Optimization.continuousOn_endpoint_negative_or_exists_zero
+  AppliedModelingLib.Optimization.continuousOn_endpoint_negative_or_exists_zero
     hab hg hga
 
 /--
@@ -14459,7 +14459,7 @@ theorem continuousOn_endpoint_positive_or_first_zero
     (∀ x ∈ Set.Icc a b, 0 < g x) ∨
       ∃ c ∈ Set.Ioc a b, g c = 0 ∧
         ∀ x ∈ Set.Ico a c, 0 < g x :=
-  EconCSLib.Optimization.continuousOn_endpoint_positive_or_first_zero
+  AppliedModelingLib.Optimization.continuousOn_endpoint_positive_or_first_zero
     hab hg hga
 
 /--
@@ -14473,7 +14473,7 @@ theorem continuousOn_endpoint_negative_or_first_zero
     (∀ x ∈ Set.Icc a b, g x < 0) ∨
       ∃ c ∈ Set.Ioc a b, g c = 0 ∧
         ∀ x ∈ Set.Ico a c, g x < 0 :=
-  EconCSLib.Optimization.continuousOn_endpoint_negative_or_first_zero
+  AppliedModelingLib.Optimization.continuousOn_endpoint_negative_or_first_zero
     hab hg hga
 
 /--
@@ -14492,7 +14492,7 @@ theorem endpoint_path_lt_or_first_zero_of_derivative_pos_at_left
     (f a < f b ∧ ∀ x ∈ Set.Icc a b, 0 < f' x) ∨
       ∃ c ∈ Set.Ioc a b, f' c = 0 ∧
         f a < f c ∧ ∀ x ∈ Set.Ico a c, 0 < f' x :=
-  EconCSLib.Optimization.endpoint_path_lt_or_first_zero_of_derivative_pos_at_left
+  AppliedModelingLib.Optimization.endpoint_path_lt_or_first_zero_of_derivative_pos_at_left
     hab hf hf' hderiv hderiv_a_pos
 
 /--
@@ -14508,7 +14508,7 @@ theorem endpoint_path_gt_or_first_zero_of_derivative_neg_at_left
     (f b < f a ∧ ∀ x ∈ Set.Icc a b, f' x < 0) ∨
       ∃ c ∈ Set.Ioc a b, f' c = 0 ∧
         f c < f a ∧ ∀ x ∈ Set.Ico a c, f' x < 0 :=
-  EconCSLib.Optimization.endpoint_path_gt_or_first_zero_of_derivative_neg_at_left
+  AppliedModelingLib.Optimization.endpoint_path_gt_or_first_zero_of_derivative_neg_at_left
     hab hf hf' hderiv hderiv_a_neg
 
 /--
@@ -14524,7 +14524,7 @@ theorem continuousOn_endpoint_negative_or_last_zero
     (∀ x ∈ Set.Icc a b, g x < 0) ∨
       ∃ c ∈ Set.Ico a b, g c = 0 ∧
         ∀ x ∈ Set.Ioc c b, g x < 0 :=
-  EconCSLib.Optimization.continuousOn_endpoint_negative_or_last_zero
+  AppliedModelingLib.Optimization.continuousOn_endpoint_negative_or_last_zero
     hab hg hgb
 
 /--
@@ -14542,7 +14542,7 @@ theorem endpoint_path_gt_or_last_zero_of_derivative_neg_at_right
     (f b < f a ∧ ∀ x ∈ Set.Icc a b, f' x < 0) ∨
       ∃ c ∈ Set.Ico a b, f' c = 0 ∧
         f b < f c ∧ ∀ x ∈ Set.Ioc c b, f' x < 0 :=
-  EconCSLib.Optimization.endpoint_path_gt_or_last_zero_of_derivative_neg_at_right
+  AppliedModelingLib.Optimization.endpoint_path_gt_or_last_zero_of_derivative_neg_at_right
     hab hf hf' hderiv hderiv_b_neg
 
 /--
@@ -14554,7 +14554,7 @@ theorem exists_pos_right_improvement_of_hasDerivAt_pos
     (hderiv : HasDerivAt f derivativeValue x)
     (hpos : 0 < derivativeValue) :
     ∃ ε : ℝ, 0 < ε ∧ f x < f (x + ε) :=
-  EconCSLib.Optimization.exists_pos_right_improvement_of_hasDerivAt_pos
+  AppliedModelingLib.Optimization.exists_pos_right_improvement_of_hasDerivAt_pos
     hderiv hpos
 
 /--
@@ -14567,7 +14567,7 @@ theorem exists_pos_right_improvement_of_hasDerivAt_pos_lt
     (hpos : 0 < derivativeValue)
     (hδ : 0 < δ) :
     ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧ f x < f (x + ε) :=
-  EconCSLib.Optimization.exists_pos_right_improvement_of_hasDerivAt_pos_lt
+  AppliedModelingLib.Optimization.exists_pos_right_improvement_of_hasDerivAt_pos_lt
     hderiv hpos hδ
 
 /--
@@ -14579,7 +14579,7 @@ theorem exists_pos_right_decrease_of_hasDerivAt_neg
     (hderiv : HasDerivAt f derivativeValue x)
     (hneg : derivativeValue < 0) :
     ∃ ε : ℝ, 0 < ε ∧ f (x + ε) < f x :=
-  EconCSLib.Optimization.exists_pos_right_decrease_of_hasDerivAt_neg
+  AppliedModelingLib.Optimization.exists_pos_right_decrease_of_hasDerivAt_neg
     hderiv hneg
 
 /--
@@ -14591,7 +14591,7 @@ theorem exists_pos_right_decrease_of_hasDerivAt_neg_lt
     (hneg : derivativeValue < 0)
     (hδ : 0 < δ) :
     ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧ f (x + ε) < f x :=
-  EconCSLib.Optimization.exists_pos_right_decrease_of_hasDerivAt_neg_lt
+  AppliedModelingLib.Optimization.exists_pos_right_decrease_of_hasDerivAt_neg_lt
     hderiv hneg hδ
 
 /--
@@ -14603,7 +14603,7 @@ theorem exists_pos_left_improvement_of_hasDerivAt_neg
     (hderiv : HasDerivAt f derivativeValue x)
     (hneg : derivativeValue < 0) :
     ∃ ε : ℝ, 0 < ε ∧ f x < f (x - ε) :=
-  EconCSLib.Optimization.exists_pos_left_improvement_of_hasDerivAt_neg
+  AppliedModelingLib.Optimization.exists_pos_left_improvement_of_hasDerivAt_neg
     hderiv hneg
 
 /-- Bounded left-move improvement step. -/
@@ -14613,7 +14613,7 @@ theorem exists_pos_left_improvement_of_hasDerivAt_neg_lt
     (hneg : derivativeValue < 0)
     (hδ : 0 < δ) :
     ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧ f x < f (x - ε) :=
-  EconCSLib.Optimization.exists_pos_left_improvement_of_hasDerivAt_neg_lt
+  AppliedModelingLib.Optimization.exists_pos_left_improvement_of_hasDerivAt_neg_lt
     hderiv hneg hδ
 
 /--
@@ -14625,7 +14625,7 @@ theorem exists_pos_left_decrease_of_hasDerivAt_pos
     (hderiv : HasDerivAt f derivativeValue x)
     (hpos : 0 < derivativeValue) :
     ∃ ε : ℝ, 0 < ε ∧ f (x - ε) < f x :=
-  EconCSLib.Optimization.exists_pos_left_decrease_of_hasDerivAt_pos
+  AppliedModelingLib.Optimization.exists_pos_left_decrease_of_hasDerivAt_pos
     hderiv hpos
 
 /-- Bounded left-move decrease step. -/
@@ -14635,7 +14635,7 @@ theorem exists_pos_left_decrease_of_hasDerivAt_pos_lt
     (hpos : 0 < derivativeValue)
     (hδ : 0 < δ) :
     ∃ ε : ℝ, 0 < ε ∧ ε < δ ∧ f (x - ε) < f x :=
-  EconCSLib.Optimization.exists_pos_left_decrease_of_hasDerivAt_pos_lt
+  AppliedModelingLib.Optimization.exists_pos_left_decrease_of_hasDerivAt_pos_lt
     hderiv hpos hδ
 
 /--
@@ -16621,10 +16621,10 @@ theorem paper_lemma7_canonical_ctmc_response_quasi_convex
         gn21Lemma7CanonicalResponse c1 c2 c3 lambdaIJ lambdaJI u) := by
   rcases lt_or_eq_of_le hc2 with hc2_pos | hc2_zero
   · have hlib :
-        EconCSLib.StrictQuasiConvexOnPositive
+        AppliedModelingLib.StrictQuasiConvexOnPositive
           (fun u : ℝ =>
             gn21Lemma7CanonicalResponse c1 c2 c3 lambdaIJ lambdaJI u) := by
-      apply EconCSLib.strictQuasiConvexOnPositive_of_deriv_proxy_strictMono
+      apply AppliedModelingLib.strictQuasiConvexOnPositive_of_deriv_proxy_strictMono
         (g := fun u : ℝ =>
           gn21Lemma7CanonicalDerivativeNumerator c1 c2 lambdaIJ lambdaJI u)
       · intro a b ha hab u hu
@@ -16702,7 +16702,7 @@ theorem paper_lemma8_canonical_ctmc_response_quasi_concave
       (fun u : TripLength =>
         gn21Lemma8CanonicalResponse c1 c2 c3 lambdaIJ lambdaJI u) := by
   have hneg_qc :
-      EconCSLib.StrictQuasiConvexOnPositive
+      AppliedModelingLib.StrictQuasiConvexOnPositive
         (fun u : ℝ =>
           -gn21Lemma8CanonicalResponse c1 c2 c3 lambdaIJ lambdaJI u) := by
     have hqc :=
@@ -16713,7 +16713,7 @@ theorem paper_lemma8_canonical_ctmc_response_quasi_concave
     simpa [gn21Lemma7CanonicalResponse, gn21Lemma8CanonicalResponse,
       sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using h
   have hconcave :=
-    EconCSLib.strictQuasiConcaveOnPositive_of_neg_strictQuasiConvex
+    AppliedModelingLib.strictQuasiConcaveOnPositive_of_neg_strictQuasiConvex
       (f := fun u : ℝ =>
         gn21Lemma8CanonicalResponse c1 c2 c3 lambdaIJ lambdaJI u)
       hneg_qc
@@ -17133,7 +17133,7 @@ theorem policyAlmostEverywhereEq.diff_left
     (hae : policyAlmostEverywhereEq μ σ τ) :
     policyAlmostEverywhereEq μ (A \ σ) (A \ τ) := by
   rw [policyAlmostEverywhereEq] at hae ⊢
-  exact EconCSLib.measure_symmDiff_diff_left_eq_zero (A := A) hae
+  exact AppliedModelingLib.measure_symmDiff_diff_left_eq_zero (A := A) hae
 
 /-- Rejected feasible-trip mass is invariant under null symmetric-difference equality. -/
 theorem acceptAllDiff_measure_congr_policy_ae
@@ -17142,7 +17142,7 @@ theorem acceptAllDiff_measure_congr_policy_ae
     μ (acceptAllPolicy \ σ) = μ (acceptAllPolicy \ τ) := by
   rw [policyAlmostEverywhereEq] at hae
   exact
-    EconCSLib.measure_diff_left_congr_of_symmDiff_null
+    AppliedModelingLib.measure_diff_left_congr_of_symmDiff_null
       (A := acceptAllPolicy) hae
 
 /--
@@ -17194,7 +17194,7 @@ Lemma 5 endpoint moves inside a larger finite interval policy.
 -/
 theorem symmDiff_union_left_subset
     {κ σ τ : TripPolicy} :
-    ((κ ∪ σ) ∆ (κ ∪ τ)) ⊆ σ ∆ τ := EconCSLib.symmDiff_union_left_subset
+    ((κ ∪ σ) ∆ (κ ∪ τ)) ⊆ σ ∆ τ := AppliedModelingLib.symmDiff_union_left_subset
 
 /--
 Almost-everywhere policy equality is preserved after unioning both policies
@@ -17205,7 +17205,7 @@ theorem policyAlmostEverywhereEq_union_left
     (hae : policyAlmostEverywhereEq μ σ τ) :
     policyAlmostEverywhereEq μ (κ ∪ σ) (κ ∪ τ) := by
   rw [policyAlmostEverywhereEq] at hae ⊢
-  exact EconCSLib.measure_symmDiff_union_left_eq_zero (κ := κ) hae
+  exact AppliedModelingLib.measure_symmDiff_union_left_eq_zero (κ := κ) hae
 
 /--
 When two open intervals touch at `b`, their union differs from the merged open
@@ -17216,7 +17216,7 @@ collision.
 theorem symmDiff_ioo_union_touching_subset_singleton
     {a b c : TripLength} (hab : a ≤ b) (hbc : b ≤ c) :
     ((Set.Ioo a b ∪ Set.Ioo b c) ∆ Set.Ioo a c) ⊆
-      ({b} : Set TripLength) := EconCSLib.symmDiff_Ioo_union_Ioo_touching_subset_singleton hab hbc
+      ({b} : Set TripLength) := AppliedModelingLib.symmDiff_Ioo_union_Ioo_touching_subset_singleton hab hbc
 
 /--
 Under a nonatomic trip-length measure, touching open intervals are equivalent
@@ -17229,7 +17229,7 @@ theorem policyAlmostEverywhereEq_ioo_union_touching
       (Set.Ioo a b ∪ Set.Ioo b c) (Set.Ioo a c) := by
   rw [policyAlmostEverywhereEq]
   exact
-    EconCSLib.measure_symmDiff_Ioo_union_Ioo_touching_eq_zero
+    AppliedModelingLib.measure_symmDiff_Ioo_union_Ioo_touching_eq_zero
       μ hab hbc
 
 /--
@@ -17239,7 +17239,7 @@ at the touching endpoint.
 theorem symmDiff_ioo_union_Ioi_touching_subset_singleton
     {a b : TripLength} (hab : a ≤ b) :
     ((Set.Ioo a b ∪ Set.Ioi b) ∆ Set.Ioi a) ⊆
-      ({b} : Set TripLength) := EconCSLib.symmDiff_Ioo_union_Ioi_touching_subset_singleton hab
+      ({b} : Set TripLength) := AppliedModelingLib.symmDiff_Ioo_union_Ioi_touching_subset_singleton hab
 
 /--
 Under a nonatomic measure, an open interval touching a right ray is a.e. equal
@@ -17252,7 +17252,7 @@ theorem policyAlmostEverywhereEq_ioo_union_Ioi_touching
       (Set.Ioo a b ∪ Set.Ioi b) (Set.Ioi a) := by
   rw [policyAlmostEverywhereEq]
   exact
-    EconCSLib.measure_symmDiff_Ioo_union_Ioi_touching_eq_zero
+    AppliedModelingLib.measure_symmDiff_Ioo_union_Ioi_touching_eq_zero
       μ hab
 
 /--
@@ -25515,7 +25515,7 @@ theorem paper_lemma5_strictQuasiConvex_response_lt_of_between
     (hqc : strictQuasiConvexOnPositive response)
     {x z y : TripLength} (hx : 0 < x) (hxz : x < z) (hzy : z < y) :
     response z < max (response x) (response y) :=
-    EconCSLib.StrictQuasiConvexOnPositive.lt_of_between
+    AppliedModelingLib.StrictQuasiConvexOnPositive.lt_of_between
       (f := response) hqc hx hxz hzy
 
 /--
@@ -25528,7 +25528,7 @@ theorem paper_lemma5_strictQuasiConcave_response_lt_between
     (hqc : strictQuasiConcaveOnPositive response)
     {x z y : TripLength} (hx : 0 < x) (hxz : x < z) (hzy : z < y) :
     min (response x) (response y) < response z :=
-    EconCSLib.StrictQuasiConcaveOnPositive.lt_between
+    AppliedModelingLib.StrictQuasiConcaveOnPositive.lt_between
       (f := response) hqc hx hxz hzy
 
 /--

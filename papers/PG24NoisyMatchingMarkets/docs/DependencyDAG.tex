@@ -1,0 +1,88 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={font=\sffamily\scriptsize}]
+
+\dagPaperMetadata{Wisdom and Foolishness of Noisy Matching Markets}{Kenny Peng and Nikhil Garg}{arXiv:2402.16771}{2024}{https://arxiv.org/pdf/2402.16771}
+\dagPaperLegendRightOfMetadata{
+  \node[dag_model, dag_template_legend] (legDefinition) at (0,0) {formalized source\\definition/model};
+  \node[dag_result, dag_template_legend] (legResult) at (4.2,0) {formalized paper\\result};
+}
+\daglegend{(legDefinition)(legResult)}{Legend}
+
+\begin{dagPaperBody}
+
+\node[dag_model, text width=5.0cm] (BasicModel) at (0,-1.0) {
+  \textbf{Basic economy}\\
+  values, strict preferences, capacities, scores, iid noise, and clearing cutoffs
+};
+\node[dag_model, text width=5.0cm] (CoalitionModel) at (21,-1.0) {
+  \textbf{Extended coalition economy}\\
+  a common-value coalition within a broader finite college market
+};
+
+\node[dag_model, text width=4.5cm] (Regularity) at (0,-4.9) {
+  \textbf{Value and capacity regularity}\\
+  connected support, Holder interval bound, $0<S<1$, capacity bounds
+};
+\node[dag_model, text width=4.5cm] (BetaMax) at (7,-4.9) {
+  \textbf{$\beta$-max concentration}\\
+  iid maximum variance decay and its source variance bridge
+};
+\node[dag_model, text width=4.5cm] (LongTail) at (14,-4.9) {
+  \textbf{Long-tailed noise}\\
+  fixed-shift conditional survival ratios converge to one
+};
+\node[dag_model, text width=4.5cm] (Cutoff) at (21,-4.9) {
+  \textbf{Stability and $p_\mu$}\\
+  favorite-affordable demand, market clearing, strict affordance probability
+};
+
+\node[dag_result, text width=5.1cm] (AttenuationAppendix) at (0,-9.1) {
+  \textbf{Attenuation appendix endpoints}\\
+  corrected `thm1v2'; duck-1; tomato; duck-2; goose-1; logarithmic maximum; beet; goose-2
+};
+\node[dag_result, text width=5.1cm] (AmplificationAppendix) at (7,-9.1) {
+  \textbf{Amplification appendix endpoints}\\
+  central window; large-firm gap; unbounded cutoffs; apple; large-firm tail; approximation; small firms
+};
+\node[dag_result, text width=5.1cm] (TheoremOne) at (14,-9.1) {
+  \textbf{Theorem 1: attenuation}\\
+  match probability tends to $0$ below and $1$ above the efficient threshold
+};
+\node[dag_result, text width=5.1cm] (TheoremTwo) at (21,-9.1) {
+  \textbf{Theorem 2: amplification}\\
+  match probability at every fixed real value tends to total supply
+};
+
+\node[dag_result, text width=5.4cm] (TheoremThree) at (7,-13.3) {
+  \textbf{Theorem 3: coalition attenuation}\\
+  a large subcoalition has a sharp low/high affordability threshold
+};
+\node[dag_result, text width=5.4cm] (TheoremFour) at (17.5,-13.3) {
+  \textbf{Theorem 4: coalition amplification}\\
+  affordability is close to effective supply outside a small value set
+};
+
+\draw[dag_arrow] (BasicModel) -- (Regularity);
+\draw[dag_arrow] (BasicModel) -- (BetaMax);
+\draw[dag_arrow] (BasicModel) -- (LongTail);
+\draw[dag_arrow] (BasicModel.south east) -- ++(0.7,-1.1) -| (Cutoff.north west);
+\draw[dag_arrow] (CoalitionModel) -- (Cutoff);
+\draw[dag_arrow] (Regularity) -- (AttenuationAppendix);
+\draw[dag_arrow] (BetaMax) -- (AttenuationAppendix);
+\draw[dag_arrow] (Cutoff.south west) -- (AttenuationAppendix.north east);
+\draw[dag_arrow] (Regularity.south east) -- (AmplificationAppendix.north west);
+\draw[dag_arrow] (LongTail) -- (AmplificationAppendix);
+\draw[dag_arrow] (Cutoff) -- (AmplificationAppendix);
+\draw[dag_arrow] (AttenuationAppendix) -- (TheoremOne);
+\draw[dag_arrow] (AmplificationAppendix) -- (TheoremTwo);
+\draw[dag_arrow] (CoalitionModel.south west) -- ++(-0.7,-5.2) -| (TheoremThree.north east);
+\draw[dag_arrow] (BetaMax.south east) -- ++(1.0,-4.4) -| (TheoremThree.north west);
+\draw[dag_arrow] (Cutoff.south west) -- ++(-0.8,-4.5) -| (TheoremFour.north east);
+\draw[dag_arrow] (LongTail.south east) -- ++(1.0,-5.3) -| (TheoremFour.north west);
+
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

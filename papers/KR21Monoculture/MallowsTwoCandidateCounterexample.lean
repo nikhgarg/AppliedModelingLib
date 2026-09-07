@@ -2,7 +2,7 @@ import KR21Monoculture.MallowsSupport
 import KR21Monoculture.ConditionalForm
 import Mathlib.Tactic
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -146,9 +146,9 @@ theorem disagreementProb_eq_two_mul_mass_product_twoCandidates
     disagreementProb mu =
       2 * (mu theorem3TwoCandidateCenter).toReal *
         (mu theorem3TwoCandidateReverse).toReal := by
-  unfold disagreementProb EconCSLib.SocialChoice.Ranking.disagreementProb
+  unfold disagreementProb AppliedModelingLib.SocialChoice.Ranking.disagreementProb
     pmfPairProb pmfPairExp pmfExp
-    EconCSLib.SocialChoice.Ranking.disagreementEvent
+    AppliedModelingLib.SocialChoice.Ranking.disagreementEvent
   simp_rw [sum_rankings_two]
   simp [firstChoice, theorem3TwoCandidateCenter,
     theorem3TwoCandidateReverse]

@@ -19,7 +19,7 @@ the crossing uses the literal outer condition together with visible
 measurability, integrability, and non-null-conditioning obligations.
 -/
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
 open scoped Topology
 
 namespace KR21Monoculture
@@ -35,19 +35,19 @@ theorem exists_positive_mass_firstChoice_ne_centerFirst_of_disagreementProb_pos
   classical
   have hprob_eq :
       disagreementProb mu =
-        EconCSLib.pmfProb (EconCSLib.pmfProd mu mu) disagreementEvent := by
-    change EconCSLib.pmfPairExp mu mu
+        AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProd mu mu) disagreementEvent := by
+    change AppliedModelingLib.pmfPairExp mu mu
         (fun pi sigma => if disagreementEvent (pi, sigma) then (1 : ℝ) else 0) =
-      EconCSLib.pmfExp (EconCSLib.pmfProd mu mu)
+      AppliedModelingLib.pmfExp (AppliedModelingLib.pmfProd mu mu)
         (fun pair => if disagreementEvent pair then (1 : ℝ) else 0)
-    exact (EconCSLib.pmfExp_pmfProd_eq_pairExp mu mu
+    exact (AppliedModelingLib.pmfExp_pmfProd_eq_pairExp mu mu
       (fun pair => if disagreementEvent pair then (1 : ℝ) else 0)).symm
   rw [hprob_eq] at hdisagreement
-  rcases (EconCSLib.pmfProb_pos_iff_exists_pos_mass
-      (EconCSLib.pmfProd mu mu) disagreementEvent).mp hdisagreement with
+  rcases (AppliedModelingLib.pmfProb_pos_iff_exists_pos_mass
+      (AppliedModelingLib.pmfProd mu mu) disagreementEvent).mp hdisagreement with
     ⟨pair, hpair, hmass⟩
   have hpair_mass : 0 < (mu pair.1).toReal * (mu pair.2).toReal := by
-    simpa only [EconCSLib.pmfProd_apply_toReal] using hmass
+    simpa only [AppliedModelingLib.pmfProd_apply_toReal] using hmass
   have hleft_mass : 0 < (mu pair.1).toReal := by
     rcases (mul_pos_iff.mp hpair_mass) with hpos | hneg
     · exact hpos.1
@@ -66,12 +66,12 @@ theorem exists_positive_mass_firstChoice_ne_centerFirst_of_disagreementProb_pos
 /-- Finite iid top-disagreement probability is nonnegative. -/
 theorem disagreementProb_nonneg {n : ℕ} (mu : PMF (Ranking n)) :
     0 ≤ disagreementProb mu := by
-  change 0 ≤ EconCSLib.pmfPairExp mu mu
+  change 0 ≤ AppliedModelingLib.pmfPairExp mu mu
     (fun pi sigma => if disagreementEvent (pi, sigma) then (1 : ℝ) else 0)
-  rw [← EconCSLib.pmfExp_pmfProd_eq_pairExp mu mu
+  rw [← AppliedModelingLib.pmfExp_pmfProd_eq_pairExp mu mu
     (fun pair => if disagreementEvent pair then (1 : ℝ) else 0)]
-  change 0 ≤ EconCSLib.pmfProb (EconCSLib.pmfProd mu mu) disagreementEvent
-  exact EconCSLib.pmfProb_nonneg _ _
+  change 0 ≤ AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProd mu mu) disagreementEvent
+  exact AppliedModelingLib.pmfProb_nonneg _ _
 
 /-- A strict true ranking weakly dominates the human-versus-pure-center total
 payoff at one realized value profile. -/
@@ -83,12 +83,12 @@ theorem humanAgainstPureCenter_le_pureCenter_payoff
       expectedFirstMoverUtility (PMF.pure center) value +
         expectedSecondMoverShared (PMF.pure center) value := by
   have hpoint :
-      EconCSLib.pmfExp mu
+      AppliedModelingLib.pmfExp mu
           (fun sigma =>
             value (firstChoice sigma) +
               value (bestRemainingAfter sigma (firstChoice center))) ≤
         value (firstChoice center) + value (secondChoice center) := by
-    refine EconCSLib.pmfExp_le_of_forall_le mu _ _ ?_
+    refine AppliedModelingLib.pmfExp_le_of_forall_le mu _ _ ?_
     intro sigma
     exact add_le_add
       (AccuracyFamily.value_le_centerFirst_of_strictlyOrderedBy hvalue (firstChoice sigma))
@@ -97,13 +97,13 @@ theorem humanAgainstPureCenter_le_pureCenter_payoff
   have hleft :
       expectedFirstMoverUtility mu value +
           expectedSecondMoverIndependent mu (PMF.pure center) value =
-        EconCSLib.pmfExp mu
+        AppliedModelingLib.pmfExp mu
           (fun sigma =>
             value (firstChoice sigma) +
               value (bestRemainingAfter sigma (firstChoice center))) := by
     rw [AccuracyFamily.expectedSecondMoverIndependent_eq_expect_bestAfterRemoval]
     simp [expectedFirstMoverUtility, AccuracyFamily.expectedBestAfterRemoval,
-      EconCSLib.pmfExp_add]
+      AppliedModelingLib.pmfExp_add]
   have hright :
       expectedFirstMoverUtility (PMF.pure center) value +
           expectedSecondMoverShared (PMF.pure center) value =
@@ -264,7 +264,7 @@ theorem distributional_theorem1_of_literal_outer_source_conditions
         expectedBestInSet (F.dist thetaH value) value remaining ≤
           expectedBestInSet (F.dist thetaA value) value remaining)
     (hfull_set_strict : ∀ thetaA thetaH, 0 < thetaH → thetaH < thetaA →
-      ∀ᵐ value ∂D,
+      ∀ᵐ value ∂D, StrictlyOrderedBy center value →
         expectedBestInSet (F.dist thetaH value) value Finset.univ <
           expectedBestInSet (F.dist thetaA value) value Finset.univ) :
     F.DistributionalTheorem1Target D thetaH := by
@@ -319,7 +319,7 @@ theorem distributional_theorem1_of_literal_outer_source_conditions
   apply distributional_theorem1_of_outer_atomwise_regular_positive
     F D thetaH center hthetaH hvalue hatom_aestrongly_measurable
   · intro value pi theta htheta
-    exact EconCSLib.epsilonContinuousAt_of_continuousAt
+    exact AppliedModelingLib.epsilonContinuousAt_of_continuousAt
       (hatom_continuous value theta htheta pi)
   · exact hatom_tendsto
   · exact hdefinition2_payoff
@@ -351,19 +351,21 @@ theorem distributional_theorem1_of_literal_outer_source_conditions
           (fun pi => hatom_aestrongly_measurable thetaA pi)
           (fun pi => hatom_aestrongly_measurable thetaH pi))
     · filter_upwards [hremaining_weak thetaA thetaH hthetaH hthetaHA,
-        hfull_set_strict thetaA thetaH hthetaH hthetaHA] with value hweak hstrict
+        hfull_set_strict thetaA thetaH hthetaH hthetaHA, hstrict_order]
+          with value hweak hfull hvalue_order
       rcases theorem1RemovalMonotonicity_fields_of_literalFiniteRemoval
           (F := F.pointFamily value) (thetaA := thetaA) (thetaH := thetaH)
-          hweak hstrict with
+          hweak (hfull hvalue_order) with
         ⟨hfirst, hremaining⟩
       exact ⟨hfirst, hremaining⟩
 
 /--
 The source-faithful universal-Definition-1 form of the outer-D Theorem 1
-bridge.  The source quantifies its noisy-family clauses over every value
-profile, while the outer proof only consumes their restriction to the support
-of `D`; this wrapper performs that restriction rather than exposing the
-weaker a.e. formulation as though it were the printed premise.
+bridge. The source quantifies its noisy-family clauses over every admissible,
+strictly center-ordered value profile, while the outer proof only consumes
+their restriction to the support of `D`; this wrapper performs that restriction
+rather than exposing the weaker a.e. formulation as though it were the printed
+premise.
 
 The visible regularity hypotheses are not Definition-1--3 replacements.  A
 coordinate first moment and atom measurability make the outer payoff and
@@ -405,7 +407,7 @@ theorem distributional_theorem1_of_universal_definition1_and_literal_outer_condi
         expectedBestInSet (F.dist thetaH value) value remaining ≤
           expectedBestInSet (F.dist thetaA value) value remaining)
     (hfull_set_strict : ∀ thetaA thetaH, 0 < thetaH → thetaH < thetaA →
-      ∀ value,
+      ∀ value, StrictlyOrderedBy center value →
         expectedBestInSet (F.dist thetaH value) value Finset.univ <
           expectedBestInSet (F.dist thetaA value) value Finset.univ) :
     F.DistributionalTheorem1Target D thetaH := by
@@ -422,8 +424,9 @@ theorem distributional_theorem1_of_universal_definition1_and_literal_outer_condi
         (fun value => hremaining_weak thetaA thetaH hthetaH hthetaA value))
     (by
       intro thetaA thetaH hthetaH hthetaA
-      exact Filter.Eventually.of_forall
-        (hfull_set_strict thetaA thetaH hthetaH hthetaA))
+      filter_upwards [hstrict_order] with value hvalue_order
+      intro _
+      exact hfull_set_strict thetaA thetaH hthetaH hthetaA value hvalue_order)
 
 end DistributionalAccuracyFamily
 end KR21Monoculture

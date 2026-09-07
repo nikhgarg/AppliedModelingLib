@@ -1,0 +1,31 @@
+import AppliedModelingLib.Basic
+import AppliedModelingLib.LibraryDefinitionAudit
+import AppliedModelingLib.Foundations.Probability.IntervalUniformDiracMixture
+import AppliedModelingLib.Foundations.Probability.MovingIntervalAverage
+import AppliedModelingLib.Queueing.FiniteCapacity
+import AppliedModelingLib.Foundations.Probability.UniformHoeffding
+import AppliedModelingLib.GameTheory.MultitaskIncentives
+import AppliedModelingLib.GameTheory.EquilibriumIntervals
+import AppliedModelingLib.GameTheory.PerformativePrediction
+import AppliedModelingLib.GameTheory.StrategicPerformative
+import AppliedModelingLib.Queueing.ExternalityPricing
+import AppliedModelingLib.Learning.EmpiricalRisk
+import AppliedModelingLib.Learning.OutcomeMonotoneCost
+import AppliedModelingLib.Learning.OutcomeMonotoneThreshold
+import AppliedModelingLib.Learning.BinaryOutcomeLikelihood
+import AppliedModelingLib.Learning.OutcomeMonotoneThresholdComparativeStatics
+import AppliedModelingLib.Learning.ContinuousThresholdUtility
+import AppliedModelingLib.Learning.ContinuousStrategicBurden
+import AppliedModelingLib.Learning.StrategicResponse
+import AppliedModelingLib.Learning.StrategicResponseWelfare
+import AppliedModelingLib.Queueing
+import AppliedModelingLib.SocialChoice.FairDivision.Chores
+
+/-!
+# AppliedModelingLib compatibility root
+
+Historical convenience import for a broad, selected repository surface. It is
+neither a complete catalog of every `AppliedModelingLib` module nor a lightweight
+default for paper interfaces. Use the documented family facades or leaf modules
+for new code.
+-/

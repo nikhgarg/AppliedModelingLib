@@ -8,94 +8,9 @@ open scoped BigOperators
 open GCG24UserItemFairness.ProofBridge
 noncomputable section
 
-/-- Source-facing semantic target for the definition `recommendationUtility`. -/
-def recommendationUtilitySpec {m n : ℕ} (W : RecommendationModel m n)
-    (u : User m) (j : Item n) : Prop :=
-  GCG24UserItemFairness.ProofBridge.recommendationUtility (m := m) (n := n) (W := W) (u := u) (j := j) =
-    W.utility u j
-
-/-- Source-facing semantic target for the definition `rawUserUtility`. -/
-def rawUserUtilitySpec {m n : ℕ}
-    (W : RecommendationModel m n) (ρ : Policy m n) (u : User m) : Prop :=
-  GCG24UserItemFairness.ProofBridge.rawUserUtility (m := m) (n := n) (W := W) (ρ := ρ) (u := u) =
-    EconCSLib.Policy.agentScore ρ W.utility u
-
-/-- Source-facing semantic target for the definition `normalizedUserUtility`. -/
-def normalizedUserUtilitySpec {m n : ℕ} [NeZero n]
-    (W : RecommendationModel m n) (ρ : Policy m n) (u : User m) : Prop :=
-  GCG24UserItemFairness.ProofBridge.normalizedUserUtility (m := m) (n := n) (W := W) (ρ := ρ) (u := u) =
-    rawUserUtility W ρ u / RecommendationModel.bestItemUtility W u
-
-/-- Source-facing semantic target for the definition `userFairness`. -/
-def userFairnessSpec {m n : ℕ} [NeZero m] [NeZero n]
-    (W : RecommendationModel m n) (ρ : Policy m n) : Prop :=
-  GCG24UserItemFairness.ProofBridge.userFairness (m := m) (n := n) (W := W) (ρ := ρ) =
-    EconCSLib.finiteMin (normalizedUserUtility W ρ)
-
-/-- Source-facing semantic target for the definition `rawItemUtility`. -/
-def rawItemUtilitySpec {m n : ℕ}
-    (W : RecommendationModel m n) (ρ : Policy m n) (j : Item n) : Prop :=
-  GCG24UserItemFairness.ProofBridge.rawItemUtility (m := m) (n := n) (W := W) (ρ := ρ) (j := j) =
-    ∑ u, W.utility u j * (ρ u j).toReal
-
-/-- Source-facing semantic target for the definition `itemNormalizer`. -/
-def itemNormalizerSpec {m n : ℕ}
-    (W : RecommendationModel m n) (j : Item n) : Prop :=
-  GCG24UserItemFairness.ProofBridge.itemNormalizer (m := m) (n := n) (W := W) (j := j) =
-    ∑ u, W.utility u j
-
-/-- Source-facing semantic target for the definition `normalizedItemUtility`. -/
-def normalizedItemUtilitySpec {m n : ℕ}
-    (W : RecommendationModel m n) (ρ : Policy m n) (j : Item n) : Prop :=
-  GCG24UserItemFairness.ProofBridge.normalizedItemUtility (m := m) (n := n) (W := W) (ρ := ρ) (j := j) =
-    rawItemUtility W ρ j / itemNormalizer W j
-
-/-- Source-facing semantic target for the definition `itemFairness`. -/
-def itemFairnessSpec {m n : ℕ} [NeZero n]
-    (W : RecommendationModel m n) (ρ : Policy m n) : Prop :=
-  GCG24UserItemFairness.ProofBridge.itemFairness (m := m) (n := n) (W := W) (ρ := ρ) =
-    EconCSLib.finiteMin (normalizedItemUtility W ρ)
-
-/-- Source-facing semantic target for the definition `priceOfFairness`. -/
-def priceOfFairnessSpec {m n : ℕ} [NeZero m] [NeZero n]
-    (W : RecommendationModel m n) : Prop :=
-  GCG24UserItemFairness.ProofBridge.priceOfFairness (m := m) (n := n) (W := W) =
-    priceOfFairnessAt W 1
-
-/-- Source-facing semantic target for `solvesProblemOne_iff`. -/
-def solvesProblemOne_iffSpec {m n : ℕ} [NeZero m] [NeZero n]
-    (W : RecommendationModel m n) (γ : ℝ) (ρ : Policy m n) : Prop :=
-  solvesProblemOne W γ ρ ↔ RecommendationModel.IsOptimalAtLevel W γ ρ
-
-/-- Source-facing semantic target for the definition `priceOfMisestimation`. -/
-def priceOfMisestimationSpec {m n : ℕ} [NeZero m] [NeZero n]
-    (E : EstimatedRecommendationModel m n) (γ : ℝ) (ρhat : Policy m n)
-    (hEstimatedOptimal : solvesProblemOne E.estimatedModel γ ρhat) : Prop :=
-  GCG24UserItemFairness.ProofBridge.priceOfMisestimation (m := m) (n := n) (E := E) (γ := γ) (ρhat := ρhat) (hEstimatedOptimal := hEstimatedOptimal) =
-    (RecommendationModel.optimalUserFairnessAtLevel E.trueModel γ -
-          RecommendationModel.userFairness E.trueModel ρhat) /
-        RecommendationModel.optimalUserFairnessAtLevel E.trueModel γ
-
-/-- Source-facing semantic target for the definition `problem11EqualityFeasibleSet`. -/
-def problem11EqualityFeasibleSetSpec {n : ℕ}
-    (beta : ℝ) (v : Item n → ℝ) : Prop :=
-  GCG24UserItemFairness.ProofBridge.problem11EqualityFeasibleSet (n := n) (beta := beta) (v := v) =
-    {p |
-        (∀ j : Item n, 0 ≤ p.1.1 j) ∧
-          (∀ j : Item n, 0 ≤ p.1.2 j) ∧
-            (∑ j : Item n, p.1.1 j) = 1 ∧
-              (∑ j : Item n, p.1.2 j) = 1 ∧
-                (∀ j : Item n,
-                  p.1.2 (OpposingTypes.reverseItem j) = p.1.2 j) ∧
-                  ∀ j : Item n,
-                    OpposingTypes.theorem4Problem11ItemValue beta v p.1.1 p.1.2 j = p.2}
-
-/-- Source-facing semantic target for the definition `problem11BasicFeasible`. -/
-def problem11BasicFeasibleSpec {n : ℕ}
-    (beta : ℝ) (v : Item n → ℝ) (ρ : TypePolicy 3 n) (ell : ℝ) : Prop :=
-  GCG24UserItemFairness.ProofBridge.problem11BasicFeasible (n := n) (beta := beta) (v := v) (ρ := ρ) (ell := ell) ↔
-    problem11PointOfPolicy ρ ell ∈
-        (problem11EqualityFeasibleSet beta v).extremePoints ℝ
+/-! The model, utility, fairness, optimization, and misestimation definitions
+are imported from `Basic`, `Optimization`, and `ProofBridge`. Their actual
+declarations are the source-mapped semantic prerequisites of these results. -/
 
 /-- Source-facing semantic target for `appendix_c_lemma1_item_fairness_positive`. -/
 def appendix_c_lemma1_item_fairness_positiveSpec
@@ -115,10 +30,12 @@ def appendix_c_lemma2_item_fairness_equality_lp_solution_setSpec
 
 /-- Source-facing semantic target for `appendix_d_lemma3_unconstrained_baseline`. -/
 def appendix_d_lemma3_unconstrained_baselineSpec
-    {m n : ℕ} [NeZero m] [NeZero n]
-    (W : RecommendationModel m n) (hNonnegative : W.Nonnegative)
-    (hRow : W.RowHasPositiveItem) : Prop :=
-  W.optimalUserFairnessAtLevel 0 = 1
+    {n : ℕ} [NeZero n] {alpha : ℝ} {v : Item n → ℝ}
+    (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
+    (hpos : ∀ j : Item n, 0 < v j)
+    (hdec : OpposingTypes.StrictlyDecreasingByIndex v) : Prop :=
+  TypeWeightedRecommendationModel.optimalTypeFairnessAtLevel
+    (OpposingTypes.twoTypeReducedModel alpha v) 0 = 1
 
 /-- Source-facing semantic target for `appendix_d_lemma4_problem6_unique_sparse_solution`. -/
 def appendix_d_lemma4_problem6_unique_sparse_solutionSpec
@@ -462,13 +379,13 @@ def proposition2_symmetric_optimum_existsSpec
         RecommendationModel.IsOptimalAtLevel S.model 1 ρsym) ∧
     TypePolicy.ActivePairsBound
       (UserTypeAssignment.descendTypePolicy S.types
-        (EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypes) ρsrc) ∧
+        (AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypes) ρsrc) ∧
     (
       ell = TypeWeightedRecommendationModel.optimalItemFairness
           (S.canonicalReductionOfSurjective hTypes).reduced →
         TypePolicy.SharedItemsBound
           (UserTypeAssignment.descendTypePolicy S.types
-            (EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypes) ρsrc))
+            (AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypes) ρsrc))
 
 /-- Source-facing semantic target for `theorem3_price_decreases_first_half`. -/
 def theorem3_price_decreases_first_halfSpec
@@ -537,100 +454,40 @@ def theorem4_misestimation_without_fairness_universalSpec
         Strue.types.toType u = 1)
     (hbeta : (n : ℝ)⁻¹ < beta)
     (hvalue : assumption_theorem4_universal_value_vector v) : Prop :=
-  let ρ : TypePolicy 3 n := OpposingTypes.theorem4NoFairnessPolicyCollapsed v
-  E.SolvesEstimatedProblem 0
-      ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ) ∧
-    E.priceOfMisestimation 0
-        ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ) ≤
-      (1 / 2 : ℝ)
+  ∃ ρ : Policy m n,
+    E.SolvesEstimatedProblem 0 ρ ∧
+      E.priceOfMisestimation 0 ρ ≤ (1 / 2 : ℝ)
 
-/-- Source-facing semantic target for `theorem4_misestimation_tradeoff_typeZero`. -/
-def theorem4_misestimation_tradeoff_typeZeroSpec
+/--
+Source-facing semantic target for Theorem 4's single existential
+high-item-fairness bullet.  The source does not select an individual user or
+condition on that user's true type; the population model supplies those cases
+internally.
+-/
+def theorem4_misestimation_tradeoffSpec
     {m n : ℕ} [NeZero m] [NeZero n]
-    (E : EstimatedRecommendationModel m n)
-    (Strue : RecommendationModel.SymmetricData m n 2)
-    (Sest : RecommendationModel.SymmetricData m n 3)
-    (hTypesTrue : Function.Surjective Strue.types.toType)
-    (hTypesEst : Function.Surjective Sest.types.toType)
     {beta eps : ℝ}
-    (u : User m)
-    (htrue : assumption_theorem4_true_model_reduction E Strue)
-    (hestimated : assumption_theorem4_estimated_model_reduction E Sest)
-    (hredTrue :
-      (Strue.canonicalReductionOfSurjective hTypesTrue).reduced =
-        OpposingTypes.twoTypeReducedModel (1 / 2 : ℝ)
-        (OpposingTypes.theorem4SmallValueVector (n := n) eps))
-    (hredEst :
-      (Sest.canonicalReductionOfSurjective hTypesEst).reduced =
-        OpposingTypes.theorem4EstimatedReducedModel beta
-        (OpposingTypes.theorem4SmallValueVector (n := n) eps))
-    (hknown0 :
-      ∀ u : User m, Sest.types.toType u = 0 →
-        Strue.types.toType u = 0)
-    (hknown1 :
-      ∀ u : User m, Sest.types.toType u = 1 →
-        Strue.types.toType u = 1)
-    (htrueType : Strue.types.toType u = 0)
-    (hestimatedType : Sest.types.toType u = 2)
-    (heps : 0 < eps)
-    (hbeta : (n : ℝ)⁻¹ < beta) : Prop :=
-  (let ρ0 : TypePolicy 3 n :=
-      OpposingTypes.theorem4NoFairnessPolicyCollapsed
-        (OpposingTypes.theorem4SmallValueVector (n := n) eps);
-    E.SolvesEstimatedProblem 0
-        ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ0) ∧
-      E.priceOfMisestimation 0
-        ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ0) ≤
-        (1 / 2 : ℝ)) ∧
-    ∃ ρ1 : TypePolicy 3 n,
-      E.SolvesEstimatedProblem 1
-          ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ1) ∧
-        1 - eps < E.priceOfMisestimation 1
-          ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ1)
-
-/-- Source-facing semantic target for `theorem4_misestimation_tradeoff_typeOne`. -/
-def theorem4_misestimation_tradeoff_typeOneSpec
-    {m n : ℕ} [NeZero m] [NeZero n]
-    (E : EstimatedRecommendationModel m n)
-    (Strue : RecommendationModel.SymmetricData m n 2)
-    (Sest : RecommendationModel.SymmetricData m n 3)
-    (hTypesTrue : Function.Surjective Strue.types.toType)
-    (hTypesEst : Function.Surjective Sest.types.toType)
-    {beta eps : ℝ}
-    (u : User m)
-    (htrue : assumption_theorem4_true_model_reduction E Strue)
-    (hestimated : assumption_theorem4_estimated_model_reduction E Sest)
-    (hredTrue :
-      (Strue.canonicalReductionOfSurjective hTypesTrue).reduced =
-        OpposingTypes.twoTypeReducedModel (1 / 2 : ℝ)
-        (OpposingTypes.theorem4SmallValueVector (n := n) eps))
-    (hredEst :
-      (Sest.canonicalReductionOfSurjective hTypesEst).reduced =
-        OpposingTypes.theorem4EstimatedReducedModel beta
-        (OpposingTypes.theorem4SmallValueVector (n := n) eps))
-    (hknown0 :
-      ∀ u : User m, Sest.types.toType u = 0 →
-        Strue.types.toType u = 0)
-    (hknown1 :
-      ∀ u : User m, Sest.types.toType u = 1 →
-        Strue.types.toType u = 1)
-    (htrueType : Strue.types.toType u = 1)
-    (hestimatedType : Sest.types.toType u = 2)
-    (heps : 0 < eps)
-    (hbeta : (n : ℝ)⁻¹ < beta) : Prop :=
-  (let ρ0 : TypePolicy 3 n :=
-      OpposingTypes.theorem4NoFairnessPolicyCollapsed
-        (OpposingTypes.theorem4SmallValueVector (n := n) eps);
-    E.SolvesEstimatedProblem 0
-        ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ0) ∧
-      E.priceOfMisestimation 0
-        ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ0) ≤
-        (1 / 2 : ℝ)) ∧
-    ∃ ρ1 : TypePolicy 3 n,
-      E.SolvesEstimatedProblem 1
-          ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ1) ∧
-        1 - eps < E.priceOfMisestimation 1
-          ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ1)
+    (hparams : assumption_theorem4_parameter_domain n beta eps) : Prop :=
+  ∃ v : Item n → ℝ,
+    assumption_theorem4_universal_value_vector v ∧
+      ∀ (E : EstimatedRecommendationModel m n)
+        (Strue : RecommendationModel.SymmetricData m n 2)
+        (Sest : RecommendationModel.SymmetricData m n 3)
+        (hTypesTrue : Function.Surjective Strue.types.toType)
+        (hTypesEst : Function.Surjective Sest.types.toType),
+        assumption_theorem4_true_model_reduction E Strue →
+          assumption_theorem4_estimated_model_reduction E Sest →
+          (Strue.canonicalReductionOfSurjective hTypesTrue).reduced =
+              OpposingTypes.twoTypeReducedModel (1 / 2 : ℝ) v →
+          (Sest.canonicalReductionOfSurjective hTypesEst).reduced =
+              OpposingTypes.theorem4EstimatedReducedModel beta v →
+          (∀ u : User m, Sest.types.toType u = 0 →
+              Strue.types.toType u = 0) →
+          (∀ u : User m, Sest.types.toType u = 1 →
+              Strue.types.toType u = 1) →
+          ∃ ρ : Policy m n,
+            E.SolvesEstimatedProblem 1 ρ ∧
+              1 - eps < E.priceOfMisestimation 1 ρ
 
 end
 

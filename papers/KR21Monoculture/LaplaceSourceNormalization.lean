@@ -1,7 +1,7 @@
 import KR21Monoculture.Theorem2OuterConditionalSource
 import KR21Monoculture.LaplaceUnitVariance
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 
 namespace KR21Monoculture
 

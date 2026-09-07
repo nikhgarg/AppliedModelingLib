@@ -1,5 +1,5 @@
-import EconCSLib.Markets.Matching.DeferredAcceptance
-import EconCSLib.Markets.Matching.ManyToOne
+import AppliedModelingLib.Markets.Matching.DeferredAcceptance
+import AppliedModelingLib.Markets.Matching.ManyToOne
 
 /-!
 # Paper-Facing Theorems: Gale-Shapley 1962
@@ -12,7 +12,7 @@ the paper's `SourceCompletion`, `BatchedProcedure`,
 -/
 
 namespace GS62CollegeAdmissions
-open EconCSLib.Matching
+open AppliedModelingLib.Matching
 
 /-! ## Paper-facing definitions -/
 

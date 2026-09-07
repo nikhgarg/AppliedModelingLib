@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from scripts import source_display_projection as source_display
+
 import hashlib
 import json
 import tempfile
@@ -9,8 +11,14 @@ from unittest import mock
 
 from scripts import public_source_display_projection as projection
 from scripts import review_dashboard
-from scripts import review_dashboard_packet as packet
+from scripts import review_dashboard_html
+from scripts import human_review_packet_renderer as renderer
+from scripts.current_closeout import review_surface as surface
 from scripts.public_release_projection import project_bytes
+from scripts.semantic_prerequisite_projection import (
+    PAPER_PREREQUISITE_PROMPT_VERSION,
+    PAPER_PREREQUISITE_SCHEMA,
+)
 
 
 def _sha256(value: str | bytes) -> str:
@@ -104,7 +112,7 @@ class PublicSourceDisplayDashboardTests(unittest.TestCase):
         return json.loads(self.map_path.read_text(encoding="utf-8"))
 
     def test_frozen_public_surface_is_available_only_to_browser_display(self) -> None:
-        state = review_dashboard.public_source_display_projection_state(self.folder)
+        state = source_display.public_source_display_projection_state(self.folder)
         self.assertTrue(state["active"])
         self.assertTrue(state["valid"])
         self.assertEqual(
@@ -117,14 +125,14 @@ class PublicSourceDisplayDashboardTests(unittest.TestCase):
         self.assertFalse(surface["raw_source_locally_revalidated"])
         self.assertFalse(surface["audit_current"])
         self.assertEqual(surface["source_item_count"], 2)
-        self.assertIn("public_source_display_surface", review_dashboard.HTML_PAGE)
-        self.assertIn("Source-coverage denominator", review_dashboard.HTML_PAGE)
+        self.assertIn("public_source_display_surface", review_dashboard_html.HTML_PAGE)
+        self.assertIn("Source-coverage denominator", review_dashboard_html.HTML_PAGE)
 
         source_record = self._public_map()["items"]["fixture_theorem"]
         self.assertTrue(
             review_dashboard.source_anchor_file_error(self.folder, source_record)
         )
-        connection_state, error = review_dashboard.source_anchor_display_state(
+        connection_state, error = source_display.source_anchor_display_state(
             self.folder,
             source_record,
             source_item_key="fixture_theorem",
@@ -134,7 +142,7 @@ class PublicSourceDisplayDashboardTests(unittest.TestCase):
 
         # The ordinary selector must remain independent of the display helper.
         with mock.patch.object(
-            review_dashboard,
+            source_display,
             "public_source_display_projection_state",
             side_effect=AssertionError("strict inventory consulted a display manifest"),
         ):
@@ -147,7 +155,7 @@ class PublicSourceDisplayDashboardTests(unittest.TestCase):
         ] = 1
         self.map_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
         source_record = payload["items"]["fixture_theorem"]
-        connection_state, error = review_dashboard.source_anchor_display_state(
+        connection_state, error = source_display.source_anchor_display_state(
             self.folder,
             source_record,
             source_item_key="fixture_theorem",
@@ -156,8 +164,8 @@ class PublicSourceDisplayDashboardTests(unittest.TestCase):
         self.assertIn("lacks a valid path", error)
 
     def test_prerequisite_cards_expose_display_only_source_state(self) -> None:
-        (self.root / "EconCSLib").mkdir()
-        library_source = self.root / "EconCSLib" / "Fixture.lean"
+        (self.root / "AppliedModelingLib").mkdir()
+        library_source = self.root / "AppliedModelingLib" / "Fixture.lean"
         library_source.write_text("def Fixture.Model := Nat\n", encoding="utf-8")
         ledger = {
             "schema": review_dashboard.LIBRARY_SEMANTIC_REVIEW_SCHEMA,
@@ -165,8 +173,8 @@ class PublicSourceDisplayDashboardTests(unittest.TestCase):
             "prompt_version": review_dashboard.REQUIRED_LLM_LIBRARY_SEMANTIC_REVIEW_PROMPT_VERSION,
             "target_protocol": review_dashboard.LIBRARY_SEMANTIC_TARGET_PROTOCOL,
             "items": {
-                "EconCSLib.Fixture.Model": {
-                    "library_declaration": "EconCSLib.Fixture.Model",
+                "AppliedModelingLib.Fixture.Model": {
+                    "library_declaration": "AppliedModelingLib.Fixture.Model",
                     "source_item": "fixture_definition",
                     "judgment": "matches",
                     "validator": "fixture reviewer",
@@ -177,45 +185,50 @@ class PublicSourceDisplayDashboardTests(unittest.TestCase):
         (self.folder / "audit" / "library_semantic_review.json").write_text(
             json.dumps(ledger, indent=2) + "\n", encoding="utf-8"
         )
-        template = {
-            "lean_name": "EconCSLib.Fixture.Model",
-            "label": "Fixture model",
-            "source_path": "EconCSLib/Fixture.lean",
-            "line_start": 1,
-            "line_end": 1,
-        }
+        name = "AppliedModelingLib.Fixture.Model"
         target = {
-            "display": "def EconCSLib.Fixture.Model := Nat",
-            "display_sha256": _sha256("def EconCSLib.Fixture.Model := Nat"),
+            "display": "def AppliedModelingLib.Fixture.Model := Nat",
+            "display_sha256": _sha256("def AppliedModelingLib.Fixture.Model := Nat"),
             "declaration_kind": "definition",
             "direct_library_declarations": (),
         }
         with mock.patch.object(review_dashboard, "ROOT", self.root), mock.patch.object(
-            review_dashboard, "HUMAN_REVIEW_LIBRARY_PREREQUISITES", (template,)
+            surface, "ROOT", self.root
         ):
             entries = review_dashboard.human_review_library_prerequisites(
                 self.folder,
-                [{"interface_source": "EconCSLib.Fixture.Model"}],
-                semantic_targets_override={"EconCSLib.Fixture.Model": target},
+                [{"library_review_owner_declarations": [name]}],
+                semantic_targets_override={name: target},
+                declaration_sources_override={
+                    name: {
+                        "library_definition": "def Fixture.Model := Nat",
+                        "library_definition_sha256": _sha256(
+                            "def Fixture.Model := Nat"
+                        ),
+                        "library_definition_error": "",
+                        "library_source_path": "AppliedModelingLib/Fixture.lean",
+                        "library_line_start": 1,
+                        "library_line_end": 1,
+                    }
+                },
             )
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0]["source_connection_state"], "release_projected_excerpt")
         self.assertTrue(entries[0]["source_connection_display_only"])
         self.assertFalse(entries[0]["semantic_current"])
         self.assertEqual(entries[0]["semantic_status"], "release-projected excerpt (display only)")
-        rendered = packet._prerequisites_tex(
+        rendered = renderer._prerequisites_tex(
             self.folder,
-            [],
-            entries_override=entries,
+            entries,
         )
         self.assertIn(r"release\_projected\_excerpt", rendered)
 
     def test_packet_paper_prerequisite_uses_only_the_explicit_display_validator(self) -> None:
         ledger = {
-            "schema": packet.PAPER_PREREQUISITE_SCHEMA,
+            "schema": PAPER_PREREQUISITE_SCHEMA,
             "paper": "Fixture",
-            "prompt_version": packet.PAPER_PREREQUISITE_PROMPT_VERSION,
-            "target_protocol": packet.PAPER_PREREQUISITE_TARGET_PROTOCOL,
+            "prompt_version": PAPER_PREREQUISITE_PROMPT_VERSION,
+            "target_protocol": surface.PAPER_PREREQUISITE_TARGET_PROTOCOL,
             "items": {
                 "Fixture.Model": {
                     "paper_declaration": "Fixture.Model",
@@ -241,35 +254,32 @@ class PublicSourceDisplayDashboardTests(unittest.TestCase):
             "direct_paper_declarations": (),
             "direct_library_declarations": (),
         }
-        with mock.patch.object(
-            packet,
-            "_paper_declaration_sources",
-            return_value={"Fixture.Model": declaration},
-        ):
-            entries = packet.paper_semantic_prerequisites(
+        with mock.patch.object(surface, "ROOT", self.root):
+            entries = surface._prepared_paper_prerequisites(
                 self.folder,
                 {"Fixture.ClaimSpec": {"prerequisite_declarations": ["Fixture.Model"]}},
                 semantic_targets_by_name_override={"Fixture.Model": target},
+                declaration_sources_override={"Fixture.Model": declaration},
             )
         self.assertEqual(len(entries), 1)
         self.assertEqual(entries[0]["source_connection_state"], "release_projected_excerpt")
         self.assertTrue(entries[0]["source_connection_display_only"])
         self.assertFalse(entries[0]["semantic_current"])
         self.assertEqual(entries[0]["semantic_status"], "release-projected excerpt (display only)")
-        rendered = packet._paper_prerequisites_tex(entries)
+        rendered = renderer._paper_prerequisites_tex(entries)
         self.assertIn(r"release\_projected\_excerpt", rendered)
 
     def test_packet_locator_and_final_presentation_hide_private_paths(self) -> None:
-        rendered_locator = packet._tex_locator(
+        rendered_locator = renderer._tex_locator(
             ".audit_source/Fixture/source.txt:19-21"
         )
         self.assertIn("cited publication, lines 19", rendered_locator)
         self.assertIn("21", rendered_locator)
         self.assertNotIn("audit", rendered_locator.lower())
-        metadata = packet._tex_escape("private text extraction from /tmp/fixture")
+        metadata = renderer._tex_escape("private text extraction from /tmp/fixture")
         self.assertNotIn("private", metadata.lower())
         self.assertNotIn("tmp", metadata.lower())
-        rendered = packet._public_packet_presentation_tex(
+        rendered = renderer._public_packet_presentation_tex(
             "Visible /tmp/fixture workflow.\\n"
             "\\begin{ReviewVerbatim}\\n"
             "The source quote stays exact.\\n"

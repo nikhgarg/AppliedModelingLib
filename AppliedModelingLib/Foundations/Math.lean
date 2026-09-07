@@ -1,0 +1,47 @@
+import AppliedModelingLib.Foundations.Math.FiniteSum
+import AppliedModelingLib.Foundations.Math.FiniteAverage
+import AppliedModelingLib.Foundations.Math.FiniteOptimization
+import AppliedModelingLib.Foundations.Math.FiniteChoice
+import AppliedModelingLib.Foundations.Math.FiniteDimensionalNorms
+import AppliedModelingLib.Foundations.Math.FiniteDimensionalNormsDerivative
+import AppliedModelingLib.Foundations.Math.LinearCompressedSensing
+import AppliedModelingLib.Foundations.Math.EuclideanNets
+import AppliedModelingLib.Foundations.Math.ExtremalGraph
+import AppliedModelingLib.Foundations.Math.MatrixRankInequalities
+import AppliedModelingLib.Foundations.Math.RankBounds
+import AppliedModelingLib.Foundations.Math.BinomialBounds
+import AppliedModelingLib.Foundations.Math.FiniteRanking
+import AppliedModelingLib.Foundations.Math.FiniteRounding
+import AppliedModelingLib.Foundations.Math.FiniteSigns
+import AppliedModelingLib.Foundations.Math.FiniteLogTelescoping
+import AppliedModelingLib.Foundations.Math.PositiveDenominator
+import AppliedModelingLib.Foundations.Math.PowerComparisons
+import AppliedModelingLib.Foundations.Math.QuadraticParameterCover
+import AppliedModelingLib.Foundations.Math.PairCondition
+import AppliedModelingLib.Foundations.Math.AffineThreshold
+import AppliedModelingLib.Foundations.Math.ConvexCombination
+import AppliedModelingLib.Foundations.Math.SqrtComparisons
+import AppliedModelingLib.Foundations.Math.FractionalSqrt
+import AppliedModelingLib.Foundations.Math.QuasiConvex
+import AppliedModelingLib.Foundations.Math.Sequence
+import AppliedModelingLib.Foundations.Math.Asymptotics
+import AppliedModelingLib.Foundations.Math.GammaAsymptotics
+import AppliedModelingLib.Foundations.Math.ExponentialBounds
+import AppliedModelingLib.Foundations.Math.FiniteCorrelation
+import AppliedModelingLib.Foundations.Math.FiniteCopies
+import AppliedModelingLib.Foundations.Math.IntervalCrossing
+import AppliedModelingLib.Foundations.Math.EpsilonContinuity
+import AppliedModelingLib.Foundations.Math.ThresholdCharacterization
+import AppliedModelingLib.Foundations.Math.TwoLevelMetric
+import AppliedModelingLib.Foundations.Math.IntegralConvergence
+import AppliedModelingLib.Foundations.Math.OrderedPairs
+import AppliedModelingLib.Foundations.Math.MonotoneContinuity
+import AppliedModelingLib.Foundations.Math.UniformConvergence
+
+/-!
+# Mathematical foundations
+
+Broad compatibility aggregate for reusable finite, analytic, asymptotic,
+geometric, and fixed-point mathematics. New modules should prefer the smallest
+leaf import that supplies their declarations.
+-/

@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "PKG25NoFreeLunch",
-  "private_source_map_sha256": "4350b06843496f7ffe8d237c02dfd9813ea38a3b6855c4e130a522aa6878fef4",
+  "private_source_map_sha256": "6c35fa35bc414614ea617eacd94a5020ad25b1beb98fc1b6dbec15ea34241107",
   "public_manifest_path": "papers/PKG25NoFreeLunch/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "758283904e6e777f9d0e825c3fc98bd574c9b47f126464b965133aba2a1a2dd2",
+  "public_source_map_sha256": "7f15ae36ae7cea591cddadd2f17f29bbeca0199865216bccc995cca71fb00fc8",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
@@ -40,6 +40,20 @@
       "source_kind": "predicate_vocabulary"
     },
     "source_definition_collaboration_setting": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 11,
+              "line_start": 7,
+              "publication_locator": "cited publication",
+              "quoted_text": "A \\vocab{predictor} is a function $P: \\XX\\rightarrow [0,1]$. A predictor $P$ is \\vocab{calibrated} on $\\DD$ if\n\\begin{equation}\n    \\Pr_{(X,Y)\\sim \\DD}[Y=1\\,|\\,P(X)=p] = p\n\\end{equation}\nfor all $p\\in [0,1]$ (more precisely, for all $p\\in \\text{Image}(P)$). ",
+              "quoted_text_sha256": "d5e1efbbeba7375dafb5d6f67b4b2360980958154c5fbab530926666a7101339"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 19,

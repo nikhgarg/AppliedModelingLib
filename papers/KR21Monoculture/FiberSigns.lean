@@ -1,9 +1,9 @@
 import KR21Monoculture.FirstChoiceDecomposition
 import KR21Monoculture.Kendall
-import EconCSLib.Foundations.Math.FiniteSigns
+import AppliedModelingLib.Foundations.Math.FiniteSigns
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -22,12 +22,12 @@ in the reference ranking.
 theorem rankOf_firstChoice_lt_rankOf_of_ne {n : ℕ}
     (ρ : Ranking n) {c : Candidate n} (hc : c ≠ firstChoice ρ) :
     rankOf ρ (firstChoice ρ) < rankOf ρ c := by
-  simpa [rankOf, firstChoice, EconCSLib.SocialChoice.Ranking.rankOf,
-    EconCSLib.SocialChoice.Ranking.firstChoice] using
-    EconCSLib.SocialChoice.Ranking.rankOf_firstChoice_lt_rankOf_of_ne ρ
+  simpa [rankOf, firstChoice, AppliedModelingLib.SocialChoice.Ranking.rankOf,
+    AppliedModelingLib.SocialChoice.Ranking.firstChoice] using
+    AppliedModelingLib.SocialChoice.Ranking.rankOf_firstChoice_lt_rankOf_of_ne ρ
       (by
         intro h
-        exact hc (by simpa [firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice] using h))
+        exact hc (by simpa [firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice] using h))
 
 /--
 If a ranking shares the reference top candidate, then weak monotonicity along the
@@ -39,17 +39,17 @@ theorem valueGap_nonneg_on_firstFiber_of_weaklyOrderedBy {n : ℕ}
     (hfirst : firstChoice ρ = firstChoice π) :
     0 ≤ valueGap value π := by
   have hvalue' :
-      EconCSLib.SocialChoice.Ranking.WeaklyOrderedBy ρ value := by
+      AppliedModelingLib.SocialChoice.Ranking.WeaklyOrderedBy ρ value := by
     intro a b hab
     exact hvalue (by
-      simpa [rankOf, EconCSLib.SocialChoice.Ranking.rankOf] using hab)
+      simpa [rankOf, AppliedModelingLib.SocialChoice.Ranking.rankOf] using hab)
   have hfirst' :
-      EconCSLib.SocialChoice.Ranking.firstChoice ρ =
-        EconCSLib.SocialChoice.Ranking.firstChoice π := by
-    simpa [firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice] using hfirst
-  simpa [valueGap, EconCSLib.SocialChoice.Ranking.valueGap, firstChoice, secondChoice,
-    EconCSLib.SocialChoice.Ranking.firstChoice, EconCSLib.SocialChoice.Ranking.secondChoice]
-    using EconCSLib.SocialChoice.Ranking.valueGap_nonneg_on_firstFiber_of_weaklyOrderedBy
+      AppliedModelingLib.SocialChoice.Ranking.firstChoice ρ =
+        AppliedModelingLib.SocialChoice.Ranking.firstChoice π := by
+    simpa [firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice] using hfirst
+  simpa [valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap, firstChoice, secondChoice,
+    AppliedModelingLib.SocialChoice.Ranking.firstChoice, AppliedModelingLib.SocialChoice.Ranking.secondChoice]
+    using AppliedModelingLib.SocialChoice.Ranking.valueGap_nonneg_on_firstFiber_of_weaklyOrderedBy
       (ρ := ρ) (value := value) (π := π) hvalue' hfirst'
 
 /--
@@ -62,17 +62,17 @@ theorem valueGap_pos_on_firstFiber_of_strictlyOrderedBy {n : ℕ}
     (hfirst : firstChoice ρ = firstChoice π) :
     0 < valueGap value π := by
   have hvalue' :
-      EconCSLib.SocialChoice.Ranking.StrictlyOrderedBy ρ value := by
+      AppliedModelingLib.SocialChoice.Ranking.StrictlyOrderedBy ρ value := by
     intro a b hab
     exact hvalue (by
-      simpa [rankOf, EconCSLib.SocialChoice.Ranking.rankOf] using hab)
+      simpa [rankOf, AppliedModelingLib.SocialChoice.Ranking.rankOf] using hab)
   have hfirst' :
-      EconCSLib.SocialChoice.Ranking.firstChoice ρ =
-        EconCSLib.SocialChoice.Ranking.firstChoice π := by
-    simpa [firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice] using hfirst
-  simpa [valueGap, EconCSLib.SocialChoice.Ranking.valueGap, firstChoice, secondChoice,
-    EconCSLib.SocialChoice.Ranking.firstChoice, EconCSLib.SocialChoice.Ranking.secondChoice]
-    using EconCSLib.SocialChoice.Ranking.valueGap_pos_on_firstFiber_of_strictlyOrderedBy
+      AppliedModelingLib.SocialChoice.Ranking.firstChoice ρ =
+        AppliedModelingLib.SocialChoice.Ranking.firstChoice π := by
+    simpa [firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice] using hfirst
+  simpa [valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap, firstChoice, secondChoice,
+    AppliedModelingLib.SocialChoice.Ranking.firstChoice, AppliedModelingLib.SocialChoice.Ranking.secondChoice]
+    using AppliedModelingLib.SocialChoice.Ranking.valueGap_pos_on_firstFiber_of_strictlyOrderedBy
       (ρ := ρ) (value := value) (π := π) hvalue' hfirst'
 
 /--
@@ -84,13 +84,13 @@ theorem firstChoiceGapMass_nonneg_of_referenceTop_weaklyOrdered {n : ℕ}
     (hvalue : WeaklyOrderedBy ρ value) :
     0 ≤ firstChoiceGapMass μ value (firstChoice ρ) := by
   have hvalue' :
-      EconCSLib.SocialChoice.Ranking.WeaklyOrderedBy ρ value := by
+      AppliedModelingLib.SocialChoice.Ranking.WeaklyOrderedBy ρ value := by
     intro a b hab
     exact hvalue (by
-      simpa [rankOf, EconCSLib.SocialChoice.Ranking.rankOf] using hab)
-  simpa [firstChoiceGapMass, EconCSLib.SocialChoice.Ranking.firstChoiceGapMass,
-    firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice] using
-    EconCSLib.SocialChoice.Ranking.firstChoiceGapMass_nonneg_of_referenceTop_weaklyOrdered
+      simpa [rankOf, AppliedModelingLib.SocialChoice.Ranking.rankOf] using hab)
+  simpa [firstChoiceGapMass, AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass,
+    firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice] using
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass_nonneg_of_referenceTop_weaklyOrdered
       μ ρ value hvalue'
 
 /--
@@ -104,31 +104,31 @@ theorem firstChoiceGapMass_pos_of_reference_mass_pos_and_strictlyOrderedBy {n : 
     (hvalue : StrictlyOrderedBy ρ value) :
     0 < firstChoiceGapMass μ value (firstChoice ρ) := by
   have hvalue' :
-      EconCSLib.SocialChoice.Ranking.StrictlyOrderedBy ρ value := by
+      AppliedModelingLib.SocialChoice.Ranking.StrictlyOrderedBy ρ value := by
     intro a b hab
     exact hvalue (by
-      simpa [rankOf, EconCSLib.SocialChoice.Ranking.rankOf] using hab)
-  simpa [firstChoiceGapMass, EconCSLib.SocialChoice.Ranking.firstChoiceGapMass,
-    firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice] using
-    EconCSLib.SocialChoice.Ranking.firstChoiceGapMass_pos_of_reference_mass_pos_and_strictlyOrderedBy
+      simpa [rankOf, AppliedModelingLib.SocialChoice.Ranking.rankOf] using hab)
+  simpa [firstChoiceGapMass, AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass,
+    firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice] using
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass_pos_of_reference_mass_pos_and_strictlyOrderedBy
       μ ρ value hmass hvalue'
 
 /-- Miss probability is positive exactly when first-choice probability is below one. -/
 theorem firstChoiceMissProb_pos_iff_firstChoiceProb_lt_one {n : ℕ}
     (μ : PMF (Ranking n)) (c : Candidate n) :
     0 < firstChoiceMissProb μ c ↔ firstChoiceProb μ c < 1 := by
-  simpa [firstChoiceMissProb, EconCSLib.SocialChoice.Ranking.firstChoiceMissProb,
-    firstChoiceProb, EconCSLib.SocialChoice.Ranking.firstChoiceProb] using
-    EconCSLib.SocialChoice.Ranking.firstChoiceMissProb_pos_iff_firstChoiceProb_lt_one
+  simpa [firstChoiceMissProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb,
+    firstChoiceProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb] using
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb_pos_iff_firstChoiceProb_lt_one
       μ c
 
 /-- Miss probability is nonnegative exactly when first-choice probability is at most one. -/
 theorem firstChoiceMissProb_nonneg_iff_firstChoiceProb_le_one {n : ℕ}
     (μ : PMF (Ranking n)) (c : Candidate n) :
     0 ≤ firstChoiceMissProb μ c ↔ firstChoiceProb μ c ≤ 1 := by
-  simpa [firstChoiceMissProb, EconCSLib.SocialChoice.Ranking.firstChoiceMissProb,
-    firstChoiceProb, EconCSLib.SocialChoice.Ranking.firstChoiceProb] using
-    EconCSLib.SocialChoice.Ranking.firstChoiceMissProb_nonneg_iff_firstChoiceProb_le_one
+  simpa [firstChoiceMissProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb,
+    firstChoiceProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb] using
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb_nonneg_iff_firstChoiceProb_le_one
       μ c
 
 /-- Collision difference is positive exactly when the better law puts more top mass on `c`. -/
@@ -136,9 +136,9 @@ theorem firstChoiceCollisionDiff_pos_iff {n : ℕ}
     (μBetter μWorse : PMF (Ranking n)) (c : Candidate n) :
     0 < firstChoiceCollisionDiff μBetter μWorse c ↔
       firstChoiceProb μWorse c < firstChoiceProb μBetter c := by
-  simpa [firstChoiceCollisionDiff, EconCSLib.SocialChoice.Ranking.firstChoiceCollisionDiff,
-    firstChoiceProb, EconCSLib.SocialChoice.Ranking.firstChoiceProb] using
-    EconCSLib.SocialChoice.Ranking.firstChoiceCollisionDiff_pos_iff
+  simpa [firstChoiceCollisionDiff, AppliedModelingLib.SocialChoice.Ranking.firstChoiceCollisionDiff,
+    firstChoiceProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb] using
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceCollisionDiff_pos_iff
       μBetter μWorse c
 
 /--
@@ -149,9 +149,9 @@ theorem firstChoiceCollisionDiff_nonneg_iff {n : ℕ}
     (μBetter μWorse : PMF (Ranking n)) (c : Candidate n) :
     0 ≤ firstChoiceCollisionDiff μBetter μWorse c ↔
       firstChoiceProb μWorse c ≤ firstChoiceProb μBetter c := by
-  simpa [firstChoiceCollisionDiff, EconCSLib.SocialChoice.Ranking.firstChoiceCollisionDiff,
-    firstChoiceProb, EconCSLib.SocialChoice.Ranking.firstChoiceProb] using
-    EconCSLib.SocialChoice.Ranking.firstChoiceCollisionDiff_nonneg_iff
+  simpa [firstChoiceCollisionDiff, AppliedModelingLib.SocialChoice.Ranking.firstChoiceCollisionDiff,
+    firstChoiceProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb] using
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceCollisionDiff_nonneg_iff
       μBetter μWorse c
 
 end KR21Monoculture

@@ -15,7 +15,7 @@ Source: `EFXadditivechores.tex`, lines 3006--3110.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- Every exceptional M₂ residue has two distinct, ordered auxiliary
 endpoints.  This exposes the pair that the source calls the exceptional pair;

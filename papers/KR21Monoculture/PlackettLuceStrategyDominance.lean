@@ -21,8 +21,8 @@ two-firm game.  Weak dominance is the strongest unconditional conclusion:
 equal temperatures and constant value profiles make strict dominance false.
 -/
 
-open EconCSLib MeasureTheory ProbabilityTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 
@@ -177,7 +177,7 @@ theorem plackettLuce_expectedBestInSet_le_of_accuracy_le
       funext i
       dsimp [t, raw, paper_appendixC_contractedScore]
       unfold KR21Monoculture.rumContractScore
-      unfold EconCSLib.Probability.rumContractScore
+      unfold AppliedModelingLib.Probability.rumContractScore
       field_simp [ne_of_gt hthetaH, ne_of_gt hthetaA]
       ring
     have hcontractRank :
@@ -307,9 +307,9 @@ theorem plackettLuce_semantic_improvement_of_accuracy_le
     have h := plackettLuce_expectedBestInSet_le_of_accuracy_le value hthetaLow
       hthetaLowHigh (Finset.univ \ ({removed} : Finset (Candidate n))) hremaining
     change
-      EconCSLib.SocialChoice.Ranking.expectedBestAfterRemoval
+      AppliedModelingLib.SocialChoice.Ranking.expectedBestAfterRemoval
           (plackettLuceRankingPMF thetaLow value) value removed ≤
-        EconCSLib.SocialChoice.Ranking.expectedBestAfterRemoval
+        AppliedModelingLib.SocialChoice.Ranking.expectedBestAfterRemoval
           (plackettLuceRankingPMF thetaHigh value) value removed
     simpa only [KR21Monoculture.expectedBestInSet_univ_sdiff_singleton]
       using h

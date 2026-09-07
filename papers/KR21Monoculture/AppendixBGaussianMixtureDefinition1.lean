@@ -11,7 +11,7 @@ It is intentionally separate from the Appendix B payoff and source-scaling
 modules, so every density and source-law bridge remains individually reviewable.
 -/
 
-open EconCSLib MeasureTheory Filter
+open AppliedModelingLib MeasureTheory Filter
 open scoped ENNReal NNReal Topology BigOperators
 
 namespace KR21Monoculture
@@ -252,12 +252,12 @@ theorem pmfProd_toMeasure_eq_prod
     [MeasurableSpace α] [MeasurableSpace β]
     [MeasurableSingletonClass α] [MeasurableSingletonClass β]
     (μ : PMF α) (ν : PMF β) :
-    (EconCSLib.pmfProd μ ν).toMeasure = μ.toMeasure.prod ν.toMeasure := by
+    (AppliedModelingLib.pmfProd μ ν).toMeasure = μ.toMeasure.prod ν.toMeasure := by
   apply Measure.ext_iff_singleton.mpr
   intro p
   rcases p with ⟨a, b⟩
-  rw [PMF.toMeasure_apply_singleton (EconCSLib.pmfProd μ ν) (a, b)
-      (measurableSet_singleton _), EconCSLib.pmfProd_apply,
+  rw [PMF.toMeasure_apply_singleton (AppliedModelingLib.pmfProd μ ν) (a, b)
+      (measurableSet_singleton _), AppliedModelingLib.pmfProd_apply,
     ← Set.singleton_prod_singleton, Measure.prod_prod,
     PMF.toMeasure_apply_singleton μ a (measurableSet_singleton _),
     PMF.toMeasure_apply_singleton ν b (measurableSet_singleton _)]

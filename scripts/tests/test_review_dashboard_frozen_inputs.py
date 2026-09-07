@@ -8,10 +8,24 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from scripts import review_dashboard
+from scripts import configured_paper_inputs, dashboard_audit_inputs, review_dashboard
 
 
 class ReviewDashboardFrozenInputTests(unittest.TestCase):
+    def test_dashboard_reexports_the_authoritative_input_transaction(self) -> None:
+        self.assertIs(
+            review_dashboard.DashboardAuditInputs,
+            dashboard_audit_inputs.DashboardAuditInputs,
+        )
+        self.assertIs(
+            review_dashboard.DashboardFrozenInputError,
+            dashboard_audit_inputs.DashboardFrozenInputError,
+        )
+        self.assertIs(
+            review_dashboard.dashboard_audit_input_scope,
+            dashboard_audit_inputs.dashboard_audit_input_scope,
+        )
+
     def _json_bytes(self, payload: object) -> bytes:
         return json.dumps(payload, sort_keys=True).encode("utf-8")
 
@@ -381,6 +395,7 @@ class ReviewDashboardFrozenInputTests(unittest.TestCase):
             folder / "Assumptions.lean",
             folder / "AssumptionsExtra.lean",
             folder / "FINAL_VALIDATION_REPORT.md",
+            folder / "audit/intake_freeze.json",
             folder / "reports/final.md",
             folder / "audit/statement_match_llm.json",
             folder / "statement_match_llm.json",
@@ -396,6 +411,276 @@ class ReviewDashboardFrozenInputTests(unittest.TestCase):
         }
         self.assertTrue(expected <= paths)
         self.assertLess(len(paths), 50)
+
+    def test_configured_input_collector_has_no_conventional_fallbacks(self) -> None:
+        root = Path("/bounded/repository")
+        folder = root / "papers" / "CollectorPaper"
+        status = {
+            "review_surface": {
+                "source_file": "papers/CollectorPaper/PaperInterface.lean",
+                "assumption_source_file": "AssumptionsExtra.lean",
+                "source_proof_fidelity_review": {
+                    "ledger_file": "audit/proof_ledger.json"
+                },
+            }
+        }
+        statement_map = {
+            "source_artifact_path": "sources/canonical.txt",
+            "items": {
+                "theorem": {
+                    "source_anchor_evidence": [
+                        {"path": "sources/canonical.txt"}
+                    ]
+                }
+            },
+        }
+
+        with (
+            mock.patch.object(Path, "read_bytes", side_effect=AssertionError("read")),
+            mock.patch.object(Path, "read_text", side_effect=AssertionError("read")),
+            mock.patch.object(Path, "exists", side_effect=AssertionError("probe")),
+            mock.patch.object(Path, "is_file", side_effect=AssertionError("probe")),
+            mock.patch.object(Path, "glob", side_effect=AssertionError("walk")),
+            mock.patch.object(Path, "rglob", side_effect=AssertionError("walk")),
+        ):
+            paths = set(
+                review_dashboard.configured_dashboard_audit_input_paths(
+                    folder,
+                    status_bytes=self._json_bytes(status),
+                    statement_map_bytes=self._json_bytes(statement_map),
+                    repository_root=root,
+                )
+            )
+
+        self.assertEqual(
+            paths,
+            {
+                folder / "PaperInterface.lean",
+                folder / "AssumptionsExtra.lean",
+                folder / "audit/proof_ledger.json",
+                folder / "sources/canonical.txt",
+            },
+        )
+        self.assertNotIn(folder / "paper.tex", paths)
+        self.assertNotIn(folder / "source.txt", paths)
+        self.assertNotIn(folder / "audit/intake_freeze.json", paths)
+
+    def test_v11_evidence_collector_excludes_presentation_paths(self) -> None:
+        root = Path("/bounded/repository")
+        folder = root / "papers" / "CollectorPaper"
+        status = {
+            "review_entrypoint": (
+                "papers/CollectorPaper/FINAL_VALIDATION_REPORT.md"
+            ),
+            "intake_freeze_required": True,
+            "review_surface": {
+                "source_file": "papers/CollectorPaper/PaperInterface.lean",
+                "assumption_source_file": "Assumptions.lean",
+                "source_proof_fidelity_review": {
+                    "ledger_file": "audit/source_proof_fidelity.json"
+                },
+            },
+        }
+        statement_map = {
+            "source_artifact_path": "sources/canonical.txt",
+            "items": {},
+        }
+
+        paths = set(
+            configured_paper_inputs.configured_v11_evidence_input_paths(
+                folder,
+                status_bytes=self._json_bytes(status),
+                statement_map_bytes=self._json_bytes(statement_map),
+                repository_root=root,
+            )
+        )
+
+        self.assertEqual(
+            paths,
+            {
+                folder / "PaperInterface.lean",
+                folder / "Assumptions.lean",
+                folder / "audit/source_proof_fidelity.json",
+                folder / "audit/intake_freeze.json",
+                folder / "sources/canonical.txt",
+            },
+        )
+        self.assertNotIn(folder / "FINAL_VALIDATION_REPORT.md", paths)
+
+    def test_v11_evidence_collector_binds_reviewed_source_inventory_plan(self) -> None:
+        root = Path("/bounded/repository")
+        folder = root / "papers" / "CollectorPaper"
+        status = {
+            "source_inventory_review_required": True,
+            "review_surface": {
+                "source_file": "papers/CollectorPaper/PaperInterface.lean",
+            },
+        }
+        statement_map = {
+            "source_artifact_path": "sources/canonical.txt",
+            "items": {},
+        }
+
+        paths = set(
+            configured_paper_inputs.configured_v11_evidence_input_paths(
+                folder,
+                status_bytes=self._json_bytes(status),
+                statement_map_bytes=self._json_bytes(statement_map),
+                repository_root=root,
+            )
+        )
+
+        self.assertIn(
+            folder / "audit/v11_source_map_preparation_config.json", paths
+        )
+        self.assertNotIn(folder / "audit/intake_freeze.json", paths)
+
+    def test_current_v11_transaction_paths_are_complete_and_payload_only(self) -> None:
+        root = Path("/bounded/repository")
+        folder = root / "papers" / "CollectorPaper"
+        status = {
+            "intake_freeze_required": True,
+            "source_inventory_review_required": True,
+            "review_surface": {
+                "assumption_names": [],
+                "source_file": "source/paper.tex",
+                "source_proof_fidelity_review": {
+                    "ledger_file": "audit/source_proof_fidelity.json"
+                },
+            },
+        }
+        statement_map = {
+            "source_artifact_path": "source/paper.tex",
+            "items": {
+                "corrected": {
+                    "corrected_target": {
+                        "approval": {"artifact_path": "docs/approval.md"}
+                    }
+                }
+            },
+        }
+
+        with (
+            mock.patch.object(Path, "read_bytes", side_effect=AssertionError("read")),
+            mock.patch.object(Path, "read_text", side_effect=AssertionError("read")),
+            mock.patch.object(Path, "exists", side_effect=AssertionError("probe")),
+            mock.patch.object(Path, "is_file", side_effect=AssertionError("probe")),
+            mock.patch.object(Path, "glob", side_effect=AssertionError("walk")),
+            mock.patch.object(Path, "rglob", side_effect=AssertionError("walk")),
+        ):
+            paths = set(
+                configured_paper_inputs.current_v11_transaction_input_paths(
+                    folder,
+                    status_bytes=self._json_bytes(status),
+                    statement_map_bytes=self._json_bytes(statement_map),
+                    repository_root=root,
+                )
+            )
+
+        self.assertEqual(
+            paths,
+            {
+                root / "papers/audit_config.json",
+                root / "lakefile.toml",
+                root / "scripts/refresh_validation_report_audit_summaries.py",
+                folder / "status.json",
+                folder / "Assumptions.lean",
+                folder / "source/paper.tex",
+                folder / "docs/approval.md",
+                folder / "audit/intake_freeze.json",
+                folder / "audit/v11_source_map_preparation_config.json",
+                folder / "audit/paper_statement_map.json",
+                folder / "audit/LEAN_IMPORT_CLOSURE_RECEIPT.json",
+                folder / "audit/v11_raw_source_spec_screening.json",
+                folder / "audit/paper_semantic_prerequisites.json",
+                folder / "audit/library_semantic_review.json",
+                folder / "audit/source_proof_fidelity.json",
+            },
+        )
+        self.assertNotIn(folder / "audit/assumption_match_llm.json", paths)
+
+        status["review_surface"]["assumption_names"] = ["Fixture.Assumption"]
+        with_assumption = set(
+            configured_paper_inputs.current_v11_transaction_input_paths(
+                folder,
+                status_bytes=self._json_bytes(status),
+                statement_map_bytes=self._json_bytes(statement_map),
+                repository_root=root,
+            )
+        )
+        self.assertIn(folder / "audit/assumption_match_llm.json", with_assumption)
+
+    def test_current_v11_transaction_freezes_proof_fidelity_canonical_artifact(self) -> None:
+        """The frozen ledger's own source pin must be available to its validator."""
+
+        root = Path("/bounded/repository")
+        folder = root / "papers" / "CollectorPaper"
+        status = {
+            "review_surface": {
+                "source_proof_fidelity_review": {
+                    "ledger_file": "audit/source_proof_fidelity.json"
+                }
+            },
+        }
+        statement_map = {"items": {}}
+        proof_fidelity = {
+            "source_artifact_path": "source.tar.gz",
+            "source_artifact_sha256": "a" * 64,
+            "reviewed_proof_scopes": [
+                {
+                    "source_locator": "source/chapter.tex:1-2",
+                }
+            ],
+        }
+
+        paths = set(
+            configured_paper_inputs.current_v11_transaction_input_paths(
+                folder,
+                status_bytes=self._json_bytes(status),
+                statement_map_bytes=self._json_bytes(statement_map),
+                source_proof_fidelity_bytes=self._json_bytes(proof_fidelity),
+                repository_root=root,
+            )
+        )
+
+        self.assertIn(folder / "source.tar.gz", paths)
+        self.assertIn(folder / "source/chapter.tex", paths)
+
+    def test_proof_fidelity_path_uses_the_same_frozen_status_rule(self) -> None:
+        root = Path("/bounded/repository")
+        folder = root / "papers" / "CollectorPaper"
+        status = {
+            "review_surface": {
+                "source_proof_fidelity_review": {
+                    "ledger_file": "audit/source_proof_fidelity.json"
+                }
+            }
+        }
+        path, error = (
+            configured_paper_inputs.configured_source_proof_fidelity_ledger_path(
+                folder,
+                status,
+                repository_root=root,
+            )
+        )
+        self.assertEqual(path, folder / "audit/source_proof_fidelity.json")
+        self.assertEqual(error, "")
+
+        escaped, escaped_error = (
+            configured_paper_inputs.configured_source_proof_fidelity_ledger_path(
+                folder,
+                {
+                    "review_surface": {
+                        "source_proof_fidelity_review": {
+                            "ledger_file": "../foreign.json"
+                        }
+                    }
+                },
+                repository_root=root,
+            )
+        )
+        self.assertIsNone(escaped)
+        self.assertIn("escapes the paper folder", escaped_error)
 
     def test_shared_source_validators_receive_the_frozen_byte_mapping(self) -> None:
         from scripts import audit_evidence_integrity

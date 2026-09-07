@@ -1,0 +1,211 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "LMMS04FairDivision",
+  "private_source_map_sha256": "b600ce818d61496619eb406d10651c5b82591828d766ef3cfab8aa43479c0a6b",
+  "public_manifest_path": "papers/LMMS04FairDivision/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "cc1f117f46a2d31cd4859a208eacb4502f7e43fd6e2713cc23721e551271f529",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goods",
+    "lemma2_2_acyclic_reduction",
+    "lemma2_4_real_interval_low_value_partition",
+    "lemma3_5_additive_transfer_epsilon_bound",
+    "theorem2_1_bounded_envy_allocation_exists",
+    "theorem2_1_runtime_bound",
+    "theorem2_3_real_interval_supported_atom_bound",
+    "theorem2_3_zero_atom_envyfree_external_boundary",
+    "theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queries",
+    "theorem3_2_graham_certificate_to_envy_ratio_bound",
+    "theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guarantee",
+    "theorem4_1_source_minimum_envy_not_truthful",
+    "theorem4_1_source_not_truthful_envy_free_whenever_exists",
+    "theorem4_2_asymptotic_high_probability_rate",
+    "theorem4_2_uniform_random_mechanism_truthful"
+  ],
+  "selected_source_items": {
+    "claim3_4_bounded_optimal_of_exact_allocations_with_nonempty_positive_goods": {
+      "source_anchors": [
+        {
+          "line_end": 581,
+          "line_start": 494,
+          "publication_locator": "cited publication",
+          "quoted_text": "Claim 3.4. If v(i) < L for every good i, then there exists an optimal allocation A = (A1 , ..., An ) such that 12 L <\nv(Ai ) < 2L.\nThe proof is by showing that in a given optimal solution, it\nis possible to reallocate the goods so that the envy-ratio does\nnot increase and the conditions of the claim are satisfied.\nWe will now describe how to round the values of the goods\nand obtain an instance in which there is only a constant\nnumber of different types of goods (i.e. a constant number of\ndistinct values for the goods). The construction is the same\nas in [2] and we repeat it here for the sake of completeness.\nWe will denote the rounded instance by I R (λ), where λ is\na positive constant and will be determined later (λ will be\nO(1/\u000f)). We will often omit λ in the notation.\nWe first round the value of every good with relatively high\nvalue. In particular, for every good i with v(i) > L/λ, we\nround v(i) to the next integer multiple of L/λ2 . Roughly\nthis means that we round up the first least significant digits\nof v(i). We cannot afford to do the same for goods with\nsmall value since the error introduced by this process might\nbe very big. Instead, let S be the sum of the values of\nthe goods with value less than L/λ. We round S to the\nnext integer multiple of L/λ, say S R . Instance I R (λ) will\nhave S R λ/L new goods with value L/λ. This completes the\nconstruction. Note that in I R (λ) all values are of the form\nkL/λ2 , where λ ≤ k ≤ λ2 . Hence we have only a constant\nnumber of distinct values.\nLet M R be the set of goods in the newP\ninstance and v R (i)\nR\n1\nbe the value of each good. Let L = n j∈M R v R (i). It is\neasy to see that L ≤ LR and that all values in I R (λ) are at\nmost LR . Hence by Claim 3.4 there is an optimal solution\nR\nR\nR\n1 R\nAR = (AR\n1 , ..., An ) such that 2 L < v(Ap ) < 2L for every\np. In the algorithm below we will search for such a solution.\nWe represent a player’s bundle by a vector t = (tλ , ..., tλ2 ),\nwhere tk is the number of goods with value kL/λ2 assigned\nto her. We will then say thatP\nthe player is of type t. The\nutility derived from t is v(t) = k tk kL/λ2 . Let U be the set\nof all possible types t, with 21 LR < v(t) < 2LR . It is easy to\nsee that |U | is bounded by a constant which is exponential in\nλ. Hence for a player of type t ∈ U , there is only a constant\nnumber of distinct values for her utility. Let V (U ) be the set\nof these values, i.e. V (U ) = {u : v(t) = u for some t ∈ U }.\nWe can now show how to find the optimal envy-ratio in\nI R (λ). For all pairs of values u1 , u2 ∈ V (U ), we will solve\nthe following decision problem: Is there an allocation in\nwhich the utility of every player is between u1 and u2 ? Since\n|V (U )| is constant, after solving the above problem for all\nu1 , u2 we can output the allocation corresponding to u∗1 , u∗2\nfor which the minimum ratio u∗2 /u∗1 is attained.\nTo solve the decision problem, we will write an integer\nprogram (IP) with a constant number of variables and use\nLenstra’s algorithm [12]. In the following IP, for each t ∈ U\nwe have an integer variable Xt indicating how many players\nare of type t. The first constraint implies that all players\n\nX\n\nXt = n\n\nX\n\nXt tk = nk\n\nt∈U\n\n∀k\n\nt∈U\n\nXt ≥ 0\n\n∀Xt with t ∈ Uuu12\n\nXt = 0\n\n∀Xt with t ∈ U \\ Uuu12\n\nWe need to see how the original instance is related to the\nrounded instance. The following Lemma has been proved\nin [2]:",
+          "quoted_text_sha256": "19edde0406d85e90e56996b0ec9f8f0302cf44b2ca1521b3b07399d0a2dbee1a"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "lemma2_2_acyclic_reduction": {
+      "source_anchors": [
+        {
+          "line_end": 174,
+          "line_start": 170,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 2.2. For any partial allocation A with envy graph\nG, we can find another partial allocation B with envy graph\nH such that:\n• e(B) ≤ e(A)\n• H is acyclic.",
+          "quoted_text_sha256": "e8c60ed0cd167175e2accd502378625993c1d11acce7cd6959d8a4fbef839a4d"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma2_4_real_interval_low_value_partition": {
+      "source_anchors": [
+        {
+          "line_end": 342,
+          "line_start": 337,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 2.4. The interval [0, 1] can be partitioned in m\ndisjoint sets S1 , ..., Sm such that m = O(n/α) and vp (Sj ) ≤\nα for every p = 1, ..., n, j = 1, ..., m\nProof. Find the minimum possible value for x ∈ [0, 1]\nsuch that vp ([0, x]) ≤ α for every player p. Such an x\n",
+          "quoted_text_sha256": "22dbf4f7f858c126fb6cb168de9360264725398b7add2e7e83a5fe235e94f1cd"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma3_5_additive_transfer_epsilon_bound": {
+      "source_anchors": [
+        {
+          "line_end": 763,
+          "line_start": 582,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 3.5. Let A = (A1 , ..., An ) be an allocation in I,\nwhere 12 L < v(Ai ) < 2L. Then there exists an allocation\nB = (B1 , ..., Bn ) in the rounded instance, I R , such that:\nv(Ai ) −\n\n1\nλ+1\n1\nL ≤ v(Bi ) ≤\nv(Ai ) + L\nλ\nλ\nλ\n\nAlso if B = (B1 , ..., Bn ) is an allocation in I R such that\n1 R\nL < v(Bi ) < 2LR , then there exists an allocation A =\n2\n(A1 , ..., An ), in I such that:\nλ\n2\n1\nv(Bi ) − L ≤ v(Ai ) ≤ v(Bi ) + L\nλ+1\nλ\nλ\nWe are now ready to prove our Theorem. Our algorithm\nwill be: Given instance I, compute the instance I R , find\nR\nR\nan optimal allocation AR = (AR\n1 , ..., An ) for I , and then\nR\nconvert A to an allocation A = (A1 , ..., An ) for I using\nLemma 3.5. Output A.\nSuppose without loss of generality that v(AR\n1 ) ≤ ... ≤\n∗\n∗\n∗\nv(AR\nn ) and v(A1 ) ≤ ... ≤ v(An ). Let A = (A1 , ..., An ) be an\noptimal solution to I satisfying the conditions of Claim 3.4\nand assume v(A∗1 ) ≤ ... ≤ v(A∗n ). We want to show:\nv(A∗n )\nv(An )\n≤ (1 + \u000f)\n)\nv(A1 )\nv(A∗1\nBy Lemma 3.5 we know that:\nv(An ) ≤ v(AR\nn) +\n\n1\n2\n1 R\nL ≤ v(AR\nL ≤ v(AR\n)\nn) =\nn )(1 +\nλ\nλ\nλ\n\n4\nλ\nSimilar calculations yield: v(A1 ) ≥ v(AR\n1 )( λ+1 − λ ). Therefore:\n1 + λ2\nv(An )\nv(AR\nn)\n≤\n(\n)\nλ\n4\nv(A1 )\nv(AR\n1 ) λ+1 − λ\n\nWe need to relate the optimal solution in I R with the\noptimal solution in I. By using the first part of Lemma 3.5\nand by performing similar calculations we have that there\nexists an allocation A0 = (A01 , ..., A0n ) in I R such that:\n+ 2\nv(A0n )\nv(A∗n ) λ+1\n≤\n( λ 2λ )\n0\n∗\nv(A1 )\nv(A1 ) 1 − λ\n\n129\n\n\fSince AR is an optimal solution in I R the ratio in A0 will\nbe at least as big as in AR . Hence by combining the above\nequations we finally have:\nv(An )\nv(A1 )\n\n≤\n\nλ+1\n+ 2\nv(A∗n ) 1 + λ2\n( λ\n)( λ 2 λ )\n∗\n4\nv(A1 ) λ+1 − λ\n1− λ\n\n≤\n\n(λ + 1)(λ + 2)(λ + 3)\nOP T\n(λ − 2)(λ2 − 4λ − 4)\n\nbe envious). But then player 2 will receive a and at most 25\neggs so she will be envious, a contradiction. Therefore in A\nplayer 1 receives a and T eggs and player 2 receives b and\nk − T eggs. It is also easy to see that 25 ≤ T ≤ 75.\nCase 1: T < 74\nIn this case player 1 can increase her utility by lying and\ndeclaring that good a has less value for her. It is possible for\nher to lie in such a way to force the mechanism to give her\nthe good a and at least T + 1 eggs (assuming that 2 does not\nchange her declaration). She can declare that her valuation\nfunction is: v1 (a) = 0.45−δ, v1 (b) = 0.35+δ, v1 (egg) = 0.2/k\nwhere δ is such that:\n\nThus, if we set λ = 56/\u000f, it is easy to see that the factor\nwill be at most 1 + \u000f.\nFor the FPTAS in the case that the number of players is\nconstant, the proof is by rounding the goods and running a\ndynamic programming algorithm [19].\n\n4.\n\n0.45 − δ + (T + 1)0.2/k = 1/2\nNotice that under this new declaration, there still exists an\nenvy-free outcome. Let A0 be the new output of M. Again\nplayer 1 will receive a. This is true because if player 1 receives b then she has to receive at least k − T − 1 eggs so\nthat she is not jealous. But then player 2 will receive good\na and at most T + 1 ≤ 74 eggs which in total is worth less\nthan 1/2. Hence player 1 will get a and at least T + 1 eggs\n(otherwise her bundle is worth less than 1/2) which is more\nthan what she gets if she is honest.\nCase 2: T ≥ 74\nNow it is player 2 who can try to cheat. By misreporting\nher utilities in a similar manner as in Case 1, she can obtain\na higher utility than before.\n\nTRUTHFULNESS\n\nSo far we have assumed that we can obtain the actual\nutilities of the players for the goods. However, in many situations players’ utilities are private information and they\nmight lie about their valuations in order to obtain a better\nbundle. We would like to investigate the question of whether\nwe can have mechanisms that elicit truthful utilities from\nthe players and also produce allocations with minimum or\nbounded envy. A mechanism is truthful if for every player,\nher profit is maximized by declaring her true utility i.e. being truthful is a dominant strategy.\nIn the last few years, truthful mechanisms have been the\nsubject of research especially in the context of auctions.\nHowever, unlike our problem, auction mechanisms are allowed to compensate the players with money to keep them\ntruthful.\nWe will present a simple argument to prove that any mechanism that computes a minimum-envy allocation can not be\ntruthful even in the special case where the utility functions\nare additive.\n\nIn the rest of the section, we present a simple truthful\nmechanism which allocates the goods to the players uniformly at random. We assume that the sum of the utilities\nof each player over all goods is one. We will show that with\nhigh probability the maximum\nenvy of the resulting alloca√\ntion is no more than O( αn1/2+\u000f ).",
+          "quoted_text_sha256": "6181bf8a4aac13666ba742c0b15423d23c2e122a557e06b8c605ba1171f75ad3"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "theorem2_1_bounded_envy_allocation_exists": {
+      "source_anchors": [
+        {
+          "line_end": 169,
+          "line_start": 161,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 2.1. For any set of goods and any set of players, there exists an allocation A such that the maximum envy\nof A is bounded by the maximum marginal utility of the\ngoods, α. Furthermore, given oracle access for the utility\nfunctions of the players, there is an O(mn3 ) time algorithm\nfor finding such an allocation.\nGiven an allocation A, we define the envy graph of A as\nfollows: every node of the graph represents a player and\nthere is a directed edge from p to q iff p envies q. The proof\nof Theorem 2.1 is based on the following Lemma:",
+          "quoted_text_sha256": "94d9eb4722d5e618d4b7fc4dbbded1baca5a9980f48a98c32a78ce0f53c6c1bf"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem2_1_runtime_bound": {
+      "source_anchors": [
+        {
+          "line_end": 169,
+          "line_start": 161,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 2.1. For any set of goods and any set of players, there exists an allocation A such that the maximum envy\nof A is bounded by the maximum marginal utility of the\ngoods, α. Furthermore, given oracle access for the utility\nfunctions of the players, there is an O(mn3 ) time algorithm\nfor finding such an allocation.\nGiven an allocation A, we define the envy graph of A as\nfollows: every node of the graph represents a player and\nthere is a directed edge from p to q iff p envies q. The proof\nof Theorem 2.1 is based on the following Lemma:",
+          "quoted_text_sha256": "94d9eb4722d5e618d4b7fc4dbbded1baca5a9980f48a98c32a78ce0f53c6c1bf"
+        }
+      ],
+      "source_kind": "runtime_claim"
+    },
+    "theorem2_3_real_interval_supported_atom_bound": {
+      "source_anchors": [
+        {
+          "line_end": 315,
+          "line_start": 313,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 2.3. When the utilities of the players are probability measures on (Ω, F ) = ([0, 1], Borel sets) with atoms\nof value at most α, there exists a partition A = (A1 , ..., An )\nof Ω such that e(A) ≤ α.",
+          "quoted_text_sha256": "be552889f4e603e060bd278030f8105a1365b38b54196d916cc919c9138d2d09"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem2_3_zero_atom_envyfree_external_boundary": {
+      "source_anchors": [
+        {
+          "line_end": 325,
+          "line_start": 320,
+          "publication_locator": "cited publication",
+          "quoted_text": "Proof. Since each measure vp has atoms of value at most\nα, this means that for every x ∈ [0, 1], vp ({x}) ≤ α. The\ncase α = 0 corresponds to an infinitely divisible cake and\nan envy-free allocation always exists [8]. For α > 0 we can\nreduce the problem to allocating indivisible goods of value\nat most α and then use Theorem 2.1.",
+          "quoted_text_sha256": "0cacde71f6c27cc84e1c46871c425b316da111de4be9d2c245c91b58447f50e1"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_queries": {
+      "source_anchors": [
+        {
+          "line_end": 318,
+          "line_start": 317,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3.1. Any (deterministic) algorithm that computes an allocation with minimum envy or minimum envyratio requires a number of queries which is exponential in\nthe number of goods in the worst case.",
+          "quoted_text_sha256": "03518634081e112077d869580ffb8b7a86ba326e3baa7d4fe27721f2648e2e35"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem3_2_graham_certificate_to_envy_ratio_bound": {
+      "source_anchors": [
+        {
+          "line_end": 362,
+          "line_start": 359,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3.2. [5] Graham’s algorithm achieves an approximation factor of 1.4 for the envy-ratio problem.\nIn the next Theorem, we improve this result and show\nthat we can achieve any constant factor arbitrarily close to\n1 for the envy-ratio problem.",
+          "quoted_text_sha256": "6a54522795e0cfd14d8733ea99befad5c7435e06f687467cf42f47abde396fe7"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem3_3_solver_auto_cap_full_ip_summary_with_ratio_guarantee": {
+      "source_anchors": [
+        {
+          "line_end": 368,
+          "line_start": 363,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3.3. There is a PTAS for the envy-ratio problem when all players have the same utility for each good.\nFurthermore, when the number of players is constant, there\nis an FPTAS.\n\nWe would like to note that an interesting fact about Theorem 3.1 is that it is unconditional, i.e., not dependent on\nany complexity theory assumption.",
+          "quoted_text_sha256": "2d083d0abbc85534042358635b46d74a045486ce1693ff966e242077d221b020"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem4_1_source_minimum_envy_not_truthful": {
+      "source_anchors": [
+        {
+          "line_end": 773,
+          "line_start": 770,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 4.1. Any mechanism that returns an allocation\nwith minimum possible envy cannot be truthful. The same is\ntrue for any mechanism that returns an envy-free allocation\nwhenever there exists one.",
+          "quoted_text_sha256": "948b0969c709217b0b29a218b285362a9a8c7748096e36846650f7d2bb66b557"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem4_1_source_not_truthful_envy_free_whenever_exists": {
+      "source_anchors": [
+        {
+          "line_end": 773,
+          "line_start": 770,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 4.1. Any mechanism that returns an allocation\nwith minimum possible envy cannot be truthful. The same is\ntrue for any mechanism that returns an envy-free allocation\nwhenever there exists one.",
+          "quoted_text_sha256": "948b0969c709217b0b29a218b285362a9a8c7748096e36846650f7d2bb66b557"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem4_2_asymptotic_high_probability_rate": {
+      "source_anchors": [
+        {
+          "line_end": 768,
+          "line_start": 764,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 4.2. Suppose that vp,i ≤ α ∀p ∈ N, j ∈ M .\nThen for every \u000f > 0, and for large enough n, there exists\na truthful algorithm such that with high probability the allocation\n√ output by the algorithm has maximum envy at most\nO( α n1/2+\u000f ).",
+          "quoted_text_sha256": "aefc64b37e1b7ccf3b767459a491716681a24b050b98a301c4af653e6c3e88e2"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem4_2_uniform_random_mechanism_truthful": {
+      "source_anchors": [
+        {
+          "line_end": 776,
+          "line_start": 764,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 4.2. Suppose that vp,i ≤ α ∀p ∈ N, j ∈ M .\nThen for every \u000f > 0, and for large enough n, there exists\na truthful algorithm such that with high probability the allocation\n√ output by the algorithm has maximum envy at most\nO( α n1/2+\u000f ).\n\nTheorem 4.1. Any mechanism that returns an allocation\nwith minimum possible envy cannot be truthful. The same is\ntrue for any mechanism that returns an envy-free allocation\nwhenever there exists one.\n\nProof. The proof is based on the probabilistic method.\nAllocate each good independently to player p with probability 1/n. Clearly this is a truthful mechanism. We will show",
+          "quoted_text_sha256": "2a8e17c07a99541dba1e6033e998f65639289562500c766bff97fef5a68d73bd"
+        }
+      ],
+      "source_kind": "theorem"
+    }
+  },
+  "source_artifact_sha256": "0dd14a20e6667cff71dc2a8834df2d12649372127d07295c1ab6ad9b94516f14",
+  "source_coverage_mode": "named_theoretical_statements"
+}

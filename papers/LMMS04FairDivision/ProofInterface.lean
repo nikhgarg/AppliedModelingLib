@@ -10,7 +10,7 @@ formalization. The compact human-review surface is `PaperInterface.lean`.
 open MeasureTheory
 open Filter
 open scoped BigOperators
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 namespace ProofInterface
@@ -115,7 +115,7 @@ theorem theorem2_3_real_interval_supported_atom_bound
     (haggregate_support :
       (aggregateMeasure mu).real ((Set.Ioc a b)ᶜ) = 0) :
     ∃ H : Finset ℝ,
-      ∃ P : EconCSLib.Probability.RealIntervalPartition
+      ∃ P : AppliedModelingLib.Probability.RealIntervalPartition
         ((aggregateMeasure mu).restrict (H : Set ℝ)ᶜ) alpha a b,
         letI := P.instFintype
         letI := P.instDecidableEq
@@ -159,7 +159,7 @@ theorem theorem3_1_eventually_minimum_envy_lower_bound_from_twoBit_adaptive_quer
       ∀ n, Theorem31.QueryTranscript (Bool × Bool) (q n) →
         Allocation Theorem31.LMMS31Agent (SourceItem n))
     (hquery_ratio :
-      EconCSLib.Math.TendsToZero fun n =>
+      AppliedModelingLib.Math.TendsToZero fun n =>
         (((2 * q n : ℕ) : ℝ) / (Fintype.card (C n).Pair : ℝ)))
     (hpair_pos : ∀ᶠ n in atTop, 0 < Fintype.card (C n).Pair) :
     ∀ᶠ n in atTop,
@@ -195,7 +195,7 @@ theorem theorem3_1_eventually_minimum_envy_ratio_lower_bound_from_twoBit_adaptiv
       ∀ n, Theorem31.QueryTranscript (Bool × Bool) (q n) →
         Allocation Theorem31.LMMS31Agent (SourceItem n))
     (hquery_ratio :
-      EconCSLib.Math.TendsToZero fun n =>
+      AppliedModelingLib.Math.TendsToZero fun n =>
         (((2 * q n : ℕ) : ℝ) / (Fintype.card (C n).Pair : ℝ)))
     (hpair_pos : ∀ᶠ n in atTop, 0 < Fintype.card (C n).Pair) :
     ∀ᶠ n in atTop,
@@ -7712,7 +7712,7 @@ theorem theorem4_2_uniform_random_max_envy_probability_bound
     (hsum : ∀ p : Agent, ∑ g : Item, w p g = 1)
     (hbound : ∀ p : Agent, ∀ g : Item, w p g ≤ alpha) :
     1 - 2 * alpha * (Fintype.card Agent : ℝ) / t ^ 2 ≤
-      EconCSLib.pmfProb (Theorem42.lmms42UniformAssignmentLaw Agent Item)
+      AppliedModelingLib.pmfProb (Theorem42.lmms42UniformAssignmentLaw Agent Item)
         (fun assign : Item → Agent =>
           maxReportEnvy (Theorem42.lmms42AdditiveReport w)
             (Theorem42.lmms42AllocationOfAssignment assign) ≤ t) := by

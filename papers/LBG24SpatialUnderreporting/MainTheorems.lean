@@ -1,5 +1,5 @@
-import EconCSLib.Foundations.Probability.PoissonStopping
-import EconCSLib.Foundations.Probability.RenewalReward
+import AppliedModelingLib.Foundations.Probability.PoissonStopping
+import AppliedModelingLib.Foundations.Probability.RenewalReward
 import Mathlib.Tactic
 
 /-!
@@ -8,7 +8,7 @@ import Mathlib.Tactic
 This file contains the Lean implementation layer for Liu, Bhandaram, and Garg
 2024.  It keeps source-facing probability formulas in the paper namespace while
 reusing the generic Poisson-count algebra in
-`EconCSLib.Foundations.Probability.PoissonProcess`.
+`AppliedModelingLib.Foundations.Probability.PoissonProcess`.
 
 The continuous-time process construction in Appendix B.2 is represented here by
 explicit likelihood-factorization inputs.  Downstream algebra is proved in Lean;
@@ -21,7 +21,7 @@ namespace LBG24SpatialUnderreporting
 open Finset
 open Filter
 open MeasureTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped Function ProbabilityTheory Topology
 
 noncomputable section
@@ -34,6 +34,15 @@ def observationExposure (startTime endTime : ℝ) : ℝ :=
 
 /-- The paper's Poisson count mass `p(M; rate * exposure)`. -/
 def sourcePoissonPMF (rate exposure : ℝ) (count : ℕ) : ℝ :=
+  countLikelihood rate exposure count
+
+/-- Equation (2)'s Poisson mass on its stated positive-parameter domain.
+
+`sourcePoissonPMF` remains the total algebraic expression used by historical
+proof infrastructure.  Paper-facing Specs carry the source's
+`rate * exposure > 0` parameter condition as an ordinary premise; it is not a
+proof-irrelevant argument to the displayed mass itself. -/
+def sourcePoissonPMFOnSourceDomain (rate exposure : ℝ) (count : ℕ) : ℝ :=
   countLikelihood rate exposure count
 
 /-- Probability that an active incident receives at least one report. -/
@@ -1448,7 +1457,7 @@ theorem lemma1_unit_interval_observed_counts_lln_of_iid
         (fun T : ℕ =>
           (∑ τ ∈ Finset.range T, observedCount τ ω) / T)
         atTop (nhds (∫ ω, observedCount 0 ω ∂P)) :=
-  EconCSLib.ae_tendsto_empirical_mean_real_of_iid
+  AppliedModelingLib.ae_tendsto_empirical_mean_real_of_iid
     observedCount hint hindep hident
 
 /--
@@ -1901,7 +1910,7 @@ theorem lemma2_no_arrival_eq_exponential_tail
     (rate : ℝ) (h_rate : 0 < rate)
     {exposure : ℝ} (h_exposure : 0 ≤ exposure) :
     noArrivalProb rate exposure =
-      ((EconCSLib.Probability.Exponential.Model.mk rate h_rate).measure
+      ((AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).measure
         (Set.Ioi exposure)).toReal := by
   exact noArrivalProb_eq_exponential_tail rate h_rate h_exposure
 
@@ -1924,14 +1933,14 @@ theorem lemma2_exponential_memoryless_tail_ratio
     (rate : ℝ) (h_rate : 0 < rate)
     {elapsed future : ℝ}
     (h_elapsed : 0 ≤ elapsed) (h_future : 0 ≤ future) :
-    ((EconCSLib.Probability.Exponential.Model.mk rate h_rate).measure
+    ((AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).measure
         (Set.Ioi (elapsed + future))).toReal /
-      ((EconCSLib.Probability.Exponential.Model.mk rate h_rate).measure
+      ((AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).measure
         (Set.Ioi elapsed)).toReal =
-    ((EconCSLib.Probability.Exponential.Model.mk rate h_rate).measure
+    ((AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).measure
         (Set.Ioi future)).toReal := by
   exact
-    (EconCSLib.Probability.Exponential.Model.mk
+    (AppliedModelingLib.Probability.Exponential.Model.mk
       rate h_rate).measure_Ioi_add_div_measure_Ioi_toReal
         h_elapsed h_future
 
@@ -2013,7 +2022,7 @@ theorem lemma2_process_law_no_arrival_eq_exponential_tail
     (H : HomogeneousPoissonProcessLaw Ω P) (W : ObservationWindow) :
     P.real {ω : Ω |
         H.countLaw.intervalCount W.startTime W.endTime ω = 0} =
-      ((EconCSLib.Probability.Exponential.Model.mk
+      ((AppliedModelingLib.Probability.Exponential.Model.mk
           H.rate H.rate_pos).measure (Set.Ioi W.exposure)).toReal := by
   exact H.windowCount_zero_prob_eq_exponential_tail W
 
@@ -2025,9 +2034,9 @@ theorem lemma2_process_law_one_jump_density_eq_exponential_pdf_tail
     {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
     (H : HomogeneousPoissonProcessLaw Ω P) (T : OrderedOneJumpWindow) :
     H.arrivalLaw.oneJumpDensity T =
-      (EconCSLib.Probability.Exponential.Model.mk
+      (AppliedModelingLib.Probability.Exponential.Model.mk
           H.rate H.rate_pos).pdfReal T.gap *
-        ((EconCSLib.Probability.Exponential.Model.mk
+        ((AppliedModelingLib.Probability.Exponential.Model.mk
           H.rate H.rate_pos).measure (Set.Ioi T.tail)).toReal := by
   exact H.oneJumpDensity_eq_exponential_pdfReal_mul_tail T
 
@@ -2040,9 +2049,9 @@ theorem lemma2_process_law_finite_jump_density_eq_exponential_pdf_tail
     (H : HomogeneousPoissonProcessLaw Ω P) (T : OrderedFiniteJumpTimeline) :
     H.arrivalLaw.finiteJumpDensity T =
       (∏ j : Fin T.count,
-          (EconCSLib.Probability.Exponential.Model.mk
+          (AppliedModelingLib.Probability.Exponential.Model.mk
             H.rate H.rate_pos).pdfReal (T.gap j)) *
-        ((EconCSLib.Probability.Exponential.Model.mk
+        ((AppliedModelingLib.Probability.Exponential.Model.mk
           H.rate H.rate_pos).measure (Set.Ioi T.tail)).toReal := by
   exact H.finiteJumpDensity_eq_exponential_pdfReal_prod_mul_tail T
 
@@ -2105,11 +2114,11 @@ rate-`rate` exponential reporting clock is `1 / rate`.
 -/
 theorem homogeneous_reporting_delay_mean
     (rate : ℝ) (h_rate : 0 < rate) :
-    ∫ x, x ∂(EconCSLib.Probability.Exponential.Model.mk rate h_rate).measure =
+    ∫ x, x ∂(AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).measure =
       1 / rate := by
-  rw [EconCSLib.Probability.Exponential.Model.integral_id_eq_expectedMaxValue_one]
-  simp [EconCSLib.Probability.Exponential.Model.expectedMaxValue,
-    EconCSLib.Probability.Exponential.expectedMaxValueOfRate_one]
+  rw [AppliedModelingLib.Probability.Exponential.Model.integral_id_eq_expectedMaxValue_one]
+  simp [AppliedModelingLib.Probability.Exponential.Model.expectedMaxValue,
+    AppliedModelingLib.Probability.Exponential.expectedMaxValueOfRate_one]
 
 /--
 Proposition 1 algebraic core: if only the observed unique-incident rate is
@@ -4776,9 +4785,9 @@ theorem theorem2_one_report_process_data_likelihood_eq_exponential_pdf_tail
     (Theorem2ProcessSourceData.one D).likelihood rate =
       theorem2OneReportKernelResidual
           D.startDensity D.endDensityAfterJump D.endSurvivalIntegral *
-        ((EconCSLib.Probability.Exponential.Model.mk rate h_rate).pdfReal
+        ((AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).pdfReal
             D.arrival.gap *
-          ((EconCSLib.Probability.Exponential.Model.mk rate h_rate).measure
+          ((AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).measure
             (Set.Ioi D.arrival.tail)).toReal) := by
   rw [theorem2_one_report_process_data_likelihood_eq_arrival_kernel]
   rw [D.arrival.likelihood_eq_exponential_pdfReal_mul_tail
@@ -4808,9 +4817,9 @@ theorem theorem2_multi_report_process_data_likelihood_eq_exponential_pdf_tail
           D.startDensity D.endDensityAfterLastJump
           D.survivalIntegralProduct *
         ((∏ j : Fin D.arrival.count,
-            (EconCSLib.Probability.Exponential.Model.mk rate h_rate).pdfReal
+            (AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).pdfReal
               (D.arrival.gap j)) *
-          ((EconCSLib.Probability.Exponential.Model.mk rate h_rate).measure
+          ((AppliedModelingLib.Probability.Exponential.Model.mk rate h_rate).measure
             (Set.Ioi D.arrival.tail)).toReal) := by
   rw [theorem2_multi_report_process_data_likelihood_eq_arrival_kernel]
   rw [D.arrival.likelihood_eq_exponential_pdfReal_prod_mul_tail

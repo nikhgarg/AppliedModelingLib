@@ -1,2 +1,2 @@
 import MBJG25ProducerFairness.MainTheorems
-import MBJG25ProducerFairness.PaperInterface
+import MBJG25ProducerFairness.ProofInterface

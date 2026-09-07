@@ -4,7 +4,7 @@ namespace GHW01DigitalGoods
 
 namespace PaperInterface
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 open scoped BigOperators
 open GHW01DigitalGoods.ProofBridge
 noncomputable section
@@ -184,11 +184,11 @@ def result_lemma8_1_monotone_allocationSpec : Prop :=
       (values : Agent → ℝ) (price : Price → ℝ) (offerLaw : Agent → PMF Price)
       (_hcdf_monotone :
         ∀ i j, values i ≤ values j → ∀ t, t ≤ values i →
-          EconCSLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤
-            EconCSLib.pmfProb (offerLaw j) (fun p => price p ≤ t))
+          AppliedModelingLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤
+            AppliedModelingLib.pmfProb (offerLaw j) (fun p => price p ≤ t))
       (i j : Agent) (_hij : values i < values j),
-      EconCSLib.pmfProb (offerLaw i) (fun p => price p ≤ values i) ≤
-        EconCSLib.pmfProb (offerLaw j) (fun p => price p ≤ values j)
+      AppliedModelingLib.pmfProb (offerLaw i) (fun p => price p ≤ values i) ≤
+        AppliedModelingLib.pmfProb (offerLaw j) (fun p => price p ≤ values j)
 
 /-- Source-facing semantic target migrated from `theorem8_2_truthful_revenue_upper_boundSpec`. -/
 def result_theorem8_2_journal_revenue_upper_boundSpec : Prop :=
@@ -202,8 +202,8 @@ def result_theorem8_2_journal_revenue_upper_boundSpec : Prop :=
       (_hprice_nonneg : ∀ p, 0 ≤ price p)
       (_hcdf_monotone :
         ∀ i j, values i ≤ values j → ∀ t, t ≤ values i →
-          EconCSLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤
-            EconCSLib.pmfProb (offerLaw j) (fun p => price p ≤ t)),
+          AppliedModelingLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤
+            AppliedModelingLib.pmfProb (offerLaw j) (fun p => price p ≤ t)),
       paper_theorem8_2_raw_cdf_expected_revenue
           values price offerLaw ≤
         fixedPriceBenchmark values

@@ -1,5 +1,5 @@
 import GJ19OptimalBinaryRatingSystems.ContinuumTheorems
-import EconCSLib.Foundations.Probability.MeasureInequalities
+import AppliedModelingLib.Foundations.Probability.MeasureInequalities
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 open scoped BigOperators
@@ -8,7 +8,7 @@ namespace GJ19OptimalBinaryRatingSystems
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 open Filter Topology
 open MeasureTheory
 
@@ -167,7 +167,7 @@ theorem clampedFloorLevelIndex_old_refined_five_window
       refinedRaw ≤ 2 * oldRaw + 1 ∧ 2 * oldRaw ≤ refinedRaw + 2 := by
     simpa [oldRaw, refinedRaw, Nat.cast_add, Nat.cast_ofNat, mul_add,
       add_mul, two_mul] using
-      EconCSLib.Math.nat_floor_two_mul_sub_one_mul_window
+      AppliedModelingLib.Math.nat_floor_two_mul_sub_one_mul_window
         (M := m + 2) (by omega) hθ0 hθ1
   have hold_val :
       (clampedFloorLevelIndex m θ).1 = min oldRaw (m + 1) := by
@@ -268,7 +268,7 @@ theorem clampedFloorLevelIndex_iterated_old_refined_scaled_window
       refinedRaw ≤ scale * oldRaw + scale ∧
         scale * oldRaw ≤ refinedRaw + scale := by
     simpa [scale, oldRaw, refinedRaw] using
-      EconCSLib.Math.nat_floor_dyadic_pred_add_one_mul_window
+      AppliedModelingLib.Math.nat_floor_dyadic_pred_add_one_mul_window
         (M := m + 2) (q := q) (by omega) hθ0 hθ1
   have hold_val :
       (clampedFloorLevelIndex m θ).1 = min oldRaw (m + 1) := by
@@ -733,7 +733,7 @@ theorem corollaryC4_equispaced_interval_quantile_tendstoUniformlyOn_identity :
       (fun M : ℕ => fun θ : ℝ => equispacedIntervalQuantile M θ)
       (fun θ : ℝ => θ) atTop (Set.Icc (0 : ℝ) 1) := by
   simpa [equispacedIntervalQuantile] using
-    EconCSLib.Math.tendstoUniformlyOn_nat_floor_mul_div_Icc_zero_one
+    AppliedModelingLib.Math.tendstoUniformlyOn_nat_floor_mul_div_Icc_zero_one
 
 /--
 The equispaced interval quantile map stays in `[0,1]` on the source interval.
@@ -764,7 +764,7 @@ theorem equispacedIntervalQuantile_dist_identity_le_inv
     (hθ : θ ∈ Set.Icc (0 : ℝ) 1) :
     dist θ (equispacedIntervalQuantile M θ) ≤ 1 / (M : ℝ) := by
   have hclose :=
-    EconCSLib.Math.nat_floor_mul_div_sub_abs_lt_inv
+    AppliedModelingLib.Math.nat_floor_mul_div_sub_abs_lt_inv
       (Q := M) hM (x := θ) hθ.1
   exact le_of_lt (by
     simpa [equispacedIntervalQuantile, Real.dist_eq, abs_sub_comm] using hclose)
@@ -786,7 +786,7 @@ theorem BinaryEndpointLevelVector_two_step_width_le_two_maxWidth
         binaryEndpointAdjacentMaxWidth (m := m) levels := by
     simpa [binaryEndpointAdjacentMaxWidth, j0, adjacentLowIndex,
       adjacentHighIndex] using
-      EconCSLib.le_finiteMax
+      AppliedModelingLib.le_finiteMax
         (fun j : Fin (m + 1) =>
           levels (adjacentHighIndex j) - levels (adjacentLowIndex j)) j0
   have h1 :
@@ -794,7 +794,7 @@ theorem BinaryEndpointLevelVector_two_step_width_le_two_maxWidth
         binaryEndpointAdjacentMaxWidth (m := m) levels := by
     simpa [binaryEndpointAdjacentMaxWidth, j1, adjacentLowIndex,
       adjacentHighIndex] using
-      EconCSLib.le_finiteMax
+      AppliedModelingLib.le_finiteMax
         (fun j : Fin (m + 1) =>
           levels (adjacentHighIndex j) - levels (adjacentLowIndex j)) j1
   calc
@@ -835,7 +835,7 @@ theorem BinaryEndpointLevelVector_block_width_le_nat_mul_maxWidth
             binaryEndpointAdjacentMaxWidth (m := m) levels := by
         simpa [binaryEndpointAdjacentMaxWidth, j, adjacentLowIndex,
           adjacentHighIndex, Nat.add_assoc] using
-          EconCSLib.le_finiteMax
+          AppliedModelingLib.le_finiteMax
             (fun j : Fin (m + 1) =>
               levels (adjacentHighIndex j) - levels (adjacentLowIndex j)) j
       calc
@@ -1364,7 +1364,7 @@ theorem uniformDoubledEndpointIndexIterate_clampedFloor_subsequence_exists_unifo
       (binaryEndpointAdjacentMaxWidth_nonneg
         (hlevels (uniformDoubledEndpointIndexIterate m M)))
   refine
-    EconCSLib.Math.exists_tendstoUniformlyOn_of_eventual_anchor_bound
+    AppliedModelingLib.Math.exists_tendstoUniformlyOn_of_eventual_anchor_bound
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (uniformDoubledEndpointIndexIterate m N) θ)
       (Set.Icc (0 : ℝ) 1) mesh2 hmesh2 hmesh2_nonneg ?_
@@ -1442,7 +1442,7 @@ theorem uniformDoubledEndpointIndexIterate_subsequence_exists_uniform_limit_of_s
       (binaryEndpointAdjacentMaxWidth_nonneg
         (hlevels (uniformDoubledEndpointIndexIterate m M)))
   refine
-    EconCSLib.Math.exists_tendstoUniformlyOn_of_eventual_anchor_bound
+    AppliedModelingLib.Math.exists_tendstoUniformlyOn_of_eventual_anchor_bound
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (uniformDoubledEndpointIndexIterate m N) θ)
       (Set.Icc (0 : ℝ) 1) mesh2 hmesh2 hmesh2_nonneg ?_
@@ -1538,7 +1538,7 @@ theorem uniformDoubledEndpointIndexIterate_subsequence_exists_uniform_limit_of_e
       (binaryEndpointAdjacentMaxWidth_nonneg
         (hlevels (uniformDoubledEndpointIndexIterate m M)))
   refine
-    EconCSLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
+    AppliedModelingLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (uniformDoubledEndpointIndexIterate m N) θ)
       (Set.Icc (0 : ℝ) 1) mesh2 hmesh2 hmesh2_nonneg ?_
@@ -1637,7 +1637,7 @@ theorem uniformDoubledEndpointIndexIterate_subsequence_exists_uniform_limit_of_e
       (binaryEndpointAdjacentMaxWidth_nonneg
         (hlevels (uniformDoubledEndpointIndexIterate m M)))
   refine
-    EconCSLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
+    AppliedModelingLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (uniformDoubledEndpointIndexIterate m N) θ)
       (Set.Icc (0 : ℝ) 1) meshWidth hmeshWidth hmeshWidth_nonneg ?_
@@ -1737,7 +1737,7 @@ theorem uniformDoubledEndpointIndexIterate_subsequence_exists_uniform_limit_of_e
       (binaryEndpointAdjacentMaxWidth_nonneg
         (hlevels (uniformDoubledEndpointIndexIterate m M)))
   refine
-    EconCSLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
+    AppliedModelingLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (uniformDoubledEndpointIndexIterate m N) θ)
       (Set.Icc (0 : ℝ) 1) meshWidth hmeshWidth' hmeshWidth_nonneg ?_
@@ -1823,7 +1823,7 @@ theorem uniformDoubledEndpointIndexIterate_subsequence_exists_uniform_limit_of_e
           betaSeq (uniformDoubledEndpointIndexIterate m N) θ)
         betaLimit atTop (Set.Icc (0 : ℝ) 1) := by
   refine
-    EconCSLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
+    AppliedModelingLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (uniformDoubledEndpointIndexIterate m N) θ)
       (Set.Icc (0 : ℝ) 1) blockWidth hblockWidth hblockWidth_nonneg ?_
@@ -2512,7 +2512,7 @@ theorem theoremB1SubsequenceIndex_clampedFloor_subsequence_exists_uniform_limit_
       (fun m : ℕ => fun θ : ℝ => betaSeq (m + 2) θ)
       levels hrepr hlevels heq hendpointStart
   refine ⟨betaLimit, ?_⟩
-  refine EconCSLib.Math.TendstoUniformlyOn.of_succ ?_
+  refine AppliedModelingLib.Math.TendstoUniformlyOn.of_succ ?_
   refine htail_internal.congr ?_
   filter_upwards with N
   intro θ _hθ
@@ -2607,7 +2607,7 @@ theorem theoremB1SubsequenceIndex_subsequence_exists_uniform_limit_of_uniform_eq
           hidx)
       (by simpa [endpointStart] using hwindow)
   refine ⟨betaLimit, ?_⟩
-  refine EconCSLib.Math.TendstoUniformlyOn.of_succ ?_
+  refine AppliedModelingLib.Math.TendstoUniformlyOn.of_succ ?_
   refine htail_internal.congr ?_
   filter_upwards with N
   intro θ _hθ
@@ -2705,7 +2705,7 @@ theorem theoremB1SubsequenceIndex_subsequence_exists_uniform_limit_of_uniform_eq
           hidx)
       (by simpa [endpointStart] using hwindow)
   refine ⟨betaLimit, ?_⟩
-  refine EconCSLib.Math.TendstoUniformlyOn.of_succ ?_
+  refine AppliedModelingLib.Math.TendstoUniformlyOn.of_succ ?_
   refine htail_internal.congr ?_
   filter_upwards with N
   intro θ _hθ
@@ -2778,7 +2778,7 @@ theorem theoremB1SubsequenceIndex_subsequence_exists_uniform_limit_of_uniform_eq
       hwidth
       (by simpa [endpointStart] using hwindow)
   refine ⟨betaLimit, ?_⟩
-  refine EconCSLib.Math.TendstoUniformlyOn.of_succ ?_
+  refine AppliedModelingLib.Math.TendstoUniformlyOn.of_succ ?_
   refine htail_internal.congr ?_
   filter_upwards with N
   intro θ _hθ
@@ -2847,7 +2847,7 @@ theorem theoremB1SubsequenceIndex_subsequence_exists_uniform_limit_of_uniform_eq
       hblockWidth hblockWidth_nonneg hwidth
       (by simpa [endpointStart] using hwindow)
   refine ⟨betaLimit, ?_⟩
-  refine EconCSLib.Math.TendstoUniformlyOn.of_succ ?_
+  refine AppliedModelingLib.Math.TendstoUniformlyOn.of_succ ?_
   refine htail_internal.congr ?_
   filter_upwards with N
   intro θ _hθ
@@ -2946,7 +2946,7 @@ theorem theoremB1_quantileLimit_mem_Icc_of_tendstoUniformlyOn_shift
       TendstoUniformlyOn
         (fun m : ℕ => fun θ : ℝ => quantileSeq (m + 2) θ)
         quantileLimit atTop (Set.Icc (0 : ℝ) 1) :=
-    EconCSLib.Math.TendstoUniformlyOn.comp_tendsto_index
+    AppliedModelingLib.Math.TendstoUniformlyOn.comp_tendsto_index
       hquantile hshift
   exact
     isClosed_Icc.mem_of_tendsto
@@ -2993,7 +2993,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_clampedFl
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (clampedFloorLevelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -3526,9 +3526,9 @@ theorem theoremB1DyadicSubsequenceUniformConvergence_of_uniform_equalized_eventu
       simpa [meshProd, sqBound, maxW, mM, div_eq_mul_inv, mul_pow] using hmul
     simpa [abs_of_nonneg hprod_nonneg] using Real.le_sqrt_of_sq_le hprod_sq
   have hzero :=
-    EconCSLib.Math.TendsToZero_of_eventually_abs_le_tendsto_zero
+    AppliedModelingLib.Math.TendsToZero_of_eventually_abs_le_tendsto_zero
       meshProd (fun M : ℕ => Real.sqrt (sqBound M)) hsqrt_zero habs_bound
-  simpa [EconCSLib.Math.TendsToZero, meshProd, endpointStart] using hzero
+  simpa [AppliedModelingLib.Math.TendsToZero, meshProd, endpointStart] using hzero
 
 /--
 General-limit B.1 bridge from a sub-square-root variable-width scaled selector
@@ -3719,7 +3719,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_eventuall
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -3770,7 +3770,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_eventua
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -3832,7 +3832,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_eventua
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -3965,7 +3965,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -4102,7 +4102,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -4217,9 +4217,9 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
                 ring
       simpa [abs_of_nonneg hprod_nonneg] using htarget
     have hzero :=
-      EconCSLib.Math.TendsToZero_of_eventually_abs_le_tendsto_zero
+      AppliedModelingLib.Math.TendsToZero_of_eventually_abs_le_tendsto_zero
         meshProd scaledRatio hscaled_zero habs_bound
-    simpa [EconCSLib.Math.TendsToZero, meshProd, endpointStart] using hzero
+    simpa [AppliedModelingLib.Math.TendsToZero, meshProd, endpointStart] using hzero
   · intro C hC
     let endpointStart : ℕ := 2 * C - 1
     exact
@@ -4241,7 +4241,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -4368,9 +4368,9 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
                 ring
       simpa [abs_of_nonneg hprod_nonneg] using htarget
     have hzero :=
-      EconCSLib.Math.TendsToZero_of_eventually_abs_le_tendsto_zero
+      AppliedModelingLib.Math.TendsToZero_of_eventually_abs_le_tendsto_zero
         meshProd scaledRatio hscaled_zero habs_bound
-    simpa [EconCSLib.Math.TendsToZero, meshProd, endpointStart] using hzero
+    simpa [AppliedModelingLib.Math.TendsToZero, meshProd, endpointStart] using hzero
   · intro C hC
     let endpointStart : ℕ := 2 * C - 1
     exact
@@ -4392,7 +4392,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -4522,7 +4522,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_eventua
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -4660,7 +4660,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_common_fl
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -4701,7 +4701,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_common_
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -4848,7 +4848,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_common_fl
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -4992,7 +4992,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_source_fl
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -5083,7 +5083,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_common_fl
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -5118,7 +5118,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_floor_val
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -5151,7 +5151,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_identity_
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -5243,7 +5243,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_quantile_
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -5461,7 +5461,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_quantile_
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -5530,7 +5530,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -5602,7 +5602,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -5770,7 +5770,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -5986,7 +5986,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_quantile_
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -6030,7 +6030,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -6130,7 +6130,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_quantile_
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -6229,7 +6229,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -6278,7 +6278,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -6322,7 +6322,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -6369,7 +6369,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_uniform_optimal_quantil
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -6411,7 +6411,7 @@ structure TheoremB1OptimalQuantileFloorGlobalDistTrackingConvention
   hrepr : ∀ m θ, betaSeq (m + 2) θ =
     levels m (levelIndex m θ)
   hoptimal : ∀ m : ℕ,
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun xs : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective xs
@@ -6451,7 +6451,7 @@ def theoremB1OptimalQuantileFloorGlobalDistTrackingConvention_of_limit_dist_trac
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -6565,7 +6565,7 @@ theorem theoremB1DyadicSubsequenceUniformConvergence_of_eventually_eq
   · rcases href C with ⟨betaLimit, hreference⟩
     refine ⟨betaLimit, ?_⟩
     refine
-      EconCSLib.Math.tendstoUniformlyOn_of_tendstoUniformlyOn_of_eventual_dist_le
+      AppliedModelingLib.Math.tendstoUniformlyOn_of_tendstoUniformlyOn_of_eventual_dist_le
         (fun N : ℕ => fun θ : ℝ =>
           betaSeq (theoremB1SubsequenceIndex C N) θ)
         (fun N : ℕ => fun θ : ℝ =>
@@ -6692,7 +6692,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_anchor_bound
     theoremB1UniformOptimalSubsequencePrinciple betaSeq quantileSeq := by
   intro _hquantile C
   exact
-    EconCSLib.Math.exists_tendstoUniformlyOn_of_eventual_anchor_bound
+    AppliedModelingLib.Math.exists_tendstoUniformlyOn_of_eventual_anchor_bound
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (theoremB1SubsequenceIndex C N) θ)
       (Set.Icc (0 : ℝ) 1) mesh hmesh hmesh_nonneg
@@ -6717,7 +6717,7 @@ theorem theoremB1DyadicSubsequenceUniformConvergence_of_anchor_bound
     theoremB1DyadicSubsequenceUniformConvergence betaSeq := by
   intro C
   exact
-    EconCSLib.Math.exists_tendstoUniformlyOn_of_eventual_anchor_bound
+    AppliedModelingLib.Math.exists_tendstoUniformlyOn_of_eventual_anchor_bound
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (theoremB1SubsequenceIndex C N) θ)
       (Set.Icc (0 : ℝ) 1) mesh hmesh hmesh_nonneg
@@ -6765,7 +6765,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_eventually_anchor_bound
     theoremB1UniformOptimalSubsequencePrinciple betaSeq quantileSeq := by
   intro _hquantile C
   exact
-    EconCSLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
+    AppliedModelingLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (theoremB1SubsequenceIndex C N) θ)
       (Set.Icc (0 : ℝ) 1) mesh hmesh hmesh_nonneg
@@ -6790,7 +6790,7 @@ theorem theoremB1DyadicSubsequenceUniformConvergence_of_eventually_anchor_bound
     theoremB1DyadicSubsequenceUniformConvergence betaSeq := by
   intro C
   exact
-    EconCSLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
+    AppliedModelingLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (theoremB1SubsequenceIndex C N) θ)
       (Set.Icc (0 : ℝ) 1) mesh hmesh hmesh_nonneg
@@ -6841,7 +6841,7 @@ theorem theoremB1DyadicSubsequenceUniformConvergence_of_eventually_anchor_bound_
     theoremB1DyadicSubsequenceUniformConvergence betaSeq := by
   intro C
   exact
-    EconCSLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
+    AppliedModelingLib.Math.exists_tendstoUniformlyOn_of_eventually_eventual_anchor_bound
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (theoremB1SubsequenceIndex C N) θ)
       (Set.Icc (0 : ℝ) 1) (mesh C) (hmesh C) (hmesh_nonneg C)
@@ -7152,7 +7152,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_two_step_
     (betaSeq quantileSeq : ℕ → ℝ → ℝ)
     (levels : (M : ℕ) → Fin ((M + 1) + 2) → ℝ)
     (hoptimal : ∀ M : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin ((M + 1) + 2) → ℝ) → Prop)
         (fun xs : Fin ((M + 1) + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -7185,7 +7185,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_eventuall
     (betaSeq quantileSeq : ℕ → ℝ → ℝ)
     (levels : (M : ℕ) → Fin ((M + 1) + 2) → ℝ)
     (hoptimal : ∀ M : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin ((M + 1) + 2) → ℝ) → Prop)
         (fun xs : Fin ((M + 1) + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -7220,7 +7220,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_eventuall
     (betaSeq quantileSeq : ℕ → ℝ → ℝ)
     (levels : (M : ℕ) → Fin ((M + 1) + 2) → ℝ)
     (hoptimal : ∀ M : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin ((M + 1) + 2) → ℝ) → Prop)
         (fun xs : Fin ((M + 1) + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -7355,7 +7355,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_levelInde
     (levelIndex : (M : ℕ) → ℝ → Fin ((M + 1) + 2))
     (hrepr : BetaSeqRepresentedByLevelIndex betaSeq levels levelIndex)
     (hoptimal : ∀ M : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin ((M + 1) + 2) → ℝ) → Prop)
         (fun xs : Fin ((M + 1) + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -7392,7 +7392,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_eventuall
     (levelIndex : (M : ℕ) → ℝ → Fin ((M + 1) + 2))
     (hrepr : BetaSeqRepresentedByLevelIndex betaSeq levels levelIndex)
     (hoptimal : ∀ M : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin ((M + 1) + 2) → ℝ) → Prop)
         (fun xs : Fin ((M + 1) + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -7450,7 +7450,7 @@ theorem theoremB1_dyadic_subsequence_uniform_limit_of_quantile_tracking
         betaLimit atTop (Set.Icc (0 : ℝ) 1) := by
   refine ⟨fun θ : ℝ => θ, ?_⟩
   exact
-    EconCSLib.Math.tendstoUniformlyOn_of_tendstoUniformlyOn_of_eventual_dist_le
+    AppliedModelingLib.Math.tendstoUniformlyOn_of_tendstoUniformlyOn_of_eventual_dist_le
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (theoremB1SubsequenceIndex C N) θ)
       (fun N : ℕ => fun θ : ℝ =>
@@ -7485,7 +7485,7 @@ theorem theoremB1_dyadic_subsequence_uniform_limit_of_quantile_tracking_to
         betaLimit atTop (Set.Icc (0 : ℝ) 1) := by
   refine ⟨quantileLimit, ?_⟩
   exact
-    EconCSLib.Math.tendstoUniformlyOn_of_tendstoUniformlyOn_of_eventual_dist_le
+    AppliedModelingLib.Math.tendstoUniformlyOn_of_tendstoUniformlyOn_of_eventual_dist_le
       (fun N : ℕ => fun θ : ℝ =>
         betaSeq (theoremB1SubsequenceIndex C N) θ)
       (fun N : ℕ => fun θ : ℝ =>
@@ -7519,7 +7519,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_dyadic_quantile_tracking
     exact
       theoremB1_dyadic_subsequence_uniform_limit_of_quantile_tracking
         betaSeq quantileSeq mesh C
-        (EconCSLib.Math.TendstoUniformlyOn.comp_tendsto_index hquantile
+        (AppliedModelingLib.Math.TendstoUniformlyOn.comp_tendsto_index hquantile
           (theoremB1SubsequenceIndex_tendsto_atTop_of_pos hC))
         hmesh htrack
   · have hC0 : C = 0 := by omega
@@ -7557,7 +7557,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_dyadic_quantile_trackin
     exact
       theoremB1_dyadic_subsequence_uniform_limit_of_quantile_tracking_to
         betaSeq quantileSeq quantileLimit mesh C
-        (EconCSLib.Math.TendstoUniformlyOn.comp_tendsto_index hquantile
+        (AppliedModelingLib.Math.TendstoUniformlyOn.comp_tendsto_index hquantile
           (theoremB1SubsequenceIndex_tendsto_atTop_of_pos hC))
         hmesh htrack
   · have hC0 : C = 0 := by omega
@@ -7583,7 +7583,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_beta_tendstoUniformlyOn
   by_cases hC : 0 < C
   · exact
       ⟨betaLimit,
-        EconCSLib.Math.TendstoUniformlyOn.comp_tendsto_index hbeta
+        AppliedModelingLib.Math.TendstoUniformlyOn.comp_tendsto_index hbeta
           (theoremB1SubsequenceIndex_tendsto_atTop_of_pos hC)⟩
   · have hC0 : C = 0 := by omega
     subst C
@@ -7660,7 +7660,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_global_quantile_tracking_
       (fun M : ℕ => B / (((M + 1 : ℕ) : ℝ))) ?_ htracking
   simpa using
     (Filter.Tendsto.const_div_atTop
-      EconCSLib.Math.tendsto_nat_succ_cast_atTop B)
+      AppliedModelingLib.Math.tendsto_nat_succ_cast_atTop B)
 
 /--
 General-limit global tracking bridge for an explicit `O(1/M)` source-selector
@@ -7681,7 +7681,7 @@ theorem theoremB1UniformOptimalSubsequencePrincipleTo_of_global_quantile_trackin
       (fun M : ℕ => B / (((M + 1 : ℕ) : ℝ))) ?_ htracking
   simpa using
     (Filter.Tendsto.const_div_atTop
-      EconCSLib.Math.tendsto_nat_succ_cast_atTop B)
+      AppliedModelingLib.Math.tendsto_nat_succ_cast_atTop B)
 
 /--
 Corollary C.4 dyadic quantile specialization: along every positive dyadic B.1
@@ -7694,7 +7694,7 @@ theorem corollaryC4_equispaced_dyadic_quantile_tendstoUniformlyOn_identity
       (fun N : ℕ => fun θ : ℝ =>
         equispacedIntervalQuantile (theoremB1SubsequenceIndex C N) θ)
       (fun θ : ℝ => θ) atTop (Set.Icc (0 : ℝ) 1) :=
-  EconCSLib.Math.TendstoUniformlyOn.comp_tendsto_index
+  AppliedModelingLib.Math.TendstoUniformlyOn.comp_tendsto_index
     corollaryC4_equispaced_interval_quantile_tendstoUniformlyOn_identity
     (theoremB1SubsequenceIndex_tendsto_atTop_of_pos hC)
 
@@ -7826,7 +7826,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_cla
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (clampedFloorLevelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -7857,7 +7857,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_com
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -7902,7 +7902,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_ide
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -7937,7 +7937,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_sou
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -7972,7 +7972,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_qua
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8068,7 +8068,7 @@ theorem theoremB1UniformOptimalSubsequencePrinciple_of_uniform_optimal_equispace
       levels m
         (clampedFloorLevelIndex m (equispacedIntervalQuantile (m + 2) θ)))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8121,7 +8121,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_qua
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8157,7 +8157,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_equ
       levels m
         (clampedFloorLevelIndex m (equispacedIntervalQuantile (m + 2) θ)))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8186,7 +8186,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_two
     (betaSeq : ℕ → ℝ → ℝ)
     (levels : (M : ℕ) → Fin ((M + 1) + 2) → ℝ)
     (hoptimal : ∀ M : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin ((M + 1) + 2) → ℝ) → Prop)
         (fun xs : Fin ((M + 1) + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8223,7 +8223,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_eve
     (betaSeq : ℕ → ℝ → ℝ)
     (levels : (M : ℕ) → Fin ((M + 1) + 2) → ℝ)
     (hoptimal : ∀ M : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin ((M + 1) + 2) → ℝ) → Prop)
         (fun xs : Fin ((M + 1) + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8262,7 +8262,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_eve
     (betaSeq : ℕ → ℝ → ℝ)
     (levels : (M : ℕ) → Fin ((M + 1) + 2) → ℝ)
     (hoptimal : ∀ M : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin ((M + 1) + 2) → ℝ) → Prop)
         (fun xs : Fin ((M + 1) + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8305,7 +8305,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_eve
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8359,7 +8359,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_com
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8422,7 +8422,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_qua
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8474,7 +8474,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_qua
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8520,7 +8520,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_qua
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8593,7 +8593,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_lev
     (levelIndex : (M : ℕ) → ℝ → Fin ((M + 1) + 2))
     (hrepr : BetaSeqRepresentedByLevelIndex betaSeq levels levelIndex)
     (hoptimal : ∀ M : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin ((M + 1) + 2) → ℝ) → Prop)
         (fun xs : Fin ((M + 1) + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8634,7 +8634,7 @@ theorem corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optimal_eve
     (levelIndex : (M : ℕ) → ℝ → Fin ((M + 1) + 2))
     (hrepr : BetaSeqRepresentedByLevelIndex betaSeq levels levelIndex)
     (hoptimal : ∀ M : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin ((M + 1) + 2) → ℝ) → Prop)
         (fun xs : Fin ((M + 1) + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -8899,7 +8899,7 @@ theorem theorem31_sourceDefinedWbar_const_weight_uniform_sampleRate_fixed_value_
               (fun _ : ℝ × ℝ => (1 : ℝ)))
             (binaryEndpointAwareAdjacentRateObjective levels
               (fun _ : Fin (m + 2) => (1 : ℝ))) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
+          AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun _candidate : Fin (m + 2) → ℝ => limitingValue)
             (fun candidate : Fin (m + 2) → ℝ =>
@@ -8937,7 +8937,7 @@ theorem intervalCutpoints_eq_equispacedIntervalCutpoint_of_uniform_gap
     simpa using hgap ⟨r, hr_lt_M⟩
   have htel :
       (∑ r ∈ Finset.range k, (s (r + 1) - s r)) = s k := by
-    simpa [h0] using EconCSLib.sum_range_adjacent_sub s k
+    simpa [h0] using AppliedModelingLib.sum_range_adjacent_sub s k
   calc
     s k = ∑ r ∈ Finset.range k, (s (r + 1) - s r) := htel.symm
     _ = ∑ _r ∈ Finset.range k, (M : ℝ)⁻¹ := hsum
@@ -8954,7 +8954,7 @@ def monotoneIntervalCutpointsEndpointFeasible (M : ℕ) (s : ℕ → ℝ) : Prop
 
 /-- Adjacent gap vector induced by a finite cutpoint chain. -/
 def intervalCutpointAdjacentGap (M : ℕ) (s : ℕ → ℝ) : Fin M → ℝ :=
-  EconCSLib.finiteAdjacentGap M s
+  AppliedModelingLib.finiteAdjacentGap M s
 
 /--
 Every monotone endpoint-feasible cutpoint chain induces a finite probability
@@ -8963,10 +8963,10 @@ simplex of adjacent gaps.
 theorem finiteProbabilitySimplex_intervalCutpointAdjacentGap_of_monotoneIntervalCutpointsEndpointFeasible
     {M : ℕ} (s : ℕ → ℝ)
     (hs : monotoneIntervalCutpointsEndpointFeasible M s) :
-    EconCSLib.FiniteProbabilitySimplex
+    AppliedModelingLib.FiniteProbabilitySimplex
       (intervalCutpointAdjacentGap M s) := by
   exact
-    EconCSLib.finiteProbabilitySimplex_finiteAdjacentGap_of_monotone_endpoint
+    AppliedModelingLib.finiteProbabilitySimplex_finiteAdjacentGap_of_monotone_endpoint
       s hs.1 hs.2.1 hs.2.2
 
 /--
@@ -8976,9 +8976,9 @@ recover the original cutpoints on the finite source range.
 theorem finiteGapCutpoint_intervalCutpointAdjacentGap_eq
     {M : ℕ} (s : ℕ → ℝ) (h0 : s 0 = 0) :
     ∀ k : ℕ, k ≤ M →
-      EconCSLib.FiniteSum.finiteGapCutpoint
+      AppliedModelingLib.FiniteSum.finiteGapCutpoint
           (intervalCutpointAdjacentGap M s) k = s k :=
-  EconCSLib.finiteGapCutpoint_finiteAdjacentGap_eq s h0
+  AppliedModelingLib.finiteGapCutpoint_finiteAdjacentGap_eq s h0
 
 /--
 Finite simplex gap vectors induce monotone interval cutpoints with endpoints
@@ -8987,15 +8987,15 @@ optimizers into the paper's interval-cutpoint convention.
 -/
 theorem monotoneIntervalCutpointsEndpointFeasible_finiteGapCutpoint_of_finiteProbabilitySimplex
     {M : ℕ} (gap : Fin M → ℝ)
-    (hgap : EconCSLib.FiniteProbabilitySimplex gap) :
+    (hgap : AppliedModelingLib.FiniteProbabilitySimplex gap) :
     monotoneIntervalCutpointsEndpointFeasible M
-      (EconCSLib.FiniteSum.finiteGapCutpoint gap) := by
+      (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) := by
   refine ⟨?_, ?_⟩
   · exact
-      EconCSLib.FiniteSum.finiteGapCutpoint_monotone_of_nonneg gap hgap.1
+      AppliedModelingLib.FiniteSum.finiteGapCutpoint_monotone_of_nonneg gap hgap.1
   · refine ⟨?_, ?_⟩
-    · exact EconCSLib.FiniteSum.finiteGapCutpoint_zero gap
-    · rw [EconCSLib.FiniteSum.finiteGapCutpoint_self_eq_sum gap]
+    · exact AppliedModelingLib.FiniteSum.finiteGapCutpoint_zero gap
+    · rw [AppliedModelingLib.FiniteSum.finiteGapCutpoint_self_eq_sum gap]
       exact hgap.2
 
 /--
@@ -9005,20 +9005,20 @@ the C.3/C.4 endpoint-partition arguments.
 -/
 theorem monotoneIntervalCutpointsEndpointFeasible_finiteGapCutpoint_strict_adjacent_of_pos
     {M : ℕ} (gap : Fin M → ℝ)
-    (hgap : EconCSLib.FiniteProbabilitySimplex gap)
+    (hgap : AppliedModelingLib.FiniteProbabilitySimplex gap)
     (hgap_pos : ∀ i : Fin M, 0 < gap i) :
     monotoneIntervalCutpointsEndpointFeasible M
-        (EconCSLib.FiniteSum.finiteGapCutpoint gap) ∧
+        (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) ∧
       ∀ i : Fin M,
-        EconCSLib.FiniteSum.finiteGapCutpoint gap i.1 <
-          EconCSLib.FiniteSum.finiteGapCutpoint gap (i.1 + 1) := by
+        AppliedModelingLib.FiniteSum.finiteGapCutpoint gap i.1 <
+          AppliedModelingLib.FiniteSum.finiteGapCutpoint gap (i.1 + 1) := by
   refine ⟨?_, ?_⟩
   · exact
       monotoneIntervalCutpointsEndpointFeasible_finiteGapCutpoint_of_finiteProbabilitySimplex
         gap hgap
   · intro i
     exact
-      EconCSLib.FiniteSum.finiteGapCutpoint_strict_adjacent_of_pos
+      AppliedModelingLib.FiniteSum.finiteGapCutpoint_strict_adjacent_of_pos
         gap hgap_pos i.2
 
 /--
@@ -9041,11 +9041,11 @@ theorem cutpointFunctionalDependsOnlyOnRange.value_extensional
     ∀ (S : ℕ → ℝ) (gap : Fin M → ℝ),
       monotoneIntervalCutpointsEndpointFeasible M S →
       (∀ k : ℕ, k ≤ M →
-        EconCSLib.FiniteSum.finiteGapCutpoint gap k = S k) →
-      functional (EconCSLib.FiniteSum.finiteGapCutpoint gap) =
+        AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k = S k) →
+      functional (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) =
         functional S := by
   intro S gap _hS hrecover
-  exact hdepends (EconCSLib.FiniteSum.finiteGapCutpoint gap) S hrecover
+  exact hdepends (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) S hrecover
 
 /--
 Lift a finite-vector objective on the displayed cutpoints `0, ..., M` to a
@@ -9508,15 +9508,15 @@ theorem continuous_finiteGapCutpoint_eval
     {M : ℕ} (i : ℕ) :
     Continuous
       (fun gap : Fin M → ℝ =>
-        EconCSLib.FiniteSum.finiteGapCutpoint gap i) := by
-  unfold EconCSLib.FiniteSum.finiteGapCutpoint
-    EconCSLib.FiniteSum.finitePartitionPrefix
+        AppliedModelingLib.FiniteSum.finiteGapCutpoint gap i) := by
+  unfold AppliedModelingLib.FiniteSum.finiteGapCutpoint
+    AppliedModelingLib.FiniteSum.finitePartitionPrefix
   exact continuous_finset_sum (Finset.range i) (fun k _hk => by
     by_cases hkM : k < M
-    · simpa [EconCSLib.FiniteSum.finiteGapExtend, hkM] using
+    · simpa [AppliedModelingLib.FiniteSum.finiteGapExtend, hkM] using
         (continuous_apply (⟨k, hkM⟩ : Fin M) :
           Continuous (fun gap : Fin M → ℝ => gap ⟨k, hkM⟩))
-    · simpa [EconCSLib.FiniteSum.finiteGapExtend, hkM] using
+    · simpa [AppliedModelingLib.FiniteSum.finiteGapExtend, hkM] using
         (continuous_const :
           Continuous (fun _gap : Fin M → ℝ => (0 : ℝ))))
 
@@ -9529,7 +9529,7 @@ theorem continuous_finiteGapCutpoint_vector
     Continuous
       (fun gap : Fin M → ℝ =>
         fun i : Fin (M + 1) =>
-          EconCSLib.FiniteSum.finiteGapCutpoint gap i.1) :=
+          AppliedModelingLib.FiniteSum.finiteGapCutpoint gap i.1) :=
   continuous_pi (fun i => continuous_finiteGapCutpoint_eval i.1)
 
 /--
@@ -9544,41 +9544,41 @@ theorem theorem31_exists_finiteGapCutpoint_endpoint_two_stage_lexicographic_opti
     (hcontinuous :
       ContinuousOn
         (fun gap : Fin M → ℝ =>
-          limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gap))
-        {gap : Fin M → ℝ | EconCSLib.FiniteProbabilitySimplex gap})
+          limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
+        {gap : Fin M → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap})
     (hendpoint :
-      ∀ gap : Fin M → ℝ, EconCSLib.FiniteProbabilitySimplex gap →
+      ∀ gap : Fin M → ℝ, AppliedModelingLib.FiniteProbabilitySimplex gap →
         ∃ tstar : Endpoint,
-          endpointFeasible (EconCSLib.FiniteSum.finiteGapCutpoint gap)
+          endpointFeasible (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap)
             tstar ∧
             ∀ (otherGap : Fin M → ℝ) (t : Endpoint),
-              EconCSLib.FiniteProbabilitySimplex otherGap →
+              AppliedModelingLib.FiniteProbabilitySimplex otherGap →
               endpointFeasible
-                (EconCSLib.FiniteSum.finiteGapCutpoint otherGap) t →
+                (AppliedModelingLib.FiniteSum.finiteGapCutpoint otherGap) t →
               limitingValue
-                  (EconCSLib.FiniteSum.finiteGapCutpoint otherGap) =
+                  (AppliedModelingLib.FiniteSum.finiteGapCutpoint otherGap) =
                   limitingValue
-                    (EconCSLib.FiniteSum.finiteGapCutpoint gap) →
-                  rate (EconCSLib.FiniteSum.finiteGapCutpoint otherGap) t ≤
-                    rate (EconCSLib.FiniteSum.finiteGapCutpoint gap) tstar) :
+                    (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) →
+                  rate (AppliedModelingLib.FiniteSum.finiteGapCutpoint otherGap) t ≤
+                    rate (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) tstar) :
     ∃ design : (Fin M → ℝ) × Endpoint,
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (Fin M → ℝ) × Endpoint =>
-          EconCSLib.FiniteProbabilitySimplex design.1 ∧
+          AppliedModelingLib.FiniteProbabilitySimplex design.1 ∧
             endpointFeasible
-              (EconCSLib.FiniteSum.finiteGapCutpoint design.1) design.2)
+              (AppliedModelingLib.FiniteSum.finiteGapCutpoint design.1) design.2)
         (fun design : (Fin M → ℝ) × Endpoint =>
-          limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint design.1))
+          limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint design.1))
         (fun design : (Fin M → ℝ) × Endpoint =>
-          rate (EconCSLib.FiniteSum.finiteGapCutpoint design.1) design.2)
+          rate (AppliedModelingLib.FiniteSum.finiteGapCutpoint design.1) design.2)
         design :=
   theorem31_exists_gap_partition_endpoint_two_stage_lexicographic_optimality_of_continuousOn_finiteProbabilitySimplex
     (fun gap t =>
-      endpointFeasible (EconCSLib.FiniteSum.finiteGapCutpoint gap) t)
+      endpointFeasible (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) t)
     (fun gap =>
-      limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gap))
+      limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
     (fun gap t =>
-      rate (EconCSLib.FiniteSum.finiteGapCutpoint gap) t)
+      rate (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) t)
     hcontinuous hendpoint
 
 /--
@@ -9594,29 +9594,29 @@ theorem theorem31_exists_cutpoint_value_argmax_of_continuousOn_finiteProbability
     (hcontinuous :
       ContinuousOn
         (fun gap : Fin M → ℝ =>
-          limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gap))
-        {gap : Fin M → ℝ | EconCSLib.FiniteProbabilitySimplex gap})
+          limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
+        {gap : Fin M → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap})
     (hvalue_extensional :
       ∀ (S : ℕ → ℝ) (gap : Fin M → ℝ),
         monotoneIntervalCutpointsEndpointFeasible M S →
         (∀ k : ℕ, k ≤ M →
-          EconCSLib.FiniteSum.finiteGapCutpoint gap k = S k) →
-        limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gap) =
+          AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k = S k) →
+        limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) =
           limitingValue S) :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible M)
         limitingValue Sstar := by
   rcases
-    EconCSLib.Optimization.exists_isMaximizerOn_of_isCompact_continuousOn
-      EconCSLib.finiteProbabilitySimplex_isCompact
-      EconCSLib.finiteProbabilitySimplex_nonempty
+    AppliedModelingLib.Optimization.exists_isMaximizerOn_of_isCompact_continuousOn
+      AppliedModelingLib.finiteProbabilitySimplex_isCompact
+      AppliedModelingLib.finiteProbabilitySimplex_nonempty
       (fun gap : Fin M → ℝ =>
-        limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gap))
+        limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
       hcontinuous with
     ⟨gapstar, hgapstar⟩
   let Sstar : ℕ → ℝ :=
-    EconCSLib.FiniteSum.finiteGapCutpoint gapstar
+    AppliedModelingLib.FiniteSum.finiteGapCutpoint gapstar
   refine ⟨Sstar, ?_⟩
   constructor
   · exact
@@ -9626,26 +9626,26 @@ theorem theorem31_exists_cutpoint_value_argmax_of_continuousOn_finiteProbability
     let altGap : Fin M → ℝ :=
       intervalCutpointAdjacentGap M S
     have haltGap :
-        EconCSLib.FiniteProbabilitySimplex altGap :=
+        AppliedModelingLib.FiniteProbabilitySimplex altGap :=
       finiteProbabilitySimplex_intervalCutpointAdjacentGap_of_monotoneIntervalCutpointsEndpointFeasible
         S hS
     have hrecover :
         ∀ k : ℕ, k ≤ M →
-          EconCSLib.FiniteSum.finiteGapCutpoint altGap k = S k :=
+          AppliedModelingLib.FiniteSum.finiteGapCutpoint altGap k = S k :=
       finiteGapCutpoint_intervalCutpointAdjacentGap_eq S hS.2.1
     have hvalue :
-        limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint altGap) =
+        limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint altGap) =
           limitingValue S :=
       hvalue_extensional S altGap hS hrecover
     have hle :
-        limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint altGap) ≤
-          limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gapstar) :=
+        limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint altGap) ≤
+          limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gapstar) :=
       hgapstar.2 altGap haltGap
     calc
       limitingValue S =
-          limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint altGap) :=
+          limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint altGap) :=
         hvalue.symm
-      _ ≤ limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gapstar) :=
+      _ ≤ limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gapstar) :=
         hle
       _ = limitingValue Sstar := rfl
 
@@ -9661,12 +9661,12 @@ theorem theorem31_exists_cutpoint_value_argmax_of_continuousOn_finiteProbability
     (hcontinuous :
       ContinuousOn
         (fun gap : Fin M → ℝ =>
-          limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gap))
-        {gap : Fin M → ℝ | EconCSLib.FiniteProbabilitySimplex gap})
+          limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
+        {gap : Fin M → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap})
     (hdepends :
       cutpointFunctionalDependsOnlyOnRange M limitingValue) :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible M)
         limitingValue Sstar :=
   theorem31_exists_cutpoint_value_argmax_of_continuousOn_finiteProbabilitySimplex
@@ -9685,10 +9685,10 @@ theorem theorem31_exists_cutpoint_value_argmax_of_continuousOn_finiteProbability
       ContinuousOn
         (fun gap : Fin M → ℝ =>
           cutpointRangeFunctional M finiteFunctional
-            (EconCSLib.FiniteSum.finiteGapCutpoint gap))
-        {gap : Fin M → ℝ | EconCSLib.FiniteProbabilitySimplex gap}) :
+            (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
+        {gap : Fin M → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap}) :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible M)
         (cutpointRangeFunctional M finiteFunctional) Sstar :=
   theorem31_exists_cutpoint_value_argmax_of_continuousOn_finiteProbabilitySimplex_of_dependsOnlyOnRange
@@ -9707,28 +9707,23 @@ theorem theorem31_exists_cutpoint_value_argmax_of_continuous_cutpointRangeFuncti
     (finiteFunctional : (Fin (M + 1) → ℝ) → ℝ)
     (hcontinuous : Continuous finiteFunctional) :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible M)
         (cutpointRangeFunctional M finiteFunctional) Sstar := by
   have hcontinuousOn :
       ContinuousOn
         (fun gap : Fin M → ℝ =>
           cutpointRangeFunctional M finiteFunctional
-            (EconCSLib.FiniteSum.finiteGapCutpoint gap))
-        {gap : Fin M → ℝ | EconCSLib.FiniteProbabilitySimplex gap} := by
+            (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
+        {gap : Fin M → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap} := by
     simpa [cutpointRangeFunctional] using
       (hcontinuous.comp (continuous_finiteGapCutpoint_vector (M := M))).continuousOn
   exact
     theorem31_exists_cutpoint_value_argmax_of_continuousOn_finiteProbabilitySimplex_of_cutpointRangeFunctional
       finiteFunctional hcontinuousOn
 
-/--
-Finite-vector form of the exact equation-(20) cell-integral objective.  This
-is the source objective written as a function of the displayed cutpoints
-`0, ..., m + 2`, so it can be fed directly to the existing compact cutpoint
-optimizer once continuity of these moving-cell integrals is proved.
--/
-noncomputable def theorem31CellIntegralFiniteObjective
+/-- Weight integral over ordered cell pairs excluding the bottom-to-top pair. This is the nontrivial-error component weight, not the full cross-cell primary value. -/
+noncomputable def nontrivialCellWeightFiniteObjective
     (μ : Measure ℝ) (m : ℕ) (weight : ℝ × ℝ → ℝ)
     (v : Fin ((m + 2) + 1) → ℝ) : ℝ :=
   ∑ component : theorem31OrderedNontrivialPairComponent m,
@@ -9741,15 +9736,10 @@ noncomputable def theorem31CellIntegralFiniteObjective
           (finiteCutpointVectorEval (m + 2) v (component.val.2.val + 1))),
       weight q ∂(μ.prod μ)
 
-/--
-For Lebesgue measure and constant weight, the exact equation-(20)
-cell-integral objective is the finite sum of rectangle areas.  This is the
-moving-cell regular case used by the Kendall branch of the continuum `S*`
-objective.
--/
-theorem theorem31CellIntegralFiniteObjective_volume_const_eq_gapProduct
+/-- For constant Lebesgue weight, the nontrivial-cell weight equals the sum of its rectangle areas. -/
+theorem nontrivialCellWeightFiniteObjective_volume_const_eq_gapProduct
     (m : ℕ) :
-    theorem31CellIntegralFiniteObjective volume m
+    nontrivialCellWeightFiniteObjective volume m
         (fun _q : ℝ × ℝ => (1 : ℝ)) =
       fun v : Fin ((m + 2) + 1) → ℝ =>
         ∑ component : theorem31OrderedNontrivialPairComponent m,
@@ -9764,20 +9754,16 @@ theorem theorem31CellIntegralFiniteObjective_volume_const_eq_gapProduct
                 finiteCutpointVectorEval (m + 2) v component.val.2.val)
               0 := by
   funext v
-  unfold theorem31CellIntegralFiniteObjective
+  unfold nontrivialCellWeightFiniteObjective
   simp [MeasureTheory.measureReal_prod_prod]
 
-/--
-The exact equation-(20) cell-integral objective is continuous for Lebesgue
-measure and constant weight.  This discharges the moving-rectangle continuity
-premise for the source's constant-weight/Kendall case.
--/
-theorem continuous_theorem31CellIntegralFiniteObjective_volume_const
+/-- The constant-weight nontrivial-cell objective is continuous. -/
+theorem continuous_nontrivialCellWeightFiniteObjective_volume_const
     (m : ℕ) :
     Continuous
-      (theorem31CellIntegralFiniteObjective volume m
+      (nontrivialCellWeightFiniteObjective volume m
         (fun _q : ℝ × ℝ => (1 : ℝ))) := by
-  rw [theorem31CellIntegralFiniteObjective_volume_const_eq_gapProduct]
+  rw [nontrivialCellWeightFiniteObjective_volume_const_eq_gapProduct]
   refine continuous_finset_sum Finset.univ ?_
   intro component _hcomponent
   have hfirst :
@@ -9881,20 +9867,20 @@ unit interval.
 -/
 theorem finiteGapCutpoint_mem_Icc_of_finiteProbabilitySimplex
     {M : ℕ} (gap : Fin M → ℝ)
-    (hgap : EconCSLib.FiniteProbabilitySimplex gap)
+    (hgap : AppliedModelingLib.FiniteProbabilitySimplex gap)
     {k : ℕ} (hk : k ≤ M) :
-    EconCSLib.FiniteSum.finiteGapCutpoint gap k ∈ Set.Icc (0 : ℝ) 1 := by
+    AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k ∈ Set.Icc (0 : ℝ) 1 := by
   have hfeasible :=
     monotoneIntervalCutpointsEndpointFeasible_finiteGapCutpoint_of_finiteProbabilitySimplex
       gap hgap
   constructor
   · calc
-      0 = EconCSLib.FiniteSum.finiteGapCutpoint gap 0 := by
-        exact (EconCSLib.FiniteSum.finiteGapCutpoint_zero gap).symm
-      _ ≤ EconCSLib.FiniteSum.finiteGapCutpoint gap k := hfeasible.1 (Nat.zero_le k)
+      0 = AppliedModelingLib.FiniteSum.finiteGapCutpoint gap 0 := by
+        exact (AppliedModelingLib.FiniteSum.finiteGapCutpoint_zero gap).symm
+      _ ≤ AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k := hfeasible.1 (Nat.zero_le k)
   · calc
-      EconCSLib.FiniteSum.finiteGapCutpoint gap k ≤
-          EconCSLib.FiniteSum.finiteGapCutpoint gap M := hfeasible.1 hk
+      AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k ≤
+          AppliedModelingLib.FiniteSum.finiteGapCutpoint gap M := hfeasible.1 hk
       _ = 1 := hfeasible.2.2
 
 /--
@@ -9903,11 +9889,11 @@ the unit interval, with the out-of-range default also equal to `0`.
 -/
 theorem finiteCutpointVectorEval_finiteGapCutpoint_mem_Icc_of_finiteProbabilitySimplex
     {M : ℕ} (gap : Fin M → ℝ)
-    (hgap : EconCSLib.FiniteProbabilitySimplex gap)
+    (hgap : AppliedModelingLib.FiniteProbabilitySimplex gap)
     (k : ℕ) :
     finiteCutpointVectorEval M
         (fun j : Fin (M + 1) =>
-          EconCSLib.FiniteSum.finiteGapCutpoint gap j.1) k ∈
+          AppliedModelingLib.FiniteSum.finiteGapCutpoint gap j.1) k ∈
       Set.Icc (0 : ℝ) 1 := by
   unfold finiteCutpointVectorEval
   by_cases hk : k ≤ M
@@ -9921,21 +9907,21 @@ source unit square.
 -/
 theorem finiteCutpointVectorEval_finiteGapCutpoint_Ioc_prod_subset_unit_square
     {M : ℕ} (gap : Fin M → ℝ)
-    (hgap : EconCSLib.FiniteProbabilitySimplex gap) (i j : ℕ) :
+    (hgap : AppliedModelingLib.FiniteProbabilitySimplex gap) (i j : ℕ) :
     Set.Ioc
         (finiteCutpointVectorEval M
           (fun k : Fin (M + 1) =>
-            EconCSLib.FiniteSum.finiteGapCutpoint gap k.1) i)
+            AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k.1) i)
         (finiteCutpointVectorEval M
           (fun k : Fin (M + 1) =>
-            EconCSLib.FiniteSum.finiteGapCutpoint gap k.1) (i + 1)) ×ˢ
+            AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k.1) (i + 1)) ×ˢ
       Set.Ioc
         (finiteCutpointVectorEval M
           (fun k : Fin (M + 1) =>
-            EconCSLib.FiniteSum.finiteGapCutpoint gap k.1) j)
+            AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k.1) j)
         (finiteCutpointVectorEval M
           (fun k : Fin (M + 1) =>
-            EconCSLib.FiniteSum.finiteGapCutpoint gap k.1) (j + 1)) ⊆
+            AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k.1) (j + 1)) ⊆
         Set.Icc (0 : ℝ) 1 ×ˢ Set.Icc (0 : ℝ) 1 := by
   intro q hq
   constructor
@@ -10026,22 +10012,22 @@ theorem tendsto_integral_Ioc_prod_of_tendsto_of_integrableOn_Icc
       μ {q : ℝ × ℝ | q.1 = a₀} = 0 := by
     change (volume.prod volume) {q : ℝ × ℝ | q.1 = a₀} = 0
     rw [← Measure.volume_eq_prod ℝ ℝ]
-    exact EconCSLib.volume_prod_vertical_line a₀
+    exact AppliedModelingLib.volume_prod_vertical_line a₀
   have hline_b :
       μ {q : ℝ × ℝ | q.1 = b₀} = 0 := by
     change (volume.prod volume) {q : ℝ × ℝ | q.1 = b₀} = 0
     rw [← Measure.volume_eq_prod ℝ ℝ]
-    exact EconCSLib.volume_prod_vertical_line b₀
+    exact AppliedModelingLib.volume_prod_vertical_line b₀
   have hline_c :
       μ {q : ℝ × ℝ | q.2 = c₀} = 0 := by
     change (volume.prod volume) {q : ℝ × ℝ | q.2 = c₀} = 0
     rw [← Measure.volume_eq_prod ℝ ℝ]
-    exact EconCSLib.volume_prod_horizontal_line c₀
+    exact AppliedModelingLib.volume_prod_horizontal_line c₀
   have hline_d :
       μ {q : ℝ × ℝ | q.2 = d₀} = 0 := by
     change (volume.prod volume) {q : ℝ × ℝ | q.2 = d₀} = 0
     rw [← Measure.volume_eq_prod ℝ ℝ]
-    exact EconCSLib.volume_prod_horizontal_line d₀
+    exact AppliedModelingLib.volume_prod_horizontal_line d₀
   have hne_a : ∀ᵐ q ∂μ, q.1 ≠ a₀ := by
     rw [ae_iff]
     simpa using hline_a
@@ -10080,13 +10066,8 @@ theorem tendsto_integral_Ioc_prod_of_tendsto_of_integrableOn_Icc
   simpa [μ, rect, rect₀, MeasureTheory.integral_indicator,
     hrect_meas, hrect₀_meas] using hdct
 
-/--
-For any weight integrable on the source unit square, the exact equation-(20)
-selected-cell integral objective is continuous on the finite-gap simplex.
-This is the general moving-cell continuity theorem needed by the paper's
-weighted `S*` branch.
--/
-theorem continuousOn_theorem31CellIntegralFiniteObjective_volume_of_integrableOn_Icc
+/-- An integrable weight gives a continuous nontrivial-cell objective on the finite-gap simplex. -/
+theorem continuousOn_nontrivialCellWeightFiniteObjective_volume_of_integrableOn_Icc
     (m : ℕ) {weight : ℝ × ℝ → ℝ}
     (hweight_int :
       IntegrableOn weight
@@ -10095,11 +10076,11 @@ theorem continuousOn_theorem31CellIntegralFiniteObjective_volume_of_integrableOn
     ContinuousOn
       (fun gap : Fin (m + 2) → ℝ =>
         cutpointRangeFunctional (m + 2)
-          (theorem31CellIntegralFiniteObjective volume m weight)
-          (EconCSLib.FiniteSum.finiteGapCutpoint gap))
-      {gap : Fin (m + 2) → ℝ | EconCSLib.FiniteProbabilitySimplex gap} := by
+          (nontrivialCellWeightFiniteObjective volume m weight)
+          (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
+      {gap : Fin (m + 2) → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap} := by
   let simplex : Set (Fin (m + 2) → ℝ) :=
-    {gap : Fin (m + 2) → ℝ | EconCSLib.FiniteProbabilitySimplex gap}
+    {gap : Fin (m + 2) → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap}
   have hsum :
       ContinuousOn
         (fun gap : Fin (m + 2) → ℝ =>
@@ -10108,20 +10089,20 @@ theorem continuousOn_theorem31CellIntegralFiniteObjective_volume_of_integrableOn
               (Set.Ioc
                   (finiteCutpointVectorEval (m + 2)
                     (fun j : Fin ((m + 2) + 1) =>
-                      EconCSLib.FiniteSum.finiteGapCutpoint gap j.1)
+                      AppliedModelingLib.FiniteSum.finiteGapCutpoint gap j.1)
                     component.val.1.val)
                   (finiteCutpointVectorEval (m + 2)
                     (fun j : Fin ((m + 2) + 1) =>
-                      EconCSLib.FiniteSum.finiteGapCutpoint gap j.1)
+                      AppliedModelingLib.FiniteSum.finiteGapCutpoint gap j.1)
                     (component.val.1.val + 1)) ×ˢ
                 Set.Ioc
                   (finiteCutpointVectorEval (m + 2)
                     (fun j : Fin ((m + 2) + 1) =>
-                      EconCSLib.FiniteSum.finiteGapCutpoint gap j.1)
+                      AppliedModelingLib.FiniteSum.finiteGapCutpoint gap j.1)
                     component.val.2.val)
                   (finiteCutpointVectorEval (m + 2)
                     (fun j : Fin ((m + 2) + 1) =>
-                      EconCSLib.FiniteSum.finiteGapCutpoint gap j.1)
+                      AppliedModelingLib.FiniteSum.finiteGapCutpoint gap j.1)
                     (component.val.2.val + 1))),
               weight q ∂(volume.prod volume))
         simplex := by
@@ -10131,25 +10112,25 @@ theorem continuousOn_theorem31CellIntegralFiniteObjective_volume_of_integrableOn
       fun gap =>
         finiteCutpointVectorEval (m + 2)
           (fun j : Fin ((m + 2) + 1) =>
-            EconCSLib.FiniteSum.finiteGapCutpoint gap j.1)
+            AppliedModelingLib.FiniteSum.finiteGapCutpoint gap j.1)
           component.val.1.val
     let b : (Fin (m + 2) → ℝ) → ℝ :=
       fun gap =>
         finiteCutpointVectorEval (m + 2)
           (fun j : Fin ((m + 2) + 1) =>
-            EconCSLib.FiniteSum.finiteGapCutpoint gap j.1)
+            AppliedModelingLib.FiniteSum.finiteGapCutpoint gap j.1)
           (component.val.1.val + 1)
     let c : (Fin (m + 2) → ℝ) → ℝ :=
       fun gap =>
         finiteCutpointVectorEval (m + 2)
           (fun j : Fin ((m + 2) + 1) =>
-            EconCSLib.FiniteSum.finiteGapCutpoint gap j.1)
+            AppliedModelingLib.FiniteSum.finiteGapCutpoint gap j.1)
           component.val.2.val
     let d : (Fin (m + 2) → ℝ) → ℝ :=
       fun gap =>
         finiteCutpointVectorEval (m + 2)
           (fun j : Fin ((m + 2) + 1) =>
-            EconCSLib.FiniteSum.finiteGapCutpoint gap j.1)
+            AppliedModelingLib.FiniteSum.finiteGapCutpoint gap j.1)
           (component.val.2.val + 1)
     have ha : Tendsto a (𝓝[simplex] gap₀) (𝓝 (a gap₀)) := by
       simpa [a] using
@@ -10189,7 +10170,7 @@ theorem continuousOn_theorem31CellIntegralFiniteObjective_volume_of_integrableOn
       tendsto_integral_Ioc_prod_of_tendsto_of_integrableOn_Icc
         (l := 𝓝[simplex] gap₀)
         ha hb hc hd hweight_int hrect_subset hrect₀_subset
-  simpa [simplex, theorem31CellIntegralFiniteObjective, cutpointRangeFunctional]
+  simpa [simplex, nontrivialCellWeightFiniteObjective, cutpointRangeFunctional]
     using hsum
 
 /--
@@ -10261,13 +10242,8 @@ theorem spearmanLinearWeight_rectangleIntegral_eq_midpoint_area_of_le
           rw [h_snd, h_fst, hA_one, hB_one, hA_id, hB_id]
           ring
 
-/--
-Finite-vector selected-cell Spearman objective obtained by evaluating the
-linear weight at each cell midpoint and multiplying by the cell area.  The
-selected component index matches the Theorem 3.1 ordered-pair component type,
-including its endpoint-pair convention.
--/
-noncomputable def theorem31SpearmanCellMidpointFiniteObjective
+/-- Midpoint formula for linear weights on ordered cell pairs excluding the bottom-to-top pair. -/
+noncomputable def nontrivialCellSpearmanMidpointFiniteObjective
     (m : ℕ) (v : Fin ((m + 2) + 1) → ℝ) : ℝ :=
   ∑ component : theorem31OrderedNontrivialPairComponent m,
     (((finiteCutpointVectorEval (m + 2) v component.val.2.val +
@@ -10283,11 +10259,11 @@ noncomputable def theorem31SpearmanCellMidpointFiniteObjective
           (component.val.2.val + 1) -
         finiteCutpointVectorEval (m + 2) v component.val.2.val)
 
-/-- The selected-cell Spearman midpoint finite objective is continuous. -/
-theorem continuous_theorem31SpearmanCellMidpointFiniteObjective
+/-- The nontrivial-cell linear-weight midpoint formula is continuous. -/
+theorem continuous_nontrivialCellSpearmanMidpointFiniteObjective
     (m : ℕ) :
-    Continuous (theorem31SpearmanCellMidpointFiniteObjective m) := by
-  unfold theorem31SpearmanCellMidpointFiniteObjective
+    Continuous (nontrivialCellSpearmanMidpointFiniteObjective m) := by
+  unfold nontrivialCellSpearmanMidpointFiniteObjective
   refine continuous_finset_sum Finset.univ ?_
   intro component _hcomponent
   have hmid :
@@ -10329,22 +10305,18 @@ theorem continuous_theorem31SpearmanCellMidpointFiniteObjective
         component.val.2.val)
   exact (hmid.mul hlow).mul hhigh
 
-/--
-For monotone displayed cutpoints, the exact equation-(20) cell-integral
-objective with Spearman's linear weight reduces componentwise to the
-midpoint-distance times rectangle-area formula.
--/
-theorem theorem31CellIntegralFiniteObjective_volume_spearman_eq_midpoint_sum_of_monotone
+/-- For ordered cells, the nontrivial-cell linear-weight integral equals its midpoint formula. -/
+theorem nontrivialCellWeightFiniteObjective_volume_spearman_eq_midpoint_sum_of_monotone
     (m : ℕ) (v : Fin ((m + 2) + 1) → ℝ)
     (hmono :
       ∀ i : ℕ, i + 1 ≤ m + 2 →
         finiteCutpointVectorEval (m + 2) v i ≤
           finiteCutpointVectorEval (m + 2) v (i + 1)) :
-    theorem31CellIntegralFiniteObjective volume m
+    nontrivialCellWeightFiniteObjective volume m
         (fun q : ℝ × ℝ => q.2 - q.1) v =
-      theorem31SpearmanCellMidpointFiniteObjective m v := by
-  unfold theorem31CellIntegralFiniteObjective
-    theorem31SpearmanCellMidpointFiniteObjective
+      nontrivialCellSpearmanMidpointFiniteObjective m v := by
+  unfold nontrivialCellWeightFiniteObjective
+    nontrivialCellSpearmanMidpointFiniteObjective
   refine Finset.sum_congr rfl ?_
   intro component _hcomponent
   have hlow :
@@ -10363,140 +10335,117 @@ theorem theorem31CellIntegralFiniteObjective_volume_spearman_eq_midpoint_sum_of_
       (d := finiteCutpointVectorEval (m + 2) v (component.val.2.val + 1))
       hlow hhigh
 
-/--
-On the finite-gap simplex, the exact selected-cell Spearman objective is
-continuous as a function of the gap vector.  The proof uses the midpoint-area
-identity on monotone cutpoints induced by nonnegative gaps.
--/
-theorem continuousOn_theorem31CellIntegralFiniteObjective_volume_spearman_finiteGapCutpoint
+/-- The nontrivial-cell linear-weight objective is continuous on the finite-gap simplex. -/
+theorem continuousOn_nontrivialCellWeightFiniteObjective_volume_spearman_finiteGapCutpoint
     (m : ℕ) :
     ContinuousOn
       (fun gap : Fin (m + 2) → ℝ =>
         cutpointRangeFunctional (m + 2)
-          (theorem31CellIntegralFiniteObjective volume m
+          (nontrivialCellWeightFiniteObjective volume m
             (fun q : ℝ × ℝ => q.2 - q.1))
-          (EconCSLib.FiniteSum.finiteGapCutpoint gap))
-      {gap : Fin (m + 2) → ℝ | EconCSLib.FiniteProbabilitySimplex gap} := by
+          (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
+      {gap : Fin (m + 2) → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap} := by
   have hpoly :
       Continuous
         (fun gap : Fin (m + 2) → ℝ =>
           cutpointRangeFunctional (m + 2)
-            (theorem31SpearmanCellMidpointFiniteObjective m)
-            (EconCSLib.FiniteSum.finiteGapCutpoint gap)) := by
+            (nontrivialCellSpearmanMidpointFiniteObjective m)
+            (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap)) := by
     simpa [cutpointRangeFunctional] using
-      (continuous_theorem31SpearmanCellMidpointFiniteObjective m).comp
+      (continuous_nontrivialCellSpearmanMidpointFiniteObjective m).comp
         (continuous_finiteGapCutpoint_vector (M := m + 2))
   refine hpoly.continuousOn.congr ?_
   intro gap hgap
   unfold cutpointRangeFunctional
   have hcut_mono :
-      Monotone (EconCSLib.FiniteSum.finiteGapCutpoint gap) :=
-    EconCSLib.FiniteSum.finiteGapCutpoint_monotone_of_nonneg gap hgap.1
+      Monotone (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) :=
+    AppliedModelingLib.FiniteSum.finiteGapCutpoint_monotone_of_nonneg gap hgap.1
   have hmono_eval :
       ∀ i : ℕ, i + 1 ≤ m + 2 →
         finiteCutpointVectorEval (m + 2)
             (fun j : Fin ((m + 2) + 1) =>
-              EconCSLib.FiniteSum.finiteGapCutpoint gap j.1) i ≤
+              AppliedModelingLib.FiniteSum.finiteGapCutpoint gap j.1) i ≤
           finiteCutpointVectorEval (m + 2)
             (fun j : Fin ((m + 2) + 1) =>
-              EconCSLib.FiniteSum.finiteGapCutpoint gap j.1) (i + 1) := by
+              AppliedModelingLib.FiniteSum.finiteGapCutpoint gap j.1) (i + 1) := by
     intro i hi
     have hi0 : i ≤ m + 2 := Nat.le_of_succ_le hi
     simp [finiteCutpointVectorEval, hi0, hi]
     exact hcut_mono (Nat.le_succ i)
   simpa using
-    theorem31CellIntegralFiniteObjective_volume_spearman_eq_midpoint_sum_of_monotone
+    nontrivialCellWeightFiniteObjective_volume_spearman_eq_midpoint_sum_of_monotone
       m
       (fun j : Fin ((m + 2) + 1) =>
-        EconCSLib.FiniteSum.finiteGapCutpoint gap j.1)
+        AppliedModelingLib.FiniteSum.finiteGapCutpoint gap j.1)
       hmono_eval
 
-/--
-Theorem 3.1 exact cell-integral `S*` bridge for the Spearman linear-weight
-Lebesgue branch.  The selected-cell Spearman integral objective is continuous
-on the feasible finite-gap simplex, so Lean derives a maximizing cutpoint
-chain with no exposed continuity premise.
--/
-theorem theorem31_exists_cell_integral_volume_spearman_cutpoint_value_argmax
+/-- The nontrivial-cell linear-weight objective attains a maximum. -/
+theorem exists_nontrivialCellWeight_volume_spearman_cutpoint_value_argmax
     (m : ℕ) :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible (m + 2))
         (cutpointRangeFunctional (m + 2)
-          (theorem31CellIntegralFiniteObjective volume m
+          (nontrivialCellWeightFiniteObjective volume m
             (fun q : ℝ × ℝ => q.2 - q.1))) Sstar := by
   haveI : Nonempty (Fin (m + 2)) := ⟨⟨0, by omega⟩⟩
   exact
     theorem31_exists_cutpoint_value_argmax_of_continuousOn_finiteProbabilitySimplex_of_cutpointRangeFunctional
       (M := m + 2)
-      (theorem31CellIntegralFiniteObjective volume m
+      (nontrivialCellWeightFiniteObjective volume m
         (fun q : ℝ × ℝ => q.2 - q.1))
-      (continuousOn_theorem31CellIntegralFiniteObjective_volume_spearman_finiteGapCutpoint m)
+      (continuousOn_nontrivialCellWeightFiniteObjective_volume_spearman_finiteGapCutpoint m)
 
-/--
-Theorem 3.1 exact cell-integral `S*` bridge for any Lebesgue weight
-integrable on the source unit square.  The moving-cell continuity premise is
-discharged by dominated convergence, so the only analytic hypothesis exposed
-is source-facing integrability of the paper weight.
--/
-theorem theorem31_exists_cell_integral_volume_weighted_cutpoint_value_argmax_of_integrableOn_Icc
+/-- The nontrivial-cell integrable-weight objective attains a maximum. -/
+theorem exists_nontrivialCellWeight_volume_weighted_cutpoint_value_argmax_of_integrableOn_Icc
     (m : ℕ) {weight : ℝ × ℝ → ℝ}
     (hweight_int :
       IntegrableOn weight
         (Set.Icc (0 : ℝ) 1 ×ˢ Set.Icc (0 : ℝ) 1)
         (volume.prod volume)) :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible (m + 2))
         (cutpointRangeFunctional (m + 2)
-          (theorem31CellIntegralFiniteObjective volume m weight)) Sstar := by
+          (nontrivialCellWeightFiniteObjective volume m weight)) Sstar := by
   haveI : Nonempty (Fin (m + 2)) := ⟨⟨0, by omega⟩⟩
   exact
     theorem31_exists_cutpoint_value_argmax_of_continuousOn_finiteProbabilitySimplex_of_cutpointRangeFunctional
       (M := m + 2)
-      (theorem31CellIntegralFiniteObjective volume m weight)
-      (continuousOn_theorem31CellIntegralFiniteObjective_volume_of_integrableOn_Icc
+      (nontrivialCellWeightFiniteObjective volume m weight)
+      (continuousOn_nontrivialCellWeightFiniteObjective_volume_of_integrableOn_Icc
         m hweight_int)
 
-/--
-Theorem 3.1 exact cell-integral `S*` bridge with continuity supplied as the
-remaining analytic premise: if the finite-vector equation-(20) objective is
-continuous in the displayed cutpoints, then it has a maximizing cutpoint
-chain.
--/
-theorem theorem31_exists_cell_integral_cutpoint_value_argmax_of_continuous
+/-- A continuous nontrivial-cell objective attains a maximum. -/
+theorem exists_nontrivialCellWeight_cutpoint_value_argmax_of_continuous
     (μ : Measure ℝ) (m : ℕ) (weight : ℝ × ℝ → ℝ)
     (hcontinuous :
-      Continuous (theorem31CellIntegralFiniteObjective μ m weight)) :
+      Continuous (nontrivialCellWeightFiniteObjective μ m weight)) :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible (m + 2))
         (cutpointRangeFunctional (m + 2)
-          (theorem31CellIntegralFiniteObjective μ m weight)) Sstar := by
+          (nontrivialCellWeightFiniteObjective μ m weight)) Sstar := by
   haveI : Nonempty (Fin (m + 2)) := ⟨⟨0, by omega⟩⟩
   exact
     theorem31_exists_cutpoint_value_argmax_of_continuous_cutpointRangeFunctional
       (M := m + 2)
-      (theorem31CellIntegralFiniteObjective μ m weight)
+      (nontrivialCellWeightFiniteObjective μ m weight)
       hcontinuous
 
-/--
-Theorem 3.1 exact cell-integral `S*` bridge for the constant-weight Lebesgue
-case.  Here the moving-cell continuity premise is discharged by the rectangle
-area formula.
--/
-theorem theorem31_exists_cell_integral_volume_const_cutpoint_value_argmax
+/-- The constant-weight nontrivial-cell objective attains a maximum. -/
+theorem exists_nontrivialCellWeight_volume_const_cutpoint_value_argmax
     (m : ℕ) :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible (m + 2))
         (cutpointRangeFunctional (m + 2)
-          (theorem31CellIntegralFiniteObjective volume m
+          (nontrivialCellWeightFiniteObjective volume m
             (fun _q : ℝ × ℝ => (1 : ℝ)))) Sstar := by
   exact
-    theorem31_exists_cell_integral_cutpoint_value_argmax_of_continuous
+    exists_nontrivialCellWeight_cutpoint_value_argmax_of_continuous
       volume m (fun _q : ℝ × ℝ => (1 : ℝ))
-      (continuous_theorem31CellIntegralFiniteObjective_volume_const m)
+      (continuous_nontrivialCellWeightFiniteObjective_volume_const m)
 
 /--
 Theorem 3.1 Kendall source objective: the constant-weight ordered-pair
@@ -10507,7 +10456,7 @@ internally.
 theorem theorem31_exists_kendall_constant_weight_ordered_pair_cutpoint_value_argmax
     {M : ℕ} [Nonempty (Fin M)] :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible M)
         (kendallConstantWeightOrderedPairIntervalObjective M) Sstar := by
   rcases
@@ -10529,7 +10478,7 @@ internally.
 theorem theorem31_exists_spearman_linear_weight_ordered_pair_cutpoint_value_argmax
     {M : ℕ} [Nonempty (Fin M)] :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible M)
         (spearmanLinearWeightOrderedPairIntervalObjective M) Sstar := by
   rcases
@@ -10551,7 +10500,7 @@ theorem theorem31_exists_midpoint_weighted_ordered_pair_cutpoint_value_argmax
     {M : ℕ} [Nonempty (Fin M)]
     (weight : ℝ × ℝ → ℝ) (hweight : Continuous weight) :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible M)
         (midpointWeightedOrderedPairIntervalObjective M weight) Sstar := by
   rcases
@@ -10574,7 +10523,7 @@ theorem theorem31_exists_finite_ordered_pair_cutpoint_value_argmax
     (term : Fin M → Fin M → (Fin (M + 1) → ℝ) → ℝ)
     (hterm : ∀ i j : Fin M, Continuous (term i j)) :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible M)
         (cutpointRangeFunctional M
           (finiteOrderedPairCutpointObjective M term)) Sstar :=
@@ -10597,45 +10546,45 @@ theorem theorem31_exists_cutpoint_endpoint_two_stage_lexicographic_optimality_of
     (hcontinuous :
       ContinuousOn
         (fun gap : Fin M → ℝ =>
-          limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gap))
-        {gap : Fin M → ℝ | EconCSLib.FiniteProbabilitySimplex gap})
+          limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
+        {gap : Fin M → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap})
     (hendpoint :
-      ∀ gap : Fin M → ℝ, EconCSLib.FiniteProbabilitySimplex gap →
+      ∀ gap : Fin M → ℝ, AppliedModelingLib.FiniteProbabilitySimplex gap →
         ∃ tstar : Endpoint,
-          endpointFeasible (EconCSLib.FiniteSum.finiteGapCutpoint gap)
+          endpointFeasible (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap)
             tstar ∧
             ∀ (otherGap : Fin M → ℝ) (t : Endpoint),
-              EconCSLib.FiniteProbabilitySimplex otherGap →
+              AppliedModelingLib.FiniteProbabilitySimplex otherGap →
               endpointFeasible
-                (EconCSLib.FiniteSum.finiteGapCutpoint otherGap) t →
+                (AppliedModelingLib.FiniteSum.finiteGapCutpoint otherGap) t →
               limitingValue
-                  (EconCSLib.FiniteSum.finiteGapCutpoint otherGap) =
+                  (AppliedModelingLib.FiniteSum.finiteGapCutpoint otherGap) =
                   limitingValue
-                    (EconCSLib.FiniteSum.finiteGapCutpoint gap) →
-                  rate (EconCSLib.FiniteSum.finiteGapCutpoint otherGap) t ≤
-                    rate (EconCSLib.FiniteSum.finiteGapCutpoint gap) tstar)
+                    (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) →
+                  rate (AppliedModelingLib.FiniteSum.finiteGapCutpoint otherGap) t ≤
+                    rate (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) tstar)
     (hendpoint_extensional :
       ∀ (S : ℕ → ℝ) (gap : Fin M → ℝ) (t : Endpoint),
         monotoneIntervalCutpointsEndpointFeasible M S →
         (∀ k : ℕ, k ≤ M →
-          EconCSLib.FiniteSum.finiteGapCutpoint gap k = S k) →
+          AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k = S k) →
         endpointFeasible S t →
-          endpointFeasible (EconCSLib.FiniteSum.finiteGapCutpoint gap) t)
+          endpointFeasible (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) t)
     (hvalue_extensional :
       ∀ (S : ℕ → ℝ) (gap : Fin M → ℝ),
         monotoneIntervalCutpointsEndpointFeasible M S →
         (∀ k : ℕ, k ≤ M →
-          EconCSLib.FiniteSum.finiteGapCutpoint gap k = S k) →
-        limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gap) =
+          AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k = S k) →
+        limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) =
           limitingValue S)
     (hrate_extensional :
       ∀ (S : ℕ → ℝ) (gap : Fin M → ℝ) (t : Endpoint),
         monotoneIntervalCutpointsEndpointFeasible M S →
         (∀ k : ℕ, k ≤ M →
-          EconCSLib.FiniteSum.finiteGapCutpoint gap k = S k) →
-        rate (EconCSLib.FiniteSum.finiteGapCutpoint gap) t = rate S t) :
+          AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k = S k) →
+        rate (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) t = rate S t) :
     ∃ design : (ℕ → ℝ) × Endpoint,
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × Endpoint =>
           monotoneIntervalCutpointsEndpointFeasible M design.1 ∧
             endpointFeasible design.1 design.2)
@@ -10647,7 +10596,7 @@ theorem theorem31_exists_cutpoint_endpoint_two_stage_lexicographic_optimality_of
       (M := M) endpointFeasible limitingValue rate hcontinuous hendpoint with
     ⟨designGap, hlexGap⟩
   let Sstar : ℕ → ℝ :=
-    EconCSLib.FiniteSum.finiteGapCutpoint designGap.1
+    AppliedModelingLib.FiniteSum.finiteGapCutpoint designGap.1
   refine ⟨(Sstar, designGap.2), ?_⟩
   constructor
   · exact
@@ -10658,26 +10607,26 @@ theorem theorem31_exists_cutpoint_endpoint_two_stage_lexicographic_optimality_of
     let altGap : Fin M → ℝ :=
       intervalCutpointAdjacentGap M design.1
     have haltGap :
-        EconCSLib.FiniteProbabilitySimplex altGap :=
+        AppliedModelingLib.FiniteProbabilitySimplex altGap :=
       finiteProbabilitySimplex_intervalCutpointAdjacentGap_of_monotoneIntervalCutpointsEndpointFeasible
         design.1 hdesign.1
     have hrecover :
         ∀ k : ℕ, k ≤ M →
-          EconCSLib.FiniteSum.finiteGapCutpoint altGap k = design.1 k :=
+          AppliedModelingLib.FiniteSum.finiteGapCutpoint altGap k = design.1 k :=
       finiteGapCutpoint_intervalCutpointAdjacentGap_eq design.1 hdesign.1.2.1
     have haltEndpoint :
-        endpointFeasible (EconCSLib.FiniteSum.finiteGapCutpoint altGap)
+        endpointFeasible (AppliedModelingLib.FiniteSum.finiteGapCutpoint altGap)
           design.2 :=
       hendpoint_extensional design.1 altGap design.2 hdesign.1 hrecover
         hdesign.2
     have hlexAlt :=
       hlexGap.2 (altGap, design.2) ⟨haltGap, haltEndpoint⟩
     have hvalue :
-        limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint altGap) =
+        limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint altGap) =
           limitingValue design.1 :=
       hvalue_extensional design.1 altGap hdesign.1 hrecover
     have hrate :
-        rate (EconCSLib.FiniteSum.finiteGapCutpoint altGap) design.2 =
+        rate (AppliedModelingLib.FiniteSum.finiteGapCutpoint altGap) design.2 =
           rate design.1 design.2 :=
       hrate_extensional design.1 altGap design.2 hdesign.1 hrecover
     rcases hlexAlt with hlt | ⟨heq, hle⟩
@@ -10702,17 +10651,17 @@ theorem theorem31_exists_cutpoint_uniform_endpoint_two_stage_lexicographic_optim
     (hcontinuous :
       ContinuousOn
         (fun gap : Fin (m + 2) → ℝ =>
-          limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gap))
-        {gap : Fin (m + 2) → ℝ | EconCSLib.FiniteProbabilitySimplex gap})
+          limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
+        {gap : Fin (m + 2) → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap})
     (hvalue_extensional :
       ∀ (S : ℕ → ℝ) (gap : Fin (m + 2) → ℝ),
         monotoneIntervalCutpointsEndpointFeasible (m + 2) S →
         (∀ k : ℕ, k ≤ m + 2 →
-          EconCSLib.FiniteSum.finiteGapCutpoint gap k = S k) →
-        limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gap) =
+          AppliedModelingLib.FiniteSum.finiteGapCutpoint gap k = S k) →
+        limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap) =
           limitingValue S) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -10756,12 +10705,12 @@ theorem theorem31_exists_cutpoint_uniform_endpoint_two_stage_lexicographic_optim
     (hcontinuous :
       ContinuousOn
         (fun gap : Fin (m + 2) → ℝ =>
-          limitingValue (EconCSLib.FiniteSum.finiteGapCutpoint gap))
-        {gap : Fin (m + 2) → ℝ | EconCSLib.FiniteProbabilitySimplex gap})
+          limitingValue (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
+        {gap : Fin (m + 2) → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap})
     (hdepends :
       cutpointFunctionalDependsOnlyOnRange (m + 2) limitingValue) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -10787,10 +10736,10 @@ theorem theorem31_exists_cutpoint_uniform_endpoint_two_stage_lexicographic_optim
       ContinuousOn
         (fun gap : Fin (m + 2) → ℝ =>
           cutpointRangeFunctional (m + 2) finiteFunctional
-            (EconCSLib.FiniteSum.finiteGapCutpoint gap))
-        {gap : Fin (m + 2) → ℝ | EconCSLib.FiniteProbabilitySimplex gap}) :
+            (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
+        {gap : Fin (m + 2) → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap}) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -10805,22 +10754,17 @@ theorem theorem31_exists_cutpoint_uniform_endpoint_two_stage_lexicographic_optim
     (cutpointFunctionalDependsOnlyOnRange_cutpointRangeFunctional (m + 2)
       finiteFunctional)
 
-/--
-Theorem 3.1 exact cell-integral `S*` bridge for Spearman's linear weight with
-uniform matching: the source-style selected-cell equation-(20) objective and
-the canonical endpoint-rate optimizer have a two-stage lexicographically
-optimal design with no exposed continuity premise.
--/
-theorem theorem31_exists_cell_integral_volume_spearman_uniform_endpoint_two_stage_lexicographic_optimality
+/-- Lexicographic optimization of nontrivial-cell linear weight and the uniform-matching adjacent-rate formula. -/
+theorem exists_nontrivialCellWeight_volume_spearman_uniform_endpoint_two_stage_lexicographic_optimality
     (m : ℕ) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           cutpointRangeFunctional (m + 2)
-            (theorem31CellIntegralFiniteObjective volume m
+            (nontrivialCellWeightFiniteObjective volume m
               (fun q : ℝ × ℝ => q.2 - q.1)) design.1)
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           binaryEndpointAwareAdjacentRateObjective design.2
@@ -10829,30 +10773,25 @@ theorem theorem31_exists_cell_integral_volume_spearman_uniform_endpoint_two_stag
   exact
     theorem31_exists_cutpoint_uniform_endpoint_two_stage_lexicographic_optimality_of_continuousOn_finiteProbabilitySimplex_of_cutpointRangeFunctional
       (m := m)
-      (theorem31CellIntegralFiniteObjective volume m
+      (nontrivialCellWeightFiniteObjective volume m
         (fun q : ℝ × ℝ => q.2 - q.1))
-      (continuousOn_theorem31CellIntegralFiniteObjective_volume_spearman_finiteGapCutpoint m)
+      (continuousOn_nontrivialCellWeightFiniteObjective_volume_spearman_finiteGapCutpoint m)
 
-/--
-Theorem 3.1 exact cell-integral optimizer for any Lebesgue weight integrable
-on `[0,1]^2`, with the paper's uniform-matching endpoint objective.  This is
-the general weighted moving-cell `S*` branch after the dominated-convergence
-continuity proof.
--/
-theorem theorem31_exists_cell_integral_volume_weighted_uniform_endpoint_two_stage_lexicographic_optimality_of_integrableOn_Icc
+/-- Lexicographic optimization of nontrivial-cell integrable weight and the uniform-matching adjacent-rate formula. -/
+theorem exists_nontrivialCellWeight_volume_weighted_uniform_endpoint_two_stage_lexicographic_optimality_of_integrableOn_Icc
     (m : ℕ) {weight : ℝ × ℝ → ℝ}
     (hweight_int :
       IntegrableOn weight
         (Set.Icc (0 : ℝ) 1 ×ˢ Set.Icc (0 : ℝ) 1)
         (volume.prod volume)) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           cutpointRangeFunctional (m + 2)
-            (theorem31CellIntegralFiniteObjective volume m weight) design.1)
+            (nontrivialCellWeightFiniteObjective volume m weight) design.1)
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           binaryEndpointAwareAdjacentRateObjective design.2
             (fun _ : Fin (m + 2) => (1 : ℝ)))
@@ -10860,8 +10799,8 @@ theorem theorem31_exists_cell_integral_volume_weighted_uniform_endpoint_two_stag
   exact
     theorem31_exists_cutpoint_uniform_endpoint_two_stage_lexicographic_optimality_of_continuousOn_finiteProbabilitySimplex_of_cutpointRangeFunctional
       (m := m)
-      (theorem31CellIntegralFiniteObjective volume m weight)
-      (continuousOn_theorem31CellIntegralFiniteObjective_volume_of_integrableOn_Icc
+      (nontrivialCellWeightFiniteObjective volume m weight)
+      (continuousOn_nontrivialCellWeightFiniteObjective_volume_of_integrableOn_Icc
         m hweight_int)
 
 /--
@@ -10874,7 +10813,7 @@ theorem theorem31_exists_cutpoint_uniform_endpoint_two_stage_lexicographic_optim
     (finiteFunctional : (Fin ((m + 2) + 1) → ℝ) → ℝ)
     (hcontinuous : Continuous finiteFunctional) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -10888,8 +10827,8 @@ theorem theorem31_exists_cutpoint_uniform_endpoint_two_stage_lexicographic_optim
       ContinuousOn
         (fun gap : Fin (m + 2) → ℝ =>
           cutpointRangeFunctional (m + 2) finiteFunctional
-            (EconCSLib.FiniteSum.finiteGapCutpoint gap))
-        {gap : Fin (m + 2) → ℝ | EconCSLib.FiniteProbabilitySimplex gap} := by
+            (AppliedModelingLib.FiniteSum.finiteGapCutpoint gap))
+        {gap : Fin (m + 2) → ℝ | AppliedModelingLib.FiniteProbabilitySimplex gap} := by
     simpa [cutpointRangeFunctional] using
       (hcontinuous.comp
         (continuous_finiteGapCutpoint_vector (M := m + 2))).continuousOn
@@ -10897,23 +10836,19 @@ theorem theorem31_exists_cutpoint_uniform_endpoint_two_stage_lexicographic_optim
     theorem31_exists_cutpoint_uniform_endpoint_two_stage_lexicographic_optimality_of_continuousOn_finiteProbabilitySimplex_of_cutpointRangeFunctional
       finiteFunctional hcontinuousOn
 
-/--
-Theorem 3.1 exact cell-integral objective with uniform matching: continuity
-of the finite-vector equation-(20) objective is enough to combine the compact
-`S*` optimizer with the canonical endpoint-rate optimizer.
--/
-theorem theorem31_exists_cell_integral_uniform_endpoint_two_stage_lexicographic_optimality_of_continuous
+/-- A continuous nontrivial-cell objective and the uniform-matching adjacent-rate formula admit a lexicographic optimizer. -/
+theorem exists_nontrivialCellWeight_uniform_endpoint_two_stage_lexicographic_optimality_of_continuous
     (μ : Measure ℝ) (m : ℕ) (weight : ℝ × ℝ → ℝ)
     (hcontinuous :
-      Continuous (theorem31CellIntegralFiniteObjective μ m weight)) :
+      Continuous (nontrivialCellWeightFiniteObjective μ m weight)) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           cutpointRangeFunctional (m + 2)
-            (theorem31CellIntegralFiniteObjective μ m weight) design.1)
+            (nontrivialCellWeightFiniteObjective μ m weight) design.1)
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           binaryEndpointAwareAdjacentRateObjective design.2
             (fun _ : Fin (m + 2) => (1 : ℝ)))
@@ -10921,33 +10856,29 @@ theorem theorem31_exists_cell_integral_uniform_endpoint_two_stage_lexicographic_
   exact
     theorem31_exists_cutpoint_uniform_endpoint_two_stage_lexicographic_optimality_of_continuous_cutpointRangeFunctional
       (m := m)
-      (theorem31CellIntegralFiniteObjective μ m weight)
+      (nontrivialCellWeightFiniteObjective μ m weight)
       hcontinuous
 
-/--
-Theorem 3.1 exact cell-integral two-stage bridge for the constant-weight
-Lebesgue case.  The source-style moving-cell objective is continuous by the
-rectangle area formula, so no continuity certificate is exposed.
--/
-theorem theorem31_exists_cell_integral_volume_const_uniform_endpoint_two_stage_lexicographic_optimality
+/-- Lexicographic optimization of constant nontrivial-cell weight and the uniform-matching adjacent-rate formula. -/
+theorem exists_nontrivialCellWeight_volume_const_uniform_endpoint_two_stage_lexicographic_optimality
     (m : ℕ) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           cutpointRangeFunctional (m + 2)
-            (theorem31CellIntegralFiniteObjective volume m
+            (nontrivialCellWeightFiniteObjective volume m
               (fun _q : ℝ × ℝ => (1 : ℝ))) design.1)
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           binaryEndpointAwareAdjacentRateObjective design.2
             (fun _ : Fin (m + 2) => (1 : ℝ)))
         design := by
   exact
-    theorem31_exists_cell_integral_uniform_endpoint_two_stage_lexicographic_optimality_of_continuous
+    exists_nontrivialCellWeight_uniform_endpoint_two_stage_lexicographic_optimality_of_continuous
       volume m (fun _q : ℝ × ℝ => (1 : ℝ))
-      (continuous_theorem31CellIntegralFiniteObjective_volume_const m)
+      (continuous_nontrivialCellWeightFiniteObjective_volume_const m)
 
 /--
 Theorem 3.1 Kendall source objective with uniform matching: the concrete
@@ -10958,7 +10889,7 @@ continuity or argmax certificate is exposed to the caller.
 theorem theorem31_exists_kendall_constant_weight_ordered_pair_uniform_endpoint_two_stage_lexicographic_optimality
     (m : ℕ) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -10988,7 +10919,7 @@ continuity or argmax certificate is exposed to the caller.
 theorem theorem31_exists_spearman_linear_weight_ordered_pair_uniform_endpoint_two_stage_lexicographic_optimality
     (m : ℕ) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -11018,7 +10949,7 @@ are derived internally from the finite-vector objective.
 theorem theorem31_exists_midpoint_weighted_ordered_pair_uniform_endpoint_two_stage_lexicographic_optimality
     (m : ℕ) (weight : ℝ × ℝ → ℝ) (hweight : Continuous weight) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -11053,7 +10984,7 @@ theorem theorem31_exists_finite_ordered_pair_uniform_endpoint_two_stage_lexicogr
     (hterm :
       ∀ i j : Fin (m + 2), Continuous (term i j)) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -11085,7 +11016,7 @@ theorem theorem31_strict_cutpoint_value_argmax_forward_clipped_endpoint_source_c
     (cut : ℕ → ℝ) (hmono : Monotone cut)
     (hcut_strict : ∀ i : ℕ, i < m + 2 → cut i < cut (i + 1))
     (hcut_value :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible (m + 2))
         limitingValue cut)
     (sampleRate : Fin (m + 2) → ℝ)
@@ -11115,7 +11046,7 @@ theorem theorem31_strict_cutpoint_value_argmax_forward_clipped_endpoint_source_c
     ∃ levels : Fin (m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -11123,7 +11054,7 @@ theorem theorem31_strict_cutpoint_value_argmax_forward_clipped_endpoint_source_c
           ExponentialRateCertificate
             (theorem31SourceWbar μ cut hmono sampleRate levels hlevels weight)
             (binaryEndpointAwareAdjacentRateObjective levels sampleRate) ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (monotoneIntervalCutpointsEndpointFeasible (m + 2))
             limitingValue cut := by
   rcases
@@ -11132,138 +11063,6 @@ theorem theorem31_strict_cutpoint_value_argmax_forward_clipped_endpoint_source_c
       weight hweight_int hweight_nonneg hweight_cont hweight_midpoint_pos with
     ⟨levels, hlevels, heq, hrate_opt, _hpos, hcert⟩
   exact ⟨levels, hlevels, heq, hrate_opt, hcert, hcut_value⟩
-
-/--
-Theorem 3.1 staged source theorem under a unique value-maximizing
-discretization convention.  If the source's `S*` cutpoint chain is the unique
-maximizer of the limiting-value objective, then the fixed-`S*`
-forward-clipped endpoint optimizer gives a full lexicographic optimum over
-cutpoint/endpoint designs.  This removes the stronger cross-partition
-secondary tie premise from the generic two-stage theorem while making the
-uniqueness convention explicit.
--/
-theorem theorem31_strict_cutpoint_unique_value_argmax_forward_clipped_endpoint_lexicographic_certificate
-    (μ : Measure ℝ) [IsFiniteMeasure (μ.prod μ)]
-    [Measure.IsOpenPosMeasure (μ.prod μ)]
-    {m : ℕ} (hm : 1 < m)
-    (limitingValue : (ℕ → ℝ) → ℝ)
-    (rate : (ℕ → ℝ) → (Fin (m + 2) → ℝ) → ℝ)
-    (cut : ℕ → ℝ) (hmono : Monotone cut)
-    (hcut_strict : ∀ i : ℕ, i < m + 2 → cut i < cut (i + 1))
-    (hcut_value :
-      EconCSLib.Optimization.IsMaximizerOn
-        (monotoneIntervalCutpointsEndpointFeasible (m + 2))
-        limitingValue cut)
-    (hcut_value_unique :
-      ∀ S : ℕ → ℝ,
-        monotoneIntervalCutpointsEndpointFeasible (m + 2) S →
-          limitingValue S = limitingValue cut → S = cut)
-    (sampleRate : Fin (m + 2) → ℝ)
-    (hsample_pos :
-      ∀ k : ℕ, k < m + 2 → 0 < binaryEndpointSampleRateNat sampleRate k)
-    (hsample_mono :
-      ∀ {a b : Fin (m + 2)}, a.val ≤ b.val → sampleRate a ≤ sampleRate b)
-    (hrate_cut :
-      ∀ levels : Fin (m + 2) → ℝ, BinaryEndpointLevelVector levels →
-        rate cut levels =
-          binaryEndpointAwareAdjacentRateObjective levels sampleRate)
-    (weight : ℝ × ℝ → ℝ)
-    (hweight_int :
-      ∀ component,
-        IntegrableOn weight
-          ((theorem31_ordered_quality_pair_partition μ (m + 2) cut hmono
-            (theorem31OrderedNontrivialPairSelected (m := m))).pieceSet component)
-          (μ.prod μ))
-    (hweight_nonneg :
-      ∀ component,
-        ∀ᵐ x ∂(μ.prod μ).restrict
-            ((theorem31_ordered_quality_pair_partition μ (m + 2) cut hmono
-              (theorem31OrderedNontrivialPairSelected (m := m))).pieceSet component),
-          0 ≤ weight x)
-    (hweight_cont : Continuous weight)
-    (hweight_midpoint_pos :
-      ∀ component : theorem31OrderedNontrivialPairComponent m,
-        0 < weight
-          (theorem31_ordered_quality_pair_component_midpoint (m := m) cut
-            component)) :
-    ∃ levels : Fin (m + 2) → ℝ,
-      ∃ hlevels : BinaryEndpointLevelVector levels,
-        BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          ExponentialRateCertificate
-            (theorem31SourceWbar μ cut hmono sampleRate levels hlevels weight)
-            (binaryEndpointAwareAdjacentRateObjective levels sampleRate) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
-            (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
-              monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
-                BinaryEndpointLevelVector design.2)
-            (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
-              limitingValue design.1)
-            (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
-              rate design.1 design.2)
-            (cut, levels) := by
-  rcases
-    theorem31_sourceDefinedWbar_forward_clipped_endpoint_piecewiseConstKernel_rate_certificate_of_cell_midpoints
-      μ hm cut hmono hcut_strict sampleRate hsample_pos hsample_mono
-      weight hweight_int hweight_nonneg hweight_cont hweight_midpoint_pos with
-    ⟨levels, hlevels, heq, hrate_opt, _hpos, hcert⟩
-  refine ⟨levels, hlevels, heq, hcert, ?_⟩
-  refine
-    theorem31_partition_endpoint_two_stage_lexicographic_optimality_of_unique_value_argmax
-      (fun S : ℕ → ℝ =>
-        monotoneIntervalCutpointsEndpointFeasible (m + 2) S)
-      (fun _S levels => BinaryEndpointLevelVector levels)
-      limitingValue rate cut levels hcut_value hcut_value_unique ?_
-  refine ⟨hlevels, ?_⟩
-  intro candidate hcandidate
-  rw [hrate_cut candidate hcandidate, hrate_cut levels hlevels]
-  exact hrate_opt.le hcandidate
-
-/--
-Theorem 3.1 unique-`S*` theorem under the weighted finite-level source model.
-The model record supplies the strict cutpoints, monotone sample rates, and
-weight regularity needed for the fixed-discretization large-deviation bridge;
-the additional hypotheses are exactly the source-level value argmax convention
-for `S*` and the identification of the displayed secondary rate at `S*`.
--/
-theorem theorem31_appropriate_finite_levels_weighted_unique_value_argmax_lexicographic_certificate
-    (μ : Measure ℝ) [IsFiniteMeasure (μ.prod μ)]
-    [Measure.IsOpenPosMeasure (μ.prod μ)]
-    (S : LemmaC4AppropriateFiniteLevelsWeightedModel μ)
-    (limitingValue : (ℕ → ℝ) → ℝ)
-    (rate : (ℕ → ℝ) → (Fin (S.m + 2) → ℝ) → ℝ)
-    (hcut_value :
-      EconCSLib.Optimization.IsMaximizerOn
-        (monotoneIntervalCutpointsEndpointFeasible (S.m + 2))
-        limitingValue S.cut)
-    (hcut_value_unique :
-      ∀ cut : ℕ → ℝ,
-        monotoneIntervalCutpointsEndpointFeasible (S.m + 2) cut →
-          limitingValue cut = limitingValue S.cut → cut = S.cut)
-    (hrate_cut :
-      ∀ levels : Fin (S.m + 2) → ℝ, BinaryEndpointLevelVector levels →
-        rate S.cut levels =
-          binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) :
-    ∃ levels : Fin (S.m + 2) → ℝ,
-      ∃ hlevels : BinaryEndpointLevelVector levels,
-        BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate ∧
-          ExponentialRateCertificate
-            (theorem31SourceWbar μ S.cut S.hmono S.sampleRate levels hlevels
-              S.weight)
-            (binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
-            (fun design : (ℕ → ℝ) × (Fin (S.m + 2) → ℝ) =>
-              monotoneIntervalCutpointsEndpointFeasible (S.m + 2) design.1 ∧
-                BinaryEndpointLevelVector design.2)
-            (fun design : (ℕ → ℝ) × (Fin (S.m + 2) → ℝ) =>
-              limitingValue design.1)
-            (fun design : (ℕ → ℝ) × (Fin (S.m + 2) → ℝ) =>
-              rate design.1 design.2)
-            (S.cut, levels) :=
-  theorem31_strict_cutpoint_unique_value_argmax_forward_clipped_endpoint_lexicographic_certificate
-    μ S.hm limitingValue rate S.cut S.hmono S.hcut_strict hcut_value
-    hcut_value_unique S.sampleRate S.hsample_pos S.hsample_mono hrate_cut
-    S.weight S.hweight_int S.hweight_nonneg S.hweight_cont
-    S.hweight_midpoint_pos
 
 /--
 Theorem 3.1 staged source theorem with the nonunique value-tie obligation
@@ -11282,7 +11081,7 @@ theorem theorem31_strict_cutpoint_value_tie_forward_clipped_endpoint_lexicograph
     (cut : ℕ → ℝ) (hmono : Monotone cut)
     (hcut_strict : ∀ i : ℕ, i < m + 2 → cut i < cut (i + 1))
     (hcut_value :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible (m + 2))
         limitingValue cut)
     (sampleRate : Fin (m + 2) → ℝ)
@@ -11330,7 +11129,7 @@ theorem theorem31_strict_cutpoint_value_tie_forward_clipped_endpoint_lexicograph
           ExponentialRateCertificate
             (theorem31SourceWbar μ cut hmono sampleRate levels hlevels weight)
             (binaryEndpointAwareAdjacentRateObjective levels sampleRate) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
+          AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
             (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
               monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
                 BinaryEndpointLevelVector design.2)
@@ -11375,7 +11174,7 @@ theorem theorem31_appropriate_finite_levels_weighted_value_tie_lexicographic_cer
     (limitingValue : (ℕ → ℝ) → ℝ)
     (rate : (ℕ → ℝ) → (Fin (S.m + 2) → ℝ) → ℝ)
     (hcut_value :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible (S.m + 2))
         limitingValue S.cut)
     (hrate_cut :
@@ -11400,7 +11199,7 @@ theorem theorem31_appropriate_finite_levels_weighted_value_tie_lexicographic_cer
             (theorem31SourceWbar μ S.cut S.hmono S.sampleRate levels hlevels
               S.weight)
             (binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
+          AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
             (fun design : (ℕ → ℝ) × (Fin (S.m + 2) → ℝ) =>
               monotoneIntervalCutpointsEndpointFeasible (S.m + 2) design.1 ∧
                 BinaryEndpointLevelVector design.2)
@@ -11431,7 +11230,7 @@ theorem theorem31_strict_cutpoint_value_fiber_rate_max_forward_clipped_endpoint_
     (cut : ℕ → ℝ) (hmono : Monotone cut)
     (hcut_strict : ∀ i : ℕ, i < m + 2 → cut i < cut (i + 1))
     (hcut_value :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible (m + 2))
         limitingValue cut)
     (sampleRate : Fin (m + 2) → ℝ)
@@ -11447,7 +11246,7 @@ theorem theorem31_strict_cutpoint_value_fiber_rate_max_forward_clipped_endpoint_
       ∀ levels : Fin (m + 2) → ℝ,
         BinaryEndpointLevelVector levels →
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate →
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
               monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
                 BinaryEndpointLevelVector design.2 ∧
@@ -11480,7 +11279,7 @@ theorem theorem31_strict_cutpoint_value_fiber_rate_max_forward_clipped_endpoint_
           ExponentialRateCertificate
             (theorem31SourceWbar μ cut hmono sampleRate levels hlevels weight)
             (binaryEndpointAwareAdjacentRateObjective levels sampleRate) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
+          AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
             (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
               monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
                 BinaryEndpointLevelVector design.2)
@@ -11513,7 +11312,7 @@ theorem theorem31_appropriate_finite_levels_weighted_value_fiber_rate_max_lexico
     (limitingValue : (ℕ → ℝ) → ℝ)
     (rate : (ℕ → ℝ) → (Fin (S.m + 2) → ℝ) → ℝ)
     (hcut_value :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible (S.m + 2))
         limitingValue S.cut)
     (hrate_cut :
@@ -11524,7 +11323,7 @@ theorem theorem31_appropriate_finite_levels_weighted_value_fiber_rate_max_lexico
       ∀ levels : Fin (S.m + 2) → ℝ,
         BinaryEndpointLevelVector levels →
         BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate →
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (fun design : (ℕ → ℝ) × (Fin (S.m + 2) → ℝ) =>
               monotoneIntervalCutpointsEndpointFeasible (S.m + 2) design.1 ∧
                 BinaryEndpointLevelVector design.2 ∧
@@ -11539,7 +11338,7 @@ theorem theorem31_appropriate_finite_levels_weighted_value_fiber_rate_max_lexico
             (theorem31SourceWbar μ S.cut S.hmono S.sampleRate levels hlevels
               S.weight)
             (binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
+          AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
             (fun design : (ℕ → ℝ) × (Fin (S.m + 2) → ℝ) =>
               monotoneIntervalCutpointsEndpointFeasible (S.m + 2) design.1 ∧
                 BinaryEndpointLevelVector design.2)
@@ -11597,7 +11396,7 @@ theorem lemmaC11_kendall_constant_weight_gap_objective_le_uniform
     kendallConstantWeightGapObjective gap ≤
       (1 - (M : ℝ)⁻¹) / 2 := by
   have h :=
-    EconCSLib.simplex_one_sub_sum_sq_div_two_le_uniform gap hgap_sum
+    AppliedModelingLib.simplex_one_sub_sum_sq_div_two_le_uniform gap hgap_sum
   simpa [kendallConstantWeightGapObjective] using h
 
 /--
@@ -11612,7 +11411,7 @@ theorem lemmaC11_kendall_constant_weight_ordered_pair_gap_objective_le_uniform
     (∑ i : Fin M, ∑ j : Fin M,
         if i < j then gap i * gap j else 0) ≤
       (1 - (M : ℝ)⁻¹) / 2 := by
-  rw [EconCSLib.FiniteSum.ordered_pair_mul_sum_eq_one_sub_sum_sq_div_two
+  rw [AppliedModelingLib.FiniteSum.ordered_pair_mul_sum_eq_one_sub_sum_sq_div_two
     gap hgap_sum]
   exact lemmaC11_kendall_constant_weight_gap_objective_le_uniform gap hgap_sum
 
@@ -11634,7 +11433,7 @@ theorem lemmaC11_kendall_constant_weight_interval_objective_le_equispaced
             rw [Fin.sum_univ_eq_sum_range
               (fun k : ℕ => s (k + 1) - s k) M]
       _ = 1 := by
-            simpa [h0, hM] using EconCSLib.sum_range_adjacent_sub s M
+            simpa [h0, hM] using AppliedModelingLib.sum_range_adjacent_sub s M
   exact
     lemmaC11_kendall_constant_weight_gap_objective_le_uniform
       (M := M) (fun i : Fin M => s (i.1 + 1) - s i.1) hgap_sum
@@ -11646,7 +11445,7 @@ cutpoints.
 -/
 theorem lemmaC11_kendall_constant_weight_interval_objective_equispaced_isMaximizerOn
     {M : ℕ} [Nonempty (Fin M)] (hM : 0 < M) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (intervalCutpointsEndpointFeasible M)
       (kendallConstantWeightIntervalObjective M)
       (equispacedIntervalCutpoint M) := by
@@ -11683,7 +11482,7 @@ theorem lemmaC11_kendall_constant_weight_ordered_pair_interval_objective_le_equi
             rw [Fin.sum_univ_eq_sum_range
               (fun k : ℕ => s (k + 1) - s k) M]
       _ = 1 := by
-            simpa [h0, hM] using EconCSLib.sum_range_adjacent_sub s M
+            simpa [h0, hM] using AppliedModelingLib.sum_range_adjacent_sub s M
   exact
     lemmaC11_kendall_constant_weight_ordered_pair_gap_objective_le_uniform
       (M := M) (fun i : Fin M => s (i.1 + 1) - s i.1) hgap_sum
@@ -11721,9 +11520,9 @@ theorem lemmaC11_kendall_constant_weight_ordered_pair_interval_objective_equispa
             simpa [equispacedIntervalCutpoint_zero M,
               equispacedIntervalCutpoint_self hM]
               using
-                EconCSLib.sum_range_adjacent_sub
+                AppliedModelingLib.sum_range_adjacent_sub
                   (equispacedIntervalCutpoint M) M
-  rw [EconCSLib.FiniteSum.ordered_pair_mul_sum_eq_one_sub_sum_sq_div_two
+  rw [AppliedModelingLib.FiniteSum.ordered_pair_mul_sum_eq_one_sub_sum_sq_div_two
     (fun i : Fin M =>
       equispacedIntervalCutpoint M (i.1 + 1) -
         equispacedIntervalCutpoint M i.1) hgap_sum]
@@ -11735,7 +11534,7 @@ constant-weight Kendall ordered-pair interval objective.
 -/
 theorem lemmaC11_kendall_constant_weight_ordered_pair_interval_objective_equispaced_isMaximizerOn
     {M : ℕ} [Nonempty (Fin M)] (hM : 0 < M) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (intervalCutpointsEndpointFeasible M)
       (fun s : ℕ → ℝ =>
         ∑ i : Fin M, ∑ j : Fin M,
@@ -11793,7 +11592,7 @@ theorem lemmaC11_kendall_constant_weight_ordered_pair_interval_objective_eq_equi
             rw [Fin.sum_univ_eq_sum_range
               (fun k : ℕ => s (k + 1) - s k) M]
       _ = 1 := by
-            simpa [gap, h0, hsM] using EconCSLib.sum_range_adjacent_sub s M
+            simpa [gap, h0, hsM] using AppliedModelingLib.sum_range_adjacent_sub s M
   have hsource :
       (∑ i : Fin M, ∑ j : Fin M,
           if i < j then
@@ -11801,7 +11600,7 @@ theorem lemmaC11_kendall_constant_weight_ordered_pair_interval_objective_eq_equi
           else 0) =
         (1 - ∑ i : Fin M, (gap i) ^ 2) / 2 := by
     simpa [gap] using
-      EconCSLib.FiniteSum.ordered_pair_mul_sum_eq_one_sub_sum_sq_div_two
+      AppliedModelingLib.FiniteSum.ordered_pair_mul_sum_eq_one_sub_sum_sq_div_two
         gap hgap_sum
   have hequi :
       (∑ i : Fin M, ∑ j : Fin M,
@@ -11818,7 +11617,7 @@ theorem lemmaC11_kendall_constant_weight_ordered_pair_interval_objective_eq_equi
     rw [hsource, hequi] at heq
     linarith
   have huniform :=
-    EconCSLib.simplex_eq_inv_card_of_sum_sq_eq_inv_card
+    AppliedModelingLib.simplex_eq_inv_card_of_sum_sq_eq_inv_card
       gap hgap_sum (by simpa using hsq)
   intro i
   simpa [gap] using huniform i
@@ -11841,7 +11640,7 @@ theorem theorem31_kendall_constant_weight_equispaced_two_stage_lexicographic_opt
         endpointFeasible S t →
         (∀ i : Fin M, S (i.1 + 1) - S i.1 = (M : ℝ)⁻¹) →
           rate S t ≤ rate (equispacedIntervalCutpoint M) tstar) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : (ℕ → ℝ) × Endpoint =>
         intervalCutpointsEndpointFeasible M design.1 ∧
           endpointFeasible design.1 design.2)
@@ -11889,7 +11688,7 @@ theorem theorem31_kendall_constant_weight_equispaced_two_stage_lexicographic_opt
         endpointFeasible S t →
         (∀ k : ℕ, k ≤ M → S k = equispacedIntervalCutpoint M k) →
           rate S t ≤ rate (equispacedIntervalCutpoint M) tstar) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : (ℕ → ℝ) × Endpoint =>
         intervalCutpointsEndpointFeasible M design.1 ∧
           endpointFeasible design.1 design.2)
@@ -11962,21 +11761,21 @@ theorem lemmaC10_spearman_linear_weight_ordered_pair_interval_objective_eq_gap_o
   let gap : ℕ → ℝ := fun i => s (i + 1) - s i
   have hmid :
       ∀ i : ℕ,
-        EconCSLib.FiniteSum.finitePartitionMidpoint gap i =
+        AppliedModelingLib.FiniteSum.finitePartitionMidpoint gap i =
           (s (i + 1) + s i) / 2 := by
     intro i
     have hprefix :
-        EconCSLib.FiniteSum.finitePartitionPrefix gap i = s i := by
-      have htel := EconCSLib.sum_range_adjacent_sub s i
-      simpa [gap, EconCSLib.FiniteSum.finitePartitionPrefix, h0] using htel
-    rw [EconCSLib.FiniteSum.finitePartitionMidpoint, hprefix]
+        AppliedModelingLib.FiniteSum.finitePartitionPrefix gap i = s i := by
+      have htel := AppliedModelingLib.sum_range_adjacent_sub s i
+      simpa [gap, AppliedModelingLib.FiniteSum.finitePartitionPrefix, h0] using htel
+    rw [AppliedModelingLib.FiniteSum.finitePartitionMidpoint, hprefix]
     simp [gap]
     ring
   have hsource :
       spearmanLinearWeightOrderedPairIntervalObjective M s =
-        EconCSLib.FiniteSum.orderedPairLinearGapObjectiveRange gap M := by
+        AppliedModelingLib.FiniteSum.orderedPairLinearGapObjectiveRange gap M := by
     unfold spearmanLinearWeightOrderedPairIntervalObjective
-    unfold EconCSLib.FiniteSum.orderedPairLinearGapObjectiveRange
+    unfold AppliedModelingLib.FiniteSum.orderedPairLinearGapObjectiveRange
     refine Finset.sum_congr rfl ?_
     intro i _hi
     refine Finset.sum_congr rfl ?_
@@ -11985,11 +11784,11 @@ theorem lemmaC10_spearman_linear_weight_ordered_pair_interval_objective_eq_gap_o
     · simp [hij, gap, hmid i, hmid j]
     · simp [hij]
   have hprefixM :
-      EconCSLib.FiniteSum.finitePartitionPrefix gap M = 1 := by
-    have htel := EconCSLib.sum_range_adjacent_sub s M
-    simpa [gap, EconCSLib.FiniteSum.finitePartitionPrefix, h0, hM] using htel
+      AppliedModelingLib.FiniteSum.finitePartitionPrefix gap M = 1 := by
+    have htel := AppliedModelingLib.sum_range_adjacent_sub s M
+    simpa [gap, AppliedModelingLib.FiniteSum.finitePartitionPrefix, h0, hM] using htel
   rw [hsource,
-    EconCSLib.FiniteSum.orderedPairLinearGapObjectiveRange_eq_cube_sub_sum_cube_div_six,
+    AppliedModelingLib.FiniteSum.orderedPairLinearGapObjectiveRange_eq_cube_sub_sum_cube_div_six,
     hprefixM]
   unfold spearmanLinearWeightIntervalObjective spearmanLinearWeightGapObjective
   rw [Fin.sum_univ_eq_sum_range (fun i : ℕ => (s (i + 1) - s i) ^ 3) M]
@@ -12007,7 +11806,7 @@ theorem lemmaC12_spearman_linear_weight_gap_objective_le_uniform
     spearmanLinearWeightGapObjective gap ≤
       (1 - ((M : ℝ)⁻¹) ^ 2) / 6 := by
   have h :=
-    EconCSLib.simplex_one_sub_sum_cube_div_six_le_uniform
+    AppliedModelingLib.simplex_one_sub_sum_cube_div_six_le_uniform
       gap hgap_nonneg hgap_sum
   simpa [spearmanLinearWeightGapObjective] using h
 
@@ -12033,7 +11832,7 @@ theorem lemmaC12_spearman_linear_weight_interval_objective_le_equispaced
             rw [Fin.sum_univ_eq_sum_range
               (fun k : ℕ => s (k + 1) - s k) M]
       _ = 1 := by
-            simpa [h0, hM] using EconCSLib.sum_range_adjacent_sub s M
+            simpa [h0, hM] using AppliedModelingLib.sum_range_adjacent_sub s M
   exact
     lemmaC12_spearman_linear_weight_gap_objective_le_uniform
       (M := M) (fun i : Fin M => s (i.1 + 1) - s i.1)
@@ -12046,7 +11845,7 @@ cutpoints.
 -/
 theorem lemmaC12_spearman_linear_weight_interval_objective_equispaced_isMaximizerOn
     {M : ℕ} [Nonempty (Fin M)] (hM : 0 < M) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (monotoneIntervalCutpointsEndpointFeasible M)
       (spearmanLinearWeightIntervalObjective M)
       (equispacedIntervalCutpoint M) := by
@@ -12100,7 +11899,7 @@ cutpoints.
 -/
 theorem lemmaC12_spearman_linear_weight_ordered_pair_interval_objective_equispaced_isMaximizerOn
     {M : ℕ} [Nonempty (Fin M)] (hM : 0 < M) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (monotoneIntervalCutpointsEndpointFeasible M)
       (spearmanLinearWeightOrderedPairIntervalObjective M)
       (equispacedIntervalCutpoint M) := by
@@ -12142,7 +11941,7 @@ theorem lemmaC12_spearman_linear_weight_ordered_pair_interval_objective_eq_equis
             rw [Fin.sum_univ_eq_sum_range
               (fun k : ℕ => s (k + 1) - s k) M]
       _ = 1 := by
-            simpa [gap, h0, hsM] using EconCSLib.sum_range_adjacent_sub s M
+            simpa [gap, h0, hsM] using AppliedModelingLib.sum_range_adjacent_sub s M
   have hsource :
       spearmanLinearWeightOrderedPairIntervalObjective M s =
         (1 - ∑ i : Fin M, (gap i) ^ 3) / 6 := by
@@ -12160,7 +11959,7 @@ theorem lemmaC12_spearman_linear_weight_ordered_pair_interval_objective_eq_equis
     rw [hsource, hequi] at heq
     linarith
   have huniform :=
-    EconCSLib.simplex_eq_inv_card_of_sum_cube_eq_inv_card_sq
+    AppliedModelingLib.simplex_eq_inv_card_of_sum_cube_eq_inv_card_sq
       gap hgap_nonneg hgap_sum (by simpa using hcube)
   intro i
   simpa [gap] using huniform i
@@ -12183,7 +11982,7 @@ theorem theorem31_spearman_linear_weight_equispaced_two_stage_lexicographic_opti
         endpointFeasible S t →
         (∀ i : Fin M, S (i.1 + 1) - S i.1 = (M : ℝ)⁻¹) →
           rate S t ≤ rate (equispacedIntervalCutpoint M) tstar) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : (ℕ → ℝ) × Endpoint =>
         monotoneIntervalCutpointsEndpointFeasible M design.1 ∧
           endpointFeasible design.1 design.2)
@@ -12229,7 +12028,7 @@ theorem theorem31_spearman_linear_weight_equispaced_two_stage_lexicographic_opti
         endpointFeasible S t →
         (∀ k : ℕ, k ≤ M → S k = equispacedIntervalCutpoint M k) →
           rate S t ≤ rate (equispacedIntervalCutpoint M) tstar) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : (ℕ → ℝ) × Endpoint =>
         monotoneIntervalCutpointsEndpointFeasible M design.1 ∧
           endpointFeasible design.1 design.2)
@@ -12253,7 +12052,7 @@ large-deviation rate objective on the value-tie fiber.
 -/
 theorem theorem31_kendall_constant_weight_equispaced_canonical_uniform_endpoint_lexicographic_optimality
     {M : ℕ} [Nonempty (Fin M)] (hM : 0 < M) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : (ℕ → ℝ) × (Fin (M + 2) → ℝ) =>
         intervalCutpointsEndpointFeasible M design.1 ∧
           BinaryEndpointLevelVector design.2)
@@ -12284,7 +12083,7 @@ large-deviation rate objective on the value-tie fiber.
 -/
 theorem theorem31_spearman_linear_weight_equispaced_canonical_uniform_endpoint_lexicographic_optimality
     {M : ℕ} [Nonempty (Fin M)] (hM : 0 < M) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : (ℕ → ℝ) × (Fin (M + 2) → ℝ) =>
         monotoneIntervalCutpointsEndpointFeasible M design.1 ∧
           BinaryEndpointLevelVector design.2)
@@ -12316,7 +12115,7 @@ objective over endpoint vectors of length `m + 2`.
 -/
 theorem theorem31_kendall_constant_weight_equispaced_source_endpoint_lexicographic_optimality
     (m : ℕ) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
         intervalCutpointsEndpointFeasible (m + 2) design.1 ∧
           BinaryEndpointLevelVector design.2)
@@ -12370,7 +12169,7 @@ theorem theorem31_kendall_constant_weight_equispaced_source_endpoint_lexicograph
           (canonicalUniformEqualizedEndpointLevels_levelVector m)
           (fun _ : ℝ × ℝ => (1 : ℝ)))
         c ∧
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           intervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -12399,7 +12198,7 @@ endpoint vectors of length `m + 2`.
 -/
 theorem theorem31_spearman_linear_weight_equispaced_source_endpoint_lexicographic_optimality
     (m : ℕ) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
         monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
           BinaryEndpointLevelVector design.2)
@@ -12453,7 +12252,7 @@ theorem theorem31_spearman_linear_weight_equispaced_source_endpoint_lexicographi
           (canonicalUniformEqualizedEndpointLevels_levelVector m)
           (fun _ : ℝ × ℝ => (1 : ℝ)))
         c ∧
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -12490,7 +12289,7 @@ theorem lemmaB2_knownTypeExperiment_finite_representatives_uniform_of_pointwise
       (fun N : ℕ => fun p : Item × Y => psiHat N p.1 p.2)
       (fun p : Item × Y => psiAt p.1 p.2) atTop Set.univ := by
   exact
-    EconCSLib.Math.tendstoUniformlyOn_univ_of_fintype
+    AppliedModelingLib.Math.tendstoUniformlyOn_univ_of_fintype
       (fun N : ℕ => fun p : Item × Y => psiHat N p.1 p.2)
       (fun p : Item × Y => psiAt p.1 p.2)
       (by
@@ -12534,7 +12333,7 @@ theorem lemmaB2_knownTypeExperiment_uniform_over_finite_questions_of_each_questi
       (fun p : ℝ × Y => psi p.1 p.2) atTop
       (Set.Icc (0 : ℝ) 1 ×ˢ Set.univ) := by
   exact
-    EconCSLib.Math.tendstoUniformlyOn_prod_right_of_finite hquestion
+    AppliedModelingLib.Math.tendstoUniformlyOn_prod_right_of_finite hquestion
 
 /--
 Lemma B.3 finite-question product step.  The same finite-coordinate product
@@ -12590,7 +12389,7 @@ theorem lemmaB2_knownTypeExperiment_uniform_convergence_of_lipschitz_tracking
       (fun p : ℝ × Y => psi p.1 p.2) atTop
       (Set.Icc (0 : ℝ) 1 ×ˢ Set.univ) := by
   exact
-    EconCSLib.Math.tendstoUniformlyOn_prod_of_lipschitz_tracking_rep
+    AppliedModelingLib.Math.tendstoUniformlyOn_prod_of_lipschitz_tracking_rep
       psiHat psi representative (Set.Icc (0 : ℝ) 1) noise mesh K hK
       hnoise hmesh htrack hrepresentative hlipschitz
 

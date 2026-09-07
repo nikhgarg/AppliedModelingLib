@@ -9,7 +9,7 @@ endpoints here lets future proof iterations avoid rebuilding the monolithic
 `MainTheorems.lean` file when only these bridge statements change.
 -/
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Auction
 
 /--
@@ -31142,4 +31142,4 @@ theorem paper_theorem8_bstar_ranked_threshold_strict_ordered_price_sorted_fin_sc
   exact ⟨htrace, hsource_extensive, hevent_safe, hexact, hordered_pbe⟩
 
 end Auction
-end EconCSLib
+end AppliedModelingLib

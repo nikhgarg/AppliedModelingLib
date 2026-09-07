@@ -1,17 +1,17 @@
-import EconCSLib.SocialChoice.Ranking.Basic
+import AppliedModelingLib.SocialChoice.Ranking.Basic
 
 /-!
 # KR21 Ranking Compatibility Layer
 
 KR21 originally introduced finite ranking primitives in this file. The
 paper-independent definitions now live in
-`EconCSLib.SocialChoice.Ranking.Basic`; this file preserves the existing
+`AppliedModelingLib.SocialChoice.Ranking.Basic`; this file preserves the existing
 KR21 names for downstream paper proofs.
 -/
 
 namespace KR21Monoculture
 
-export EconCSLib.SocialChoice.Ranking
+export AppliedModelingLib.SocialChoice.Ranking
   (Candidate
     Ranking
     firstChoice

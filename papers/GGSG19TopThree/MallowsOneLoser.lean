@@ -1,4 +1,4 @@
-import EconCSLib.SocialChoice.Ranking.MallowsRankFactorization
+import AppliedModelingLib.SocialChoice.Ranking.MallowsRankFactorization
 
 /-!
 # Mallows One-Loser Boundary
@@ -11,7 +11,7 @@ ranked last by the center ranking.
 
 namespace GGSG19TopThree
 
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib.SocialChoice.Ranking
 
 noncomputable section
 
@@ -261,7 +261,7 @@ def oneLoserRelevantPairEquivSelectionPair {n : ℕ} (ρ : Ranking n) :
 theorem eq_of_rankOf_eq {n : ℕ} {π : Ranking n} {a b : Candidate n}
     (h : rankOf π a = rankOf π b) :
     a = b := by
-  exact EconCSLib.SocialChoice.Ranking.eq_of_rankOf_eq π h
+  exact AppliedModelingLib.SocialChoice.Ranking.eq_of_rankOf_eq π h
 
 /-- Top-`n + 1` approval is equivalent to not being ranked last. -/
 theorem approvedByK_oneLoser_iff_rankOf_ne_lastRank {n : ℕ}
@@ -304,7 +304,7 @@ theorem kApprovalPairDown_oneLoser_iff_rankOf_hi_lastRank {n : ℕ}
 theorem kApprovalPairUpProb_oneLoser_eq_rankOf_lastProb {n : ℕ}
     (μ : PMF (Ranking n)) {hi lo : Candidate n} (hhi_lo : hi ≠ lo) :
     kApprovalPairUpProb μ (n + 1) hi lo =
-      EconCSLib.pmfProb μ (fun π : Ranking n => rankOf π lo = oneLoserLastRank n) := by
+      AppliedModelingLib.pmfProb μ (fun π : Ranking n => rankOf π lo = oneLoserLastRank n) := by
   simpa [oneLoserLastRank] using
     (kApprovalPairUpProb_allButOne_eq_rankOf_lastProb μ hhi_lo)
 
@@ -312,7 +312,7 @@ theorem kApprovalPairUpProb_oneLoser_eq_rankOf_lastProb {n : ℕ}
 theorem kApprovalPairDownProb_oneLoser_eq_rankOf_lastProb {n : ℕ}
     (μ : PMF (Ranking n)) {hi lo : Candidate n} (hhi_lo : hi ≠ lo) :
     kApprovalPairDownProb μ (n + 1) hi lo =
-      EconCSLib.pmfProb μ (fun π : Ranking n => rankOf π hi = oneLoserLastRank n) := by
+      AppliedModelingLib.pmfProb μ (fun π : Ranking n => rankOf π hi = oneLoserLastRank n) := by
   simpa [oneLoserLastRank] using
     (kApprovalPairDownProb_allButOne_eq_rankOf_lastProb μ hhi_lo)
 
@@ -320,7 +320,7 @@ theorem kApprovalPairDownProb_oneLoser_eq_rankOf_lastProb {n : ℕ}
 theorem kApprovalPairUpProb_oneLoser_pair_eq_rankOf_lo_lastProb {n : ℕ}
     (μ : PMF (Ranking n)) {ρ : Ranking n} (pair : OneLoserSelectionPair ρ) :
     kApprovalPairUpProb μ (n + 1) pair.hi pair.lo =
-      EconCSLib.pmfProb μ
+      AppliedModelingLib.pmfProb μ
         (fun π : Ranking n => rankOf π pair.lo = oneLoserLastRank n) :=
   kApprovalPairUpProb_oneLoser_eq_rankOf_lastProb μ pair.hi_ne_lo
 
@@ -328,7 +328,7 @@ theorem kApprovalPairUpProb_oneLoser_pair_eq_rankOf_lo_lastProb {n : ℕ}
 theorem kApprovalPairDownProb_oneLoser_pair_eq_rankOf_hi_lastProb {n : ℕ}
     (μ : PMF (Ranking n)) {ρ : Ranking n} (pair : OneLoserSelectionPair ρ) :
     kApprovalPairDownProb μ (n + 1) pair.hi pair.lo =
-      EconCSLib.pmfProb μ
+      AppliedModelingLib.pmfProb μ
         (fun π : Ranking n => rankOf π pair.hi = oneLoserLastRank n) :=
   kApprovalPairDownProb_oneLoser_eq_rankOf_lastProb μ pair.hi_ne_lo
 
@@ -425,7 +425,7 @@ theorem mallowsOneLoserLastRankWeight_eq_reverse_rank_pow_tail {n : ℕ}
 /-- Probability that `c` is ranked last under a Mallows law. -/
 def mallowsOneLoserLastRankProb {n : ℕ}
     (M : MallowsSpec n) (c : Candidate n) : ℝ :=
-  EconCSLib.pmfProb M.law
+  AppliedModelingLib.pmfProb M.law
     (fun π : Ranking n => rankOf π c = oneLoserLastRank n)
 
 /-- One-loser ordered-pair up probability as a Mallows last-rank probability. -/
@@ -449,7 +449,7 @@ theorem mallowsOneLoserLastRankProb_eq_weight_div_partition {n : ℕ}
       mallowsOneLoserLastRankWeight M c / M.partition := by
   classical
   unfold mallowsOneLoserLastRankProb mallowsOneLoserLastRankWeight
-  unfold EconCSLib.pmfProb EconCSLib.pmfExp
+  unfold AppliedModelingLib.pmfProb AppliedModelingLib.pmfExp
   calc
     ∑ π : Ranking n, (M.law π).toReal *
         (if rankOf π c = oneLoserLastRank n then (1 : ℝ) else 0)
@@ -498,19 +498,19 @@ theorem mallowsOneLoserLastRankProb_add_le_one {n : ℕ}
     apply hab
     exact eq_of_rankOf_eq (ha.trans hb.symm)
   have hunion :
-      EconCSLib.pmfProb M.law
+      AppliedModelingLib.pmfProb M.law
           (fun π : Ranking n =>
             rankOf π a = oneLoserLastRank n ∨
               rankOf π b = oneLoserLastRank n) =
         mallowsOneLoserLastRankProb M a +
           mallowsOneLoserLastRankProb M b := by
     simpa [mallowsOneLoserLastRankProb] using
-      (EconCSLib.pmfProb_or_eq_add_of_disjoint M.law
+      (AppliedModelingLib.pmfProb_or_eq_add_of_disjoint M.law
         (fun π : Ranking n => rankOf π a = oneLoserLastRank n)
         (fun π : Ranking n => rankOf π b = oneLoserLastRank n)
         hdisjoint)
   rw [← hunion]
-  exact EconCSLib.pmfProb_le_one M.law
+  exact AppliedModelingLib.pmfProb_le_one M.law
     (fun π : Ranking n =>
       rankOf π a = oneLoserLastRank n ∨
         rankOf π b = oneLoserLastRank n)

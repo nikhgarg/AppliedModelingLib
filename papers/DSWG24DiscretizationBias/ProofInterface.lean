@@ -27,6 +27,11 @@ theorem calibration_definition {X Y : Type*} [MeasurableSpace (X × Y)] [Decidab
     (μ : Measure (X × Y)) (q : X → Y → ℝ) : calibration_definitionSpec (X := X) (Y := Y) (μ := μ) (q := q) := by
   rfl
 
+theorem argmax_rule_definition {X Y : Type*}
+    (q : X → Y → ℝ) (rule : X → Y) :
+    argmax_rule_definitionSpec (X := X) (Y := Y) q rule := by
+  rfl
+
 theorem tie_broken_argmax_definition {N K : ℕ}
     (q : Fin N → Fin K → ℝ) (rule : Fin N → Fin K) : tie_broken_argmax_definitionSpec (N := N) (K := K) (q := q) (rule := rule) := by
   rfl
@@ -36,6 +41,12 @@ theorem thompson_sampling_definition {N K : ℕ} (q selectionProbability : Fin N
 
 theorem independent_rule_definition {X : Type*} {N K : ℕ}
     (rule : (Fin N → X) → Fin N → Fin K) : independent_rule_definitionSpec (X := X) (N := N) (K := K) (rule := rule) := by
+  rfl
+
+theorem independent_randomized_rule_definition {X : Type*} {N K : ℕ}
+    (jointProbability : (Fin N → X) → (Fin N → Fin K) → ℝ) :
+    independent_randomized_rule_definitionSpec
+      (X := X) (N := N) (K := K) jointProbability := by
   rfl
 
 theorem integer_optimization_rule_definition {N K : ℕ} (γ : ℝ)
@@ -51,6 +62,18 @@ theorem nontrivial_reference_family_definition {Sample : Type*} {N K : ℕ}
     (posterior : Sample → Fin N → Fin K → ℝ)
     (aggregateArgmax : Sample → Fin K)
     (prefAt : Sample → Fin K → ℝ) : nontrivial_reference_family_definitionSpec (Sample := Sample) (N := N) (K := K) (posterior := posterior) (aggregateArgmax := aggregateArgmax) (prefAt := prefAt) := by
+  rfl
+
+theorem reference_distribution_definition {Sample : Type*} {K : ℕ}
+    (prefAt : Sample → Fin K → ℝ) :
+    reference_distribution_definitionSpec (Sample := Sample) (K := K) prefAt := by
+  rfl
+
+theorem dataset_most_likely_class_definition {Sample : Type*} {N K : ℕ}
+    (posterior : Sample → Fin N → Fin K → ℝ)
+    (aggregateArgmax : Sample → Fin K) :
+    dataset_most_likely_class_definitionSpec
+      (Sample := Sample) (N := N) (K := K) posterior aggregateArgmax := by
   rfl
 
 theorem theorem1i_no_information_bias
@@ -79,7 +102,18 @@ theorem theorem1iii_argmax_bias_le_mae
     (hsimplex : posteriorSimplex q)
     (hscore : ∀ y : Y, Measurable (fun xy : X × Y => q xy.1 y))
     (hcal : calibrated μ q) : theorem1iii_argmax_bias_le_maeSpec (X := X) (Y := Y) (μ := μ) (q := q) (argmaxRule := argmaxRule) (y := y) (hrule := hrule) (hargmax := hargmax) (hsimplex := hsimplex) (hscore := hscore) (hcal := hcal) := by
-  exact DSWG24DiscretizationBias.ProofBridge.theorem1iii_argmax_bias_le_mae_spec (X := X) (Y := Y) (μ := μ) (q := q) (argmaxRule := argmaxRule) (y := y) (hrule := hrule) (hargmax := hargmax) (hsimplex := hsimplex) (hscore := hscore) (hcal := hcal)
+  change
+    continuousJointPriorBias μ argmaxRule y ≤ continuousJointClassifierMAE μ q ∧
+      continuousJointAggregateBias μ q argmaxRule y ≤ continuousJointClassifierMAE μ q
+  constructor
+  · exact DSWG24DiscretizationBias.ProofBridge.theorem1iii_argmax_bias_le_mae_spec (X := X) (Y := Y) (μ := μ) (q := q) (argmaxRule := argmaxRule) (y := y) (hrule := hrule) (hargmax := hargmax) (hsimplex := hsimplex) (hscore := hscore) (hcal := hcal)
+  · have hpriorAggregate :
+        (∫ xy, (if xy.2 = y then (1 : ℝ) else 0) ∂μ) =
+          continuousJointAggregatePosterior μ q y :=
+      DSWG24DiscretizationBias.ProofBridge.continuousJointPrior_eq_jointAggregatePosterior_of_calibrated
+        μ q y hcal
+    rw [continuousJointAggregateBias, ← hpriorAggregate]
+    exact DSWG24DiscretizationBias.ProofBridge.theorem1iii_argmax_bias_le_mae_spec (X := X) (Y := Y) (μ := μ) (q := q) (argmaxRule := argmaxRule) (y := y) (hrule := hrule) (hargmax := hargmax) (hsimplex := hsimplex) (hscore := hscore) (hcal := hcal)
 
 theorem theorem1iii_tight_binary_example : theorem1iii_tight_binary_exampleSpec := by
   exact DSWG24DiscretizationBias.ProofBridge.theorem1iii_tight_binary_example_spec
@@ -88,7 +122,7 @@ theorem theorem2i_joint_rule_exists
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (hK : 2 ≤ K) (hNK : K < N)
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (γ : ℝ) (posterior : σ → Fin N → Fin K → ℝ)
@@ -103,13 +137,13 @@ theorem theorem2ii_argmax_accuracy_maximizing
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (hK : 2 ≤ K) (hNK : K < N)
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (posterior : σ → Fin N → Fin K → ℝ)
     {decisionRule argmaxRule : σ → Fin N → Fin K}
     (hargmax :
-      ∀ xs, EconCSLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs))
+      ∀ xs, AppliedModelingLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs))
     (hbayesRow : ∀ i (choose : σ → Fin K),
       expect (fun x =>
           if choose (observedDataset x) = trueLabels x i then (1 : ℝ) else 0) =
@@ -131,6 +165,50 @@ theorem theorem2iii_weighted_objective_maximizer_agrees_argmax
     (aggregateArgmax : (Fin N → X) → Fin K)
     (prefAt : (Fin N → X) → Fin K → ℝ) (γ : ℝ) : theorem2iii_weighted_objective_maximizer_agrees_argmaxSpec (X := X) (N := N) (K := K) (μ := μ) (posterior := posterior) (rule := rule) (argmaxRule := argmaxRule) (aggregateArgmax := aggregateArgmax) (prefAt := prefAt) (γ := γ) := by
   exact DSWG24DiscretizationBias.ProofBridge.theorem2iii_source_weighted_objective_maximizer_agrees_argmax_spec (X := X) (N := N) (K := K) (μ := μ) (posterior := posterior) (rule := rule) (argmaxRule := argmaxRule) (aggregateArgmax := aggregateArgmax) (prefAt := prefAt) (γ := γ)
+
+theorem theorem2iii_randomized_non_argmax_not_pareto
+    {Z X : Type*} [Fintype Z] [DecidableEq Z] {N K : ℕ}
+    (ν : PMF Z) (feature : Z → X) (posterior : X → Fin K → ℝ)
+    (rule : Z → Fin K) (argmaxRule : X → Fin K)
+    (aggregateArgmax : (Fin N → X) → Fin K)
+    (prefAt : (Fin N → X) → Fin K → ℝ) :
+    theorem2iii_randomized_non_argmax_not_paretoSpec
+      (Z := Z) (X := X) (N := N) (K := K) ν feature posterior rule argmaxRule
+      aggregateArgmax prefAt := by
+  intro hK hNK hargmax hdisagree hPNq hNpos
+  exact
+    (DSWG24DiscretizationBias.ProofBridge.theorem2iii_source_randomized_augmented_endpoints
+      ν feature posterior rule argmaxRule hargmax hdisagree aggregateArgmax prefAt hPNq
+      (γ := 0) (by norm_num) (by norm_num) hNpos).1
+
+theorem theorem2iii_randomized_weighted_objective_maximizer_agrees_argmax
+    {Z X : Type*} [Fintype Z] [DecidableEq Z] {N K : ℕ}
+    (ν : PMF Z) (feature : Z → X) (posterior : X → Fin K → ℝ)
+    (rule : Z → Fin K) (argmaxRule : X → Fin K)
+    (aggregateArgmax : (Fin N → X) → Fin K)
+    (prefAt : (Fin N → X) → Fin K → ℝ) (γ : ℝ) :
+    theorem2iii_randomized_weighted_objective_maximizer_agrees_argmaxSpec
+      (Z := Z) (X := X) (N := N) (K := K) ν feature posterior rule argmaxRule
+      aggregateArgmax prefAt γ := by
+  intro hK hNK hargmax hdisagree hPNq hγnonneg hγlt hNpos
+  exact
+    (DSWG24DiscretizationBias.ProofBridge.theorem2iii_source_randomized_augmented_endpoints
+      ν feature posterior rule argmaxRule hargmax hdisagree aggregateArgmax prefAt hPNq
+      hγnonneg hγlt hNpos).2
+
+theorem theorem2iii_randomized_augmented_endpoints
+    {Z X : Type*} [Fintype Z] [DecidableEq Z] {N K : ℕ}
+    (ν : PMF Z) (feature : Z → X) (posterior : X → Fin K → ℝ)
+    (rule : Z → Fin K) (argmaxRule : X → Fin K)
+    (aggregateArgmax : (Fin N → X) → Fin K)
+    (prefAt : (Fin N → X) → Fin K → ℝ) (γ : ℝ) :
+    theorem2iii_randomized_augmented_endpointsSpec
+      (Z := Z) (X := X) (N := N) (K := K) ν feature posterior rule argmaxRule
+      aggregateArgmax prefAt γ := by
+  intro hargmax hdisagree hPNq hγnonneg hγlt hNpos
+  exact DSWG24DiscretizationBias.ProofBridge.theorem2iii_source_randomized_augmented_endpoints
+    ν feature posterior rule argmaxRule hargmax hdisagree aggregateArgmax prefAt hPNq
+    hγnonneg hγlt hNpos
 
 end
 

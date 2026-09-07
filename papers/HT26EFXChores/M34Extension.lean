@@ -13,7 +13,7 @@ Source: `EFXadditivechores.tex`, lines 672--676.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- Repeatedly insert a finite, disjoint pool of chores each of which is small
 for at least three of the four agents. -/

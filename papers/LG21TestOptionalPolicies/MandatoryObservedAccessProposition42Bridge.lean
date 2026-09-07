@@ -22,7 +22,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- A mandatory-given-access source policy for Proposition 4.2.  The only
 PBO premise concerns the observed reported-score branch; Proposition 4.2 does

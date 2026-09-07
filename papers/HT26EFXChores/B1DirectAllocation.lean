@@ -13,7 +13,7 @@ Source: `EFXadditivechores.tex`, Case B.2.1(a), lines 2291--2324.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The representative direct allocation in source Case B.2.1(a), with
 agent `0` the long agent.  The `u`, `v`, and `w` pools are respectively the
@@ -1438,7 +1438,7 @@ theorem existsEfxOfB1LowMultiplicity_doubleDisjoint_longZero
     (by simpa [hcover] using hfinal.1), (by simpa [hcover] using hfinal.2)⟩
 
 /-- The preceding B.2.2(b) double-disjoint schedule, stated directly with
-the M₂ type fibres used by EconCSLib. -/
+the M₂ type fibres used by AppliedModelingLib. -/
 theorem existsEfxOfB1LowMultiplicity_doubleDisjoint_longZero_of_typePools
     (Item : Type) [DecidableEq Item] (r : ℝ) (cost : ChoreCost (Fin 4) Item)
     (prefixChores m2Chores u w : Finset Item) (head : Item)

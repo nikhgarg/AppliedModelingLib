@@ -8,6 +8,7 @@ import json
 import sys
 import tempfile
 import unittest
+from contextlib import ExitStack
 from pathlib import Path
 from unittest import mock
 
@@ -21,8 +22,34 @@ from scripts import audit_evidence_integrity  # noqa: E402
 from scripts import audit_repository  # noqa: E402
 from scripts import lean_signature_manifest  # noqa: E402
 from scripts import review_dashboard  # noqa: E402
+from scripts import review_surface_structure  # noqa: E402
+from scripts import source_claim_policy  # noqa: E402
 from scripts import source_record_integrity  # noqa: E402
 from scripts import sync_paper_status  # noqa: E402
+
+
+def typed_fixture_declaration_index(
+    folder: Path,
+    declarations: dict[str, str],
+) -> dict[str, list[audit_repository.LeanDeclaration]]:
+    """Build synthetic Lean-environment records for current-v11 unit tests."""
+
+    path = folder / "PaperInterface.lean"
+    index: dict[str, list[audit_repository.LeanDeclaration]] = {}
+    for line, (qualified_name, kind) in enumerate(declarations.items(), start=1):
+        short_name = qualified_name.rsplit(".", 1)[-1]
+        declaration = audit_repository.LeanDeclaration(
+            path=path,
+            line=line,
+            kind=kind,
+            name=short_name,
+            source=f"{kind} {short_name}",
+            qualified_name=qualified_name,
+            identity_authority="lean_environment",
+        )
+        index.setdefault(qualified_name, []).append(declaration)
+        index.setdefault(short_name, []).append(declaration)
+    return index
 
 
 def proposition_spec_manifest() -> dict[str, object]:
@@ -113,6 +140,70 @@ def normalized_fixture_manifest(raw: dict[str, object]) -> dict[str, object]:
     normalized = lean_signature_manifest.normalize_signature_manifest(value)
     assert normalized is not None
     return normalized
+
+
+def make_fixture_coverage_source_inputs_current(folder: Path) -> None:
+    """Upgrade an accepted coverage fixture to the current raw-source protocol.
+
+    Older tests exercised downstream routing rules with page labels alone.  The
+    production gate now (correctly) requires every accepted source judgment to
+    be bound to a verbatim byte-pinned excerpt.  Keep those downstream tests
+    meaningful by supplying real fixture bytes instead of mocking or relaxing
+    the source-input gate.
+    """
+
+    map_path = folder / "audit" / "paper_statement_map.json"
+    coverage_path = folder / "audit" / "paper_coverage_llm.json"
+    statement_map = json.loads(map_path.read_text(encoding="utf-8"))
+    items = statement_map.get("items")
+    assert isinstance(items, dict)
+
+    missing_anchor_keys = [
+        key
+        for key, item in items.items()
+        if isinstance(item, dict) and not item.get("source_anchor_evidence")
+    ]
+    if missing_anchor_keys:
+        source_path = folder / "fixture_source.txt"
+        source_lines: list[str] = []
+        for key in missing_anchor_keys:
+            item = items[key]
+            assert isinstance(item, dict)
+            quote = str(item.get("statement") or item.get("title") or key).strip()
+            assert quote and "\n" not in quote
+            source_lines.append(quote)
+            line = len(source_lines)
+            item["source_anchor_evidence"] = [
+                {
+                    "path": source_path.name,
+                    "line_start": line,
+                    "line_end": line,
+                    "quoted_text": quote,
+                    "quoted_text_sha256": hashlib.sha256(
+                        quote.encode("utf-8")
+                    ).hexdigest(),
+                }
+            ]
+        source_path.write_text("\n".join(source_lines) + "\n", encoding="utf-8")
+        map_path.write_text(json.dumps(statement_map), encoding="utf-8")
+
+    inventory = review_dashboard.paper_statement_inventory(folder)
+    coverage = json.loads(coverage_path.read_text(encoding="utf-8"))
+    coverage["source_input_protocol"] = "verbatim_source_anchor_bundle_v1"
+    coverage["paper_statement_inventory_sha256"] = (
+        review_dashboard.paper_statement_inventory_digest(inventory)
+    )
+    coverage_items = coverage.get("items")
+    assert isinstance(coverage_items, dict)
+    for source_key, judgment in coverage_items.items():
+        if source_key not in inventory or not isinstance(judgment, dict):
+            continue
+        identity, error = review_dashboard.source_anchor_quote_identity(
+            inventory[source_key]
+        )
+        assert not error, error
+        judgment["source_anchor_quote_identity_sha256"] = identity
+    coverage_path.write_text(json.dumps(coverage), encoding="utf-8")
 
 
 def semantic_contract_manifest_pair(
@@ -240,6 +331,75 @@ def proposition_inductive_manifest() -> dict[str, object]:
 
 
 class PropositionSpecAuditTests(unittest.TestCase):
+    def test_v11_claim_surface_accepts_results_and_direct_definitions(self) -> None:
+        status = {
+            "review_surface": {
+                "require_v11_raw_source_spec_screening": True,
+                "include_names": ["resultSpec", "sourceDefinition"],
+                "proposition_spec_proofs": {"resultSpec": "resultProof"},
+                "source_definition_names": ["sourceDefinition"],
+            }
+        }
+
+        self.assertEqual(
+            audit_repository.v11_source_claim_review_names(status),
+            frozenset({"resultSpec", "sourceDefinition"}),
+        )
+
+    def test_v11_claim_surface_defers_roles_to_typed_routes(self) -> None:
+        status = {
+            "review_surface": {
+                "require_v11_raw_source_spec_screening": True,
+                "include_names": ["resultSpec", "unrouted"],
+                "proposition_spec_proofs": {"resultSpec": "resultProof"},
+                "source_definition_names": [],
+            }
+        }
+
+        self.assertEqual(
+            audit_repository.v11_source_claim_review_names(status),
+            frozenset({"resultSpec", "unrouted"}),
+        )
+
+    def test_v11_claim_surface_ignores_legacy_definition_vocabulary(self) -> None:
+        status = {
+            "review_surface": {
+                "require_v11_raw_source_spec_screening": True,
+                "include_names": ["resultSpec"],
+                "proposition_spec_proofs": {"resultSpec": "resultProof"},
+                "source_definition_names": ["notReviewed"],
+            }
+        }
+
+        self.assertEqual(
+            audit_repository.v11_source_claim_review_names(status),
+            frozenset({"resultSpec"}),
+        )
+
+    def test_comment_stripper_preserves_nested_block_comment_semantics(self) -> None:
+        source = (
+            "namespace Outer /- first\n"
+            "  /- nested -/ hidden -/\n"
+            "theorem visible : True := by trivial -- trailing\n"
+            "/- inline -/ lemma second : True := by trivial\n"
+            "end Outer\n"
+        )
+        self.assertEqual(
+            audit_repository.lean_code_lines_from_text(source),
+            [
+                (1, "namespace Outer "),
+                (2, ""),
+                (3, "theorem visible : True := by trivial "),
+                (4, " lemma second : True := by trivial"),
+                (5, "end Outer"),
+            ],
+        )
+        self.assertEqual(
+            audit_repository.lean_code_text(source),
+            "namespace Outer \n\ntheorem visible : True := by trivial \n"
+            " lemma second : True := by trivial\nend Outer",
+        )
+
     def test_declaration_index_scans_namespace_state_once_per_file(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             folder = Path(temp_dir)
@@ -467,6 +627,73 @@ class PropositionSpecAuditTests(unittest.TestCase):
             "",
         )
 
+    def test_current_v11_root_owns_recursive_closure_once(self) -> None:
+        """Coverage reuses v11 closure but still checks the exact Spec root."""
+
+        source_item, owner, evidence, rows = self.semantic_contract_coverage_fixture()
+        manifest = json.loads(json.dumps(owner.lean_signature_manifest))
+        dependency_graph = manifest["semantic_dependency_graph"]
+        dependency_graph["complete"] = False
+        dependency_graph["realization_complete"] = False
+        dependency_graph["failures"] = [
+            {"tag": "historical_schema2_closure_failure"}
+        ]
+        manifest.pop("sha256", None)
+        manifest["sha256"] = review_dashboard.signature_manifest_digest(manifest)
+        owner.lean_signature_manifest = manifest
+        owner.lean_signature_sha256 = str(manifest["sha256"])
+        owner.llm_match_source = Path(
+            review_dashboard.V11_RAW_SOURCE_SPEC_SCREENING_FILE
+        ).name
+        owner.llm_match_stale = False
+
+        resolved, error = review_dashboard._semantic_contract_spec_coverage_proof_row(
+            source_item,
+            owner,
+            rows,
+            semantic_contract_schema=1,
+        )
+        self.assertEqual(error, "")
+        self.assertIs(resolved, evidence)
+
+        # Without a current v11 transaction, the legacy row must still own its
+        # complete recursive dependency receipt and therefore fails closed.
+        owner.llm_match_source = "legacy_review.json"
+        resolved, error = review_dashboard._semantic_contract_spec_coverage_proof_row(
+            source_item,
+            owner,
+            rows,
+            semantic_contract_schema=1,
+        )
+        self.assertIsNone(resolved)
+        self.assertIn("proposition/dependency receipt", error)
+
+    def test_definition_coverage_accepts_exact_definitionally_realized_spec(self) -> None:
+        source_item, owner, evidence, rows = self.semantic_contract_coverage_fixture()
+        source_item["source_kind"] = "definition"
+        source_item["semantic_contract"]["evidence_mode"] = (
+            "definitionally_realizes"
+        )
+
+        self.assertEqual(
+            review_dashboard._definitionally_realized_spec_coverage_error(
+                source_item,
+                owner,
+                semantic_contract_schema=1,
+            ),
+            "",
+        )
+        self.assertEqual(
+            review_dashboard._coverage_route_error(
+                "opaque_source_identity",
+                source_item,
+                owner,
+                row_items=rows,
+                semantic_contract_schema=1,
+            ),
+            "",
+        )
+
     def test_dashboard_attaches_batched_lean_contract_verdicts(self) -> None:
         _source_item, owner, evidence, _rows = self.semantic_contract_coverage_fixture()
         owner.semantic_contract_lean_match_verified = None
@@ -505,6 +732,129 @@ class PropositionSpecAuditTests(unittest.TestCase):
         self.assertTrue(owner.semantic_contract_lean_transparency_verified)
         self.assertEqual(matches.call_args.args[2], [route])
         self.assertEqual(transparency.call_args.args[2], [owner.full_name])
+
+    def test_dashboard_attaches_definitional_source_contract_verdict(self) -> None:
+        _source_item, owner, evidence, _rows = self.semantic_contract_coverage_fixture()
+        owner.proposition_spec_role = "unproved_spec"
+        owner.proposition_spec_proof = ""
+        route = (owner.full_name, evidence.full_name, "definitionally_realizes")
+        source_map = {
+            "items": {
+                "source_definition": {
+                    "semantic_contract": {
+                        "spec_declaration": owner.full_name,
+                        "evidence_declaration": evidence.full_name,
+                        "evidence_mode": "definitionally_realizes",
+                        "semantic_shape": "plain",
+                    }
+                }
+            }
+        }
+        with (
+            mock.patch.object(
+                review_dashboard,
+                "paper_statement_map_payload",
+                return_value=source_map,
+            ),
+            mock.patch.object(
+                review_dashboard,
+                "review_source_module",
+                return_value="Fixture.PaperInterface",
+            ),
+            mock.patch.object(
+                review_dashboard,
+                "paper_owned_module_names_in_import_closure",
+                return_value=("Fixture.PaperInterface",),
+            ),
+            mock.patch.object(
+                review_dashboard,
+                "run_lean_semantic_contract_matches",
+                return_value={route: True},
+            ) as matches,
+            mock.patch.object(
+                review_dashboard,
+                "run_lean_semantic_contract_transparency_checks",
+                return_value={owner.full_name: {"passes": True}},
+            ),
+        ):
+            review_dashboard.attach_current_lean_semantic_contract_results(
+                Path("Fixture"),
+                Path("Fixture/PaperInterface.lean"),
+                [owner],
+                build_input_provider=mock.Mock(),
+            )
+
+        self.assertTrue(owner.semantic_contract_lean_match_verified)
+        self.assertTrue(owner.semantic_contract_lean_transparency_verified)
+        self.assertEqual(matches.call_args.args[2], [route])
+
+    def test_dashboard_routes_hidden_proof_relative_to_spec_namespace(self) -> None:
+        """An excluded proof still receives Lean-Meta credit at its exact name."""
+
+        _source_item, owner, evidence, _rows = self.semantic_contract_coverage_fixture()
+        owner.semantic_contract_lean_match_verified = None
+        owner.semantic_contract_lean_transparency_verified = None
+        route = (owner.full_name, evidence.full_name, "proves")
+        with (
+            mock.patch.object(
+                review_dashboard,
+                "review_source_module",
+                return_value="Fixture.PaperInterface",
+            ),
+            mock.patch.object(
+                review_dashboard,
+                "paper_owned_module_names_in_import_closure",
+                return_value=("Fixture.PaperInterface",),
+            ),
+            mock.patch.object(
+                review_dashboard,
+                "run_lean_semantic_contract_matches",
+                return_value={route: True},
+            ) as matches,
+            mock.patch.object(
+                review_dashboard,
+                "run_lean_semantic_contract_transparency_checks",
+                return_value={owner.full_name: {"passes": True}},
+            ),
+        ):
+            review_dashboard.attach_current_lean_semantic_contract_results(
+                Path("Fixture"),
+                Path("Fixture/PaperInterface.lean"),
+                [owner],
+                build_input_provider=mock.Mock(),
+            )
+
+        self.assertTrue(owner.semantic_contract_lean_match_verified)
+        self.assertTrue(owner.semantic_contract_lean_transparency_verified)
+        self.assertEqual(matches.call_args.args[2], [route])
+
+    def test_coverage_spec_owner_credits_configured_hidden_proof(self) -> None:
+        """A v11 Spec card need not duplicate its paired proof as a review row."""
+
+        source_item, owner, evidence, _rows = self.semantic_contract_coverage_fixture()
+        resolved, error = review_dashboard._semantic_contract_spec_coverage_proof_row(
+            source_item,
+            owner,
+            {owner.name: owner},
+            semantic_contract_schema=1,
+        )
+
+        self.assertEqual(error, "")
+        self.assertIsNotNone(resolved)
+        assert resolved is not None
+        self.assertEqual(resolved.full_name, evidence.full_name)
+        self.assertEqual(resolved.kind, "theorem")
+        self.assertNotEqual(resolved.name, owner.name)
+        self.assertEqual(
+            review_dashboard._coverage_route_error(
+                "opaque_source_identity",
+                source_item,
+                owner,
+                row_items={owner.name: owner},
+                semantic_contract_schema=1,
+            ),
+            "",
+        )
 
     def test_coverage_spec_owner_uses_lean_verdict_not_python_telescope(self) -> None:
         source_item, owner, _evidence, rows = self.semantic_contract_coverage_fixture(
@@ -599,10 +949,10 @@ class PropositionSpecAuditTests(unittest.TestCase):
                 include_names,
                 set(),
                 "formalized",
-                paper_closeout=True,
+                paper_closeout=False,
             )
 
-    def test_closeout_rejects_unproved_uncertified_and_missing_routes(self) -> None:
+    def test_diagnostic_rejects_unproved_uncertified_and_missing_routes(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             folder = Path(temp_dir)
             items, surface = self.fixture(folder)
@@ -617,9 +967,11 @@ class PropositionSpecAuditTests(unittest.TestCase):
             surface["proposition_spec_proofs"] = {"spec": "proof"}
             surface["include_names"] = ["spec"]
             findings = self.run_gate(folder, items, surface)
-            self.assertTrue(any("missing/unreviewed proof row" in f.message for f in findings))
+            self.assertTrue(
+                any("Lean Meta did not establish" in f.message for f in findings)
+            )
 
-    def test_closeout_uses_lean_meta_type_equality_and_fails_closed(self) -> None:
+    def test_diagnostic_uses_lean_meta_type_equality_and_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             folder = Path(temp_dir)
             items, surface = self.fixture(folder)
@@ -633,6 +985,263 @@ class PropositionSpecAuditTests(unittest.TestCase):
 
             exact = self.run_gate(folder, items, surface, meta_results={route: True})
             self.assertEqual(exact, [])
+
+    def test_closeout_rejects_parser_and_per_pair_fallback(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir)
+            items, surface = self.fixture(folder)
+            findings = audit_repository.check_proposition_spec_routes(
+                "Example",
+                folder,
+                surface,
+                list(surface["include_names"]),
+                set(),
+                "formalized",
+                paper_closeout=True,
+                review_items_provider=lambda: tuple(items),
+            )
+        self.assertTrue(
+            any("diagnostic only" in finding.message for finding in findings)
+        )
+
+    def test_current_v11_closeout_checks_typed_graph_without_dashboard(
+        self,
+    ) -> None:
+        """Current v11 checks each typed relation without presentation replay."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir)
+            _items, surface = self.fixture(folder)
+            surface["include_names"] = ["spec"]
+            surface["proposition_spec_proofs"] = {
+                "spec": "proof",
+                "internalSpec": "internalProof",
+            }
+            source_item = {
+                "semantic_contract": {
+                    "spec_declaration": "Example.spec",
+                    "evidence_declaration": "Example.proof",
+                    "evidence_mode": "proves",
+                    "semantic_shape": "plain",
+                }
+            }
+            source_map = {"items": {"source_claim": source_item}}
+            status_payload = {"review_surface": surface}
+            receipt = audit_repository.StrictSourceSpecCorrespondenceReceipt(
+                source_item_key="source_claim",
+                spec_declaration="Example.spec",
+                evidence_declaration="Example.proof",
+                evidence_mode="proves",
+                semantic_shape="plain",
+                source_atoms_sha256="1" * 64,
+                item_identity_sha256="2" * 64,
+                spec_closure_sha256="3" * 64,
+                spec_surface_sha256="4" * 64,
+                closure_environment_sha256="5" * 64,
+            )
+            context = mock.Mock()
+            context.issued_by_builder = True
+            context.selected_v11_closeout = True
+            context.current_v11_closeout = True
+            context.v11_direct_semantic_review_current = True
+            context.exact_json_payload.side_effect = lambda path: (
+                source_map if path.name == "paper_statement_map.json" else status_payload
+            )
+            context.paper_declaration_index.return_value = (
+                typed_fixture_declaration_index(
+                    folder,
+                    {"Example.spec": "def", "Example.proof": "theorem"},
+                )
+            )
+            context.v11_lean_review_surface = mock.Mock(
+                semantic_contracts={
+                    ("Example.spec", "Example.proof", "proves"): {
+                        "specification": "Example.spec",
+                        "evidence": "Example.proof",
+                        "mode": "proves",
+                        "matches": True,
+                    }
+                }
+            )
+            context.current_strict_source_spec_correspondence_receipts.return_value = (
+                receipt,
+            )
+            context.current_strict_source_spec_correspondence_scope_keys.return_value = (
+                "source_claim",
+            )
+            context.current_v11_primary_gate_result.return_value = mock.Mock(
+                proof_errors=()
+            )
+            review_items = mock.Mock(
+                side_effect=AssertionError("direct v11 proof check should avoid dashboard replay")
+            )
+            with (
+                mock.patch.object(
+                    audit_repository,
+                    "v11_source_claim_review_names",
+                    return_value={"spec"},
+                ),
+                mock.patch.object(
+                    lean_signature_manifest,
+                    "run_lean_proposition_spec_proof_matches",
+                    side_effect=AssertionError("retained graph should own proof equality"),
+                ) as direct_lean,
+            ):
+                findings = audit_repository.check_proposition_spec_routes(
+                    "Example",
+                    folder,
+                    surface,
+                    ["spec"],
+                    set(),
+                    "formalized",
+                    paper_closeout=True,
+                    review_items_provider=review_items,
+                    run_context=context,
+                )
+
+            self.assertEqual(findings, [])
+            review_items.assert_not_called()
+            direct_lean.assert_not_called()
+
+    def test_current_v11_axiom_gate_consumes_spec_and_proof_graph_rows(self) -> None:
+        """One retained graph owns both semantic-root and endpoint proof debt."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir)
+            _items, surface = self.fixture(folder)
+            surface["include_names"] = ["spec"]
+            surface["proposition_spec_proofs"] = {"spec": "proof"}
+            declarations = typed_fixture_declaration_index(
+                folder,
+                {"Example.spec": "def", "Example.proof": "theorem"},
+            )
+            source_map = {
+                "items": {
+                    "source_claim": {
+                        "semantic_contract": {
+                            "spec_declaration": "Example.spec",
+                            "evidence_declaration": "Example.proof",
+                            "evidence_mode": "proves",
+                            "semantic_shape": "plain",
+                        }
+                    }
+                }
+            }
+            context = mock.Mock()
+            context.paper_declaration_index.return_value = declarations
+            context.exact_json_payload.return_value = source_map
+            context.v11_lean_review_surface = mock.Mock(
+                declaration_inventory={
+                    "declarations": [
+                        {
+                            "declaration": "Example.spec",
+                            "axiom_closure_checked": True,
+                            "axiom_closure": [],
+                            "is_unsafe": False,
+                            "value_has_sorry": False,
+                        }
+                    ]
+                },
+                semantic_contracts={
+                    ("Example.spec", "Example.proof", "proves"): {
+                        "specification": "Example.spec",
+                        "evidence": "Example.proof",
+                        "mode": "proves",
+                        "matches": True,
+                        "evidence_axiom_closure_checked": True,
+                        "evidence_axiom_closure": ["Example.unapproved"],
+                        "evidence_is_unsafe": False,
+                        "evidence_value_has_sorry": False,
+                    }
+                },
+            )
+            context.current_v11_primary_gate_result.return_value = mock.Mock(
+                axiom_errors=(
+                    "`Example` Lean declaration `proof` depends on unapproved "
+                    "axiom(s): Example.unapproved",
+                )
+            )
+
+            findings = audit_repository.current_v11_direct_axiom_closure_findings(
+                "Example",
+                folder,
+                surface,
+                ["spec"],
+                set(),
+                run_context=context,
+            )
+
+            self.assertEqual(len(findings), 1)
+            self.assertIn("Example.unapproved", findings[0].message)
+
+    def test_current_v11_direct_definition_has_no_fake_proof_obligation(self) -> None:
+        """A source definition is checked as its exact declaration, once."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir)
+            _items, surface = self.fixture(folder)
+            surface["include_names"] = ["notProof"]
+            # A stale presentation mapping must not turn the definition into
+            # an alias-equivalence proof obligation.
+            surface["proposition_spec_proofs"] = {"notProof": "proof"}
+            source_map = {
+                "items": {
+                    "source_definition": {
+                        "source_kind": "definition",
+                        "inventory_role": "source_semantic_declaration",
+                        "lean_declarations": ["Example.notProof"],
+                    }
+                }
+            }
+            context = mock.Mock()
+            context.paper_declaration_index.return_value = (
+                typed_fixture_declaration_index(
+                    folder,
+                    {
+                        "Example.notProof": "def",
+                        "Example.proof": "theorem",
+                    },
+                )
+            )
+            context.exact_json_payload.return_value = source_map
+            context.v11_lean_review_surface = mock.Mock(
+                declaration_inventory={
+                    "declarations": [
+                        {
+                            "declaration": "Example.notProof",
+                            "axiom_closure_checked": True,
+                            "axiom_closure": [],
+                            "is_unsafe": False,
+                            "value_has_sorry": False,
+                        }
+                    ]
+                },
+                semantic_contracts={},
+            )
+            context.current_v11_primary_gate_result.return_value = mock.Mock(
+                proof_errors=(),
+                axiom_errors=(),
+            )
+
+            proof_findings = audit_repository.current_v11_direct_proof_pair_findings(
+                "Example",
+                folder,
+                surface,
+                surface["proposition_spec_proofs"],
+                {"notProof"},
+                run_context=context,
+            )
+            axiom_findings = audit_repository.current_v11_direct_axiom_closure_findings(
+                "Example",
+                folder,
+                surface,
+                ["notProof"],
+                set(),
+                run_context=context,
+            )
+
+            self.assertEqual(proof_findings, [])
+            self.assertEqual(axiom_findings, [])
 
     def test_prop_structure_is_a_specification_until_routed_to_a_theorem(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -755,6 +1364,20 @@ class PropositionSpecAuditTests(unittest.TestCase):
                 )
             )
 
+    def test_explicit_named_source_support_is_not_a_second_direct_proof_obligation(self) -> None:
+        item = {
+            "source": review_dashboard.PAPER_STATEMENT_MAP_FILE,
+            "source_kind": "lemma",
+            "source_status": "support_only",
+            "claim_bearing": True,
+            "statement": "The named intermediate lemma supplies a source proof step.",
+        }
+        self.assertFalse(
+            review_dashboard._source_inventory_item_requires_proof_evidence(
+                "source_support", item
+            )
+        )
+
     def test_theorem_like_source_item_requires_reviewed_theorem_declaration(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             folder = Path(temp_dir)
@@ -816,6 +1439,10 @@ class PropositionSpecAuditTests(unittest.TestCase):
             unknown_kind = findings_for("notProof", "theorm")
             self.assertTrue(
                 any("unknown `source_kind`" in f.message for f in unknown_kind)
+            )
+            condition_kind = findings_for("notProof", "condition")
+            self.assertFalse(
+                any("unknown `source_kind`" in f.message for f in condition_kind)
             )
 
     def test_direct_result_routes_follow_semantic_source_scope(self) -> None:
@@ -1471,6 +2098,8 @@ class PropositionSpecAuditTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
+            make_fixture_coverage_source_inputs_current(folder)
+
             summary = review_dashboard.paper_coverage_audit_summary(folder, [])
             self.assertCountEqual(
                 summary["required_out_of_scope"],
@@ -1596,6 +2225,7 @@ class PropositionSpecAuditTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
+            make_fixture_coverage_source_inputs_current(folder)
             summary = review_dashboard.paper_coverage_audit_summary(folder, [])
             self.assertEqual(summary["user_approved_scope_exclusions"], ["renamed_navigation_key"])
             self.assertEqual(summary["required_out_of_scope"], [])
@@ -1712,7 +2342,7 @@ class PropositionSpecAuditTests(unittest.TestCase):
             r"By Theorem~\ref{thm:main}, the conclusion follows."
         )
         self.assertTrue(
-            review_dashboard._source_inventory_item_is_named_result_presentation(
+            source_claim_policy.source_inventory_item_is_named_result_presentation(
                 mislabelled_result
             )
         )
@@ -1722,7 +2352,7 @@ class PropositionSpecAuditTests(unittest.TestCase):
             )
         )
         self.assertFalse(
-            review_dashboard._source_inventory_item_is_named_result_presentation(
+            source_claim_policy.source_inventory_item_is_named_result_presentation(
                 theorem_reference
             )
         )
@@ -2428,6 +3058,8 @@ class PropositionSpecAuditTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
+            make_fixture_coverage_source_inputs_current(folder)
+
             summary = review_dashboard.paper_coverage_audit_summary(folder, [row])
             self.assertFalse(summary["source_to_lean_needs_attention"])
             self.assertEqual(summary["row_statement_match_missing"], [])
@@ -2736,6 +3368,7 @@ class PropositionSpecAuditTests(unittest.TestCase):
                     ),
                     encoding="utf-8",
                 )
+                make_fixture_coverage_source_inputs_current(folder)
 
             write_coverage()
             archival_summary = review_dashboard.paper_coverage_audit_summary(folder, [row])
@@ -2903,6 +3536,7 @@ class PropositionSpecAuditTests(unittest.TestCase):
                     ),
                     encoding="utf-8",
                 )
+                make_fixture_coverage_source_inputs_current(folder)
 
             write_coverage(["primary_endpoint"])
             accepted = review_dashboard.paper_coverage_audit_summary(folder, rows)
@@ -3093,6 +3727,7 @@ class PropositionSpecAuditTests(unittest.TestCase):
                     ),
                     encoding="utf-8",
                 )
+                make_fixture_coverage_source_inputs_current(folder)
 
             write_coverage({})
             missing_summary = review_dashboard.paper_coverage_audit_summary(folder, [row])
@@ -3258,6 +3893,7 @@ class PropositionSpecAuditTests(unittest.TestCase):
                     ),
                     encoding="utf-8",
                 )
+                make_fixture_coverage_source_inputs_current(folder)
 
             write_coverage()
             accepted = review_dashboard.paper_coverage_audit_summary(folder, [row])
@@ -3438,7 +4074,7 @@ class PropositionSpecAuditTests(unittest.TestCase):
                     "source_kind": "theorem",
                     "source_status": "quarantined_source_defect",
                     "source_defect_ids": ["OPAQUE-DEFECT-1"],
-                    "support_lean_declarations": ["route7"],
+                    "support_lean_declarations": ["Fixture.route7"],
                 },
                 "item8": {
                     **base_source,
@@ -3515,6 +4151,7 @@ class PropositionSpecAuditTests(unittest.TestCase):
                     ),
                     encoding="utf-8",
                 )
+                make_fixture_coverage_source_inputs_current(folder)
 
             def support_judgment(
                 source_key: str,
@@ -5281,14 +5918,14 @@ class PropositionSpecAuditTests(unittest.TestCase):
         original_guard = equality(scoped_bvar(4), const("Fixture.bound"))
         alpha_equivalent_guard = equality(scoped_bvar(97), const("Fixture.bound"))
         changed_guard = equality(scoped_bvar(97), const("Fixture.changed_bound"))
-        guard_pin = audit_repository.canonical_schema3_guard_sha256(original_guard)
+        guard_pin = audit_repository.canonical_schema3_expression_sha256(original_guard)
         self.assertEqual(
             guard_pin,
-            audit_repository.canonical_schema3_guard_sha256(alpha_equivalent_guard),
+            audit_repository.canonical_schema3_expression_sha256(alpha_equivalent_guard),
         )
         self.assertNotEqual(
             guard_pin,
-            audit_repository.canonical_schema3_guard_sha256(changed_guard),
+            audit_repository.canonical_schema3_expression_sha256(changed_guard),
         )
 
         surface = {
@@ -6303,6 +6940,7 @@ class ReviewSurfaceRouteTests(unittest.TestCase):
         aggregate_entry: dict[str, object] | None = None,
         sidecar_statuses: list[object] | None = None,
         assumption_source: str | None = None,
+        source_map: object | None = None,
     ) -> list[audit_repository.Finding]:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -6324,6 +6962,13 @@ class ReviewSurfaceRouteTests(unittest.TestCase):
                     assumption_source,
                     encoding="utf-8",
                 )
+            if source_map is not None:
+                audit = paper / "audit"
+                audit.mkdir()
+                (audit / "paper_statement_map.json").write_text(
+                    json.dumps(source_map),
+                    encoding="utf-8",
+                )
             aggregate = {
                 "schema": 1,
                 "papers": [aggregate_entry if aggregate_entry is not None else paper_entry],
@@ -6341,7 +6986,7 @@ class ReviewSurfaceRouteTests(unittest.TestCase):
                     sidecar_statuses.append(status)
                 return []
 
-            with (
+            patches = (
                 mock.patch.object(audit_repository, "ROOT", root),
                 mock.patch.object(audit_repository, "PAPERS", papers),
                 mock.patch.object(audit_repository, "PAPER_STATUS_FILE", papers / "status.json"),
@@ -6351,11 +6996,13 @@ class ReviewSurfaceRouteTests(unittest.TestCase):
                     side_effect=collect_sidecar_status,
                 ),
                 mock.patch.object(audit_repository, "paper_lean_declaration_index", return_value={}),
-                mock.patch.object(audit_repository, "assumption_premises_from_file", return_value={}),
                 mock.patch.object(audit_repository, "current_statement_conditional_boundary_rows", return_value=set()),
                 mock.patch.object(audit_repository, "check_source_record_audit", return_value=[]),
                 mock.patch.object(audit_repository, "check_proposition_spec_routes", return_value=[]),
-            ):
+            )
+            with ExitStack() as stack:
+                for patcher in patches:
+                    stack.enter_context(patcher)
                 return audit_repository.check_machine_paper_status(
                     paper_filter=str(paper_entry["id"])
                 )
@@ -6418,6 +7065,79 @@ class ReviewSurfaceRouteTests(unittest.TestCase):
             any("paper_interface.path` must point to `papers/ExamplePaper/PaperInterface.lean" in f.message for f in findings)
         )
 
+    def test_machine_status_treats_line_count_as_release_navigation(self) -> None:
+        entry = self.base_machine_status_entry()
+        entry["paper_interface"]["line_count"] = 999
+
+        findings = self.machine_status_findings_for(entry)
+        line_findings = [
+            finding
+            for finding in findings
+            if "display line_count" in finding.message
+        ]
+
+        self.assertEqual(len(line_findings), 1)
+        self.assertEqual(line_findings[0].severity, "WARN")
+
+    def test_source_claim_human_denominator_uses_configured_claim_slices(self) -> None:
+        entry = self.base_machine_status_entry()
+        entry["human_review"]["surface"] = "source_claims_v1"
+        entry["human_review"]["total_rows"] = 1
+        entry["paper_interface"]["review_rows"] = 2
+        surface = entry["review_surface"]
+        surface["include_names"] = ["paper_row", "support_row"]
+        surface["require_v11_raw_source_spec_screening"] = True
+        surface["proposition_spec_proofs"] = {
+            "paper_row": "paper_row_proof",
+            "support_row": "support_row_proof",
+        }
+        surface["slices"] = [
+            {"id": "main", "title": "Main claims", "names": ["paper_row"]}
+        ]
+
+        findings = self.machine_status_findings_for(entry)
+
+        self.assertFalse(
+            any("human_review.total_rows" in finding.message for finding in findings),
+            [finding.message for finding in findings],
+        )
+
+    def test_graph_native_source_condition_denominator_is_not_an_assumption_count(self) -> None:
+        entry = self.base_machine_status_entry()
+        entry["human_review"]["surface"] = "source_claims_v1"
+        entry["human_review"]["total_rows"] = 2
+        surface = entry["review_surface"]
+        surface["include_names"] = ["paper_row"]
+        surface["require_v11_raw_source_spec_screening"] = True
+        surface["source_condition_items"] = ["condition"]
+
+        findings = self.machine_status_findings_for(
+            entry,
+            source_map={
+                "items": {
+                    "claim": {
+                        "source_kind": "theorem",
+                        "semantic_contract": {
+                            "spec_declaration": "ExamplePaper.paper_row",
+                            "evidence_declaration": "ExamplePaper.paper_row",
+                            "evidence_mode": "proves",
+                            "semantic_shape": "plain",
+                        },
+                    },
+                    "condition": {
+                        "source_kind": "condition",
+                        "inventory_role": "source_semantic_declaration",
+                        "lean_declarations": ["ExamplePaper.ModelCondition"],
+                    },
+                }
+            },
+        )
+
+        self.assertFalse(
+            any("human_review.total_rows" in finding.message for finding in findings),
+            [finding.message for finding in findings],
+        )
+
     def test_paper_filter_uses_local_status_when_generated_aggregate_is_stale(self) -> None:
         local_entry = self.base_machine_status_entry()
         aggregate_entry = json.loads(json.dumps(local_entry))
@@ -6461,25 +7181,6 @@ class ReviewSurfaceRouteTests(unittest.TestCase):
                 and "Retained the complete PaperInterface audit surface" in finding.message
                 for finding in findings
             )
-        )
-
-    def test_paper_closeout_keeps_global_aggregate_drift_for_selected_paper(self) -> None:
-        selected = audit_repository.Finding(
-            "ERROR",
-            Path("papers/status.json"),
-            "`ExamplePaper` aggregate entry is out of sync with paper-local status",
-        )
-        other = audit_repository.Finding(
-            "ERROR",
-            Path("papers/status.json"),
-            "`OtherPaper` aggregate entry is out of sync with paper-local status",
-        )
-
-        self.assertTrue(
-            audit_repository.finding_is_for_paper_closeout(selected, "ExamplePaper")
-        )
-        self.assertFalse(
-            audit_repository.finding_is_for_paper_closeout(other, "ExamplePaper")
         )
 
     def test_status_sync_validator_rejects_non_paperinterface_routes(self) -> None:
@@ -6683,7 +7384,7 @@ def actual_tuple_witness_statement : Nat × Nat := (0, 0)
         )
 
     def test_reviewed_names_must_be_declared_in_paperinterface(self) -> None:
-        declaration_blocks = audit_repository.review_declaration_blocks(
+        declaration_blocks = review_surface_structure.review_declaration_blocks(
             "import ExamplePaper.AuditInterface\n"
             "namespace ExamplePaper\n"
             "export AuditInterface (paper_row)\n"
@@ -6707,11 +7408,12 @@ def actual_tuple_witness_statement : Nat × Nat := (0, 0)
         )
 
         self.assertEqual(
-            audit_repository.review_rows_from_interface_text(interface_text),
+            review_surface_structure.review_rows_from_interface_text(interface_text),
             [(2, "folded_row")],
         )
         self.assertIn(
-            "folded_row", audit_repository.review_declaration_blocks(interface_text)
+            "folded_row",
+            review_surface_structure.review_declaration_blocks(interface_text),
         )
         with tempfile.TemporaryDirectory() as temp_dir:
             folder = Path(temp_dir) / "ExamplePaper"
@@ -6741,7 +7443,7 @@ def actual_tuple_witness_statement : Nat × Nat := (0, 0)
         )
 
         self.assertEqual(
-            audit_repository.review_rows_from_interface_text(interface_text),
+            review_surface_structure.review_rows_from_interface_text(interface_text),
             [
                 (3, "EndpointVariation"),
                 (5, "EndpointVariation.zero_density_reward_eq"),
@@ -6856,166 +7558,12 @@ class SemanticCorrectedScopeAuditTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            declarations = audit_repository.assumption_declarations_from_file(
-                path, {"source_visible_condition"}
+            declarations = review_surface_structure.assumption_declarations_from_text(
+                path.read_text(encoding="utf-8"), {"source_visible_condition"}
             )
 
         self.assertEqual(set(declarations), {"source_visible_condition"})
 
-    def test_corrected_model_record_routing_requires_exact_fqn_and_resolved_binding(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            folder = Path(temp_dir) / "FixturePaper"
-            audit = folder / "audit"
-            audit.mkdir(parents=True)
-            target = "Fixture.PaperInterface.corrected"
-            source_row = "Fixture.PaperInterface.source_row"
-            source_record = {
-                "semantic_model_items": [
-                    {
-                        "qualified_declaration": target,
-                        "row": "corrected",
-                        "record_input_bindings": [
-                            {
-                                "binder_names": ["model"],
-                                "record_roots": ["Fixture.RootModel"],
-                            }
-                        ],
-                    },
-                    {
-                        "qualified_declaration": source_row,
-                        "row": "source_row",
-                        "record_input_bindings": [
-                            {
-                                "binder_names": ["sourceModel"],
-                                "record_roots": ["Fixture.SourceModel"],
-                            }
-                        ],
-                    }
-                ]
-            }
-            (audit / "source_record_audit.json").write_text(
-                json.dumps(source_record),
-                encoding="utf-8",
-            )
-            payload: dict[str, object] = {
-                "review_surface": {},
-                "formalization_scope": {
-                    "model_spec_declaration": "Fixture.RootModel",
-                    "target_result_declarations": [target],
-                }
-            }
-            interface = folder / "PaperInterface.lean"
-            interface.write_text(
-                "namespace Fixture.PaperInterface\n"
-                "theorem corrected (model : Fixture.RootModel) : True := by trivial\n"
-                "theorem source_row (sourceModel : Fixture.SourceModel) : True := by trivial\n"
-                "end Fixture.PaperInterface\n"
-                "namespace Other.PaperInterface\n"
-                "theorem source_row (sourceModel : Other.SourceModel) : True := by trivial\n"
-                "end Other.PaperInterface\n",
-                encoding="utf-8",
-            )
-            target_declaration = audit_repository.LeanDeclaration(
-                interface,
-                2,
-                "theorem",
-                "corrected",
-                "theorem corrected (model : Fixture.RootModel) : True := by trivial",
-            )
-            source_declaration = audit_repository.LeanDeclaration(
-                interface,
-                3,
-                "theorem",
-                "source_row",
-                "theorem source_row (sourceModel : Fixture.SourceModel) : True := by trivial",
-            )
-            same_suffix_declaration = audit_repository.LeanDeclaration(
-                interface,
-                6,
-                "theorem",
-                "source_row",
-                "theorem source_row (sourceModel : Other.SourceModel) : True := by trivial",
-            )
-            with mock.patch.object(
-                audit_repository,
-                "current_author_approved_corrected_scope",
-                return_value=True,
-            ):
-                bindings = audit_repository.corrected_scope_semantic_record_bindings(
-                    folder, payload
-                )
-
-                self.assertEqual(
-                    bindings,
-                    {
-                        target: ((frozenset({"model"}), "Fixture.RootModel"),),
-                        source_row: ((frozenset({"sourceModel"}), "Fixture.SourceModel"),),
-                    },
-                )
-                self.assertTrue(
-                    audit_repository.premise_is_current_corrected_model_record(
-                        "model : Fixture.RootModel n",
-                        target_declaration,
-                        bindings,
-                    )
-                )
-                self.assertTrue(
-                    audit_repository.premise_is_current_corrected_model_record(
-                        "sourceModel : Fixture.SourceModel n",
-                        source_declaration,
-                        bindings,
-                    )
-                )
-                self.assertTrue(
-                    audit_repository.premise_is_current_corrected_model_record(
-                        "anonymous : Fixture.SourceModel n",
-                        source_declaration,
-                        bindings,
-                    )
-                )
-                self.assertFalse(
-                    audit_repository.premise_is_current_corrected_model_record(
-                        "anonymous : Other.SourceModel n",
-                        source_declaration,
-                        bindings,
-                    )
-                )
-                self.assertFalse(
-                    audit_repository.premise_is_current_corrected_model_record(
-                        "anonymous : SourceModel n",
-                        source_declaration,
-                        bindings,
-                    )
-                )
-                self.assertFalse(
-                    audit_repository.premise_is_current_corrected_model_record(
-                        "certificate : Fixture.RootCertificate n",
-                        target_declaration,
-                        bindings,
-                    )
-                )
-                self.assertFalse(
-                    audit_repository.premise_is_current_corrected_model_record(
-                        "sourceModel : Other.SourceModel n",
-                        same_suffix_declaration,
-                        bindings,
-                    )
-                )
-
-                source_record["semantic_model_items"][1]["record_input_bindings"] = [
-                    {
-                        "binder_names": ["sourceModel"],
-                        "record_roots": ["Fixture.SourceModel", "Other.SourceModel"],
-                    }
-                ]
-                (audit / "source_record_audit.json").write_text(
-                    json.dumps(source_record),
-                    encoding="utf-8",
-                )
-                self.assertEqual(
-                    audit_repository.corrected_scope_semantic_record_bindings(folder, payload),
-                    {target: ((frozenset({"model"}), "Fixture.RootModel"),)},
-                )
 
     def test_current_corrected_model_premise_bridge_is_exact_and_fail_closed(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -7389,6 +7937,79 @@ class SemanticCorrectedScopeAuditTests(unittest.TestCase):
 
 
 class NamedTheorySemanticSurfaceTests(unittest.TestCase):
+    def test_current_v11_uses_exact_paper_status_not_stale_generated_entry(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "FixturePaper"
+            folder.mkdir()
+            (folder / "PaperInterface.lean").write_text(
+                "namespace Example\n"
+                "def spec : Prop := True\n"
+                "theorem proof : spec := by trivial\n"
+                "end Example\n",
+                encoding="utf-8",
+            )
+            declarations = typed_fixture_declaration_index(
+                folder,
+                {"Example.spec": "def", "Example.proof": "theorem"},
+            )
+            exact_status = {
+                "status": "formalized",
+                "review_surface": {
+                    "include_names": ["spec"],
+                    "proposition_spec_proofs": {"spec": "proof"},
+                    # Historical status vocabulary is not a v11 role map.
+                    "source_definition_names": [
+                        "AppliedModelingLib.Example.ReusableModel"
+                    ],
+                    "require_v11_raw_source_spec_screening": True,
+                },
+            }
+            statement_map = {
+                "items": {
+                    "claim": {
+                        "semantic_contract": {
+                            "spec_declaration": "Example.spec",
+                            "evidence_declaration": "Example.proof",
+                            "evidence_mode": "proves",
+                            "semantic_shape": "plain",
+                        }
+                    }
+                }
+            }
+            context = mock.Mock()
+            context.issued_by_builder = True
+            context.selected_v11_closeout = True
+            context.current_v11_closeout = True
+            context.v11_direct_semantic_review_current = True
+            context.evidence_context = object()
+            context.paper_declaration_index.return_value = declarations
+            context.exact_json_payload.side_effect = lambda path: (
+                exact_status if path.name == "status.json" else statement_map
+            )
+
+            with mock.patch.object(
+                audit_repository,
+                "graph_authority_source_spec_correspondence_errors",
+                side_effect=AssertionError(
+                    "current v11 hidden-premise selection must not fall back to raw graph authority"
+                ),
+            ):
+                surface, error = (
+                    audit_repository.current_named_theory_semantic_review_surface(
+                        folder,
+                        {"status": "formalized"},
+                        declarations,
+                        run_context=context,
+                    )
+                )
+
+        self.assertEqual(error, "")
+        self.assertIsNotNone(surface)
+        assert surface is not None
+        self.assertEqual(set(surface.rows), {"Example.spec"})
+
     def write_receipt_fixture(
         self,
         folder: Path,
@@ -7415,7 +8036,7 @@ class NamedTheorySemanticSurfaceTests(unittest.TestCase):
             "end Fixture\n",
             encoding="utf-8",
         )
-        declaration_blocks = audit_repository.review_declaration_blocks(
+        declaration_blocks = review_surface_structure.review_declaration_blocks(
             interface.read_text(encoding="utf-8")
         )
         declaration_index = audit_repository.paper_lean_declaration_index(folder)
@@ -7514,7 +8135,7 @@ class NamedTheorySemanticSurfaceTests(unittest.TestCase):
         direct = f"Fixture.PaperInterface.{direct_short_name}"
         spec = f"Fixture.PaperInterface.{spec_short_name}"
         unreviewed = "Fixture.PaperInterface.unreviewed_surface"
-        declaration_blocks = audit_repository.review_declaration_blocks(
+        declaration_blocks = review_surface_structure.review_declaration_blocks(
             interface.read_text(encoding="utf-8")
         )
         declaration_index = audit_repository.paper_lean_declaration_index(folder)
@@ -7853,7 +8474,7 @@ class NamedTheorySemanticSurfaceTests(unittest.TestCase):
                 "end Fixture\n",
                 encoding="utf-8",
             )
-            assumption_blocks = audit_repository.review_declaration_blocks(
+            assumption_blocks = review_surface_structure.review_declaration_blocks(
                 assumptions.read_text(encoding="utf-8")
             )
             _line, _kind, assumption_source = assumption_blocks["source_condition"]
@@ -8150,7 +8771,7 @@ class ReviewDashboardReadOnlyPrecheckTests(unittest.TestCase):
             with (
                 mock.patch.object(
                     review_dashboard,
-                    "load_cached_review_rows",
+                    "load_interactive_cached_review_rows",
                     return_value=[item],
                 ) as load_cache,
                 mock.patch.object(
@@ -8376,33 +8997,211 @@ class ReviewDashboardReadOnlyPrecheckTests(unittest.TestCase):
         write_cache.assert_not_called()
 
     def test_precheck_status_paths_gather_without_rendered_images(self) -> None:
-        checks = [
-            lambda: review_dashboard.stale_review_summary("ExamplePaper", None, "main"),
-            lambda: review_dashboard.print_statement_audit_status("ExamplePaper", "main"),
-            lambda: review_dashboard.print_paper_coverage_audit_status("ExamplePaper", "main"),
-            lambda: review_dashboard.print_assumption_audit_status("ExamplePaper", "main"),
-        ]
-        for check in checks:
-            with self.subTest(check=check):
-                with (
-                    mock.patch.object(
-                        review_dashboard,
-                        "gather_paper_data",
-                        return_value=[],
-                    ) as gather,
-                    mock.patch.object(
-                        review_dashboard,
-                        "merge_hidden_premise_audit_rows",
-                        return_value=[],
-                    ),
-                ):
-                    check()
+        with (
+            mock.patch.object(
+                review_dashboard,
+                "gather_paper_data",
+                return_value=[],
+            ) as gather,
+            mock.patch.object(
+                review_dashboard,
+                "merge_hidden_premise_audit_rows",
+                return_value=[],
+            ),
+        ):
+            review_dashboard.stale_review_summary("ExamplePaper", None, "main")
 
-                gather.assert_called_once_with(
-                    "ExamplePaper",
-                    "main",
-                    render_images=False,
+        gather.assert_called_once_with(
+            "ExamplePaper",
+            "main",
+            render_images=False,
+        )
+
+    def test_assumption_precheck_uses_direct_strict_rows(self) -> None:
+        with (
+            mock.patch.object(
+                review_dashboard,
+                "fast_saved_source_record_assumption_precheck",
+                return_value=None,
+            ),
+            mock.patch.object(
+                review_dashboard,
+                "direct_assumption_audit_rows",
+                return_value=[],
+            ) as direct_rows,
+            mock.patch.object(
+                review_dashboard,
+                "merge_hidden_premise_audit_rows",
+                return_value=[],
+            ),
+            mock.patch.object(
+                review_dashboard,
+                "gather_paper_data",
+                side_effect=AssertionError(
+                    "assumption precheck must not build dashboard data"
+                ),
+            ),
+        ):
+            self.assertFalse(
+                review_dashboard.print_assumption_audit_status(
+                    "ExamplePaper", "main"
                 )
+            )
+
+        direct_rows.assert_called_once_with("ExamplePaper", "main")
+
+    def test_statement_precheck_does_not_build_dashboard_data(self) -> None:
+        with (
+            mock.patch.object(
+                review_dashboard,
+                "direct_statement_audit_rows",
+                return_value=[],
+            ) as direct_rows,
+            mock.patch.object(
+                review_dashboard,
+                "gather_paper_data",
+                side_effect=AssertionError(
+                    "statement precheck must not build dashboard data"
+                ),
+            ),
+        ):
+            self.assertFalse(
+                review_dashboard.print_statement_audit_status(
+                    "ExamplePaper", "main"
+                )
+            )
+
+        direct_rows.assert_called_once_with("ExamplePaper", "main")
+
+    def test_direct_statement_check_uses_shared_library_surface(self) -> None:
+        folder = Path("/fixture/papers/ExamplePaper")
+        authority = object()
+        item = self.review_item()
+        library_summary = {"needs_attention": False, "current_matches": 2}
+        semantic_surface = review_dashboard._CurrentSemanticReviewSurface(
+            human_claims=[],
+            library_prerequisites=[],
+            library_summary=library_summary,
+        )
+        statement_summary = {"needs_attention": False, "matches": 1}
+        with (
+            mock.patch.object(
+                review_dashboard,
+                "_direct_audit_inputs",
+                return_value=iter([(folder, authority, [item], [item])]),
+            ),
+            mock.patch.object(
+                review_dashboard,
+                "current_semantic_review_surface",
+                return_value=semantic_surface,
+            ) as shared_surface,
+            mock.patch.object(
+                review_dashboard,
+                "statement_translation_audit_summary",
+                return_value=statement_summary,
+            ) as statement_audit,
+        ):
+            rows = review_dashboard.direct_statement_audit_rows(
+                "ExamplePaper", "main"
+            )
+
+        self.assertEqual(rows, [{"paper": "ExamplePaper", **statement_summary}])
+        shared_surface.assert_called_once_with(
+            folder,
+            [item],
+            [item],
+            semantic_reuse_authority=authority,
+        )
+        statement_audit.assert_called_once_with(
+            folder,
+            [item],
+            library_summary_override=library_summary,
+        )
+
+    def test_paper_coverage_precheck_does_not_build_dashboard_data(self) -> None:
+        with (
+            mock.patch.object(
+                review_dashboard,
+                "direct_paper_coverage_audit_rows",
+                return_value=[],
+            ) as direct_rows,
+            mock.patch.object(
+                review_dashboard,
+                "gather_paper_data",
+                side_effect=AssertionError(
+                    "paper coverage precheck must not build dashboard data"
+                ),
+            ),
+        ):
+            self.assertFalse(
+                review_dashboard.print_paper_coverage_audit_status(
+                    "ExamplePaper", "main"
+                )
+            )
+
+        direct_rows.assert_called_once_with("ExamplePaper", "main")
+
+    def test_direct_paper_coverage_reuses_current_semantic_authority(self) -> None:
+        folder = Path("/fixture/papers/ExamplePaper")
+        authority = object()
+        item = self.review_item()
+        summary = {"needs_attention": False, "direct": 1}
+        with (
+            mock.patch.object(
+                review_dashboard,
+                "iter_paper_folders",
+                return_value=[folder],
+            ),
+            mock.patch.object(
+                review_dashboard,
+                "current_dashboard_semantic_reuse_authority",
+                return_value=authority,
+            ) as load_authority,
+            mock.patch.object(
+                review_dashboard,
+                "review_items_for_paper",
+                return_value=[item],
+            ) as review_items,
+            mock.patch.object(
+                review_dashboard,
+                "filter_items_by_slice",
+                return_value=[item],
+            ) as filter_items,
+            mock.patch.object(
+                review_dashboard,
+                "current_semantic_review_surface",
+                return_value=review_dashboard._CurrentSemanticReviewSurface(
+                    human_claims=[],
+                    library_prerequisites=[],
+                    library_summary={"needs_attention": False},
+                ),
+            ) as semantic_surface,
+            mock.patch.object(
+                review_dashboard,
+                "paper_coverage_audit_summary",
+                return_value=summary,
+            ) as coverage_summary,
+        ):
+            rows = review_dashboard.direct_paper_coverage_audit_rows(
+                "ExamplePaper", "main"
+            )
+
+        self.assertEqual(rows, [{"paper": "ExamplePaper", **summary}])
+        load_authority.assert_called_once_with(folder)
+        review_items.assert_called_once_with(
+            folder,
+            use_cache=True,
+            render_images=False,
+            semantic_reuse_authority=authority,
+        )
+        filter_items.assert_called_once_with([item], "ExamplePaper", "main")
+        semantic_surface.assert_called_once_with(
+            folder,
+            [item],
+            [item],
+            semantic_reuse_authority=authority,
+        )
+        coverage_summary.assert_called_once_with(folder, [item])
 
     def test_assumption_precheck_uses_fast_saved_receipt_without_dashboard_rows(self) -> None:
         fast_result = {
@@ -8433,6 +9232,25 @@ class ReviewDashboardReadOnlyPrecheckTests(unittest.TestCase):
 
         fast_precheck.assert_called_once_with("ExamplePaper", None)
         print_fast.assert_called_once_with(fast_result)
+
+    def test_hidden_premise_precheck_does_not_run_full_machine_audit(self) -> None:
+        with mock.patch.object(
+            review_dashboard,
+            "conditional_boundary_statement_premises",
+            return_value={},
+        ), mock.patch(
+            "scripts.audit_repository.check_hidden_variable_premises",
+            return_value=[],
+        ) as hidden_scan, mock.patch(
+            "scripts.audit_repository.check_machine_paper_status",
+            side_effect=AssertionError("assumption precheck must stay phase-local"),
+        ):
+            rows = review_dashboard.hidden_premise_repository_audit_rows(
+                None
+            )
+
+        self.assertEqual(rows, [])
+        hidden_scan.assert_called_once_with(include_active=False)
 
     def test_fast_precheck_marks_unimported_assumption_support_as_inactive(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -8490,6 +9308,12 @@ class PaperCloseoutScopingTests(unittest.TestCase):
         ]
         run_context = mock.Mock()
         evidence_context = mock.Mock()
+        evidence_context.source_record_identity_error = ""
+        evidence_context.input_snapshots = ()
+        evidence_context.watched_input_digest = "fixture-inputs"
+        run_context.paper_id = "ExamplePaper"
+        run_context.evidence_context = evidence_context
+        run_context.selected_v11_closeout = False
         with (
             mock.patch.object(
                 audit_repository,
@@ -8497,7 +9321,7 @@ class PaperCloseoutScopingTests(unittest.TestCase):
                 return_value=[],
             ),
             mock.patch(
-                "scripts.closeout_reuse_plan.intake_freeze_readiness",
+                "scripts.paper_closeout_executor.source_intake_readiness",
                 return_value={"ready": True, "errors": []},
             ),
             mock.patch.object(
@@ -8512,12 +9336,17 @@ class PaperCloseoutScopingTests(unittest.TestCase):
             ),
             mock.patch.object(
                 audit_repository,
-                "paper_closeout_source_record_transaction_skew_findings",
+                "paper_closeout_evidence_context_prebuild_findings",
                 return_value=[],
             ),
             mock.patch.object(
                 audit_repository,
                 "paper_closeout_context_mutation_findings",
+                return_value=[],
+            ),
+            mock.patch.object(
+                audit_repository,
+                "paper_closeout_fast_route_schema_findings",
                 return_value=[],
             ),
             mock.patch.object(
@@ -8533,6 +9362,11 @@ class PaperCloseoutScopingTests(unittest.TestCase):
             mock.patch.object(
                 audit_repository,
                 "paper_closeout_conclusion_provenance_findings",
+                return_value=[],
+            ),
+            mock.patch.object(
+                audit_repository,
+                "check_paper_root_build_closeout",
                 return_value=[],
             ),
             mock.patch.object(
@@ -8562,39 +9396,8 @@ class PaperCloseoutScopingTests(unittest.TestCase):
             deep_paper_prose=False,
             prevalidated_strict_v11_occurrence_papers=mock.ANY,
             run_context=mock.ANY,
-        )
-
-    def test_closeout_attribution_never_uses_a_generic_message_substring(self) -> None:
-        generic_test_lint = audit_repository.Finding(
-            "ERROR",
-            Path("scripts/tests/test_generic_hygiene.py"),
-            "generic code/doc line 7 mentions paper-specific term `ExamplePaper`",
-        )
-        paper_local = audit_repository.Finding(
-            "ERROR",
-            Path("papers/ExamplePaper/PaperInterface.lean"),
-            "selected semantic gate",
-        )
-        aggregate = audit_repository.Finding(
-            "ERROR",
-            Path("papers/status.json"),
-            "`ExamplePaper` aggregate entry is out of sync with paper-local status",
-        )
-
-        self.assertFalse(
-            audit_repository.finding_is_for_paper_closeout(
-                generic_test_lint, "ExamplePaper"
-            )
-        )
-        self.assertTrue(
-            audit_repository.finding_is_for_paper_closeout(
-                paper_local, "ExamplePaper"
-            )
-        )
-        self.assertTrue(
-            audit_repository.finding_is_for_paper_closeout(
-                aggregate, "ExamplePaper"
-            )
+            phase_timings=mock.ANY,
+            phase_progress_callback=mock.ANY,
         )
 
     def presentation_fixture_findings(
@@ -8643,7 +9446,7 @@ class PaperCloseoutScopingTests(unittest.TestCase):
             }
             (paper / "status.json").write_text(json.dumps(status), encoding="utf-8")
 
-            with (
+            patches = (
                 mock.patch.object(audit_repository, "ROOT", root),
                 mock.patch.object(audit_repository, "PAPERS", papers),
                 mock.patch.object(
@@ -8660,16 +9463,6 @@ class PaperCloseoutScopingTests(unittest.TestCase):
                 mock.patch.object(
                     audit_repository,
                     "paper_lean_declaration_index",
-                    return_value={},
-                ),
-                mock.patch.object(
-                    audit_repository,
-                    "assumption_declarations_from_file",
-                    return_value={},
-                ),
-                mock.patch.object(
-                    audit_repository,
-                    "assumption_premises_from_file",
                     return_value={},
                 ),
                 mock.patch.object(
@@ -8732,7 +9525,10 @@ class PaperCloseoutScopingTests(unittest.TestCase):
                     "load_expanded_review_statements",
                     return_value={},
                 ),
-            ):
+            )
+            with ExitStack() as stack:
+                for patcher in patches:
+                    stack.enter_context(patcher)
                 return audit_repository.check_machine_paper_status(
                     paper_filter="ExamplePaper",
                     paper_closeout=True,
@@ -8824,6 +9620,97 @@ class PaperCloseoutScopingTests(unittest.TestCase):
         self.assertTrue(
             any("lack a `Source status:`" in finding.message for finding in deep_findings),
             [finding.message for finding in deep_findings],
+        )
+
+    def test_selected_v11_direct_library_route_needs_no_paper_wrapper(self) -> None:
+        """Location-neutral v11 review must not manufacture equivalence aliases."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "FixturePaper"
+            folder.mkdir()
+            audit = folder / "audit"
+            audit.mkdir()
+            statement_map = {
+                "items": {
+                    "source_definition": {
+                        "source_kind": "definition",
+                        "source_location": "source.txt:1-2",
+                        "statement": "Definition 1. The reusable model has carrier Nat.",
+                        "lean_declarations": ["AppliedModelingLib.Example.ReusableModel"],
+                    }
+                }
+            }
+            status = {
+                "status": "formalized",
+                "review_surface": {
+                    "include_names": [],
+                    "assumption_names": [],
+                },
+            }
+            (audit / "paper_statement_map.json").write_text(
+                json.dumps(statement_map), encoding="utf-8"
+            )
+            (folder / "status.json").write_text(
+                json.dumps(status), encoding="utf-8"
+            )
+            declaration = audit_repository.LeanDeclaration(
+                path=Path(temp_dir) / "AppliedModelingLib" / "Example.lean",
+                line=1,
+                kind="def",
+                name="ReusableModel",
+                source="def ReusableModel : Nat := 0",
+                qualified_name="AppliedModelingLib.Example.ReusableModel",
+            )
+            library_index = {
+                "AppliedModelingLib.Example.ReusableModel": [declaration],
+                "ReusableModel": [declaration],
+            }
+            context = mock.Mock()
+            context.selected_v11_closeout = True
+            context.evidence_context = None
+            context.paper_declaration_index.return_value = {}
+            context.library_declaration_index.return_value = library_index
+            context.exact_json_payload.side_effect = lambda path: (
+                statement_map
+                if path.name == "paper_statement_map.json"
+                else status
+                if path.name == "status.json"
+                else None
+            )
+
+            with mock.patch.object(
+                audit_repository,
+                "review_declaration_comments",
+                side_effect=AssertionError(
+                    "selected v11 routes must not parse Lean comments"
+                ),
+            ):
+                current = audit_repository.paper_statement_map_declaration_findings(
+                    folder.name,
+                    folder,
+                    "formalized",
+                    run_context=context,
+                    skip_semantic_contract_lean=True,
+                )
+            with mock.patch.object(
+                audit_repository,
+                "library_lean_declaration_index",
+                return_value=library_index,
+            ):
+                legacy = audit_repository.paper_statement_map_declaration_findings(
+                    folder.name,
+                    folder,
+                    "formalized",
+                    skip_semantic_contract_lean=True,
+                )
+
+        self.assertFalse(
+            any("directly to reusable-library" in finding.message for finding in current),
+            [finding.message for finding in current],
+        )
+        self.assertTrue(
+            any("directly to reusable-library" in finding.message for finding in legacy),
+            [finding.message for finding in legacy],
         )
 
 

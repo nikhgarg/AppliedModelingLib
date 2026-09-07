@@ -10,7 +10,7 @@ conditions, and lower-bound parameter conditions.
 
 namespace GHW01DigitalGoods
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 open scoped BigOperators
 
 /-- Corollary 4.2 fixes `h` as a maximum bid. -/
@@ -65,7 +65,7 @@ record.
 -/
 -- audit-premise: hvalue_nonneg : ∀ i, 0 ≤ values i
 -- audit-premise: hprice_nonneg : ∀ p, 0 ≤ price p
--- audit-premise: hcdf_monotone : ∀ i j, values i ≤ values j → ∀ t, t ≤ values i → EconCSLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤ EconCSLib.pmfProb (offerLaw j) (fun p => price p ≤ t)
+-- audit-premise: hcdf_monotone : ∀ i j, values i ≤ values j → ∀ t, t ≤ values i → AppliedModelingLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤ AppliedModelingLib.pmfProb (offerLaw j) (fun p => price p ≤ t)
 abbrev assumption_theorem8_2_journal_raw_cdf_monotone_offer_source_model
     {Agent Price : Type*} [Fintype Agent] [Nonempty Agent]
     [Fintype Price]
@@ -76,8 +76,8 @@ abbrev assumption_theorem8_2_journal_raw_cdf_monotone_offer_source_model
     (∀ i, 0 ≤ values i) ∧
       (∀ p, 0 ≤ price p) ∧
         ∀ i j, values i ≤ values j → ∀ t, t ≤ values i →
-          EconCSLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤
-            EconCSLib.pmfProb (offerLaw j) (fun p => price p ≤ t)
+          AppliedModelingLib.pmfProb (offerLaw i) (fun p => price p ≤ t) ≤
+            AppliedModelingLib.pmfProb (offerLaw j) (fun p => price p ≤ t)
 
 /--
 Theorem 9.3's source-model carrier.  This makes explicit the paper's

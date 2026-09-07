@@ -17,8 +17,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
-open EconCSLib.Probability
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib.Probability
 open scoped ENNReal NNReal ProbabilityTheory
 
 /-- The source-timed all-take report-required action data.  It shares the
@@ -219,10 +219,9 @@ def lg21ReportRequiredPositiveMassRefinedSourceEquilibrium_allTake_of_fullBaseGa
           exfalso
           simpa using hpositive'
         positive_mass_recalibrated_stable := by
-          simpa [law, base, score, skill, E,
-            lg21ObservedAccessReportRequiredAllTakeData] using
-            (lg21_reportRequired_allTake_positive_mass_recalibrated_stable
-              law base score skill hpublic) }
+          intro region candidate _hfixedLaw hentry
+          exact (lg21_reportRequired_allTake_positive_mass_recalibrated_stable
+            law base score skill hpublic) region candidate hentry }
   · intro latentSkill publicBase
     rfl
 

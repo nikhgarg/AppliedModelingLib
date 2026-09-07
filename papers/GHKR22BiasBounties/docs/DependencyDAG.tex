@@ -1,0 +1,164 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[
+  x=1cm,
+  y=1cm,
+  every node/.append style={font=\sffamily\scriptsize, outer sep=4pt}
+]
+
+\dagPaperMetadata{An Algorithmic Framework for Bias Bounties}{Ira Globus-Harris, Michael Kearns, and Aaron Roth}{ACM Conference on Fairness, Accountability, and Transparency}{2022}{https://doi.org/10.1145/3531146.3533172}
+\dagPaperLegendRightOfMetadata{
+\node[dag_result, dag_template_legend] (legRes) at (0,0) {formalized\\paper result};
+\node[dag_lemma, dag_template_legend] (legLem) at (3.4,0) {formalized\\lemma / reduction};
+\node[dag_model, dag_template_legend] (legModel) at (6.8,0) {definition /\\algorithm};
+}
+\daglegend{(legRes)(legLem)(legModel)}{Legend}
+
+\begin{dagPaperBody}
+\begin{scope}[xshift=0.2cm,yshift=-0.4cm]
+
+% Population model and certificate characterization.
+\node[dag_model, text width=4.3cm, minimum width=4.6cm] (Setup) at (0,-1.0) {
+  \textbf{Population setup}\\
+  Models, Boolean groups, bounded loss, and a probability law
+};
+\node[dag_model, text width=4.3cm, minimum width=4.6cm] (Defs13) at (5.6,-1.0) {
+  \textbf{Definitions 1--3}\\
+  Group mass and loss; Bayes optimality with its almost-everywhere reading
+};
+\node[dag_result, text width=4.3cm] (Obs4) at (11.2,-1.0) {
+  \textbf{Observation 4}\\
+  Bayes optimality iff there is no measurable subgroup improvement
+};
+\node[dag_model, text width=4.3cm, minimum width=4.6cm] (Defs57) at (16.8,-1.0) {
+  \textbf{Definitions 5 and 7}\\
+  Approximate Bayes optimality and positive certificates
+};
+\node[dag_result, text width=4.3cm] (Thm8) at (22.4,-1.0) {
+  \textbf{Theorem 8}\\
+  Certificate characterization of approximate Bayes optimality
+};
+\node[dag_model, text width=4.3cm, minimum width=4.6cm] (Objective) at (28.0,-1.0) {
+  \textbf{Certificate objective}\\
+  Empirical argmax of mass times conditional-loss improvement
+};
+
+\draw[dag_arrow] (Setup) -- (Defs13);
+\draw[dag_arrow] (Defs13) -- (Obs4);
+\draw[dag_arrow] (Defs13) -- (Defs57);
+\draw[dag_arrow] (Defs57) -- (Thm8);
+\draw[dag_arrow] (Defs57) -- (Objective);
+
+% Loss-potential and adaptive-checker chain.
+\node[dag_model, text width=4.3cm, minimum width=4.6cm] (Alg1) at (0,-5.3) {
+  \textbf{Algorithm 1}\\
+  \textsc{ListUpdate}: replace the model on the submitted group
+};
+\node[dag_result, text width=4.3cm] (Thm9) at (5.6,-5.3) {
+  \textbf{Theorem 9}\\
+  Exact group replacement and total-loss decrease $\mu\Delta$
+};
+\node[dag_result, text width=4.3cm] (Thm10) at (11.2,-5.3) {
+  \textbf{Theorem 10}\\
+  At most $\ell_0/\epsilon\leq1/\epsilon$ valuable accepted updates
+};
+\node[dag_model, text width=4.3cm, minimum width=4.6cm] (Alg2) at (16.8,-5.3) {
+  \textbf{Algorithm 2}\\
+  Adaptive certificate checker and sparse transcript family
+};
+\node[dag_result, text width=4.3cm] (Thm11) at (22.4,-5.3) {
+  \textbf{Theorem 11}\\
+  Accept/reject semantics with the exact finite failure tail
+};
+\node[dag_model, text width=4.3cm, minimum width=4.6cm] (Alg3) at (28.0,-5.3) {
+  \textbf{Algorithm 3}\\
+  Adaptive \textsc{FalsifyAndUpdate} process
+};
+
+\draw[dag_arrow] (Thm8.south) -- ++(0,-0.8) -| (Alg1.north);
+\draw[dag_arrow] (Alg1) -- (Thm9);
+\draw[dag_arrow] (Thm9) -- (Thm10);
+\draw[dag_arrow] (Defs57.south) -- ++(0,-1.3) -| (Alg2.north);
+\draw[dag_arrow] (Alg2) -- (Thm11);
+\draw[dag_arrow] (Thm11) -- (Alg3);
+
+% Adaptive consequences and training.
+\node[dag_result, text width=4.3cm] (Thm12) at (0,-9.6) {
+  \textbf{Theorem 12 / Remark 13}\\
+  Adaptive progress and logarithmic submission-horizon dependence
+};
+\node[dag_model, text width=4.3cm, minimum width=4.6cm] (Alg4) at (5.6,-9.6) {
+  \textbf{Algorithm 4}\\
+  One shared checker state and a restarted repair scan
+};
+\node[dag_result, text width=4.3cm] (Thm14) at (11.2,-9.6) {
+  \textbf{Theorem 14}\\
+  Historical-group monotonicity and cubic query envelope
+};
+\node[dag_lemma, text width=4.3cm] (Lem15) at (16.8,-9.6) {
+  \textbf{Lemma 15}\\
+  VC uniform convergence for the certificate objective
+};
+\node[dag_model, text width=4.3cm, minimum width=4.6cm] (Alg5) at (22.4,-9.6) {
+  \textbf{Algorithm 5}\\
+  Fresh-block training with an integer-safe horizon
+};
+\node[dag_result, text width=4.3cm] (Thm16) at (28.0,-9.6) {
+  \textbf{Theorem 16}\\
+  Approximate Bayes optimality, call bound, and sample count
+};
+
+\draw[dag_arrow] (Alg3.south) -- ++(0,-0.8) -| (Thm12.north);
+\draw[dag_arrow] (Thm10.south) -- ++(0,-1.4) -| (Alg4.north);
+\draw[dag_arrow] (Thm11.south) -- ++(0,-0.8) -| (Alg4.north);
+\draw[dag_arrow] (Alg4) -- (Thm14);
+\draw[dag_arrow] (Objective.east) -- ++(2.0,0) |- (Lem15.north);
+\draw[dag_arrow] (Lem15) -- (Alg5);
+\draw[dag_arrow] (Alg5) -- (Thm16);
+
+% Cost-sensitive and alternating-ERM chain.
+\node[dag_model, text width=4.3cm, minimum width=4.6cm] (Defs1719) at (0,-14.0) {
+  \textbf{Definitions 17--19}\\
+  Ternary deferral, derived certificates, and induced costs
+};
+\node[dag_result, text width=4.3cm] (Thm20) at (5.6,-14.0) {
+  \textbf{Theorem 20}\\
+  Cost-sensitive classification yields an optimal certificate
+};
+\node[dag_lemma, text width=4.3cm] (Lem21) at (11.2,-14.0) {
+  \textbf{Lemma 21}\\
+  Group best response by empirical risk minimization
+};
+\node[dag_lemma, text width=4.3cm] (Lem22) at (16.8,-14.0) {
+  \textbf{Lemma 22}\\
+  Model best response by the disagreement-loss identity
+};
+\node[dag_model, text width=4.3cm, minimum width=4.6cm] (Alg6) at (22.4,-14.0) {
+  \textbf{Algorithm 6}\\
+  Two-gap alternating empirical risk minimization
+};
+\node[dag_result, text width=4.3cm] (Thm23) at (28.0,-14.0) {
+  \textbf{Theorem 23}\\
+  Two-sided local optimum and $O(1/\epsilon)$ response complexity
+};
+
+\draw[dag_arrow] (Defs1719) -- (Thm20);
+\draw[dag_arrow] (Thm20) -- (Lem21);
+\draw[dag_arrow] (Lem21) -- (Lem22);
+\draw[dag_arrow] (Lem22) -- (Alg6);
+\draw[dag_arrow] (Alg6) -- (Thm23);
+
+\node[dag_template_note, text width=22.0cm] (Clarifications) at (14.0,-18.2) {
+  \textbf{Source clarifications.} Observation 4 is almost everywhere for arbitrary laws.
+  Theorem 11 uses the exact sparse-transcript tail. Algorithms 4 and 5 make shared-state,
+  restart, fresh-block, and integer-rounding semantics explicit. Lemma 22 retains its
+  conclusion through the exact disagreement identity. Algorithm 6 tests both coordinate
+  gaps; positive initialization is required only for Theorem 23's positive-certificate clause.
+};
+
+\end{scope}
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

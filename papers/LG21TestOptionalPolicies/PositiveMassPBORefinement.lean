@@ -1,5 +1,5 @@
 import LG21TestOptionalPolicies.SelectedConditionalExpectation
-import EconCSLib.Foundations.Optimization.BinaryChoice
+import AppliedModelingLib.GameTheory.Choice.Binary
 
 /-!
 # Positive-mass PBO refinement interface
@@ -30,7 +30,7 @@ namespace LG21TestOptionalPolicies
 noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
-open EconCSLib
+open AppliedModelingLib
 
 /--
 An estimate is a PBO for `branch` only when that branch has positive mass.

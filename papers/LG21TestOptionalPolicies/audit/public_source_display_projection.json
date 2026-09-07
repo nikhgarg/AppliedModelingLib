@@ -1,35 +1,44 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "LG21TestOptionalPolicies",
-  "private_source_map_sha256": "6e6acd15f4d404f7590d73044f3d039b294f72ee1f4a16c383e4e5d5ac3c01a8",
+  "private_source_map_sha256": "9780e24dcb4da51c3f8015d96213f112947365ef10f16904ddf222ea6fe2b983",
   "public_manifest_path": "papers/LG21TestOptionalPolicies/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "e10255dae0e8d7d06e50e3ca5c3d8cd83f841ad2cd902765d799bb11797e23fa",
+  "public_source_map_sha256": "fa02972f5708ddff672b96c9cd78bbf51c1eafab69a5c3d1bb6ef22a233fa0a1",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
   "selected_source_item_ids": [
+    "lg21_definition1_best_response",
+    "lg21_definition1_estimation_consistency",
+    "lg21_definition1_feasibility",
     "lg21_definition1_hidden_access_optional_protocol",
-    "lg21_definition1_observed_access_mandatory_protocol",
-    "lg21_definition1_observed_access_optional_protocol",
-    "lg21_definition1_observed_access_report_required_protocol",
     "lg21_definition2_latent_skill_fair",
     "lg21_definition3_observable_fair",
     "lg21_definition4_demographic_fair",
     "lg21_definition5_test_blank",
     "lg21_definition6_access_estimator",
     "lg21_distributional_equality_notation",
+    "lg21_fairness_implication_chain",
+    "lg21_ignoring_test_scores_achieves_fairness",
+    "lg21_known_parameters_cutoff_model",
     "lg21_lemma41_strategy_proofness",
     "lg21_proposition42_not_latent_skill_fair",
     "lg21_proposition43_not_observable_or_demographic_fair",
+    "lg21_report_decision_skill_independence",
+    "lg21_reporting_conditioned_generalization",
+    "lg21_test_taking_probability_preference",
     "lg21_theorem31_all_fairness_fail",
     "lg21_theorem31_optional_reporting",
     "lg21_theorem31_report_required",
     "lg21_theorem32_fairness_impossibility",
+    "lg21_theorem32_observable_summary",
+    "lg21_theorem32_report_required_proof_conclusion",
     "lg21_theorem32_report_required_source_statement",
-    "lg21_theorem44_resampling_fairness"
+    "lg21_theorem44_resampling_fairness",
+    "lg21_thompson_acceptance_interpretation"
   ],
   "selected_source_items": {
-    "lg21_definition1_hidden_access_optional_protocol": {
+    "lg21_definition1_best_response": {
       "source_anchors": [
         {
           "line_end": 335,
@@ -39,40 +48,40 @@
           "quoted_text_sha256": "ddad487f94a30a6be39f6fad7febf09f7726d4a4eb619c48a9fb08ab86daf9fb"
         }
       ],
-      "source_kind": "definition"
+      "source_kind": "formula"
     },
-    "lg21_definition1_observed_access_mandatory_protocol": {
+    "lg21_definition1_estimation_consistency": {
       "source_anchors": [
         {
-          "line_end": 324,
+          "line_end": 335,
           "line_start": 256,
           "publication_locator": "cited publication",
-          "quoted_text": "\fDefinition 1 (Equilibrium). Let T = {(Y, X) : Y ≥ X, (Y,X) obeys feature requirement policy} denote the action space of students with test access. Then, given estimation policy P and a requirement\npolicy, student decision functions X(·), Y (·) and estimation function fp constitute an equilibrium if:\n• All decisions are feasible:\n\n\u0010\n\n\u0011\nK , P ) ∈ T , for all {θ }K−1 , q.\nY (q, {θk }K−1\n,\nP\n),\nX({θ\n}\nk k=1\nk k=1\nk=1\n\n• Given a school’s estimation function, each individual weakly prefers to follow their given action\nover other feasible actions: for all {θk }K−1\nk=1 , q,\n\u0010\n\u0011\nK\nY (q, {θk }K−1\n,\nP\n),\nX({θ\n}\n,\nP\n)\n∈ arg max(y,x)∈T E[q̃|Y = y, X = x]\nk\nk=1\nk=1\n\nWhere the expectation is performed over the (potentially random) school estimation function\nfP , and, for Y , the randomness in the student’s test score.\n\n• Estimation function fP follows its definition given the decision functions X(·), Y (·). For\nexample, suppose the school knows Z and is using Bayesian optimal policy PBO . Then, for\nstudents with access who do not report a score:\nK−1\n, X = 0, Z = 1) , EX(·) [q|{θk }K−1\nfPBO ({θk }k=1\nk=1 , X = 0, Z = 1]\n\u0011\u0011\n\u0010\n\u0010\nR\nK ] Pr θ |{θ }K−1\ndθK\nE[q|{θ\n}\nK\nK\nk\nk\nk=1\nk=1\nθK :X({θk }k=1 ,P )=0\n\u0011\n\u0010\n=\nK−1\nPr {θK : X({θk }K\nk=1 , P ) = 0}|{θk }k=1",
-          "quoted_text_sha256": "c1f94c04e28110b1dd8dd0d3babfe4e549b9e97b23a0a6bb098c99c07a24c4af"
+          "quoted_text": "\fDefinition 1 (Equilibrium). Let T = {(Y, X) : Y ≥ X, (Y,X) obeys feature requirement policy} denote the action space of students with test access. Then, given estimation policy P and a requirement\npolicy, student decision functions X(·), Y (·) and estimation function fp constitute an equilibrium if:\n• All decisions are feasible:\n\n\u0010\n\n\u0011\nK , P ) ∈ T , for all {θ }K−1 , q.\nY (q, {θk }K−1\n,\nP\n),\nX({θ\n}\nk k=1\nk k=1\nk=1\n\n• Given a school’s estimation function, each individual weakly prefers to follow their given action\nover other feasible actions: for all {θk }K−1\nk=1 , q,\n\u0010\n\u0011\nK\nY (q, {θk }K−1\n,\nP\n),\nX({θ\n}\n,\nP\n)\n∈ arg max(y,x)∈T E[q̃|Y = y, X = x]\nk\nk=1\nk=1\n\nWhere the expectation is performed over the (potentially random) school estimation function\nfP , and, for Y , the randomness in the student’s test score.\n\n• Estimation function fP follows its definition given the decision functions X(·), Y (·). For\nexample, suppose the school knows Z and is using Bayesian optimal policy PBO . Then, for\nstudents with access who do not report a score:\nK−1\n, X = 0, Z = 1) , EX(·) [q|{θk }K−1\nfPBO ({θk }k=1\nk=1 , X = 0, Z = 1]\n\u0011\u0011\n\u0010\n\u0010\nR\nK ] Pr θ |{θ }K−1\ndθK\nE[q|{θ\n}\nK\nK\nk\nk\nk=1\nk=1\nθK :X({θk }k=1 ,P )=0\n\u0011\n\u0010\n=\nK−1\nPr {θK : X({θk }K\nk=1 , P ) = 0}|{θk }k=1\n\nWhat does test-optional mean?\nThe focus of this work is to understand how schools can meet their test-optional pledge. However, a prerequisite challenge is to formalize what “test-optional” even means, as it is left undeﬁned by schools beyond the idea to “not penalize students for the absence of a standardized test\nscore” [NACAC, 2020]. Here, we deﬁne several potential notions, on the distribution of resulting\nskill estimates for students with and without test access. (Recall that, by assumption, neither true\nskill distribution q nor feature distributions θk |q diﬀer by test access).\nD\n\nOur notions rely on “distributional equality,” denoted (==), because of the randomness in the\nprocess, both in the sampling of test scores given q and in the estimation function fP . Let q̃|D, P\ndenote the distribution of q̃ given the information D using policy P .",
+          "quoted_text_sha256": "ddad487f94a30a6be39f6fad7febf09f7726d4a4eb619c48a9fb08ab86daf9fb"
         }
       ],
-      "source_kind": "definition"
+      "source_kind": "formula"
     },
-    "lg21_definition1_observed_access_optional_protocol": {
+    "lg21_definition1_feasibility": {
       "source_anchors": [
         {
-          "line_end": 324,
+          "line_end": 335,
           "line_start": 256,
           "publication_locator": "cited publication",
-          "quoted_text": "\fDefinition 1 (Equilibrium). Let T = {(Y, X) : Y ≥ X, (Y,X) obeys feature requirement policy} denote the action space of students with test access. Then, given estimation policy P and a requirement\npolicy, student decision functions X(·), Y (·) and estimation function fp constitute an equilibrium if:\n• All decisions are feasible:\n\n\u0010\n\n\u0011\nK , P ) ∈ T , for all {θ }K−1 , q.\nY (q, {θk }K−1\n,\nP\n),\nX({θ\n}\nk k=1\nk k=1\nk=1\n\n• Given a school’s estimation function, each individual weakly prefers to follow their given action\nover other feasible actions: for all {θk }K−1\nk=1 , q,\n\u0010\n\u0011\nK\nY (q, {θk }K−1\n,\nP\n),\nX({θ\n}\n,\nP\n)\n∈ arg max(y,x)∈T E[q̃|Y = y, X = x]\nk\nk=1\nk=1\n\nWhere the expectation is performed over the (potentially random) school estimation function\nfP , and, for Y , the randomness in the student’s test score.\n\n• Estimation function fP follows its definition given the decision functions X(·), Y (·). For\nexample, suppose the school knows Z and is using Bayesian optimal policy PBO . Then, for\nstudents with access who do not report a score:\nK−1\n, X = 0, Z = 1) , EX(·) [q|{θk }K−1\nfPBO ({θk }k=1\nk=1 , X = 0, Z = 1]\n\u0011\u0011\n\u0010\n\u0010\nR\nK ] Pr θ |{θ }K−1\ndθK\nE[q|{θ\n}\nK\nK\nk\nk\nk=1\nk=1\nθK :X({θk }k=1 ,P )=0\n\u0011\n\u0010\n=\nK−1\nPr {θK : X({θk }K\nk=1 , P ) = 0}|{θk }k=1",
-          "quoted_text_sha256": "c1f94c04e28110b1dd8dd0d3babfe4e549b9e97b23a0a6bb098c99c07a24c4af"
+          "quoted_text": "\fDefinition 1 (Equilibrium). Let T = {(Y, X) : Y ≥ X, (Y,X) obeys feature requirement policy} denote the action space of students with test access. Then, given estimation policy P and a requirement\npolicy, student decision functions X(·), Y (·) and estimation function fp constitute an equilibrium if:\n• All decisions are feasible:\n\n\u0010\n\n\u0011\nK , P ) ∈ T , for all {θ }K−1 , q.\nY (q, {θk }K−1\n,\nP\n),\nX({θ\n}\nk k=1\nk k=1\nk=1\n\n• Given a school’s estimation function, each individual weakly prefers to follow their given action\nover other feasible actions: for all {θk }K−1\nk=1 , q,\n\u0010\n\u0011\nK\nY (q, {θk }K−1\n,\nP\n),\nX({θ\n}\n,\nP\n)\n∈ arg max(y,x)∈T E[q̃|Y = y, X = x]\nk\nk=1\nk=1\n\nWhere the expectation is performed over the (potentially random) school estimation function\nfP , and, for Y , the randomness in the student’s test score.\n\n• Estimation function fP follows its definition given the decision functions X(·), Y (·). For\nexample, suppose the school knows Z and is using Bayesian optimal policy PBO . Then, for\nstudents with access who do not report a score:\nK−1\n, X = 0, Z = 1) , EX(·) [q|{θk }K−1\nfPBO ({θk }k=1\nk=1 , X = 0, Z = 1]\n\u0011\u0011\n\u0010\n\u0010\nR\nK ] Pr θ |{θ }K−1\ndθK\nE[q|{θ\n}\nK\nK\nk\nk\nk=1\nk=1\nθK :X({θk }k=1 ,P )=0\n\u0011\n\u0010\n=\nK−1\nPr {θK : X({θk }K\nk=1 , P ) = 0}|{θk }k=1\n\nWhat does test-optional mean?\nThe focus of this work is to understand how schools can meet their test-optional pledge. However, a prerequisite challenge is to formalize what “test-optional” even means, as it is left undeﬁned by schools beyond the idea to “not penalize students for the absence of a standardized test\nscore” [NACAC, 2020]. Here, we deﬁne several potential notions, on the distribution of resulting\nskill estimates for students with and without test access. (Recall that, by assumption, neither true\nskill distribution q nor feature distributions θk |q diﬀer by test access).\nD\n\nOur notions rely on “distributional equality,” denoted (==), because of the randomness in the\nprocess, both in the sampling of test scores given q and in the estimation function fP . Let q̃|D, P\ndenote the distribution of q̃ given the information D using policy P .",
+          "quoted_text_sha256": "ddad487f94a30a6be39f6fad7febf09f7726d4a4eb619c48a9fb08ab86daf9fb"
         }
       ],
-      "source_kind": "definition"
+      "source_kind": "formula"
     },
-    "lg21_definition1_observed_access_report_required_protocol": {
+    "lg21_definition1_hidden_access_optional_protocol": {
       "source_anchors": [
         {
-          "line_end": 324,
+          "line_end": 335,
           "line_start": 256,
           "publication_locator": "cited publication",
-          "quoted_text": "\fDefinition 1 (Equilibrium). Let T = {(Y, X) : Y ≥ X, (Y,X) obeys feature requirement policy} denote the action space of students with test access. Then, given estimation policy P and a requirement\npolicy, student decision functions X(·), Y (·) and estimation function fp constitute an equilibrium if:\n• All decisions are feasible:\n\n\u0010\n\n\u0011\nK , P ) ∈ T , for all {θ }K−1 , q.\nY (q, {θk }K−1\n,\nP\n),\nX({θ\n}\nk k=1\nk k=1\nk=1\n\n• Given a school’s estimation function, each individual weakly prefers to follow their given action\nover other feasible actions: for all {θk }K−1\nk=1 , q,\n\u0010\n\u0011\nK\nY (q, {θk }K−1\n,\nP\n),\nX({θ\n}\n,\nP\n)\n∈ arg max(y,x)∈T E[q̃|Y = y, X = x]\nk\nk=1\nk=1\n\nWhere the expectation is performed over the (potentially random) school estimation function\nfP , and, for Y , the randomness in the student’s test score.\n\n• Estimation function fP follows its definition given the decision functions X(·), Y (·). For\nexample, suppose the school knows Z and is using Bayesian optimal policy PBO . Then, for\nstudents with access who do not report a score:\nK−1\n, X = 0, Z = 1) , EX(·) [q|{θk }K−1\nfPBO ({θk }k=1\nk=1 , X = 0, Z = 1]\n\u0011\u0011\n\u0010\n\u0010\nR\nK ] Pr θ |{θ }K−1\ndθK\nE[q|{θ\n}\nK\nK\nk\nk\nk=1\nk=1\nθK :X({θk }k=1 ,P )=0\n\u0011\n\u0010\n=\nK−1\nPr {θK : X({θk }K\nk=1 , P ) = 0}|{θk }k=1",
-          "quoted_text_sha256": "c1f94c04e28110b1dd8dd0d3babfe4e549b9e97b23a0a6bb098c99c07a24c4af"
+          "quoted_text": "\fDefinition 1 (Equilibrium). Let T = {(Y, X) : Y ≥ X, (Y,X) obeys feature requirement policy} denote the action space of students with test access. Then, given estimation policy P and a requirement\npolicy, student decision functions X(·), Y (·) and estimation function fp constitute an equilibrium if:\n• All decisions are feasible:\n\n\u0010\n\n\u0011\nK , P ) ∈ T , for all {θ }K−1 , q.\nY (q, {θk }K−1\n,\nP\n),\nX({θ\n}\nk k=1\nk k=1\nk=1\n\n• Given a school’s estimation function, each individual weakly prefers to follow their given action\nover other feasible actions: for all {θk }K−1\nk=1 , q,\n\u0010\n\u0011\nK\nY (q, {θk }K−1\n,\nP\n),\nX({θ\n}\n,\nP\n)\n∈ arg max(y,x)∈T E[q̃|Y = y, X = x]\nk\nk=1\nk=1\n\nWhere the expectation is performed over the (potentially random) school estimation function\nfP , and, for Y , the randomness in the student’s test score.\n\n• Estimation function fP follows its definition given the decision functions X(·), Y (·). For\nexample, suppose the school knows Z and is using Bayesian optimal policy PBO . Then, for\nstudents with access who do not report a score:\nK−1\n, X = 0, Z = 1) , EX(·) [q|{θk }K−1\nfPBO ({θk }k=1\nk=1 , X = 0, Z = 1]\n\u0011\u0011\n\u0010\n\u0010\nR\nK ] Pr θ |{θ }K−1\ndθK\nE[q|{θ\n}\nK\nK\nk\nk\nk=1\nk=1\nθK :X({θk }k=1 ,P )=0\n\u0011\n\u0010\n=\nK−1\nPr {θK : X({θk }K\nk=1 , P ) = 0}|{θk }k=1\n\nWhat does test-optional mean?\nThe focus of this work is to understand how schools can meet their test-optional pledge. However, a prerequisite challenge is to formalize what “test-optional” even means, as it is left undeﬁned by schools beyond the idea to “not penalize students for the absence of a standardized test\nscore” [NACAC, 2020]. Here, we deﬁne several potential notions, on the distribution of resulting\nskill estimates for students with and without test access. (Recall that, by assumption, neither true\nskill distribution q nor feature distributions θk |q diﬀer by test access).\nD\n\nOur notions rely on “distributional equality,” denoted (==), because of the randomness in the\nprocess, both in the sampling of test scores given q and in the estimation function fP . Let q̃|D, P\ndenote the distribution of q̃ given the information D using policy P .",
+          "quoted_text_sha256": "ddad487f94a30a6be39f6fad7febf09f7726d4a4eb619c48a9fb08ab86daf9fb"
         }
       ],
       "source_kind": "definition"
@@ -104,11 +113,11 @@
     "lg21_definition4_demographic_fair": {
       "source_anchors": [
         {
-          "line_end": 369,
+          "line_end": 364,
           "line_start": 360,
           "publication_locator": "cited publication",
-          "quoted_text": "\fDefinition 4. Policy P is demographically fair if in every equilibrium,\nD\n\nq̃|Z = 1, P == q̃|Z = 0, P,\ni.e., if the distribution of skill estimates for students with and without access are equal.\nEach deﬁnition is less stringent than the previous, i.e., latent skill fairness =⇒ observable fairness =⇒ demographic fairness. The notions connect naturally to those common in the literature.\nBoth latent and observable fairness are instances of individual fairness, while demographic fairness\nis a group fairness notion (however, one based on potentially unobserved group membership). Observable fairness, in particular, aligns with the school’s pledge to not penalize students without a\ntest score: that two students with the same features θ1 to θK−1 have the same distribution of scores.\nA school can trivially achieve these notions if test scores are ignored altogether.",
-          "quoted_text_sha256": "04204f295aa7e23585f36cd54d1a6643f858c24b52f28a615baa7daf261efaa6"
+          "quoted_text": "\fDefinition 4. Policy P is demographically fair if in every equilibrium,\nD\n\nq̃|Z = 1, P == q̃|Z = 0, P,\ni.e., if the distribution of skill estimates for students with and without access are equal.",
+          "quoted_text_sha256": "f7c51e718f2351dc15ed3f1dd85b7a3eea3c249164a32ca4b77c9153b428451f"
         }
       ],
       "source_kind": "definition"
@@ -116,11 +125,11 @@
     "lg21_definition5_test_blank": {
       "source_anchors": [
         {
-          "line_end": 423,
+          "line_end": 387,
           "line_start": 370,
           "publication_locator": "cited publication",
-          "quoted_text": "Definition 5. Policy P is test-blank, i.e., test scores play no role, if in every equilibrium,\nD\n\nK−1\nq̃|{θk }K−1\nk=1 , P == q̃|{θk }k=1 , θK , P\n\n∀ {θk }K\nk=1\n\nOf course, test-blank policies defeat the purpose of going test-optional. In this work, we thus\nask whether it is possible to meet the fairness notions without being test-blank.\nNote that these deﬁnitions all concern the estimates of the policy P in equilibrium. For example,\nthere are two ways for a policy to be test-blank: either the estimation function fP ignores the test\nscore (and whether the student reports it, X), or in equilibrium no student reports a test score. In\neither case, the deﬁnition is met, and test scores play no role in student estimates. Note also that\nfor notational ease we suppress the requirement policy in the statement of each deﬁnition, as our\nresults do not depend on which requirement policy is chosen.\n\nDiscussion\nHere, we brieﬂy discuss some of our choices, with additional discussion in Section 5.\nFirst, note that our stated fairness deﬁnitions all condition on access Z, as opposed to reporting\nX. However, all of our results, for each deﬁnition, also hold for the corresponding deﬁnition for\nwhich access Z is replaced by reporting X; in fact, the corresponding results are easier to prove,\nas X is always observed but Z is potentially unobserved. In each proof, we explain the requisite\nchanges needed for such a result. Our exposition centers Z normatively, with the idea that schools\nshould not reward those who strategically decide to not report.\nSecond, in this work we focus exclusively on how (and whether) a school can achieve the deﬁned\nfairness notions. We do not explicitly consider other school goals, such as admitting students with\nthe highest latent skill levels q (“academic merit”). However, such a goal motivates our consideration\nof Bayesian estimation policy PBO , which is optimal for academic merit when the students with the\nhighest estimates are subsequently accepted; it also motivates us to ﬁnd ways to meet the school’s\nfairness goals without becoming test-blank, which similarly would worsen academic merit and be\nespecially harmful for students without access to other informative signals with which to distinguish\nthemselves [Garg et al., 2020]. Further note that our impossibility results hold for any policy P\nthat might be chosen to maximize such other goals.\n\n3\n\nWhen school does not know access status\n\nIn this section, we consider the case where the school does not observe (or does not use) whether\na student has access to the test, Z. Instead, for each student, the school observes the ﬁrst K − 1\n7\n\n\ffeatures, {θk }K−1\nk=1 , whether the student submits a score, X, and – if the student submits the score\n(X = 1) – the score, θK . This setting is consistent with the current policy adopted by many schools,\nwhich is that the school does not verify whether the student has access.\nEmpirically with test-optional policies, some students who have taken the test choose not to\nreport their score [Morgan, 2016, Robinson and Monks, 2005]; in particular, students with lower\nscores are more likely to withhold it. Our ﬁrst result establishes that such withholding is the\nequilibrium result under Bayesian optimal estimation. As a result, the equilibrium does not satisfy\nany of our fairness deﬁnitions.",
-          "quoted_text_sha256": "f65ec270b765a8c1bbad894c72ef57ce6cdb956be9ca109e0702babec1e99e95"
+          "quoted_text": "Definition 5. Policy P is test-blank, i.e., test scores play no role, if in every equilibrium,\nD\n\nK−1\nq̃|{θk }K−1\nk=1 , P == q̃|{θk }k=1 , θK , P\n\n∀ {θk }K\nk=1\n\nOf course, test-blank policies defeat the purpose of going test-optional. In this work, we thus\nask whether it is possible to meet the fairness notions without being test-blank.\nNote that these deﬁnitions all concern the estimates of the policy P in equilibrium. For example,\nthere are two ways for a policy to be test-blank: either the estimation function fP ignores the test\nscore (and whether the student reports it, X), or in equilibrium no student reports a test score. In\neither case, the deﬁnition is met, and test scores play no role in student estimates. Note also that\nfor notational ease we suppress the requirement policy in the statement of each deﬁnition, as our\nresults do not depend on which requirement policy is chosen.",
+          "quoted_text_sha256": "90b6067a9425b38fd557206ebd2343d4dc1a4fca10936c397e6400ffc13157e0"
         }
       ],
       "source_kind": "definition"
@@ -149,14 +158,50 @@
       ],
       "source_kind": "predicate_vocabulary"
     },
+    "lg21_fairness_implication_chain": {
+      "source_anchors": [
+        {
+          "line_end": 365,
+          "line_start": 365,
+          "publication_locator": "cited publication",
+          "quoted_text": "Each deﬁnition is less stringent than the previous, i.e., latent skill fairness =⇒ observable fairness =⇒ demographic fairness. The notions connect naturally to those common in the literature.",
+          "quoted_text_sha256": "57d9d6381f921f957f0699b2d0978de9ef8f325369bc25ddfb237c446038781c"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "lg21_ignoring_test_scores_achieves_fairness": {
+      "source_anchors": [
+        {
+          "line_end": 369,
+          "line_start": 369,
+          "publication_locator": "cited publication",
+          "quoted_text": "A school can trivially achieve these notions if test scores are ignored altogether.",
+          "quoted_text_sha256": "cec0c1e08339cc6671f11f85cfd9823f8f4fb5f8c3b08abb7c02787e0a6ffe43"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "lg21_known_parameters_cutoff_model": {
+      "source_anchors": [
+        {
+          "line_end": 2261,
+          "line_start": 2255,
+          "publication_locator": "cited publication",
+          "quoted_text": "2 are known, and so the only unknown\nNote that we assume that the parameters σ 2 and σ12 , ..., σK\n\nwhere µ̂ =\n\nis q̄. Thus, after observing the test scores,the school should be able to accurately estimate q̄ based\non the observed distribution.",
+          "quoted_text_sha256": "0a96fa9a4474c46b5b57cee99f054ccf375506c7d752369aaa98086b60550508"
+        }
+      ],
+      "source_kind": "model"
+    },
     "lg21_lemma41_strategy_proofness": {
       "source_anchors": [
         {
-          "line_end": 549,
+          "line_end": 539,
           "line_start": 492,
           "publication_locator": "cited publication",
-          "quoted_text": "Lemma 4.1 (Strategy-proofness). Suppose the school observes access Z for each student and uses\na policy P that performs Bayesian optimal estimation on students with access; i.e., when Z = 1,\nfP (I) = E[q|I].\nThen, the unique equilibrium is that all students with access take the test and report their scores:\nK−1\nY (q, {θk }k=1\n, P ) = X({θk }K\nk=1 , P ) = 1.\n\n∀q, {θk }K\nk=1\n\nThe proof proceeds as follows: the unraveling occurs in the opposite direction as in the case\nwhere access is not known. If some students with access do not report their score (or do not take the\ntest), then for any ﬁxed feature set {θk }K−1\nk=1 there must exist a threshold θ̄K such that applicants do\nnot submit a score if and only if θK < θ̄K (or a true skill threshold q̄ if students can strategize taking\nthe test). However, under such threshold, there are always some students who have access and are\ncurrently not reporting (or taking the test) who can improve their estimated skill by reporting (or\ntaking the test and then reporting). Thus any fraction of the students with access not reporting (or\ntaking) is unstable, and so in equilibrium all students with access take the test.\nThe result establishes that the school can induce all students with access to take the test and\nsubmit their scores, without having to mandate submission – simply by following a Bayesian optimal\nestimation policy. In other words, by simply following the policy that best makes use of given\ninformation, the school simultaneously induces students to report all available information. This\n6\n\nWhile a school may never have true knowledge of Z in practice, it may be able to approximate it by, for example,\nusing submission information from others in the same socio-economic contexts. It may also ask students to credibly\nattest to a lack of access, or pursue other verification techniques. Our work provides an upper bound for how beneficial\nsuch knowledge may be.\n\n9\n\n\fresult is the opposite of Theorem 3.1, where the school did not know who had access and so such\nstudents could strategically withhold their scores.\nWhat is diﬀerent between the two settings? When the school does not know who has access,\nstudents with access but a low test score can disguise themselves as (potentially high true skill)\nstudents without test access. When the school does know, on the other hand, they cannot do so;\nif any fraction of students do not report their score, the school pools such students together and\nestimates the test scores for this pool – and so there are always students who do not wish to pool\nwith others who have also strategically with-held their scores.\nRecall that in the proof of Theorem 3.1, we established that if any students can strategically\nwithhold their test score to improve their estimate, fairness is not possible. Lemma 4.1 thus enables\nus to ﬁnd fair policies by establishing that in the case where the school knows test access, Bayesian\noptimal estimation for applicants with access removes strategic incentives. Thus, for the rest of the\nsection, we will assume that the school follows such a policy for applicants with test access, and\nfocus on estimation for students without test access.\n\n4.1\n\nInformational gaps cause unfairness\n\nLemma 4.1 eliminates strategic concerns when the school uses Bayesian optimal estimation for those\nwith test access. Thus, it may be tempting to conclude that it immediately follows that the fairness\ncriteria hold. Our next result establishes the opposite: using Bayesian optimal estimation for those\nwith test access eliminates the possibility for latent skill fairness, regardless of what one does for\nthose without access.",
-          "quoted_text_sha256": "fe61f6b91b3e850dc98f60cfd0efae11e59378459bc5e9d0e60e00125cc7f03f"
+          "quoted_text": "Lemma 4.1 (Strategy-proofness). Suppose the school observes access Z for each student and uses\na policy P that performs Bayesian optimal estimation on students with access; i.e., when Z = 1,\nfP (I) = E[q|I].\nThen, the unique equilibrium is that all students with access take the test and report their scores:\nK−1\nY (q, {θk }k=1\n, P ) = X({θk }K\nk=1 , P ) = 1.\n\n∀q, {θk }K\nk=1\n\nThe proof proceeds as follows: the unraveling occurs in the opposite direction as in the case\nwhere access is not known. If some students with access do not report their score (or do not take the\ntest), then for any ﬁxed feature set {θk }K−1\nk=1 there must exist a threshold θ̄K such that applicants do\nnot submit a score if and only if θK < θ̄K (or a true skill threshold q̄ if students can strategize taking\nthe test). However, under such threshold, there are always some students who have access and are\ncurrently not reporting (or taking the test) who can improve their estimated skill by reporting (or\ntaking the test and then reporting). Thus any fraction of the students with access not reporting (or\ntaking) is unstable, and so in equilibrium all students with access take the test.\nThe result establishes that the school can induce all students with access to take the test and\nsubmit their scores, without having to mandate submission – simply by following a Bayesian optimal\nestimation policy. In other words, by simply following the policy that best makes use of given\ninformation, the school simultaneously induces students to report all available information. This\n6\n\nWhile a school may never have true knowledge of Z in practice, it may be able to approximate it by, for example,\nusing submission information from others in the same socio-economic contexts. It may also ask students to credibly\nattest to a lack of access, or pursue other verification techniques. Our work provides an upper bound for how beneficial\nsuch knowledge may be.\n\n9\n\n\fresult is the opposite of Theorem 3.1, where the school did not know who had access and so such\nstudents could strategically withhold their scores.\nWhat is diﬀerent between the two settings? When the school does not know who has access,\nstudents with access but a low test score can disguise themselves as (potentially high true skill)\nstudents without test access. When the school does know, on the other hand, they cannot do so;\nif any fraction of students do not report their score, the school pools such students together and\nestimates the test scores for this pool – and so there are always students who do not wish to pool\nwith others who have also strategically with-held their scores.\nRecall that in the proof of Theorem 3.1, we established that if any students can strategically\nwithhold their test score to improve their estimate, fairness is not possible. Lemma 4.1 thus enables\nus to ﬁnd fair policies by establishing that in the case where the school knows test access, Bayesian\noptimal estimation for applicants with access removes strategic incentives. Thus, for the rest of the\nsection, we will assume that the school follows such a policy for applicants with test access, and\nfocus on estimation for students without test access.",
+          "quoted_text_sha256": "4b483896c76e418a574d730c360e0ac65996090ed60a42f17e0e244f6c5f7ec1"
         }
       ],
       "source_kind": "lemma"
@@ -164,26 +209,124 @@
     "lg21_proposition42_not_latent_skill_fair": {
       "source_anchors": [
         {
-          "line_end": 560,
+          "line_end": 551,
           "line_start": 550,
           "publication_locator": "cited publication",
-          "quoted_text": "Proposition 4.2. Suppose the school observes access Z. Consider any policy P that performs\nBayesian optimal estimation on students with access. Then, P is not latent skill fair.\nThe result follows from informational diﬀerences: if the school uses the test score for those with\naccess, then it cannot hope to equally accurately distinguish among students without access – high\ntrue skill students without access have fewer opportunities to demonstrate their skill and receive a\nhigh skill estimate. In other words, if the school wishes to be latent skill fair, then it must artiﬁcially\nworsen its estimates for those with test access.7\nThus, for the remainder of this section, we turn to studying observable and demographic fairness.\nHowever, even in this case, eliminating the strategic challenge does not guarantee that the school\nto satisﬁes these criteria; for example, our next result establishes that also using Bayesian optimal\nestimation for students without access does not satisfy these notions.",
-          "quoted_text_sha256": "3ed059bf58d974c53a3820707482ff730b47dae72e35b085ce9bfd972a9a2fe4"
+          "quoted_text": "Proposition 4.2. Suppose the school observes access Z. Consider any policy P that performs\nBayesian optimal estimation on students with access. Then, P is not latent skill fair.",
+          "quoted_text_sha256": "46c02688cef94fa483ba246f88878e3868f617fafb01b61e90f42c5cc324f459"
         }
       ],
       "source_kind": "proposition"
     },
     "lg21_proposition43_not_observable_or_demographic_fair": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 204,
+              "line_start": 199,
+              "publication_locator": "cited publication",
+              "quoted_text": "\fStudents. There is a unit mass of students. Each student has a latent skill level q, normally\ndistributed as N (µ, σ 2 ), as well as a set of observed features Θ. All students have the ﬁrst K − 1\nfeatures {1, . . . , K − 1}; only a subset apply with the last feature K. For each student, θk is a noisy\nfunction of q, i.e., θk = q +ǫk , for k = 1, . . . , K, with Gaussian noise ǫk ∼ N (0, σk2 ). The distribution\nof noise ǫk is feature dependent, but independent across features and students. Throughout our\nexposition, we refer to feature K as the “test score.”",
+              "quoted_text_sha256": "2b750de7c67e6d0ccc3e6aaaf67c03fa0f78acafb4f25e4bf24e8698b1e42bdb"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 218,
+              "line_start": 213,
+              "publication_locator": "cited publication",
+              "quoted_text": "score); if X = 1, it further includes θK . As in Garg et al. [2020], we study the Bayesian optimal\nestimation policy PBO , in which the student skill estimate is the posterior mean using all the\ninformation available:\nq̃ = fPBO (I) , E[q|I].\nWe further consider non-Bayesian optimal estimation policies P , implemented by (potentially\nrandomized) functions fP .",
+              "quoted_text_sha256": "a6eff3a0ee14b98557e32831d7abf4bc014c0574fedfadc79665234d9fc0324b"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 364,
+              "line_start": 333,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our notions rely on “distributional equality,” denoted (==), because of the randomness in the\nprocess, both in the sampling of test scores given q and in the estimation function fP . Let q̃|D, P\ndenote the distribution of q̃ given the information D using policy P .\nDefinition 2. Policy P is latent skill fair if in every equilibrium, for all q,\nD\n\nK−1\nq̃|Z = 1, {θk }K−1\nk=1 , q, P == q̃|Z = 0, {θk }k=1 , q, P,\n\ni.e., if the distribution of skill estimates for students – that share (latent) skill q and (observable)\nother features {θk }K−1\nk=1 – with and without access are equal.\nDefinition 3. Policy P is observably fair if in every equilibrium, for all {θk }K−1\nk=1 ,\nD\n\nK−1\nq̃|Z = 1, {θk }K−1\nk=1 , P == q̃|Z = 0, {θk }k=1 , P,\n\ni.e., if the distribution of skill estimates for students – that share (observable) other features {θk }K−1\nk=1\n– with and without access are equal.\n\n6\n\n\fDefinition 4. Policy P is demographically fair if in every equilibrium,\nD\n\nq̃|Z = 1, P == q̃|Z = 0, P,\ni.e., if the distribution of skill estimates for students with and without access are equal.",
+              "quoted_text_sha256": "7517a04b655d0676d4d316679c6868b15acefa35a71f006471480693910f53d6"
+            }
+          ]
+        },
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 228,
+              "line_start": 223,
+              "publication_locator": "cited publication",
+              "quoted_text": "What can the school require? We consider three requirement policies: no requirements (students\nare free to take and report the test unconstrained, Z ≥ Y ≥ X); reporting required conditional\ntaking the test (if a student takes the test, then they must report their score, Z ≥ Y = X);3 or, in\nthe case where the school knows Z, reporting required given access (Z = Y = X). We ﬁnd that\nsuch requirements do not make a diﬀerence: the same results hold for all our settings, and so we do\nnot include the requirement policy when denoting the school’s policy P .",
+              "quoted_text_sha256": "dd798678140f83f8ef2640a450b5f5ddac4214d4234dcaaef190a3e1d14aa904"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 1136,
+              "line_start": 1134,
+              "publication_locator": "cited publication",
+              "quoted_text": "generality, that within this set of students with ﬁxed {θk }K\nk=1 , the fraction of students who have\naccess to tests is C ∈ (0, 1). Then we have that of this fraction of students with access, a further",
+              "quoted_text_sha256": "0387682379e7b259c573b4c6bce1acc9f08d7f791a1543c37ad0559d2cbbe272"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
-          "line_end": 590,
+          "line_end": 562,
           "line_start": 561,
           "publication_locator": "cited publication",
-          "quoted_text": "Proposition 4.3. Suppose the school observes access status Z. Then, PBO – the policy that uses\nBayesian optimal estimation for all students – is not observably or demographically fair.\nThe proof is straightforward and follows from Lemma 4.1: since every student with access reports\ntheir test score, Bayesian optimal estimation has more information on such students. One can then\nalgebraically verify that the resulting distributions of q̃ diﬀer.8\n7\n\nAs an example of a policy that would be latent fair, suppose the school added additional noise to the estimates\nof students with access, such that the distributions equalize even conditioned on q.\n8\nIn fact, the result follows immediately from our Lemma 4.1 (which removes strategic concerns) and Lemma 3.1\nin Garg et al. [2020], which calculates the skill distributions using Bayesian-optimal estimation given a fixed feature\nset.\n\n10\n\n\f4.2\n\nA non-Bayesian optimal but fair admissions process\n\nUp to now, our results have been negative: even if the school knows who has access and uses this\nknowledge to eliminate strategic incentives, it does not meet the fairness criteria using existing\npolicies. We now provide a positive result, a novel estimation policy that satisﬁes observable and\ndemographic fairness.\nTo overcome the issue identiﬁed in Proposition 4.3, a policy P must randomize the estimated\nskill for students without access, in order to equalize the distributions of q̃|Z = 1, {θk }K−1\nk=1 , P and\nK−1\nq̃|Z = 0, {θk }k=1 , P . With this randomization, students with the same observable features may\nreceive diﬀerent skill estimates. Consider the following policy.",
-          "quoted_text_sha256": "c0b74fed6ce9f2dce6e829513f2834c1301ee07deef8d8ed508c4a84fc9f4229"
+          "quoted_text": "Proposition 4.3. Suppose the school observes access status Z. Then, PBO – the policy that uses\nBayesian optimal estimation for all students – is not observably or demographically fair.",
+          "quoted_text_sha256": "67d30b17300d2c33de124dc7ef8879eb3e43f57aa6f9d23c99e6d8e296acd75e"
         }
       ],
       "source_kind": "proposition"
+    },
+    "lg21_report_decision_skill_independence": {
+      "source_anchors": [
+        {
+          "line_end": 250,
+          "line_start": 249,
+          "publication_locator": "cited publication",
+          "quoted_text": "It is simple to see that X should not depend on q, given θK . Once the test score is sampled from the student’s\nskill level, the student’s admission probability does not depend on q.",
+          "quoted_text_sha256": "2f2d98c7c337eb0a5323f40006fda0ef27213424be3c8a2b3aa1e0aa8877b92f"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "lg21_reporting_conditioned_generalization": {
+      "source_anchors": [
+        {
+          "line_end": 395,
+          "line_start": 391,
+          "publication_locator": "cited publication",
+          "quoted_text": "First, note that our stated fairness deﬁnitions all condition on access Z, as opposed to reporting\nX. However, all of our results, for each deﬁnition, also hold for the corresponding deﬁnition for\nwhich access Z is replaced by reporting X; in fact, the corresponding results are easier to prove,\nas X is always observed but Z is potentially unobserved. In each proof, we explain the requisite\nchanges needed for such a result. Our exposition centers Z normatively, with the idea that schools",
+          "quoted_text_sha256": "6a4ae0b40d0dec2bfd379669026a5bb2818d85041a75ab86f18149cc8108e21d"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "lg21_test_taking_probability_preference": {
+      "source_anchors": [
+        {
+          "line_end": 2174,
+          "line_start": 2173,
+          "publication_locator": "cited publication",
+          "quoted_text": "to be maximize the estimated skill level. Here we further interpret this to be that a student will\nchoose to take the test if this has a higher probability of leading to a better result than a worse one.",
+          "quoted_text_sha256": "39d88efaf90359101477c03dc7a676c3372f3073a1cc0d6800dd533771eb8cde"
+        }
+      ],
+      "source_kind": "condition"
     },
     "lg21_theorem31_all_fairness_fail": {
       "semantic_context": [
@@ -203,11 +346,11 @@
           "semantic_role": "scope",
           "source_anchors": [
             {
-              "line_end": 1586,
+              "line_end": 1581,
               "line_start": 1577,
               "publication_locator": "cited publication",
-              "quoted_text": "We can then show that neither everyone takes the test and reports nor no one takes the test\nand reports are stable, so if an equilibrium exists, it must be that a fraction of students report.\nUnder such situation, the function Y ({θk }K−1\nk=1 , q, PBO ) would be increasing with respect to q, so\nthat there is a threshold of q for test-taking. We can then ﬁnish by showing that there exists\nThe\nsuch a threshold which deﬁnes the function\u0010Y (·) for each {θk }K−1\nk=1 , that satisﬁes equilibrium.\n\u0011\n",
-              "quoted_text_sha256": "8a8cf1869590a96cce3bea9c9c737b8ac5010375de547433c3a92f3296ac1a16"
+              "quoted_text": "We can then show that neither everyone takes the test and reports nor no one takes the test\nand reports are stable, so if an equilibrium exists, it must be that a fraction of students report.\nUnder such situation, the function Y ({θk }K−1\nk=1 , q, PBO ) would be increasing with respect to q, so\nthat there is a threshold of q for test-taking. We can then ﬁnish by showing that there exists",
+              "quoted_text_sha256": "9e097cb220563ffa6a0806805de433318d6fdcabd3f440beae8ac1b074edd1fa"
             }
           ]
         }
@@ -262,11 +405,11 @@
           "semantic_role": "scope",
           "source_anchors": [
             {
-              "line_end": 1586,
+              "line_end": 1581,
               "line_start": 1577,
               "publication_locator": "cited publication",
-              "quoted_text": "We can then show that neither everyone takes the test and reports nor no one takes the test\nand reports are stable, so if an equilibrium exists, it must be that a fraction of students report.\nUnder such situation, the function Y ({θk }K−1\nk=1 , q, PBO ) would be increasing with respect to q, so\nthat there is a threshold of q for test-taking. We can then ﬁnish by showing that there exists\nThe\nsuch a threshold which deﬁnes the function\u0010Y (·) for each {θk }K−1\nk=1 , that satisﬁes equilibrium.\n\u0011\n",
-              "quoted_text_sha256": "8a8cf1869590a96cce3bea9c9c737b8ac5010375de547433c3a92f3296ac1a16"
+              "quoted_text": "We can then show that neither everyone takes the test and reports nor no one takes the test\nand reports are stable, so if an equilibrium exists, it must be that a fraction of students report.\nUnder such situation, the function Y ({θk }K−1\nk=1 , q, PBO ) would be increasing with respect to q, so\nthat there is a threshold of q for test-taking. We can then ﬁnish by showing that there exists",
+              "quoted_text_sha256": "9e097cb220563ffa6a0806805de433318d6fdcabd3f440beae8ac1b074edd1fa"
             }
           ]
         }
@@ -278,13 +421,6 @@
           "publication_locator": "cited publication",
           "quoted_text": "Theorem 3.1 (Strategic withholding). Suppose the school does not know access status and uses\nBayesian optimal estimation PBO for all students. Then, some students with access do not report\ntest scores. In particular, in every equilibrium:\n• If the school does not require reporting conditional on taking the test, then Y (·) = 1. For each\n{θk }K−1\nk=1 , there exists a finite test score threshold θ̄K such that an applicant reports their score,\nX({θk }K−1\nk=1 , θK ) = 1, if and only if θK ≥ θ̄K .\n• If the school requires reporting conditional on taking the test (Y = X), then for each {θk }K−1\nk=1 ,\nthere exists a finite skill threshold q̄ such that an applicant takes the test and reports their\nscore, Y ({θk }K−1\nk=1 , q) = 1, if and only if q ≥ q̄.\nFurthermore, PBO satisfies none of the fairness definitions.\nTo prove this theorem, we ﬁrst argue that neither everyone report or no one report is equilibrium.",
           "quoted_text_sha256": "799a8d39a61135708397be0015737370cf8bef279f137b9a92e39428fdf7bfcf"
-        },
-        {
-          "line_end": 1598,
-          "line_start": 1432,
-          "publication_locator": "cited publication",
-          "quoted_text": "Next, it is simple to carry the above proof to the case where reporting is required\nconditional on taking the test. We brieﬂy sketch the proof as follows. Note that the estimation\nfunction fPBO should be rewritten in terms of Y (·) and q. For students who takes the test, the\nestimated skill is\nPK−1\n−2\n\u0010\n\u0011\n(θK |q)\nµσ −2 + k=1\nθk σk−2 + σK\nK−1\nK−1\nK−1\n,\nfPBO {θk }k=1 , Y ({θk }k=1 , q, PBO ) = X = 1 , E[q|{θk }k=1 , θK |q] =\nP\nK\n−2\n−2\nσ + i=1 σk\n\nwhere we abused the notations a bit: here q is not observed by the school, and θK is not known\nand random to the students at the time of his decision to take the test. Since this skill estimate is\n\n18\n\n\frandom at the time of decision, what the student would really care about is actually the expectation\nof the above amount, which is\nh\n\u0010\n\u0011i µσ −2 + PK−1 θ σ −2 + qσ −2\nK−1\nK−1\nk=1 k k\nK\nE fPBO {θk }k=1 , Y ({θk }k=1 , q, PBO ) = X = 1 =\nPK −2\n−2\nσ + i=1 σk\nFor students who do not report a test score, the skill is estimated as follows:\n\u0011\n\u0010\nK−1\n,\nq,\nP\n)\n=\nX\n=\n0\n, E[q|{θk }K−1\n,\nY\n({θ\n}\nfPBO {θk }K−1\nBO\nk k=1\nk=1 , Y = X = 0]\nk=1\n\u0011\ni \u0010\nh\nK−1\n,\nZ\n=\n0\nPr\nZ\n=\n0|Y\n=\nX\n=\n0,\n{θ\n}\n=E q|Y = X = 0, {θk }K−1\nk\nk=1\nk=1\n\u0011\nh\ni \u0010\nK−1\n+ E q|Y = X = 0, {θk }K−1\n,\nZ\n=\n1\nPr\nZ\n=\n1|Y\n=\nX\n=\n0,\n{θ\n}\nk\nk=1\nk=1\nPK−1\n−2\n\u0011\n\u0010\n−2\nµσ + k=1 θk σk\nK−1\n=\nPK−1 −2 Pr Z = 0|Y = X = 0, {θk }k=1\n−2\nσ + i=1 σk\n\u0010\n\u0011\u0011\nR\nR \u0010\nK ] Pr(θ |q) Pr q|{θ }K−1\ndθK dq\nE[q|{θ\n}\nK−1\nK\nk\nk\nk=1\nk=1\nq:Y ({θk }k=1 ,q,PBO )=0 θK\n\u0010\n\u0011\n+\nK−1\nPr {q : Y ({θk }k=1\n, q, PBO ) = 0}|{θk }K−1\nk=1 , Z = 1\n\u0010\n\u0011\n× Pr Z = 1|Y = X = 0, {θk }K−1\nk=1\n\nwhere the last equality is by deﬁnition of the equilibrium and properties of the normal distribution.\nWe can then show that neither everyone takes the test and reports nor no one takes the test\nand reports are stable, so if an equilibrium exists, it must be that a fraction of students report.\nUnder such situation, the function Y ({θk }K−1\nk=1 , q, PBO ) would be increasing with respect to q, so\nthat there is a threshold of q for test-taking. We can then ﬁnish by showing that there exists\nThe\nsuch a threshold which deﬁnes the function\u0010Y (·) for each {θk }K−1\nk=1 , that satisﬁes equilibrium.\n\u0011\n\nK−1\n, q, PBO ) = X = 0 is continuous\n, Y ({θk }K−1\ntechnique is the same, by noting that fPBO {θk }k=1\n\u0011i k=1\nh\n\u0010\nK−1\nis linear in q, and that their relation\nin q and E fPBO {θk }K−1\nk=1 , Y ({θk }k=1 , q, PBO ) = X = 1\ndoes not agree when q goes to plus or minus inﬁnity.",
-          "quoted_text_sha256": "2743b435f94b5bc5cdd5e4c443e40082753237440506c08ee6a078638b987ac6"
         }
       ],
       "source_kind": "theorem"
@@ -292,23 +428,47 @@
     "lg21_theorem32_fairness_impossibility": {
       "source_anchors": [
         {
-          "line_end": 491,
+          "line_end": 461,
           "line_start": 455,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2 (Fairness impossibility). Suppose the school does not know access status and uses an\nestimation policy P that satisfies either latent skill or observable fairness. Then, P is test-blank.\nThe proof proceeds via an unraveling argument. To satisfy those fairness notions and to avoid\nbeing test-blank, for any X(·) the policy P must randomize skill estimates to equalize the estimate distributions. However, then, some students with X({θk }K−1\nk=1 , θK ) = 1 can strictly improve\ntheir estimates by no longer reporting their score. Reporting unravels until no student reports in\nequilibrium, which itself leads to the policy being test-blank.\n\n8\n\n\fOur result does not establish whether demographic fairness is possible when the school does not\nknow who has access – that remains an open question. We conjecture that it cannot hold; however,\nthe diﬃculty in the analysis is that policies can arbitrarily treat diﬀerent other features, {θk }K−1\nk=1 ,\ndiﬀerently, such that demographic fairness may hold without the condition for observable fairness\nholding for any particular {θk }K−1\nk=1 . Note however that both of the above results (as all our results)\nalso hold for fairness deﬁned by conditioning on reporting X – even though the school observes it.\nThis section establishes that achieving latent or observable fairness when the true access status\nis not known is generally impossible, if the school also wishes to make use of the test score. Both\nresults in this section follow from the strategic aspect of optional testing: students with low test\nscores can, by not reporting their score, masquerade as students without test access.\n\n4\n\nWhen school knows access status\n\nGiven the general impossibility results in the previous section, we now turn to the setting in which\nthe school knows whether a student has access to tests, Z.6 Thus, the school now observes the ﬁrst\nK − 1 features, the access status, Z, and whether a students submits a score, X. If the student\nsubmits a score, X = 1, then it further observes θK ; i.e., I , (Z, {θk }K−1\nk=1 , X, θK 1X ). Note that this\nknowledge enables the school to follow diﬀerent estimation policies for students with and without\ntest access. We ﬁnd that this knowledge substantially changes what is possible to achieve.\nOur ﬁrst result for this setting suggests why. In contrast to the setting without knowledge of Z,\nusing a Bayesian optimal estimator of skill for students with access to tests results in all students\nwith access submitting their score.",
-          "quoted_text_sha256": "6c1a849cc83a07ca1755af7547f602a8f8b22d8f230c81147ea28c8ec7d5415b"
+          "quoted_text": "Theorem 3.2 (Fairness impossibility). Suppose the school does not know access status and uses an\nestimation policy P that satisfies either latent skill or observable fairness. Then, P is test-blank.\nThe proof proceeds via an unraveling argument. To satisfy those fairness notions and to avoid\nbeing test-blank, for any X(·) the policy P must randomize skill estimates to equalize the estimate distributions. However, then, some students with X({θk }K−1\nk=1 , θK ) = 1 can strictly improve\ntheir estimates by no longer reporting their score. Reporting unravels until no student reports in\nequilibrium, which itself leads to the policy being test-blank.",
+          "quoted_text_sha256": "5426b4a7799246b9fa6d2169bf8a794ff3543c814f0652794a9cb9a5f018bd74"
         }
       ],
       "source_kind": "theorem"
     },
+    "lg21_theorem32_observable_summary": {
+      "source_anchors": [
+        {
+          "line_end": 1780,
+          "line_start": 1779,
+          "publication_locator": "cited publication",
+          "quoted_text": "To sum up, any policy that satisﬁes demographic fairness will be either test-blank, or lead to no\none reporting in equilibrium.",
+          "quoted_text_sha256": "854dd77a4c103c00eb47092e0a9878f5723a907afe7e119bb242888cfa7f2463"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "lg21_theorem32_report_required_proof_conclusion": {
+      "source_anchors": [
+        {
+          "line_end": 1778,
+          "line_start": 1776,
+          "publication_locator": "cited publication",
+          "quoted_text": "To migrate the above proof to the case where reporting is required conditional on testing, simply\nreplace the integral over θK by a double integral over θK |q and q, the other arguments are the same,\nand the result is that the unique equilibrium is no one takes the test and reports the score.",
+          "quoted_text_sha256": "718d71f25dc7ccf52b02f8e3225620e5d419c296b12815181ff247dc857aadfe"
+        }
+      ],
+      "source_kind": "claim"
+    },
     "lg21_theorem32_report_required_source_statement": {
       "source_anchors": [
         {
-          "line_end": 491,
+          "line_end": 461,
           "line_start": 455,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2 (Fairness impossibility). Suppose the school does not know access status and uses an\nestimation policy P that satisfies either latent skill or observable fairness. Then, P is test-blank.\nThe proof proceeds via an unraveling argument. To satisfy those fairness notions and to avoid\nbeing test-blank, for any X(·) the policy P must randomize skill estimates to equalize the estimate distributions. However, then, some students with X({θk }K−1\nk=1 , θK ) = 1 can strictly improve\ntheir estimates by no longer reporting their score. Reporting unravels until no student reports in\nequilibrium, which itself leads to the policy being test-blank.\n\n8\n\n\fOur result does not establish whether demographic fairness is possible when the school does not\nknow who has access – that remains an open question. We conjecture that it cannot hold; however,\nthe diﬃculty in the analysis is that policies can arbitrarily treat diﬀerent other features, {θk }K−1\nk=1 ,\ndiﬀerently, such that demographic fairness may hold without the condition for observable fairness\nholding for any particular {θk }K−1\nk=1 . Note however that both of the above results (as all our results)\nalso hold for fairness deﬁned by conditioning on reporting X – even though the school observes it.\nThis section establishes that achieving latent or observable fairness when the true access status\nis not known is generally impossible, if the school also wishes to make use of the test score. Both\nresults in this section follow from the strategic aspect of optional testing: students with low test\nscores can, by not reporting their score, masquerade as students without test access.\n\n4\n\nWhen school knows access status\n\nGiven the general impossibility results in the previous section, we now turn to the setting in which\nthe school knows whether a student has access to tests, Z.6 Thus, the school now observes the ﬁrst\nK − 1 features, the access status, Z, and whether a students submits a score, X. If the student\nsubmits a score, X = 1, then it further observes θK ; i.e., I , (Z, {θk }K−1\nk=1 , X, θK 1X ). Note that this\nknowledge enables the school to follow diﬀerent estimation policies for students with and without\ntest access. We ﬁnd that this knowledge substantially changes what is possible to achieve.\nOur ﬁrst result for this setting suggests why. In contrast to the setting without knowledge of Z,\nusing a Bayesian optimal estimator of skill for students with access to tests results in all students\nwith access submitting their score.",
-          "quoted_text_sha256": "6c1a849cc83a07ca1755af7547f602a8f8b22d8f230c81147ea28c8ec7d5415b"
+          "quoted_text": "Theorem 3.2 (Fairness impossibility). Suppose the school does not know access status and uses an\nestimation policy P that satisfies either latent skill or observable fairness. Then, P is test-blank.\nThe proof proceeds via an unraveling argument. To satisfy those fairness notions and to avoid\nbeing test-blank, for any X(·) the policy P must randomize skill estimates to equalize the estimate distributions. However, then, some students with X({θk }K−1\nk=1 , θK ) = 1 can strictly improve\ntheir estimates by no longer reporting their score. Reporting unravels until no student reports in\nequilibrium, which itself leads to the policy being test-blank.",
+          "quoted_text_sha256": "5426b4a7799246b9fa6d2169bf8a794ff3543c814f0652794a9cb9a5f018bd74"
         }
       ],
       "source_kind": "theorem"
@@ -316,14 +476,26 @@
     "lg21_theorem44_resampling_fairness": {
       "source_anchors": [
         {
-          "line_end": 674,
+          "line_end": 611,
           "line_start": 610,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 4.4. Suppose the school observes access status Z. Then, the re-sampling policy PS is\nobservably and demographically fair.\nThe proof follows from directly computing the induced skill estimate distributions. In addition\nto theoretically achieving our fairness notion, the policy can be described via a simple intuition. The\nschool uses everything it knows about a student to generate the distribution of what the student’s\nskill estimate could have been had they had access to the test, and then it samples the student’s\nestimate from the resulting distribution.\nThis procedure is akin to Thompson sampling for bandits, in which an action is played according\nto the probability that it maximizes the reward. Here, if a school accepts all students with skill\nestimates above some threshold q̄, then each student without access is accepted with probability\nequal to the probability they would receive a high enough score to be accepted had they taken the\ntest; this probability is conditioned on everything the school knows about the student, {θk }K−1\nk=1 .\nNote that the re-sampling policy PS accepts some students who would not be accepted by the\nBayesian optimal policy – a school adopting PS would be recognizing that there are some students\nwho do not have access to tests, but would excel if they did. And because it cannot identify the exact\nindividual students who would excel, it re-samples test scores to maintain distributional fairness for\nthe group (but still conditional on each individual’s features {θk }K−1\nk=1 ).\nTogether, the results in this section establish that a school can in theory overcome both the\nstrategic and the informational gaps induced by test-optional policies. Overcoming strategic gaps\nrequires using knowledge of who has access to the test (Lemma 4.1); overcoming informational gaps\nrequires adopting a non-Bayesian optimal policy (Theorem 4.4).\n11\n\n\f5\n\nDiscussion\n\nOur model is stylized in several ways. One useful assumption is that the features are normally\ndistributed with the true skill level as the mean. In practice, test scores are truncated and may\nbe well ﬁtted with truncated normal distributions,9 while scores of other features may exhibit far\ndiﬀerent distributions. This assumption is made for simplicity of exposition, following Garg et al.\n[2020]. We expect our results to hold more generally outside the assumption; in our proofs, we\ndo not use extensively the normal distribution itself, but rather properties such as symmetry and\ninvariability to linear transforms.\nMore consequential is our assumption that students seek to maximize their expected skill estimate q̃, as opposed to some (potentially non-linear) function of the estimate. For example, an\nalternative choice would be for students to maximize their probability of admissions, in a setting in\nwhich the school accepts the students with the highest skill estimates up to a capacity constraint.\nDoing so would not change our results (assuming appropriate tie-breaking for how students choose\namong equivalent strategies), except when the school mandates reporting of test scores given a student has taken it. In that case, students with high scores in other features might – even if the test\nincreases their estimated skill in expectation – not take the test to avoid the downside risk of a bad\nscore resulting in a rejection. We believe that our choice is more natural, as in practice students\nmay not know the admissions threshold but may know whether they are likely to do well on the test.\nSimilarly, our notions and impossibility results are for strict (distributional) equality – it is likely\nthat policies diﬀer in the magnitude the fairness violations. We leave to future work to construct\npolicies that, while maximizing some objective of interest, minimize the fairness violations.\nFinally, we note that our focus on Bayesian optimal policies implicitly assumes that tests provide\nsome useful information about students, and that schools process such information optimally (as\nopposed to, e.g., over-weighting what a low score says about a student). In this way, our framework\nprovides an upper bound for when test-optional policies can be eﬀective.\nPolicy impact and future work Following the empirical literature on test-optional policies,\nwe analyze the fairness implications of such adoption. Our work shows that eﬀective and fair\nimplementation of such policies requires overcoming both strategic behavior and informational gaps.\nBoth aspects are, to an extent, feasible to overcome: the school may learn about students’ access\nstatus using submission information from others in the same socio-economic contexts, or by asking\nstudents to credibly attest to a lack of access; randomized admission may be achieved by drawing\nrandomly from test scores observed in the group with test scores and similar features, or more\ninformally by the school choosing to take “risks” on some students about which it has limited\ninformation. However, development of workable schemes in practice requires considerable work\nalongside practitioners. Our work provides guidance for the strategies that are likely to be eﬀective.\nMore generally, our work is an example of a setting in which the strategic behavior of (some)\nagents introduces inequities that must be countered. Such eﬀects are common in societal systems,\nthough surprisingly rarely analyzed in the fair machine learning or mechanism design communities.\nWe believe that our work provides an illustration of and lays the groundwork for such future work.",
-          "quoted_text_sha256": "509170bb0d7a25d93bb537589af6e57c363a95103bf63783ec2c315d1467ecf4"
+          "quoted_text": "Theorem 4.4. Suppose the school observes access status Z. Then, the re-sampling policy PS is\nobservably and demographically fair.",
+          "quoted_text_sha256": "e1057c214ccf554831049b5f71710808e8e761b7abf880fd4776de6c4b922907"
         }
       ],
       "source_kind": "theorem"
+    },
+    "lg21_thompson_acceptance_interpretation": {
+      "source_anchors": [
+        {
+          "line_end": 622,
+          "line_start": 617,
+          "publication_locator": "cited publication",
+          "quoted_text": "This procedure is akin to Thompson sampling for bandits, in which an action is played according\nto the probability that it maximizes the reward. Here, if a school accepts all students with skill\nestimates above some threshold q̄, then each student without access is accepted with probability\nequal to the probability they would receive a high enough score to be accepted had they taken the\ntest; this probability is conditioned on everything the school knows about the student, {θk }K−1\nk=1 .",
+          "quoted_text_sha256": "0424f3a2172a5cf9a9c9a6833c398d5ef3199f9660753ab6505046a642b2d082"
+        }
+      ],
+      "source_kind": "claim"
     }
   },
   "source_artifact_sha256": "11fb7a52959948847ce19d85adf97256a30c3f1575941ff6efec0e33bf908e1c",

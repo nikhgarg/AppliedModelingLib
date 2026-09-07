@@ -19,15 +19,14 @@ import sys
 from pathlib import Path
 from typing import Any
 
-try:
-    from scripts.review_dashboard import parse_review_source_declarations
-    from scripts.generate_v11_specs_patch import _DECL_HEAD_RE, _outer_token
-except ModuleNotFoundError:
-    from review_dashboard import parse_review_source_declarations
-    from generate_v11_specs_patch import _DECL_HEAD_RE, _outer_token
-
-
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.generate_v11_specs_patch import _DECL_HEAD_RE, _outer_token
+from scripts.review_dashboard import parse_review_source_declarations
+
+
 
 
 class GenerationError(ValueError):

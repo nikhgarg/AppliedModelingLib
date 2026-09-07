@@ -1,7 +1,7 @@
 import LBG24SpatialUnderreporting.CollapsedCausalObservationLaw
-import EconCSLib.Foundations.Probability.PalmCampbell
-import EconCSLib.Foundations.Probability.PalmFiniteTaggedArrival
-import EconCSLib.Foundations.Probability.PoissonSuspensionMarkedTransport
+import AppliedModelingLib.Foundations.Probability.PalmCampbell
+import AppliedModelingLib.Foundations.Probability.PalmFiniteTaggedArrival
+import AppliedModelingLib.Foundations.Probability.PoissonSuspensionMarkedTransport
 import Mathlib.Tactic
 
 /-!
@@ -14,7 +14,7 @@ causal endpoint-density model from that model itself.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section
@@ -28,10 +28,10 @@ structure StationaryPalmTaggedArrivalSource
     (Ωbase Ω : Type*) [MeasurableSpace Ωbase] [MeasurableSpace Ω]
     (P : Measure Ω)
     (count : ℕ) (rate : ℝ) where
-  base : EconCSLib.Probability.Palm.ShiftInvariantProbabilityLaw Ωbase
-  tagged : EconCSLib.Probability.Queueing.TaggedArrivalAtZero Ω
+  base : AppliedModelingLib.Probability.Palm.ShiftInvariantProbabilityLaw Ωbase
+  tagged : AppliedModelingLib.Probability.Queueing.TaggedArrivalAtZero Ω
   tagged_law : tagged.Ptag = P
-  palm : EconCSLib.Probability.Palm.CampbellPalmTaggedArrivalCertificate base tagged
+  palm : AppliedModelingLib.Probability.Palm.CampbellPalmTaggedArrivalCertificate base tagged
   palm_arrivalRate_eq_rate : palm.arrivalRate = rate
   rate_pos : 0 < rate
   /-- The selected-start density evaluated at the fixed tagged history. -/
@@ -128,18 +128,18 @@ noncomputable def ofPoissonSuspension
 /-- A concrete tagged-gap source built from an independent stationary base and
 the canonical two-sided post-tag Poisson gaps. -/
 noncomputable def ofIndependentProductTaggedArrivalAtZero
-    (base : EconCSLib.Probability.Palm.ShiftInvariantProbabilityLaw Ωbase)
+    (base : AppliedModelingLib.Probability.Palm.ShiftInvariantProbabilityLaw Ωbase)
     [IsProbabilityMeasure base.Pbase]
     (rate : ℝ) (rate_pos : 0 < rate) (count : ℕ) (startWeight : ℝ≥0∞)
-    (palm : EconCSLib.Probability.Palm.CampbellPalmTaggedArrivalCertificate base
-      (EconCSLib.Probability.PoissonProcess.independentProductTaggedArrivalAtZero
+    (palm : AppliedModelingLib.Probability.Palm.CampbellPalmTaggedArrivalCertificate base
+      (AppliedModelingLib.Probability.PoissonProcess.independentProductTaggedArrivalAtZero
         base.Pbase rate rate_pos))
     (palm_arrivalRate_eq_rate : palm.arrivalRate = rate) :
     StationaryPalmTaggedArrivalSource Ωbase (Ωbase × (ℤ → ℝ))
-      (EconCSLib.Probability.PoissonProcess.independentProductTaggedArrivalAtZero
+      (AppliedModelingLib.Probability.PoissonProcess.independentProductTaggedArrivalAtZero
         base.Pbase rate rate_pos).Ptag count rate := by
   let tagged :=
-    EconCSLib.Probability.PoissonProcess.independentProductTaggedArrivalAtZero
+    AppliedModelingLib.Probability.PoissonProcess.independentProductTaggedArrivalAtZero
       base.Pbase rate rate_pos
   letI : IsProbabilityMeasure tagged.Ptag := tagged.isProbability
   refine
@@ -151,19 +151,19 @@ noncomputable def ofIndependentProductTaggedArrivalAtZero
       rate_pos := rate_pos
       startWeight := startWeight
       postTagGapTail := fun x =>
-        (EconCSLib.Probability.PoissonProcess.taggedFutureGapBlock count x.2,
-          EconCSLib.Probability.PoissonProcess.twoSidedGap (Int.ofNat count) x.2)
+        (AppliedModelingLib.Probability.PoissonProcess.taggedFutureGapBlock count x.2,
+          AppliedModelingLib.Probability.PoissonProcess.twoSidedGap (Int.ofNat count) x.2)
       postTagGapTail_measurable := ?_
       palm_postTagGapTail_law := ?_ }
   · simpa [tagged] using palm
   · simpa [tagged] using palm_arrivalRate_eq_rate
   · exact
-      (EconCSLib.Probability.PoissonProcess.measurable_taggedFutureGapBlock count).comp
+      (AppliedModelingLib.Probability.PoissonProcess.measurable_taggedFutureGapBlock count).comp
         measurable_snd |>.prodMk
-      ((EconCSLib.Probability.PoissonProcess.measurable_twoSidedGap
+      ((AppliedModelingLib.Probability.PoissonProcess.measurable_twoSidedGap
         (Int.ofNat count)).comp measurable_snd)
   · simpa [tagged] using
-      (EconCSLib.Probability.PoissonProcess.map_taggedFutureGapBlock_nextGap_independentProductTaggedArrivalAtZero
+      (AppliedModelingLib.Probability.PoissonProcess.map_taggedFutureGapBlock_nextGap_independentProductTaggedArrivalAtZero
         base.Pbase rate_pos count)
 
 end StationaryPalmTaggedArrivalSource

@@ -1,6 +1,6 @@
 import GHW01DigitalGoods.AuctionMainTheorems
 import GHW01DigitalGoods.FixedSizeSampling
-import EconCSLib.Foundations.Probability.OrderStatistics
+import AppliedModelingLib.Foundations.Probability.OrderStatistics
 
 /-!
 # Bounded-supply digital-goods auctions
@@ -12,8 +12,8 @@ unlimited-supply core.
 
 namespace GHW01DigitalGoods
 
-open EconCSLib
-open EconCSLib.Auction
+open AppliedModelingLib
+open AppliedModelingLib.Auction
 open scoped BigOperators
 
 noncomputable section
@@ -191,7 +191,7 @@ bids.  The paper-facing `T_k` endpoint below identifies this with the exact
 def boundedSupplyTopKTotal {Agent : Type*}
     [Fintype Agent] [DecidableEq Agent]
     (values : Agent → ℝ) (capacity : ℕ) : ℝ :=
-  EconCSLib.Probability.topKSumOn capacity values
+  AppliedModelingLib.Probability.topKSumOn capacity values
 
 /-- On the source domain for Section 11, the library's convenient
 at-most-`k` representation is exactly the paper's sum of the highest `k`
@@ -218,7 +218,7 @@ theorem boundedSupplyTopKTotal_eq_exact_cardinality_of_nonneg
   let exact : Finset (Finset Agent) :=
     (Finset.univ : Finset Agent).powerset.filter fun s => s.card = capacity
   have hatMost_nonempty : atMost.Nonempty := by
-    exact EconCSLib.Probability.topKCandidateSets_nonempty Agent capacity
+    exact AppliedModelingLib.Probability.topKCandidateSets_nonempty Agent capacity
   have hexact_nonempty : exact.Nonempty := by
     obtain ⟨s, hs_sub, hs_card⟩ :=
       Finset.exists_subset_card_eq
@@ -321,14 +321,14 @@ theorem boundedSupplyFixedPriceBenchmark_ge_topK
       (2 * (Real.logb 2 h + 2)) *
         boundedSupplyFixedPriceBenchmark values capacity := by
   classical
-  let candidates := EconCSLib.Probability.topKCandidateSets Agent capacity
+  let candidates := AppliedModelingLib.Probability.topKCandidateSets Agent capacity
   obtain ⟨s, hs_mem, hs_eq⟩ :=
     candidates.exists_mem_eq_sup'
-      (EconCSLib.Probability.topKCandidateSets_nonempty Agent capacity)
+      (AppliedModelingLib.Probability.topKCandidateSets_nonempty Agent capacity)
       (fun s => ∑ i ∈ s, values i)
   have hs_card : s.card ≤ capacity := by
-    simpa [candidates, EconCSLib.Probability.topKCandidateSets] using hs_mem
-  rw [boundedSupplyTopKTotal, EconCSLib.Probability.topKSumOn]
+    simpa [candidates, AppliedModelingLib.Probability.topKCandidateSets] using hs_mem
+  rw [boundedSupplyTopKTotal, AppliedModelingLib.Probability.topKSumOn]
   change candidates.sup' _ (fun s => ∑ i ∈ s, values i) ≤ _
   rw [hs_eq]
   by_cases hs_nonempty : s.Nonempty
@@ -373,14 +373,14 @@ theorem boundedSupplyFixedPriceBenchmark_ge_topK_exact_logb_of_two_le
       (2 * Real.logb 2 h) *
         boundedSupplyFixedPriceBenchmark values capacity := by
   classical
-  let candidates := EconCSLib.Probability.topKCandidateSets Agent capacity
+  let candidates := AppliedModelingLib.Probability.topKCandidateSets Agent capacity
   obtain ⟨s, hs_mem, hs_eq⟩ :=
     candidates.exists_mem_eq_sup'
-      (EconCSLib.Probability.topKCandidateSets_nonempty Agent capacity)
+      (AppliedModelingLib.Probability.topKCandidateSets_nonempty Agent capacity)
       (fun s => ∑ i ∈ s, values i)
   have hs_card : s.card ≤ capacity := by
-    simpa [candidates, EconCSLib.Probability.topKCandidateSets] using hs_mem
-  rw [boundedSupplyTopKTotal, EconCSLib.Probability.topKSumOn]
+    simpa [candidates, AppliedModelingLib.Probability.topKCandidateSets] using hs_mem
+  rw [boundedSupplyTopKTotal, AppliedModelingLib.Probability.topKSumOn]
   change candidates.sup' _ (fun s => ∑ i ∈ s, values i) ≤ _
   rw [hs_eq]
   by_cases hs_nonempty : s.Nonempty
@@ -930,7 +930,7 @@ noncomputable def uniformFixedSizeSampleLaw
   letI : Nonempty (FixedSizeSampleSpace Agent sampleSize) :=
     Finset.nonempty_coe_sort.mpr
       (Finset.powersetCard_nonempty.mpr (by simpa using hsize))
-  exact EconCSLib.uniformPMF _
+  exact AppliedModelingLib.uniformPMF _
 
 /-- Event probability is monotone under pointwise implication. -/
 theorem pmfProb_mono
@@ -938,9 +938,9 @@ theorem pmfProb_mono
     (law : PMF Ω) (P Q : Ω → Prop)
     [DecidablePred P] [DecidablePred Q]
     (hPQ : ∀ ω, P ω → Q ω) :
-    EconCSLib.pmfProb law P ≤ EconCSLib.pmfProb law Q := by
-  unfold EconCSLib.pmfProb
-  apply EconCSLib.pmfExp_le_pmfExp_of_forall_le
+    AppliedModelingLib.pmfProb law P ≤ AppliedModelingLib.pmfProb law Q := by
+  unfold AppliedModelingLib.pmfProb
+  apply AppliedModelingLib.pmfExp_le_pmfExp_of_forall_le
   intro ω
   by_cases hP : P ω
   · simp [hP, hPQ ω hP]
@@ -953,7 +953,7 @@ noncomputable def pmfEventProbability
     {Ω : Type*} [Fintype Ω] [DecidableEq Ω]
     (law : PMF Ω) (P : Ω → Prop) : ℝ := by
   letI := Classical.decPred P
-  exact EconCSLib.pmfProb law P
+  exact AppliedModelingLib.pmfProb law P
 
 theorem pmfEventProbability_mono
     {Ω : Type*} [Fintype Ω] [DecidableEq Ω]

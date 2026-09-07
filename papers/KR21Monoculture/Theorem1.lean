@@ -2,10 +2,10 @@ import KR21Monoculture.Family
 import KR21Monoculture.FiberSigns
 import KR21Monoculture.FirstChoiceDecomposition
 import KR21Monoculture.Payoff
-import EconCSLib.Foundations.Math.EpsilonContinuity
-import EconCSLib.Foundations.Math.IntervalCrossing
+import AppliedModelingLib.Foundations.Math.EpsilonContinuity
+import AppliedModelingLib.Foundations.Math.IntervalCrossing
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 namespace AccuracyFamily
@@ -91,7 +91,7 @@ theorem expectedBestAfterRemoval_eq_firstMover_sub_firstChoiceGapMass {n : ℕ}
     expectedBestAfterRemoval μ value c =
       expectedFirstMoverUtility μ value - firstChoiceGapMass μ value c := by
   unfold expectedBestAfterRemoval expectedFirstMoverUtility firstChoiceGapMass
-    EconCSLib.SocialChoice.Ranking.firstChoiceGapMass
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass
   rw [← pmfExp_sub]
   congr 1
   funext π
@@ -102,15 +102,15 @@ theorem expectedBestAfterRemoval_eq_firstMover_sub_firstChoiceGapMass {n : ℕ}
         simpa [firstChoice, secondChoice] using
           congrArg value (bestRemainingAfter_of_eq π)
       _ = value (firstChoice π) - valueGap value π := by
-        simp [valueGap, EconCSLib.SocialChoice.Ranking.valueGap,
+        simp [valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap,
           firstChoice, secondChoice,
-          EconCSLib.SocialChoice.Ranking.firstChoice,
-          EconCSLib.SocialChoice.Ranking.secondChoice]
+          AppliedModelingLib.SocialChoice.Ranking.firstChoice,
+          AppliedModelingLib.SocialChoice.Ranking.secondChoice]
       _ = value (firstChoice π) -
-          (if firstChoice π = EconCSLib.SocialChoice.Ranking.firstChoice π
-            then EconCSLib.SocialChoice.Ranking.valueGap value π else 0) := by
-        simp [valueGap, EconCSLib.SocialChoice.Ranking.valueGap,
-          firstChoice, EconCSLib.SocialChoice.Ranking.firstChoice]
+          (if firstChoice π = AppliedModelingLib.SocialChoice.Ranking.firstChoice π
+            then AppliedModelingLib.SocialChoice.Ranking.valueGap value π else 0) := by
+        simp [valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap,
+          firstChoice, AppliedModelingLib.SocialChoice.Ranking.firstChoice]
   · have hc : c ≠ firstChoice π := by
       intro hc
       exact h hc.symm
@@ -325,7 +325,7 @@ theorem theorem1RemovalMonotonicityAt_of_mul_value {n : ℕ}
     Theorem1RemovalMonotonicityAt F θA θH := by
   constructor
   · have h := hmono.firstMover_strict
-    simp [EconCSLib.SocialChoice.Ranking.expectedFirstMoverUtility_mul_value] at h
+    simp [AppliedModelingLib.SocialChoice.Ranking.expectedFirstMoverUtility_mul_value] at h
     exact lt_of_mul_lt_mul_left h hc0.le
   · intro c
     have h := hmono.bestRemaining_weak c
@@ -393,7 +393,7 @@ theorem expected_human_against_pureCenter_lt_pureCenter_payoff {n : ℕ}
             value (firstChoice π) +
               value (bestRemainingAfter π (firstChoice ρ))) <
         value (firstChoice ρ) + value (secondChoice ρ) := by
-    refine EconCSLib.pmfExp_lt_of_forall_le_exists_lt μ
+    refine AppliedModelingLib.pmfExp_lt_of_forall_le_exists_lt μ
       (fun π =>
         value (firstChoice π) +
           value (bestRemainingAfter π (firstChoice ρ)))
@@ -1031,7 +1031,7 @@ theorem theorem1_g_lt_h_of_prefersWeakerCompetition {n : ℕ}
       Model.PrefersWeakerCompetition (F.dist θA) (F.dist θH) F.value) :
     theorem1_g F θA θH < theorem1_h F θA θH := by
   unfold theorem1_g theorem1_h Model.PrefersWeakerCompetition
-    EconCSLib.SocialChoice.Ranking.PrefersWeakerCompetition at *
+    AppliedModelingLib.SocialChoice.Ranking.PrefersWeakerCompetition at *
   simp [modelAt, Model.firstMoverEU, Model.secondMoverEU, Model.rankingDist] at *
   linarith
 
@@ -1082,7 +1082,7 @@ theorem theorem1_f_lt_g_of_prefersIndependent_equalAccuracy {n : ℕ}
     (hind : Model.PrefersIndependentReranking (F.dist θ) F.value) :
     theorem1_f F θ θ < theorem1_g F θ θ := by
   unfold theorem1_f theorem1_g Model.PrefersIndependentReranking
-    EconCSLib.SocialChoice.Ranking.PrefersIndependentReranking at *
+    AppliedModelingLib.SocialChoice.Ranking.PrefersIndependentReranking at *
   simp [modelAt, Model.firstMoverEU, Model.secondMoverEU, Model.rankingDist] at *
   linarith
 

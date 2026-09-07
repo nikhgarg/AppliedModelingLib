@@ -7,7 +7,7 @@ open scoped BigOperators
 
 namespace KR21Monoculture
 
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib.SocialChoice.Ranking
 
 /-! The finite source input types carry their discrete sigma algebras in the
 generic product experiment below. -/
@@ -201,7 +201,7 @@ theorem sourceIdentityFirmUtility_eq_canonical_upperOrderStatistic
     (human : SourceThreeFirm -> SourceFourRanking)
     (order : SourceFirmPermutation) :
     sourceIdentityFirmUtility values focal usesAlgorithm algorithm human order =
-      EconCSLib.Probability.upperOrderStatistic values
+      AppliedModelingLib.Probability.upperOrderStatistic values
         (sourceFirmSelectedCandidate focal
           (sourceProfileRankings usesAlgorithm algorithm human) order) := by
   unfold sourceIdentityFirmUtility

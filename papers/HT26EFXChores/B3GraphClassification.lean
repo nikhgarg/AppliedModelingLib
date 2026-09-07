@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, lines 3006--3009 and 3200--3201.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The edge-type support of an M₂ pool has exactly the three graph forms
 used in the source's `b = 3` analysis.  The fixed-type alternative also

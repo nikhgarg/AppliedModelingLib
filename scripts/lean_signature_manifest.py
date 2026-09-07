@@ -23,13 +23,65 @@ import sys
 import tempfile
 from copy import deepcopy
 from contextlib import contextmanager
+from dataclasses import dataclass
 from pathlib import Path
+from types import MappingProxyType
 from typing import Any, Callable, Iterable, Iterator, Mapping
+
+if __package__:
+    from .foundation_registry import FoundationRegistry, load_foundation_registry
+else:  # pragma: no cover - direct script entrypoint
+    from foundation_registry import FoundationRegistry, load_foundation_registry
+
+if __package__:
+    from .lean_import_closure import (
+        run_owned_lean_process, single_threaded_lean_build_environment,
+    )
+else:  # pragma: no cover - direct script entrypoint
+    from lean_import_closure import (
+        run_owned_lean_process, single_threaded_lean_build_environment,
+    )
+
+if __package__:
+    from .lean_process_diagnostics import bounded_lean_diagnostic_excerpt
+else:  # pragma: no cover - direct script entrypoint
+    from lean_process_diagnostics import bounded_lean_diagnostic_excerpt
+
+if __package__:
+    from .lean_review_surface import (
+        TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SCHEMA,
+        TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SENTINEL,
+        TRANSPARENT_PAPER_DECLARATION_DISPLAY_SCHEMA,
+        TRANSPARENT_PAPER_DECLARATION_DISPLAY_SENTINEL,
+        TRANSPARENT_PAPER_SPEC_DISPLAY_SCHEMA,
+        TRANSPARENT_PAPER_SPEC_DISPLAY_SENTINEL,
+        lean_source_range_text,
+        project_transparent_library_declaration_display_section,
+        project_transparent_paper_declaration_display_section,
+        project_transparent_paper_spec_display_section,
+    )
+else:  # pragma: no cover - direct script entrypoint
+    from lean_review_surface import (
+        TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SCHEMA,
+        TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SENTINEL,
+        TRANSPARENT_PAPER_DECLARATION_DISPLAY_SCHEMA,
+        TRANSPARENT_PAPER_DECLARATION_DISPLAY_SENTINEL,
+        TRANSPARENT_PAPER_SPEC_DISPLAY_SCHEMA,
+        TRANSPARENT_PAPER_SPEC_DISPLAY_SENTINEL,
+        lean_source_range_text,
+        project_transparent_library_declaration_display_section,
+        project_transparent_paper_declaration_display_section,
+        project_transparent_paper_spec_display_section,
+    )
 
 
 HELPER_PATH = Path(__file__).with_name("lean_signature_manifest_helper.lean")
-COMPILED_AUDIT_HELPER_MODULE = "EconCSLib.Audit.SignatureManifest"
-COMPILED_AUDIT_HELPER_SOURCE = Path("EconCSLib") / "Audit" / "SignatureManifest.lean"
+COMPILED_AUDIT_HELPER_MODULE = "AppliedModelingLib.Audit.SignatureManifest"
+COMPILED_AUDIT_HELPER_SOURCE = Path("AppliedModelingLib") / "Audit" / "SignatureManifest.lean"
+COMPILED_DECLARATION_GRAPH_MODULE = "AppliedModelingLib.Audit.DeclarationGraph"
+COMPILED_DECLARATION_GRAPH_SOURCE = (
+    Path("AppliedModelingLib") / "Audit" / "DeclarationGraph.lean"
+)
 CLOSURE_SUBPROCESS_TRAMPOLINE_PATH = Path(__file__).with_name(
     "lean_closure_subprocess.py"
 )
@@ -37,14 +89,6 @@ SENTINEL = "LEAN_SIGNATURE_MANIFEST:"
 SIGNATURE_MANIFEST_REVALIDATION_SENTINEL = "LEAN_SIGNATURE_MANIFEST_REVALIDATION:"
 PROPOSITION_SPEC_PROOF_SENTINEL = "LEAN_PROPOSITION_SPEC_PROOF_MATCH:"
 SEMANTIC_CONTRACT_SENTINEL = "LEAN_SEMANTIC_CONTRACT_MATCH:"
-OPERATIONAL_OUTCOME_DOMAIN_BRIDGE_SENTINEL = "LEAN_OPERATIONAL_OUTCOME_DOMAIN_BRIDGE:"
-OperationalOutcomeDomainRoute = tuple[str, str, int, int, int, int, str, str]
-OPERATIONAL_OUTCOME_STATE_TRANSITION_BRIDGE_SENTINEL = (
-    "LEAN_OPERATIONAL_OUTCOME_STATE_TRANSITION_BRIDGE:"
-)
-OperationalOutcomeStateTransitionRoute = tuple[
-    str, str, str, int, int, int, int, int, int, str, str, str
-]
 SEMANTIC_CONTRACT_TRANSPARENCY_SENTINEL = "LEAN_SEMANTIC_CONTRACT_TRANSPARENCY:"
 SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_SCHEMA = 1
 SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_RECEIPT_SCHEMA = 1
@@ -53,6 +97,7 @@ SEMANTIC_CONTRACT_EXECUTABLE_TERMINAL_RECEIPT_FIELD = (
 )
 SEMANTIC_CONTRACT_CLOSURE_SENTINEL = "LEAN_SEMANTIC_CONTRACT_CLOSURE:"
 SEMANTIC_CONTRACT_CLOSURE_ERROR_SENTINEL = "LEAN_SEMANTIC_CONTRACT_CLOSURE_ERROR:"
+SEMANTIC_CONTRACT_CLOSURE_EXTRACTOR_CONTRACT_SCHEMA = 1
 SOURCE_PREMISE_FALSE_SCAN_SENTINEL = "LEAN_SOURCE_PREMISE_FALSE_SCAN:"
 CONSTRUCTOR_RESULT_TYPE_MATCH_SENTINEL = "LEAN_CONSTRUCTOR_RESULT_TYPE_MATCH:"
 RECURSIVE_FIELD_PROPOSITION_SORT_SENTINEL = "LEAN_RECURSIVE_FIELD_PROPOSITION_SORT:"
@@ -65,16 +110,14 @@ DIRECT_LIBRARY_DEPENDENCY_SURFACE_SENTINEL = (
     "LEAN_DIRECT_LIBRARY_DEPENDENCY_SURFACE:"
 )
 DIRECT_LIBRARY_DEPENDENCY_SURFACE_SCHEMA = 1
-TRANSPARENT_PAPER_SPEC_DISPLAY_SENTINEL = "LEAN_TRANSPARENT_PAPER_SPEC_DISPLAY:"
-TRANSPARENT_PAPER_SPEC_DISPLAY_SCHEMA = 1
-TRANSPARENT_PAPER_DECLARATION_DISPLAY_SENTINEL = (
-    "LEAN_TRANSPARENT_PAPER_DECLARATION_DISPLAY:"
-)
-TRANSPARENT_PAPER_DECLARATION_DISPLAY_SCHEMA = 1
-TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SENTINEL = (
-    "LEAN_TRANSPARENT_LIBRARY_DECLARATION_DISPLAY:"
-)
-TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SCHEMA = 1
+DECLARATION_INVENTORY_SENTINEL = "LEAN_ECONCSLIB_DECLARATION_INVENTORY:"
+DECLARATION_INVENTORY_SCHEMA = 4
+# Some proof-interface imports transitively load substantially more compiled
+# proof implementation than their paper-facing interface.  A 4 GiB Lean
+# allocation cap fails before any graph query on those modules (Naor is the
+# regression); one bounded 8 GiB graph process replaces many former startups.
+DECLARATION_INVENTORY_MAX_MEMORY_MB = 8192
+DECLARATION_INVENTORY_MAX_ADDRESS_SPACE_BYTES = 16 * 1024 * 1024 * 1024
 TYPE_WITNESS_PAYLOAD_SAFETY_SCHEMA = 1
 RECURSIVE_FIELD_SAFETY_LOCATOR_SCHEMA = 1
 RECURSIVE_FIELD_SAFETY_RECEIPT_SCHEMA = 1
@@ -145,6 +188,12 @@ SEMANTIC_DEPENDENCY_GRAPH_ORIGINS = {
     "unresolved",
 }
 MAX_COMPACT_CANONICAL_BYTES = 1_000_000
+# Version the exact canonical-atom transport separately from the Lean
+# manifest schema.  Version 3 extends the existing exact compact fingerprint
+# to oversized theorem binders and conclusions; version 2 used it only for an
+# oversized definition result.  This is an engine/representation transition,
+# never evidence that the underlying Lean declaration changed.
+CANONICAL_REPRESENTATION = "lean_compact_canonical_v3"
 # The signature manifest may expand local structures and inductives while
 # preserving an exact Lean-owned canonical type tree.  Keep the supplemental
 # execution/refinement scan bounded as well: it is a review trigger, never a
@@ -155,31 +204,22 @@ EXECUTION_STATE_REFINEMENT_SHAPE_DETECTOR_BASIS = (
 )
 MAX_EXECUTION_STATE_REFINEMENT_CANONICAL_NODES = 100_000
 _REFL_TRANS_GEN_CONSTANT = "Relation.ReflTransGen"
-# A non-chunked failed bulk run may isolate a few malformed or unusually
-# expensive rows, but it must not fan out without bound for a paper. Residuals
-# below this cap are bisected, so successful siblings stay batched and only an
-# unresolved leaf reaches a singleton process.
-MAX_INDIVIDUAL_MANIFEST_RETRIES = 8
-# A Lean signature request materializes an elaborated dependency graph. Its
-# peak memory is governed by that graph, not declaration spelling or source
-# length, so co-locating even unrelated rows can exceed a constrained host's
-# memory budget. Run one exact row per Lean process by default. Machines with
-# measured headroom may opt into a deterministic larger capacity via
-# `ECONCSLIB_MANIFEST_BATCH_SIZE`; this changes scheduling only, never a
-# manifest's inputs, signatures, or cache authority.
-DEFAULT_MANIFEST_BATCH_SIZE = 1
-MAX_MANIFEST_BATCH_SIZE = 64
-MANIFEST_BATCH_SIZE_ENV = "ECONCSLIB_MANIFEST_BATCH_SIZE"
-MIN_CHUNKED_MANIFEST_REQUEST_ROWS = DEFAULT_MANIFEST_BATCH_SIZE + 1
 # Progress events are operational diagnostics only.  They intentionally omit
 # declaration names and are never incorporated into a manifest, cache key, or
 # source-record receipt.
 MANIFEST_PROGRESS_EVENT_SCHEMA = 1
-# The value below is a per-declaration share, not a whole-batch cap. A chunk's
-# wall budget scales with its exact row count up to the caller's bound; treating
-# four additive traversals as one 60-second task caused avoidable timeouts and
-# repeated Lean startup. Residual retries bisect only missing rows.
-MAX_CHUNKED_MANIFEST_TIMEOUT_SECONDS = 60
+# Canonical declaration manifests retain exact elaborated expression trees and
+# can therefore be much larger than the display/signature rows produced by the
+# same native inventory service.  Keep each native process bounded by request
+# count so one large paper cannot lose every independently completed manifest
+# to a single timeout or address-space exhaustion.  The partition is neutral:
+# names are sorted only for deterministic scheduling, and every declaration is
+# sent through the identical Lean-owned extractor.
+SEMANTIC_MANIFEST_CHUNK_SIZE = 2
+# The legacy exact-transparency gate still uses bounded request chunks. This is
+# not the retired semantic-manifest scheduler: canonical declaration manifests
+# and revalidations now use the one native declaration-graph service.
+MAX_CHUNKED_SEMANTIC_CONTRACT_TRANSPARENCY_TIMEOUT_SECONDS = 60
 # A recursive model surface can contain hundreds of Lean-owned constructor or
 # projection slots. Passing them through one JSON command makes the helper fail
 # as a unit, which would erase independent safety receipts. Keep this separate
@@ -196,18 +236,26 @@ MAX_TYPE_WITNESS_PAYLOAD_SAFETY_CHUNKS = 32
 MAX_CHUNKED_TYPE_WITNESS_PAYLOAD_SAFETY_TIMEOUT_SECONDS = 60
 # Exact-contract matching and the transparency gate each elaborate the helper
 # once per generated script.  Keep their paper-closeout requests bounded
-# independently of the signature-manifest batching policy above.  These are
+# independently of the native signature-manifest service.  These are
 # capacity bounds, not declaration-name filters: every requested route or Spec
 # receives the identical Lean-owned check.
-SEMANTIC_CONTRACT_MATCH_CHUNK_SIZE = 8
-MIN_CHUNKED_SEMANTIC_CONTRACT_MATCH_ROUTES = 16
+# Exact contract checks share one imported environment and each route emits an
+# independent fail-closed verdict.  A two-row process cap forced large papers
+# to import the same module six or more times and then retry every route when
+# the 60-second cap was consumed by import startup alone.  Keep an ordinary
+# paper in one bounded process; only genuinely large surfaces are chunked, and
+# incomplete chunks are bisected below.
+SEMANTIC_CONTRACT_MATCH_CHUNK_SIZE = 16
+MIN_CHUNKED_SEMANTIC_CONTRACT_MATCH_ROUTES = SEMANTIC_CONTRACT_MATCH_CHUNK_SIZE + 1
 MAX_SEMANTIC_CONTRACT_MATCH_CHUNKS = 32
-MAX_CHUNKED_SEMANTIC_CONTRACT_MATCH_TIMEOUT_SECONDS = 60
-SEMANTIC_CONTRACT_TRANSPARENCY_CHUNK_SIZE = 4
-MIN_CHUNKED_SEMANTIC_CONTRACT_TRANSPARENCY_ROWS = 16
+MAX_CHUNKED_SEMANTIC_CONTRACT_MATCH_TIMEOUT_SECONDS = 180
+SEMANTIC_CONTRACT_TRANSPARENCY_CHUNK_SIZE = 2
+MIN_CHUNKED_SEMANTIC_CONTRACT_TRANSPARENCY_ROWS = (
+    SEMANTIC_CONTRACT_TRANSPARENCY_CHUNK_SIZE + 1
+)
 MAX_SEMANTIC_CONTRACT_TRANSPARENCY_CHUNKS = 32
-SEMANTIC_CONTRACT_CLOSURE_CHUNK_SIZE = 4
-MIN_CHUNKED_SEMANTIC_CONTRACT_CLOSURE_ROWS = 16
+SEMANTIC_CONTRACT_CLOSURE_CHUNK_SIZE = 2
+MIN_CHUNKED_SEMANTIC_CONTRACT_CLOSURE_ROWS = SEMANTIC_CONTRACT_CLOSURE_CHUNK_SIZE + 1
 MAX_SEMANTIC_CONTRACT_CLOSURE_CHUNKS = 32
 # Production closure surfaces are compact fingerprint receipts. This hard cap
 # keeps a helper regression from materializing recursive canonical trees in a
@@ -224,13 +272,13 @@ SEMANTIC_CONTRACT_CLOSURE_OUTPUT_LIMIT_SENTINEL = (
 # closure's semantics or accepting a partial receipt.
 SEMANTIC_CONTRACT_CLOSURE_MAX_RECURSION_DEPTH = 4096
 SEMANTIC_CONTRACT_CLOSURE_MAX_HEARTBEATS = 8_000_000
-# Lean reserves a large virtual heap when importing a large compiled paper
-# interface.  The closure route uses one worker and a 4 GiB Lean cap: enough
-# for the largest current interface import, while avoiding the old 6 GiB cap
-# that could let the host terminate a child before Lean returned a fail-closed
-# diagnostic.  The recursive walk itself is Lean's compact environment utility
-# and no longer materializes a second expanded closure tree.
-SEMANTIC_CONTRACT_CLOSURE_MAX_MEMORY_MB = 4096
+# Lean reserves a large heap when importing and retaining a complete compiled
+# paper semantic graph.  Seshadri's unchanged 11-result surface reproducibly
+# failed closed at 4 GiB and completed at 6.28 GiB RSS.  Keep one worker and an
+# 8 GiB finite Lean cap so the honest surface fits while runaway work still
+# fails before the separate 12 GiB address-space ceiling.  This is an
+# operational bound only; it does not split or weaken the semantic closure.
+SEMANTIC_CONTRACT_CLOSURE_MAX_MEMORY_MB = 8192
 SEMANTIC_CONTRACT_CLOSURE_MAX_THREADS = 1
 SEMANTIC_CONTRACT_CLOSURE_MAX_ADDRESS_SPACE_BYTES = 12 * 1024 * 1024 * 1024
 SEMANTIC_CONTRACT_CLOSURE_RUNNER_FAILURE_SENTINEL = (
@@ -248,33 +296,17 @@ _CACHE: dict[
 _MANIFEST_REVALIDATION_RECEIPT_CACHE: dict[
     tuple[tuple[Any, ...], str], dict[str, Any]
 ] = {}
-_PROPOSITION_SPEC_PROOF_CACHE: dict[
-    tuple[str, str, tuple[int, int], tuple[int, int], tuple[tuple[str, str], ...]],
-    dict[tuple[str, str], bool],
+_DECLARATION_INVENTORY_CACHE: dict[tuple[Any, ...], dict[str, Any]] = {}
+_DECLARATION_SPEC_DISPLAY_CACHE: dict[tuple[Any, ...], dict[str, Any]] = {}
+_DECLARATION_PAPER_DISPLAY_CACHE: dict[tuple[Any, ...], dict[str, Any]] = {}
+_DECLARATION_LIBRARY_DISPLAY_CACHE: dict[tuple[Any, ...], dict[str, Any]] = {}
+_DECLARATION_SEMANTIC_SIGNATURE_CACHE: dict[tuple[Any, ...], str] = {}
+_DECLARATION_PROOF_PAIR_CACHE: dict[
+    tuple[Any, ...], dict[str, Any]
 ] = {}
 _SEMANTIC_CONTRACT_CACHE: dict[
     tuple[str, str, tuple[int, int], tuple[int, int], tuple[tuple[str, str, str], ...]],
     dict[tuple[str, str, str], bool],
-] = {}
-_OPERATIONAL_OUTCOME_DOMAIN_BRIDGE_CACHE: dict[
-    tuple[
-        str,
-        str,
-        tuple[int, int],
-        tuple[int, int],
-        tuple[OperationalOutcomeDomainRoute, ...],
-    ],
-    dict[OperationalOutcomeDomainRoute, bool],
-] = {}
-_OPERATIONAL_OUTCOME_STATE_TRANSITION_BRIDGE_CACHE: dict[
-    tuple[
-        str,
-        str,
-        tuple[int, int],
-        tuple[int, int],
-        tuple[OperationalOutcomeStateTransitionRoute, ...],
-    ],
-    dict[OperationalOutcomeStateTransitionRoute, bool],
 ] = {}
 _SEMANTIC_CONTRACT_TRANSPARENCY_CACHE: dict[
     tuple[
@@ -1058,17 +1090,38 @@ def _canonical_payload(manifest: dict[str, Any]) -> dict[str, Any] | None:
                 ref == "result" and declaration_kind == "definition"
             ),
         )
-        if (
-            len(
-                json.dumps(
-                    compact_canonical,
-                    ensure_ascii=False,
-                    sort_keys=True,
-                    separators=(",", ":"),
-                ).encode("utf-8")
-            )
-            > MAX_COMPACT_CANONICAL_BYTES
-        ):
+        compact_bytes = json.dumps(
+            compact_canonical,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        if len(compact_bytes) > MAX_COMPACT_CANONICAL_BYTES:
+            # A valid Lean-owned atom can be very large: a data-valued
+            # definition may contain a record with all proof fields, while a
+            # theorem can expose a deeply expanded proposition.  The complete
+            # atom has already been emitted by Lean and canonicalized above.
+            # Its exact canonical-content hash therefore preserves semantic
+            # identity; it is not truncation and does not infer Lean syntax in
+            # Python.  Keeping the full tree in the transport is not stricter,
+            # but can let one valid declaration erase every independent row in
+            # a batched inventory.  Small atoms retain their existing identity,
+            # as does the historical oversized definition-result encoding.
+            compact_canonical = {
+                "tag": (
+                    "definition"
+                    if ref == "result" and declaration_kind == "definition"
+                    else "canonical"
+                ),
+                "sha256": hashlib.sha256(compact_bytes).hexdigest(),
+            }
+            compact_bytes = json.dumps(
+                compact_canonical,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        if len(compact_bytes) > MAX_COMPACT_CANONICAL_BYTES:
             return None
         item: dict[str, Any] = {
             "ref": ref,
@@ -1299,6 +1352,59 @@ def semantic_dependency_manifest(
     }
 
 
+def lean_manifest_revalidation_basis(
+    manifest: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Return the complete minimal basis for current-artifact revalidation.
+
+    This projection is owned beside the validators that consume it so a
+    restart-record producer cannot silently omit a newly required semantic
+    field.  Imported-module and environment identities are deliberately
+    excluded: callers must reattach their current artifacts and compare the
+    reconstructed leaf before reuse.
+    """
+
+    canonical = _canonical_payload(dict(manifest))
+    graph = normalize_semantic_dependency_graph(
+        manifest.get("semantic_dependency_graph")
+    )
+    proposition_graph = normalize_elaborated_proposition_graph(
+        manifest.get("elaborated_proposition_graph")
+    )
+    execution_shape = _validated_execution_state_refinement_shape(manifest)
+    current_dependency = semantic_dependency_manifest(manifest)
+    if (
+        canonical is None
+        or graph is None
+        or proposition_graph is None
+        or execution_shape is None
+        or current_dependency is None
+    ):
+        return None
+    basis = {
+        **canonical,
+        "semantic_dependency_graph": graph,
+        "elaborated_proposition_graph": proposition_graph,
+        "elaborated_execution_state_refinement_shape": execution_shape,
+    }
+    raw_modules = manifest.get("semantic_dependency_module_identities")
+    raw_environment = manifest.get("semantic_dependency_environment_identities")
+    if not isinstance(raw_modules, list) or not isinstance(raw_environment, list):
+        return None
+    basis_dependency = semantic_dependency_manifest(
+        basis,
+        list(raw_modules),
+        list(raw_environment),
+    )
+    if (
+        signature_manifest_digest(basis)
+        != signature_manifest_digest(dict(manifest))
+        or basis_dependency != current_dependency
+    ):
+        return None
+    return basis
+
+
 def signature_manifest_outer_binder_digest(manifest: dict[str, Any]) -> str:
     """Hash the exact name-free outer theorem interface, excluding its result.
 
@@ -1483,6 +1589,197 @@ def normalize_signature_manifest(manifest: dict[str, Any]) -> dict[str, Any] | N
     return normalized
 
 
+def normalize_semantic_review_claim(
+    claim: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Validate the narrow Lean-owned source-review claim surface.
+
+    This is the claim-role projection of a full semantic manifest: the same
+    canonical declaration signature plus the transparent value telescope that
+    exposes binders hidden inside a proposition-valued ``Spec``.  It omits the
+    transitive dependency and proposition graphs because the v11 declaration
+    graph validates those independent obligations through its recursive
+    display/prerequisite surface, semantic contract, axiom closure, and exact
+    import closure.
+    """
+
+    if set(claim) != {
+        "schema",
+        "signature",
+        "transparent_value_presentation_telescope",
+    } or str(claim.get("schema") or "") != "1":
+        return None
+    raw_signature = claim.get("signature")
+    if not isinstance(raw_signature, Mapping) or set(raw_signature) != {
+        "schema",
+        "declaration_kind",
+        "conclusion_mode",
+        "atoms",
+    }:
+        return None
+    payload = _canonical_payload(dict(raw_signature))
+    raw_atoms = raw_signature.get("atoms")
+    if payload is None or not isinstance(raw_atoms, list):
+        return None
+    atoms: list[dict[str, Any]] = []
+    for canonical, raw in zip(payload["atoms"], raw_atoms, strict=True):
+        if not isinstance(raw, Mapping):
+            return None
+        display = str(raw.get("display") or "").strip()
+        if not display:
+            return None
+        atom = dict(canonical)
+        atom["display"] = display
+        atoms.append(atom)
+    signature = {
+        "schema": MANIFEST_SCHEMA,
+        "declaration_kind": payload["declaration_kind"],
+        "conclusion_mode": payload["conclusion_mode"],
+        "atoms": atoms,
+    }
+    signature["sha256"] = signature_manifest_digest(signature)
+    presentation = normalize_transparent_value_presentation_telescope(
+        claim.get("transparent_value_presentation_telescope")
+    )
+    if presentation is None:
+        return None
+    return {
+        "schema": 1,
+        "signature": signature,
+        "transparent_value_presentation_telescope": presentation,
+    }
+
+
+def _review_claim_atom_surface_from_normalized(
+    normalized_signature: Mapping[str, Any],
+    presentation: Mapping[str, Any] | None,
+) -> dict[str, Any] | None:
+    """Project reviewer roles from already validated Lean-owned structures."""
+
+    raw_atoms = (
+        presentation.get("atoms")
+        if isinstance(presentation, Mapping)
+        else normalized_signature.get("atoms")
+    )
+    if not isinstance(raw_atoms, list) or not raw_atoms:
+        return None
+    atoms = [dict(atom) for atom in raw_atoms if isinstance(atom, Mapping)]
+    roles = [str(atom.get("role") or "") for atom in atoms]
+    if (
+        len(atoms) != len(raw_atoms)
+        or roles[-1:] != ["conclusion"]
+        or roles.count("conclusion") != 1
+        or any(
+            role not in {"parameter", "assumption", "conclusion"}
+            for role in roles
+        )
+    ):
+        return None
+    semantic_atoms = [
+        {key: value for key, value in atom.items() if key != "display"}
+        for atom in atoms
+    ]
+    manifest_sha256 = str(normalized_signature.get("sha256") or "").strip()
+    if not re.fullmatch(r"[0-9a-f]{64}", manifest_sha256):
+        return None
+    return {
+        "schema": 1,
+        "manifest_sha256": manifest_sha256,
+        "claim_atoms_sha256": _semantic_json_sha256(
+            {"schema": 1, "atoms": semantic_atoms}
+        ),
+        "claim_atoms": atoms,
+    }
+
+
+def review_claim_atom_surface_from_claim(
+    claim: Mapping[str, Any],
+) -> dict[str, Any] | None:
+    """Return reviewer atoms from the narrow native v11 claim response."""
+
+    normalized = normalize_semantic_review_claim(claim)
+    if normalized is None:
+        return None
+    signature = normalized.get("signature")
+    presentation = normalized.get("transparent_value_presentation_telescope")
+    if not isinstance(signature, Mapping) or not isinstance(presentation, Mapping):
+        return None
+    return _review_claim_atom_surface_from_normalized(signature, presentation)
+
+
+def review_claim_atom_surface(manifest: Mapping[str, Any]) -> dict[str, Any] | None:
+    """Return Lean's single formal-side source-review claim decomposition.
+
+    Lean has already elaborated each atom and assigned its semantic role.  This
+    projector only validates that emitted manifest and chooses the transparent
+    value telescope for a paper ``Spec`` when Lean supplied one; otherwise it
+    uses the declaration telescope.  It never reparses Lean display text or
+    infers a premise/conclusion boundary in Python.
+    """
+
+    normalized = normalize_signature_manifest(dict(manifest))
+    if normalized is None:
+        return None
+    presentation = normalized.get("transparent_value_presentation_telescope")
+    return _review_claim_atom_surface_from_normalized(
+        normalized,
+        presentation if isinstance(presentation, Mapping) else None,
+    )
+
+
+def validated_review_claim_atom_material(
+    semantic_target: Mapping[str, Any],
+) -> tuple[list[dict[str, Any]], str]:
+    """Validate a persisted target's exact Lean-emitted review atoms."""
+
+    raw_atoms = semantic_target.get("review_claim_atoms")
+    expected_digest = str(
+        semantic_target.get("review_claim_atoms_sha256") or ""
+    ).strip().lower()
+    if not isinstance(raw_atoms, list) or not raw_atoms:
+        raise ValueError("Lean semantic target has no claim-atom surface")
+    atoms = [dict(atom) for atom in raw_atoms if isinstance(atom, Mapping)]
+    roles = [str(atom.get("role") or "") for atom in atoms]
+    semantic_atoms = [
+        {key: value for key, value in atom.items() if key != "display"}
+        for atom in atoms
+    ]
+    actual_digest = _semantic_json_sha256({"schema": 1, "atoms": semantic_atoms})
+    if (
+        len(atoms) != len(raw_atoms)
+        or roles[-1:] != ["conclusion"]
+        or roles.count("conclusion") != 1
+        or any(
+            role not in {"parameter", "assumption", "conclusion"}
+            for role in roles
+        )
+        or actual_digest != expected_digest
+    ):
+        raise ValueError("Lean semantic target has malformed claim atoms")
+    return atoms, actual_digest
+
+
+def review_claim_target_text(semantic_target: Mapping[str, Any]) -> str:
+    """Render the exact atom-aware target shown to a semantic reviewer."""
+
+    display = str(semantic_target.get("display") or "").strip()
+    if not display:
+        raise ValueError("Lean semantic target has no expanded display")
+    atoms, _digest = validated_review_claim_atom_material(semantic_target)
+    atom_lines = [
+        f"{index}. {atom['role']}: {str(atom.get('display') or '').strip()}"
+        for index, atom in enumerate(atoms, start=1)
+    ]
+    if any(line.endswith(": ") for line in atom_lines):
+        raise ValueError("Lean semantic target has a displayless claim atom")
+    return (
+        "Expanded Lean semantic target:\n"
+        + display
+        + "\n\nLean-elaborated claim roles:\n"
+        + "\n".join(atom_lines)
+    )
+
+
 def parse_signature_manifest_output(output: str) -> dict[str, dict[str, Any]]:
     """Parse only sentinel-delimited JSON emitted by the Lean meta command."""
 
@@ -1556,15 +1853,28 @@ def parse_direct_library_dependency_surface_output(
             return {}
         normalized = tuple(str(value).strip() for value in dependencies)
         if (
-            any(
-                not value.startswith("EconCSLib.") or not value
-                for value in normalized
-            )
+            any(not value for value in normalized)
             or list(normalized) != sorted(set(normalized))
         ):
             return {}
         parsed[declaration] = normalized
     return parsed if sorted(parsed) == requested else {}
+
+
+def _decoded_unique_sentinel_payload(output: str, sentinel: str) -> object | None:
+    """Decode the one Lean-emitted payload for ``sentinel`` if it is unique."""
+
+    matches = [
+        line[line.find(sentinel) + len(sentinel) :]
+        for line in output.splitlines()
+        if sentinel in line
+    ]
+    if len(matches) != 1:
+        return None
+    try:
+        return json.loads(matches[0])
+    except json.JSONDecodeError:
+        return None
 
 
 def parse_transparent_paper_spec_display_output(
@@ -1579,91 +1889,12 @@ def parse_transparent_paper_spec_display_output(
     source tokens.
     """
 
-    requested = sorted(
-        {str(name).strip() for name in requested_specifications if str(name).strip()}
+    return project_transparent_paper_spec_display_section(
+        _decoded_unique_sentinel_payload(
+            output, TRANSPARENT_PAPER_SPEC_DISPLAY_SENTINEL
+        ),
+        requested_specifications,
     )
-    matches = [
-        line[
-            line.find(TRANSPARENT_PAPER_SPEC_DISPLAY_SENTINEL)
-            + len(TRANSPARENT_PAPER_SPEC_DISPLAY_SENTINEL) :
-        ]
-        for line in output.splitlines()
-        if TRANSPARENT_PAPER_SPEC_DISPLAY_SENTINEL in line
-    ]
-    if len(matches) != 1:
-        return {}
-    try:
-        payload = json.loads(matches[0])
-    except json.JSONDecodeError:
-        return {}
-    if not isinstance(payload, Mapping) or set(payload) != {"schema", "items"}:
-        return {}
-    if payload.get("schema") != str(TRANSPARENT_PAPER_SPEC_DISPLAY_SCHEMA):
-        return {}
-    raw_items = payload.get("items")
-    if not isinstance(raw_items, list) or len(raw_items) != len(requested):
-        return {}
-    parsed: dict[str, dict[str, Any]] = {}
-    for raw in raw_items:
-        if not isinstance(raw, Mapping) or set(raw) != {
-            "specification",
-            "complete",
-            "expansion_count",
-            "expanded_declarations",
-            "prerequisite_declarations",
-            "library_declarations",
-            "blocked_declarations",
-            "display",
-        }:
-            return {}
-        specification = str(raw.get("specification") or "").strip()
-        complete = raw.get("complete")
-        expansion_count = raw.get("expansion_count")
-        expanded = raw.get("expanded_declarations")
-        prerequisites = raw.get("prerequisite_declarations")
-        libraries = raw.get("library_declarations")
-        blocked = raw.get("blocked_declarations")
-        display = raw.get("display")
-        if (
-            not specification
-            or specification in parsed
-            or complete is not True
-            or not isinstance(expansion_count, str)
-            or not expansion_count.isdigit()
-            or not isinstance(expanded, list)
-            or not isinstance(prerequisites, list)
-            or not isinstance(libraries, list)
-            or not isinstance(blocked, list)
-            or blocked
-            or not isinstance(display, str)
-            or not display.strip()
-            or any(not isinstance(value, str) or not value.strip() for value in expanded)
-            or any(not isinstance(value, str) or not value.strip() for value in prerequisites)
-            or any(
-                not isinstance(value, str)
-                or not value.strip().startswith("EconCSLib.")
-                for value in libraries
-            )
-        ):
-            return {}
-        normalized_expanded = [str(value).strip() for value in expanded]
-        normalized_prerequisites = [str(value).strip() for value in prerequisites]
-        normalized_libraries = [str(value).strip() for value in libraries]
-        if (
-            normalized_expanded != sorted(set(normalized_expanded))
-            or normalized_prerequisites != sorted(set(normalized_prerequisites))
-            or normalized_libraries != sorted(set(normalized_libraries))
-        ):
-            return {}
-        parsed[specification] = {
-            "display": display,
-            "display_sha256": hashlib.sha256(display.encode("utf-8")).hexdigest(),
-            "expansion_count": int(expansion_count),
-            "expanded_declarations": tuple(normalized_expanded),
-            "prerequisite_declarations": tuple(normalized_prerequisites),
-            "library_declarations": tuple(normalized_libraries),
-        }
-    return parsed if sorted(parsed) == requested else {}
 
 
 def parse_transparent_paper_declaration_display_output(
@@ -1677,85 +1908,12 @@ def parse_transparent_paper_declaration_display_output(
     the exact display, but never discovers or expands source declarations.
     """
 
-    requested = sorted(
-        {str(name).strip() for name in requested_declarations if str(name).strip()}
+    return project_transparent_paper_declaration_display_section(
+        _decoded_unique_sentinel_payload(
+            output, TRANSPARENT_PAPER_DECLARATION_DISPLAY_SENTINEL
+        ),
+        requested_declarations,
     )
-    matches = [
-        line[
-            line.find(TRANSPARENT_PAPER_DECLARATION_DISPLAY_SENTINEL)
-            + len(TRANSPARENT_PAPER_DECLARATION_DISPLAY_SENTINEL) :
-        ]
-        for line in output.splitlines()
-        if TRANSPARENT_PAPER_DECLARATION_DISPLAY_SENTINEL in line
-    ]
-    if len(matches) != 1:
-        return {}
-    try:
-        payload = json.loads(matches[0])
-    except json.JSONDecodeError:
-        return {}
-    if not isinstance(payload, Mapping) or set(payload) != {"schema", "items"}:
-        return {}
-    if payload.get("schema") != str(TRANSPARENT_PAPER_DECLARATION_DISPLAY_SCHEMA):
-        return {}
-    raw_items = payload.get("items")
-    if not isinstance(raw_items, list) or len(raw_items) < len(requested):
-        return {}
-    parsed: dict[str, dict[str, Any]] = {}
-    allowed_kinds = {"definition", "opaque_definition", "non_definition"}
-    for raw in raw_items:
-        if not isinstance(raw, Mapping) or set(raw) != {
-            "declaration",
-            "declaration_kind",
-            "root_expanded",
-            "direct_paper_declarations",
-            "direct_library_declarations",
-            "display",
-        }:
-            return {}
-        declaration = str(raw.get("declaration") or "").strip()
-        kind = str(raw.get("declaration_kind") or "").strip()
-        root_expanded = raw.get("root_expanded")
-        paper_dependencies = raw.get("direct_paper_declarations")
-        library_dependencies = raw.get("direct_library_declarations")
-        display = raw.get("display")
-        if (
-            not declaration
-            or declaration in parsed
-            or kind not in allowed_kinds
-            or not isinstance(root_expanded, bool)
-            or (kind == "definition") != root_expanded
-            or not isinstance(paper_dependencies, list)
-            or not isinstance(library_dependencies, list)
-            or not isinstance(display, str)
-            or not display.strip()
-        ):
-            return {}
-        normalized_paper_dependencies = [str(value).strip() for value in paper_dependencies]
-        normalized_library_dependencies = [
-            str(value).strip() for value in library_dependencies
-        ]
-        if (
-            any(not isinstance(value, str) or not value.strip() for value in paper_dependencies)
-            or normalized_paper_dependencies != sorted(set(normalized_paper_dependencies))
-            or declaration in normalized_paper_dependencies
-            or any(
-                not isinstance(value, str)
-                or not value.strip().startswith("EconCSLib.")
-                for value in library_dependencies
-            )
-            or normalized_library_dependencies != sorted(set(normalized_library_dependencies))
-        ):
-            return {}
-        parsed[declaration] = {
-            "display": display,
-            "display_sha256": hashlib.sha256(display.encode("utf-8")).hexdigest(),
-            "declaration_kind": kind,
-            "root_expanded": root_expanded,
-            "direct_paper_declarations": tuple(normalized_paper_dependencies),
-            "direct_library_declarations": tuple(normalized_library_dependencies),
-        }
-    return parsed if set(requested).issubset(parsed) else {}
 
 
 def parse_transparent_library_declaration_display_output(
@@ -1770,76 +1928,12 @@ def parse_transparent_library_declaration_display_output(
     retained by the caller for the constructor/field-level review.
     """
 
-    requested = sorted(
-        {str(name).strip() for name in requested_declarations if str(name).strip()}
+    return project_transparent_library_declaration_display_section(
+        _decoded_unique_sentinel_payload(
+            output, TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SENTINEL
+        ),
+        requested_declarations,
     )
-    matches = [
-        line[
-            line.find(TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SENTINEL)
-            + len(TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SENTINEL) :
-        ]
-        for line in output.splitlines()
-        if TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SENTINEL in line
-    ]
-    if len(matches) != 1:
-        return {}
-    try:
-        payload = json.loads(matches[0])
-    except json.JSONDecodeError:
-        return {}
-    if not isinstance(payload, Mapping) or set(payload) != {"schema", "items"}:
-        return {}
-    if payload.get("schema") != str(TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SCHEMA):
-        return {}
-    raw_items = payload.get("items")
-    if not isinstance(raw_items, list) or len(raw_items) < len(requested):
-        return {}
-    parsed: dict[str, dict[str, Any]] = {}
-    allowed_kinds = {"definition", "opaque_definition", "non_definition"}
-    for raw in raw_items:
-        if not isinstance(raw, Mapping) or set(raw) != {
-            "declaration",
-            "declaration_kind",
-            "root_expanded",
-            "direct_library_declarations",
-            "display",
-        }:
-            return {}
-        declaration = str(raw.get("declaration") or "").strip()
-        kind = str(raw.get("declaration_kind") or "").strip()
-        root_expanded = raw.get("root_expanded")
-        dependencies = raw.get("direct_library_declarations")
-        display = raw.get("display")
-        if (
-            not declaration.startswith("EconCSLib.")
-            or declaration in parsed
-            or kind not in allowed_kinds
-            or not isinstance(root_expanded, bool)
-            or (kind == "definition") != root_expanded
-            or not isinstance(dependencies, list)
-            or not isinstance(display, str)
-            or not display.strip()
-        ):
-            return {}
-        normalized_dependencies = [str(value).strip() for value in dependencies]
-        if (
-            any(
-                not isinstance(value, str)
-                or not value.strip().startswith("EconCSLib.")
-                or value.strip() == declaration
-                for value in dependencies
-            )
-            or normalized_dependencies != sorted(set(normalized_dependencies))
-        ):
-            return {}
-        parsed[declaration] = {
-            "display": display,
-            "display_sha256": hashlib.sha256(display.encode("utf-8")).hexdigest(),
-            "declaration_kind": kind,
-            "root_expanded": root_expanded,
-            "direct_library_declarations": tuple(normalized_dependencies),
-        }
-    return parsed if set(requested).issubset(parsed) else {}
 
 
 def _semantic_dependency_root_identity(
@@ -1862,6 +1956,54 @@ def _semantic_dependency_root_identity(
     )
 
 
+def _normalize_signature_manifest_revalidation(
+    declaration: str, decoded: object
+) -> dict[str, Any] | None:
+    """Validate one compact Lean-owned current-environment receipt."""
+
+    declaration = str(declaration).strip()
+    if (
+        not declaration
+        or not isinstance(decoded, Mapping)
+        or str(decoded.get("schema") or "") != "1"
+    ):
+        return None
+    declaration_kind = str(decoded.get("declaration_kind") or "").strip()
+    conclusion_mode = str(decoded.get("conclusion_mode") or "").strip()
+    expected_mode = (
+        "type_and_value" if declaration_kind == "definition" else "type_only"
+    )
+    graph = normalize_semantic_dependency_graph(
+        decoded.get("semantic_dependency_graph")
+    )
+    execution_shape = _normalize_execution_state_refinement_shape(
+        decoded.get("elaborated_execution_state_refinement_shape")
+    )
+    root_identity = (
+        _semantic_dependency_root_identity(graph, declaration)
+        if isinstance(graph, Mapping)
+        else ""
+    )
+    if (
+        declaration_kind not in DECLARATION_KINDS
+        or conclusion_mode != expected_mode
+        or not isinstance(graph, Mapping)
+        or graph.get("complete") is not True
+        or graph.get("realization_complete") is not True
+        or execution_shape is None
+        or not root_identity
+    ):
+        return None
+    return {
+        "schema": 1,
+        "declaration_kind": declaration_kind,
+        "conclusion_mode": conclusion_mode,
+        "root_semantic_identity_sha256": root_identity,
+        "elaborated_execution_state_refinement_shape": execution_shape,
+        "semantic_dependency_graph": graph,
+    }
+
+
 def parse_signature_manifest_revalidation_output(
     output: str,
 ) -> dict[str, dict[str, Any]]:
@@ -1879,47 +2021,10 @@ def parse_signature_manifest_revalidation_output(
         except (ValueError, json.JSONDecodeError):
             return {}
         declaration = declaration.strip()
-        if (
-            not declaration
-            or declaration in receipts
-            or not isinstance(decoded, Mapping)
-            or str(decoded.get("schema") or "") != "1"
-        ):
+        receipt = _normalize_signature_manifest_revalidation(declaration, decoded)
+        if receipt is None or declaration in receipts:
             return {}
-        declaration_kind = str(decoded.get("declaration_kind") or "").strip()
-        conclusion_mode = str(decoded.get("conclusion_mode") or "").strip()
-        expected_mode = (
-            "type_and_value" if declaration_kind == "definition" else "type_only"
-        )
-        graph = normalize_semantic_dependency_graph(
-            decoded.get("semantic_dependency_graph")
-        )
-        execution_shape = _normalize_execution_state_refinement_shape(
-            decoded.get("elaborated_execution_state_refinement_shape")
-        )
-        root_identity = (
-            _semantic_dependency_root_identity(graph, declaration)
-            if isinstance(graph, Mapping)
-            else ""
-        )
-        if (
-            declaration_kind not in DECLARATION_KINDS
-            or conclusion_mode != expected_mode
-            or not isinstance(graph, Mapping)
-            or graph.get("complete") is not True
-            or graph.get("realization_complete") is not True
-            or execution_shape is None
-            or not root_identity
-        ):
-            return {}
-        receipts[declaration] = {
-            "schema": 1,
-            "declaration_kind": declaration_kind,
-            "conclusion_mode": conclusion_mode,
-            "root_semantic_identity_sha256": root_identity,
-            "elaborated_execution_state_refinement_shape": execution_shape,
-            "semantic_dependency_graph": graph,
-        }
+        receipts[declaration] = receipt
     return receipts
 
 
@@ -2051,133 +2156,6 @@ def parse_semantic_contract_output(
             not spec
             or not evidence
             or mode not in {"proves", "refutes", "definitionally_realizes"}
-            or key in matches
-        ):
-            return {}
-        matches[key] = decoded["matches"]
-    return matches
-
-
-def parse_operational_outcome_domain_bridge_output(
-    output: str,
-) -> dict[OperationalOutcomeDomainRoute, bool]:
-    """Parse Lean-owned nonvacuity bridge checks fail-closed.
-
-    The route contains only exact declaration coordinates, outer-telescope
-    positions, and direct elaborated model/transition roots. Its truth value
-    is produced by Lean's elaborated type checker; no binder spelling
-    participates in deciding a match.
-    """
-
-    matches: dict[OperationalOutcomeDomainRoute, bool] = {}
-    for raw_line in output.splitlines():
-        marker = raw_line.find(OPERATIONAL_OUTCOME_DOMAIN_BRIDGE_SENTINEL)
-        if marker < 0:
-            continue
-        raw_json = raw_line[marker + len(OPERATIONAL_OUTCOME_DOMAIN_BRIDGE_SENTINEL) :]
-        try:
-            decoded = json.loads(raw_json)
-        except json.JSONDecodeError:
-            return {}
-        if not isinstance(decoded, dict) or not isinstance(
-            decoded.get("matches"), bool
-        ):
-            return {}
-        target = str(decoded.get("target") or "").strip()
-        bridge = str(decoded.get("bridge") or "").strip()
-        indices: list[int] = []
-        for field in (
-            "model_index",
-            "terminal_index",
-            "run_index",
-            "terminal_predicate_index",
-        ):
-            raw_index = decoded.get(field)
-            if not isinstance(raw_index, str) or not raw_index.isdigit():
-                return {}
-            indices.append(int(raw_index))
-        model_root = str(decoded.get("model_root") or "").strip()
-        transition_root = str(decoded.get("transition_root") or "").strip()
-        key: OperationalOutcomeDomainRoute = (
-            target,
-            bridge,
-            *indices,
-            model_root,
-            transition_root,
-        )
-        if (
-            not target
-            or not bridge
-            or not model_root
-            or not transition_root
-            or key in matches
-        ):
-            return {}
-        matches[key] = decoded["matches"]
-    return matches
-
-
-def parse_operational_outcome_state_transition_bridge_output(
-    output: str,
-) -> dict[OperationalOutcomeStateTransitionRoute, bool]:
-    """Parse result-local state/transition bridge checks fail-closed.
-
-    The route is a tuple of exact declaration coordinates, elaborated outer
-    binder positions, and resolved roots.  It deliberately contains no
-    presentation label or semantic classification inferred from a name.
-    """
-
-    matches: dict[OperationalOutcomeStateTransitionRoute, bool] = {}
-    for raw_line in output.splitlines():
-        marker = raw_line.find(OPERATIONAL_OUTCOME_STATE_TRANSITION_BRIDGE_SENTINEL)
-        if marker < 0:
-            continue
-        raw_json = raw_line[
-            marker + len(OPERATIONAL_OUTCOME_STATE_TRANSITION_BRIDGE_SENTINEL) :
-        ]
-        try:
-            decoded = json.loads(raw_json)
-        except json.JSONDecodeError:
-            return {}
-        if not isinstance(decoded, dict) or not isinstance(
-            decoded.get("matches"), bool
-        ):
-            return {}
-        target = str(decoded.get("target") or "").strip()
-        bridge = str(decoded.get("bridge") or "").strip()
-        initial_witness = str(decoded.get("initial_witness") or "").strip()
-        indices: list[int] = []
-        for field in (
-            "model_index",
-            "state_index",
-            "initial_predicate_index",
-            "terminal_index",
-            "run_index",
-            "terminal_predicate_index",
-        ):
-            raw_index = decoded.get(field)
-            if not isinstance(raw_index, str) or not raw_index.isdigit():
-                return {}
-            indices.append(int(raw_index))
-        model_root = str(decoded.get("model_root") or "").strip()
-        state_root = str(decoded.get("state_root") or "").strip()
-        transition_root = str(decoded.get("transition_root") or "").strip()
-        key: OperationalOutcomeStateTransitionRoute = (
-            target,
-            bridge,
-            initial_witness,
-            *indices,
-            model_root,
-            state_root,
-            transition_root,
-        )
-        if (
-            not target
-            or not bridge
-            or not initial_witness
-            or not model_root
-            or not state_root
-            or not transition_root
             or key in matches
         ):
             return {}
@@ -2343,6 +2321,7 @@ SEMANTIC_CONTRACT_CLOSURE_ORIGIN_CLASSES = {
     "paper",
     "workspace",
     "foundation",
+    "foreign_model_definition",
     "external",
     "unresolved",
 }
@@ -2364,9 +2343,9 @@ DEFAULT_SEMANTIC_CONTRACT_FOUNDATION_MODULES = (
     "Plausible",
     "Mathlib",
     "Cslib",
-    # EconCSLib definitions are library prerequisites with their own current
+    # AppliedModelingLib definitions are library prerequisites with their own current
     # source-to-Lean screening lane; they are not paper-local source claims.
-    "EconCSLib",
+    "AppliedModelingLib",
 )
 
 
@@ -2437,6 +2416,9 @@ def _normalize_semantic_contract_closure(
         or not isinstance(passes, bool)
         or not isinstance(expanded, str)
         or not expanded.isdigit()
+        # Expanded-tree modes are historical read compatibility only. Current
+        # Lean producers issue compact fingerprint surfaces for both passing
+        # and terminal diagnostic closures.
         or surface_mode
         not in {
             "closure_expanded",
@@ -2581,7 +2563,8 @@ def _normalize_semantic_contract_closure(
         # terminal credit.  `<inline>` and `<internal>` are explicit Lean
         # helper contexts, never ordinary imported-module placeholders.
         if (
-            origin_class in {"workspace", "foundation", "external"}
+            origin_class
+            in {"workspace", "foundation", "foreign_model_definition", "external"}
             and not module_origin
         ):
             return None
@@ -2655,7 +2638,13 @@ def _normalize_semantic_contract_closure(
         return None
 
     scope: dict[str, Any] = {}
-    for key in ("paper_modules", "workspace_modules", "foundation_modules"):
+    for key in (
+        "paper_modules",
+        "workspace_modules",
+        "foundation_modules",
+        "foreign_model_definitions",
+        "foreign_model_modules",
+    ):
         values = raw_scope.get(key)
         if not isinstance(values, list) or any(
             not isinstance(value, str) or not value.strip() for value in values
@@ -2667,7 +2656,11 @@ def _normalize_semantic_contract_closure(
     if not isinstance(inline_paper_scope, bool) or not hash_tool_path:
         return None
     scope["inline_paper_scope"] = inline_paper_scope
-    scope["hash_tool_path"] = hash_tool_path
+    # The absolute executable path is an operational locator supplied by the
+    # Python launcher, not semantic evidence. Canonicalize it before any
+    # manifest can be persisted or content-addressed so an otherwise identical
+    # checkout produces the same receipt on another machine.
+    scope["hash_tool_command"] = "sha256sum"
 
     structural_payload = {
         "schema": SEMANTIC_CONTRACT_CLOSURE_SCHEMA,
@@ -3218,6 +3211,34 @@ def _compose_helper_script(script_prefix: str, helper: str, commands: str) -> st
     )
 
 
+def _compiled_audit_module_available(root: Path, source: Path) -> bool:
+    """Whether one separately compiled audit module exists in this checkout."""
+
+    return (root / source).is_file()
+
+
+def _build_compiled_audit_module(
+    root: Path,
+    module: str,
+    source: Path,
+    timeout_seconds: int,
+) -> bool:
+    """Build one audit utility explicitly, never as a paper dependency."""
+
+    if not _compiled_audit_module_available(root, source):
+        return False
+    try:
+        proc = run_owned_lean_process(
+            ["lake", "build", f"+{module}"],
+            cwd=root,
+            env=single_threaded_lean_build_environment(),
+            timeout=timeout_seconds,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return proc.returncode == 0
+
+
 def _compiled_audit_helper_available(root: Path) -> bool:
     """Whether this checkout can import the separately compiled audit helper.
 
@@ -3226,27 +3247,18 @@ def _compiled_audit_helper_available(root: Path) -> bool:
     does not elaborate the helper implementation in the same Lean process.
     """
 
-    return (root / COMPILED_AUDIT_HELPER_SOURCE).is_file()
+    return _compiled_audit_module_available(root, COMPILED_AUDIT_HELPER_SOURCE)
 
 
 def _build_compiled_audit_helper(root: Path, timeout_seconds: int) -> bool:
     """Build the audit helper explicitly, never as a paper-theorem dependency."""
 
-    if not _compiled_audit_helper_available(root):
-        return False
-    try:
-        proc = subprocess.run(
-            ["lake", "build", COMPILED_AUDIT_HELPER_MODULE],
-            cwd=str(root),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            timeout=timeout_seconds,
-            check=False,
-        )
-    except (OSError, subprocess.TimeoutExpired):
-        return False
-    return proc.returncode == 0
+    return _build_compiled_audit_module(
+        root,
+        COMPILED_AUDIT_HELPER_MODULE,
+        COMPILED_AUDIT_HELPER_SOURCE,
+        timeout_seconds,
+    )
 
 
 def _emit_manifest_timeout_diagnostic(
@@ -3377,173 +3389,6 @@ def _run_manifest_script(
     return parsed
 
 
-def _run_direct_library_dependency_surface_script(
-    root: Path,
-    script_prefix: str,
-    declaration_names: list[str],
-    timeout_seconds: int,
-) -> dict[str, tuple[str, ...]]:
-    """Ask Lean for direct EconCSLib dependencies without materializing graphs.
-
-    This intentionally has a much smaller memory profile than a full signature
-    manifest: it uses the same elaborated declaration bodies, but returns only
-    the direct reusable-library coordinates required to construct the human
-    source-to-library review surface.
-    """
-
-    names = sorted({str(name).strip() for name in declaration_names if str(name).strip()})
-    if not names or not HELPER_PATH.exists():
-        return {}
-    try:
-        helper = HELPER_PATH.read_text(encoding="utf-8")
-    except OSError:
-        return {}
-    script = _compose_helper_script(
-        script_prefix
-        + "\nset_option maxRecDepth 100000"
-        + "\nset_option maxHeartbeats 0",
-        helper,
-        "#direct_library_dependency_surface " + json.dumps(json.dumps(names)),
-    )
-    with tempfile.TemporaryDirectory() as tmpdir:
-        path = Path(tmpdir) / "direct_library_dependency_surface.lean"
-        path.write_text(script, encoding="utf-8")
-        try:
-            proc = subprocess.Popen(
-                ["lake", "env", "lean", str(path)],
-                cwd=str(root),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                start_new_session=True,
-            )
-            stdout_bytes, stderr_bytes = proc.communicate(timeout=timeout_seconds)
-        except OSError:
-            return {}
-        except subprocess.TimeoutExpired:
-            try:
-                os.killpg(proc.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            try:
-                proc.communicate(timeout=1)
-            except (OSError, subprocess.TimeoutExpired):
-                pass
-            return {}
-    stdout = stdout_bytes.decode("utf-8", errors="replace")
-    if proc.returncode != 0:
-        diagnostic = stderr_bytes.decode("utf-8", errors="replace")
-        if diagnostic.strip():
-            print(
-                "Lean direct-library dependency extraction failed:\n" + diagnostic[:8000],
-                file=sys.stderr,
-            )
-        else:
-            print(
-                "Lean direct-library dependency extraction failed without stderr "
-                f"(exit {proc.returncode}):\n"
-                + stdout_bytes.decode("utf-8", errors="replace")[:8000],
-                file=sys.stderr,
-            )
-        return {}
-    parsed = parse_direct_library_dependency_surface_output(stdout, names)
-    if not parsed:
-        diagnostics = [
-            line
-            for line in stdout.splitlines()
-            if "LEAN_DIRECT_LIBRARY_DEPENDENCY_SURFACE" in line
-        ]
-        if diagnostics:
-            print("\n".join(diagnostics[:8]), file=sys.stderr)
-    return parsed
-
-
-def _run_manifest_revalidation_script(
-    root: Path,
-    script_prefix: str,
-    declaration_names: list[str],
-    timeout_seconds: int,
-    audit_modules: str,
-    hash_tool_path: str,
-) -> dict[str, dict[str, Any]]:
-    """Run compact item-level receipts without rebuilding full manifests."""
-
-    if not declaration_names or not HELPER_PATH.exists():
-        return {}
-    try:
-        resolved_hash_tool = str(Path(hash_tool_path).resolve(strict=True))
-    except OSError:
-        return {}
-    helper = HELPER_PATH.read_text(encoding="utf-8")
-    commands = "\n".join(
-        f"#signature_manifest_revalidation {json.dumps(name)} "
-        f"{json.dumps(audit_modules)} {json.dumps(resolved_hash_tool)}"
-        for name in declaration_names
-    )
-    script = _compose_helper_script(
-        script_prefix
-        + "\nset_option maxRecDepth 100000"
-        + "\nset_option maxHeartbeats 0",
-        helper,
-        commands,
-    )
-    with tempfile.TemporaryDirectory() as tmpdir:
-        path = Path(tmpdir) / "signature_manifest_revalidation.lean"
-        path.write_text(script, encoding="utf-8")
-        timed_out = False
-        try:
-            proc = subprocess.Popen(
-                ["lake", "env", "lean", str(path)],
-                cwd=str(root),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                start_new_session=True,
-            )
-            stdout_bytes, stderr_bytes = proc.communicate(timeout=timeout_seconds)
-        except OSError:
-            return {}
-        except subprocess.TimeoutExpired:
-            timed_out = True
-            try:
-                os.killpg(proc.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            try:
-                stdout_bytes, stderr_bytes = proc.communicate(timeout=1)
-            except (OSError, subprocess.TimeoutExpired):
-                _emit_manifest_timeout_diagnostic(
-                    declaration_names,
-                    timeout_seconds=timeout_seconds,
-                    completed_declarations=(),
-                )
-                return {}
-    stdout = stdout_bytes.decode("utf-8", errors="replace")
-    if proc.returncode != 0 and not timed_out:
-        diagnostic = stderr_bytes.decode("utf-8", errors="replace")
-        if diagnostic.strip():
-            print(
-                "Lean signature-manifest item revalidation failed:\n"
-                + diagnostic[:8000],
-                file=sys.stderr,
-            )
-        return {}
-    parsed = parse_signature_manifest_revalidation_output(stdout)
-    if timed_out:
-        _emit_manifest_timeout_diagnostic(
-            declaration_names,
-            timeout_seconds=timeout_seconds,
-            completed_declarations=parsed,
-        )
-    if not parsed:
-        diagnostics = [
-            line
-            for line in stdout.splitlines()
-            if "LEAN_SIGNATURE_MANIFEST_REVALIDATION_DIAGNOSTIC:" in line
-        ]
-        if diagnostics:
-            print("\n".join(diagnostics[:8]), file=sys.stderr)
-    return parsed
-
-
 def _run_proposition_spec_proof_script(
     root: Path,
     script_prefix: str,
@@ -3630,127 +3475,6 @@ def _run_semantic_contract_script(
     return parse_semantic_contract_output(stdout)
 
 
-def _run_operational_outcome_domain_bridge_script(
-    root: Path,
-    script_prefix: str,
-    routes: list[OperationalOutcomeDomainRoute],
-    timeout_seconds: int,
-) -> dict[OperationalOutcomeDomainRoute, bool]:
-    """Ask Lean to check terminal-existence bridges for result domains."""
-
-    if not routes or not HELPER_PATH.exists():
-        return {}
-    helper = HELPER_PATH.read_text(encoding="utf-8")
-    commands = "\n".join(
-        "#operational_outcome_domain_bridge "
-        f"{json.dumps(target)} {json.dumps(bridge)} "
-        f"{json.dumps(str(model_index))} {json.dumps(str(terminal_index))} "
-        f"{json.dumps(str(run_index))} {json.dumps(str(terminal_predicate_index))} "
-        f"{json.dumps(model_root)} {json.dumps(transition_root)}"
-        for (
-            target,
-            bridge,
-            model_index,
-            terminal_index,
-            run_index,
-            terminal_predicate_index,
-            model_root,
-            transition_root,
-        ) in routes
-    )
-    script = _compose_helper_script(script_prefix, helper, commands)
-    with tempfile.TemporaryDirectory() as tmpdir:
-        path = Path(tmpdir) / "operational_outcome_domain_bridge.lean"
-        path.write_text(script, encoding="utf-8")
-        try:
-            proc = subprocess.Popen(
-                ["lake", "env", "lean", str(path)],
-                cwd=str(root),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                start_new_session=True,
-            )
-            stdout, _stderr = proc.communicate(timeout=timeout_seconds)
-        except (OSError, subprocess.TimeoutExpired):
-            if "proc" in locals():
-                try:
-                    os.killpg(proc.pid, signal.SIGKILL)
-                except ProcessLookupError:
-                    pass
-                try:
-                    proc.communicate(timeout=1)
-                except (OSError, subprocess.TimeoutExpired):
-                    pass
-            return {}
-    if proc.returncode != 0:
-        return {}
-    return parse_operational_outcome_domain_bridge_output(stdout)
-
-
-def _run_operational_outcome_state_transition_bridge_script(
-    root: Path,
-    script_prefix: str,
-    routes: list[OperationalOutcomeStateTransitionRoute],
-    timeout_seconds: int,
-) -> dict[OperationalOutcomeStateTransitionRoute, bool]:
-    """Ask Lean to check result-local state/transition nonvacuity bridges."""
-
-    if not routes or not HELPER_PATH.exists():
-        return {}
-    helper = HELPER_PATH.read_text(encoding="utf-8")
-    commands = "\n".join(
-        "#operational_outcome_state_transition_bridge "
-        f"{json.dumps(target)} {json.dumps(bridge)} {json.dumps(initial_witness)} "
-        f"{json.dumps(str(model_index))} {json.dumps(str(state_index))} "
-        f"{json.dumps(str(initial_predicate_index))} {json.dumps(str(terminal_index))} "
-        f"{json.dumps(str(run_index))} {json.dumps(str(terminal_predicate_index))} "
-        f"{json.dumps(model_root)} {json.dumps(state_root)} {json.dumps(transition_root)}"
-        for (
-            target,
-            bridge,
-            initial_witness,
-            model_index,
-            state_index,
-            initial_predicate_index,
-            terminal_index,
-            run_index,
-            terminal_predicate_index,
-            model_root,
-            state_root,
-            transition_root,
-        ) in routes
-    )
-    script = _compose_helper_script(script_prefix, helper, commands)
-    with tempfile.TemporaryDirectory() as tmpdir:
-        path = Path(tmpdir) / "operational_outcome_state_transition_bridge.lean"
-        path.write_text(script, encoding="utf-8")
-        try:
-            proc = subprocess.Popen(
-                ["lake", "env", "lean", str(path)],
-                cwd=str(root),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                start_new_session=True,
-            )
-            stdout, _stderr = proc.communicate(timeout=timeout_seconds)
-        except (OSError, subprocess.TimeoutExpired):
-            if "proc" in locals():
-                try:
-                    os.killpg(proc.pid, signal.SIGKILL)
-                except ProcessLookupError:
-                    pass
-                try:
-                    proc.communicate(timeout=1)
-                except (OSError, subprocess.TimeoutExpired):
-                    pass
-            return {}
-    if proc.returncode != 0:
-        return {}
-    return parse_operational_outcome_state_transition_bridge_output(stdout)
-
-
 def _run_semantic_contract_transparency_script(
     root: Path,
     script_prefix: str,
@@ -3826,6 +3550,8 @@ def _run_semantic_contract_closure_script(
     workspace_modules: tuple[str, ...],
     foundation_modules: tuple[str, ...],
     *,
+    foreign_model_definitions: tuple[str, ...] = (),
+    foreign_model_modules: tuple[str, ...] = (),
     hash_tool_path: str | None = None,
     inline_paper_scope: bool,
     use_compiled_helper: bool = False,
@@ -3846,6 +3572,9 @@ def _run_semantic_contract_closure_script(
         or any(not module for module in paper_modules)
         or any(not module for module in workspace_modules)
         or any(not module for module in foundation_modules)
+        or any(not declaration for declaration in foreign_model_definitions)
+        or any(not module for module in foreign_model_modules)
+        or bool(foreign_model_definitions) != bool(foreign_model_modules)
     ):
         return {}
     if use_compiled_helper:
@@ -3860,6 +3589,8 @@ def _run_semantic_contract_closure_script(
             "paper_modules": list(paper_modules),
             "workspace_modules": list(workspace_modules),
             "foundation_modules": list(foundation_modules),
+            "foreign_model_definitions": list(foreign_model_definitions),
+            "foreign_model_modules": list(foreign_model_modules),
             "hash_tool_path": resolved_hash_tool,
             "inline_paper_scope": inline_paper_scope,
         },
@@ -4037,14 +3768,19 @@ def _run_semantic_contract_closure_script(
 def _semantic_contract_transparency_batches(names: list[str]) -> list[list[str]]:
     """Split bounded paper-closeout requests without inspecting declarations."""
 
-    maximum_rows = (
-        SEMANTIC_CONTRACT_TRANSPARENCY_CHUNK_SIZE
-        * MAX_SEMANTIC_CONTRACT_TRANSPARENCY_CHUNKS
-    )
-    if MIN_CHUNKED_SEMANTIC_CONTRACT_TRANSPARENCY_ROWS <= len(names) <= maximum_rows:
+    if MIN_CHUNKED_SEMANTIC_CONTRACT_TRANSPARENCY_ROWS <= len(names):
+        # Keep the default one-row Lean process whenever the finite process
+        # budget permits it.  For a much larger paper, widen only by request
+        # count to remain within the cap; declaration identities never affect
+        # scheduling.
+        capacity = max(
+            SEMANTIC_CONTRACT_TRANSPARENCY_CHUNK_SIZE,
+            (len(names) + MAX_SEMANTIC_CONTRACT_TRANSPARENCY_CHUNKS - 1)
+            // MAX_SEMANTIC_CONTRACT_TRANSPARENCY_CHUNKS,
+        )
         return [
-            names[index : index + SEMANTIC_CONTRACT_TRANSPARENCY_CHUNK_SIZE]
-            for index in range(0, len(names), SEMANTIC_CONTRACT_TRANSPARENCY_CHUNK_SIZE)
+            names[index : index + capacity]
+            for index in range(0, len(names), capacity)
         ]
     return [names]
 
@@ -4052,13 +3788,15 @@ def _semantic_contract_transparency_batches(names: list[str]) -> list[list[str]]
 def _semantic_contract_closure_batches(names: list[str]) -> list[list[str]]:
     """Split closure requests by row count only, never declaration spelling."""
 
-    maximum_rows = (
-        SEMANTIC_CONTRACT_CLOSURE_CHUNK_SIZE * MAX_SEMANTIC_CONTRACT_CLOSURE_CHUNKS
-    )
-    if MIN_CHUNKED_SEMANTIC_CONTRACT_CLOSURE_ROWS <= len(names) <= maximum_rows:
+    if MIN_CHUNKED_SEMANTIC_CONTRACT_CLOSURE_ROWS <= len(names):
+        capacity = max(
+            SEMANTIC_CONTRACT_CLOSURE_CHUNK_SIZE,
+            (len(names) + MAX_SEMANTIC_CONTRACT_CLOSURE_CHUNKS - 1)
+            // MAX_SEMANTIC_CONTRACT_CLOSURE_CHUNKS,
+        )
         return [
-            names[index : index + SEMANTIC_CONTRACT_CLOSURE_CHUNK_SIZE]
-            for index in range(0, len(names), SEMANTIC_CONTRACT_CLOSURE_CHUNK_SIZE)
+            names[index : index + capacity]
+            for index in range(0, len(names), capacity)
         ]
     return [names]
 
@@ -4084,13 +3822,15 @@ def _semantic_contract_match_batches(
 ) -> list[list[tuple[str, str, str]]]:
     """Split bounded exact-contract requests without inspecting route content."""
 
-    maximum_routes = (
-        SEMANTIC_CONTRACT_MATCH_CHUNK_SIZE * MAX_SEMANTIC_CONTRACT_MATCH_CHUNKS
-    )
-    if MIN_CHUNKED_SEMANTIC_CONTRACT_MATCH_ROUTES <= len(routes) <= maximum_routes:
+    if MIN_CHUNKED_SEMANTIC_CONTRACT_MATCH_ROUTES <= len(routes):
+        capacity = max(
+            SEMANTIC_CONTRACT_MATCH_CHUNK_SIZE,
+            (len(routes) + MAX_SEMANTIC_CONTRACT_MATCH_CHUNKS - 1)
+            // MAX_SEMANTIC_CONTRACT_MATCH_CHUNKS,
+        )
         return [
-            routes[index : index + SEMANTIC_CONTRACT_MATCH_CHUNK_SIZE]
-            for index in range(0, len(routes), SEMANTIC_CONTRACT_MATCH_CHUNK_SIZE)
+            routes[index : index + capacity]
+            for index in range(0, len(routes), capacity)
         ]
     return [routes]
 
@@ -4102,6 +3842,35 @@ def _requested_semantic_contract_matches(
     """Keep only exact requested contract output in deterministic route order."""
 
     return {route: matches[route] for route in routes if route in matches}
+
+
+def _semantic_contract_adaptive_retries(
+    missing_routes: list[tuple[str, str, str]],
+    run_batch: Callable[
+        [list[tuple[str, str, str]]],
+        Mapping[tuple[str, str, str], bool],
+    ],
+) -> dict[tuple[str, str, str], bool]:
+    """Bisect only unresolved exact-contract routes after a batch failure."""
+
+    recovered: dict[tuple[str, str, str], bool] = {}
+    pending: list[list[tuple[str, str, str]]] = []
+    if len(missing_routes) == 1:
+        pending = [missing_routes]
+    elif missing_routes:
+        midpoint = len(missing_routes) // 2
+        pending = [missing_routes[:midpoint], missing_routes[midpoint:]]
+    attempts = 0
+    while pending and attempts < MAX_SEMANTIC_CONTRACT_MATCH_CHUNKS:
+        batch = pending.pop(0)
+        attempts += 1
+        extracted = dict(run_batch(batch))
+        recovered.update(_requested_semantic_contract_matches(extracted, batch))
+        unresolved = [route for route in batch if route not in recovered]
+        if len(unresolved) > 1:
+            midpoint = len(unresolved) // 2
+            pending[0:0] = [unresolved[:midpoint], unresolved[midpoint:]]
+    return recovered
 
 
 def _run_source_premise_false_scan_script(
@@ -4927,7 +4696,8 @@ def _closure_module_identity_snapshot(
             (origin_class, module_origin)
             for origin_class, module_origin in _closure_module_origin_pairs(manifest)
             if not (
-                manifest.get("surface_mode") == "lean_dependency_fingerprint"
+                manifest.get("surface_mode")
+                in {"lean_dependency_fingerprint", "closure_fingerprints"}
                 and origin_class == "foundation"
             )
         ]
@@ -4936,9 +4706,10 @@ def _closure_module_identity_snapshot(
     reached_origins = {
         origin for origins in origins_by_specification.values() for origin in origins
     }
-    # Every reached module receives an exact `.olean` content pin. Package and
-    # toolchain identities remain additional context, not a substitute for
-    # the compiled bytes Lean actually traversed.
+    # Every reached paper or unregistered-external module receives an exact
+    # `.olean` content pin.  Compact foundation roots are authenticated once
+    # by the package/toolchain context above; they deliberately have no
+    # per-module artifact row here.
     artifacts_by_module = _closure_module_artifact_snapshot(
         root,
         {module_origin for _origin_class, module_origin in reached_origins},
@@ -5251,13 +5022,15 @@ class RepositoryBuildInputSnapshotProvider:
     it never supplies modules, source bytes, or cache identity on this class's
     canonical methods.
 
-    Every adopted receipt is checked against exact current source bytes,
-    source ownership, build controls, Lake routing, and external artifacts.
-    The same immutable bytes then feed every build and structural query in the
-    process.  The caller must invoke :meth:`finalize_unchanged` once before
-    publishing derived results.  That boundary rereads only receipt-owned
-    inputs, so unrelated paper directories and unimported scratch files do not
-    invalidate a closeout.
+    Ordinary receipt adoption checks exact current source bytes, source
+    ownership, build controls, Lake routing, and external artifacts. The same
+    immutable bytes then feed every build and structural query in the process.
+    Terminal verification of a complete accepted graph uses the separate
+    :func:`graph_authenticated_lean_import_closure_guard`, which cannot provide
+    build snapshots or issue evidence. The caller must invoke
+    :meth:`finalize_unchanged` once before publishing derived results. That
+    boundary rereads only receipt-owned inputs, so unrelated paper directories
+    and unimported scratch files do not invalidate a closeout.
     """
 
     _IMPORT_NAME = re.compile(
@@ -5273,6 +5046,7 @@ class RepositoryBuildInputSnapshotProvider:
         root: Path | str,
         *,
         lean_import_closure_payload: object | None = None,
+        semantic_reuse_authority: object | None = None,
         module_graph_loader: Callable[
             [Path, str, int], tuple[tuple[str, ...] | None, str]
         ]
@@ -5283,6 +5057,7 @@ class RepositoryBuildInputSnapshotProvider:
         self._module_graph_loader = module_graph_loader
         self._lean_graph_timeout_seconds = lean_graph_timeout_seconds
         self._live_closure_provider: object | None = None
+        self._lean_graph_errors: dict[str, str] = {}
         self._resolved_paths: dict[str, Path | None] = {}
         self._source_bytes: dict[str, bytes] = {}
         self._source_digests: dict[str, str] = {}
@@ -5290,6 +5065,9 @@ class RepositoryBuildInputSnapshotProvider:
         self._imports: dict[str, tuple[str, ...] | None] = {}
         self._closures: dict[str, tuple[str, ...]] = {}
         self._closure_receipts: dict[str, dict[str, object]] = {}
+        self._external_artifact_snapshots: dict[str, Any] = {}
+        self._semantic_authority_entries: set[str] = set()
+        self._semantic_authority_material: dict[Path, bytes | None] = {}
         self._snapshots: dict[str, str | None] = {}
         self._control_bytes = {
             relative: self._read_optional_bytes(self.root / relative)
@@ -5308,11 +5086,19 @@ class RepositoryBuildInputSnapshotProvider:
             "lean_graph_requests": 0,
             "lean_graph_reuses": 0,
             "saved_receipts_adopted": 0,
+            "semantic_receipts_adopted": 0,
+            "external_artifact_snapshot_reuses": 0,
             "finalization_checks": 0,
             "finalization_failures": 0,
         }
         if lean_import_closure_payload is not None:
-            self.adopt_lean_import_closure_payload(lean_import_closure_payload)
+            if semantic_reuse_authority is not None:
+                self.adopt_semantically_current_lean_import_closure_payload(
+                    lean_import_closure_payload,
+                    semantic_reuse_authority=semantic_reuse_authority,
+                )
+            else:
+                self.adopt_lean_import_closure_payload(lean_import_closure_payload)
 
     @staticmethod
     def _read_optional_bytes(path: Path) -> bytes | None:
@@ -5479,58 +5265,42 @@ class RepositoryBuildInputSnapshotProvider:
         return tuple(sorted(modules))
 
     @staticmethod
-    def _closure_helpers() -> tuple[Any, Any, Any, Any, Any, Any, Any]:
+    def _closure_module() -> Any:
+        """Return the named import-closure API without a positional adapter."""
+
         try:
             if __package__:
-                from .lean_import_closure import (
-                    WorktreeImportClosureProvider,
-                    durable_lake_routing_projection,
-                    external_module_artifact_records,
-                    external_module_artifacts_sha256,
-                    lake_routing_projection,
-                    lean_loaded_module_closure,
-                    validated_lean_import_closure_payload,
-                )
+                from . import lean_import_closure as closure
             else:
-                from lean_import_closure import (
-                    WorktreeImportClosureProvider,
-                    durable_lake_routing_projection,
-                    external_module_artifact_records,
-                    external_module_artifacts_sha256,
-                    lake_routing_projection,
-                    lean_loaded_module_closure,
-                    validated_lean_import_closure_payload,
-                )
+                import lean_import_closure as closure
         except ImportError as exc:
             raise ValueError("Lean import-closure authority is unavailable") from exc
-        return (
-            WorktreeImportClosureProvider,
-            durable_lake_routing_projection,
-            external_module_artifact_records,
-            external_module_artifacts_sha256,
-            lake_routing_projection,
-            lean_loaded_module_closure,
-            validated_lean_import_closure_payload,
-        )
+        return closure
 
     def _validated_current_receipt(
         self,
         payload: object,
         *,
         reuse_cached_sources: bool = True,
-    ) -> tuple[dict[str, object], dict[str, tuple[Path, bytes]]]:
-        """Validate one receipt and return its exact current source bytes."""
+        reuse_cached_external_artifacts: bool = False,
+        validate_current_external_artifacts: bool = True,
+    ) -> tuple[dict[str, object], dict[str, tuple[Path, bytes]], Any]:
+        """Validate one receipt and return its exact current source bytes.
 
-        (
-            _worktree_provider,
-            durable_lake_routing_projection,
-            external_module_artifact_records,
-            external_module_artifacts_sha256,
-            lake_routing_projection,
-            _lean_loader,
-            validated_lean_import_closure_payload,
-        ) = self._closure_helpers()
-        validated = validated_lean_import_closure_payload(payload)
+        Fresh build or evidence issuance must retain the default and bind the
+        exact external artifacts loaded by Lean. A terminal verifier for an
+        already authenticated accepted graph may disable only that ambient
+        artifact-cache replay: the graph already binds the issuance-time
+        artifact aggregate, while this method still rechecks every repository
+        source, source owner, build control, Lake route, and external/repository
+        ownership boundary.
+        """
+
+        closure = self._closure_module()
+        validated = closure.validated_lean_import_closure_payload(payload)
+        ownership_snapshot = closure.repository_module_ownership_snapshot(
+            self.root
+        )
         entry_module = str(validated["entry_module"])
         entrypoint = str(validated["entrypoint"])
         entry_path = (self.root / entrypoint).resolve()
@@ -5542,6 +5312,7 @@ class RepositoryBuildInputSnapshotProvider:
             ) from exc
 
         current_sources: dict[str, tuple[Path, bytes]] = {}
+        source_problems: list[str] = []
         raw_sources = validated["sources"]
         assert isinstance(raw_sources, list)
         for raw in raw_sources:
@@ -5555,10 +5326,11 @@ class RepositoryBuildInputSnapshotProvider:
                 raise ValueError(
                     f"Lean import-closure source escapes the repository: {relative}"
                 ) from exc
-            if _repository_module_source_path(self.root, module) != path:
-                raise ValueError(
+            if ownership_snapshot.candidates(module) != (path,):
+                source_problems.append(
                     f"Lean import-closure source ownership changed: {module}"
                 )
+                continue
             content = None
             if reuse_cached_sources and self._resolved_paths.get(module) == path:
                 candidate = self._source_bytes.get(module)
@@ -5575,10 +5347,17 @@ class RepositoryBuildInputSnapshotProvider:
                 len(content) != raw["byte_length"]
                 or hashlib.sha256(content).hexdigest() != raw["sha256"]
             ):
-                raise ValueError(
+                source_problems.append(
                     f"Lean import-closure source bytes changed: {relative}"
                 )
+                continue
             current_sources[module] = (path, content)
+        if source_problems:
+            raise ValueError(
+                "Lean import-closure source validation found "
+                f"{len(source_problems)} problem(s):\n- "
+                + "\n- ".join(source_problems)
+            )
         if current_sources.get(entry_module, (None, b""))[0] != entry_path:
             raise ValueError(
                 "Lean import-closure entrypoint source association changed"
@@ -5586,7 +5365,7 @@ class RepositoryBuildInputSnapshotProvider:
         raw_external = validated["external_import_modules"]
         assert isinstance(raw_external, list)
         for module in (str(value) for value in raw_external):
-            candidates = _repository_module_source_candidates(self.root, module)
+            candidates = ownership_snapshot.candidates(module)
             if len(candidates) > 1:
                 raise ValueError(
                     "Lean import-closure external module has ambiguous repository "
@@ -5622,32 +5401,68 @@ class RepositoryBuildInputSnapshotProvider:
                     f"Lean import-closure build control changed: {relative}"
                 )
 
-        routing, routing_error = lake_routing_projection(self.root, entry_module)
-        if routing is None or durable_lake_routing_projection(
+        routing, routing_error = closure.lake_routing_projection(
+            self.root, entry_module
+        )
+        if routing is None or closure.durable_lake_routing_projection(
             routing
-        ) != durable_lake_routing_projection(validated["lake_routing"]):
+        ) != closure.durable_lake_routing_projection(validated["lake_routing"]):
             raise ValueError(
                 routing_error or "Lean import-closure Lake routing changed"
             )
 
-        artifacts, artifact_error = external_module_artifact_records(
-            self.root,
-            (str(module) for module in raw_external),
-            timeout_seconds=min(self._lean_graph_timeout_seconds, 60),
+        if not validate_current_external_artifacts:
+            return validated, current_sources, None
+
+        artifact_snapshot = (
+            self._external_artifact_snapshots.get(entry_module)
+            if reuse_cached_external_artifacts
+            else None
         )
-        if artifacts is None or (
-            external_module_artifacts_sha256(artifacts)
+        artifact_error = ""
+        if artifact_snapshot is not None:
+            if artifact_snapshot.records():
+                search_snapshot, artifact_error = (
+                    closure.external_artifact_search_snapshot(
+                        self.root,
+                        timeout_seconds=min(
+                            self._lean_graph_timeout_seconds, 60
+                        ),
+                    )
+                )
+                if search_snapshot is not None and not artifact_error:
+                    artifact_error = artifact_snapshot.current_problem(
+                        search_snapshot=search_snapshot
+                    )
+            else:
+                artifact_error = artifact_snapshot.current_problem()
+        if artifact_snapshot is not None and not artifact_error:
+            self._diagnostics["external_artifact_snapshot_reuses"] += 1
+        if artifact_snapshot is None:
+            artifact_snapshot, artifact_error = (
+                closure.external_module_artifact_snapshot(
+                    self.root,
+                    (str(module) for module in raw_external),
+                    timeout_seconds=min(
+                        self._lean_graph_timeout_seconds, 60
+                    ),
+                )
+            )
+        if artifact_snapshot is None or artifact_error or (
+            closure.external_module_artifacts_sha256(artifact_snapshot.records())
             != validated["external_module_artifacts_sha256"]
         ):
             raise ValueError(
                 artifact_error or "Lean import-closure external artifacts changed"
             )
-        return validated, current_sources
+        return validated, current_sources, artifact_snapshot
 
     def adopt_lean_import_closure_payload(self, payload: object) -> str:
         """Adopt one current Lean-owned receipt and return its entry module."""
 
-        validated, current_sources = self._validated_current_receipt(payload)
+        validated, current_sources, artifact_snapshot = (
+            self._validated_current_receipt(payload)
+        )
         entry_module = str(validated["entry_module"])
         if entry_module in self._closure_receipts:
             if self._closure_receipts[entry_module] != validated:
@@ -5684,7 +5499,200 @@ class RepositoryBuildInputSnapshotProvider:
         self._loaded_modules[entry_module] = loaded
         self._closures[entry_module] = repository_modules
         self._closure_receipts[entry_module] = deepcopy(validated)
+        self._external_artifact_snapshots[entry_module] = artifact_snapshot
         self._diagnostics["saved_receipts_adopted"] += 1
+        return entry_module
+
+    def validated_repository_source_snapshot(
+        self,
+        payload: object,
+    ) -> tuple[tuple[str, Path, bytes, str], ...]:
+        """Validate and snapshot only repository-owned closure sources.
+
+        This is a deliberately non-accepting projection for consumers that
+        already hold a content-bound Lean graph and only need its exact current
+        repository source bytes for reviewer material.  It validates the
+        receipt schema, repository ownership, every recorded source byte,
+        build controls, Lake routing, and the external/repository ownership
+        boundary.  It does not hash current external ``.olean`` bytes, adopt a
+        build provider, expose a build snapshot, or issue evidence.  Fresh
+        graph acquisition and every accepting evidence path must continue to
+        use :meth:`adopt_lean_import_closure_payload`.
+        """
+
+        _validated, current_sources, _artifact_snapshot = (
+            self._validated_current_receipt(
+                payload,
+                validate_current_external_artifacts=False,
+            )
+        )
+        return tuple(
+            (
+                module,
+                path,
+                content,
+                hashlib.sha256(content).hexdigest(),
+            )
+            for module, (path, content) in sorted(current_sources.items())
+        )
+
+    def owns_exact_lean_import_closure_payload(self, payload: object) -> bool:
+        """Return whether this provider already owns the exact validated closure.
+
+        This comparison performs no filesystem or Lean discovery. It lets one
+        transaction pass its already authenticated provider through downstream
+        consumers without each consumer rehashing the same external artifacts.
+        The transaction owner remains responsible for one final
+        :meth:`finalize_unchanged` call before publishing acceptance.
+        """
+
+        try:
+            validated = self._closure_module().validated_lean_import_closure_payload(
+                payload
+            )
+        except ValueError:
+            return False
+        entry_module = str(validated["entry_module"])
+        return self._closure_receipts.get(entry_module) == validated
+
+    def _repository_module_for_semantic_source(self, path: Path) -> str:
+        """Return the current Lean module owned by one watched source path."""
+
+        try:
+            relative = path.resolve().relative_to(self.root)
+        except (OSError, ValueError):
+            return ""
+        if relative.suffix != ".lean":
+            return ""
+        parts = list(relative.with_suffix("").parts)
+        if parts and parts[0] == "papers":
+            parts = parts[1:]
+        if not parts:
+            return ""
+        module = ".".join(parts)
+        return (
+            module
+            if _repository_module_source_path(self.root, module) == path.resolve()
+            else ""
+        )
+
+    def adopt_semantically_current_lean_import_closure_payload(
+        self,
+        payload: object,
+        *,
+        semantic_reuse_authority: object,
+    ) -> str:
+        """Adopt historical Lean topology under current semantic authority.
+
+        A successful declaration-level Lean pass has already proved that every
+        receipt-bound root retains its elaborated signature, proposition graph,
+        and transitive semantic dependency identity.  Requiring the historical
+        byte digest of every imported repository file or every external olean
+        at this point would duplicate that proof and create false churn.  This
+        route instead snapshots the exact current inputs watched by that pass,
+        retains the Lean-emitted loaded-module receipt as lookup provenance,
+        and enforces a start/end mutation check.
+        """
+
+        try:
+            if __package__:
+                from .semantic_reuse_authority import (
+                    CurrentSemanticReuseAuthority,
+                )
+            else:  # pragma: no cover - direct script invocation.
+                from semantic_reuse_authority import (  # type: ignore
+                    CurrentSemanticReuseAuthority,
+                )
+        except ImportError as exc:  # pragma: no cover - installation failure.
+            raise ValueError("semantic-reuse authority type is unavailable") from exc
+        if not isinstance(semantic_reuse_authority, CurrentSemanticReuseAuthority):
+            raise ValueError("semantic-reuse authority was not issued by the verifier")
+
+        validated = self._closure_module().validated_lean_import_closure_payload(
+            payload
+        )
+        entry_module = str(validated["entry_module"])
+        if semantic_reuse_authority.paper != entry_module.split(".", 1)[0]:
+            raise ValueError("semantic-reuse authority does not match the Lean entry")
+
+        current_material: dict[Path, bytes | None] = {}
+        material_digests: dict[Path, str] = {}
+        for relative, state, digest in semantic_reuse_authority.watched_repository_material:
+            candidate = (self.root / relative).resolve()
+            try:
+                candidate.relative_to(self.root)
+            except ValueError as exc:
+                raise ValueError("semantic-reuse watched path escapes the repository") from exc
+            content = self._read_optional_bytes(candidate)
+            if state == "missing":
+                if content is not None:
+                    raise ValueError(
+                        f"semantic-reuse watched input appeared: {relative}"
+                    )
+            elif content is None or hashlib.sha256(content).hexdigest() != digest:
+                raise ValueError(
+                    f"semantic-reuse watched input changed: {relative}"
+                )
+            current_material[candidate] = content
+            material_digests[candidate] = digest
+
+        for relative in self._CONTROL_PATHS:
+            path = (self.root / relative).resolve()
+            content = current_material.get(path)
+            if content is None or content != self._control_bytes.get(relative):
+                raise ValueError(
+                    f"semantic-reuse authority omits current build control: {relative}"
+                )
+
+        current_sources: dict[str, tuple[Path, bytes]] = {}
+        raw_sources = validated["sources"]
+        assert isinstance(raw_sources, list)
+        for raw in raw_sources:
+            assert isinstance(raw, Mapping)
+            module = str(raw["module"])
+            path = _repository_module_source_path(self.root, module)
+            content = current_material.get(path.resolve()) if path is not None else None
+            if path is None or content is None:
+                raise ValueError(
+                    f"semantic-reuse authority omits current Lean source: {module}"
+                )
+            current_sources[module] = (path.resolve(), content)
+
+        # The successful semantic pass watches the current imported repository
+        # material, including a newly introduced or moved helper module.  Add
+        # those modules to the provider snapshot without using this path
+        # projection as semantic evidence; the declaration-level authority
+        # above already owns that decision.
+        for path, content in current_material.items():
+            if content is None:
+                continue
+            module = self._repository_module_for_semantic_source(path)
+            if module:
+                current_sources[module] = (path, content)
+
+        entry_path = _repository_module_source_path(self.root, entry_module)
+        if entry_path is None or entry_module not in current_sources:
+            raise ValueError("semantic-reuse authority omits the current Lean entrypoint")
+
+        for module, (path, content) in current_sources.items():
+            self._resolved_paths[module] = path
+            self._source_bytes[module] = content
+            self._source_digests[module] = hashlib.sha256(content).hexdigest()
+        loaded = tuple(
+            sorted(
+                set(str(module) for module in validated["lean_loaded_modules"])
+                | set(current_sources)
+            )
+        )
+        for module in loaded:
+            if module not in current_sources:
+                self._resolved_paths[module] = None
+        self._loaded_modules[entry_module] = loaded
+        self._closures[entry_module] = tuple(sorted(current_sources))
+        self._closure_receipts[entry_module] = deepcopy(validated)
+        self._semantic_authority_entries.add(entry_module)
+        self._semantic_authority_material.update(current_material)
+        self._diagnostics["semantic_receipts_adopted"] += 1
         return entry_module
 
     def _acquire_live_receipt(
@@ -5694,18 +5702,11 @@ class RepositoryBuildInputSnapshotProvider:
     ) -> bool:
         """Ask the strict worktree provider for one Lean-emitted receipt."""
 
-        (
-            WorktreeImportClosureProvider,
-            _durable_lake_routing,
-            _external_records,
-            _external_sha256,
-            _lake_routing,
-            lean_loaded_module_closure,
-            _validate_payload,
-        ) = self._closure_helpers()
+        self._lean_graph_errors.pop(import_module, None)
+        closure = self._closure_module()
         if self._live_closure_provider is None:
-            loader = self._module_graph_loader or lean_loaded_module_closure
-            self._live_closure_provider = WorktreeImportClosureProvider(
+            loader = self._module_graph_loader or closure.lean_loaded_module_closure
+            self._live_closure_provider = closure.WorktreeImportClosureProvider(
                 self.root,
                 module_graph_loader=loader,
                 graph_timeout_seconds=max(
@@ -5716,20 +5717,32 @@ class RepositoryBuildInputSnapshotProvider:
             )
         source = _repository_module_source_path(self.root, import_module)
         if source is None:
+            self._lean_graph_errors[import_module] = "current entry-module source is unavailable"
             return False
         try:
             entrypoint = source.relative_to(self.root).as_posix()
-        except ValueError:
+        except ValueError as exc:
+            self._lean_graph_errors[import_module] = bounded_lean_diagnostic_excerpt(str(exc), None)
             return False
         self._diagnostics["lean_graph_requests"] += 1
         record, problem = self._live_closure_provider.record_for_entrypoint(entrypoint)
         if record is None or problem is not None:
+            self._lean_graph_errors[import_module] = bounded_lean_diagnostic_excerpt(
+                problem.reason if problem is not None else "Lean emitted no import-closure receipt",
+                None,
+            )
             return False
         try:
             adopted = self.adopt_lean_import_closure_payload(record)
-        except ValueError:
+        except ValueError as exc:
+            self._lean_graph_errors[import_module] = bounded_lean_diagnostic_excerpt(str(exc), None)
             return False
         return adopted == import_module
+
+    def lean_loaded_module_error(self, import_module: str) -> str:
+        """Read the last bounded discovery diagnostic; never acceptance evidence."""
+
+        return "" if import_module in self._loaded_modules else self._lean_graph_errors.get(import_module, "")
 
     def lean_loaded_module_names(
         self,
@@ -5870,10 +5883,26 @@ class RepositoryBuildInputSnapshotProvider:
         self._diagnostics["finalization_checks"] += 1
         unchanged = True
         try:
-            for receipt in self._closure_receipts.values():
+            for entry_module, receipt in self._closure_receipts.items():
+                if entry_module in self._semantic_authority_entries:
+                    continue
                 self._validated_current_receipt(
                     receipt,
                     reuse_cached_sources=False,
+                    reuse_cached_external_artifacts=True,
+                )
+            for path, expected in self._semantic_authority_material.items():
+                if self._read_optional_bytes(path) != expected:
+                    raise ValueError(
+                        "semantic-reuse watched input changed during the transaction"
+                    )
+            current_control_bytes = {
+                relative: self._read_optional_bytes(self.root / relative)
+                for relative in self._CONTROL_PATHS
+            }
+            if current_control_bytes != self._control_bytes:
+                raise ValueError(
+                    "Lean build controls changed during the transaction"
                 )
         except ValueError:
             unchanged = False
@@ -5885,6 +5914,61 @@ class RepositoryBuildInputSnapshotProvider:
         """Return non-authoritative counters for profiling and regression tests."""
 
         return dict(self._diagnostics)
+
+
+@dataclass(frozen=True)
+class _GraphAuthenticatedLeanImportClosureGuard:
+    """Mutation guard for repository inputs bound by an accepted graph.
+
+    It intentionally exposes no build-snapshot, closure-discovery, or evidence-
+    issuance API. The accepted graph already authenticates the exact external
+    artifact aggregate used by Lean at issuance; terminal replay only restates
+    the repository-controlled sources, ownership, controls, and Lake route.
+    """
+
+    provider: RepositoryBuildInputSnapshotProvider
+    receipt: Mapping[str, object]
+
+    def finalize_unchanged(self) -> bool:
+        try:
+            self.provider._validated_current_receipt(
+                self.receipt,
+                reuse_cached_sources=False,
+                validate_current_external_artifacts=False,
+            )
+        except ValueError:
+            return False
+        return True
+
+
+def graph_authenticated_lean_import_closure_guard(
+    root: Path | str,
+    payload: object,
+    *,
+    lean_graph_timeout_seconds: int = 600,
+) -> _GraphAuthenticatedLeanImportClosureGuard:
+    """Authenticate current repository inputs without replaying artifact cache.
+
+    This constructor is only for terminal validation of a complete accepted
+    obligation graph. Fresh closeout and every evidence producer must instead
+    use :class:`RepositoryBuildInputSnapshotProvider`, whose ordinary adoption
+    hashes the exact external artifacts loaded by Lean.
+    """
+
+    provider = RepositoryBuildInputSnapshotProvider(
+        root,
+        lean_graph_timeout_seconds=lean_graph_timeout_seconds,
+    )
+    validated, _current_sources, _artifact_snapshot = (
+        provider._validated_current_receipt(
+            payload,
+            validate_current_external_artifacts=False,
+        )
+    )
+    return _GraphAuthenticatedLeanImportClosureGuard(
+        provider=provider,
+        receipt=MappingProxyType(deepcopy(validated)),
+    )
 
 
 def _build_target_input_snapshot(
@@ -6021,8 +6105,9 @@ def _build_import_target(
 
     try:
         proc = subprocess.Popen(
-            ["lake", "build", import_module],
+            ["lake", "build", f"+{import_module}"],
             cwd=str(root),
+            env=single_threaded_lean_build_environment(),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
@@ -6075,6 +6160,2294 @@ def _build_import_target(
         artifact_snapshot,
     )
     return True
+
+
+def _normalize_declaration_result_rows(
+    section: object,
+    expected_declarations: tuple[str, ...],
+    *,
+    payload_field: str,
+    normalize_payload: Callable[[object], Any | None],
+    invalid_payload_message: str,
+) -> tuple[dict[str, Any], list[dict[str, str]]] | None:
+    """Validate independent Lean results without making one payload a veto.
+
+    The Lean service already returns a coordinate for every requested
+    declaration and separates successful items from errors.  A structurally
+    malformed section or ambiguous coordinate remains a transaction failure.
+    Once a unique declaration coordinate is known, however, a malformed
+    declaration-local payload is exactly that row's error: preserving the
+    other validated rows is both stricter and more resumable than erasing the
+    complete response and forcing an agent to bisect declaration names.
+    """
+
+    if (
+        not isinstance(section, Mapping)
+        or set(section) != {"schema", "items", "errors"}
+        or str(section.get("schema") or "") != "1"
+        or not isinstance(section.get("items"), list)
+        or not isinstance(section.get("errors"), list)
+    ):
+        return None
+    parsed: dict[str, Any] = {}
+    seen: set[str] = set()
+    normalized_errors: list[dict[str, str]] = []
+    for row in section["items"]:
+        if not isinstance(row, Mapping) or set(row) != {
+            "declaration",
+            payload_field,
+        }:
+            return None
+        declaration = str(row.get("declaration") or "").strip()
+        if not declaration or declaration in seen:
+            return None
+        seen.add(declaration)
+        normalized = normalize_payload(row.get(payload_field))
+        if normalized is None:
+            normalized_errors.append(
+                {
+                    "declaration": declaration,
+                    "message": invalid_payload_message,
+                }
+            )
+        else:
+            parsed[declaration] = normalized
+    for row in section["errors"]:
+        if not isinstance(row, Mapping) or set(row) != {"declaration", "message"}:
+            return None
+        declaration = str(row.get("declaration") or "").strip()
+        message = str(row.get("message") or "").strip()
+        if (
+            not declaration
+            or not message
+            or declaration in seen
+        ):
+            return None
+        seen.add(declaration)
+        normalized_errors.append(
+            {"declaration": declaration, "message": message}
+        )
+    if tuple(sorted(seen)) != expected_declarations:
+        return None
+    return parsed, sorted(
+        normalized_errors, key=lambda row: row["declaration"]
+    )
+
+
+def _normalize_declaration_inventory_manifest_section(
+    section: object,
+    expected_declarations: tuple[str, ...],
+) -> dict[str, Any] | None:
+    """Validate one graph-issued manifest batch without duplicating adapters."""
+
+    rows = _normalize_declaration_result_rows(
+        section,
+        expected_declarations,
+        payload_field="manifest",
+        normalize_payload=lambda value: (
+            normalize_signature_manifest(dict(value))
+            if isinstance(value, Mapping)
+            else None
+        ),
+        invalid_payload_message="invalid semantic manifest payload emitted by Lean",
+    )
+    if rows is None:
+        return None
+    parsed, errors = rows
+    return {
+        "schema": "1",
+        "items": [
+            {"declaration": declaration, "manifest": parsed[declaration]}
+            for declaration in sorted(parsed)
+        ],
+        "errors": errors,
+    }
+
+
+def _normalize_declaration_inventory_semantic_signature_section(
+    section: object,
+    expected_declarations: tuple[str, ...],
+) -> dict[str, Any] | None:
+    """Validate Lean-owned semantic signatures and retain their exact identity."""
+
+    def normalize_signature(value: object) -> str | None:
+        if not isinstance(value, Mapping) or set(value) != {
+            "schema",
+            "declaration_kind",
+            "conclusion_mode",
+            "atoms",
+        }:
+            return None
+        digest = signature_manifest_digest(dict(value))
+        return digest if re.fullmatch(r"[0-9a-f]{64}", digest) else None
+
+    rows = _normalize_declaration_result_rows(
+        section,
+        expected_declarations,
+        payload_field="signature",
+        normalize_payload=normalize_signature,
+        invalid_payload_message="invalid semantic signature payload emitted by Lean",
+    )
+    if rows is None:
+        return None
+    parsed, errors = rows
+    return {
+        "schema": "1",
+        "items": [
+            {
+                "declaration": declaration,
+                "elaborated_signature_sha256": parsed[declaration],
+            }
+            for declaration in sorted(parsed)
+        ],
+        "errors": errors,
+    }
+
+
+def semantic_signature_sha256s_from_inventory(
+    payload: object,
+    *,
+    expected_declarations: Iterable[str] | None = None,
+) -> dict[str, str]:
+    """Return the complete Lean-owned stable identities from one inventory.
+
+    The inventory parser has already validated each signature's canonical
+    atom representation. This shared projection keeps packet, closeout, and
+    terminal consumers from reimplementing subtly different section readers.
+    """
+
+    if not isinstance(payload, Mapping):
+        raise ValueError("Lean declaration inventory is malformed")
+    section = payload.get("semantic_signatures")
+    rows = section.get("items") if isinstance(section, Mapping) else None
+    errors = section.get("errors") if isinstance(section, Mapping) else None
+    if not isinstance(rows, list) or not isinstance(errors, list) or errors:
+        raise ValueError("Lean declaration inventory has incomplete semantic signatures")
+    signatures: dict[str, str] = {}
+    for row in rows:
+        name = (
+            str(row.get("declaration") or "").strip()
+            if isinstance(row, Mapping)
+            else ""
+        )
+        digest = (
+            str(row.get("elaborated_signature_sha256") or "")
+            .strip()
+            .lower()
+            if isinstance(row, Mapping)
+            else ""
+        )
+        if (
+            not name
+            or name in signatures
+            or not re.fullmatch(r"[0-9a-f]{64}", digest)
+        ):
+            raise ValueError("Lean declaration inventory has a malformed semantic signature")
+        signatures[name] = digest
+    if expected_declarations is not None:
+        expected = {
+            str(name).strip()
+            for name in expected_declarations
+            if str(name).strip()
+        }
+        if set(signatures) != expected:
+            raise ValueError(
+                "Lean semantic signatures differ from the selected review surface"
+            )
+    return signatures
+
+
+def _declaration_inventory_review_claim_rows(
+    section: object,
+    expected_declarations: tuple[str, ...],
+) -> tuple[
+    dict[str, dict[str, Any]],
+    dict[str, dict[str, Any]],
+    list[dict[str, Any]],
+] | None:
+    """Validate Lean-owned claim-role surfaces without full semantic graphs."""
+
+    def normalize_claim(value: object) -> tuple[dict[str, Any], dict[str, Any]] | None:
+        if not isinstance(value, Mapping):
+            return None
+        surface = review_claim_atom_surface_from_claim(value)
+        return (dict(value), surface) if surface is not None else None
+
+    rows = _normalize_declaration_result_rows(
+        section,
+        expected_declarations,
+        payload_field="claim",
+        normalize_payload=normalize_claim,
+        invalid_payload_message="invalid semantic review claim payload emitted by Lean",
+    )
+    if rows is None:
+        return None
+    normalized, errors = rows
+    parsed = {
+        declaration: value[0]
+        for declaration, value in normalized.items()
+    }
+    surfaces = {
+        declaration: value[1]
+        for declaration, value in normalized.items()
+    }
+    return parsed, surfaces, errors
+
+
+def _normalize_declaration_inventory_review_claim_section(
+    section: object,
+    expected_declarations: tuple[str, ...],
+) -> dict[str, Any] | None:
+    parsed_rows = _declaration_inventory_review_claim_rows(
+        section, expected_declarations
+    )
+    if parsed_rows is None:
+        return None
+    parsed, _surfaces, errors = parsed_rows
+    return {
+        "schema": "1",
+        "items": [
+            {"declaration": declaration, "claim": parsed[declaration]}
+            for declaration in sorted(parsed)
+        ],
+        "errors": errors,
+    }
+
+
+def semantic_review_claim_surfaces_from_inventory(
+    payload: object,
+    *,
+    expected_declarations: Iterable[str],
+) -> dict[str, dict[str, Any]]:
+    """Return every complete Lean-owned reviewer claim-atom surface."""
+
+    if not isinstance(payload, Mapping):
+        raise ValueError("Lean declaration inventory is malformed")
+    expected = tuple(
+        sorted(
+            {
+                str(name).strip()
+                for name in expected_declarations
+                if str(name).strip()
+            }
+        )
+    )
+    parsed_rows = _declaration_inventory_review_claim_rows(
+        payload.get("semantic_review_claims"), expected
+    )
+    if parsed_rows is None:
+        raise ValueError("Lean declaration inventory has malformed review claims")
+    _claims, surfaces, errors = parsed_rows
+    if errors or set(surfaces) != set(expected):
+        raise ValueError("Lean declaration inventory has incomplete review claims")
+    return surfaces
+
+
+def _declaration_inventory_semantic_contract_rows(
+    section: object,
+    expected_contracts: tuple[tuple[str, str, str], ...],
+    *,
+    include_axiom_closure: bool,
+) -> dict[tuple[str, str, str], dict[str, Any]] | None:
+    """Validate the exact Lean-owned typed Spec/evidence contract section."""
+
+    if not isinstance(section, list):
+        return None
+    contract_fields = {
+        "specification",
+        "evidence",
+        "mode",
+        "matches",
+        "evidence_is_unsafe",
+        "evidence_value_has_sorry",
+        "evidence_axiom_closure_checked",
+        "evidence_axiom_closure",
+    }
+    parsed: dict[tuple[str, str, str], dict[str, Any]] = {}
+    for row in section:
+        if not isinstance(row, Mapping) or set(row) != contract_fields:
+            return None
+        raw_contract = (
+            row.get("specification"),
+            row.get("evidence"),
+            row.get("mode"),
+        )
+        if any(
+            not isinstance(value, str)
+            or not value
+            or value != value.strip()
+            for value in raw_contract
+        ):
+            return None
+        contract = (
+            raw_contract[0],
+            raw_contract[1],
+            raw_contract[2],
+        )
+        evidence_axioms = row.get("evidence_axiom_closure")
+        if (
+            not all(contract)
+            or contract[2]
+            not in {"proves", "refutes", "definitionally_realizes"}
+            or contract in parsed
+            or not isinstance(row.get("matches"), bool)
+            or not isinstance(row.get("evidence_is_unsafe"), bool)
+            or not isinstance(row.get("evidence_value_has_sorry"), bool)
+            or row.get("evidence_axiom_closure_checked") is not include_axiom_closure
+            or not isinstance(evidence_axioms, list)
+            or any(
+                not isinstance(name, str)
+                or not name
+                or name != name.strip()
+                for name in evidence_axioms
+            )
+            or evidence_axioms != sorted(set(evidence_axioms))
+            or (not include_axiom_closure and bool(evidence_axioms))
+        ):
+            return None
+        parsed[contract] = dict(row)
+    return parsed if tuple(sorted(parsed)) == expected_contracts else None
+
+
+def passing_semantic_contract_rows_from_inventory(
+    payload: object,
+    *,
+    expected_contracts: Iterable[tuple[str, str, str]],
+) -> Mapping[tuple[str, str, str], Mapping[str, Any]]:
+    """Return the complete safe, proved, axiom-checked Lean contract surface."""
+
+    if not isinstance(payload, Mapping):
+        raise ValueError("Lean declaration inventory is malformed")
+    expected = tuple(
+        sorted(
+            {
+                (
+                    str(specification).strip(),
+                    str(evidence).strip(),
+                    str(mode).strip(),
+                )
+                for specification, evidence, mode in expected_contracts
+            }
+        )
+    )
+    if any(not all(contract) for contract in expected):
+        raise ValueError("selected semantic contract is malformed")
+    rows = _declaration_inventory_semantic_contract_rows(
+        payload.get("semantic_contracts"),
+        expected,
+        include_axiom_closure=True,
+    )
+    if rows is None:
+        raise ValueError(
+            "Lean semantic contracts differ from the selected typed routes"
+        )
+    failures = [
+        " / ".join(contract)
+        for contract, row in rows.items()
+        if row.get("matches") is not True
+        or row.get("evidence_is_unsafe") is not False
+        or row.get("evidence_value_has_sorry") is not False
+        or row.get("evidence_axiom_closure_checked") is not True
+    ]
+    if failures:
+        raise ValueError(
+            "Lean semantic contracts are not safely realized: "
+            + "; ".join(sorted(failures))
+        )
+    return MappingProxyType(rows)
+
+
+_FOUNDATION_FRONTIER_ROW_FIELDS = {
+    "declaration",
+    "module",
+    "package_root",
+    "declaration_kind",
+}
+
+
+def _parse_foundation_frontier_preview(
+    value: object,
+    *,
+    registry: FoundationRegistry,
+    specifications: tuple[str, ...],
+    promoted_foundation_declarations: tuple[str, ...],
+    paper_modules: tuple[str, ...] = (),
+    workspace_modules: tuple[str, ...] = (),
+) -> dict[str, Any] | None:
+    """Validate Lean's diagnostic semantic-frontier preview.
+
+    The preview schedules existing semantic-review lanes; it is explicitly not
+    evidence and cannot waive a source comparison.  Lean owns occurrence and
+    module classification.  Python checks only the complete typed transport
+    and the package-policy identity supplied to that same Lean process.
+    """
+
+    if not isinstance(value, Mapping) or set(value) != {
+        "schema",
+        "acceptance_credential",
+        "foundation_policy_id",
+        "foundation_registry_sha256",
+        "foundation_module_roots",
+        "specifications",
+        "promoted_expansions",
+        "summary",
+    }:
+        return None
+    raw_specs = value.get("specifications")
+    raw_promotions = value.get("promoted_expansions")
+    summary = value.get("summary")
+    if (
+        str(value.get("schema") or "") != "1"
+        or value.get("acceptance_credential") is not False
+        or value.get("foundation_policy_id") != registry.policy_id
+        or value.get("foundation_registry_sha256") != registry.sha256
+        or tuple(value.get("foundation_module_roots") or ())
+        != registry.module_roots
+        or not isinstance(raw_specs, list)
+        or not isinstance(raw_promotions, list)
+        or not isinstance(summary, Mapping)
+        or set(summary)
+        != {
+            "specification_count",
+            "conventional_foundation_root_count",
+            "promoted_root_count",
+            "promoted_expansion_row_count",
+            "maximum_promoted_depth",
+            "promoted_reuse_count",
+            "domain_root_count",
+            "unregistered_external_root_count",
+        }
+        or any(not isinstance(count, int) or count < 0 for count in summary.values())
+    ):
+        return None
+
+    def parse_rows(
+        raw: object,
+        *,
+        foundation: bool | None,
+        allowed_modules: tuple[str, ...] | None = None,
+        forbidden_modules: tuple[str, ...] = (),
+    ) -> tuple[str, ...] | None:
+        if not isinstance(raw, list):
+            return None
+        declarations: list[str] = []
+        for row in raw:
+            if not isinstance(row, Mapping) or set(row) != _FOUNDATION_FRONTIER_ROW_FIELDS:
+                return None
+            declaration = str(row.get("declaration") or "").strip()
+            module = str(row.get("module") or "").strip()
+            package_root = str(row.get("package_root") or "").strip()
+            kind = str(row.get("declaration_kind") or "").strip()
+            if not declaration or not kind or declaration in declarations:
+                return None
+            if foundation is True and (
+                not module or package_root not in registry.module_roots
+            ):
+                return None
+            if foundation is False and package_root:
+                return None
+            if allowed_modules is not None and module not in allowed_modules:
+                return None
+            if module and module in forbidden_modules:
+                return None
+            if foundation is False and module and any(
+                module == root or module.startswith(root + ".")
+                for root in registry.module_roots
+            ):
+                return None
+            declarations.append(declaration)
+        if declarations != sorted(declarations):
+            return None
+        return tuple(declarations)
+
+    conventional: set[str] = set()
+    promoted_roots: set[str] = set()
+    domain: set[str] = set()
+    unregistered: set[str] = set()
+    seen_specs: list[str] = []
+    promoted_occurrences = 0
+    for row in raw_specs:
+        if not isinstance(row, Mapping) or set(row) != {
+            "specification",
+            "conventional_foundation_occurrences",
+            "promoted_foundation_occurrences",
+            "paper_semantic_roots",
+            "domain_semantic_roots",
+            "unregistered_external_occurrences",
+            "erased_proof_values",
+        }:
+            return None
+        specification = str(row.get("specification") or "").strip()
+        if not specification or specification in seen_specs:
+            return None
+        seen_specs.append(specification)
+        parsed_conventional = parse_rows(
+            row.get("conventional_foundation_occurrences"), foundation=True
+        )
+        parsed_promoted = parse_rows(
+            row.get("promoted_foundation_occurrences"), foundation=True
+        )
+        parsed_paper = parse_rows(
+            row.get("paper_semantic_roots"),
+            foundation=False,
+            allowed_modules=paper_modules if paper_modules else None,
+        )
+        parsed_domain = parse_rows(
+            row.get("domain_semantic_roots"),
+            foundation=False,
+            allowed_modules=workspace_modules if workspace_modules else None,
+            forbidden_modules=paper_modules,
+        )
+        parsed_unregistered = parse_rows(
+            row.get("unregistered_external_occurrences"),
+            foundation=False,
+            forbidden_modules=workspace_modules,
+        )
+        parsed_proofs = parse_rows(row.get("erased_proof_values"), foundation=None)
+        if any(
+            parsed is None
+            for parsed in (
+                parsed_conventional,
+                parsed_promoted,
+                parsed_paper,
+                parsed_domain,
+                parsed_unregistered,
+                parsed_proofs,
+            )
+        ):
+            return None
+        conventional.update(parsed_conventional or ())
+        promoted_roots.update(parsed_promoted or ())
+        promoted_occurrences += len(parsed_promoted or ())
+        domain.update(parsed_domain or ())
+        unregistered.update(parsed_unregistered or ())
+    if tuple(seen_specs) != specifications:
+        return None
+
+    promotion_names: list[str] = []
+    for row in raw_promotions:
+        if not isinstance(row, Mapping) or set(row) != {
+            "declaration",
+            "module",
+            "package_root",
+            "declaration_kind",
+            "root_expanded",
+            "direct_source_occurrence",
+            "direct_foundation_declarations",
+            "direct_domain_declarations",
+            "direct_paper_declarations",
+            "unregistered_external_declarations",
+            "erased_proof_values",
+            "display",
+        }:
+            return None
+        declaration = str(row.get("declaration") or "").strip()
+        module = str(row.get("module") or "").strip()
+        package_root = str(row.get("package_root") or "").strip()
+        if (
+            not declaration
+            or declaration in promotion_names
+            or not module
+            or package_root not in registry.module_roots
+            or not str(row.get("declaration_kind") or "").strip()
+            or not isinstance(row.get("root_expanded"), bool)
+            or not isinstance(row.get("direct_source_occurrence"), bool)
+            or not str(row.get("display") or "").strip()
+            or parse_rows(row.get("direct_foundation_declarations"), foundation=True)
+            is None
+            or parse_rows(row.get("direct_domain_declarations"), foundation=False)
+            is None
+            or parse_rows(row.get("direct_paper_declarations"), foundation=False)
+            is None
+            or parse_rows(
+                row.get("unregistered_external_declarations"), foundation=False
+            )
+            is None
+            or parse_rows(row.get("erased_proof_values"), foundation=None) is None
+        ):
+            return None
+        promotion_names.append(declaration)
+    if promotion_names != sorted(promotion_names):
+        return None
+    if len(promotion_names) != len(set(promoted_foundation_declarations)):
+        return None
+    if (
+        summary.get("specification_count") != len(specifications)
+        or summary.get("conventional_foundation_root_count") != len(conventional)
+        or summary.get("promoted_root_count") != len(promoted_roots)
+        or summary.get("promoted_expansion_row_count") != len(promotion_names)
+        or summary.get("promoted_reuse_count")
+        != promoted_occurrences - len(promoted_roots)
+        or summary.get("domain_root_count") != len(domain)
+        or summary.get("unregistered_external_root_count") != len(unregistered)
+    ):
+        return None
+    return deepcopy(dict(value))
+
+
+def foundation_frontier_preview_from_inventory(
+    root: Path,
+    payload: object,
+    *,
+    expected_specifications: Iterable[str],
+    promoted_foundation_declarations: Iterable[str] = (),
+) -> Mapping[str, Any]:
+    """Return the complete Lean-owned preview or fail closed.
+
+    This is a scheduling and diagnosis surface only.  A caller may use it to
+    stop before semantic review or to request a bounded promotion, but never as
+    a source-to-Lean judgment or closeout credential.
+    """
+
+    if not isinstance(payload, Mapping):
+        raise ValueError("Lean declaration inventory is malformed")
+    try:
+        registry = load_foundation_registry(root.resolve())
+    except ValueError as exc:
+        raise ValueError("trusted-foundation registry is invalid") from exc
+    specifications = tuple(
+        sorted(
+            {
+                str(value).strip()
+                for value in expected_specifications
+                if str(value).strip()
+            }
+        )
+    )
+    promotions = tuple(
+        sorted(
+            {
+                str(value).strip()
+                for value in promoted_foundation_declarations
+                if str(value).strip()
+            }
+        )
+    )
+    parsed = _parse_foundation_frontier_preview(
+        payload.get("foundation_frontier_preview"),
+        registry=registry,
+        specifications=specifications,
+        promoted_foundation_declarations=promotions,
+        paper_modules=tuple(sorted(payload.get("paper_modules") or ())),
+        workspace_modules=tuple(sorted(payload.get("workspace_modules") or ())),
+    )
+    if parsed is None:
+        raise ValueError("Lean foundation-frontier preview is malformed")
+    return MappingProxyType(parsed)
+
+
+def _parse_declaration_inventory_output(
+    stdout: str,
+    *,
+    inventory_modules: tuple[str, ...],
+    paper_modules: tuple[str, ...],
+    workspace_modules: tuple[str, ...],
+    specifications: tuple[str, ...],
+    semantic_declarations: tuple[str, ...],
+    proof_pairs: tuple[tuple[str, str], ...],
+    semantic_contracts: tuple[tuple[str, str, str], ...],
+    axiom_roots: tuple[str, ...],
+    semantic_signature_declarations: tuple[str, ...],
+    semantic_review_claim_declarations: tuple[str, ...],
+    semantic_manifest_declarations: tuple[str, ...],
+    root_semantic_manifest_declarations: tuple[str, ...],
+    semantic_revalidation_declarations: tuple[str, ...],
+    foundation_registry: FoundationRegistry,
+    promoted_foundation_declarations: tuple[str, ...],
+    include_semantic_displays: bool,
+    include_axiom_closure: bool,
+) -> dict[str, Any] | None:
+    """Validate the one typed response emitted by the compiled Lean service."""
+
+    payloads: list[dict[str, Any]] = []
+    for line in stdout.splitlines():
+        if not line.startswith(DECLARATION_INVENTORY_SENTINEL):
+            continue
+        try:
+            payload = json.loads(line[len(DECLARATION_INVENTORY_SENTINEL) :])
+        except (json.JSONDecodeError, TypeError):
+            return None
+        if not isinstance(payload, dict):
+            return None
+        payloads.append(payload)
+    if len(payloads) != 1:
+        return None
+    payload = payloads[0]
+    if set(payload) != {
+        "schema",
+        "inventory_modules",
+        "paper_modules",
+        "workspace_modules",
+        "module_range_entry_count",
+        "generated_constant_count",
+        "source_declarations",
+        "declarations",
+        "proof_pairs",
+        "semantic_contracts",
+        "semantic_signatures",
+        "semantic_review_claims",
+        "semantic_manifests",
+        "root_semantic_manifests",
+        "semantic_revalidations",
+        "foundation_frontier_preview",
+        "transparent_spec_displays",
+        "paper_prerequisite_displays",
+        "library_prerequisite_displays",
+    }:
+        return None
+    if str(payload.get("schema") or "") != str(DECLARATION_INVENTORY_SCHEMA):
+        return None
+    if tuple(sorted(payload.get("inventory_modules") or ())) != inventory_modules:
+        return None
+    if tuple(sorted(payload.get("paper_modules") or ())) != paper_modules:
+        return None
+    if tuple(sorted(payload.get("workspace_modules") or ())) != workspace_modules:
+        return None
+    if _parse_foundation_frontier_preview(
+        payload.get("foundation_frontier_preview"),
+        registry=foundation_registry,
+        specifications=specifications if include_semantic_displays else (),
+        promoted_foundation_declarations=promoted_foundation_declarations,
+        paper_modules=paper_modules,
+        workspace_modules=workspace_modules,
+    ) is None:
+        return None
+    source_declarations = payload.get("source_declarations")
+    declarations = payload.get("declarations")
+    raw_pairs = payload.get("proof_pairs")
+    raw_contracts = payload.get("semantic_contracts")
+    if (
+        not isinstance(payload.get("module_range_entry_count"), int)
+        or payload["module_range_entry_count"] < 0
+        or not isinstance(payload.get("generated_constant_count"), int)
+        or payload["generated_constant_count"] < 0
+        or not isinstance(source_declarations, list)
+        or any(not isinstance(name, str) or not name for name in source_declarations)
+        or source_declarations != sorted(set(source_declarations))
+        or not isinstance(declarations, list)
+    ):
+        return None
+    spec_section = payload.get("transparent_spec_displays")
+    paper_section = payload.get("paper_prerequisite_displays")
+    library_section = payload.get("library_prerequisite_displays")
+    if not all(isinstance(section, Mapping) for section in (
+        spec_section, paper_section, library_section
+    )):
+        return None
+    for section, schema in (
+        (spec_section, TRANSPARENT_PAPER_SPEC_DISPLAY_SCHEMA),
+        (paper_section, TRANSPARENT_PAPER_DECLARATION_DISPLAY_SCHEMA),
+        (library_section, TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SCHEMA),
+    ):
+        if (
+            set(section) != {"schema", "items"}
+            or str(section.get("schema") or "") != str(schema)
+            or not isinstance(section.get("items"), list)
+        ):
+            return None
+    paper_display_names: tuple[str, ...] = ()
+    library_display_names: tuple[str, ...] = ()
+    erased_workspace_names: set[str] = set()
+    if include_semantic_displays:
+        parsed_spec_displays = parse_transparent_paper_spec_display_output(
+            TRANSPARENT_PAPER_SPEC_DISPLAY_SENTINEL
+            + json.dumps(spec_section, sort_keys=True, separators=(",", ":")),
+            specifications,
+        )
+        if set(parsed_spec_displays) != set(specifications):
+            return None
+        paper_display_names = tuple(
+            str(row.get("declaration") or "").strip()
+            for row in paper_section["items"]
+            if isinstance(row, Mapping)
+        )
+        parsed_paper_displays = parse_transparent_paper_declaration_display_output(
+            TRANSPARENT_PAPER_DECLARATION_DISPLAY_SENTINEL
+            + json.dumps(paper_section, sort_keys=True, separators=(",", ":")),
+            paper_display_names,
+        )
+        if set(parsed_paper_displays) != set(paper_display_names):
+            return None
+        library_display_names = tuple(
+            str(row.get("declaration") or "").strip()
+            for row in library_section["items"]
+            if isinstance(row, Mapping)
+        )
+        parsed_library_displays = parse_transparent_library_declaration_display_output(
+            TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SENTINEL
+            + json.dumps(library_section, sort_keys=True, separators=(",", ":")),
+            library_display_names,
+        )
+        if set(parsed_library_displays) != set(library_display_names):
+            return None
+        for rows in (
+            parsed_spec_displays.values(),
+            parsed_paper_displays.values(),
+            parsed_library_displays.values(),
+        ):
+            for row in rows:
+                erased_workspace_names.update(
+                    row["erased_proof_declarations"]
+                )
+        if any(
+            not isinstance(row, Mapping)
+            or str(row.get("source_module") or "").strip() not in workspace_modules
+            or str(row.get("source_module") or "").strip() in paper_modules
+            for row in library_section["items"]
+        ):
+            return None
+    elif any(section.get("items") for section in (
+        spec_section, paper_section, library_section
+    )):
+        return None
+    expected_nodes = (
+        set(source_declarations)
+        | set(specifications)
+        | set(semantic_declarations)
+        | set(paper_display_names)
+        | set(library_display_names)
+        | erased_workspace_names
+        | set(axiom_roots)
+        | {evidence for _, evidence, _ in semantic_contracts}
+    )
+    if include_semantic_displays and not set(semantic_declarations).issubset(
+        set(paper_display_names) | set(library_display_names)
+    ):
+        return None
+    node_names: set[str] = set()
+    checked_axiom_roots = (
+        set(specifications)
+        | {proof for _, proof in proof_pairs}
+        | {evidence for _, evidence, _ in semantic_contracts}
+        | set(axiom_roots)
+    )
+
+    def valid_range(value: object) -> bool:
+        if value is None:
+            return True
+        return (
+            isinstance(value, Mapping)
+            and set(value)
+            == {"line_start", "column_start", "line_end", "column_end"}
+            and all(isinstance(value[field], int) for field in value)
+            and value["line_start"] > 0
+            and value["column_start"] >= 0
+            and value["line_end"] >= value["line_start"]
+            and value["column_end"] >= 0
+        )
+
+    node_fields = {
+        "declaration",
+        "review_owner_declaration",
+        "generated_from_owner",
+        "module",
+        "owner_module",
+        "paper_owned",
+        "declaration_kind",
+        "is_unsafe",
+        "is_transparent_definition",
+        "is_opaque",
+        "is_axiom",
+        "value_has_sorry",
+        "source_presented",
+        "source_range",
+        "owner_source_range",
+        "type_display",
+        "direct_dependencies",
+        "axiom_closure_checked",
+        "axiom_closure",
+    }
+    dependency_fields = {
+        "role",
+        "declaration",
+        "review_owner_declaration",
+        "module",
+        "paper_owned",
+    }
+    for node in declarations:
+        if not isinstance(node, Mapping) or set(node) != node_fields:
+            return None
+        declaration = str(node.get("declaration") or "").strip()
+        owner = str(node.get("review_owner_declaration") or "").strip()
+        dependencies = node.get("direct_dependencies")
+        axioms = node.get("axiom_closure")
+        checked = node.get("axiom_closure_checked")
+        if (
+            not declaration
+            or declaration in node_names
+            or not owner
+            or not isinstance(node.get("module"), str)
+            or not isinstance(node.get("owner_module"), str)
+            or not isinstance(node.get("declaration_kind"), str)
+            or not str(node.get("declaration_kind") or "").strip()
+            or not isinstance(node.get("type_display"), str)
+            or not str(node.get("type_display") or "").strip()
+            or any(
+                not isinstance(node.get(field), bool)
+                for field in (
+                    "generated_from_owner",
+                    "paper_owned",
+                    "is_unsafe",
+                    "is_transparent_definition",
+                    "is_opaque",
+                    "is_axiom",
+                    "value_has_sorry",
+                    "source_presented",
+                )
+            )
+            or not valid_range(node.get("source_range"))
+            or not valid_range(node.get("owner_source_range"))
+            or not isinstance(dependencies, list)
+            or not isinstance(checked, bool)
+            or checked
+            != (include_axiom_closure and declaration in checked_axiom_roots)
+            or not isinstance(axioms, list)
+            or any(not isinstance(name, str) or not name for name in axioms)
+            or axioms != sorted(set(axioms))
+            or (not checked and bool(axioms))
+        ):
+            return None
+        dependency_order: list[tuple[str, str]] = []
+        for dependency in dependencies:
+            if not isinstance(dependency, Mapping) or set(dependency) != dependency_fields:
+                return None
+            role = str(dependency.get("role") or "").strip()
+            name = str(dependency.get("declaration") or "").strip()
+            if (
+                not role
+                or not name
+                or not str(dependency.get("review_owner_declaration") or "").strip()
+                or not isinstance(dependency.get("module"), str)
+                or not isinstance(dependency.get("paper_owned"), bool)
+            ):
+                return None
+            dependency_order.append((role, name))
+        if dependency_order != sorted(set(dependency_order)):
+            return None
+        node_names.add(declaration)
+    if node_names != expected_nodes:
+        return None
+    if not isinstance(raw_pairs, list):
+        return None
+    parsed_pairs: dict[tuple[str, str], bool] = {}
+    proof_fields = {
+        "specification",
+        "proof",
+        "matches",
+        "proof_is_unsafe",
+        "proof_value_has_sorry",
+        "proof_axiom_closure_checked",
+        "proof_axiom_closure",
+    }
+    for row in raw_pairs:
+        if not isinstance(row, Mapping) or set(row) != proof_fields:
+            return None
+        pair = (str(row.get("specification") or ""), str(row.get("proof") or ""))
+        proof_axioms = row.get("proof_axiom_closure")
+        if (
+            not all(pair)
+            or pair in parsed_pairs
+            or not isinstance(row.get("matches"), bool)
+            or not isinstance(row.get("proof_is_unsafe"), bool)
+            or not isinstance(row.get("proof_value_has_sorry"), bool)
+            or row.get("proof_axiom_closure_checked") is not include_axiom_closure
+            or not isinstance(proof_axioms, list)
+            or any(not isinstance(name, str) or not name for name in proof_axioms)
+            or proof_axioms != sorted(set(proof_axioms))
+            or (not include_axiom_closure and bool(proof_axioms))
+        ):
+            return None
+        parsed_pairs[pair] = row["matches"]
+    if tuple(sorted(parsed_pairs)) != proof_pairs:
+        return None
+    if _declaration_inventory_semantic_contract_rows(
+        raw_contracts,
+        semantic_contracts,
+        include_axiom_closure=include_axiom_closure,
+    ) is None:
+        return None
+    effective_semantic_signature_declarations = tuple(
+        sorted(
+            set(semantic_signature_declarations)
+            | set(semantic_review_claim_declarations)
+            | set(paper_display_names)
+            | set(library_display_names)
+        )
+    )
+    semantic_signature_section = (
+        _normalize_declaration_inventory_semantic_signature_section(
+            payload.get("semantic_signatures"),
+            effective_semantic_signature_declarations,
+        )
+    )
+    semantic_review_claim_section = (
+        _normalize_declaration_inventory_review_claim_section(
+            payload.get("semantic_review_claims"),
+            semantic_review_claim_declarations,
+        )
+    )
+    manifest_section = _normalize_declaration_inventory_manifest_section(
+        payload.get("semantic_manifests"), semantic_manifest_declarations
+    )
+    root_manifest_section = _normalize_declaration_inventory_manifest_section(
+        payload.get("root_semantic_manifests"),
+        root_semantic_manifest_declarations,
+    )
+    if (
+        semantic_signature_section is None
+        or semantic_review_claim_section is None
+        or manifest_section is None
+        or root_manifest_section is None
+    ):
+        return None
+    payload["semantic_signatures"] = semantic_signature_section
+    payload["semantic_review_claims"] = semantic_review_claim_section
+    payload["semantic_manifests"] = manifest_section
+    payload["root_semantic_manifests"] = root_manifest_section
+    revalidation_section = payload.get("semantic_revalidations")
+    if (
+        not isinstance(revalidation_section, Mapping)
+        or set(revalidation_section) != {"schema", "items", "errors"}
+        or str(revalidation_section.get("schema") or "") != "1"
+        or not isinstance(revalidation_section.get("items"), list)
+        or not isinstance(revalidation_section.get("errors"), list)
+    ):
+        return None
+    parsed_revalidations: dict[str, dict[str, Any]] = {}
+    failed_revalidations: set[str] = set()
+    for row in revalidation_section["items"]:
+        if not isinstance(row, Mapping) or set(row) != {"declaration", "receipt"}:
+            return None
+        declaration = str(row.get("declaration") or "").strip()
+        normalized = _normalize_signature_manifest_revalidation(
+            declaration, row.get("receipt")
+        )
+        if (
+            not declaration
+            or declaration in parsed_revalidations
+            or normalized is None
+        ):
+            return None
+        parsed_revalidations[declaration] = normalized
+    for row in revalidation_section["errors"]:
+        if not isinstance(row, Mapping) or set(row) != {"declaration", "message"}:
+            return None
+        declaration = str(row.get("declaration") or "").strip()
+        message = str(row.get("message") or "").strip()
+        if (
+            not declaration
+            or not message
+            or declaration in parsed_revalidations
+            or declaration in failed_revalidations
+        ):
+            return None
+        failed_revalidations.add(declaration)
+    if tuple(sorted(set(parsed_revalidations) | failed_revalidations)) != (
+        semantic_revalidation_declarations
+    ):
+        return None
+    revalidation_section["items"] = [
+        {"declaration": declaration, "receipt": parsed_revalidations[declaration]}
+        for declaration in sorted(parsed_revalidations)
+    ]
+    return payload
+
+
+def lean_inventory_source_declaration_records(
+    payload: object,
+    module_sources: Mapping[str, tuple[Path, bytes]],
+    *,
+    declaration_names: Iterable[str] | None = None,
+) -> dict[str, dict[str, Any]]:
+    """Project Lean's declaration inventory onto exact source declarations.
+
+    Declaration identity, owner, kind, module, and range all come from Lean's
+    elaborated environment.  Python merely joins those typed coordinates to
+    the immutable module-byte snapshot.  A malformed, missing, generated, or
+    ambiguous row fails the entire projection; there is no text-parser
+    fallback on an accepting path.
+    """
+
+    if not isinstance(payload, Mapping):
+        raise ValueError("Lean declaration inventory payload is malformed")
+    raw_names = (
+        payload.get("source_declarations")
+        if declaration_names is None
+        else sorted(
+            {
+                str(name).strip()
+                for name in declaration_names
+                if str(name).strip()
+            }
+        )
+    )
+    raw_nodes = payload.get("declarations")
+    if not isinstance(raw_names, list) or not isinstance(raw_nodes, list):
+        raise ValueError("Lean declaration inventory omits source declarations")
+    names = [
+        str(name).strip()
+        for name in raw_names
+        if isinstance(name, str) and str(name).strip()
+    ]
+    if len(names) != len(raw_names) or names != sorted(set(names)):
+        raise ValueError("Lean source-declaration inventory is ambiguous")
+    nodes: dict[str, Mapping[str, Any]] = {}
+    for raw_node in raw_nodes:
+        if not isinstance(raw_node, Mapping):
+            raise ValueError("Lean declaration inventory contains a malformed node")
+        declaration = str(raw_node.get("declaration") or "").strip()
+        if declaration in names:
+            if declaration in nodes:
+                raise ValueError(
+                    f"Lean declaration inventory duplicates `{declaration}`"
+                )
+            nodes[declaration] = raw_node
+    if set(nodes) != set(names):
+        raise ValueError("Lean declaration inventory is incomplete")
+
+    records: dict[str, dict[str, Any]] = {}
+    for declaration in names:
+        node = nodes[declaration]
+        module = str(node.get("module") or "").strip()
+        source = module_sources.get(module)
+        if (
+            source is None
+            or node.get("source_presented") is not True
+            or node.get("generated_from_owner") is not False
+            or str(node.get("review_owner_declaration") or "").strip()
+            != declaration
+        ):
+            raise ValueError(
+                f"Lean source declaration `{declaration}` has no unique source owner"
+            )
+        path, content = source
+        raw_range = node.get("source_range")
+        declaration_source = lean_source_range_text(content, raw_range)
+        if declaration_source is None or not isinstance(raw_range, Mapping):
+            raise ValueError(
+                f"Lean source declaration `{declaration}` has no usable source range"
+            )
+        records[declaration] = {
+            "qualified_name": declaration,
+            "short_name": declaration.rsplit(".", 1)[-1],
+            "source_module": module,
+            "source_path": path,
+            "source": declaration_source,
+            "source_sha256": hashlib.sha256(
+                declaration_source.encode("utf-8")
+            ).hexdigest(),
+            "source_range": dict(raw_range),
+            "declaration_kind": str(node.get("declaration_kind") or "").strip(),
+            "is_transparent_definition": node.get("is_transparent_definition"),
+            "type_display": str(node.get("type_display") or "").strip(),
+        }
+    return records
+
+
+def lean_inventory_library_source_declaration_records(
+    payload: object,
+    module_sources: Mapping[str, tuple[Path, bytes]],
+    *,
+    declaration_names: Iterable[str] | None = None,
+) -> dict[str, dict[str, Any]]:
+    """Return exact library declarations selected by Lean's review closure.
+
+    The material-library display section is itself Lean-selected and includes
+    the owning module and range for every recursively reached review root.
+    This projection binds those coordinates to the same frozen module bytes as
+    the paper declarations, eliminating the former repository scan and
+    historical-line fallback from accepting semantic review.
+    """
+
+    if not isinstance(payload, Mapping):
+        raise ValueError("Lean declaration inventory payload is malformed")
+    section = payload.get("library_prerequisite_displays")
+    raw_rows = section.get("items") if isinstance(section, Mapping) else None
+    if not isinstance(raw_rows, list):
+        raise ValueError("Lean declaration inventory omits library displays")
+    requested = (
+        None
+        if declaration_names is None
+        else {
+            str(name).strip() for name in declaration_names if str(name).strip()
+        }
+    )
+    records: dict[str, dict[str, Any]] = {}
+    for raw in raw_rows:
+        if not isinstance(raw, Mapping):
+            raise ValueError("Lean library display contains a malformed row")
+        declaration = str(raw.get("declaration") or "").strip()
+        owner = str(raw.get("review_owner_declaration") or "").strip()
+        module = str(raw.get("source_module") or "").strip()
+        if (
+            not declaration
+            or not owner
+            or declaration != owner
+            or declaration in records
+        ):
+            raise ValueError("Lean library display has an ambiguous source owner")
+        if requested is not None and declaration not in requested:
+            continue
+        source = module_sources.get(module)
+        raw_range = {
+            "line_start": raw.get("source_line_start"),
+            "column_start": raw.get("source_column_start"),
+            "line_end": raw.get("source_line_end"),
+            "column_end": raw.get("source_column_end"),
+        }
+        declaration_source = (
+            lean_source_range_text(source[1], raw_range)
+            if source is not None
+            else None
+        )
+        if source is None or declaration_source is None:
+            raise ValueError(
+                f"Lean library declaration `{declaration}` has no frozen source range"
+            )
+        path, _content = source
+        records[declaration] = {
+            "qualified_name": declaration,
+            "short_name": declaration.rsplit(".", 1)[-1],
+            "source_module": module,
+            "source_path": path,
+            "source": declaration_source,
+            "source_sha256": hashlib.sha256(
+                declaration_source.encode("utf-8")
+            ).hexdigest(),
+            "source_range": raw_range,
+            "declaration_kind": str(raw.get("declaration_kind") or "").strip(),
+            "root_expanded": raw.get("root_expanded"),
+        }
+    if requested is not None and set(records) != requested:
+        missing = sorted(requested - set(records))
+        raise ValueError(
+            "Lean library display omits selected declaration(s): "
+            + ", ".join(missing)
+        )
+    return records
+
+
+def lean_inventory_review_declaration_modules(
+    payload: object,
+    *,
+    paper_declarations: Iterable[str],
+    library_declarations: Iterable[str],
+) -> dict[str, str]:
+    """Project accepted review declarations to Lean-owned source modules.
+
+    This is an ownership projection, not source-code extraction. It consumes
+    the declaration graph and material-library display section emitted by the
+    same Lean inventory, requires the requested paper/library partition, and
+    deliberately ignores source ranges and presentation bytes.
+    """
+
+    if not isinstance(payload, Mapping):
+        raise ValueError("Lean declaration inventory payload is malformed")
+    paper_names = {
+        str(name).strip() for name in paper_declarations if str(name).strip()
+    }
+    library_names = {
+        str(name).strip() for name in library_declarations if str(name).strip()
+    }
+    if paper_names & library_names:
+        raise ValueError("Lean review declaration ownership overlaps")
+
+    raw_nodes = payload.get("declarations")
+    if not isinstance(raw_nodes, list):
+        raise ValueError("Lean declaration inventory omits declaration nodes")
+    result: dict[str, str] = {}
+    for raw_node in raw_nodes:
+        if not isinstance(raw_node, Mapping):
+            raise ValueError("Lean declaration inventory contains a malformed node")
+        declaration = str(raw_node.get("declaration") or "").strip()
+        if declaration not in paper_names:
+            continue
+        module = str(raw_node.get("module") or "").strip()
+        if (
+            declaration in result
+            or not module
+            or raw_node.get("paper_owned") is not True
+            or raw_node.get("source_presented") is not True
+            or raw_node.get("generated_from_owner") is not False
+            or str(raw_node.get("review_owner_declaration") or "").strip()
+            != declaration
+        ):
+            raise ValueError(
+                f"Lean paper declaration `{declaration}` has no unique source module"
+            )
+        result[declaration] = module
+    if set(result) != paper_names:
+        missing = sorted(paper_names - set(result))
+        raise ValueError(
+            "Lean declaration inventory omits selected paper declarations: "
+            + ", ".join(missing)
+        )
+
+    section = payload.get("library_prerequisite_displays")
+    raw_rows = section.get("items") if isinstance(section, Mapping) else None
+    if not isinstance(raw_rows, list):
+        raise ValueError("Lean declaration inventory omits library displays")
+    discovered: set[str] = set()
+    for raw in raw_rows:
+        if not isinstance(raw, Mapping):
+            raise ValueError("Lean library display contains a malformed row")
+        declaration = str(raw.get("declaration") or "").strip()
+        owner = str(raw.get("review_owner_declaration") or "").strip()
+        module = str(raw.get("source_module") or "").strip()
+        if (
+            not declaration
+            or declaration in discovered
+            or owner != declaration
+            or not module
+        ):
+            raise ValueError("Lean library display has an ambiguous source owner")
+        discovered.add(declaration)
+        if declaration in library_names:
+            result[declaration] = module
+    expected = paper_names | library_names
+    if set(result) != expected:
+        missing = sorted(expected - set(result))
+        raise ValueError(
+            "Lean declaration inventory omits selected review declarations: "
+            + ", ".join(missing)
+        )
+    return result
+
+
+def _declaration_inventory_runtime_cache_key(
+    root: Path, import_module: str
+) -> tuple[Any, ...] | None:
+    """Return a process-local coordinate for one compiled graph context."""
+
+    root = root.resolve()
+    import_fingerprint = _built_olean_fingerprint(root, import_module)
+    graph_fingerprint = _file_content_fingerprint(
+        root / COMPILED_DECLARATION_GRAPH_SOURCE
+    )
+    helper_fingerprint = _file_content_fingerprint(HELPER_PATH)
+    if (
+        import_fingerprint is None
+        or graph_fingerprint is None
+        or helper_fingerprint is None
+    ):
+        return None
+    return (
+        str(root),
+        import_module,
+        import_fingerprint,
+        graph_fingerprint,
+        helper_fingerprint,
+    )
+
+
+def _cache_declaration_inventory_displays(
+    runtime_key: tuple[Any, ...],
+    paper_modules: tuple[str, ...],
+    payload: Mapping[str, Any],
+    paper_declarations: tuple[str, ...] = (),
+) -> None:
+    """Retain Lean display rows for sibling packet/dashboard consumers."""
+
+    try:
+        semantic_signatures = semantic_signature_sha256s_from_inventory(payload)
+    except ValueError:
+        semantic_signatures = {}
+    for declaration, digest in semantic_signatures.items():
+        _DECLARATION_SEMANTIC_SIGNATURE_CACHE[
+            runtime_key + (declaration,)
+        ] = digest
+
+    for field, cache, uses_paper_scope in (
+        ("transparent_spec_displays", _DECLARATION_SPEC_DISPLAY_CACHE, True),
+        ("paper_prerequisite_displays", _DECLARATION_PAPER_DISPLAY_CACHE, True),
+        ("library_prerequisite_displays", _DECLARATION_LIBRARY_DISPLAY_CACHE, False),
+    ):
+        section = payload.get(field)
+        rows = section.get("items") if isinstance(section, Mapping) else None
+        if not isinstance(rows, list):
+            continue
+        for row in rows:
+            if not isinstance(row, Mapping):
+                continue
+            name = str(
+                row.get("specification")
+                if field == "transparent_spec_displays"
+                else row.get("declaration")
+                or ""
+            ).strip()
+            if not name:
+                continue
+            if field == "transparent_spec_displays":
+                key = runtime_key + (paper_modules, paper_declarations, name)
+            else:
+                key = runtime_key + ((paper_modules,) if uses_paper_scope else ()) + (name,)
+            cache[key] = deepcopy(dict(row))
+
+
+def _attach_cached_declaration_semantic_signatures(
+    root: Path,
+    import_module: str,
+    targets: Mapping[str, Mapping[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    """Attach Lean-owned stable identities to cached/display projections."""
+
+    runtime_key = _declaration_inventory_runtime_cache_key(root, import_module)
+    if runtime_key is None:
+        return {}
+    enriched: dict[str, dict[str, Any]] = {}
+    for declaration, target in targets.items():
+        digest = _DECLARATION_SEMANTIC_SIGNATURE_CACHE.get(
+            runtime_key + (declaration,)
+        )
+        if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+            return {}
+        enriched[declaration] = {
+            **dict(target),
+            "elaborated_signature_sha256": digest,
+        }
+    return enriched
+
+
+def _cache_declaration_inventory_proof_pairs(
+    runtime_key: tuple[Any, ...], payload: Mapping[str, Any]
+) -> None:
+    """Retain exact Lean proof-pair facts for sibling closeout consumers."""
+
+    rows = payload.get("proof_pairs")
+    if not isinstance(rows, list):
+        return
+    for row in rows:
+        if not isinstance(row, Mapping):
+            continue
+        specification = str(row.get("specification") or "").strip()
+        proof = str(row.get("proof") or "").strip()
+        if specification and proof and isinstance(row.get("matches"), bool):
+            _DECLARATION_PROOF_PAIR_CACHE[
+                (*runtime_key, specification, proof)
+            ] = deepcopy(dict(row))
+
+
+def _cached_declaration_display_section(
+    root: Path,
+    import_module: str,
+    names: Iterable[str],
+    *,
+    paper_modules: tuple[str, ...],
+    paper_declarations: tuple[str, ...] = (),
+    kind: str,
+) -> dict[str, Any] | None:
+    """Return a complete current process-local display section, if present.
+
+    Lean emits the full paper/library prerequisite closure for every requested
+    root.  Preserve that closure when satisfying a sibling request from the
+    process-local row cache: returning only the requested roots would silently
+    drop retained semantic prerequisites that Lean had already discovered.
+    Python follows only the exact dependency names recorded in Lean's cached
+    rows; it does not discover declarations from source text.
+    """
+
+    runtime_key = _declaration_inventory_runtime_cache_key(root, import_module)
+    if runtime_key is None:
+        return None
+    if kind == "spec":
+        cache = _DECLARATION_SPEC_DISPLAY_CACHE
+        schema = TRANSPARENT_PAPER_SPEC_DISPLAY_SCHEMA
+        scoped = True
+    elif kind == "paper":
+        cache = _DECLARATION_PAPER_DISPLAY_CACHE
+        schema = TRANSPARENT_PAPER_DECLARATION_DISPLAY_SCHEMA
+        scoped = True
+    elif kind == "library":
+        cache = _DECLARATION_LIBRARY_DISPLAY_CACHE
+        schema = TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SCHEMA
+        scoped = False
+    else:
+        return None
+    dependency_field = {
+        "paper": "direct_paper_declarations",
+        "library": "direct_library_declarations",
+    }.get(kind)
+    pending = sorted(set(names))
+    visited: set[str] = set()
+    rows_by_name: dict[str, dict[str, Any]] = {}
+    while pending:
+        name = pending.pop(0)
+        if name in visited:
+            continue
+        if kind == "spec":
+            key = runtime_key + (paper_modules, paper_declarations, name)
+        else:
+            key = runtime_key + ((paper_modules,) if scoped else ()) + (name,)
+        row = cache.get(key)
+        if row is None:
+            return None
+        copied = deepcopy(row)
+        visited.add(name)
+        rows_by_name[name] = copied
+        if dependency_field is None:
+            continue
+        dependencies = copied.get(dependency_field)
+        if not isinstance(dependencies, list):
+            return None
+        for raw_dependency in dependencies:
+            dependency = str(raw_dependency or "").strip()
+            if not dependency:
+                return None
+            if dependency not in visited and dependency not in pending:
+                pending.append(dependency)
+        pending.sort()
+    return {
+        "schema": str(schema),
+        "items": [rows_by_name[name] for name in sorted(rows_by_name)],
+    }
+
+
+def run_lean_declaration_inventory(
+    root: Path,
+    import_module: str,
+    *,
+    inventory_modules: Iterable[str],
+    paper_modules: Iterable[str],
+    workspace_module_names: Iterable[str] | None = None,
+    specification_names: Iterable[str] = (),
+    semantic_declaration_names: Iterable[str] = (),
+    proof_pairs: Iterable[tuple[str, str]] = (),
+    semantic_contracts: Iterable[tuple[str, str, str]] = (),
+    axiom_root_names: Iterable[str] = (),
+    semantic_signature_declaration_names: Iterable[str] = (),
+    semantic_review_claim_declaration_names: Iterable[str] = (),
+    semantic_manifest_declaration_names: Iterable[str] = (),
+    root_semantic_manifest_declaration_names: Iterable[str] = (),
+    semantic_revalidation_declaration_names: Iterable[str] = (),
+    semantic_manifest_modules: Iterable[str] = (),
+    promoted_foundation_declaration_names: Iterable[str] = (),
+    include_semantic_displays: bool = True,
+    include_axiom_closure: bool = True,
+    timeout_seconds: int = 180,
+    build_timeout_seconds: int = 600,
+    build_input_provider: RepositoryBuildInputSnapshotProvider | None = None,
+    require_build: bool = True,
+) -> dict[str, Any]:
+    """Load one paper once and return all Lean-owned closeout graph facts.
+
+    This is the production replacement for repeated source-regex discovery and
+    command-specific Lean startups.  Lean owns declaration/module/range data,
+    generated-declaration ownership, elaborated dependencies and displays,
+    exact Spec/proof equality, and axiom/sorry facts.  Python supplies typed
+    routing coordinates, checks the complete response, and keeps only a
+    process-local operational cache; the cache is never acceptance evidence.
+    """
+
+    root = root.resolve()
+    inventory = tuple(sorted({str(value).strip() for value in inventory_modules if str(value).strip()}))
+    papers = tuple(sorted({str(value).strip() for value in paper_modules if str(value).strip()}))
+    requested_workspace = (
+        None
+        if workspace_module_names is None
+        else tuple(
+            sorted(
+                {
+                    str(value).strip()
+                    for value in workspace_module_names
+                    if str(value).strip()
+                }
+            )
+        )
+    )
+    workspace = papers if requested_workspace is None else requested_workspace
+    specifications = tuple(
+        sorted({str(value).strip() for value in specification_names if str(value).strip()})
+    )
+    semantic_declarations = tuple(
+        sorted({str(value).strip() for value in semantic_declaration_names if str(value).strip()})
+    )
+    pairs = tuple(
+        sorted(
+            {
+                (str(specification).strip(), str(proof).strip())
+                for specification, proof in proof_pairs
+                if str(specification).strip() and str(proof).strip()
+            }
+        )
+    )
+    contracts = tuple(
+        sorted(
+            {
+                (
+                    str(specification).strip(),
+                    str(evidence).strip(),
+                    str(mode).strip(),
+                )
+                for specification, evidence, mode in semantic_contracts
+                if str(specification).strip()
+                and str(evidence).strip()
+                and str(mode).strip()
+            }
+        )
+    )
+    if any(
+        mode not in {"proves", "refutes", "definitionally_realizes"}
+        for _, _, mode in contracts
+    ):
+        return {}
+    axiom_roots = tuple(
+        sorted(
+            {
+                str(value).strip()
+                for value in axiom_root_names
+                if str(value).strip()
+            }
+        )
+    )
+    semantic_signatures = tuple(
+        sorted(
+            {
+                str(value).strip()
+                for value in semantic_signature_declaration_names
+                if str(value).strip()
+            }
+        )
+    )
+    semantic_review_claims = tuple(
+        sorted(
+            {
+                str(value).strip()
+                for value in semantic_review_claim_declaration_names
+                if str(value).strip()
+            }
+        )
+    )
+    semantic_manifests = tuple(
+        sorted(
+            {
+                str(value).strip()
+                for value in semantic_manifest_declaration_names
+                if str(value).strip()
+            }
+        )
+    )
+    root_semantic_manifests = tuple(
+        sorted(
+            {
+                str(value).strip()
+                for value in root_semantic_manifest_declaration_names
+                if str(value).strip()
+            }
+        )
+    )
+    semantic_revalidations = tuple(
+        sorted(
+            {
+                str(value).strip()
+                for value in semantic_revalidation_declaration_names
+                if str(value).strip()
+            }
+        )
+    )
+    manifest_modules = tuple(
+        sorted(
+            {
+                str(value).strip()
+                for value in semantic_manifest_modules
+                if str(value).strip()
+            }
+        )
+    )
+    promoted_foundation_declarations = tuple(
+        sorted(
+            {
+                str(value).strip()
+                for value in promoted_foundation_declaration_names
+                if str(value).strip()
+            }
+        )
+    )
+    if promoted_foundation_declarations and not include_semantic_displays:
+        return {}
+    try:
+        foundation_registry = load_foundation_registry(root)
+    except ValueError:
+        return {}
+    needs_semantic_hash_tool = bool(
+        semantic_signatures
+        or semantic_review_claims
+        or semantic_manifests
+        or root_semantic_manifests
+        or semantic_revalidations
+        or include_semantic_displays
+    )
+    hash_tool_identity = (
+        _semantic_contract_closure_hash_tool_identity()
+        if needs_semantic_hash_tool
+        else None
+    )
+    if needs_semantic_hash_tool and not isinstance(hash_tool_identity, Mapping):
+        return {}
+    hash_tool_path = str(
+        hash_tool_identity.get("resolved_path") if hash_tool_identity else ""
+    ).strip()
+    if not papers or not set(inventory).issubset(papers):
+        return {}
+    inventory_provider = build_input_provider
+    owns_inventory_provider = False
+    if include_semantic_displays and inventory_provider is None:
+        inventory_provider = RepositoryBuildInputSnapshotProvider(root)
+        owns_inventory_provider = True
+    if require_build and not _build_import_target(
+        root,
+        import_module,
+        build_timeout_seconds,
+        provider=inventory_provider,
+    ):
+        return {}
+    if include_semantic_displays:
+        assert inventory_provider is not None
+        source_snapshot = inventory_provider.repository_source_snapshot(import_module)
+        actual_workspace = tuple(sorted(module for module, _path, _content, _digest in source_snapshot))
+        if not actual_workspace or (
+            requested_workspace is not None
+            and requested_workspace != actual_workspace
+        ):
+            return {}
+        workspace = actual_workspace
+    if not set(papers).issubset(workspace):
+        return {}
+    if not _build_compiled_audit_module(
+        root,
+        COMPILED_DECLARATION_GRAPH_MODULE,
+        COMPILED_DECLARATION_GRAPH_SOURCE,
+        build_timeout_seconds,
+    ):
+        return {}
+    runtime_key = _declaration_inventory_runtime_cache_key(root, import_module)
+    if runtime_key is None:
+        return {}
+    cache_key = (
+        *runtime_key,
+        inventory,
+        papers,
+        workspace,
+        specifications,
+        semantic_declarations,
+        pairs,
+        contracts,
+        axiom_roots,
+        semantic_signatures,
+        semantic_review_claims,
+        semantic_manifests,
+        root_semantic_manifests,
+        semantic_revalidations,
+        manifest_modules,
+        foundation_registry.sha256,
+        promoted_foundation_declarations,
+        include_semantic_displays,
+        include_axiom_closure,
+    )
+    cached = _DECLARATION_INVENTORY_CACHE.get(cache_key)
+    if cached is not None:
+        if owns_inventory_provider and not inventory_provider.finalize_unchanged():
+            return {}
+        return deepcopy(cached)
+    request = json.dumps(
+        {
+            "inventory_modules": list(inventory),
+            "paper_modules": list(papers),
+            "workspace_modules": list(workspace),
+            "foundation_modules": list(foundation_registry.module_roots),
+            "foundation_policy_id": foundation_registry.policy_id,
+            "foundation_registry_sha256": foundation_registry.sha256,
+            "promoted_foundation_declarations": list(
+                promoted_foundation_declarations
+            ),
+            "specifications": list(specifications),
+            "semantic_declarations": list(semantic_declarations),
+            "proof_pairs": [
+                {"specification": specification, "proof": proof}
+                for specification, proof in pairs
+            ],
+            "semantic_contracts": [
+                {
+                    "specification": specification,
+                    "evidence": evidence,
+                    "mode": mode,
+                }
+                for specification, evidence, mode in contracts
+            ],
+            "axiom_roots": list(axiom_roots),
+            "semantic_signature_declarations": list(semantic_signatures),
+            "semantic_review_claim_declarations": list(semantic_review_claims),
+            "semantic_manifest_declarations": list(semantic_manifests),
+            "root_semantic_manifest_declarations": list(root_semantic_manifests),
+            "semantic_revalidation_declarations": list(semantic_revalidations),
+            "semantic_manifest_modules": list(manifest_modules),
+            "semantic_hash_tool_path": hash_tool_path,
+            "include_semantic_displays": include_semantic_displays,
+            "include_axiom_closure": include_axiom_closure,
+        },
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    script = _compose_helper_script(
+        f"import {import_module}\nimport {COMPILED_DECLARATION_GRAPH_MODULE}"
+        "\nset_option maxRecDepth 100000\nset_option maxHeartbeats 0",
+        "",
+        "#econcslib_declaration_inventory " + json.dumps(request),
+    )
+
+    def report_failure(
+        reason: str,
+        *,
+        stdout: str | bytes | None = None,
+        stderr: str | bytes | None = None,
+        returncode: int | None = None,
+    ) -> None:
+        out, err = stdout or "", stderr or ""
+        # Native inventory records can contain large source/display payloads.
+        # Scan line ranges without copying records, and bound even the input to
+        # the shared excerpt helper. TimeoutExpired may retain raw bytes.
+        def preview(value: str | bytes) -> str:
+            binary = isinstance(value, bytes)
+            newline = b"\n" if binary else "\n"
+            sentinel = (
+                DECLARATION_INVENTORY_SENTINEL.encode("utf-8")
+                if binary else DECLARATION_INVENTORY_SENTINEL
+            )
+            parts: list[str] = []
+            start, remaining = 0, 4096
+            while start < len(value) and remaining:
+                end = value.find(newline, start)
+                if end < 0:
+                    end = len(value)
+                if value.find(sentinel, start, end) < 0:
+                    part = value[start:min(end + 1, start + remaining)]
+                    remaining -= len(part)
+                    parts.append(
+                        part.decode("utf-8", errors="replace")
+                        if isinstance(part, bytes) else part
+                    )
+                start = end + 1
+            return "".join(parts)
+
+        diagnostic = {
+            "reason": reason,
+            "import_module": import_module,
+            "timeout_seconds": timeout_seconds,
+            "returncode": returncode,
+            "request_sha256": hashlib.sha256(request.encode("utf-8")).hexdigest(),
+            "specification_count": len(specifications),
+            "semantic_declaration_count": len(semantic_declarations),
+            "workspace_module_count": len(workspace),
+            f"stdout_{'bytes' if isinstance(out, bytes) else 'chars'}": len(out),
+            f"stderr_{'bytes' if isinstance(err, bytes) else 'chars'}": len(err),
+            "inventory_record_count": out.count(
+                DECLARATION_INVENTORY_SENTINEL.encode("utf-8")
+                if isinstance(out, bytes) else DECLARATION_INVENTORY_SENTINEL
+            ),
+            "excerpt": bounded_lean_diagnostic_excerpt(preview(out), preview(err)),
+        }
+        print(
+            "Lean declaration inventory failed: "
+            + json.dumps(diagnostic, sort_keys=True, separators=(",", ":")),
+            file=sys.stderr,
+        )
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        path = Path(tmpdir) / "declaration_inventory.lean"
+        path.write_text(script, encoding="utf-8")
+        if not CLOSURE_SUBPROCESS_TRAMPOLINE_PATH.is_file():
+            report_failure("missing_subprocess_trampoline")
+            return {}
+        try:
+            proc = subprocess.Popen(
+                [
+                    sys.executable,
+                    str(CLOSURE_SUBPROCESS_TRAMPOLINE_PATH),
+                    "--address-space-bytes",
+                    str(DECLARATION_INVENTORY_MAX_ADDRESS_SPACE_BYTES),
+                    "--",
+                    "lake",
+                    "env",
+                    "lean",
+                    "-M",
+                    str(DECLARATION_INVENTORY_MAX_MEMORY_MB),
+                    "-j",
+                    str(SEMANTIC_CONTRACT_CLOSURE_MAX_THREADS),
+                    str(path),
+                ],
+                cwd=str(root),
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                start_new_session=True,
+                close_fds=True,
+            )
+            stdout, stderr = proc.communicate(timeout=timeout_seconds)
+        except subprocess.TimeoutExpired as exc:
+            if "proc" in locals():
+                _terminate_semantic_contract_closure_process(proc)
+            report_failure("timeout", stdout=exc.output, stderr=exc.stderr)
+            return {}
+        except OSError as exc:
+            if "proc" in locals():
+                _terminate_semantic_contract_closure_process(proc)
+            report_failure("subprocess_error", stderr=str(exc))
+            return {}
+    if proc.returncode != 0:
+        report_failure(
+            "nonzero_exit", stdout=stdout, stderr=stderr, returncode=proc.returncode
+        )
+        return {}
+    payload = _parse_declaration_inventory_output(
+        stdout,
+        inventory_modules=inventory,
+        paper_modules=papers,
+        workspace_modules=workspace,
+        specifications=specifications,
+        semantic_declarations=semantic_declarations,
+        proof_pairs=pairs,
+        semantic_contracts=contracts,
+        axiom_roots=axiom_roots,
+        semantic_signature_declarations=semantic_signatures,
+        semantic_review_claim_declarations=semantic_review_claims,
+        semantic_manifest_declarations=semantic_manifests,
+        root_semantic_manifest_declarations=root_semantic_manifests,
+        semantic_revalidation_declarations=semantic_revalidations,
+        foundation_registry=foundation_registry,
+        promoted_foundation_declarations=promoted_foundation_declarations,
+        include_semantic_displays=include_semantic_displays,
+        include_axiom_closure=include_axiom_closure,
+    )
+    if payload is None:
+        report_failure(
+            "invalid_or_missing_inventory",
+            stdout=stdout,
+            stderr=stderr,
+            returncode=proc.returncode,
+        )
+        return {}
+    if owns_inventory_provider and not inventory_provider.finalize_unchanged():
+        return {}
+    _DECLARATION_INVENTORY_CACHE[cache_key] = deepcopy(payload)
+    paper_section = payload.get("paper_prerequisite_displays")
+    paper_rows = paper_section.get("items") if isinstance(paper_section, Mapping) else ()
+    paper_names = {
+        str(row.get("declaration") or "").strip()
+        for row in paper_rows
+        if isinstance(row, Mapping) and str(row.get("declaration") or "").strip()
+    }
+    paper_semantic_declarations = tuple(
+        sorted(set(semantic_declarations) & paper_names)
+    )
+    _cache_declaration_inventory_displays(
+        runtime_key, papers, payload, paper_semantic_declarations
+    )
+    _cache_declaration_inventory_proof_pairs(runtime_key, payload)
+    return payload
+
+
+def run_lean_paper_semantic_review_graph(
+    root: Path,
+    import_module: str,
+    *,
+    specification_names: Iterable[str],
+    semantic_declaration_names: Iterable[str],
+    semantic_review_claim_declaration_names: Iterable[str],
+    paper_modules: Iterable[str],
+    promoted_foundation_declaration_names: Iterable[str] = (),
+    timeout_seconds: int = 180,
+    build_timeout_seconds: int = 600,
+    build_input_provider: RepositoryBuildInputSnapshotProvider | None = None,
+    require_build: bool = True,
+) -> dict[str, Any]:
+    """Return packet-ready displays and claim atoms from one Lean graph.
+
+    This is the shared graph-native replacement for the older packet path that
+    first expanded Specs and then launched a second Lean process for semantic
+    manifests. Exact routed paper declarations are both expansion terminals in
+    dependent Specs and separately opened prerequisite roots in the same
+    transaction. Python validates and projects Lean's typed response; it does
+    not infer either the semantic frontier or claim roles.
+    """
+
+    specifications = tuple(
+        sorted(
+            {
+                str(name).strip()
+                for name in specification_names
+                if str(name).strip()
+            }
+        )
+    )
+    semantic_declarations = tuple(
+        sorted(
+            {
+                str(name).strip()
+                for name in semantic_declaration_names
+                if str(name).strip()
+            }
+        )
+    )
+    review_claims = tuple(
+        sorted(
+            {
+                str(name).strip()
+                for name in semantic_review_claim_declaration_names
+                if str(name).strip()
+            }
+        )
+    )
+    promotions = tuple(
+        sorted(
+            {
+                str(name).strip()
+                for name in promoted_foundation_declaration_names
+                if str(name).strip()
+            }
+        )
+    )
+    modules = tuple(
+        sorted(
+            {
+                str(module).strip()
+                for module in paper_modules
+                if str(module).strip()
+            }
+        )
+    )
+    if not modules:
+        return {}
+    # Keep the exact, Lean-authenticated module-byte snapshot available for
+    # declaration-source presentation below.  Lean still owns declaration
+    # identity, ownership, and source ranges; Python only joins those typed
+    # coordinates to these frozen bytes.  This is deliberately presentation
+    # data, not a second discovery or acceptance path.
+    provider = build_input_provider or RepositoryBuildInputSnapshotProvider(root)
+    payload = run_lean_declaration_inventory(
+        root,
+        import_module,
+        inventory_modules=(),
+        paper_modules=modules,
+        specification_names=specifications,
+        semantic_declaration_names=semantic_declarations,
+        semantic_review_claim_declaration_names=review_claims,
+        promoted_foundation_declaration_names=promotions,
+        semantic_manifest_modules=modules,
+        include_semantic_displays=True,
+        include_axiom_closure=False,
+        timeout_seconds=timeout_seconds,
+        build_timeout_seconds=build_timeout_seconds,
+        build_input_provider=provider,
+        require_build=require_build,
+    )
+    if not payload:
+        return {}
+    try:
+        foundation_preview = foundation_frontier_preview_from_inventory(
+            root,
+            payload,
+            expected_specifications=specifications,
+            promoted_foundation_declarations=promotions,
+        )
+    except ValueError:
+        return {}
+    spec_section = payload.get("transparent_spec_displays")
+    specification_targets = parse_transparent_paper_spec_display_output(
+        TRANSPARENT_PAPER_SPEC_DISPLAY_SENTINEL
+        + json.dumps(spec_section, sort_keys=True, separators=(",", ":")),
+        specifications,
+    )
+    if set(specification_targets) != set(specifications):
+        return {}
+    paper_section = payload.get("paper_prerequisite_displays")
+    raw_paper_rows = (
+        paper_section.get("items") if isinstance(paper_section, Mapping) else None
+    )
+    if not isinstance(raw_paper_rows, list):
+        return {}
+    paper_target_names = tuple(
+        str(row.get("declaration") or "").strip()
+        for row in raw_paper_rows
+        if isinstance(row, Mapping)
+    )
+    paper_targets = parse_transparent_paper_declaration_display_output(
+        TRANSPARENT_PAPER_DECLARATION_DISPLAY_SENTINEL
+        + json.dumps(paper_section, sort_keys=True, separators=(",", ":")),
+        paper_target_names,
+    )
+    if set(paper_targets) != set(paper_target_names):
+        return {}
+    library_section = payload.get("library_prerequisite_displays")
+    raw_library_rows = (
+        library_section.get("items") if isinstance(library_section, Mapping) else None
+    )
+    if not isinstance(raw_library_rows, list):
+        return {}
+    library_target_names = tuple(
+        str(row.get("declaration") or "").strip()
+        for row in raw_library_rows
+        if isinstance(row, Mapping)
+    )
+    library_targets = parse_transparent_library_declaration_display_output(
+        TRANSPARENT_LIBRARY_DECLARATION_DISPLAY_SENTINEL
+        + json.dumps(library_section, sort_keys=True, separators=(",", ":")),
+        library_target_names,
+    )
+    if set(library_targets) != set(library_target_names):
+        return {}
+    declaration_targets = paper_targets | library_targets
+    if not set(semantic_declarations).issubset(declaration_targets):
+        return {}
+    parsed_claim_rows = _declaration_inventory_review_claim_rows(
+        payload.get("semantic_review_claims"), review_claims
+    )
+    if parsed_claim_rows is None:
+        return {}
+    _claims, claim_surfaces, raw_claim_errors = parsed_claim_rows
+    claim_errors = {
+        str(row["declaration"]): str(row["message"])
+        for row in raw_claim_errors
+    }
+    if set(claim_surfaces) | set(claim_errors) != set(review_claims):
+        return {}
+
+    signature_section = payload.get("semantic_signatures")
+    raw_signature_rows = (
+        signature_section.get("items")
+        if isinstance(signature_section, Mapping)
+        else None
+    )
+    raw_signature_errors = (
+        signature_section.get("errors")
+        if isinstance(signature_section, Mapping)
+        else None
+    )
+    if not isinstance(raw_signature_rows, list) or not isinstance(
+        raw_signature_errors, list
+    ):
+        return {}
+    signature_sha256s: dict[str, str] = {}
+    for row in raw_signature_rows:
+        if not isinstance(row, Mapping):
+            return {}
+        declaration = str(row.get("declaration") or "").strip()
+        digest = str(row.get("elaborated_signature_sha256") or "").strip()
+        if (
+            not declaration
+            or declaration in signature_sha256s
+            or not re.fullmatch(r"[0-9a-f]{64}", digest)
+        ):
+            return {}
+        signature_sha256s[declaration] = digest
+    signature_errors: dict[str, str] = {}
+    for row in raw_signature_errors:
+        if not isinstance(row, Mapping):
+            return {}
+        declaration = str(row.get("declaration") or "").strip()
+        message = str(row.get("message") or "").strip()
+        if (
+            not declaration
+            or not message
+            or declaration in signature_sha256s
+            or declaration in signature_errors
+        ):
+            return {}
+        signature_errors[declaration] = message
+
+    for declaration, surface in claim_surfaces.items():
+        signature = signature_sha256s.get(declaration)
+        if (
+            signature is not None
+            and signature != surface.get("manifest_sha256")
+        ):
+            return {}
+    for declaration, target in declaration_targets.items():
+        signature = signature_sha256s.get(declaration)
+        if signature is not None:
+            target["elaborated_signature_sha256"] = signature
+    try:
+        module_sources = {
+            module: (path.resolve(), content)
+            for module, path, content, _digest in provider.repository_source_snapshot(
+                import_module
+            )
+        }
+        if not module_sources:
+            return {}
+        requested_paper_sources = tuple(
+            sorted(set(semantic_declarations) & set(paper_target_names))
+        )
+        requested_library_sources = tuple(
+            sorted(set(semantic_declarations) & set(library_target_names))
+        )
+        paper_source_records = lean_inventory_source_declaration_records(
+            payload,
+            module_sources,
+            declaration_names=requested_paper_sources,
+        )
+        library_source_records = (
+            lean_inventory_library_source_declaration_records(
+                payload,
+                module_sources,
+                declaration_names=requested_library_sources,
+            )
+            if requested_library_sources
+            else {}
+        )
+    except (OSError, RuntimeError, TypeError, ValueError):
+        return {}
+
+    def rendered_source_records(
+        records: Mapping[str, Mapping[str, Any]],
+    ) -> dict[str, dict[str, Any]]:
+        """Return JSON-safe exact sources selected by Lean's inventory."""
+
+        rendered: dict[str, dict[str, Any]] = {}
+        for declaration, record in records.items():
+            path = record.get("source_path")
+            raw_range = record.get("source_range")
+            if not isinstance(path, Path) or not isinstance(raw_range, Mapping):
+                raise ValueError("Lean source declaration record is malformed")
+            try:
+                relative_path = path.relative_to(root).as_posix()
+            except ValueError as exc:
+                raise ValueError("Lean source declaration lies outside repository") from exc
+            source = str(record.get("source") or "")
+            digest = str(record.get("source_sha256") or "")
+            if not source or not re.fullmatch(r"[0-9a-f]{64}", digest):
+                raise ValueError("Lean source declaration record is incomplete")
+            rendered[declaration] = {
+                "source": source,
+                "source_sha256": digest,
+                "source_module": str(record.get("source_module") or ""),
+                "source_path": relative_path,
+                "source_range": dict(raw_range),
+                "declaration_kind": str(record.get("declaration_kind") or ""),
+            }
+        return rendered
+
+    try:
+        rendered_paper_sources = rendered_source_records(paper_source_records)
+        rendered_library_sources = rendered_source_records(library_source_records)
+    except ValueError:
+        return {}
+    if set(rendered_paper_sources) != set(requested_paper_sources):
+        return {}
+    if set(rendered_library_sources) != set(requested_library_sources):
+        return {}
+
+    return {
+        "specification_targets": specification_targets,
+        "paper_declaration_targets": paper_targets,
+        "library_declaration_targets": library_targets,
+        "paper_declaration_sources": rendered_paper_sources,
+        "library_declaration_sources": rendered_library_sources,
+        "review_claim_surfaces": claim_surfaces,
+        "review_claim_errors": claim_errors,
+        "semantic_signature_errors": signature_errors,
+        "foundation_frontier_preview": foundation_preview,
+    }
 
 
 def _file_fingerprint(path: Path) -> tuple[int, int] | None:
@@ -6142,7 +8515,6 @@ def _structural_scan_environment_snapshot(
         return None
     payload = {
         "schema": STRUCTURAL_SCAN_ENVIRONMENT_SCHEMA,
-        "root": str(root.resolve()),
         "import_module": import_module,
         "build_input_sha256": input_snapshot,
         "repository_import_artifacts": [
@@ -6438,6 +8810,101 @@ def paper_local_module_names(
     )
 
 
+FOREIGN_MODEL_DEFINITION_IMPORTS_FIELD = "foreign_model_definition_imports"
+
+
+def foreign_model_definition_scope(
+    root: Path, paper_folder: Path
+) -> tuple[tuple[str, ...], tuple[str, ...], str]:
+    """Read the exact sibling-model definition boundary for one review surface.
+
+    An entry can authorize only a compiled transparent definition whose module
+    is byte-pinned by this paper's saved import audit and whose repository
+    source is in a different paper directory.  Lean separately rejects every
+    non-definition reached through this boundary.
+    """
+
+    try:
+        root = root.resolve()
+        folder = paper_folder.resolve()
+        papers_root = (root / "papers").resolve()
+        paper_name = folder.relative_to(papers_root).name
+        status = json.loads((folder / "status.json").read_text(encoding="utf-8"))
+        if not isinstance(status, dict):
+            return (), (), "status.json is not an object"
+        review_surface = status.get("review_surface")
+        if not isinstance(review_surface, dict):
+            return (), (), "review_surface is not an object"
+        raw_entries = review_surface.get(FOREIGN_MODEL_DEFINITION_IMPORTS_FIELD)
+        if raw_entries is None:
+            return (), (), ""
+        if not isinstance(raw_entries, list) or not raw_entries:
+            return (), (), f"{FOREIGN_MODEL_DEFINITION_IMPORTS_FIELD} must be a nonempty list"
+        audit = json.loads(
+            (folder / "audit" / "source_record_audit.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        import_closure = audit.get("lean_import_closure")
+        raw_sources = import_closure.get("sources") if isinstance(import_closure, dict) else None
+        if not isinstance(raw_sources, list):
+            return (), (), "saved import audit has no source list"
+        audit_sources: dict[str, dict[str, Any]] = {}
+        for raw_source in raw_sources:
+            if not isinstance(raw_source, dict):
+                continue
+            module = str(raw_source.get("module") or "").strip()
+            if not module or module in audit_sources:
+                return (), (), "saved import audit has ambiguous module source pins"
+            audit_sources[module] = raw_source
+        declarations: list[str] = []
+        modules: list[str] = []
+        for index, raw_entry in enumerate(raw_entries):
+            if not isinstance(raw_entry, dict) or set(raw_entry) != {
+                "declaration",
+                "module",
+            }:
+                return (), (), (
+                    f"{FOREIGN_MODEL_DEFINITION_IMPORTS_FIELD}[{index}] must contain "
+                    "only declaration and module"
+                )
+            declaration = str(raw_entry.get("declaration") or "").strip()
+            module = str(raw_entry.get("module") or "").strip()
+            if "." not in declaration or "." not in module:
+                return (), (), (
+                    f"{FOREIGN_MODEL_DEFINITION_IMPORTS_FIELD}[{index}] must use "
+                    "fully-qualified Lean identities"
+                )
+            source = _repository_module_source_path(root, module)
+            if source is None:
+                return (), (), f"foreign model module has no repository source: {module}"
+            resolved_source = source.resolve()
+            relative_source = resolved_source.relative_to(papers_root)
+            if len(relative_source.parts) < 2 or relative_source.parts[0] == paper_name:
+                return (), (), (
+                    "foreign model module must belong to a different paper directory: "
+                    + module
+                )
+            audit_source = audit_sources.get(module)
+            if not isinstance(audit_source, dict):
+                return (), (), "saved import audit does not pin foreign model module: " + module
+            audit_path = str(audit_source.get("path") or "").strip()
+            audit_digest = str(audit_source.get("sha256") or "").strip().lower()
+            if (
+                audit_path != resolved_source.relative_to(root).as_posix()
+                or not re.fullmatch(r"[0-9a-f]{64}", audit_digest)
+                or hashlib.sha256(resolved_source.read_bytes()).hexdigest() != audit_digest
+            ):
+                return (), (), "saved import audit is stale for foreign model module: " + module
+            declarations.append(declaration)
+            modules.append(module)
+        if len(set(declarations)) != len(declarations):
+            return (), (), f"{FOREIGN_MODEL_DEFINITION_IMPORTS_FIELD} has duplicate declarations"
+        return tuple(sorted(declarations)), tuple(sorted(set(modules))), ""
+    except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exc:
+        return (), (), "could not read foreign model definition scope: " + str(exc)
+
+
 def _paper_module_olean_fingerprints(
     root: Path, paper_modules: tuple[str, ...]
 ) -> tuple[tuple[str, tuple[str, int] | None], ...]:
@@ -6585,11 +9052,11 @@ def signature_manifest_cache_context(
         return None
     olean_fingerprint = _built_olean_fingerprint(root, import_module)
     helper_fingerprint = _file_content_fingerprint(HELPER_PATH)
-    hash_tool_identity = _semantic_contract_closure_hash_tool_identity()
+    hash_tool_runtime_identity = _semantic_contract_closure_hash_tool_identity()
     if (
         olean_fingerprint is None
         or helper_fingerprint is None
-        or hash_tool_identity is None
+        or hash_tool_runtime_identity is None
     ):
         return None
     audit_modules = tuple(
@@ -6618,8 +9085,10 @@ def signature_manifest_cache_context(
         "import_module": import_module,
         "olean_fingerprint": list(olean_fingerprint),
         "helper_fingerprint": list(helper_fingerprint),
-        "semantic_hash_tool_identity": dict(hash_tool_identity),
-        "canonical_representation": "lean_compact_canonical_v2",
+        "semantic_hash_tool_identity": portable_semantic_hash_tool_identity(
+            hash_tool_runtime_identity
+        ),
+        "canonical_representation": CANONICAL_REPRESENTATION,
         "audit_scope_fingerprint": _audit_scope_fingerprint(
             import_module,
             olean_fingerprint,
@@ -6649,7 +9118,14 @@ def signature_manifest_cache_context_sha256(context: Mapping[str, Any]) -> str:
     }
     if not required <= set(context):
         return ""
-    return _closure_json_sha256(dict(context))
+    portable = dict(context)
+    portable_hash_tool = portable_semantic_hash_tool_identity(
+        portable.get("semantic_hash_tool_identity")
+    )
+    if not portable_hash_tool:
+        return ""
+    portable["semantic_hash_tool_identity"] = portable_hash_tool
+    return _closure_json_sha256(portable)
 
 
 def _signature_manifest_context_cache_coordinates(
@@ -6663,13 +9139,19 @@ def _signature_manifest_context_cache_coordinates(
     try:
         olean_fingerprint = tuple(context["olean_fingerprint"])
         helper_fingerprint = tuple(context["helper_fingerprint"])
-        raw_hash_tool_identity = context.get("semantic_hash_tool_identity")
-        if not isinstance(raw_hash_tool_identity, dict):
+        saved_hash_tool_identity = context.get("semantic_hash_tool_identity")
+        if not isinstance(saved_hash_tool_identity, Mapping):
             return None
-        hash_tool_path = str(raw_hash_tool_identity.get("resolved_path") or "")
-        if not hash_tool_path:
+        raw_hash_tool_identity = _semantic_contract_closure_hash_tool_identity()
+        if (
+            raw_hash_tool_identity is None
+            or portable_semantic_hash_tool_identity(saved_hash_tool_identity)
+            != portable_semantic_hash_tool_identity(raw_hash_tool_identity)
+        ):
             return None
-        hash_tool_fingerprint = _closure_json_sha256(raw_hash_tool_identity)
+        hash_tool_fingerprint = _closure_json_sha256(
+            portable_semantic_hash_tool_identity(raw_hash_tool_identity)
+        )
         audit_modules = tuple(
             sorted(
                 set(
@@ -6799,7 +9281,10 @@ def seed_lean_signature_manifest_context_cache(
             or not re.fullmatch(r"[0-9a-f]{64}", expected_signature)
             or not re.fullmatch(r"[0-9a-f]{64}", expected_dependency)
             or manifest.get("canonical_representation") != canonical_representation
-            or manifest.get("semantic_hash_tool_identity") != hash_tool_identity
+            or portable_semantic_hash_tool_identity(
+                manifest.get("semantic_hash_tool_identity")
+            )
+            != portable_semantic_hash_tool_identity(hash_tool_identity)
             or str(manifest.get("sha256") or "").strip().lower() != expected_signature
             or signature_manifest_digest(manifest) != expected_signature
             or not isinstance(dependency, Mapping)
@@ -6829,36 +9314,6 @@ def seed_lean_signature_manifest_context_cache(
             if cache_key != context_cache_key and cache_key[:-1] == context_prefix:
                 del _CACHE[cache_key]
     return seeded
-
-
-def _manifest_batch_size() -> int:
-    """Return the explicit, bounded capacity for one Lean manifest process."""
-
-    raw = os.environ.get(MANIFEST_BATCH_SIZE_ENV, "").strip()
-    if not raw:
-        return DEFAULT_MANIFEST_BATCH_SIZE
-    try:
-        configured = int(raw)
-    except ValueError:
-        return DEFAULT_MANIFEST_BATCH_SIZE
-    return min(MAX_MANIFEST_BATCH_SIZE, max(1, configured))
-
-
-def _manifest_chunks(
-    names: list[str], *, batch_size: int | None = None
-) -> list[list[str]]:
-    """Split requests by a resource capacity, never by declaration identity."""
-
-    capacity = _manifest_batch_size() if batch_size is None else batch_size
-    if capacity < 1:
-        raise ValueError("manifest batch capacity must be positive")
-    return [names[index : index + capacity] for index in range(0, len(names), capacity)]
-
-
-def _manifest_initial_batches(names: list[str]) -> list[list[str]]:
-    """Schedule every row under the configured per-process resource bound."""
-
-    return _manifest_chunks(names)
 
 
 def _emit_manifest_batch_progress(
@@ -6892,58 +9347,21 @@ def _emit_manifest_batch_progress(
         pass
 
 
-def _manifest_batch_timeout_seconds(
-    batch: list[str], caller_timeout_seconds: int, *, chunked: bool
-) -> int:
-    """Give a bounded batch an additive, declaration-count resource budget."""
-
-    # A singleton has no co-located graph to protect from.  It must retain the
-    # caller's full budget even when its siblings make the overall request
-    # chunked, otherwise a 300-second dashboard row is silently truncated to
-    # the generic short-batch cap.
-    if not chunked or len(batch) == 1:
-        return caller_timeout_seconds
-    return min(
-        caller_timeout_seconds,
-        MAX_CHUNKED_MANIFEST_TIMEOUT_SECONDS * max(1, len(batch)),
-    )
-
-
-def _manifest_retry_batches(missing_names: list[str]) -> list[list[str]]:
-    """Return bounded residual retries after an incomplete initial request."""
-
-    if len(missing_names) == 1:
-        return [missing_names]
-    if 1 < len(missing_names) <= MAX_INDIVIDUAL_MANIFEST_RETRIES:
-        midpoint = len(missing_names) // 2
-        return [missing_names[:midpoint], missing_names[midpoint:]]
-    return []
-
-
-def _manifest_adaptive_retries(
-    missing_names: list[str],
-    run_batch: Callable[[list[str]], Mapping[str, Mapping[str, Any]]],
-) -> dict[str, dict[str, Any]]:
-    """Bisect only unresolved rows, retaining every completed Lean receipt."""
-
-    recovered: dict[str, dict[str, Any]] = {}
-    pending = _manifest_retry_batches(missing_names)
-    while pending:
-        batch = pending.pop(0)
-        extracted = run_batch(batch)
-        recovered.update(_requested_manifests(dict(extracted), batch))
-        unresolved = [name for name in batch if name not in recovered]
-        if len(batch) > 1 and unresolved:
-            pending[0:0] = _manifest_retry_batches(unresolved)
-    return recovered
-
-
 def _requested_manifests(
     manifests: dict[str, dict[str, Any]], request_names: list[str]
 ) -> dict[str, dict[str, Any]]:
     """Keep only requested helper output in the request's deterministic order."""
 
     return {name: manifests[name] for name in request_names if name in manifests}
+
+
+def _semantic_manifest_batches(names: list[str]) -> list[list[str]]:
+    """Partition exact manifest roots into deterministic capacity batches."""
+
+    return [
+        names[index : index + SEMANTIC_MANIFEST_CHUNK_SIZE]
+        for index in range(0, len(names), SEMANTIC_MANIFEST_CHUNK_SIZE)
+    ]
 
 
 def run_lean_signature_manifests(
@@ -6960,6 +9378,7 @@ def run_lean_signature_manifests(
     ]
     | None = None,
     progress_callback: Callable[[Mapping[str, Any]], None] | None = None,
+    current_context: Mapping[str, Any] | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Return current manifests for declarations imported from one Lean module.
 
@@ -6969,7 +9388,7 @@ def run_lean_signature_manifests(
     callers that need only the outer elaborated type.
 
     ``manifest_checkpoint`` is an optional best-effort durability hook for
-    independently completed Lean batches.  It receives the exact compiled
+    independently completed Lean roots.  It receives the exact compiled
     context and raw Lean-owned manifests before the final dependency-artifact
     attachment.  A callback is never allowed to affect extraction; persistent
     consumers must independently revalidate its records before reuse.
@@ -6978,17 +9397,24 @@ def run_lean_signature_manifests(
     initial Lean batches. It cannot affect scheduling, cache authority, or the
     returned manifests, and receives no declaration names.
 
+    ``current_context`` lets a caller freeze and reuse the exact validated
+    context that it also binds into durable per-row checkpoints.
+
     """
 
     names = sorted(set(declaration_names))
     if not names:
         return {}
-    context = signature_manifest_cache_context(
-        root,
-        import_module,
-        build_timeout_seconds=build_timeout_seconds,
-        semantic_dependency_modules=semantic_dependency_modules,
-        build_input_provider=build_input_provider,
+    context = (
+        dict(current_context)
+        if isinstance(current_context, Mapping)
+        else signature_manifest_cache_context(
+            root,
+            import_module,
+            build_timeout_seconds=build_timeout_seconds,
+            semantic_dependency_modules=semantic_dependency_modules,
+            build_input_provider=build_input_provider,
+        )
     )
     if context is None:
         return {}
@@ -6998,17 +9424,14 @@ def run_lean_signature_manifests(
     if coordinates is None:
         return {}
     context_cache_key, audit_modules, raw_hash_tool_identity = coordinates
-    hash_tool_path = str(raw_hash_tool_identity.get("resolved_path") or "")
     cache_key = (*context_cache_key[:-1], tuple(names))
 
-    def checkpoint(
-        extracted: Mapping[str, Mapping[str, Any]], batch: list[str]
-    ) -> None:
-        """Persist one completed raw batch without making persistence authoritative."""
+    def checkpoint(extracted: Mapping[str, Mapping[str, Any]]) -> None:
+        """Persist completed native roots without making the cache authoritative."""
 
         if manifest_checkpoint is None:
             return
-        completed = _requested_manifests(dict(extracted), batch)
+        completed = _requested_manifests(dict(extracted), list(extracted))
         if not completed:
             return
         try:
@@ -7028,79 +9451,91 @@ def run_lean_signature_manifests(
         cached_context = _CACHE.get(context_cache_key, {})
         manifests = dict(cached_context)
         missing_names = [name for name in names if name not in manifests]
-        initial_batches = (
-            _manifest_initial_batches(missing_names) if missing_names else []
-        )
-        uses_chunking = len(initial_batches) > 1
-        for batch_number, batch in enumerate(initial_batches, start=1):
+        batches = _semantic_manifest_batches(missing_names)
+        for batch_number, batch in enumerate(batches, start=1):
             _emit_manifest_batch_progress(
                 progress_callback,
-                runner="full_manifest",
+                runner="native_declaration_graph",
                 status="started",
                 batch_number=batch_number,
-                batch_total=len(initial_batches),
+                batch_total=len(batches),
                 root_count=len(batch),
             )
-            extracted = _run_manifest_script(
+            payload = run_lean_declaration_inventory(
                 root,
-                f"import Lean\nimport {import_module}",
-                batch,
-                _manifest_batch_timeout_seconds(
-                    batch, timeout_seconds, chunked=uses_chunking
-                ),
-                ",".join(audit_modules),
-                hash_tool_path,
+                import_module,
+                inventory_modules=(),
+                paper_modules=(import_module,),
+                semantic_manifest_declaration_names=batch,
+                semantic_manifest_modules=audit_modules,
+                include_semantic_displays=False,
+                include_axiom_closure=False,
+                timeout_seconds=timeout_seconds,
+                build_timeout_seconds=build_timeout_seconds,
+                build_input_provider=build_input_provider,
+                require_build=False,
             )
-            manifests.update(_requested_manifests(extracted, batch))
-            checkpoint(extracted, batch)
-            # Preserve independently obtained exact results before a later
-            # batch or retry fails. This is process-local only; a new audit
-            # still receives fresh Lean output for its compiled environment.
-            _CACHE[context_cache_key] = dict(manifests)
-            missing_batch_names = [name for name in batch if name not in manifests]
+            section = payload.get("semantic_manifests")
+            rows = section.get("items") if isinstance(section, Mapping) else None
+            extracted = {
+                str(row.get("declaration") or "").strip(): dict(row["manifest"])
+                for row in rows or []
+                if isinstance(row, Mapping)
+                and isinstance(row.get("manifest"), Mapping)
+                and str(row.get("declaration") or "").strip() in batch
+            }
+            extracted = _requested_manifests(extracted, batch)
+            # A native Lean process can exhaust memory while expanding two
+            # individually valid, unusually large transparent Specs together.
+            # Preserve the normal bounded batch for throughput, but retry an
+            # entirely missing multi-root batch one root at a time so one
+            # capacity failure does not erase independent current signatures.
+            if not extracted and len(batch) > 1:
+                for declaration in batch:
+                    retry_payload = run_lean_declaration_inventory(
+                        root,
+                        import_module,
+                        inventory_modules=(),
+                        paper_modules=(import_module,),
+                        semantic_manifest_declaration_names=(declaration,),
+                        semantic_manifest_modules=audit_modules,
+                        include_semantic_displays=False,
+                        include_axiom_closure=False,
+                        timeout_seconds=timeout_seconds,
+                        build_timeout_seconds=build_timeout_seconds,
+                        build_input_provider=build_input_provider,
+                        require_build=False,
+                    )
+                    retry_section = retry_payload.get("semantic_manifests")
+                    retry_rows = (
+                        retry_section.get("items")
+                        if isinstance(retry_section, Mapping)
+                        else None
+                    )
+                    retry_extracted = {
+                        str(row.get("declaration") or "").strip(): dict(row["manifest"])
+                        for row in retry_rows or []
+                        if isinstance(row, Mapping)
+                        and isinstance(row.get("manifest"), Mapping)
+                        and str(row.get("declaration") or "").strip() == declaration
+                    }
+                    extracted.update(_requested_manifests(retry_extracted, [declaration]))
+            manifests.update(extracted)
+            checkpoint(extracted)
+            missing_after = [name for name in batch if name not in manifests]
             _emit_manifest_batch_progress(
                 progress_callback,
-                runner="full_manifest",
+                runner="native_declaration_graph",
                 status="finished",
                 batch_number=batch_number,
-                batch_total=len(initial_batches),
+                batch_total=len(batches),
                 root_count=len(batch),
-                completed_count=len(batch) - len(missing_batch_names),
-                missing_count=len(missing_batch_names),
+                completed_count=len(batch) - len(missing_after),
+                missing_count=len(missing_after),
             )
-            if uses_chunking and len(missing_batch_names) > 1:
-                # Retry failures locally, before another chunk can obscure
-                # which bounded request caused the missing result. Singleton
-                # requests cannot be split further and are not repeated.
-                retried = _manifest_adaptive_retries(
-                    missing_batch_names,
-                    lambda retry_names: _run_manifest_script(
-                        root,
-                        f"import Lean\nimport {import_module}",
-                        retry_names,
-                        timeout_seconds,
-                        ",".join(audit_modules),
-                        hash_tool_path,
-                    ),
-                )
-                manifests.update(retried)
-                checkpoint(retried, missing_batch_names)
-                _CACHE[context_cache_key] = dict(manifests)
-        missing_names = [name for name in names if name not in manifests]
-        if len(names) > 1 and not uses_chunking:
-            retried = _manifest_adaptive_retries(
-                missing_names,
-                lambda retry_names: _run_manifest_script(
-                    root,
-                    f"import Lean\nimport {import_module}",
-                    retry_names,
-                    timeout_seconds,
-                    ",".join(audit_modules),
-                    hash_tool_path,
-                ),
-            )
-            manifests.update(retried)
-            checkpoint(retried, missing_names)
+            # Make each completed batch immediately available to narrower
+            # requests in this process.  This cache is operational only; the
+            # tracked authority/carrier still performs independent validation.
             _CACHE[context_cache_key] = dict(manifests)
         manifests = _with_semantic_dependency_module_identities(
             root, manifests, timeout_seconds=build_timeout_seconds
@@ -7108,8 +9543,10 @@ def run_lean_signature_manifests(
         manifests = {
             name: {
                 **manifest,
-                "canonical_representation": "lean_compact_canonical_v2",
-                "semantic_hash_tool_identity": dict(raw_hash_tool_identity),
+                "canonical_representation": CANONICAL_REPRESENTATION,
+                "semantic_hash_tool_identity": portable_semantic_hash_tool_identity(
+                    raw_hash_tool_identity
+                ),
             }
             for name, manifest in manifests.items()
         }
@@ -7125,7 +9562,7 @@ def run_lean_direct_library_dependency_surface(
     timeout_seconds: int = 120,
     build_timeout_seconds: int = 600,
 ) -> dict[str, tuple[str, ...]]:
-    """Return each current Spec's direct elaborated EconCSLib dependencies.
+    """Return each current Spec's direct elaborated AppliedModelingLib dependencies.
 
     Unlike the full manifest route this retains neither recursive graphs nor
     proof bodies.  It is the narrow source-to-library review inventory: Lean
@@ -7136,401 +9573,44 @@ def run_lean_direct_library_dependency_surface(
     """
 
     names = sorted({str(name).strip() for name in declaration_names if str(name).strip()})
-    if not names or not _build_import_target(root, import_module, build_timeout_seconds):
+    if not names:
         return {}
-    return _run_direct_library_dependency_surface_script(
-        root,
-        f"import Lean\nimport {import_module}",
-        names,
-        timeout_seconds,
-    )
-
-
-def _run_transparent_paper_spec_display_script(
-    root: Path,
-    script_prefix: str,
-    specification_names: list[str],
-    paper_modules: tuple[str, ...],
-    *,
-    max_expansions: int,
-    timeout_seconds: int,
-) -> dict[str, dict[str, Any]]:
-    """Ask Lean to pretty-print current transparent paper-local Spec bodies."""
-
-    names = sorted({str(name).strip() for name in specification_names if str(name).strip()})
-    modules = tuple(sorted({str(module).strip() for module in paper_modules if str(module).strip()}))
-    if (
-        not names
-        or not modules
-        or not HELPER_PATH.exists()
-        or not (1 <= max_expansions <= 4096)
-    ):
-        return {}
-    try:
-        helper = HELPER_PATH.read_text(encoding="utf-8")
-    except OSError:
-        return {}
-    request = json.dumps(
-        {"specifications": names, "paper_modules": list(modules)},
-        ensure_ascii=True,
-        sort_keys=True,
-        separators=(",", ":"),
-    )
-    script = _compose_helper_script(
-        script_prefix
-        + "\nset_option maxRecDepth 100000"
-        + "\nset_option maxHeartbeats 0",
-        helper,
-        "#transparent_paper_spec_display "
-        + json.dumps(request)
-        + " "
-        + json.dumps(str(max_expansions)),
-    )
-    with tempfile.TemporaryDirectory() as tmpdir:
-        path = Path(tmpdir) / "transparent_paper_spec_display.lean"
-        path.write_text(script, encoding="utf-8")
-        try:
-            proc = subprocess.Popen(
-                ["lake", "env", "lean", str(path)],
-                cwd=str(root),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                start_new_session=True,
-            )
-            stdout_bytes, stderr_bytes = proc.communicate(timeout=timeout_seconds)
-        except OSError:
-            return {}
-        except subprocess.TimeoutExpired:
-            try:
-                os.killpg(proc.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            try:
-                proc.communicate(timeout=1)
-            except (OSError, subprocess.TimeoutExpired):
-                pass
-            return {}
-    stdout = stdout_bytes.decode("utf-8", errors="replace")
-    if proc.returncode != 0:
-        diagnostic = stderr_bytes.decode("utf-8", errors="replace")
-        if diagnostic.strip():
-            print(
-                "Lean transparent-Spec display extraction failed:\n" + diagnostic[:8000],
-                file=sys.stderr,
-            )
-        else:
-            print(
-                "Lean transparent-Spec display extraction failed without stderr "
-                f"(exit {proc.returncode}):\n"
-                + stdout[:8000],
-                file=sys.stderr,
-            )
-        return {}
-    parsed = parse_transparent_paper_spec_display_output(stdout, names)
-    if not parsed:
-        diagnostics = [
-            line
-            for line in stdout.splitlines()
-            if "LEAN_TRANSPARENT_PAPER_SPEC_DISPLAY" in line
-        ]
-        if diagnostics:
-            print("\n".join(diagnostics[:8]), file=sys.stderr)
-    return parsed
-
-
-def _run_transparent_paper_declaration_display_script(
-    root: Path,
-    script_prefix: str,
-    declaration_names: list[str],
-    paper_modules: tuple[str, ...],
-    *,
-    timeout_seconds: int,
-) -> dict[str, dict[str, Any]]:
-    """Ask Lean for a recursive paper-prerequisite display closure."""
-
-    names = sorted({str(name).strip() for name in declaration_names if str(name).strip()})
-    modules = tuple(
-        sorted({str(module).strip() for module in paper_modules if str(module).strip()})
-    )
-    if not names or not modules or not HELPER_PATH.exists():
-        return {}
-    try:
-        helper = HELPER_PATH.read_text(encoding="utf-8")
-    except OSError:
-        return {}
-    request = json.dumps(
-        {"specifications": names, "paper_modules": list(modules)},
-        ensure_ascii=True,
-        sort_keys=True,
-        separators=(",", ":"),
-    )
-    script = _compose_helper_script(
-        script_prefix
-        + "\nset_option maxRecDepth 100000"
-        + "\nset_option maxHeartbeats 0",
-        helper,
-        "#transparent_paper_declaration_display " + json.dumps(request),
-    )
-    with tempfile.TemporaryDirectory() as tmpdir:
-        path = Path(tmpdir) / "transparent_paper_declaration_display.lean"
-        path.write_text(script, encoding="utf-8")
-        try:
-            proc = subprocess.Popen(
-                ["lake", "env", "lean", str(path)],
-                cwd=str(root),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                start_new_session=True,
-            )
-            stdout_bytes, stderr_bytes = proc.communicate(timeout=timeout_seconds)
-        except OSError:
-            return {}
-        except subprocess.TimeoutExpired:
-            try:
-                os.killpg(proc.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            try:
-                proc.communicate(timeout=1)
-            except (OSError, subprocess.TimeoutExpired):
-                pass
-            return {}
-    stdout = stdout_bytes.decode("utf-8", errors="replace")
-    if proc.returncode != 0:
-        diagnostic = stderr_bytes.decode("utf-8", errors="replace")
-        if diagnostic.strip():
-            print(
-                "Lean paper-prerequisite display extraction failed:\n" + diagnostic[:8000],
-                file=sys.stderr,
-            )
-        else:
-            print(
-                "Lean paper-prerequisite display extraction failed without stderr "
-                f"(exit {proc.returncode}):\n" + stdout[:8000],
-                file=sys.stderr,
-            )
-        return {}
-    parsed = parse_transparent_paper_declaration_display_output(stdout, names)
-    if not parsed:
-        diagnostics = [
-            line
-            for line in stdout.splitlines()
-            if "LEAN_TRANSPARENT_PAPER_DECLARATION_DISPLAY" in line
-        ]
-        if diagnostics:
-            print("\n".join(diagnostics[:8]), file=sys.stderr)
-        elif stdout.strip():
-            print(
-                "Lean paper-prerequisite display extraction emitted no valid receipt:\n"
-                + stdout[:8000],
-                file=sys.stderr,
-            )
-    return parsed
-
-
-def _run_transparent_library_declaration_display_script(
-    root: Path,
-    script_prefix: str,
-    declaration_names: list[str],
-    *,
-    timeout_seconds: int,
-) -> dict[str, dict[str, Any]]:
-    """Ask Lean for each library root's own transparent semantic target."""
-
-    names = sorted({str(name).strip() for name in declaration_names if str(name).strip()})
-    if (
-        not names
-        or any(not name.startswith("EconCSLib.") for name in names)
-        or not HELPER_PATH.exists()
-    ):
-        return {}
-    try:
-        helper = HELPER_PATH.read_text(encoding="utf-8")
-    except OSError:
-        return {}
-    script = _compose_helper_script(
-        script_prefix
-        + "\nset_option maxRecDepth 100000"
-        + "\nset_option maxHeartbeats 0",
-        helper,
-        "#transparent_library_declaration_display "
-        + json.dumps(
-            json.dumps(names, ensure_ascii=True, separators=(",", ":")),
-            ensure_ascii=True,
-        ),
-    )
-    with tempfile.TemporaryDirectory() as tmpdir:
-        path = Path(tmpdir) / "transparent_library_declaration_display.lean"
-        path.write_text(script, encoding="utf-8")
-        try:
-            proc = subprocess.Popen(
-                ["lake", "env", "lean", str(path)],
-                cwd=str(root),
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                start_new_session=True,
-            )
-            stdout_bytes, stderr_bytes = proc.communicate(timeout=timeout_seconds)
-        except OSError:
-            return {}
-        except subprocess.TimeoutExpired:
-            try:
-                os.killpg(proc.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            try:
-                proc.communicate(timeout=1)
-            except (OSError, subprocess.TimeoutExpired):
-                pass
-            return {}
-    stdout = stdout_bytes.decode("utf-8", errors="replace")
-    if proc.returncode != 0:
-        diagnostic = stderr_bytes.decode("utf-8", errors="replace")
-        if diagnostic.strip():
-            print(
-                "Lean transparent-library display extraction failed:\n" + diagnostic[:8000],
-                file=sys.stderr,
-            )
-        else:
-            print(
-                "Lean transparent-library display extraction failed without stderr "
-                f"(exit {proc.returncode}):\n" + stdout[:8000],
-                file=sys.stderr,
-            )
-        return {}
-    parsed = parse_transparent_library_declaration_display_output(stdout, names)
-    if not parsed:
-        diagnostics = [
-            line
-            for line in stdout.splitlines()
-            if "LEAN_TRANSPARENT_LIBRARY_DECLARATION_DISPLAY" in line
-        ]
-        if diagnostics:
-            print("\n".join(diagnostics[:8]), file=sys.stderr)
-        elif stdout.strip():
-            print(
-                "Lean transparent-library display extraction emitted no valid receipt:\n"
-                + stdout[:8000],
-                file=sys.stderr,
-            )
-    return parsed
-
-
-def run_lean_transparent_paper_spec_displays(
-    root: Path,
-    import_module: str,
-    specification_names: list[str],
-    paper_modules: tuple[str, ...],
-    *,
-    max_expansions: int = 512,
-    timeout_seconds: int = 120,
-    build_timeout_seconds: int = 600,
-    build_input_provider: RepositoryBuildInputSnapshotProvider | None = None,
-    require_build: bool = True,
-) -> dict[str, dict[str, Any]]:
-    """Return Lean-owned readable semantic targets for source-to-Spec review.
-
-    A target is available only after Lean builds the selected import module and
-    fully eliminates transparent declarations owned by the paper.  Imported
-    library declarations intentionally remain visible so the separate library
-    review surface can show their exact definitions and source connections.
-    """
-
-    names = sorted({str(name).strip() for name in specification_names if str(name).strip()})
-    modules = tuple(sorted({str(module).strip() for module in paper_modules if str(module).strip()}))
-    if not names or not modules or not (1 <= max_expansions <= 4096):
-        return {}
-    # Receipt-producing audit callers leave this enabled.  Packet rendering is
-    # deliberately non-certifying and may reuse a just-built interface: asking
-    # Lake to rebuild the same large import closure immediately before the
-    # independent Lean display pass can consume the whole renderer budget.
-    if require_build and not _build_import_target(
+    payload = run_lean_declaration_inventory(
         root,
         import_module,
-        build_timeout_seconds,
-        provider=build_input_provider,
-    ):
-        return {}
-    return _run_transparent_paper_spec_display_script(
-        root,
-        f"import Lean\nimport {import_module}",
-        names,
-        modules,
-        max_expansions=max_expansions,
+        inventory_modules=(),
+        paper_modules=(import_module,),
+        specification_names=names,
+        include_semantic_displays=False,
+        include_axiom_closure=False,
         timeout_seconds=timeout_seconds,
+        build_timeout_seconds=build_timeout_seconds,
     )
-
-
-def run_lean_transparent_paper_declaration_displays(
-    root: Path,
-    import_module: str,
-    declaration_names: list[str],
-    paper_modules: tuple[str, ...],
-    *,
-    timeout_seconds: int = 120,
-    build_timeout_seconds: int = 600,
-    build_input_provider: RepositoryBuildInputSnapshotProvider | None = None,
-    require_build: bool = True,
-) -> dict[str, dict[str, Any]]:
-    """Return Lean-owned semantic displays for retained paper-local objects.
-
-    Every transparent definition is opened exactly at its own root.  Named
-    paper and library dependencies left in that elaborated body become
-    recursive review cards; Python only carries Lean's resulting closure.
-    """
-
-    names = sorted({str(name).strip() for name in declaration_names if str(name).strip()})
-    modules = tuple(
-        sorted({str(module).strip() for module in paper_modules if str(module).strip()})
-    )
-    if not names or not modules:
+    nodes = payload.get("declarations")
+    if not isinstance(nodes, list):
         return {}
-    if require_build and not _build_import_target(
-        root,
-        import_module,
-        build_timeout_seconds,
-        provider=build_input_provider,
-    ):
-        return {}
-    return _run_transparent_paper_declaration_display_script(
-        root,
-        f"import Lean\nimport {import_module}",
-        names,
-        modules,
-        timeout_seconds=timeout_seconds,
-    )
-
-
-def run_lean_transparent_library_declaration_displays(
-    root: Path,
-    import_module: str,
-    declaration_names: list[str],
-    *,
-    timeout_seconds: int = 120,
-    build_timeout_seconds: int = 600,
-    require_build: bool = True,
-) -> dict[str, dict[str, Any]]:
-    """Return Lean-expanded own bodies for reusable library declarations.
-
-    This is deliberately a shallow declaration-level expansion: names left in
-    a definition's body form their own library review cards instead of being
-    hidden by a recursive pretty-printer.  The function is Lean-owned; Python
-    only validates and hashes the emitted transport.
-    """
-
-    names = sorted({str(name).strip() for name in declaration_names if str(name).strip()})
-    if not names or any(not name.startswith("EconCSLib.") for name in names):
-        return {}
-    if require_build and not _build_import_target(
-        root, import_module, build_timeout_seconds
-    ):
-        return {}
-    return _run_transparent_library_declaration_display_script(
-        root,
-        f"import Lean\nimport {import_module}",
-        names,
-        timeout_seconds=timeout_seconds,
-    )
+    parsed: dict[str, tuple[str, ...]] = {}
+    for node in nodes:
+        if not isinstance(node, Mapping):
+            return {}
+        declaration = str(node.get("declaration") or "").strip()
+        if declaration not in names:
+            continue
+        raw_dependencies = node.get("direct_dependencies")
+        if not isinstance(raw_dependencies, list):
+            return {}
+        dependencies = sorted(
+            {
+                str(row.get("review_owner_declaration") or "").strip()
+                for row in raw_dependencies
+                if isinstance(row, Mapping)
+                and str(row.get("review_owner_declaration") or "").strip().startswith(
+                    "AppliedModelingLib."
+                )
+            }
+        )
+        parsed[declaration] = tuple(dependencies)
+    return parsed if sorted(parsed) == names else {}
 
 
 def run_lean_signature_manifest_revalidations(
@@ -7574,8 +9654,7 @@ def run_lean_signature_manifest_revalidations(
     )
     if coordinates is None:
         return {}
-    context_cache_key, audit_modules, raw_hash_tool_identity = coordinates
-    hash_tool_path = str(raw_hash_tool_identity.get("resolved_path") or "")
+    context_cache_key, audit_modules, _raw_hash_tool_identity = coordinates
     receipt_cache_keys = {
         name: (context_cache_key, name)
         for name in names
@@ -7590,8 +9669,6 @@ def run_lean_signature_manifest_revalidations(
         if cache_key in _MANIFEST_REVALIDATION_RECEIPT_CACHE
     }
     pending_names = [name for name in names if name not in receipts]
-    initial_batches = _manifest_initial_batches(pending_names)
-    uses_chunking = len(initial_batches) > 1
 
     def retain_successful_receipts(
         extracted: Mapping[str, Mapping[str, Any]],
@@ -7606,64 +9683,50 @@ def run_lean_signature_manifest_revalidations(
                 deepcopy(stored)
             )
 
-    for batch_number, batch in enumerate(initial_batches, start=1):
+    if pending_names:
         _emit_manifest_batch_progress(
             progress_callback,
-            runner="manifest_revalidation",
+            runner="native_declaration_graph_revalidation",
             status="started",
-            batch_number=batch_number,
-            batch_total=len(initial_batches),
-            root_count=len(batch),
+            batch_number=1,
+            batch_total=1,
+            root_count=len(pending_names),
         )
-        extracted = _run_manifest_revalidation_script(
+        payload = run_lean_declaration_inventory(
             root,
-            f"import Lean\nimport {import_module}",
-            batch,
-            _manifest_batch_timeout_seconds(
-                batch, timeout_seconds, chunked=uses_chunking
-            ),
-            ",".join(audit_modules),
-            hash_tool_path,
+            import_module,
+            inventory_modules=(),
+            paper_modules=(import_module,),
+            semantic_revalidation_declaration_names=pending_names,
+            semantic_manifest_modules=audit_modules,
+            include_semantic_displays=False,
+            include_axiom_closure=False,
+            timeout_seconds=timeout_seconds,
+            build_timeout_seconds=build_timeout_seconds,
+            build_input_provider=build_input_provider,
+            require_build=False,
         )
-        retain_successful_receipts(extracted, batch)
-        missing = [name for name in batch if name not in receipts]
+        section = payload.get("semantic_revalidations")
+        rows = section.get("items") if isinstance(section, Mapping) else None
+        extracted = {
+            str(row.get("declaration") or "").strip(): dict(row["receipt"])
+            for row in rows or []
+            if isinstance(row, Mapping)
+            and isinstance(row.get("receipt"), Mapping)
+            and str(row.get("declaration") or "").strip() in pending_names
+        }
+        retain_successful_receipts(extracted, pending_names)
+        missing = [name for name in pending_names if name not in receipts]
         _emit_manifest_batch_progress(
             progress_callback,
-            runner="manifest_revalidation",
+            runner="native_declaration_graph_revalidation",
             status="finished",
-            batch_number=batch_number,
-            batch_total=len(initial_batches),
-            root_count=len(batch),
-            completed_count=len(batch) - len(missing),
+            batch_number=1,
+            batch_total=1,
+            root_count=len(pending_names),
+            completed_count=len(pending_names) - len(missing),
             missing_count=len(missing),
         )
-        if uses_chunking and len(missing) > 1:
-            retried = _manifest_adaptive_retries(
-                missing,
-                lambda retry_names: _run_manifest_revalidation_script(
-                    root,
-                    f"import Lean\nimport {import_module}",
-                    retry_names,
-                    timeout_seconds,
-                    ",".join(audit_modules),
-                    hash_tool_path,
-                ),
-            )
-            retain_successful_receipts(retried, missing)
-    missing = [name for name in names if name not in receipts]
-    if len(pending_names) > 1 and not uses_chunking:
-        retried = _manifest_adaptive_retries(
-            missing,
-            lambda retry_names: _run_manifest_revalidation_script(
-                root,
-                f"import Lean\nimport {import_module}",
-                retry_names,
-                timeout_seconds,
-                ",".join(audit_modules),
-                hash_tool_path,
-            ),
-        )
-        retain_successful_receipts(retried, missing)
     return {
         name: deepcopy(receipts[name])
         for name in names
@@ -7696,8 +9759,10 @@ def run_lean_signature_manifests_for_source(
     return {
         name: {
             **manifest,
-            "canonical_representation": "lean_compact_canonical_v2",
-            "semantic_hash_tool_identity": dict(hash_tool_identity),
+            "canonical_representation": CANONICAL_REPRESENTATION,
+            "semantic_hash_tool_identity": portable_semantic_hash_tool_identity(
+                hash_tool_identity
+            ),
         }
         for name, manifest in manifests.items()
     }
@@ -7715,32 +9780,43 @@ def run_lean_proposition_spec_proof_matches(
     """Check proof routes by definitional equality of elaborated Lean types."""
 
     canonical_routes = sorted(set(routes))
-    if not _build_import_target(
-        root,
-        import_module,
-        build_timeout_seconds,
-        provider=build_input_provider,
-    ):
-        return {}
-    olean_fingerprint = _built_olean_fingerprint(root, import_module)
-    helper_fingerprint = _file_content_fingerprint(HELPER_PATH)
-    if olean_fingerprint is None or helper_fingerprint is None:
-        return {}
-    cache_key = (
-        str(root.resolve()),
-        import_module,
-        olean_fingerprint,
-        helper_fingerprint,
-        tuple(canonical_routes),
-    )
-    if cache_key not in _PROPOSITION_SPEC_PROOF_CACHE:
-        _PROPOSITION_SPEC_PROOF_CACHE[cache_key] = _run_proposition_spec_proof_script(
+    runtime_key = _declaration_inventory_runtime_cache_key(root, import_module)
+    matches: dict[tuple[str, str], bool] = {}
+    if runtime_key is not None:
+        for route in canonical_routes:
+            row = _DECLARATION_PROOF_PAIR_CACHE.get((*runtime_key, *route))
+            if isinstance(row, Mapping) and isinstance(row.get("matches"), bool):
+                matches[route] = bool(row["matches"])
+    pending = [route for route in canonical_routes if route not in matches]
+    if pending:
+        payload = run_lean_declaration_inventory(
             root,
-            f"import Lean\nimport {import_module}",
-            canonical_routes,
-            timeout_seconds,
+            import_module,
+            inventory_modules=(),
+            paper_modules=(import_module,),
+            specification_names=(specification for specification, _ in pending),
+            proof_pairs=pending,
+            include_semantic_displays=False,
+            include_axiom_closure=False,
+            timeout_seconds=timeout_seconds,
+            build_timeout_seconds=build_timeout_seconds,
+            build_input_provider=build_input_provider,
         )
-    return _PROPOSITION_SPEC_PROOF_CACHE[cache_key]
+        raw_pairs = payload.get("proof_pairs")
+        if not isinstance(raw_pairs, list):
+            return {}
+        matches.update(
+            {
+                (
+                    str(row.get("specification") or ""),
+                    str(row.get("proof") or ""),
+                ): bool(row["matches"])
+                for row in raw_pairs
+                if isinstance(row, Mapping)
+                and isinstance(row.get("matches"), bool)
+            }
+        )
+    return matches if sorted(matches) == canonical_routes else {}
 
 
 def run_lean_proposition_spec_proof_matches_for_source(
@@ -7804,22 +9880,22 @@ def run_lean_semantic_contract_matches(
                 batch_timeout if uses_chunking else timeout_seconds,
             )
             matches.update(_requested_semantic_contract_matches(extracted, batch))
-            if uses_chunking:
-                # A missing Lean result is never credited.  Retry only that
-                # exact route so a resource failure in one bounded script does
-                # not discard independently checkable contracts in the batch.
-                for route in batch:
-                    if route in matches:
-                        continue
-                    retried = _run_semantic_contract_script(
-                        root,
-                        f"import Lean\nimport {import_module}",
-                        [route],
-                        batch_timeout,
+            missing = [route for route in batch if route not in matches]
+            if missing:
+                # Preserve every completed route.  Split only the unresolved
+                # subset so a capacity failure does not turn one large paper
+                # into a fixed sequence of one-process-per-row imports.
+                matches.update(
+                    _semantic_contract_adaptive_retries(
+                        missing,
+                        lambda retry_routes: _run_semantic_contract_script(
+                            root,
+                            f"import Lean\nimport {import_module}",
+                            retry_routes,
+                            batch_timeout if uses_chunking else timeout_seconds,
+                        ),
                     )
-                    matches.update(
-                        _requested_semantic_contract_matches(retried, [route])
-                    )
+                )
         _SEMANTIC_CONTRACT_CACHE[cache_key] = _requested_semantic_contract_matches(
             matches, canonical_routes
         )
@@ -7835,140 +9911,6 @@ def run_lean_semantic_contract_matches_for_source(
     """Test helper for exact semantic contracts declared in inline Lean source."""
 
     return _run_semantic_contract_script(
-        root,
-        f"import Lean\n\n{source}",
-        sorted(set(routes)),
-        timeout_seconds,
-    )
-
-
-def run_lean_operational_outcome_domain_bridges(
-    root: Path,
-    import_module: str,
-    routes: list[OperationalOutcomeDomainRoute],
-    timeout_seconds: int = 120,
-    build_timeout_seconds: int = 600,
-    *,
-    build_input_provider: RepositoryBuildInputSnapshotProvider | None = None,
-) -> dict[OperationalOutcomeDomainRoute, bool]:
-    """Check terminal-existence bridge routes from elaborated Lean types.
-
-    Each route is ``(target, bridge, model, terminal, run, terminal_predicate,
-    model_root, transition_root)`` using outer Pi indices and exact resolved
-    declaration roots. The checker derives the existential result domain,
-    requires an exact-header bridge theorem, and verifies that the model value
-    occurs in the concrete transition relation. Route names only locate Lean
-    declarations; mathematical acceptance is entirely Meta-level.
-    """
-
-    canonical_routes = sorted(set(routes))
-    if not _build_import_target(
-        root,
-        import_module,
-        build_timeout_seconds,
-        provider=build_input_provider,
-    ):
-        return {}
-    olean_fingerprint = _built_olean_fingerprint(root, import_module)
-    helper_fingerprint = _file_content_fingerprint(HELPER_PATH)
-    if olean_fingerprint is None or helper_fingerprint is None:
-        return {}
-    cache_key = (
-        str(root.resolve()),
-        import_module,
-        olean_fingerprint,
-        helper_fingerprint,
-        tuple(canonical_routes),
-    )
-    if cache_key not in _OPERATIONAL_OUTCOME_DOMAIN_BRIDGE_CACHE:
-        checked = _run_operational_outcome_domain_bridge_script(
-            root,
-            f"import Lean\nimport {import_module}",
-            canonical_routes,
-            timeout_seconds,
-        )
-        _OPERATIONAL_OUTCOME_DOMAIN_BRIDGE_CACHE[cache_key] = {
-            route: checked[route] for route in canonical_routes if route in checked
-        }
-    return _OPERATIONAL_OUTCOME_DOMAIN_BRIDGE_CACHE[cache_key]
-
-
-def run_lean_operational_outcome_domain_bridges_for_source(
-    root: Path,
-    source: str,
-    routes: list[OperationalOutcomeDomainRoute],
-    timeout_seconds: int = 120,
-) -> dict[OperationalOutcomeDomainRoute, bool]:
-    """Test helper for terminal-existence bridge checks in inline Lean code."""
-
-    return _run_operational_outcome_domain_bridge_script(
-        root,
-        f"import Lean\n\n{source}",
-        sorted(set(routes)),
-        timeout_seconds,
-    )
-
-
-def run_lean_operational_outcome_state_transition_bridges(
-    root: Path,
-    import_module: str,
-    routes: list[OperationalOutcomeStateTransitionRoute],
-    timeout_seconds: int = 120,
-    build_timeout_seconds: int = 600,
-    *,
-    build_input_provider: RepositoryBuildInputSnapshotProvider | None = None,
-) -> dict[OperationalOutcomeStateTransitionRoute, bool]:
-    """Check exact bridges for result-local operational state domains.
-
-    Each route is ``(target, terminal_bridge, initial_witness, model, state,
-    initial, terminal, run, terminal_predicate, model_root, state_root,
-    transition_root)``.  Lean derives both exact-header proof types and
-    verifies the direct state/transition occurrence relations.  Names only
-    locate declarations and roots supplied by the generated manifest; they
-    are not used for semantic classification.
-    """
-
-    canonical_routes = sorted(set(routes))
-    if not _build_import_target(
-        root,
-        import_module,
-        build_timeout_seconds,
-        provider=build_input_provider,
-    ):
-        return {}
-    olean_fingerprint = _built_olean_fingerprint(root, import_module)
-    helper_fingerprint = _file_content_fingerprint(HELPER_PATH)
-    if olean_fingerprint is None or helper_fingerprint is None:
-        return {}
-    cache_key = (
-        str(root.resolve()),
-        import_module,
-        olean_fingerprint,
-        helper_fingerprint,
-        tuple(canonical_routes),
-    )
-    if cache_key not in _OPERATIONAL_OUTCOME_STATE_TRANSITION_BRIDGE_CACHE:
-        checked = _run_operational_outcome_state_transition_bridge_script(
-            root,
-            f"import Lean\nimport {import_module}",
-            canonical_routes,
-            timeout_seconds,
-        )
-        _OPERATIONAL_OUTCOME_STATE_TRANSITION_BRIDGE_CACHE[cache_key] = {
-            route: checked[route] for route in canonical_routes if route in checked
-        }
-    return _OPERATIONAL_OUTCOME_STATE_TRANSITION_BRIDGE_CACHE[cache_key]
-
-
-def run_lean_operational_outcome_state_transition_bridges_for_source(
-    root: Path,
-    source: str,
-    routes: list[OperationalOutcomeStateTransitionRoute],
-    timeout_seconds: int = 120,
-) -> dict[OperationalOutcomeStateTransitionRoute, bool]:
-    """Test helper for result-local state/transition bridge checks."""
-
-    return _run_operational_outcome_state_transition_bridge_script(
         root,
         f"import Lean\n\n{source}",
         sorted(set(routes)),
@@ -8032,7 +9974,10 @@ def run_lean_semantic_contract_transparency_checks(
         names = list(specifications)
         batches = _semantic_contract_transparency_batches(names)
         uses_chunking = len(batches) > 1
-        batch_timeout = min(timeout_seconds, MAX_CHUNKED_MANIFEST_TIMEOUT_SECONDS)
+        batch_timeout = min(
+            timeout_seconds,
+            MAX_CHUNKED_SEMANTIC_CONTRACT_TRANSPARENCY_TIMEOUT_SECONDS,
+        )
         checks: dict[str, dict[str, Any]] = {}
         for batch in batches:
             extracted = _run_semantic_contract_transparency_script(
@@ -8106,6 +10051,8 @@ def _semantic_contract_closure_context_sha256(
     paper_modules: tuple[str, ...],
     workspace_scope_sha256: str,
     foundation_modules: tuple[str, ...],
+    foreign_model_definitions: tuple[str, ...],
+    foreign_model_modules: tuple[str, ...],
 ) -> str:
     """Bind a closure receipt to its module/package ownership context."""
 
@@ -8133,6 +10080,8 @@ def _semantic_contract_closure_context_sha256(
             "paper_modules": list(paper_modules),
             "workspace_module_scope_sha256": workspace_scope_sha256,
             "foundation_module_roots": list(foundation_modules),
+            "foreign_model_definitions": list(foreign_model_definitions),
+            "foreign_model_modules": list(foreign_model_modules),
             "extractor_identity": extractor_identity,
             "package_identities": package_identities,
         }
@@ -8190,6 +10139,69 @@ def _semantic_contract_closure_extractor_identity() -> dict[str, str] | None:
     }
 
 
+def _semantic_contract_closure_extractor_contract_identity() -> dict[str, object]:
+    """Return the durable output contract, independent of implementation code.
+
+    The implementation source slice remains useful provenance and a cache
+    coordinate. It is not a semantic paper input: review-compatible refactors
+    must not reopen every closure. A correctness change that alters this
+    contract must bump this explicit schema/contract through the registered
+    audit-protocol transition instead.
+    """
+
+    return {
+        "schema": SEMANTIC_CONTRACT_CLOSURE_EXTRACTOR_CONTRACT_SCHEMA,
+        "contract": "lean_semantic_contract_closure_v1",
+        "closure_schema": SEMANTIC_CONTRACT_CLOSURE_SCHEMA,
+        "canonical_surface_representation": (
+            "lean_compact_canonical_surface_sha256_v2"
+        ),
+        "digest_algorithm": "sha256",
+        "ownership_policy": "explicit_paper_foundation_and_foreign_model_scope_v1",
+    }
+
+
+def _legacy_semantic_contract_closure_extractor_is_compatible(
+    value: object,
+) -> bool:
+    """Recognize accepted schema-4 provenance under the current contract.
+
+    This is a schema-to-contract projection, not an engine-version bridge. All
+    future compatible implementations project to the same durable contract;
+    a contract change receives one new contract schema rather than pairwise
+    compatibility code.
+    """
+
+    if not isinstance(value, Mapping):
+        return False
+    sha_fields = (
+        "lean_helper_sha256",
+        "python_source_slice_sha256",
+        "python_source_slice_builder_sha256",
+        "python_source_slice_roots_sha256",
+        "python_source_slice_symbols_sha256",
+        "python_source_slice_local_imports_sha256",
+    )
+    return bool(
+        value.get("schema") == "4"
+        and value.get("canonical_surface_representation")
+        == "lean_compact_canonical_surface_sha256_v2"
+        and value.get("digest_algorithm") == "sha256"
+        and all(
+            re.fullmatch(r"[0-9a-f]{64}", str(value.get(field) or ""))
+            for field in sha_fields
+        )
+        and all(
+            str(value.get(field) or "").isdigit()
+            for field in (
+                "python_source_slice_schema",
+                "python_source_slice_symbol_count",
+                "python_source_slice_local_import_count",
+            )
+        )
+    )
+
+
 def _semantic_contract_closure_hash_tool_identity() -> dict[str, str] | None:
     """Resolve, pin, and self-test the exact SHA-256 executable used by Lean."""
 
@@ -8242,6 +10254,25 @@ def _semantic_contract_closure_hash_tool_identity() -> dict[str, str] | None:
     }
 
 
+def portable_semantic_hash_tool_identity(value: object) -> dict[str, str]:
+    """Use the shared durable projector without a conditional top-level import.
+
+    Closure-extractor identity is itself a transitive top-level source slice.
+    Keeping this tiny forwarding function avoids turning package-vs-direct
+    execution import routing into a hidden top-level provider in that slice.
+    """
+
+    try:
+        from scripts.portable_evidence_identity import (
+            portable_semantic_hash_tool_identity as project,
+        )
+    except ModuleNotFoundError:  # Direct ``python scripts/...`` execution.
+        from portable_evidence_identity import (
+            portable_semantic_hash_tool_identity as project,
+        )
+    return project(value)
+
+
 def _with_semantic_contract_closure_context(
     manifests: dict[str, dict[str, Any]],
     context_sha256: str,
@@ -8290,7 +10321,9 @@ def _with_semantic_contract_closure_module_identities(
     """Attach exact encountered module pins to each independently audited Spec."""
 
     extractor_identity = _semantic_contract_closure_extractor_identity()
-    if extractor_identity is None:
+    extractor_contract = _semantic_contract_closure_extractor_contract_identity()
+    portable_hash_tool = portable_semantic_hash_tool_identity(hash_tool_identity)
+    if extractor_identity is None or not portable_hash_tool:
         return {}
     identity_snapshot = (
         _closure_module_identity_snapshot(
@@ -8304,10 +10337,16 @@ def _with_semantic_contract_closure_module_identities(
     attached: dict[str, dict[str, Any]] = {}
     for specification, manifest in manifests.items():
         scope = manifest.get("scope")
-        if not isinstance(scope, dict) or scope.get(
-            "hash_tool_path"
-        ) != hash_tool_identity.get("resolved_path"):
+        if not isinstance(scope, dict):
             continue
+        canonical_scope = dict(scope)
+        historical_path = str(canonical_scope.pop("hash_tool_path", "") or "")
+        command = str(canonical_scope.get("hash_tool_command") or "")
+        if command not in {"", "sha256sum"} or (
+            not command and not historical_path
+        ):
+            continue
+        canonical_scope["hash_tool_command"] = "sha256sum"
         identities = [
             dict(identity) for identity in identity_snapshot.get(specification, [])
         ]
@@ -8333,15 +10372,17 @@ def _with_semantic_contract_closure_module_identities(
                 "schema": SEMANTIC_CONTRACT_CLOSURE_SCHEMA,
                 "foundation_context_sha256": foundation_context_sha256,
                 "module_identities": identities,
-                "extractor_identity": extractor_identity,
+                "extractor_contract": extractor_contract,
             }
         )
         attached[specification] = {
             **manifest,
+            "scope": canonical_scope,
             "closure_module_identities": identities,
             "closure_foundation_context_sha256": foundation_context_sha256,
             "closure_extractor_identity": extractor_identity,
-            "closure_hash_tool_identity": dict(hash_tool_identity),
+            "closure_extractor_contract_identity": extractor_contract,
+            "closure_hash_tool_identity": portable_hash_tool,
             "closure_module_context_sha256": module_context_sha256,
         }
     return attached
@@ -8419,24 +10460,38 @@ def reattach_semantic_contract_closure_module_identities(
 ) -> dict[str, dict[str, Any]]:
     """Revalidate saved closure receipts against their current narrow context.
 
-    This accepts only authenticated closure cores already emitted under the
-    current extractor identity. The hash tool, foundation context, every
-    reached module artifact, and the resulting environment digest must also
-    remain byte-for-byte equal. A caller must separately establish that these
-    are the current requested Spec roots; this function never infers roots
-    from declaration spellings.
+    This accepts only authenticated closure cores emitted under the current
+    durable extractor contract. Implementation source identity is provenance,
+    not paper semantics. The hash tool behavior, foundation context, and every
+    reached module artifact must remain equal. A caller must separately
+    establish that these are the current requested Spec roots; this function
+    never infers roots from declaration spellings.
     """
 
     extractor_identity = _semantic_contract_closure_extractor_identity()
     hash_tool_identity = _semantic_contract_closure_hash_tool_identity()
     if extractor_identity is None or hash_tool_identity is None:
         return {}
+    extractor_contract = _semantic_contract_closure_extractor_contract_identity()
+    portable_hash_tool = portable_semantic_hash_tool_identity(hash_tool_identity)
     eligible = {
         specification: dict(manifest)
         for specification, manifest in manifests.items()
         if _semantic_contract_closure_core_digests_are_current(manifest)
-        and manifest.get("closure_extractor_identity") == extractor_identity
-        and manifest.get("closure_hash_tool_identity") == hash_tool_identity
+        and (
+            manifest.get("closure_extractor_contract_identity")
+            == extractor_contract
+            or (
+                "closure_extractor_contract_identity" not in manifest
+                and _legacy_semantic_contract_closure_extractor_is_compatible(
+                    manifest.get("closure_extractor_identity")
+                )
+            )
+        )
+        and portable_semantic_hash_tool_identity(
+            manifest.get("closure_hash_tool_identity")
+        )
+        == portable_hash_tool
     }
     if not eligible:
         return {}
@@ -8454,8 +10509,11 @@ def reattach_semantic_contract_closure_module_identities(
         == current.get("closure_module_identities")
         and eligible[specification].get("closure_foundation_context_sha256")
         == current.get("closure_foundation_context_sha256")
-        and eligible[specification].get("closure_module_context_sha256")
-        == current.get("closure_module_context_sha256")
+        and (
+            "closure_extractor_contract_identity" not in eligible[specification]
+            or eligible[specification].get("closure_module_context_sha256")
+            == current.get("closure_module_context_sha256")
+        )
     }
 
 
@@ -8466,6 +10524,8 @@ def run_lean_semantic_contract_closure_manifests(
     paper_modules: tuple[str, ...],
     *,
     foundation_modules: tuple[str, ...] = DEFAULT_SEMANTIC_CONTRACT_FOUNDATION_MODULES,
+    foreign_model_definitions: tuple[str, ...] = (),
+    foreign_model_modules: tuple[str, ...] = (),
     max_expansions: int = 512,
     timeout_seconds: int = 180,
     build_timeout_seconds: int = 600,
@@ -8490,12 +10550,25 @@ def run_lean_semantic_contract_closure_manifests(
     foundations = tuple(
         sorted(set(module.strip() for module in foundation_modules if module.strip()))
     )
+    raw_foreign_definitions = tuple(
+        str(declaration).strip() for declaration in foreign_model_definitions
+    )
+    raw_foreign_modules = tuple(str(module).strip() for module in foreign_model_modules)
+    foreign_definitions = tuple(sorted(set(raw_foreign_definitions)))
+    foreign_modules = tuple(sorted(set(raw_foreign_modules)))
     use_compiled_helper = _compiled_audit_helper_available(root)
     hash_tool_identity = _semantic_contract_closure_hash_tool_identity()
     if (
         not specifications
         or not modules
         or not foundations
+        or bool(foreign_definitions) != bool(foreign_modules)
+        or any(not declaration for declaration in raw_foreign_definitions)
+        or any(not module for module in raw_foreign_modules)
+        or len(foreign_definitions) != len(raw_foreign_definitions)
+        or len(foreign_modules) != len(raw_foreign_modules)
+        or any("." not in declaration for declaration in foreign_definitions)
+        or any("." not in module for module in foreign_modules)
         or hash_tool_identity is None
         or not (1 <= max_expansions <= 4096)
         or not _build_import_target(
@@ -8512,7 +10585,8 @@ def run_lean_semantic_contract_closure_manifests(
         return {}
     olean_fingerprint = _built_olean_fingerprint(root, import_module)
     helper_fingerprint = _file_content_fingerprint(HELPER_PATH)
-    module_fingerprints = _paper_module_olean_fingerprints(root, modules)
+    closure_modules = tuple(sorted(set(modules + foreign_modules)))
+    module_fingerprints = _paper_module_olean_fingerprints(root, closure_modules)
     if olean_fingerprint is None or helper_fingerprint is None:
         return {}
     if import_module not in modules:
@@ -8530,6 +10604,7 @@ def run_lean_semantic_contract_closure_manifests(
                 "schema": SEMANTIC_CONTRACT_CLOSURE_SCHEMA,
                 "ownership_policy": "unregistered_loaded_module_is_external_fail_closed_v1",
                 "paper_modules": list(modules),
+                "foreign_model_modules": list(foreign_modules),
             }
         )
     else:
@@ -8566,6 +10641,8 @@ def run_lean_semantic_contract_closure_manifests(
         modules,
         workspace_scope_sha256,
         foundations,
+        foreign_definitions,
+        foreign_modules,
     )
     if not re.fullmatch(r"[0-9a-f]{64}", context_sha256):
         return {}
@@ -8579,6 +10656,8 @@ def run_lean_semantic_contract_closure_manifests(
         specifications,
         modules,
         foundations,
+        foreign_definitions,
+        foreign_modules,
         context_sha256,
         _closure_json_sha256(hash_tool_identity),
         max_expansions,
@@ -8599,7 +10678,7 @@ def run_lean_semantic_contract_closure_manifests(
     # fallback retains its legacy prepass for fixture compatibility.
     candidate_artifacts = _closure_module_artifact_snapshot(
         root,
-        modules if use_compiled_helper else loaded_candidates,
+        closure_modules if use_compiled_helper else loaded_candidates,
         timeout_seconds=build_timeout_seconds,
         lean_path=lean_path,
     )
@@ -8624,6 +10703,8 @@ def run_lean_semantic_contract_closure_manifests(
             modules,
             workspace_modules,
             foundations,
+            foreign_model_definitions=foreign_definitions,
+            foreign_model_modules=foreign_modules,
             hash_tool_path=hash_tool_identity["resolved_path"],
             inline_paper_scope=not use_compiled_helper,
             use_compiled_helper=use_compiled_helper,
@@ -8644,6 +10725,8 @@ def run_lean_semantic_contract_closure_manifests(
                     modules,
                     workspace_modules,
                     foundations,
+                    foreign_model_definitions=foreign_definitions,
+                    foreign_model_modules=foreign_modules,
                     hash_tool_path=hash_tool_identity["resolved_path"],
                     inline_paper_scope=not use_compiled_helper,
                     use_compiled_helper=use_compiled_helper,
@@ -8656,7 +10739,7 @@ def run_lean_semantic_contract_closure_manifests(
                     )
                 )
     requested = _requested_semantic_contract_closure_manifests(manifests, names)
-    if _paper_module_olean_fingerprints(root, modules) != module_fingerprints:
+    if _paper_module_olean_fingerprints(root, closure_modules) != module_fingerprints:
         return {}
     if (
         _semantic_contract_closure_context_sha256(
@@ -8665,6 +10748,8 @@ def run_lean_semantic_contract_closure_manifests(
             modules,
             workspace_scope_sha256,
             foundations,
+            foreign_definitions,
+            foreign_modules,
         )
         != context_sha256
     ):

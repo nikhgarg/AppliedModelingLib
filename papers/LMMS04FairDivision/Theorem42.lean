@@ -1,8 +1,8 @@
-import EconCSLib.SocialChoice.FairDivision.Mechanisms
+import AppliedModelingLib.SocialChoice.FairDivision.Mechanisms
 
 open scoped BigOperators
-open EconCSLib
-open EconCSLib.FairDivision
+open AppliedModelingLib
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 namespace Theorem42

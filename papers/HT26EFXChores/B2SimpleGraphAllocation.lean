@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, lines 2684--2967.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- A direct suffix combines with a two-short/two-long super-canonical prefix
 when the long suffixes are empty and each short final bundle is within one

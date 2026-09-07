@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import fcntl
 import importlib.util
 import hashlib
 import io
@@ -14,7 +13,7 @@ import sys
 import tempfile
 import unittest
 from copy import deepcopy
-from contextlib import ExitStack, nullcontext, redirect_stderr, redirect_stdout
+from contextlib import ExitStack, redirect_stderr, redirect_stdout
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
@@ -34,10 +33,15 @@ from scripts.source_record_integrity import (  # noqa: E402
 )
 from scripts import lean_signature_manifest as MANIFESTS  # noqa: E402
 from scripts import lean_import_closure as IMPORT_CLOSURE  # noqa: E402
+from scripts import source_record_prompt as PROMPT  # noqa: E402
 from scripts import source_record_record_closure_completion as CLOSURE  # noqa: E402
 from scripts.source_record_target_disposition import (  # noqa: E402
     semantic_association_record_digest,
     source_map_item_record_digest,
+)
+from scripts.source_record_raw_producer_identity import (  # noqa: E402
+    SOURCE_RECORD_RAW_PRODUCER_BEGIN_MARKER,
+    SOURCE_RECORD_RAW_PRODUCER_END_MARKER,
 )
 from scripts.formalization_protocol import (  # noqa: E402
     formalization_protocol_digest,
@@ -453,8 +457,8 @@ class EffectiveAnalysisManifestTests(unittest.TestCase):
         self.assertEqual(
             [call.args[0] for call in progress.call_args_list],
             [
-                "exact elaborated review-signature manifest batch 1/1 started (1 roots)",
-                "exact elaborated review-signature manifest batch 1/1 finished (1 roots; 1 complete; 0 missing)",
+                "exact elaborated review-signature graph request 1/1 started (1 roots)",
+                "exact elaborated review-signature graph request 1/1 finished (1 roots; 1 complete; 0 missing)",
             ],
         )
 
@@ -937,6 +941,7 @@ class PriorReviewManifestReuseTests(unittest.TestCase):
         self.assertEqual(duplicates, set())
         self.assertEqual(set(bindings), {qualified})
         self.assertEqual(bindings[qualified]["source_file"], "PaperInterface.lean")
+        self.assertEqual(bindings[qualified]["line_number"], 2)
         self.assertIn("theorem reviewed : True", bindings[qualified]["lean_source_declaration"])
         self.assertNotIn("unconfigured", bindings[qualified]["lean_source_declaration"])
 
@@ -1070,6 +1075,130 @@ class PriorReviewManifestReuseTests(unittest.TestCase):
             AUDIT.elaborated_proposition_graph_sha256(graph),
         )
 
+    def test_configured_raw_publication_uses_dashboard_source_binding_contract(
+        self,
+    ) -> None:
+        """The producer and consumer must serialize one exact authority body."""
+
+        from scripts import review_dashboard
+
+        qualified = "Fixture.PaperInterface.reviewed"
+        signature = "a" * 64
+        dependency = "b" * 64
+        graph = {"schema": 1, "nodes": [{"path": "result"}]}
+        graph_sha256 = AUDIT.elaborated_proposition_graph_sha256(graph)
+        manifest = {
+            "sha256": signature,
+            "elaborated_proposition_graph": graph,
+        }
+        row = {
+            "qualified_declaration": qualified,
+            "elaborated_signature_sha256": signature,
+            "semantic_dependency_sha256": dependency,
+            "elaborated_proposition_graph_sha256": graph_sha256,
+        }
+        source_binding = {
+            "qualified_declaration": qualified,
+            "source_file": "PaperInterface.lean",
+            "lean_source_declaration": "theorem reviewed : True",
+            "line_number": 17,
+            "declaration_kind": "theorem",
+        }
+        with (
+            patch.object(AUDIT, "signature_manifest_digest", return_value=signature),
+            patch.object(
+                AUDIT,
+                "semantic_dependency_manifest",
+                return_value={"semantic_dependency_sha256": dependency},
+            ),
+            patch.object(
+                AUDIT,
+                "merge_authenticated_manifest_store",
+                return_value={qualified},
+            ) as publish,
+        ):
+            accepted = AUDIT.publish_source_record_signature_manifest_store(
+                root=ROOT,
+                paper_dir=ROOT / "papers" / "Fixture",
+                import_module="Fixture.PaperInterface",
+                semantic_dependency_modules=("Fixture.PaperInterface",),
+                configured_review_rows=[row],
+                manifests={qualified: manifest},
+                context={},
+                configured_source_bindings={qualified: source_binding},
+            )
+
+        self.assertEqual(accepted, {qualified})
+        actual = publish.call_args.kwargs["candidates"][0]["authority_binding"]
+        expected = review_dashboard.review_signature_manifest_authority_binding(
+            qualified_declaration=qualified,
+            source_file="PaperInterface.lean",
+            lean_source_declaration="theorem reviewed : True",
+            line_number=17,
+            declaration_kind="theorem",
+            elaborated_signature_sha256=signature,
+            elaborated_proposition_graph_sha256=graph_sha256,
+        )
+        self.assertEqual(actual, expected)
+
+    def test_reached_paper_local_manifest_uses_exact_source_binding(self) -> None:
+        """Non-surface roots are reusable only through their frozen source."""
+
+        from scripts import review_dashboard
+
+        qualified = "Fixture.Model.reached"
+        signature = "a" * 64
+        dependency = "b" * 64
+        graph = {"schema": 1, "nodes": []}
+        graph_sha256 = AUDIT.elaborated_proposition_graph_sha256(graph)
+        manifest = {
+            "sha256": signature,
+            "elaborated_proposition_graph": graph,
+        }
+        source_binding = {
+            "qualified_declaration": qualified,
+            "source_file": "Model.lean",
+            "lean_source_declaration": "def reached : Prop := True",
+            "line_number": 8,
+            "declaration_kind": "def",
+        }
+        with (
+            patch.object(AUDIT, "signature_manifest_digest", return_value=signature),
+            patch.object(
+                AUDIT,
+                "semantic_dependency_manifest",
+                return_value={"semantic_dependency_sha256": dependency},
+            ),
+            patch.object(
+                AUDIT,
+                "merge_authenticated_manifest_store",
+                return_value={qualified},
+            ) as publish,
+        ):
+            accepted = AUDIT.publish_source_record_signature_manifest_store(
+                root=ROOT,
+                paper_dir=ROOT / "papers" / "Fixture",
+                import_module="Fixture.PaperInterface",
+                semantic_dependency_modules=("Fixture.PaperInterface",),
+                configured_review_rows=[],
+                manifests={qualified: manifest},
+                context={},
+                configured_source_bindings={qualified: source_binding},
+            )
+
+        self.assertEqual(accepted, {qualified})
+        actual = publish.call_args.kwargs["candidates"][0]["authority_binding"]
+        expected = review_dashboard.review_signature_manifest_authority_binding(
+            qualified_declaration=qualified,
+            source_file="Model.lean",
+            lean_source_declaration="def reached : Prop := True",
+            line_number=8,
+            declaration_kind="def",
+            elaborated_signature_sha256=signature,
+            elaborated_proposition_graph_sha256=graph_sha256,
+        )
+        self.assertEqual(actual, expected)
+
     def _run_reuse(
         self,
         *,
@@ -1096,7 +1225,7 @@ class PriorReviewManifestReuseTests(unittest.TestCase):
                 "resolved_path": "/fixture/hash",
                 "sha256": "e" * 64,
             },
-            "canonical_representation": "lean_compact_canonical_v2",
+            "canonical_representation": MANIFESTS.CANONICAL_REPRESENTATION,
             "audit_scope_fingerprint": MANIFESTS._audit_scope_fingerprint(
                 "Fixture.PaperInterface",
                 ("c" * 64, 10),
@@ -1475,8 +1604,16 @@ class ManifestContextCacheSeedingTests(unittest.TestCase):
     SIGNATURE = "a" * 64
     DEPENDENCY = "b" * 64
     HASH_TOOL = {
+        "command": "sha256sum",
         "resolved_path": "/fixture/semantic-hash",
-        "sha256": "c" * 64,
+        "executable_sha256": "c" * 64,
+        "version_stdout_sha256": "d" * 64,
+        "version_banner": "fixture sha256sum",
+        "known_vector": "sha256(abc)",
+        "known_vector_sha256": (
+            "ba7816bf8f01cfea414140de5dae2223"
+            "b00361a396177a9cb410ff61f20015ad"
+        ),
     }
 
     def context(self) -> dict[str, object]:
@@ -1488,7 +1625,7 @@ class ManifestContextCacheSeedingTests(unittest.TestCase):
             "olean_fingerprint": list(olean),
             "helper_fingerprint": ["e" * 64, 20],
             "semantic_hash_tool_identity": dict(self.HASH_TOOL),
-            "canonical_representation": "lean_compact_canonical_v2",
+            "canonical_representation": MANIFESTS.CANONICAL_REPRESENTATION,
             "audit_scope_fingerprint": MANIFESTS._audit_scope_fingerprint(
                 self.MODULE, olean, modules
             ),
@@ -1501,7 +1638,7 @@ class ManifestContextCacheSeedingTests(unittest.TestCase):
     def manifest(self) -> dict[str, object]:
         return {
             "sha256": self.SIGNATURE,
-            "canonical_representation": "lean_compact_canonical_v2",
+            "canonical_representation": MANIFESTS.CANONICAL_REPRESENTATION,
             "semantic_hash_tool_identity": dict(self.HASH_TOOL),
             "test_dependency_sha256": self.DEPENDENCY,
         }
@@ -1519,6 +1656,11 @@ class ManifestContextCacheSeedingTests(unittest.TestCase):
 
     def digest_patches(self):
         return (
+            patch.object(
+                MANIFESTS,
+                "_semantic_contract_closure_hash_tool_identity",
+                return_value=dict(self.HASH_TOOL),
+            ),
             patch.object(
                 MANIFESTS,
                 "signature_manifest_digest",
@@ -1539,13 +1681,14 @@ class ManifestContextCacheSeedingTests(unittest.TestCase):
         context = self.context()
         MANIFESTS._CACHE.clear()
         try:
-            digest_patch, dependency_patch = self.digest_patches()
+            hash_tool_patch, digest_patch, dependency_patch = self.digest_patches()
             with (
                 patch.object(
                     MANIFESTS,
                     "signature_manifest_cache_context",
                     return_value=context,
                 ),
+                hash_tool_patch,
                 digest_patch,
                 dependency_patch,
                 patch.object(MANIFESTS, "_run_manifest_script") as run_script,
@@ -1590,13 +1733,14 @@ class ManifestContextCacheSeedingTests(unittest.TestCase):
         pins[self.DECLARATION]["manifest_cache_context_sha256"] = "f" * 64
         MANIFESTS._CACHE.clear()
         try:
-            digest_patch, dependency_patch = self.digest_patches()
+            hash_tool_patch, digest_patch, dependency_patch = self.digest_patches()
             with (
                 patch.object(
                     MANIFESTS,
                     "signature_manifest_cache_context",
                     return_value=context,
                 ),
+                hash_tool_patch,
                 digest_patch,
                 dependency_patch,
             ):
@@ -1616,11 +1760,12 @@ class ManifestContextCacheSeedingTests(unittest.TestCase):
         context = self.context()
         MANIFESTS._CACHE.clear()
         try:
-            digest_patch, dependency_patch = self.digest_patches()
+            hash_tool_patch, digest_patch, dependency_patch = self.digest_patches()
             with (
                 patch.object(
                     MANIFESTS, "signature_manifest_cache_context"
                 ) as context_provider,
+                hash_tool_patch,
                 digest_patch,
                 dependency_patch,
             ):
@@ -1643,13 +1788,14 @@ class ManifestContextCacheSeedingTests(unittest.TestCase):
         pins[self.DECLARATION]["elaborated_signature_sha256"] = "not-a-digest"
         MANIFESTS._CACHE.clear()
         try:
-            digest_patch, dependency_patch = self.digest_patches()
+            hash_tool_patch, digest_patch, dependency_patch = self.digest_patches()
             with (
                 patch.object(
                     MANIFESTS,
                     "signature_manifest_cache_context",
                     return_value=context,
                 ),
+                hash_tool_patch,
                 digest_patch,
                 dependency_patch,
             ):
@@ -1671,13 +1817,14 @@ class ManifestContextCacheSeedingTests(unittest.TestCase):
         pins[self.DECLARATION]["semantic_dependency_sha256"] = "f" * 64
         MANIFESTS._CACHE.clear()
         try:
-            digest_patch, dependency_patch = self.digest_patches()
+            hash_tool_patch, digest_patch, dependency_patch = self.digest_patches()
             with (
                 patch.object(
                     MANIFESTS,
                     "signature_manifest_cache_context",
                     return_value=context,
                 ),
+                hash_tool_patch,
                 digest_patch,
                 dependency_patch,
             ):
@@ -1699,13 +1846,14 @@ class ManifestContextCacheSeedingTests(unittest.TestCase):
         manifest["canonical_representation"] = "different-representation"
         MANIFESTS._CACHE.clear()
         try:
-            digest_patch, dependency_patch = self.digest_patches()
+            hash_tool_patch, digest_patch, dependency_patch = self.digest_patches()
             with (
                 patch.object(
                     MANIFESTS,
                     "signature_manifest_cache_context",
                     return_value=context,
                 ),
+                hash_tool_patch,
                 digest_patch,
                 dependency_patch,
             ):
@@ -1730,13 +1878,14 @@ class ManifestContextCacheSeedingTests(unittest.TestCase):
         }
         MANIFESTS._CACHE.clear()
         try:
-            digest_patch, dependency_patch = self.digest_patches()
+            hash_tool_patch, digest_patch, dependency_patch = self.digest_patches()
             with (
                 patch.object(
                     MANIFESTS,
                     "signature_manifest_cache_context",
                     return_value=context,
                 ),
+                hash_tool_patch,
                 digest_patch,
                 dependency_patch,
             ):
@@ -2371,6 +2520,128 @@ class RecursiveFieldSelectedRouteScopeTests(unittest.TestCase):
 
 
 class RawProducerTransitiveIdentityTests(unittest.TestCase):
+    def test_registered_engine_tree_memoizes_raw_producer_identity(self) -> None:
+        """An exact clean engine may reuse provenance, never a mutable result."""
+
+        identity = {
+            "path": (
+                "skills/econcs-formalizer/scripts/source_record_audit.py"
+                "#fresh-raw-generation"
+            ),
+            "sha256": "a" * 64,
+            "status": "present",
+        }
+        producer = Mock(return_value=identity)
+        AUDIT._registered_raw_generation_code_identity.cache_clear()
+        try:
+            with (
+                patch.object(
+                    AUDIT,
+                    "_UNCACHED_SOURCE_RECORD_RAW_GENERATION_CODE_IDENTITY",
+                    producer,
+                ),
+                patch.object(
+                    AUDIT,
+                    "_source_record_raw_generation_code_identity",
+                    producer,
+                ),
+                patch.object(
+                    AUDIT,
+                    "validate_runtime_engine_registration",
+                    return_value=SimpleNamespace(engine_tree_sha256="b" * 64),
+                ),
+            ):
+                first = AUDIT.source_record_raw_producer_code_identities()
+                producer_entry = next(
+                    item for item in first if item["path"].endswith("#fresh-raw-generation")
+                )
+                producer_entry["sha256"] = "mutated by caller"
+                second = AUDIT.source_record_raw_producer_code_identities()
+        finally:
+            AUDIT._registered_raw_generation_code_identity.cache_clear()
+
+        producer.assert_called_once_with()
+        second_entry = next(
+            item for item in second if item["path"].endswith("#fresh-raw-generation")
+        )
+        self.assertEqual(second_entry, identity)
+
+    def test_dirty_or_unregistered_engine_recomputes_raw_producer_identity(
+        self,
+    ) -> None:
+        """No cache may authenticate provenance without exact engine bytes."""
+
+        identity = {
+            "path": (
+                "skills/econcs-formalizer/scripts/source_record_audit.py"
+                "#fresh-raw-generation"
+            ),
+            "sha256": "c" * 64,
+            "status": "present",
+        }
+        producer = Mock(return_value=identity)
+        AUDIT._registered_raw_generation_code_identity.cache_clear()
+        try:
+            with (
+                patch.object(
+                    AUDIT,
+                    "_UNCACHED_SOURCE_RECORD_RAW_GENERATION_CODE_IDENTITY",
+                    producer,
+                ),
+                patch.object(
+                    AUDIT,
+                    "_source_record_raw_generation_code_identity",
+                    producer,
+                ),
+                patch.object(
+                    AUDIT,
+                    "validate_runtime_engine_registration",
+                    side_effect=AUDIT.EngineRevisionError("unregistered engine"),
+                ),
+            ):
+                AUDIT.source_record_raw_producer_code_identities()
+                AUDIT.source_record_raw_producer_code_identities()
+        finally:
+            AUDIT._registered_raw_generation_code_identity.cache_clear()
+
+        self.assertEqual(producer.call_count, 2)
+
+    def test_identity_is_independent_of_checkout_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            parent = Path(tmpdir)
+
+            def make_checkout(name: str) -> tuple[Path, Path]:
+                root = parent / name
+                scripts = root / "scripts"
+                scripts.mkdir(parents=True)
+                (scripts / "helper.py").write_text(
+                    "def semantic_value():\n    return 1\n",
+                    encoding="utf-8",
+                )
+                entry = root / "producer.py"
+                entry.write_text(
+                    "from scripts.helper import semantic_value\n"
+                    "def _run_audit():\n"
+                    f"    {SOURCE_RECORD_RAW_PRODUCER_BEGIN_MARKER}\n"
+                    "    result = semantic_value()\n"
+                    f"    {SOURCE_RECORD_RAW_PRODUCER_END_MARKER}\n"
+                    "    return result\n",
+                    encoding="utf-8",
+                )
+                return root, entry
+
+            first_root, first_entry = make_checkout("first-clone")
+            second_root, second_entry = make_checkout("unrelated/worktree")
+            first = AUDIT._source_record_raw_generation_code_identity(
+                entry_path=first_entry, repository_root=first_root
+            )
+            second = AUDIT._source_record_raw_generation_code_identity(
+                entry_path=second_entry, repository_root=second_root
+            )
+
+        self.assertEqual(first["status"], "present")
+        self.assertEqual(second, first)
+
     def test_prompt_only_helper_change_does_not_invalidate_raw_producer(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -2381,9 +2652,9 @@ class RawProducerTransitiveIdentityTests(unittest.TestCase):
                     "def render_prompt():\n"
                     f"    return {prompt_text!r}\n"
                     "def _run_audit():\n"
-                    f"    {AUDIT.SOURCE_RECORD_RAW_PRODUCER_BEGIN_MARKER}\n"
+                    f"    {SOURCE_RECORD_RAW_PRODUCER_BEGIN_MARKER}\n"
                     "    payload = {'semantic': 1}\n"
-                    f"    {AUDIT.SOURCE_RECORD_RAW_PRODUCER_END_MARKER}\n"
+                    f"    {SOURCE_RECORD_RAW_PRODUCER_END_MARKER}\n"
                     "    payload['llm_judge_prompt'] = render_prompt()\n"
                     "    return payload\n",
                     encoding="utf-8",
@@ -2422,9 +2693,9 @@ class RawProducerTransitiveIdentityTests(unittest.TestCase):
             entry.write_text(
                 "from scripts.receipt import attach_receipt\n"
                 "def _run_audit():\n"
-                f"    {AUDIT.SOURCE_RECORD_RAW_PRODUCER_BEGIN_MARKER}\n"
+                f"    {SOURCE_RECORD_RAW_PRODUCER_BEGIN_MARKER}\n"
                 "    payload = {'semantic': 1}\n"
-                f"    {AUDIT.SOURCE_RECORD_RAW_PRODUCER_END_MARKER}\n"
+                f"    {SOURCE_RECORD_RAW_PRODUCER_END_MARKER}\n"
                 "    attach_receipt(payload)\n"
                 "    return payload\n",
                 encoding="utf-8",
@@ -2460,9 +2731,9 @@ class RawProducerTransitiveIdentityTests(unittest.TestCase):
             entry.write_text(
                 "from scripts.first import first\n"
                 "def _run_audit():\n"
-                f"    {AUDIT.SOURCE_RECORD_RAW_PRODUCER_BEGIN_MARKER}\n"
+                f"    {SOURCE_RECORD_RAW_PRODUCER_BEGIN_MARKER}\n"
                 "    result = first()\n"
-                f"    {AUDIT.SOURCE_RECORD_RAW_PRODUCER_END_MARKER}\n"
+                f"    {SOURCE_RECORD_RAW_PRODUCER_END_MARKER}\n"
                 "    return result\n",
                 encoding="utf-8",
             )
@@ -2511,9 +2782,9 @@ class RawProducerTransitiveIdentityTests(unittest.TestCase):
             entry.write_text(
                 "from scripts.first import missing\n"
                 "def _run_audit():\n"
-                f"    {AUDIT.SOURCE_RECORD_RAW_PRODUCER_BEGIN_MARKER}\n"
+                f"    {SOURCE_RECORD_RAW_PRODUCER_BEGIN_MARKER}\n"
                 "    result = missing()\n"
-                f"    {AUDIT.SOURCE_RECORD_RAW_PRODUCER_END_MARKER}\n"
+                f"    {SOURCE_RECORD_RAW_PRODUCER_END_MARKER}\n"
                 "    return result\n",
                 encoding="utf-8",
             )
@@ -2719,7 +2990,7 @@ class PaperInterfaceClosedWorldTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "unresolved repository Lean import"):
                 AUDIT.diagnostic_imported_paper_lean_files(root, [interface])
 
-    def test_root_econcslib_import_is_in_the_exact_closure(self) -> None:
+    def test_root_appliedmodelinglib_import_is_in_the_exact_closure(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             paper = root / "papers" / "Fixture"
@@ -2727,11 +2998,11 @@ class PaperInterfaceClosedWorldTests(unittest.TestCase):
             interface = paper / "PaperInterface.lean"
             interface.write_text("import Fixture.Basic\n", encoding="utf-8")
             basic = paper / "Basic.lean"
-            basic.write_text("import EconCSLib\n", encoding="utf-8")
-            econcslib = root / "EconCSLib.lean"
-            econcslib.write_text("def rootModel := 1\n", encoding="utf-8")
+            basic.write_text("import AppliedModelingLib\n", encoding="utf-8")
+            library_root = root / "AppliedModelingLib.lean"
+            library_root.write_text("def rootModel := 1\n", encoding="utf-8")
             record = lean_import_closure_record(
-                root, interface, [interface, basic, econcslib]
+                root, interface, [interface, basic, library_root]
             )
             lean_owned = AUDIT.source_record_lean_import_closure_from_record(
                 root, interface, record
@@ -2742,10 +3013,17 @@ class PaperInterfaceClosedWorldTests(unittest.TestCase):
                 interface,
                 lean_import_closure=lean_owned,
             )
+            diagnostic_closure = AUDIT.diagnostic_imported_paper_lean_files(
+                root, [interface]
+            )
 
         self.assertEqual(
             {path.name for path in closure},
-            {"PaperInterface.lean", "Basic.lean", "EconCSLib.lean"},
+            {"PaperInterface.lean", "Basic.lean", "AppliedModelingLib.lean"},
+        )
+        self.assertEqual(
+            {path.name for path in diagnostic_closure},
+            {"Basic.lean", "AppliedModelingLib.lean"},
         )
 
     def test_cache_probe_reuses_saved_lean_closure_without_live_graph(self) -> None:
@@ -2819,224 +3097,20 @@ class PaperInterfaceClosedWorldTests(unittest.TestCase):
         )
 
 
-class SourceRecordAuditLockTests(unittest.TestCase):
-    def test_lock_status_reports_holder_metadata_without_reclaiming_it(self) -> None:
-        """A PID namespace mismatch is observable, never a recovery signal."""
+class SourceRecordAdmissionLockIntegrationTests(unittest.TestCase):
+    def test_cli_exposes_no_retired_closeout_raw_transition(self) -> None:
+        process = subprocess.run(
+            [sys.executable, str(HELPER), "--help"],
+            cwd=ROOT,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
 
-        with tempfile.TemporaryDirectory() as tmpdir:
-            root = Path(tmpdir)
-            lock_path = root / ".lake" / "source-record-audit.lock"
-            lock_path.parent.mkdir(parents=True)
-            owner = {
-                "schema": AUDIT.SOURCE_RECORD_AUDIT_LOCK_SCHEMA,
-                "pid": 2,
-                "paper": "FixturePaper",
-                "operation": "source_record_scan",
-                "started_at_epoch": 1.0,
-                "heartbeat_at_epoch": 2.0,
-            }
-            lock_path.write_text(json.dumps(owner), encoding="utf-8")
-            holder = subprocess.Popen(
-                [
-                    sys.executable,
-                    "-c",
-                    (
-                        "import fcntl, pathlib, sys, time; "
-                        "path = pathlib.Path(sys.argv[1]); "
-                        "handle = path.open('a+'); "
-                        "fcntl.flock(handle.fileno(), fcntl.LOCK_EX); "
-                        "print('locked', flush=True); time.sleep(30)"
-                    ),
-                    str(lock_path),
-                ],
-                stdout=subprocess.PIPE,
-                text=True,
-            )
-            try:
-                assert holder.stdout is not None
-                self.assertEqual(holder.stdout.readline().strip(), "locked")
-                before = lock_path.stat().st_ino
-                status = AUDIT.source_record_audit_lock_status(root)
-                self.assertTrue(status["held"])
-                self.assertEqual(status["state"], "held")
-                self.assertEqual(status["owner_visibility"], "recorded")
-                self.assertEqual(status["owner"], owner)
-                self.assertEqual(lock_path.stat().st_ino, before)
-            finally:
-                holder.terminate()
-                holder.wait(timeout=10)
-                if holder.stdout is not None:
-                    holder.stdout.close()
-
-    def test_lock_owner_metadata_is_written_and_cleared_with_the_lease(self) -> None:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            root = Path(tmpdir)
-            lock_path = root / ".lake" / "source-record-audit.lock"
-            with AUDIT.source_record_audit_lock(
-                root,
-                0,
-                owner={
-                    "paper": "FixturePaper",
-                    "operation": "source_record_scan",
-                    "request_id": "fixture-request",
-                    "ignored": "not serialized",
-                },
-            ):
-                with redirect_stderr(io.StringIO()):
-                    AUDIT.source_record_progress("fixture exact manifest phase started")
-                owner = json.loads(lock_path.read_text(encoding="utf-8"))
-                self.assertEqual(owner["schema"], AUDIT.SOURCE_RECORD_AUDIT_LOCK_SCHEMA)
-                self.assertEqual(owner["paper"], "FixturePaper")
-                self.assertEqual(owner["operation"], "source_record_scan")
-                self.assertEqual(owner["request_id"], "fixture-request")
-                self.assertNotIn("ignored", owner)
-                self.assertEqual(owner["progress_sequence"], 1)
-                self.assertEqual(
-                    owner["progress_message"], "fixture exact manifest phase started"
-                )
-                self.assertGreaterEqual(
-                    float(owner["progress_at_epoch"]), float(owner["started_at_epoch"])
-                )
-                self.assertGreaterEqual(
-                    float(owner["heartbeat_at_epoch"]), float(owner["started_at_epoch"])
-                )
-            status = AUDIT.source_record_audit_lock_status(root)
-            self.assertFalse(status["held"])
-            self.assertEqual(status["state"], "available")
-            self.assertEqual(status["owner_visibility"], "empty")
-
-    def test_lock_status_treats_malformed_or_oversized_owner_bytes_as_diagnostic_only(
-        self,
-    ) -> None:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            root = Path(tmpdir)
-            lock_path = root / ".lake" / "source-record-audit.lock"
-            lock_path.parent.mkdir(parents=True)
-            lock_path.write_bytes(b"\xff")
-            malformed = AUDIT.source_record_audit_lock_status(root)
-            self.assertFalse(malformed["held"])
-            self.assertEqual(malformed["state"], "available")
-            self.assertEqual(malformed["owner_visibility"], "updating_or_malformed")
-
-            lock_path.write_bytes(
-                b"x" * (AUDIT.SOURCE_RECORD_AUDIT_LOCK_MAX_OWNER_BYTES + 1)
-            )
-            oversized = AUDIT.source_record_audit_lock_status(root)
-            self.assertFalse(oversized["held"])
-            self.assertEqual(oversized["owner_visibility"], "too_large")
-
-            lock_path.write_text(
-                json.dumps({"pid": 2, "started_at_epoch": 1.0}), encoding="utf-8"
-            )
-            stale = AUDIT.source_record_audit_lock_status(root)
-            self.assertFalse(stale["held"])
-            self.assertEqual(stale["owner_visibility"], "last_owner")
-
-    def test_source_subprocess_receives_the_active_audit_lock_fd(self) -> None:
-        """A detached Lake child keeps serialization if its supervisor disappears."""
-
-        class CompletedChild:
-            returncode = 0
-
-            @staticmethod
-            def communicate(*, timeout: float) -> tuple[str, None]:
-                return "", None
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            root = Path(tmpdir)
-            with AUDIT.source_record_audit_lock(root, 0):
-                active_fd = AUDIT._ACTIVE_SOURCE_RECORD_AUDIT_LOCK_FD.get()
-                self.assertIsInstance(active_fd, int)
-                with patch.object(
-                    AUDIT.subprocess, "Popen", return_value=CompletedChild()
-                ) as popen:
-                    result = AUDIT.run_source_record_subprocess(
-                        [sys.executable, "-c", "pass"],
-                        cwd=root,
-                        phase="fixture inherited lock child",
-                        timeout_seconds=1,
-                    )
-                self.assertEqual(result.returncode, 0)
-                self.assertEqual(popen.call_args.kwargs["pass_fds"], (active_fd,))
-                self.assertTrue(popen.call_args.kwargs["close_fds"])
-
-    def test_inherited_lock_fd_survives_parent_descriptor_close(self) -> None:
-        """Kernel flock ownership follows the child, not the lost supervisor."""
-
-        def probe(path: Path) -> str:
-            command = [
-                sys.executable,
-                "-c",
-                (
-                    "import fcntl, pathlib, sys; "
-                    "handle = pathlib.Path(sys.argv[1]).open('a+'); "
-                    "\ntry:\n"
-                    " fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB); "
-                    " print('available')\n"
-                    "except BlockingIOError:\n"
-                    " print('held')\n"
-                ),
-                str(path),
-            ]
-            return subprocess.check_output(command, text=True).strip()
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            root = Path(tmpdir)
-            lock_path = root / ".lake" / "source-record-audit.lock"
-            lock_path.parent.mkdir(parents=True)
-            parent_handle = lock_path.open("a+", encoding="utf-8")
-            child: subprocess.Popen[str] | None = None
-            try:
-                fcntl.flock(parent_handle.fileno(), fcntl.LOCK_EX)
-                child = subprocess.Popen(
-                    [sys.executable, "-c", "import time; time.sleep(0.4)"],
-                    pass_fds=(parent_handle.fileno(),),
-                    start_new_session=True,
-                    text=True,
-                )
-                parent_handle.close()
-                self.assertEqual(probe(lock_path), "held")
-                child.wait(timeout=5)
-                self.assertEqual(probe(lock_path), "available")
-            finally:
-                if not parent_handle.closed:
-                    parent_handle.close()
-                if child is not None and child.poll() is None:
-                    child.terminate()
-                    child.wait(timeout=5)
-
-    def test_fails_fast_when_another_process_holds_the_repository_lock(self) -> None:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            root = Path(tmpdir)
-            lock_path = root / ".lake" / "source-record-audit.lock"
-            lock_path.parent.mkdir(parents=True)
-            holder = subprocess.Popen(
-                [
-                    sys.executable,
-                    "-c",
-                    (
-                        "import fcntl, pathlib, sys, time; "
-                        "path = pathlib.Path(sys.argv[1]); "
-                        "handle = path.open('a+'); "
-                        "fcntl.flock(handle.fileno(), fcntl.LOCK_EX); "
-                        "print('locked', flush=True); time.sleep(30)"
-                    ),
-                    str(lock_path),
-                ],
-                stdout=subprocess.PIPE,
-                text=True,
-            )
-            try:
-                assert holder.stdout is not None
-                self.assertEqual(holder.stdout.readline().strip(), "locked")
-                with self.assertRaises(AUDIT.SourceRecordAuditLockUnavailable):
-                    with AUDIT.source_record_audit_lock(root, 0):
-                        self.fail("a held source-record lock must not be re-entered")
-            finally:
-                holder.terminate()
-                holder.wait(timeout=10)
-                if holder.stdout is not None:
-                    holder.stdout.close()
+        self.assertEqual(process.returncode, 0, process.stderr)
+        self.assertNotIn("--closeout-raw-reissue", process.stdout)
+        self.assertNotIn("--closeout-raw-reissue-operation-id", process.stdout)
 
     def test_current_receipt_returns_before_acquiring_scan_lock(self) -> None:
         """A receipt-validated cache must not queue behind another Lean scan."""
@@ -3051,7 +3125,6 @@ class SourceRecordAuditLockTests(unittest.TestCase):
                 refresh_judgment_summary=False,
                 ignore_current_judgments=False,
                 identity_only=False,
-                generate_schema4_to5_migration=False,
                 lock_timeout_seconds=0.0,
             )
             output = io.StringIO()
@@ -3072,7 +3145,6 @@ class SourceRecordAuditLockTests(unittest.TestCase):
                     "_run_audit",
                     side_effect=AssertionError("current receipt must not rerun audit"),
                 ),
-                patch.object(AUDIT, "closeout_raw_reissue_admission_error") as admission,
                 redirect_stdout(output),
             ):
                 self.assertEqual(AUDIT.main(), 0)
@@ -3080,131 +3152,6 @@ class SourceRecordAuditLockTests(unittest.TestCase):
             self.assertEqual(reusable.call_count, 1)
             self.assertEqual(reusable.call_args.args, (args, Path(tmpdir).resolve()))
             self.assertEqual(output.getvalue(), "")
-            admission.assert_not_called()
-
-    @staticmethod
-    def _closeout_raw_reissue_args(tmpdir: str) -> SimpleNamespace:
-        return SimpleNamespace(
-            paper="Fixture",
-            root=tmpdir,
-            out=None,
-            stdout=False,
-            no_lean=False,
-            refresh_judgment_summary=False,
-            ignore_current_judgments=False,
-            force=False,
-            closeout_raw_reissue=True,
-            closeout_raw_reissue_operation_id="fixture-operation",
-            identity_only=False,
-            fast_saved_identity=False,
-            include_legacy_fingerprint=False,
-            generate_schema4_to5_migration=False,
-            prior_source_record_audit=None,
-            prior_source_record_judgments=None,
-            current_source_record_audit=None,
-            schema4_to5_migration_out=None,
-            lock_status=False,
-            lock_timeout_seconds=0.0,
-        )
-
-    def test_closeout_raw_reissue_admission_stops_before_source_lock(self) -> None:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            args = self._closeout_raw_reissue_args(tmpdir)
-            stderr = io.StringIO()
-            with (
-                patch.object(AUDIT, "parse_args", return_value=args),
-                patch.object(
-                    AUDIT,
-                    "emit_reusable_source_record_audit_without_lock",
-                    return_value=None,
-                ),
-                patch.object(
-                    AUDIT,
-                    "closeout_raw_reissue_admission_error",
-                    return_value="active engine wave is stale",
-                ) as admission,
-                patch.object(
-                    AUDIT,
-                    "source_record_audit_lock",
-                    side_effect=AssertionError("admission must precede source lock"),
-                ),
-                patch.object(
-                    AUDIT,
-                    "_run_audit",
-                    side_effect=AssertionError("admission must precede raw scan"),
-                ),
-                redirect_stderr(stderr),
-            ):
-                self.assertEqual(AUDIT.main(), 2)
-
-            admission.assert_called_once_with(
-                Path(tmpdir).resolve(), "Fixture", "fixture-operation"
-            )
-            self.assertIn("admission refused", stderr.getvalue())
-
-    def test_closeout_raw_reissue_cannot_cache_hit_before_admission(self) -> None:
-        """A raw reissue must never report a cache hit as a new raw action."""
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            args = self._closeout_raw_reissue_args(tmpdir)
-            stderr = io.StringIO()
-            with (
-                patch.object(AUDIT, "parse_args", return_value=args),
-                patch.object(
-                    AUDIT,
-                    "emit_reusable_source_record_audit_without_lock",
-                    side_effect=AssertionError(
-                        "closeout raw reissue must bypass reusable cache"
-                    ),
-                ) as reusable,
-                patch.object(
-                    AUDIT,
-                    "closeout_raw_reissue_admission_error",
-                    return_value="missing matching wrapper operation",
-                ) as admission,
-                patch.object(
-                    AUDIT,
-                    "source_record_audit_lock",
-                    side_effect=AssertionError("admission must precede source lock"),
-                ),
-                redirect_stderr(stderr),
-            ):
-                self.assertEqual(AUDIT.main(), 2)
-
-            reusable.assert_not_called()
-            admission.assert_called_once_with(
-                Path(tmpdir).resolve(), "Fixture", "fixture-operation"
-            )
-            self.assertIn("admission refused", stderr.getvalue())
-
-    def test_closeout_raw_reissue_rechecks_admission_after_source_lock(self) -> None:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            args = self._closeout_raw_reissue_args(tmpdir)
-            stderr = io.StringIO()
-            with (
-                patch.object(AUDIT, "parse_args", return_value=args),
-                patch.object(
-                    AUDIT,
-                    "emit_reusable_source_record_audit_without_lock",
-                    return_value=None,
-                ),
-                patch.object(
-                    AUDIT,
-                    "closeout_raw_reissue_admission_error",
-                    side_effect=["", "engine changed after initial admission"],
-                ) as admission,
-                patch.object(AUDIT, "source_record_audit_lock", return_value=nullcontext()),
-                patch.object(
-                    AUDIT,
-                    "_run_audit",
-                    side_effect=AssertionError("post-lock admission must precede raw scan"),
-                ),
-                redirect_stderr(stderr),
-            ):
-                self.assertEqual(AUDIT.main(), 2)
-
-            self.assertEqual(admission.call_count, 2)
-            self.assertIn("engine changed after initial admission", stderr.getvalue())
 
 
 class SourceRecordScanInputStabilityTests(unittest.TestCase):
@@ -3288,109 +3235,6 @@ class SourceRecordScanInputStabilityTests(unittest.TestCase):
         self.assertIn(
             "paper statement-map semantic receipt changed during scan", error
         )
-
-
-class SourceRecordSubprocessTests(unittest.TestCase):
-    def test_generated_text_write_is_atomic_and_skips_identical_bytes(self) -> None:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            path = Path(tmpdir) / "source_record_audit.json"
-            path.write_text("old payload\n", encoding="utf-8")
-            before = path.stat()
-
-            self.assertFalse(
-                AUDIT.atomic_write_text_if_changed(path, "old payload\n")
-            )
-            unchanged = path.stat()
-            self.assertEqual(unchanged.st_ino, before.st_ino)
-            self.assertEqual(unchanged.st_mtime_ns, before.st_mtime_ns)
-
-            observed: dict[str, object] = {}
-            real_replace = AUDIT.os.replace
-
-            def observe_replace(source: object, destination: object) -> None:
-                source_path = Path(str(source))
-                destination_path = Path(str(destination))
-                observed["same_directory"] = (
-                    source_path.parent == destination_path.parent
-                )
-                observed["destination_before_replace"] = (
-                    destination_path.read_text(encoding="utf-8")
-                )
-                observed["temporary_payload"] = source_path.read_text(
-                    encoding="utf-8"
-                )
-                real_replace(source, destination)
-
-            with patch.object(AUDIT.os, "replace", side_effect=observe_replace):
-                self.assertTrue(
-                    AUDIT.atomic_write_text_if_changed(path, "new payload\n")
-                )
-
-            self.assertEqual(path.read_text(encoding="utf-8"), "new payload\n")
-            self.assertEqual(observed["same_directory"], True)
-            self.assertEqual(
-                observed["destination_before_replace"], "old payload\n"
-            )
-            self.assertEqual(observed["temporary_payload"], "new payload\n")
-            self.assertEqual(list(path.parent.glob(f".{path.name}.*.tmp")), [])
-
-    def test_structural_stage_progress_reports_requested_reused_fresh_and_missing(
-        self,
-    ) -> None:
-        summary = AUDIT.structural_scan_progress_summary(
-            {
-                "stages": [
-                    {
-                        "requested_count": 3,
-                        "reused_count": 2,
-                        "fresh_count": 1,
-                        "missing_count": 0,
-                        "batch_count": 1,
-                    },
-                    {
-                        "requested_count": 2,
-                        "reused_count": 1,
-                        "fresh_count": 1,
-                        "missing_count": 1,
-                        "batch_count": 1,
-                    },
-                ]
-            }
-        )
-
-        self.assertEqual(
-            summary,
-            "5 requested; 3 reused; 2 fresh; 1 missing; 2 Lean batches",
-        )
-
-    def test_progress_is_best_effort_when_the_caller_stream_is_closed(self) -> None:
-        class ClosedStream:
-            def write(self, _text: str) -> int:
-                raise BrokenPipeError("fixture closed stream")
-
-            def flush(self) -> None:
-                raise BrokenPipeError("fixture closed stream")
-
-        with patch.object(AUDIT.sys, "stderr", ClosedStream()):
-            AUDIT.source_record_progress("fixture progress")
-
-    def test_timeout_kills_the_isolated_process_group_and_reports_phase(self) -> None:
-        diagnostics = io.StringIO()
-        with redirect_stderr(diagnostics):
-            result = AUDIT.run_source_record_subprocess(
-                [sys.executable, "-c", "import time; time.sleep(30)"],
-                cwd=ROOT,
-                phase="fixture bounded child",
-                timeout_seconds=0.1,
-                heartbeat_seconds=0.01,
-            )
-
-        self.assertTrue(result.timed_out)
-        self.assertEqual(result.returncode, 124)
-        self.assertIn("fixture bounded child", result.stdout)
-        self.assertIn("killed its Lake/Lean process group", result.stdout)
-        self.assertIn("fixture bounded child started", diagnostics.getvalue())
-        self.assertIn("killed its Lake/Lean process group", diagnostics.getvalue())
 
 
 class SourcePremiseConsistencyTests(unittest.TestCase):
@@ -3626,14 +3470,23 @@ class SemanticModelReviewTests(unittest.TestCase):
             [atom["ref"] for atom in positional["spec_row"]["atoms"]],
             ["b/0", "b/1", "result"],
         )
-        self.assertEqual(positional["spec_row"]["sha256"], "a" * 64)
+        self.assertEqual(
+            positional["spec_row"]["sha256"],
+            positional["spec_row"][
+                "transparent_spec_presentation_telescope_sha256"
+            ],
+        )
+        self.assertEqual(
+            positional["spec_row"]["paired_proof_signature_sha256"],
+            "a" * 64,
+        )
         self.assertEqual(
             positional["spec_row"]["atoms"][-1],
-            full_manifest["atoms"][-1],
+            presentation["atoms"][-1],
         )
         self.assertNotEqual(
             positional["spec_row"]["atoms"][-1],
-            presentation["atoms"][-1],
+            full_manifest["atoms"][-1],
         )
         self.assertEqual(
             routes["spec_row"]["route_kind"],
@@ -3657,7 +3510,7 @@ class SemanticModelReviewTests(unittest.TestCase):
         self.assertEqual(path_errors, [])
         self.assertEqual(
             paths[0]["terminal_conclusion_atom"],
-            AUDIT.signature_manifest_atom_identity(full_manifest["atoms"][-1]),
+            AUDIT.signature_manifest_atom_identity(presentation["atoms"][-1]),
         )
 
         mismatched = deepcopy(presentation)
@@ -3751,6 +3604,46 @@ class SemanticModelReviewTests(unittest.TestCase):
         self.assertTrue(
             any("not an exact transparent" in error for error in bad_errors),
             bad_errors,
+        )
+
+    def test_transparent_spec_bare_result_uses_exact_lean_graph_pair(self) -> None:
+        """A ProofInterface endpoint may name, rather than repeat, its Spec."""
+
+        evidence = "Fixture.ProofInterface.route"
+        spec = "Fixture.PaperInterface.payload"
+        evidence_source = "theorem route : PaperInterface.payload := by sorry"
+        spec_source = "def payload : Prop := forall n : Nat, n = n"
+        semantic_declarations = [
+            local_declaration(evidence, evidence_source),
+            local_declaration(spec, spec_source),
+        ]
+        manifests = elaborated_bare_spec_pair_manifests(evidence, spec)
+
+        surfaces, errors = AUDIT.semantic_model_review_contract_companion_surfaces(
+            companion_routes=[
+                {
+                    "source_item": "source_definition",
+                    "evidence_declaration": evidence,
+                    "spec_declaration": spec,
+                }
+            ],
+            semantic_declarations=semantic_declarations,
+            proposition_aliases=AUDIT.parse_proposition_aliases(
+                semantic_declarations
+            ),
+            type_aliases=None,
+            elaborated_manifests_by_qualified=manifests,
+        )
+
+        self.assertEqual(errors, [])
+        self.assertEqual(
+            surfaces[evidence].review_alias_expansion["evidence_surface"][
+                "validation_mode"
+            ],
+            AUDIT.ELABORATED_BARE_SPEC_REFERENCE_MODE,
+        )
+        self.assertEqual(
+            [item["names"] for item in surfaces[spec].conclusion_inputs], ["n"]
         )
 
     def test_tactic_bodied_spec_uses_exact_lean_graph_pair(self) -> None:
@@ -4943,7 +4836,7 @@ class SemanticModelReviewTests(unittest.TestCase):
         )
         self.assertIn(
             "terminal_term_dependency_surface",
-            AUDIT.judge_prompt("Fixture", [item]),
+            PROMPT.judge_prompt("Fixture", [item]),
         )
         required_check = str(item["required_check"])
         self.assertIn("parameterizations", required_check)
@@ -5096,7 +4989,7 @@ class SemanticModelReviewTests(unittest.TestCase):
             },
         )
 
-    def test_outer_negation_parser_preserves_grouped_binder_arity(self) -> None:
+    def test_outer_negation_remains_in_lean_owned_terminal_conclusion(self) -> None:
         def atom(ref: str, role: str, display: str) -> dict[str, object]:
             payload: dict[str, object] = {
                 "ref": ref,
@@ -5108,11 +5001,13 @@ class SemanticModelReviewTests(unittest.TestCase):
                 payload["binder_info"] = "explicit"
             return payload
 
-        result_atom = atom("result", "conclusion", "False")
+        result_atom = atom(
+            "result", "conclusion", "¬ Exists fun outcome => Bad outcome"
+        )
         result_atom["canonical"] = {
-            "tag": "const",
-            "name": "False",
-            "levels": [],
+            "tag": "app",
+            "fn": {"tag": "const", "name": "Not", "levels": []},
+            "arg": {"tag": "fixture", "value": "bad-outcome"},
         }
         manifest = {
             "sha256": "a" * 64,
@@ -5120,7 +5015,6 @@ class SemanticModelReviewTests(unittest.TestCase):
                 atom("b/0", "parameter", "Type u"),
                 atom("b/1", "parameter", "Type v"),
                 atom("b/2", "parameter", "Left -> Right -> Nat"),
-                atom("b/3", "assumption", "Exists fun outcome => Bad outcome"),
                 result_atom,
             ],
         }
@@ -5128,7 +5022,7 @@ class SemanticModelReviewTests(unittest.TestCase):
             "∀ (Left Right : Type*) (model : Left -> Right -> Nat), "
             "¬ (∃ outcome, Bad outcome)"
         )
-        self.assertEqual(terminal, "False")
+        self.assertEqual(terminal, "¬ (∃ outcome, Bad outcome)")
         self.assertEqual(
             parsed,
             [
@@ -5141,11 +5035,6 @@ class SemanticModelReviewTests(unittest.TestCase):
                 "names": "model",
                 "type": "Left -> Right -> Nat",
                 "input_origin": "result_forall",
-            },
-            {
-                "names": "result_premise_1",
-                "type": "∃ outcome, Bad outcome",
-                "input_origin": "result_arrow",
             },
             ],
         )
@@ -5164,7 +5053,6 @@ class SemanticModelReviewTests(unittest.TestCase):
             {
                 ("row", "conclusion_dependency_items", 0): "false",
                 ("row", "conclusion_dependency_items", 1): "false",
-                ("row", "conclusion_dependency_items", 2): "true",
             },
         )
         paths, path_errors = AUDIT.elaborated_result_input_path_receipts(
@@ -5177,26 +5065,39 @@ class SemanticModelReviewTests(unittest.TestCase):
             [item["ref"] for item in paths[0]["binder_atoms"]],
             ["b/0", "b/1"],
         )
-        self.assertEqual(paths[2]["binder_atoms"][0]["ref"], "b/3")
-        self.assertEqual(paths[2]["connective"], "arrow")
+        self.assertEqual(
+            paths[1]["terminal_conclusion_atom"],
+            AUDIT.signature_manifest_atom_identity(result_atom),
+        )
 
-    def test_ascii_not_and_parenthesized_outer_negation_are_parsed(self) -> None:
+    def test_ascii_not_and_parenthesized_outer_negation_remain_terminal(self) -> None:
         for result_type in (
             "Not (Claim payload)",
             "((¬ Claim payload))",
         ):
             inputs, terminal = AUDIT.result_type_inputs(result_type)
-            self.assertEqual(terminal, "False")
-            self.assertEqual(
-                inputs,
-                [
-                    {
-                        "names": "result_premise_1",
-                        "type": "Claim payload",
-                        "input_origin": "result_arrow",
-                    }
-                ],
-            )
+            self.assertEqual(terminal, result_type)
+            self.assertEqual(inputs, [])
+
+    def test_negation_and_explicit_implication_to_false_remain_distinct(self) -> None:
+        negated_inputs, negated_terminal = AUDIT.result_type_inputs("¬ P")
+        implication_inputs, implication_terminal = AUDIT.result_type_inputs(
+            "P → False"
+        )
+
+        self.assertEqual(negated_inputs, [])
+        self.assertEqual(negated_terminal, "¬ P")
+        self.assertEqual(
+            implication_inputs,
+            [
+                {
+                    "names": "result_premise_1",
+                    "type": "P",
+                    "input_origin": "result_arrow",
+                }
+            ],
+        )
+        self.assertEqual(implication_terminal, "False")
 
     def test_negation_binds_more_tightly_than_top_level_arrow(self) -> None:
         for result_type in (
@@ -5217,17 +5118,8 @@ class SemanticModelReviewTests(unittest.TestCase):
             )
 
         inputs, terminal = AUDIT.result_type_inputs("¬ (P → Q)")
-        self.assertEqual(terminal, "False")
-        self.assertEqual(
-            inputs,
-            [
-                {
-                    "names": "result_premise_1",
-                    "type": "P → Q",
-                    "input_origin": "result_arrow",
-                }
-            ],
-        )
+        self.assertEqual(terminal, "¬ (P → Q)")
+        self.assertEqual(inputs, [])
 
     def test_nested_negation_is_not_lifted_into_a_result_premise(self) -> None:
         for result_type in (
@@ -5241,17 +5133,8 @@ class SemanticModelReviewTests(unittest.TestCase):
             self.assertEqual(terminal, result_type)
 
         inputs, terminal = AUDIT.result_type_inputs("¬ (P ∧ Q)")
-        self.assertEqual(terminal, "False")
-        self.assertEqual(
-            inputs,
-            [
-                {
-                    "names": "result_premise_1",
-                    "type": "P ∧ Q",
-                    "input_origin": "result_arrow",
-                }
-            ],
-        )
+        self.assertEqual(terminal, "¬ (P ∧ Q)")
+        self.assertEqual(inputs, [])
 
     def test_identifier_containing_not_does_not_trigger_negation_parser(self) -> None:
         result_type = "NotableResult payload"
@@ -5259,7 +5142,7 @@ class SemanticModelReviewTests(unittest.TestCase):
         self.assertEqual(inputs, [])
         self.assertEqual(terminal, result_type)
 
-    def test_outer_negation_still_fails_closed_on_manifest_arity_mismatch(self) -> None:
+    def test_outer_negation_fails_closed_if_manifest_exposes_it_as_input(self) -> None:
         inputs, _terminal = AUDIT.result_type_inputs("¬ Existing")
         positions, errors = AUDIT.lean_row_input_proposition_sorts(
             root=ROOT,
@@ -5278,12 +5161,6 @@ class SemanticModelReviewTests(unittest.TestCase):
                             "binder_info": "explicit",
                         },
                         {
-                            "ref": "b/1",
-                            "role": "assumption",
-                            "canonical": {"tag": "fixture", "value": "extra"},
-                            "binder_info": "explicit",
-                        },
-                        {
                             "ref": "result",
                             "role": "conclusion",
                             "canonical": {
@@ -5298,7 +5175,7 @@ class SemanticModelReviewTests(unittest.TestCase):
         )
         self.assertEqual(
             positions,
-            {("row", "conclusion_dependency_items", 0): "unknown"},
+            {},
         )
         self.assertEqual(len(errors), 1)
         self.assertIn("arity does not match", errors[0])
@@ -5889,7 +5766,7 @@ class SemanticModelReviewTests(unittest.TestCase):
             "source-carrier coherence analysis",
             str(item["required_check"]),
         )
-        prompt = AUDIT.judge_prompt("Fixture", [item])
+        prompt = PROMPT.judge_prompt("Fixture", [item])
         self.assertIn("source_carrier_coherence_analysis", prompt)
         self.assertIn("all-rate indexed family", prompt)
         self.assertTrue(
@@ -9736,15 +9613,12 @@ class ExplicitDirectSourceRouteAssociationTests(unittest.TestCase):
 
 
 class SourceProofFidelityContextTests(unittest.TestCase):
-    def test_source_record_prompt_versions_match_the_repository_gate(self) -> None:
+    def test_legacy_source_record_prompt_is_not_a_new_paper_contract(self) -> None:
         self.assertEqual(
             AUDIT.SOURCE_RECORD_PROMPT_VERSION,
             REPO.REQUIRED_SOURCE_RECORD_PROMPT_VERSION,
         )
-        self.assertEqual(
-            NEW_PAPER.SOURCE_RECORD_PROMPT_VERSION,
-            REPO.REQUIRED_SOURCE_RECORD_PROMPT_VERSION,
-        )
+        self.assertFalse(hasattr(NEW_PAPER, "SOURCE_RECORD_PROMPT_VERSION"))
 
     def test_source_proof_ledger_enters_semantic_judge_context_and_digest(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -9800,7 +9674,7 @@ class SourceProofFidelityContextTests(unittest.TestCase):
         assert context is not None
         self.assertEqual(context["model_conventions"][0]["id"], "FIXTURE-EVENT-CALIBRATION")
         self.assertEqual(context["checked_proof_steps"][0]["id"], "FIXTURE-FINITE-MIXTURE")
-        prompt = AUDIT.judge_prompt("Fixture", [], context)
+        prompt = PROMPT.judge_prompt("Fixture", [], context)
         self.assertIn("source-proof fidelity ledger", prompt)
         self.assertIn("source.tex:18-21", prompt)
         self.assertIn("FIXTURE-EVENT-CALIBRATION", prompt)
@@ -10134,7 +10008,7 @@ class SemanticContextRequirementTests(unittest.TestCase):
         self.assertEqual(context["source_location"], "source.txt:1")
         self.assertIn("orientation", str(context["explanation"]))
         self.assertNotIn("lean_declarations", context)
-        prompt = AUDIT.judge_prompt(
+        prompt = PROMPT.judge_prompt(
             "Fixture", [], semantic_context_requirements=contexts
         )
         self.assertIn("semantic-context requirements", prompt)
@@ -12198,6 +12072,110 @@ end Fixture
             hashlib.sha256(current_source.encode("utf-8")).hexdigest(),
         )
 
+    def test_lean_check_compiles_interface_before_proof_endpoint(
+        self,
+    ) -> None:
+        """A separate endpoint imports the freshly compiled semantic interface."""
+
+        elaborated_sources: list[str] = []
+        generated_scripts: list[str] = []
+
+        def fake_run(command: list[str], **_kwargs: object) -> object:
+            if command[:2] == ["lake", "build"]:
+                self.assertEqual(command[2], "+Fixture.ProofInterface")
+                return type("Result", (), {"returncode": 0, "stdout": ""})()
+            if command == ["lake", "env"]:
+                return type(
+                    "Result", (), {"returncode": 0, "stdout": "LEAN_PATH=/lake-path\n"}
+                )()
+            if command[:3] == ["lake", "env", "env"] and "--root" in command:
+                elaborated_sources.append(Path(command[-1]).name)
+                Path(command[command.index("-o") + 1]).write_bytes(b"fresh olean")
+                Path(command[command.index("-i") + 1]).write_bytes(b"fresh ilean")
+                return type("Result", (), {"returncode": 0, "stdout": ""})()
+            generated_scripts.append(Path(command[-1]).read_text(encoding="utf-8"))
+            return type("Result", (), {"returncode": 0, "stdout": "checked"})()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper = root / "papers" / "Fixture"
+            paper.mkdir(parents=True)
+            proof = paper / "ProofInterface.lean"
+            proof.write_text(
+                "import Fixture.PaperInterface\nnamespace Fixture\n"
+                "theorem proof_endpoint : semantic_row := trivial\n"
+                "end Fixture\n",
+                encoding="utf-8",
+            )
+            interface = paper / "PaperInterface.lean"
+            interface.write_text(
+                "namespace Fixture\ndef semantic_row : Prop := True\nend Fixture\n",
+                encoding="utf-8",
+            )
+            artifact_dir = root / ".lake" / "build" / "lib" / "lean" / "Fixture"
+            artifact_dir.mkdir(parents=True)
+            with patch.object(AUDIT, "run_source_record_subprocess", side_effect=fake_run):
+                result = AUDIT.lean_check(
+                    root=root,
+                    paper_id="Fixture",
+                    interface_path=interface,
+                    import_module="Fixture.ProofInterface",
+                    row_namespace="Fixture",
+                    row_names=["semantic_row", "proof_endpoint"],
+                    assumption_row_names=set(),
+                    qualified_row_refs={
+                        "semantic_row": "Fixture.semantic_row",
+                        "proof_endpoint": "Fixture.proof_endpoint",
+                    },
+                    fields=[],
+                    max_output_chars=1000,
+                    proof_source_path=proof,
+                )
+
+        self.assertEqual(result["returncode"], 0)
+        self.assertEqual(
+            elaborated_sources,
+            ["PaperInterface.lean", "ProofInterface.lean"],
+        )
+        self.assertEqual(len(generated_scripts), 1)
+        self.assertTrue(generated_scripts[0].startswith("import Fixture.ProofInterface\n"))
+        self.assertEqual(
+            result["fresh_source_elaboration"][
+                "selected_proof_endpoint_sources"
+            ][0]["isolated_artifact"],
+            "Fixture.ProofInterface.olean",
+        )
+
+    def test_lean_check_rejects_noncanonical_import_before_build(self) -> None:
+        """A caller cannot accidentally repeat the proof-root closeout bug."""
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            interface = root / "papers" / "Fixture" / "PaperInterface.lean"
+            interface.parent.mkdir(parents=True)
+            interface.write_text(
+                "namespace Fixture\ntheorem semantic_row : True := trivial\n"
+                "end Fixture\n",
+                encoding="utf-8",
+            )
+            with patch.object(AUDIT, "run_source_record_subprocess") as run:
+                result = AUDIT.lean_check(
+                    root=root,
+                    paper_id="Fixture",
+                    interface_path=interface,
+                    import_module="Fixture.ProofInterface",
+                    row_namespace="Fixture",
+                    row_names=["semantic_row"],
+                    assumption_row_names=set(),
+                    qualified_row_refs={"semantic_row": "Fixture.semantic_row"},
+                    fields=[],
+                    max_output_chars=1000,
+                )
+
+        self.assertEqual(result["returncode"], 1)
+        self.assertIn("smallest module", result["output"])
+        run.assert_not_called()
+
     def test_configured_interface_assumption_surface_skips_legacy_sibling(self) -> None:
         """A compact active interface must not inherit historical assumptions."""
 
@@ -12235,13 +12213,78 @@ end Fixture
                 legacy,
             )
 
+    def test_effective_assumption_surface_follows_status_or_lean_closure(self) -> None:
+        """An unimported empty scaffold is not an unauthenticated audit input."""
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper = root / "papers" / "Fixture"
+            paper.mkdir(parents=True)
+            interface = paper / "PaperInterface.lean"
+            assumptions = paper / "Assumptions.lean"
+            interface.write_text("def ClaimSpec : Prop := True\n", encoding="utf-8")
+            assumptions.write_text("-- empty scaffold\n", encoding="utf-8")
+            status = paper / "status.json"
+            status.write_text(
+                json.dumps({"review_surface": {"assumption_names": []}}),
+                encoding="utf-8",
+            )
+            interface_only = AUDIT.SourceRecordLeanImportClosure(
+                record={},
+                repository_sources=(interface,),
+                sha256="a" * 64,
+            )
+            self.assertIsNone(
+                AUDIT.effective_source_record_assumption_path(
+                    root,
+                    paper,
+                    status,
+                    interface_path=interface,
+                    lean_import_closure=interface_only,
+                )
+            )
+
+            imported_assumptions = AUDIT.SourceRecordLeanImportClosure(
+                record={},
+                repository_sources=(interface, assumptions),
+                sha256="b" * 64,
+            )
+            self.assertEqual(
+                AUDIT.effective_source_record_assumption_path(
+                    root,
+                    paper,
+                    status,
+                    interface_path=interface,
+                    lean_import_closure=imported_assumptions,
+                ),
+                assumptions,
+            )
+
+            status.write_text(
+                json.dumps(
+                    {"review_surface": {"assumption_names": ["source_assumption"]}}
+                ),
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                AUDIT.effective_source_record_assumption_path(
+                    root,
+                    paper,
+                    status,
+                    interface_path=interface,
+                    lean_import_closure=interface_only,
+                ),
+                assumptions,
+            )
+
     def test_configured_pure_rows_keep_source_and_fresh_check_coverage(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             paper = root / "papers" / "Fixture"
             paper.mkdir(parents=True)
             interface = paper / "PaperInterface.lean"
-            interface_source = """namespace Fixture
+            interface_source = """import Fixture.Assumptions
+namespace Fixture
 theorem semantic_row (n : Nat) : n = n := rfl
 theorem pure_partition_realization : True := by trivial
 end Fixture
@@ -12969,6 +13012,26 @@ end Fixture
         )
         self.assertEqual(narrowed["checked_rows"], narrowed["requested_checked_rows"])
 
+        zero_surface = AUDIT.lean_check_subset_from_configured_preflight(
+            preflight,
+            row_names=[],
+            row_namespace="Fixture.PaperInterface",
+            qualified_row_refs={
+                "named_result": "Fixture.PaperInterface.named_result",
+                "out_of_mode_result": "Fixture.PaperInterface.out_of_mode_result",
+            },
+        )
+        self.assertEqual(
+            zero_surface["command"],
+            "skipped Lean check: no source-record rows or fields",
+        )
+        self.assertEqual(zero_surface["requested_checked_rows"], [])
+        self.assertEqual(zero_surface["checked_rows"], [])
+        self.assertEqual(
+            zero_surface["fresh_source_elaboration"]["mode"],
+            "not_run_without_lean",
+        )
+
     def test_configured_review_preflight_cannot_be_reused_for_an_unchecked_row(self) -> None:
         preflight = {
             "status": "passed",
@@ -13304,6 +13367,62 @@ end Fixture
                 ),
                 {key},
             )
+
+    def test_ordinary_source_record_sidecar_does_not_import_overlay_readers(self) -> None:
+        key = "row.h : SourceAssumption"
+        item_digest = "a" * 64
+        audit_digest = "b" * 64
+        audit_payload = {
+            "prompt_version": AUDIT.SOURCE_RECORD_PROMPT_VERSION,
+            "source_record_audit_sha256": audit_digest,
+            "boundary_input_items": [
+                {
+                    "judgment_key": key,
+                    **reusable_item_receipt(
+                        "semantic_proposition_premise", item_digest
+                    ),
+                }
+            ],
+        }
+        sidecar = {
+            "schema": 1,
+            "paper": "Fixture",
+            "prompt_version": AUDIT.SOURCE_RECORD_PROMPT_VERSION,
+            "source_record_audit_sha256": audit_digest,
+            "validator": "fixture",
+            "validated_at": "2026-08-26T00:00:00Z",
+            "formalization_protocol_sha256": formalization_protocol_digest(),
+            "items": {
+                key: {
+                    "classification": "validated_source_assumption",
+                    "source_record_item_digest_schema": (
+                        REPO.SOURCE_RECORD_ITEM_DIGEST_SCHEMA
+                    ),
+                    "source_record_item_sha256": item_digest,
+                }
+            },
+        }
+        audit_payload["formalization_protocol_sha256"] = formalization_protocol_digest()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            paper = Path(tmpdir) / "papers" / "Fixture"
+            audit_dir = paper / "audit"
+            audit_dir.mkdir(parents=True)
+            (audit_dir / "source_record_match_llm.json").write_text(
+                json.dumps(sidecar), encoding="utf-8"
+            )
+            with patch.object(
+                AUDIT,
+                "_authenticated_overlay_union_module",
+                side_effect=AssertionError("ordinary path imported overlay authority"),
+            ):
+                self.assertEqual(
+                    set(
+                        AUDIT.current_source_record_judgments(
+                            paper, "Fixture", audit_payload
+                        )
+                    ),
+                    {key},
+                )
 
     def test_conditional_constructor_inputs_remain_diagnostics_until_selected(
         self,
@@ -14241,6 +14360,25 @@ class ConclusionProvenanceTests(unittest.TestCase):
             ],
         )
 
+    def test_dependent_anonymous_instance_is_one_outer_binder(self) -> None:
+        declaration = (
+            "theorem reviewed {StudentType : ℕ → Type} "
+            "[∀ C : ℕ, MeasurableSpace (StudentType C)] (C : ℕ) : True := by trivial"
+        )
+
+        self.assertEqual(
+            AUDIT.header_inputs_from_declaration(declaration),
+            [
+                {"names": "StudentType", "type": "ℕ → Type"},
+                {
+                    "names": "instance_1",
+                    "type": "∀ C : ℕ, MeasurableSpace (StudentType C)",
+                    "input_origin": "instance_binder",
+                },
+                {"names": "C", "type": "ℕ"},
+            ],
+        )
+
     def test_paper_row_mode_separates_conclusion_inputs_from_assumptions(self) -> None:
         declaration = (
             "theorem reviewed (n : Nat) : "
@@ -15060,10 +15198,10 @@ class ConclusionProvenanceTests(unittest.TestCase):
                 "Quartz", "papers/Fixture/Model.lean", 1, [target_field], ["a"]
             ),
             "Cargo": AUDIT.StructureInfo(
-                "Cargo", "EconCSLib/Fixture/Imported.lean", 1, [carrier_field], ["c"]
+                "Cargo", "AppliedModelingLib/Fixture/Imported.lean", 1, [carrier_field], ["c"]
             ),
             "Layer": AUDIT.StructureInfo(
-                "Layer", "EconCSLib/Fixture/Imported.lean", 1, [nested_field], ["b"]
+                "Layer", "AppliedModelingLib/Fixture/Imported.lean", 1, [nested_field], ["b"]
             ),
         }
         constructor = local_declaration(
@@ -15864,77 +16002,6 @@ class ConclusionProvenanceTests(unittest.TestCase):
         self.assertEqual([candidate.declaration for candidate in rejected], ["unbundleConclusion"])
         self.assertIn("same conclusion", rejected[0].circular_inputs[0])
 
-    def test_proposition_head_without_operator_is_conclusion_bearing(self) -> None:
-        field = AUDIT.FieldInfo(
-            structure="Foo",
-            field="validRun",
-            type="ValidRun trace",
-            path="Foo.validRun",
-            line=4,
-            source_file="papers/Fixture/Model.lean",
-            nested_structures=[],
-            risk_terms=AUDIT.field_risk_terms(
-                AUDIT.FieldInfo(
-                    structure="RunModel",
-                    field="validRun",
-                    type="ValidRun trace",
-                    path="RunModel.validRun",
-                    line=4,
-                    source_file="papers/Fixture/Model.lean",
-                    nested_structures=[],
-                    risk_terms=[],
-                )
-            ),
-        )
-        primitive = AUDIT.FieldInfo(
-            structure="ArrivalSourceModel",
-            field="arrival",
-            type="Real",
-            path="ArrivalSourceModel.arrival",
-            line=2,
-            source_file="papers/Fixture/Model.lean",
-            nested_structures=[],
-            risk_terms=["model", "source"],
-        )
-        self.assertTrue(
-            AUDIT.is_conclusion_bearing_field(
-                field,
-                used_as_dependency=True,
-                proposition_heads={"ValidRun"},
-            )
-        )
-        self.assertFalse(AUDIT.is_conclusion_bearing_field(primitive))
-        mixed_case = AUDIT.FieldInfo(
-            structure="Fixture",
-            field="claim",
-            type="IsOptimal policy",
-            path="Fixture.claim",
-            line=5,
-            source_file="papers/Fixture/Model.lean",
-            nested_structures=[],
-            risk_terms=[],
-        )
-        self.assertIn("optimal", AUDIT.field_risk_terms(mixed_case))
-
-    def test_scalar_source_assumption_is_not_forced_to_have_constructor(self) -> None:
-        antecedent = AUDIT.FieldInfo(
-            structure="SurgeAssumptions",
-            field="feasible_bound",
-            type="0 ≤ mass",
-            path="SurgeAssumptions.mass_nonneg",
-            line=2,
-            source_file="papers/Fixture/Assumptions.lean",
-            nested_structures=[],
-            risk_terms=[],
-        )
-        self.assertFalse(
-            AUDIT.is_conclusion_bearing_field(
-                antecedent,
-                row_result_type="OptimalPolicy policy",
-                root_structure="SurgeAssumptions",
-            )
-        )
-
     def test_neutral_paper_local_structure_is_audit_candidate(self) -> None:
         neutral = AUDIT.StructureInfo(
             name="Foo",
@@ -15944,13 +16011,13 @@ class ConclusionProvenanceTests(unittest.TestCase):
         )
         imported_neutral = AUDIT.StructureInfo(
             name="Pair",
-            source_file="EconCSLib/Utility/Pair.lean",
+            source_file="AppliedModelingLib/Utility/Pair.lean",
             line=1,
             fields=[],
         )
         imported_assumptions = AUDIT.StructureInfo(
             name="RegularityAssumptions",
-            source_file="EconCSLib/Optimization/Regularity.lean",
+            source_file="AppliedModelingLib/Optimization/Regularity.lean",
             line=1,
             fields=[],
         )
@@ -16062,11 +16129,11 @@ class ConclusionProvenanceTests(unittest.TestCase):
 
         candidates = {
             "KR21Monoculture.Model",
-            "EconCSLib.Probability.Exponential.Model",
+            "AppliedModelingLib.Probability.Exponential.Model",
         }
         parameter_counts = {
             "KR21Monoculture.Model": 1,
-            "EconCSLib.Probability.Exponential.Model": 0,
+            "AppliedModelingLib.Probability.Exponential.Model": 0,
         }
 
         # Lean resolves `Model` inside `KR21Monoculture.PaperInterface` through
@@ -16144,10 +16211,10 @@ class ConclusionProvenanceTests(unittest.TestCase):
                 "abbrev SourceModel (n : Nat) := Model n\n"
                 "end PaperInterface\n"
                 "end KR21Monoculture\n"
-                "namespace EconCSLib.Probability.Exponential\n"
+                "namespace AppliedModelingLib.Probability.Exponential\n"
                 "structure Model where\n"
                 "  evidence : Wins 0 = true\n"
-                "end EconCSLib.Probability.Exponential\n",
+                "end AppliedModelingLib.Probability.Exponential\n",
                 encoding="utf-8",
             )
             structures = AUDIT.parse_structures(Path(directory), [path])
@@ -16453,66 +16520,6 @@ class ConclusionProvenanceTests(unittest.TestCase):
                     "Alpha.theorem7AsCore?": 4,
                     "Alpha.theorem7AsCore?_eq_some_iff": 5,
                 },
-            )
-
-    def test_paper_local_lean_files_include_nested_semantic_modules(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            paper_dir = root / "papers" / "Fixture"
-            nested_dir = paper_dir / "Semantics" / "Source"
-            sibling_dir = root / "papers" / "Sibling"
-            nested_dir.mkdir(parents=True)
-            sibling_dir.mkdir(parents=True)
-
-            interface_path = paper_dir / "PaperInterface.lean"
-            top_level_path = paper_dir / "Helpers.lean"
-            nested_path = nested_dir / "Model.lean"
-            interface_path.write_text(
-                "namespace Fixture\n"
-                "theorem reviewed : True := True.intro\n"
-                "end Fixture\n",
-                encoding="utf-8",
-            )
-            top_level_path.write_text(
-                "namespace Fixture\n"
-                "def helper : Nat := 0\n"
-                "end Fixture\n",
-                encoding="utf-8",
-            )
-            nested_path.write_text(
-                "namespace Fixture\n"
-                "structure NestedSource where\n"
-                "  source_fact : True\n"
-                "theorem buildNestedSource : NestedSource :=\n"
-                "  { source_fact := True.intro }\n"
-                "end Fixture\n",
-                encoding="utf-8",
-            )
-            (paper_dir / "Semantics" / "notes.txt").write_text(
-                "not Lean", encoding="utf-8"
-            )
-            (sibling_dir / "Foreign.lean").write_text(
-                "def foreign : Nat := 0\n", encoding="utf-8"
-            )
-
-            lean_files = AUDIT.paper_local_lean_files(paper_dir, interface_path)
-
-            self.assertEqual(
-                {path.relative_to(paper_dir) for path in lean_files},
-                {
-                    Path("Helpers.lean"),
-                    Path("PaperInterface.lean"),
-                    Path("Semantics/Source/Model.lean"),
-                },
-            )
-            declarations = {
-                declaration.name
-                for declaration in AUDIT.parse_local_declarations(root, lean_files)
-            }
-            self.assertIn("Fixture.buildNestedSource", declarations)
-            self.assertIn(
-                "Fixture.NestedSource",
-                AUDIT.parse_structures(root, lean_files),
             )
 
     def test_multiline_declaration_and_structure_names_match_at_end_of_line(self) -> None:
@@ -20301,11 +20308,12 @@ class ConclusionProvenanceTests(unittest.TestCase):
             )
         )
 
-    def test_strict_v11_closeout_replaces_legacy_record_classification_heuristics(
+    def test_current_v11_direct_lane_replaces_legacy_generated_judgments(
         self,
     ) -> None:
         unresolved_key = "paper_row.hsource : SourceCondition"
         invalid_key = "paper_row.packet : SourcePacket"
+        semantic_key = "semantic-model::paper_row_proof"
         payload = {
             "prompt_version": REPO.REQUIRED_SOURCE_RECORD_PROMPT_VERSION,
             "source_record_audit_sha256": "digest",
@@ -20315,6 +20323,14 @@ class ConclusionProvenanceTests(unittest.TestCase):
             "rows_with_record_premises": [],
             "expected_field_judgment_keys": [],
             "expected_input_judgment_keys": [unresolved_key, invalid_key],
+            "expected_semantic_model_judgment_keys": [semantic_key],
+            "semantic_model_items": [
+                {
+                    "row": "paper_row_proof",
+                    "judgment_key": semantic_key,
+                    "qualified_declaration": "Fixture.paper_row_proof",
+                }
+            ],
             "boundary_input_items": [
                 {
                     "row": "paper_row",
@@ -20345,14 +20361,21 @@ class ConclusionProvenanceTests(unittest.TestCase):
         judgments = {
             unresolved_key: {"classification": "unresolved_assumed_math"},
             invalid_key: {"classification": "nonpropositional_witness_data"},
+            "historical.v10.only": {"classification": "unresolved_assumed_math"},
         }
 
         prevalidated: set[str] = set()
-        with patch.object(
-            REPO,
-            "strict_v11_occurrence_closeout_findings",
-            return_value=(True, []),
-        ) as occurrence_gate:
+        with (
+            patch.object(
+                REPO,
+                "current_v11_direct_semantic_closeout_state",
+                return_value=(True, ""),
+            ),
+            patch.object(
+                REPO,
+                "strict_v11_occurrence_closeout_findings",
+            ) as occurrence_gate,
+        ):
             findings = self._check_source_record_fixture(
                 payload,
                 judgments,
@@ -20360,7 +20383,7 @@ class ConclusionProvenanceTests(unittest.TestCase):
                 prevalidated_strict_v11_occurrence_papers=prevalidated,
             )
 
-        occurrence_gate.assert_called_once()
+        occurrence_gate.assert_not_called()
         self.assertEqual(prevalidated, {"Fixture"})
         messages = [finding.message for finding in findings]
         self.assertFalse(
@@ -20373,6 +20396,14 @@ class ConclusionProvenanceTests(unittest.TestCase):
         )
         self.assertFalse(
             any("context-invalid classification" in message for message in messages),
+            messages,
+        )
+        self.assertFalse(
+            any("semantic-model audit is missing" in message for message in messages),
+            messages,
+        )
+        self.assertFalse(
+            any("stale/extra boundary/source-record judgment" in message for message in messages),
             messages,
         )
 
@@ -20409,10 +20440,17 @@ class ConclusionProvenanceTests(unittest.TestCase):
             ],
         }
 
-        with patch.object(
-            REPO,
-            "strict_v11_occurrence_closeout_findings",
-            return_value=(False, []),
+        with (
+            patch.object(
+                REPO,
+                "current_v11_direct_semantic_closeout_state",
+                return_value=(False, "v11 evidence is incomplete"),
+            ),
+            patch.object(
+                REPO,
+                "strict_v11_occurrence_closeout_findings",
+                return_value=(False, []),
+            ),
         ):
             findings = self._check_source_record_fixture(
                 payload,
@@ -20425,6 +20463,65 @@ class ConclusionProvenanceTests(unittest.TestCase):
             any("unresolved conclusion-bearing theorem input" in message for message in messages)
         )
         self.assertTrue(any("unresolved or unapproved" in message for message in messages))
+
+    def test_current_v11_lane_hides_unselected_legacy_judgment_diagnostic(
+        self,
+    ) -> None:
+        key = "paper_row.M : SourceModel"
+        item_digest = "a" * 64
+        payload = {
+            "prompt_version": REPO.REQUIRED_SOURCE_RECORD_PROMPT_VERSION,
+            "source_record_audit_sha256": "current-aggregate",
+            "import_module": "Fixture.PaperInterface",
+            "recursive_field_count": 0,
+            "boundary_input_count": 0,
+            "rows_with_record_premises": [],
+            "expected_field_judgment_keys": [],
+            "expected_input_judgment_keys": [],
+            "conclusion_dependency_items": [
+                {
+                    "row": "paper_row",
+                    "binder": "M",
+                    "binder_type": "SourceModel",
+                    "judgment_key": key,
+                    "kind": "record_conclusion_input",
+                    "conclusion_fields": [],
+                    "valid_constructors": [],
+                    "conditional_constructors": [],
+                    **reusable_item_receipt(
+                        "record_conclusion_input", item_digest, marker="a"
+                    ),
+                }
+            ],
+        }
+
+        with patch.object(
+            REPO,
+            "current_v11_direct_semantic_closeout_state",
+            return_value=(True, ""),
+        ):
+            findings = self._check_source_record_fixture(
+                payload,
+                {
+                    key: {
+                        "classification": "container_recursively_audited",
+                        "source_record_audit_sha256": "current-aggregate",
+                        "source_record_item_digest_schema": (
+                            REPO.SOURCE_RECORD_ITEM_DIGEST_SCHEMA
+                        ),
+                        "source_record_item_sha256": item_digest,
+                    }
+                },
+                paper_closeout=True,
+            )
+
+        self.assertFalse(
+            any(
+                "stale/extra boundary/source-record judgment" in finding.message
+                for finding in findings
+            ),
+            [finding.message for finding in findings],
+        )
 
     def test_strict_v11_closeout_reports_occurrence_failure_without_legacy_noise(
         self,
@@ -20460,10 +20557,17 @@ class ConclusionProvenanceTests(unittest.TestCase):
         )
 
         prevalidated: set[str] = set()
-        with patch.object(
-            REPO,
-            "strict_v11_occurrence_closeout_findings",
-            return_value=(True, [occurrence_failure]),
+        with (
+            patch.object(
+                REPO,
+                "current_v11_direct_semantic_closeout_state",
+                return_value=(False, "v11 evidence is incomplete"),
+            ),
+            patch.object(
+                REPO,
+                "strict_v11_occurrence_closeout_findings",
+                return_value=(True, [occurrence_failure]),
+            ),
         ):
             findings = self._check_source_record_fixture(
                 payload,
@@ -21713,6 +21817,31 @@ class ConclusionProvenanceTests(unittest.TestCase):
             [finding.message for finding in findings],
         )
 
+    def test_repository_gate_accepts_current_exact_auxiliary_classification(self) -> None:
+        payload = {
+            "prompt_version": REPO.REQUIRED_SOURCE_RECORD_PROMPT_VERSION,
+            "source_record_audit_sha256": "digest",
+            "import_module": "Fixture.PaperInterface",
+            "recursive_field_count": 0,
+            "boundary_input_count": 0,
+            "rows_with_record_premises": [],
+            "conclusion_dependency_items": [],
+            "unconfigured_assumption_support_rows": [
+                "Fixture.AppendixSupport.shared",
+                "Fixture.OtherSupport.shared",
+            ],
+        }
+
+        findings = self._check_source_record_fixture(
+            payload,
+            {},
+            review_surface={"auxiliary_names": ["AppendixSupport.shared"]},
+        )
+
+        messages = [finding.message for finding in findings]
+        self.assertFalse(any("Fixture.AppendixSupport.shared" in msg for msg in messages))
+        self.assertTrue(any("Fixture.OtherSupport.shared" in msg for msg in messages))
+
     def _check_source_record_fixture(
         self,
         payload: dict[str, object],
@@ -21722,6 +21851,7 @@ class ConclusionProvenanceTests(unittest.TestCase):
         match_extra: dict[str, object] | None = None,
         paper_closeout: bool = False,
         prevalidated_strict_v11_occurrence_papers: set[str] | None = None,
+        review_surface: dict[str, object] | None = None,
     ) -> list[object]:
         old_helper = REPO.run_source_record_audit_helper
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -21789,7 +21919,7 @@ class ConclusionProvenanceTests(unittest.TestCase):
                 return REPO.check_source_record_audit(
                     "Fixture",
                     folder,
-                    {},
+                    review_surface or {},
                     "formalized",
                     strict_assumption_policy=True,
                     paper_closeout=paper_closeout,
@@ -21799,109 +21929,6 @@ class ConclusionProvenanceTests(unittest.TestCase):
                 )
             finally:
                 REPO.run_source_record_audit_helper = old_helper
-
-
-class SourceRecordCanonicalOutputTests(unittest.TestCase):
-    """The canonical cache is evidence, never a diagnostic destination."""
-
-    def test_zero_selected_no_lean_cannot_overwrite_direct_canonical_out(self) -> None:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            root = Path(tmpdir)
-            paper_dir = root / "papers" / "Fixture"
-            canonical = paper_dir / "audit" / "source_record_audit.json"
-            canonical.parent.mkdir(parents=True)
-            canonical.write_text('{"prior":"full-audit"}\n', encoding="utf-8")
-            result = AUDIT.finalize_source_record_audit_output(
-                SimpleNamespace(out=str(canonical), no_lean=True),
-                root,
-                paper_dir,
-                json.dumps(
-                    {
-                        "lean_check": {
-                            "command": "skipped Lean check: no source-record rows or fields",
-                            "returncode": 0,
-                        }
-                    }
-                ),
-                lean_returncode=0,
-                has_recursion_failures=False,
-            )
-            self.assertEqual(result, 2)
-            self.assertEqual(
-                canonical.read_text(encoding="utf-8"), '{"prior":"full-audit"}\n'
-            )
-
-    def test_default_full_success_refreshes_canonical_cache_with_compact_receipt(self) -> None:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            root = Path(tmpdir)
-            paper_dir = root / "papers" / "Fixture"
-            canonical = paper_dir / "audit" / "source_record_audit.json"
-            canonical.parent.mkdir(parents=True)
-            canonical.write_text('{"prior":"full-audit"}\n', encoding="utf-8")
-            stdout = io.StringIO()
-            with redirect_stdout(stdout):
-                result = AUDIT.finalize_source_record_audit_output(
-                    SimpleNamespace(out=None, no_lean=False, stdout=False, paper="Fixture"),
-                    root,
-                    paper_dir,
-                    '{"new":"full-audit"}',
-                    lean_returncode=0,
-                    has_recursion_failures=False,
-                )
-            self.assertEqual(result, 0)
-            self.assertIn('"canonical_refreshed": true', stdout.getvalue())
-            self.assertNotIn('"new":"full-audit"', stdout.getvalue())
-            self.assertEqual(
-                canonical.read_text(encoding="utf-8"), '{"new":"full-audit"}\n'
-            )
-
-    def test_explicit_stdout_full_success_leaves_canonical_cache_unchanged(self) -> None:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            root = Path(tmpdir)
-            paper_dir = root / "papers" / "Fixture"
-            canonical = paper_dir / "audit" / "source_record_audit.json"
-            canonical.parent.mkdir(parents=True)
-            canonical.write_text('{"prior":"full-audit"}\n', encoding="utf-8")
-            stdout = io.StringIO()
-            with redirect_stdout(stdout):
-                result = AUDIT.finalize_source_record_audit_output(
-                    SimpleNamespace(out=None, no_lean=False, stdout=True, paper="Fixture"),
-                    root,
-                    paper_dir,
-                    '{"new":"full-audit"}',
-                    lean_returncode=0,
-                    has_recursion_failures=False,
-                )
-            self.assertEqual(result, 0)
-            self.assertIn('"new":"full-audit"', stdout.getvalue())
-            self.assertEqual(
-                canonical.read_text(encoding="utf-8"), '{"prior":"full-audit"}\n'
-            )
-
-    def test_failed_lean_writes_only_noncanonical_diagnostic(self) -> None:
-        with tempfile.TemporaryDirectory() as tmpdir:
-            root = Path(tmpdir)
-            paper_dir = root / "papers" / "Fixture"
-            canonical = paper_dir / "audit" / "source_record_audit.json"
-            canonical.parent.mkdir(parents=True)
-            canonical.write_text('{"prior":"full-audit"}\n', encoding="utf-8")
-            diagnostic = root / "diagnostic.json"
-            result = AUDIT.finalize_source_record_audit_output(
-                SimpleNamespace(out=str(diagnostic), no_lean=False),
-                root,
-                paper_dir,
-                '{"lean_check":{"returncode":1}}',
-                lean_returncode=1,
-                has_recursion_failures=False,
-            )
-            self.assertEqual(result, 2)
-            self.assertEqual(
-                diagnostic.read_text(encoding="utf-8"),
-                '{"lean_check":{"returncode":1}}\n',
-            )
-            self.assertEqual(
-                canonical.read_text(encoding="utf-8"), '{"prior":"full-audit"}\n'
-            )
 
 
 class SourceRecordRawIntegrityCacheTests(unittest.TestCase):
@@ -21974,8 +22001,8 @@ class SourceRecordRawIntegrityCacheTests(unittest.TestCase):
             }
         )
 
-    def test_cache_reuses_registered_producer_only_transition(self) -> None:
-        """A ledger grant avoids a scan only when every semantic input agrees."""
+    def test_cache_reuses_registered_engine_with_producer_only_drift(self) -> None:
+        """Registered code drift avoids a scan only when semantic inputs agree."""
 
         def identities(letter: str) -> list[dict[str, str]]:
             return [
@@ -22029,23 +22056,6 @@ class SourceRecordRawIntegrityCacheTests(unittest.TestCase):
                 "lean_check": {"returncode": 0},
                 "source_record_input_fingerprint": stored,
             }
-            ledger = {
-                "revisions": [
-                    {
-                        "relation_to_previous": "review_compatible",
-                        "raw_producer_compatibility": {
-                            "schema": 1,
-                            "invariant": (
-                                "same-nonproducer-source-record-fingerprint-v1"
-                            ),
-                            "predecessor_raw_producer_code_identity_sets": [
-                                identities("1")
-                            ],
-                            "successor_raw_producer_code_identities": identities("2"),
-                        },
-                    }
-                ]
-            }
             args = SimpleNamespace(
                 paper="Fixture",
                 force=False,
@@ -22062,8 +22072,8 @@ class SourceRecordRawIntegrityCacheTests(unittest.TestCase):
                 ),
                 patch.object(
                     AUDIT,
-                    "validated_runtime_raw_producer_compatibility_ledger",
-                    return_value=ledger,
+                    "validate_runtime_engine_registration",
+                    return_value=object(),
                 ),
                 patch.object(AUDIT, "source_record_audit_receipt_error", return_value=""),
                 patch.object(
@@ -22073,9 +22083,6 @@ class SourceRecordRawIntegrityCacheTests(unittest.TestCase):
                 ),
                 patch.object(
                     AUDIT, "source_record_raw_scan_completeness_error", return_value=""
-                ),
-                patch.object(
-                    AUDIT, "direct_route_diagnostic_rebind_error", return_value=""
                 ),
                 patch.object(
                     AUDIT,
@@ -22105,6 +22112,24 @@ class SourceRecordRawIntegrityCacheTests(unittest.TestCase):
                     {"reused": True},
                 )
                 refresh.assert_called_once()
+
+                with patch.object(
+                    AUDIT,
+                    "validate_runtime_engine_registration",
+                    side_effect=AUDIT.EngineRevisionError("unregistered engine"),
+                ):
+                    self.assertIsNone(
+                        AUDIT.reusable_source_record_audit(
+                            args,
+                            root,
+                            paper_dir,
+                            paper_statement_map_sha256=map_digest,
+                            paper_statement_map_semantic_sha256=(
+                                map_semantic_digest
+                            ),
+                            saved_payload=payload,
+                        )
+                    )
 
                 changed_feature = deepcopy(current)
                 changed_feature["audit_engine_identities"] = [
@@ -22365,16 +22390,6 @@ class SourceRecordRawIntegrityCacheTests(unittest.TestCase):
                 patch.object(
                     AUDIT, "source_record_legacy_v7_input_fingerprint"
                 ) as legacy,
-                patch.object(
-                    AUDIT,
-                    "validate_source_record_partial_to_formalized_transition",
-                    return_value=["not a status-only transition"],
-                ),
-                patch.object(
-                    AUDIT,
-                    "selected_surface_rebind_context",
-                    return_value=(None, None, "no selected rebind"),
-                ),
             ):
                 self.assertIsNone(
                     AUDIT.reusable_source_record_audit(
@@ -22387,71 +22402,6 @@ class SourceRecordRawIntegrityCacheTests(unittest.TestCase):
                 )
 
         legacy.assert_not_called()
-
-    def test_closeout_raw_reissue_rejects_legacy_cache_before_rebind_paths(
-        self,
-    ) -> None:
-        """The official reissue cannot cache-hit a legacy compatibility route."""
-
-        with tempfile.TemporaryDirectory() as tmpdir:
-            root = Path(tmpdir)
-            paper_dir = root / "papers" / "Fixture"
-            audit_dir = paper_dir / "audit"
-            audit_dir.mkdir(parents=True)
-            (audit_dir / "paper_statement_map.json").write_text(
-                json.dumps({"items": {}}), encoding="utf-8"
-            )
-            map_digest, map_semantic_digest = AUDIT.paper_statement_map_cache_receipts(
-                paper_dir
-            )
-            (audit_dir / "source_record_audit.json").write_text(
-                json.dumps(
-                    {
-                        "source_record_input_fingerprint": {"schema": 9},
-                    }
-                ),
-                encoding="utf-8",
-            )
-            args = SimpleNamespace(
-                paper="Fixture",
-                force=False,
-                refresh_judgment_summary=False,
-                ignore_current_judgments=False,
-                no_lean=False,
-                closeout_raw_reissue=True,
-            )
-            current = {"schema": 10, "surface": "current"}
-            with (
-                patch.object(
-                    AUDIT, "source_record_input_fingerprint", return_value=current
-                ),
-                patch.object(
-                    AUDIT, "configured_review_reference_static_error", return_value=""
-                ),
-                patch.object(
-                    AUDIT,
-                    "source_record_raw_producer_code_identity_matches",
-                    return_value=True,
-                ),
-                patch.object(
-                    AUDIT, "source_record_legacy_v9_protocol_fingerprint"
-                ) as legacy_v9,
-                patch.object(
-                    AUDIT,
-                    "validate_source_record_partial_to_formalized_transition",
-                ) as transition,
-            ):
-                reused = AUDIT.reusable_source_record_audit(
-                    args,
-                    root,
-                    paper_dir,
-                    paper_statement_map_sha256=map_digest,
-                    paper_statement_map_semantic_sha256=map_semantic_digest,
-                )
-
-        self.assertIsNone(reused)
-        legacy_v9.assert_not_called()
-        transition.assert_not_called()
 
     def test_cache_rejects_prior_surface_generator_version(self) -> None:
         """A v3 raw may not cache-hit after the semantic producer becomes v4."""
@@ -22549,8 +22499,8 @@ class SourceRecordRawIntegrityCacheTests(unittest.TestCase):
                 )
                 refresh.assert_not_called()
 
-    def test_cache_rejects_changed_raw_producer_code_before_transition_rebind(self) -> None:
-        """Producer-code drift may not use a status/rebind cache exception."""
+    def test_cache_accepts_registered_engine_with_exact_nonproducer_inputs(self) -> None:
+        """Producer provenance is not a second semantic cache authority."""
 
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -22608,25 +22558,26 @@ class SourceRecordRawIntegrityCacheTests(unittest.TestCase):
                 refresh_judgment_summary=False,
                 ignore_current_judgments=False,
             )
-            with (
-                patch.object(
-                    AUDIT,
-                    "validate_source_record_partial_to_formalized_transition",
-                    return_value="",
-                ) as transition,
-                patch.object(AUDIT, "refresh_existing_judgment_summary") as refresh,
+            with patch.object(
+                AUDIT,
+                "refresh_existing_judgment_summary",
+                return_value={"reused": True},
+            ) as refresh, patch.object(
+                AUDIT,
+                "validate_runtime_engine_registration",
+                return_value=SimpleNamespace(engine_tree_sha256="b" * 64),
             ):
-                self.assertIsNone(
+                self.assertEqual(
                     AUDIT.reusable_source_record_audit(
                         args,
                         root,
                         paper_dir,
                         paper_statement_map_sha256=map_digest,
                         paper_statement_map_semantic_sha256=map_semantic_digest,
-                    )
+                    ),
+                    {"reused": True},
                 )
-                transition.assert_not_called()
-                refresh.assert_not_called()
+                refresh.assert_called_once()
 
     def test_recursive_field_payload_cache_fingerprint_rejects_v5_transport(self) -> None:
         """A recursive-field receipt predating the v6 transport cannot reuse."""
@@ -23369,10 +23320,10 @@ class SourceRecordRawIntegrityCacheTests(unittest.TestCase):
                 paper_statement_map_semantic_sha256=original_semantic,
             )
             assert historical_v7_fingerprint is not None
-            legacy_fingerprint = AUDIT._legacy_source_record_input_fingerprint(
-                historical_v7_fingerprint,
-                paper_statement_map_sha256=original_full,
-            )
+            legacy_fingerprint = dict(historical_v7_fingerprint)
+            legacy_fingerprint["schema"] = 6
+            legacy_fingerprint.pop("paper_statement_map_semantic_sha256", None)
+            legacy_fingerprint["paper_statement_map_sha256"] = original_full
             payload: dict[str, object] = {
                 "paper": "Fixture",
                 "prompt_version": AUDIT.SOURCE_RECORD_PROMPT_VERSION,
@@ -23511,7 +23462,6 @@ class SourceRecordCacheIdentityBoundaryTests(unittest.TestCase):
                 "scripts/audit_evidence_integrity.py",
                 "scripts/audit_repository.py",
                 "scripts/review_dashboard.py",
-                "scripts/source_record_schema4_to5_migration.py",
                 "scripts/refresh_validation_report_audit_summaries.py",
                 "docs/FORMALIZATION.md",
                 "audit/diagnostic.json",
@@ -23852,6 +23802,183 @@ class SourceRecordScanCompletenessTests(unittest.TestCase):
 class SourceRecordFastSavedIdentityTests(unittest.TestCase):
     """The responsive precheck must share its frozen raw receipt locally."""
 
+    def test_semantic_reuse_compares_the_producer_effective_root_set(self) -> None:
+        """Displayed support rows must not masquerade as canonical raw roots."""
+
+        rows = [
+            {
+                "row": "selectedSpec",
+                "qualified_declaration": "Fixture.selectedSpec",
+            },
+            {
+                "row": "supportSpec",
+                "qualified_declaration": "Fixture.supportSpec",
+            },
+        ]
+        with (
+            patch.object(
+                AUDIT,
+                "source_coverage_review_rows",
+                return_value=(
+                    ["selectedSpec"],
+                    {},
+                    {
+                        "source_coverage_selection_error": "",
+                        "source_coverage_mode_error": "",
+                        "source_coverage_route_errors": [],
+                    },
+                ),
+            ),
+            patch.object(
+                AUDIT,
+                "explicit_source_target_declarations_for_semantic_review",
+                return_value=([], []),
+            ),
+            patch.object(
+                AUDIT,
+                "explicit_source_target_review_rows",
+                return_value=(
+                    [],
+                    {"semantic_model_explicit_source_target_route_errors": []},
+                ),
+            ),
+            patch.object(
+                AUDIT, "parse_status_review_surface_names", return_value=[]
+            ),
+            patch.object(
+                AUDIT,
+                "formalization_scope_target_declarations_for_semantic_review",
+                return_value=([], []),
+            ),
+            patch.object(
+                AUDIT,
+                "effective_source_record_review_rows",
+                return_value=(
+                    ["selectedSpec"],
+                    {"semantic_model_scope_target_route_errors": []},
+                ),
+            ) as effective,
+        ):
+            declarations, error = (
+                AUDIT.current_effective_source_record_review_declarations(
+                    Path("/tmp/Fixture"),
+                    Path("/tmp/Fixture/status.json"),
+                    rows,
+                )
+            )
+
+        self.assertEqual(error, "")
+        self.assertEqual(declarations, {"Fixture.selectedSpec"})
+        self.assertEqual(
+            effective.call_args.kwargs["configured_present"],
+            ["selectedSpec", "supportSpec"],
+        )
+
+    def test_current_semantic_reuse_consumes_exact_tracked_authority_before_lean(
+        self,
+    ) -> None:
+        """A current durable Lean result must prevent duplicate elaboration."""
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper_dir = root / "papers" / "Fixture"
+            audit_dir = paper_dir / "audit"
+            audit_dir.mkdir(parents=True)
+            interface = paper_dir / "PaperInterface.lean"
+            interface.write_text("theorem reviewed : True := by trivial\n")
+            (paper_dir / "status.json").write_text("{}\n")
+            saved_payload = {"paper": "Fixture", "raw": "canonical"}
+            (audit_dir / "source_record_audit.json").write_text(
+                json.dumps(saved_payload)
+            )
+            semantic = {
+                "schema": 1,
+                "policy": AUDIT.SOURCE_RECORD_SEMANTIC_REUSE_POLICY,
+                "paper": "Fixture",
+                "current": True,
+                "reviewed_declaration_count": 1,
+                "semantic_model_dimension_count": 1,
+                "separately_routed_proof_defect_count": 0,
+                "semantic_identity_sha256": "a" * 64,
+            }
+            authority = SimpleNamespace(
+                reviewed_declarations=("Fixture.reviewed",),
+                result={"semantic_receipt_reuse": semantic},
+            )
+            saved_closure = {
+                "sources": [
+                    {"path": "papers/Fixture/PaperInterface.lean"}
+                ]
+            }
+            with (
+                patch.object(AUDIT, "review_source_path", return_value=interface),
+                patch.object(AUDIT, "proof_endpoint_source_path", return_value=None),
+                patch.object(AUDIT, "parse_status_proof_endpoint_rows", return_value=[]),
+                patch.object(
+                    AUDIT,
+                    "saved_source_record_lean_import_closure",
+                    return_value=saved_closure,
+                ),
+                patch.object(
+                    AUDIT,
+                    "validated_lean_import_closure_payload",
+                    return_value=saved_closure,
+                ),
+                patch.object(
+                    AUDIT,
+                    "lean_import_closure_payload_sha256",
+                    return_value="b" * 64,
+                ),
+                patch.object(
+                    AUDIT,
+                    "configured_review_reference_static_preflight",
+                    return_value={
+                        "status": "static_passed",
+                        "configured_rows": [
+                            {
+                                "row": "reviewed",
+                                "qualified_declaration": "Fixture.reviewed",
+                            }
+                        ],
+                    },
+                ),
+                patch.object(
+                    AUDIT,
+                    "current_effective_source_record_review_declarations",
+                    return_value=({"Fixture.reviewed"}, ""),
+                ),
+                patch.object(
+                    AUDIT,
+                    "semantic_model_review_config",
+                    return_value=({"one": {}}, []),
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_proof_fidelity_context",
+                    return_value={"defects": []},
+                ),
+                patch.object(AUDIT, "load_json_object", return_value={"items": {}}),
+                patch.object(
+                    AUDIT,
+                    "load_current_semantic_reuse_authority",
+                    return_value=authority,
+                ) as load_authority,
+                patch.object(
+                    AUDIT, "validate_current_semantic_reuse"
+                ) as fresh_semantics,
+            ):
+                closure, reused, error = (
+                    AUDIT.current_source_record_semantic_reuse_identity(
+                        root, paper_dir, saved_payload=saved_payload
+                    )
+                )
+
+        self.assertIsNotNone(closure)
+        self.assertEqual(reused, semantic)
+        self.assertEqual(error, "")
+        load_authority.assert_called_once()
+        fresh_semantics.assert_not_called()
+
     def test_fast_saved_identity_reports_schema_for_semantically_invalid_raw(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -23890,6 +24017,16 @@ class SourceRecordFastSavedIdentityTests(unittest.TestCase):
                 patch.object(
                     AUDIT,
                     "source_record_raw_semantic_surface_error",
+                    return_value="known structural rejection",
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_semantic_contract_revalidation_context",
+                    return_value=(object(), ""),
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_effective_semantic_surface_error",
                     return_value="known structural rejection",
                 ),
                 patch.object(
@@ -24082,10 +24219,450 @@ class SourceRecordFastSavedIdentityTests(unittest.TestCase):
         )
         self.assertEqual(dimensions["raw_bytes"]["state"], "unavailable")
 
-    def test_fast_saved_identity_uses_configured_proof_interface_entrypoint(
+    def test_current_semantic_reuse_supersedes_old_statement_map_hash_veto(
         self,
     ) -> None:
-        """A paired proof endpoint must not look foreign to fast reuse."""
+        """A stronger current semantic check must not be rejected afterward."""
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper_dir = root / "papers" / "Fixture"
+            audit_dir = paper_dir / "audit"
+            audit_dir.mkdir(parents=True)
+            (paper_dir / "PaperInterface.lean").write_text(
+                "namespace Fixture\ntheorem statement : True := by trivial\n",
+                encoding="utf-8",
+            )
+            (paper_dir / "status.json").write_text("{}\n", encoding="utf-8")
+            stored_fingerprint = {
+                "schema": 10,
+                "max_depth": 4,
+                "no_lean": False,
+                "paper_statement_map_semantic_sha256": "b" * 64,
+                AUDIT.SOURCE_RECORD_LEAN_IMPORT_CLOSURE_SHA256_FIELD: "f" * 64,
+            }
+            (audit_dir / "source_record_audit.json").write_text(
+                json.dumps(
+                    {
+                        "paper": "Fixture",
+                        "prompt_version": AUDIT.SOURCE_RECORD_PROMPT_VERSION,
+                        "source_record_audit_sha256": "e" * 64,
+                        "paper_statement_map_sha256": "a" * 64,
+                        "source_record_input_fingerprint": stored_fingerprint,
+                        AUDIT.SOURCE_RECORD_LEAN_IMPORT_CLOSURE_FIELD: {},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            closure = AUDIT.SourceRecordLeanImportClosure(
+                record={}, repository_sources=(), sha256="f" * 64
+            )
+            stored_fingerprint[
+                AUDIT.SOURCE_RECORD_LEAN_IMPORT_CLOSURE_SHA256_FIELD
+            ] = closure.sha256
+            semantic_reuse = {
+                "schema": 1,
+                "policy": AUDIT.SOURCE_RECORD_SEMANTIC_REUSE_POLICY,
+                "paper": "Fixture",
+                "current": True,
+            }
+            current_fingerprint = dict(stored_fingerprint)
+            current_fingerprint["paper_statement_map_semantic_sha256"] = "d" * 64
+            with (
+                patch.object(AUDIT, "source_record_audit_receipt_error", return_value=""),
+                patch.object(
+                    AUDIT, "source_record_raw_semantic_surface_error", return_value=""
+                ),
+                patch.object(
+                    AUDIT, "source_record_raw_scan_completeness_error", return_value=""
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_raw_reusable_item_metadata_error",
+                    return_value="",
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_lean_import_closure_from_record",
+                    side_effect=AUDIT.SourceRecordLeanImportClosureStaleError(
+                        "Lean import-closure source bytes changed"
+                    ),
+                ),
+                patch.object(
+                    AUDIT,
+                    "current_source_record_semantic_reuse_identity",
+                    return_value=(closure, semantic_reuse, ""),
+                ),
+                patch.object(
+                    AUDIT,
+                    "paper_statement_map_cache_receipts",
+                    return_value=("c" * 64, "d" * 64),
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_input_fingerprint",
+                    return_value=current_fingerprint,
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_raw_producer_code_identity_matches",
+                    return_value=True,
+                ),
+                patch.object(AUDIT, "write_semantic_reuse_cache") as write_cache,
+            ):
+                result = AUDIT.fast_saved_source_record_identity_payload(
+                    argparse.Namespace(paper="Fixture"), root
+                )
+
+        self.assertTrue(result["current"])
+        self.assertEqual(result["semantic_receipt_reuse"], semantic_reuse)
+        write_cache.assert_called_once()
+
+    def test_current_semantic_reuse_runs_after_nonclosure_identity_miss(self) -> None:
+        """An exact closure must not suppress the general semantic fallback."""
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper_dir = root / "papers" / "Fixture"
+            audit_dir = paper_dir / "audit"
+            audit_dir.mkdir(parents=True)
+            (paper_dir / "PaperInterface.lean").write_text(
+                "namespace Fixture\ntheorem statement : True := by trivial\n",
+                encoding="utf-8",
+            )
+            (paper_dir / "status.json").write_text("{}\n", encoding="utf-8")
+            stored_fingerprint = {
+                "schema": 10,
+                "max_depth": 4,
+                "no_lean": False,
+                "paper_statement_map_semantic_sha256": "b" * 64,
+                AUDIT.SOURCE_RECORD_LEAN_IMPORT_CLOSURE_SHA256_FIELD: "f" * 64,
+            }
+            (audit_dir / "source_record_audit.json").write_text(
+                json.dumps(
+                    {
+                        "paper": "Fixture",
+                        "prompt_version": AUDIT.SOURCE_RECORD_PROMPT_VERSION,
+                        "source_record_audit_sha256": "e" * 64,
+                        "paper_statement_map_sha256": "a" * 64,
+                        "source_record_input_fingerprint": stored_fingerprint,
+                        AUDIT.SOURCE_RECORD_LEAN_IMPORT_CLOSURE_FIELD: {},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            closure = AUDIT.SourceRecordLeanImportClosure(
+                record={}, repository_sources=(), sha256="f" * 64
+            )
+            semantic_reuse = {
+                "schema": 1,
+                "policy": AUDIT.SOURCE_RECORD_SEMANTIC_REUSE_POLICY,
+                "paper": "Fixture",
+                "current": True,
+            }
+            current_fingerprint = {
+                **stored_fingerprint,
+                "paper_statement_map_semantic_sha256": "d" * 64,
+            }
+            with (
+                patch.object(AUDIT, "source_record_audit_receipt_error", return_value=""),
+                patch.object(
+                    AUDIT, "source_record_raw_semantic_surface_error", return_value=""
+                ),
+                patch.object(
+                    AUDIT, "source_record_raw_scan_completeness_error", return_value=""
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_raw_reusable_item_metadata_error",
+                    return_value="",
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_lean_import_closure_from_record",
+                    return_value=closure,
+                ),
+                patch.object(
+                    AUDIT,
+                    "paper_statement_map_cache_receipts",
+                    return_value=("c" * 64, "d" * 64),
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_input_fingerprint",
+                    return_value=current_fingerprint,
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_raw_producer_code_identity_matches",
+                    side_effect=[False, True],
+                ),
+                patch.object(
+                    AUDIT,
+                    "current_source_record_semantic_reuse_identity",
+                    return_value=(closure, semantic_reuse, ""),
+                ) as semantic_fallback,
+                patch.object(AUDIT, "write_semantic_reuse_cache") as write_cache,
+            ):
+                result = AUDIT.fast_saved_source_record_identity_payload(
+                    argparse.Namespace(paper="Fixture"), root
+                )
+
+        self.assertTrue(result["current"], result)
+        self.assertEqual(result["semantic_receipt_reuse"], semantic_reuse)
+        semantic_fallback.assert_called_once()
+        write_cache.assert_called_once()
+
+    def test_semantic_authority_can_publish_before_separate_pair_revalidation(self) -> None:
+        """A repairable pair error cannot erase a successful Lean semantic pass."""
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper_dir = root / "papers" / "Fixture"
+            audit_dir = paper_dir / "audit"
+            audit_dir.mkdir(parents=True)
+            (paper_dir / "PaperInterface.lean").write_text(
+                "namespace Fixture\ntheorem statement : True := by trivial\n",
+                encoding="utf-8",
+            )
+            (paper_dir / "status.json").write_text("{}\n", encoding="utf-8")
+            fingerprint = {
+                "schema": 10,
+                "max_depth": 4,
+                "no_lean": False,
+                "paper_statement_map_semantic_sha256": "b" * 64,
+                AUDIT.SOURCE_RECORD_LEAN_IMPORT_CLOSURE_SHA256_FIELD: "f" * 64,
+            }
+            (audit_dir / "source_record_audit.json").write_text(
+                json.dumps(
+                    {
+                        "paper": "Fixture",
+                        "prompt_version": AUDIT.SOURCE_RECORD_PROMPT_VERSION,
+                        "source_record_audit_sha256": "e" * 64,
+                        "paper_statement_map_sha256": "a" * 64,
+                        "source_record_input_fingerprint": fingerprint,
+                        AUDIT.SOURCE_RECORD_LEAN_IMPORT_CLOSURE_FIELD: {},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            closure = AUDIT.SourceRecordLeanImportClosure(
+                record={}, repository_sources=(), sha256="f" * 64
+            )
+            semantic_reuse = {
+                "schema": 1,
+                "policy": AUDIT.SOURCE_RECORD_SEMANTIC_REUSE_POLICY,
+                "paper": "Fixture",
+                "current": True,
+            }
+            with (
+                patch.object(AUDIT, "source_record_audit_receipt_error", return_value=""),
+                patch.object(
+                    AUDIT,
+                    "source_record_raw_semantic_surface_error",
+                    return_value="transparent pair needs structural replay",
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_semantic_contract_revalidation_context",
+                    return_value=(object(), ""),
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_effective_semantic_surface_error",
+                    return_value="transparent pair needs structural replay",
+                ),
+                patch.object(
+                    AUDIT, "source_record_raw_scan_completeness_error", return_value=""
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_raw_reusable_item_metadata_error",
+                    return_value="",
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_lean_import_closure_from_record",
+                    return_value=closure,
+                ),
+                patch.object(
+                    AUDIT,
+                    "paper_statement_map_cache_receipts",
+                    return_value=("a" * 64, "b" * 64),
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_input_fingerprint",
+                    return_value=fingerprint,
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_raw_producer_code_identity_matches",
+                    side_effect=[False, True],
+                ),
+                patch.object(
+                    AUDIT,
+                    "current_source_record_semantic_reuse_identity",
+                    return_value=(closure, semantic_reuse, ""),
+                ),
+                patch.object(AUDIT, "write_semantic_reuse_cache") as write_cache,
+            ):
+                result = AUDIT.fast_saved_source_record_identity_payload(
+                    argparse.Namespace(paper="Fixture"), root
+                )
+
+        self.assertFalse(result["current"])
+        self.assertIn("transparent pair", result["reason"])
+        write_cache.assert_called_once()
+
+    def test_fast_identity_consumes_exact_input_semantic_cache_before_lean(
+        self,
+    ) -> None:
+        """The planner handoff must not relaunch current semantic validation."""
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper_dir = root / "papers" / "Fixture"
+            audit_dir = paper_dir / "audit"
+            audit_dir.mkdir(parents=True)
+            (paper_dir / "PaperInterface.lean").write_text(
+                "namespace Fixture\ntheorem statement : True := by trivial\n",
+                encoding="utf-8",
+            )
+            (paper_dir / "status.json").write_text("{}\n", encoding="utf-8")
+            (audit_dir / "source_record_audit.json").write_text(
+                json.dumps(
+                    {
+                        "paper": "Fixture",
+                        "prompt_version": AUDIT.SOURCE_RECORD_PROMPT_VERSION,
+                        "source_record_audit_sha256": "e" * 64,
+                        "source_record_input_fingerprint": {
+                            "schema": 10,
+                            "max_depth": 4,
+                            "no_lean": False,
+                        },
+                        AUDIT.SOURCE_RECORD_LEAN_IMPORT_CLOSURE_FIELD: {},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            cached = {
+                "schema": 1,
+                "paper": "Fixture",
+                "identity_scope": "repository_sources_and_configuration_only",
+                "external_artifacts_revalidated": False,
+                "current": True,
+                "semantic_receipt_reuse": {"current": True},
+            }
+            with (
+                patch.object(AUDIT, "source_record_audit_receipt_error", return_value=""),
+                patch.object(
+                    AUDIT, "source_record_raw_semantic_surface_error", return_value=""
+                ),
+                patch.object(
+                    AUDIT, "source_record_raw_scan_completeness_error", return_value=""
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_raw_reusable_item_metadata_error",
+                    return_value="",
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_lean_import_closure_from_record",
+                    side_effect=AUDIT.SourceRecordLeanImportClosureStaleError(
+                        "Lean import-closure source bytes changed"
+                    ),
+                ),
+                patch.object(
+                    AUDIT, "load_semantic_reuse_cache", return_value=cached
+                ) as load_cache,
+                patch.object(
+                    AUDIT, "current_source_record_semantic_reuse_identity"
+                ) as current_semantics,
+            ):
+                result = AUDIT.fast_saved_source_record_identity_payload(
+                    argparse.Namespace(paper="Fixture"), root
+                )
+
+        self.assertTrue(result["current"])
+        self.assertEqual(
+            result["semantic_reuse_cache"]["state"],
+            "current_exact_repository_material",
+        )
+        load_cache.assert_called_once()
+        current_semantics.assert_not_called()
+
+    def test_fast_saved_identity_classifies_changed_review_entrypoint_as_stale(
+        self,
+    ) -> None:
+        """Moving exact endpoints to ProofInterface requires a raw reissue."""
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper_dir = root / "papers" / "Fixture"
+            audit_dir = paper_dir / "audit"
+            audit_dir.mkdir(parents=True)
+            (paper_dir / "PaperInterface.lean").write_text(
+                "namespace Fixture\ntheorem statement : True := by trivial\n",
+                encoding="utf-8",
+            )
+            (paper_dir / "status.json").write_text("{}\n", encoding="utf-8")
+            (audit_dir / "source_record_audit.json").write_text(
+                json.dumps(
+                    {
+                        "paper": "Fixture",
+                        "prompt_version": AUDIT.SOURCE_RECORD_PROMPT_VERSION,
+                        "source_record_audit_sha256": "a" * 64,
+                        "source_record_input_fingerprint": {
+                            "schema": 10,
+                            "max_depth": 4,
+                            "no_lean": False,
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with (
+                patch.object(AUDIT, "source_record_audit_receipt_error", return_value=""),
+                patch.object(
+                    AUDIT, "source_record_raw_semantic_surface_error", return_value=""
+                ),
+                patch.object(
+                    AUDIT, "source_record_raw_scan_completeness_error", return_value=""
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_raw_reusable_item_metadata_error",
+                    return_value="",
+                ),
+                patch.object(
+                    AUDIT,
+                    "source_record_lean_import_closure_from_record",
+                    side_effect=ValueError(
+                        "Lean import-closure receipt belongs to a different review interface"
+                    ),
+                ),
+            ):
+                result = AUDIT.fast_saved_source_record_identity_payload(
+                    argparse.Namespace(paper="Fixture"), root
+                )
+
+        self.assertFalse(result["current"])
+        self.assertIn("different review interface", result["reason"])
+        dimensions = result["validation_dimensions"]
+        self.assertEqual(
+            dimensions["source_configuration_identity"]["state"], "stale"
+        )
+        self.assertIn(
+            "different review interface",
+            dimensions["source_configuration_identity"]["reason"],
+        )
+
+    def test_fast_saved_identity_uses_complete_proof_interface_entrypoint(
+        self,
+    ) -> None:
+        """A paired proof module roots the closure that also contains its Specs."""
 
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -24108,6 +24685,7 @@ class SourceRecordFastSavedIdentityTests(unittest.TestCase):
                     {
                         "review_surface": {
                             "proof_file": "ProofInterface.lean",
+                            "proof_module": "Fixture.ProofInterface",
                             "proposition_spec_proofs": {"ClaimSpec": "claim"},
                         }
                     }
@@ -24169,6 +24747,90 @@ class SourceRecordFastSavedIdentityTests(unittest.TestCase):
                 )
 
         self.assertEqual(closure_from_record.call_args.args[1], proof)
+
+    def test_fresh_closure_uses_proof_interface_when_proof_file_is_configured(
+        self,
+    ) -> None:
+        """The closure root follows the actual proof-to-interface import direction."""
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            paper_dir = root / "papers" / "Fixture"
+            paper_dir.mkdir(parents=True)
+            interface = paper_dir / "PaperInterface.lean"
+            proof = paper_dir / "ProofInterface.lean"
+            interface.write_text(
+                "namespace Fixture\ndef ClaimSpec : Prop := True\n",
+                encoding="utf-8",
+            )
+            proof.write_text(
+                "import Fixture.PaperInterface\nnamespace Fixture\n"
+                "theorem claim : ClaimSpec := trivial\n",
+                encoding="utf-8",
+            )
+            (paper_dir / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "source_file": "papers/Fixture/PaperInterface.lean",
+                            "proof_file": "ProofInterface.lean",
+                            "proof_module": "Fixture.ProofInterface",
+                            "proposition_spec_proofs": {"ClaimSpec": "claim"},
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            provider = Mock()
+            expected = AUDIT.SourceRecordLeanImportClosure(
+                record={}, repository_sources=(), sha256="a" * 64
+            )
+            with patch.object(
+                AUDIT,
+                "acquire_source_record_lean_import_closure",
+                return_value=(expected, ""),
+            ) as acquire:
+                actual, error = AUDIT.source_record_lean_import_closure_for_paper(
+                    root,
+                    paper_dir,
+                    provider=provider,
+                    saved_payload=None,
+                    allow_live_lean_graph=True,
+                )
+
+        self.assertIs(actual, expected)
+        self.assertEqual(error, "")
+        self.assertEqual(acquire.call_args.args[1], proof)
+
+    def test_authenticated_review_source_rejects_live_fallback(self) -> None:
+        """A configured review file omitted from the frozen closure fails clearly."""
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            interface = Path(tmpdir) / "PaperInterface.lean"
+            interface.write_text("def ClaimSpec : Prop := True\n", encoding="utf-8")
+            with self.assertRaisesRegex(
+                SystemExit,
+                "semantic review interface source is absent from the Lean-owned",
+            ):
+                AUDIT.authenticated_lean_review_source(
+                    interface,
+                    source_bytes_by_path={},
+                    source_text_by_path={},
+                    role="semantic review interface",
+                )
+
+    def test_proof_endpoint_defaults_to_review_surface_when_not_configured(self) -> None:
+        """An embedded Spec proof endpoint must not require a sibling module."""
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            folder = Path(tmpdir)
+            source = folder / "PaperInterface.lean"
+            source.write_text("-- review surface\n", encoding="utf-8")
+
+            self.assertEqual(
+                REPO.proof_endpoint_source_file_path(folder, {}),
+                source,
+            )
 
     def test_fast_saved_identity_uses_one_raw_snapshot_for_feature_selectors(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -24387,23 +25049,6 @@ class SourceRecordFastSavedIdentityTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
-            ledger = {
-                "revisions": [
-                    {
-                        "relation_to_previous": "review_compatible",
-                        "raw_producer_compatibility": {
-                            "schema": 1,
-                            "invariant": (
-                                "same-nonproducer-source-record-fingerprint-v1"
-                            ),
-                            "predecessor_raw_producer_code_identity_sets": [
-                                identities("1")
-                            ],
-                            "successor_raw_producer_code_identities": identities("2"),
-                        },
-                    }
-                ]
-            }
             common_patches = (
                 patch.object(AUDIT, "source_record_audit_receipt_error", return_value=""),
                 patch.object(
@@ -24430,8 +25075,8 @@ class SourceRecordFastSavedIdentityTests(unittest.TestCase):
                 patch.object(AUDIT, "source_record_input_fingerprint", return_value=current),
                 patch.object(
                     AUDIT,
-                    "validated_runtime_raw_producer_compatibility_ledger",
-                    return_value=ledger,
+                    "validate_runtime_engine_registration",
+                    return_value=object(),
                 ),
             )
             with ExitStack() as stack:
@@ -24806,16 +25451,6 @@ class SourceRecordIdentityOnlyTests(unittest.TestCase):
 
             with (
                 patch.object(
-                    EVIDENCE,
-                    "validate_source_record_partial_to_formalized_transition",
-                    return_value="source identity changed",
-                ),
-                patch.object(
-                    EVIDENCE,
-                    "selected_surface_rebind_context",
-                    return_value=(None, None, "not installed"),
-                ),
-                patch.object(
                     EVIDENCE.subprocess,
                     "run",
                     side_effect=[
@@ -25157,6 +25792,23 @@ class SourceRecordIdentityOnlyTests(unittest.TestCase):
                     expected_paper_statement_map_sha256=changed_full,
                     folder=paper_dir,
                 ),
+            )
+            declaration_authority = EVIDENCE.CurrentSemanticReuseAuthority(
+                paper="Fixture",
+                raw_audit_file_sha256="b" * 64,
+                semantic_identity_sha256="c" * 64,
+                reviewed_declarations=("Fixture.Spec",),
+                watched_repository_material=(),
+                result={"current": True},
+            )
+            self.assertEqual(
+                EVIDENCE._source_record_audit_identity_error(
+                    audit_payload,
+                    expected_paper_statement_map_sha256=changed_full,
+                    folder=paper_dir,
+                    semantic_reuse_authority=declaration_authority,
+                ),
+                "",
             )
 
     def test_engine_identity_includes_named_result_selector_dependency(self) -> None:

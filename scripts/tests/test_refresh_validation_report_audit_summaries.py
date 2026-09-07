@@ -31,6 +31,85 @@ SUMMARY = {
 
 
 class LegacyAuditSummaryCompatibilityTests(unittest.TestCase):
+    def test_current_report_selects_inputs_before_any_legacy_acquisition(self) -> None:
+        cases = (
+            ({"require_source_spec_correspondence": True}, {}),
+            ({"require_v11_raw_source_spec_screening": True}, {}),
+            ({"llm_statement_review": {"required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-v3"}}, {}),
+            ({}, {"source_spec_correspondence_schema": 1}),
+        )
+        for surface, source_map in cases:
+            with self.subTest(surface=surface, source_map=source_map):
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    folder = Path(temp_dir) / "Fixture"
+                    audit = folder / "audit"
+                    audit.mkdir(parents=True)
+                    report = folder / REFRESH.REPORT
+                    # Even a complete old layout must remain authored text.
+                    original = "# Report\n\n" + "\n".join(
+                        f"## {section}. Preserved author section\n\nAuthor prose.\n"
+                        for section in (12, 13, 14, 15, 20, 21)
+                    )
+                    report.write_text(original, encoding="utf-8")
+                    (folder / "status.json").write_text(
+                        json.dumps({"review_surface": surface}), encoding="utf-8"
+                    )
+                    map_path = audit / "paper_statement_map.json"
+                    map_path.write_text(json.dumps(source_map), encoding="utf-8")
+                    retired_names = (
+                        set(REFRESH.CANONICAL_SIDECAR_NAMES.values())
+                        | set(REFRESH.SUMMARY_SIDECAR_NAMES.values())
+                    ) - {"paper_statement_map.json"}
+                    retired_paths = {
+                        parent / name
+                        for parent in (folder, audit)
+                        for name in retired_names
+                    }
+                    retired_paths.add(folder / "paper_statement_map.json")
+                    retired_paths.add(
+                        folder / ".review_traces" / "paper_interface_cache.json"
+                    )
+                    raw_record = audit / "source_record_audit.json"
+                    raw_record.write_text("{" + " " * (2 * 1024 * 1024), encoding="utf-8")
+                    real_read_bytes = Path.read_bytes
+
+                    def reject_retired_read(path: Path) -> bytes:
+                        if path in retired_paths:
+                            raise PermissionError("retired input must not be acquired")
+                        return real_read_bytes(path)
+
+                    with (
+                        mock.patch.object(Path, "read_bytes", reject_retired_read),
+                        mock.patch.object(
+                            REFRESH, "saved_report_reuse_authorization",
+                            side_effect=AssertionError("current report requested legacy reuse"),
+                        ),
+                        mock.patch.object(
+                            REFRESH, "saved_sidecar_reuse_authorization",
+                            side_effect=AssertionError("current report revalidated legacy reuse"),
+                        ),
+                    ):
+                        prepared = REFRESH.prepare_report(report)
+                        self.assertEqual(prepared.rendered, original)
+                        self.assertFalse(retired_paths.intersection(prepared.snapshot.input_paths))
+                        raw_record.write_text("changed retired bytes", encoding="utf-8")
+                        REFRESH.validate_prepared_report(prepared, closure_provider=object())
+                        map_path.write_text(json.dumps({**source_map, "changed": True}), encoding="utf-8")
+                        with self.assertRaisesRegex(ValueError, "inputs changed"):
+                            REFRESH.validate_prepared_report(prepared, closure_provider=object())
+
+    def test_historical_report_still_rejects_malformed_legacy_input(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir)
+            audit = folder / "audit"
+            audit.mkdir()
+            report = folder / REFRESH.REPORT
+            report.write_text("# Historical report\n", encoding="utf-8")
+            (folder / "status.json").write_text("{}", encoding="utf-8")
+            (audit / "source_record_audit.json").write_text("not JSON", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "valid JSON"):
+                REFRESH.load_report_input_snapshot(report)
+
     def test_direct_source_spec_reports_are_not_rewritten_by_legacy_refresher(
         self,
     ) -> None:
@@ -46,7 +125,7 @@ class LegacyAuditSummaryCompatibilityTests(unittest.TestCase):
                         "review_surface": {
                             "llm_statement_review": {
                                 "required_prompt_version": (
-                                    "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2"
+                                    "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
                                 )
                             }
                         }

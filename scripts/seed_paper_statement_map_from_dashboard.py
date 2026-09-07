@@ -21,8 +21,12 @@ ROOT = Path(__file__).resolve().parents[1]
 PAPERS_DIR = ROOT / "papers"
 CATALOG = PAPERS_DIR / "catalog.json"
 
-sys.path.insert(0, str(ROOT / "scripts"))
-from review_dashboard import PAPER_STATEMENT_MAP_FILE, review_items_for_paper  # noqa: E402
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from scripts.review_dashboard import (  # noqa: E402
+    PAPER_STATEMENT_MAP_FILE,
+    review_items_for_paper,
+)
 
 
 def load_catalog_source_urls() -> dict[str, str]:

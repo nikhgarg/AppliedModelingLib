@@ -28,7 +28,7 @@ def recommendationUtility {m n : ℕ} (W : RecommendationModel m n)
 /-- Raw user utility `sum_j w_ij rho_ij`. -/
 def rawUserUtility {m n : ℕ}
     (W : RecommendationModel m n) (ρ : Policy m n) (u : User m) : ℝ :=
-  EconCSLib.Policy.agentScore ρ W.utility u
+  AppliedModelingLib.Policy.agentScore ρ W.utility u
 
 /-- Normalized user utility `U_i(rho)`. -/
 def normalizedUserUtility {m n : ℕ} [NeZero n]
@@ -41,7 +41,7 @@ User fairness objective for a recommendation policy.
 -/
 def userFairness {m n : ℕ} [NeZero m] [NeZero n]
     (W : RecommendationModel m n) (ρ : Policy m n) : ℝ :=
-  EconCSLib.finiteMin (normalizedUserUtility W ρ)
+  AppliedModelingLib.finiteMin (normalizedUserUtility W ρ)
 
 /-- The direct paper-facing user objective is definitionally the library
 objective; no policy or utility condition is introduced by this interface. -/
@@ -71,7 +71,7 @@ Item fairness objective for a recommendation policy.
 -/
 def itemFairness {m n : ℕ} [NeZero n]
     (W : RecommendationModel m n) (ρ : Policy m n) : ℝ :=
-  EconCSLib.finiteMin (normalizedItemUtility W ρ)
+  AppliedModelingLib.finiteMin (normalizedItemUtility W ρ)
 
 /--
 The paper-facing quotient agrees with the library definition on every Lean
@@ -97,7 +97,7 @@ theorem itemFairness_eq_library {m n : ℕ} [NeZero n]
     (W : RecommendationModel m n) (ρ : Policy m n) :
     itemFairness W ρ = RecommendationModel.itemFairness W ρ := by
   unfold itemFairness RecommendationModel.itemFairness
-  apply congrArg EconCSLib.finiteMin
+  apply congrArg AppliedModelingLib.finiteMin
   funext j
   exact normalizedItemUtility_eq_library W ρ j
 
@@ -264,12 +264,14 @@ theorem appendix_c_lemma2_item_fairness_equality_lp_solution_set
 
 /-- Appendix D, Lemma 3: unconstrained user-fairness baseline. -/
 theorem appendix_d_lemma3_unconstrained_baseline
-    {m n : ℕ} [NeZero m] [NeZero n]
-    (W : RecommendationModel m n) (hNonnegative : W.Nonnegative)
-    (hRow : W.RowHasPositiveItem) :
-    W.optimalUserFairnessAtLevel 0 = 1 :=
+    {n : ℕ} [NeZero n] {alpha : ℝ} {v : Item n → ℝ}
+    (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
+    (hpos : ∀ j : Item n, 0 < v j)
+    (hdec : OpposingTypes.StrictlyDecreasingByIndex v) :
+    TypeWeightedRecommendationModel.optimalTypeFairnessAtLevel
+      (OpposingTypes.twoTypeReducedModel alpha v) 0 = 1 :=
   RecommendationModel.paper_lemma3_unconstrained_user_fairness_eq_one
-    W hNonnegative hRow
+    alpha v halpha0 halpha1 hpos hdec
 
 /--
 Appendix D, Lemma 4: Problem 6 has a unique optimal equality-form solution,
@@ -1325,15 +1327,15 @@ theorem proposition2_symmetric_optimum_exists
           RecommendationModel.IsOptimalAtLevel S.model 1 ρsym) ∧
       TypePolicy.ActivePairsBound
         (UserTypeAssignment.descendTypePolicy S.types
-          (EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypes) ρsrc) ∧
+          (AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypes) ρsrc) ∧
       (
         ell = TypeWeightedRecommendationModel.optimalItemFairness
             (S.canonicalReductionOfSurjective hTypes).reduced →
           TypePolicy.SharedItemsBound
             (UserTypeAssignment.descendTypePolicy S.types
-              (EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypes) ρsrc)) := by
+              (AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypes) ρsrc)) := by
   let reps : UserTypeAssignment.TypeRepresentatives S.types :=
-    EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypes
+    AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypes
   let R : ReductionWitness m n K := S.canonicalReductionOfSurjective hTypes
   let ρ : TypePolicy K n :=
     UserTypeAssignment.descendTypePolicy S.types reps ρsrc
@@ -1402,9 +1404,9 @@ theorem theorem3_price_decreases_first_half
     RecommendationModel.priceOfFairness S'.model ≤
       RecommendationModel.priceOfFairness S.model := by
   let reps : UserTypeAssignment.TypeRepresentatives S.types :=
-    EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypes
+    AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypes
   let reps' : UserTypeAssignment.TypeRepresentatives S'.types :=
-    EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypes'
+    AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypes'
   have hPos : assumption_positive_recommendation_utilities S.model := by
     intro u j
     change 0 < (S.canonicalReductionOfSurjective hTypes).data.model.utility u j
@@ -1452,9 +1454,9 @@ theorem theorem3_price_increases_second_half
     RecommendationModel.priceOfFairness S.model ≤
       RecommendationModel.priceOfFairness S'.model := by
   let reps : UserTypeAssignment.TypeRepresentatives S.types :=
-    EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypes
+    AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypes
   let reps' : UserTypeAssignment.TypeRepresentatives S'.types :=
-    EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypes'
+    AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypes'
   have hPos : assumption_positive_recommendation_utilities S.model := by
     intro u j
     change 0 < (S.canonicalReductionOfSurjective hTypes).data.model.utility u j
@@ -1519,9 +1521,9 @@ theorem theorem4_misestimation_without_fairness_universal
           ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ) ≤
         (1 / 2 : ℝ) := by
   let repsTrue : UserTypeAssignment.TypeRepresentatives Strue.types :=
-    EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypesTrue
+    AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypesTrue
   let repsEst : UserTypeAssignment.TypeRepresentatives Sest.types :=
-    EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypesEst
+    AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypesEst
   have hbeta_half : beta < 1 / 2 :=
     OpposingTypes.theorem4_beta_lt_half_of_estimated_reduction
       Sest hTypesEst hredEst
@@ -1589,9 +1591,9 @@ theorem theorem4_misestimation_tradeoff_typeZero
           1 - eps < E.priceOfMisestimation 1
             ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ1) := by
   let repsTrue : UserTypeAssignment.TypeRepresentatives Strue.types :=
-    EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypesTrue
+    AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypesTrue
   let repsEst : UserTypeAssignment.TypeRepresentatives Sest.types :=
-    EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypesEst
+    AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypesEst
   have hbeta_half : beta < 1 / 2 :=
     OpposingTypes.theorem4_beta_lt_half_of_estimated_reduction
       Sest hTypesEst hredEst
@@ -1650,9 +1652,9 @@ theorem theorem4_misestimation_tradeoff_typeOne
           1 - eps < E.priceOfMisestimation 1
             ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ1) := by
   let repsTrue : UserTypeAssignment.TypeRepresentatives Strue.types :=
-    EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypesTrue
+    AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypesTrue
   let repsEst : UserTypeAssignment.TypeRepresentatives Sest.types :=
-    EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypesEst
+    AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypesEst
   have hbeta_half : beta < 1 / 2 :=
     OpposingTypes.theorem4_beta_lt_half_of_estimated_reduction
       Sest hTypesEst hredEst
@@ -1663,6 +1665,60 @@ theorem theorem4_misestimation_tradeoff_typeOne
       E (Strue.canonicalReduction repsTrue) (Sest.canonicalReduction repsEst)
       repsTrue repsEst u hn htrue hestimated hredTrue hredEst
       hknown0 hknown1 htrueType hestimatedType heps hbeta hbeta_half
+
+/--
+Theorem 4's single high-item-fairness source bullet.  Surjectivity supplies a
+cold-start user, and the finite two-type true population discharges the two
+internal case lemmas without adding a user-level premise to the source result.
+-/
+theorem theorem4_misestimation_tradeoff
+    {m n : ℕ} [NeZero m] [NeZero n]
+    (E : EstimatedRecommendationModel m n)
+    (Strue : RecommendationModel.SymmetricData m n 2)
+    (Sest : RecommendationModel.SymmetricData m n 3)
+    (hTypesTrue : Function.Surjective Strue.types.toType)
+    (hTypesEst : Function.Surjective Sest.types.toType)
+    {beta eps : ℝ}
+    (htrue : assumption_theorem4_true_model_reduction E Strue)
+    (hestimated : assumption_theorem4_estimated_model_reduction E Sest)
+    (hredTrue :
+      (Strue.canonicalReductionOfSurjective hTypesTrue).reduced =
+        OpposingTypes.twoTypeReducedModel (1 / 2 : ℝ)
+        (OpposingTypes.theorem4SmallValueVector (n := n) eps))
+    (hredEst :
+      (Sest.canonicalReductionOfSurjective hTypesEst).reduced =
+        OpposingTypes.theorem4EstimatedReducedModel beta
+        (OpposingTypes.theorem4SmallValueVector (n := n) eps))
+    (hknown0 :
+      ∀ u : User m, Sest.types.toType u = 0 →
+        Strue.types.toType u = 0)
+    (hknown1 :
+      ∀ u : User m, Sest.types.toType u = 1 →
+        Strue.types.toType u = 1)
+    (heps : 0 < eps)
+    (hbeta : (n : ℝ)⁻¹ < beta) :
+    (let ρ0 : TypePolicy 3 n :=
+        OpposingTypes.theorem4NoFairnessPolicyCollapsed
+          (OpposingTypes.theorem4SmallValueVector (n := n) eps);
+      E.SolvesEstimatedProblem 0
+          ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ0) ∧
+        E.priceOfMisestimation 0
+          ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ0) ≤
+          (1 / 2 : ℝ)) ∧
+      ∃ ρ1 : TypePolicy 3 n,
+        E.SolvesEstimatedProblem 1
+            ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ1) ∧
+          1 - eps < E.priceOfMisestimation 1
+            ((Sest.canonicalReductionOfSurjective hTypesEst).liftedPolicy ρ1) := by
+  obtain ⟨u, hestimatedType⟩ := hTypesEst 2
+  generalize htrueType : Strue.types.toType u = trueType
+  fin_cases trueType
+  · exact theorem4_misestimation_tradeoff_typeZero
+      E Strue Sest hTypesTrue hTypesEst u htrue hestimated hredTrue hredEst
+      hknown0 hknown1 htrueType hestimatedType heps hbeta
+  · exact theorem4_misestimation_tradeoff_typeOne
+      E Strue Sest hTypesTrue hTypesEst u htrue hestimated hredTrue hredEst
+      hknown0 hknown1 htrueType hestimatedType heps hbeta
 
 end
 

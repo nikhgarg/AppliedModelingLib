@@ -19,7 +19,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 open scoped ENNReal NNReal ProbabilityTheory
 
 /-- The literal product law of all source noises except the designated test

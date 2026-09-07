@@ -4,14 +4,12 @@
 from __future__ import annotations
 
 import copy
-import io
 import hashlib
 import importlib.util
 import json
 import sys
 import tempfile
 import unittest
-from contextlib import redirect_stderr
 from pathlib import Path
 from unittest.mock import patch
 
@@ -25,8 +23,7 @@ from scripts import source_record_semantic_rebind as REBIND  # noqa: E402
 from scripts import (  # noqa: E402
     source_record_historical_association_snapshot_reconciliation as RECONCILIATION,
 )
-from scripts import source_record_historical_descriptor_migration as HISTORICAL  # noqa: E402
-from scripts import source_record_differential_revalidation as DIFFERENTIAL  # noqa: E402
+from scripts import source_record_obligation_groups as OBLIGATIONS  # noqa: E402
 from scripts import (  # noqa: E402
     source_record_historical_composition_attestation as COMPOSITION,
 )
@@ -36,9 +33,13 @@ from scripts.source_record_target_disposition import (  # noqa: E402
     source_map_item_record_digest,
 )
 from scripts.source_record_integrity import (  # noqa: E402
+    LEGACY_SOURCE_RECORD_AUDIT_SURFACE_SCHEMA,
     SOURCE_RECORD_AUDIT_INTEGRITY_DIGEST_FIELD,
+    SOURCE_RECORD_AUDIT_INTEGRITY_SCHEMA,
+    SOURCE_RECORD_AUDIT_INTEGRITY_SCHEMA_FIELD,
     SOURCE_RECORD_AUDIT_SURFACE_FIELD,
     SOURCE_RECORD_AUDIT_SURFACE_PROJECTION_FIELD,
+    SOURCE_RECORD_AUDIT_SURFACE_SCHEMA_FIELD,
     _source_record_legacy_prompt_integrity_sha256,
     source_record_audit_receipt_error,
     source_record_audit_surface_sha256,
@@ -228,6 +229,55 @@ class SemanticRebindDescriptorTests(unittest.TestCase):
         )
         self.assertEqual(
             REBIND._canonical_digest(prior), REBIND._canonical_digest(current)
+        )
+
+    def test_correspondence_refresh_does_not_reopen_source_premise_review(self) -> None:
+        def correspondence(bridge: str, digest: str) -> dict[str, object]:
+            return {
+                "schema": 1,
+                "source_atoms_sha256": digest,
+                "spec_closure_sha256": "b" * 64,
+                "spec_surface_sha256": "c" * 64,
+                "closure_environment_sha256": "d" * 64,
+                "item_identity_sha256": "e" * 64,
+                "source_atom_bindings": [
+                    {
+                        "source_atom_sha256": "f" * 64,
+                        "spec_component_sha256s": ["1" * 64],
+                        "semantic_bridge": bridge,
+                    }
+                ],
+                "closure_node_dispositions": [],
+            }
+
+        prior_item = _map_item()
+        prior_item["source_spec_correspondence"] = correspondence(
+            "Original exact source-to-Spec explanation.", "a" * 64
+        )
+        current_item = _map_item()
+        current_item["source_spec_correspondence"] = correspondence(
+            "Refreshed exact source-to-Spec explanation.", "9" * 64
+        )
+        prior, current = self._descriptor(prior_item, current_item)
+        self.assertEqual(
+            REBIND._canonical_digest(prior), REBIND._canonical_digest(current)
+        )
+
+        changed_source = copy.deepcopy(current_item)
+        changed_source["statement"] = "A different literal source theorem says Q."
+        _, changed = self._descriptor(prior_item, changed_source)
+        self.assertNotEqual(
+            REBIND._canonical_digest(prior), REBIND._canonical_digest(changed)
+        )
+
+        unknown_correspondence = copy.deepcopy(current_item)
+        unknown = unknown_correspondence["source_spec_correspondence"]
+        assert isinstance(unknown, dict)
+        unknown["future_semantic_field"] = "fail closed"
+        _, unknown_descriptor = self._descriptor(prior_item, unknown_correspondence)
+        self.assertNotEqual(
+            REBIND._canonical_digest(prior),
+            REBIND._canonical_digest(unknown_descriptor),
         )
 
     def test_v2_generated_taxonomy_adapter_preserves_the_semantic_core(self) -> None:
@@ -664,8 +714,8 @@ class SemanticRebindDescriptorTests(unittest.TestCase):
             REBIND._canonical_digest(normalized(renamed)),
         )
         self.assertEqual(
-            DIFFERENTIAL.source_record_differential_item_descriptor(base, section="boundary_input_items"),
-            DIFFERENTIAL.source_record_differential_item_descriptor(
+            OBLIGATIONS.source_record_obligation_descriptor(base, section="boundary_input_items"),
+            OBLIGATIONS.source_record_obligation_descriptor(
                 renamed, section="boundary_input_items"
             ),
         )
@@ -904,18 +954,6 @@ class SemanticRebindDescriptorTests(unittest.TestCase):
         }
         self.assertTrue(REBIND.source_record_semantic_rebind_item_has_provenance(forged))
         self.assertFalse(REBIND.is_loaded_source_record_semantic_rebind_item(forged))
-        # The legacy gate recognizes provenance and therefore cannot accept a
-        # forged schema-2 response through the ordinary sidecar route.
-        self.assertTrue(
-            HISTORICAL.source_record_historical_descriptor_migration_item_has_provenance(
-                forged
-            )
-        )
-        self.assertFalse(
-            HISTORICAL.is_loaded_source_record_historical_descriptor_migration_item(
-                forged
-            )
-        )
 
 
 class LegacyPromptReceiptCompatibilityTests(unittest.TestCase):
@@ -924,14 +962,22 @@ class LegacyPromptReceiptCompatibilityTests(unittest.TestCase):
             "semantic_evidence": {"result": "proved"},
             "llm_judge_prompt": "legacy presentation wording",
         }
-        stamp_source_record_audit_receipts(payload)
-        surface = payload[SOURCE_RECORD_AUDIT_SURFACE_FIELD]
-        assert isinstance(surface, dict)
-        projection = surface[SOURCE_RECORD_AUDIT_SURFACE_PROJECTION_FIELD]
-        assert isinstance(projection, dict)
-        projection["llm_judge_prompt"] = payload["llm_judge_prompt"]
+        projection = {
+            "semantic_evidence": {"result": "proved"},
+            "llm_judge_prompt": payload["llm_judge_prompt"],
+        }
+        surface = {
+            SOURCE_RECORD_AUDIT_SURFACE_PROJECTION_FIELD: projection,
+        }
+        payload[SOURCE_RECORD_AUDIT_SURFACE_SCHEMA_FIELD] = (
+            LEGACY_SOURCE_RECORD_AUDIT_SURFACE_SCHEMA
+        )
+        payload[SOURCE_RECORD_AUDIT_SURFACE_FIELD] = surface
         payload["source_record_audit_sha256"] = source_record_audit_surface_sha256(
             surface
+        )
+        payload[SOURCE_RECORD_AUDIT_INTEGRITY_SCHEMA_FIELD] = (
+            SOURCE_RECORD_AUDIT_INTEGRITY_SCHEMA
         )
         payload[SOURCE_RECORD_AUDIT_INTEGRITY_DIGEST_FIELD] = (
             _source_record_legacy_prompt_integrity_sha256(payload)
@@ -942,192 +988,14 @@ class LegacyPromptReceiptCompatibilityTests(unittest.TestCase):
         self.assertTrue(source_record_audit_receipt_error(payload))
 
 
-class SemanticRebindCliSafetyTests(unittest.TestCase):
-    def test_cli_rejects_paper_traversal_and_output_aliases(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            paper_dir = root / "papers" / "Fixture"
-            audit = paper_dir / "audit"
-            audit.mkdir(parents=True)
-            self.assertEqual(REBIND._cli_paper_dir(root, "Fixture"), paper_dir)
-            for invalid in ("../Fixture", "Fixture/child", "", ".", "..", "\\Fixture"):
-                with self.assertRaises(REBIND.SourceRecordSemanticRebindError):
-                    REBIND._cli_paper_dir(root, invalid)
-
-            files = {
-                name: audit / name
-                for name in (
-                    "prior_raw.json",
-                    "source_record_audit.json",
-                    "prior_judgments.json",
-                    "prior_attestation.json",
-                    "paper_statement_map.json",
-                    "prior_statement_map.json",
-                )
-            }
-            for path in files.values():
-                path.write_text("{}\n", encoding="utf-8")
-            base_argv = [
-                "source_record_semantic_rebind.py",
-                "--root",
-                str(root),
-                "--paper",
-                "Fixture",
-                "--prior-raw-audit",
-                str(files["prior_raw.json"]),
-                "--current-raw-audit",
-                str(files["source_record_audit.json"]),
-                "--current-statement-map",
-                str(files["paper_statement_map.json"]),
-                "--prior-judgments",
-                str(files["prior_judgments.json"]),
-                "--prior-attestation",
-                str(files["prior_attestation.json"]),
-                "--prior-statement-map",
-                str(files["prior_statement_map.json"]),
-                "--out",
-            ]
-            for protected in files.values():
-                with (
-                    patch.object(sys, "argv", [*base_argv, str(protected)]),
-                    redirect_stderr(io.StringIO()),
-                ):
-                    self.assertEqual(REBIND.main(), 1)
-
-            canonical_overlay = REBIND.source_record_semantic_rebind_overlay_path(
-                paper_dir
-            )
-            canonical_overlay.write_text("{}\n", encoding="utf-8")
-            ordinary_sidecar = audit / "source_record_match_llm.json"
-            ordinary_sidecar.write_text("{}\n", encoding="utf-8")
-            attestation = audit / "current_semantic_attestation.json"
-            attestation.write_text("{}\n", encoding="utf-8")
-            self.assertEqual(
-                REBIND._semantic_rebind_output_error(
-                    canonical_overlay, paper_dir=paper_dir
-                ),
-                "",
-            )
-            for protected in (ordinary_sidecar, attestation):
-                error = REBIND._semantic_rebind_output_error(
-                    protected, paper_dir=paper_dir
-                )
-                self.assertTrue(error)
-                with (
-                    patch.object(sys, "argv", [*base_argv, str(protected)]),
-                    redirect_stderr(io.StringIO()) as stderr,
-                ):
-                    self.assertEqual(REBIND.main(), 1)
-                self.assertIn("--out", stderr.getvalue())
-
-
-class SemanticRebindCliSummaryTests(unittest.TestCase):
-    def test_summary_exposes_current_uncovered_complement(self) -> None:
-        payload: dict[str, object] = {
-            "decisions": [
-                {
-                    "status": "rebound",
-                    "prior_judgment_key": "old-a",
-                    "current_judgment_key": "new-a",
-                },
-                {
-                    "status": "manual_current_review_required",
-                    "prior_judgment_key": "old-b",
-                },
-                {
-                    "status": "not_rebound",
-                    "prior_judgment_key": "old-c",
-                },
-                {
-                    "status": "not_rebound",
-                    "current_judgment_key": "new-b",
-                },
-                {
-                    "status": "not_rebound",
-                    "current_judgment_key": "new-c",
-                },
-                {
-                    "status": "not_rebound",
-                    "current_judgment_key": "new-d",
-                },
-            ]
-        }
-        before = copy.deepcopy(payload)
-
-        summary = REBIND._semantic_rebind_cli_summary(payload)
-
-        self.assertEqual(payload, before)
-        self.assertEqual(
-            summary,
-            {
-                "semantic_rebound": 1,
-                "total_current_uncovered": 3,
-                "prior_manual_or_nonrebound": 2,
-            },
+class SemanticRebindReaderOnlyTests(unittest.TestCase):
+    def test_production_module_has_no_issuer_or_cli(self) -> None:
+        self.assertFalse(hasattr(REBIND, "build_source_record_semantic_rebind"))
+        self.assertFalse(hasattr(REBIND, "parse_args"))
+        self.assertFalse(hasattr(REBIND, "main"))
+        self.assertTrue(
+            hasattr(REBIND, "_reconstruct_source_record_semantic_rebind")
         )
-        self.assertEqual(
-            REBIND._format_semantic_rebind_cli_summary(summary),
-            "1 semantic-rebound; 3 total-current-uncovered "
-            "(2 prior-manual/nonrebound)",
-        )
-
-    def test_summary_keeps_historical_and_current_debt_separate_after_retirement(
-        self,
-    ) -> None:
-        summary = REBIND._semantic_rebind_cli_summary(
-            {
-                "decisions": [
-                    {
-                        "status": "manual_current_review_required",
-                        "prior_judgment_key": "retired-a",
-                    },
-                    {
-                        "status": "not_rebound",
-                        "prior_judgment_key": "retired-b",
-                    },
-                    {
-                        "status": "not_rebound",
-                        "current_judgment_key": "still-current",
-                    },
-                ]
-            }
-        )
-
-        self.assertEqual(summary["total_current_uncovered"], 1)
-        self.assertEqual(summary["prior_manual_or_nonrebound"], 2)
-        self.assertEqual(
-            REBIND._format_semantic_rebind_cli_summary(summary),
-            "0 semantic-rebound; 1 total-current-uncovered "
-            "(2 prior-manual/nonrebound)",
-        )
-
-    def test_summary_deduplicates_current_complement_decisions(self) -> None:
-        summary = REBIND._semantic_rebind_cli_summary(
-            {
-                "decisions": [
-                    {
-                        "status": "manual_current_review_required",
-                        "prior_judgment_key": "old-a",
-                        "current_judgment_key": "current-a",
-                    },
-                    {
-                        "status": "not_rebound",
-                        "current_judgment_key": "current-a",
-                    },
-                    {
-                        "status": "not_rebound",
-                        "prior_judgment_key": "old-a",
-                    },
-                    {
-                        "status": "not_rebound",
-                        "current_judgment_key": "current-b",
-                    },
-                ]
-            }
-        )
-
-        self.assertEqual(summary["total_current_uncovered"], 2)
-        self.assertEqual(summary["prior_manual_or_nonrebound"], 1)
 
 
 class SemanticRebindHistoricalAssociationIntegrationTests(unittest.TestCase):
@@ -1269,7 +1137,7 @@ class SemanticRebindHistoricalAssociationIntegrationTests(unittest.TestCase):
             output_path=reconciliation_path,
         )
 
-        payload = REBIND.build_source_record_semantic_rebind(
+        payload = REBIND._reconstruct_source_record_semantic_rebind(
             paper=self.PAPER,
             paper_dir=paper_dir,
             prior_raw_audit=prior_raw,
@@ -1511,7 +1379,7 @@ class SemanticRebindLoaderTests(unittest.TestCase):
         current_raw_path = audit / "source_record_audit.json"
         prior_judgments_path = audit / "source_record_match_llm.current_revalidation_default_mode_candidate_18_semantic_groups.json"
         attestation_path = audit / "source_record_current_revalidation_default_mode_candidate_18_semantic_groups.sidecar_bound_v4_2026-07-28.json"
-        return REBIND.build_source_record_semantic_rebind(
+        return REBIND._reconstruct_source_record_semantic_rebind(
             paper="KR21Monoculture",
             paper_dir=paper_dir,
             prior_raw_audit=(
@@ -1614,7 +1482,7 @@ class SemanticRebindLoaderTests(unittest.TestCase):
             encoding="utf-8",
         )
 
-        groups, errors = DIFFERENTIAL._raw_item_groups(prior_raw)
+        groups, errors = OBLIGATIONS.raw_source_record_obligation_groups(prior_raw)
         self.assertEqual(errors, {})
         self.assertIn(
             "without a validated composition parent",
@@ -1813,7 +1681,7 @@ class SemanticRebindLoaderTests(unittest.TestCase):
         with self.assertRaisesRegex(
             REBIND.SourceRecordSemanticRebindError, "mutually exclusive"
         ):
-            REBIND.build_source_record_semantic_rebind(
+            REBIND._reconstruct_source_record_semantic_rebind(
                 paper="KR21Monoculture",
                 paper_dir=paper_dir,
                 prior_raw_audit=json.loads(
@@ -1985,12 +1853,20 @@ class SemanticRebindLoaderTests(unittest.TestCase):
         # With a live-current identity the loader materializes from the
         # archived sidecar but derives the association pin from current raw
         # members. It never trusts an old response's pin.
-        with patch.object(REBIND, "_live_raw_identity_error", return_value=""):
+        with (
+            patch.object(REBIND, "_live_raw_identity_error", return_value=""),
+            patch.object(
+                EVIDENCE, "source_record_audit_identity_error", return_value=""
+            ),
+            patch.object(
+                EVIDENCE, "_source_record_audit_identity_error", return_value=""
+            ),
+        ):
             loaded = REBIND.load_current_source_record_semantic_rebind_items(
                 paper_dir, "KR21Monoculture", current
             )
         self.assertTrue(loaded)
-        groups, errors = DIFFERENTIAL._raw_item_groups(current)
+        groups, errors = OBLIGATIONS.raw_source_record_obligation_groups(current)
         self.assertEqual(errors, {})
         selected = next(
             key
@@ -2176,7 +2052,15 @@ class SemanticRebindLoaderTests(unittest.TestCase):
             encoding="utf-8",
         )
         helper = _load_source_record_audit_helper()
-        with patch.object(REBIND, "_live_raw_identity_error", return_value=""):
+        with (
+            patch.object(REBIND, "_live_raw_identity_error", return_value=""),
+            patch.object(
+                EVIDENCE, "source_record_audit_identity_error", return_value=""
+            ),
+            patch.object(
+                EVIDENCE, "_source_record_audit_identity_error", return_value=""
+            ),
+        ):
             loaded = REBIND.load_current_source_record_semantic_rebind_items(
                 paper_dir, "KR21Monoculture", current
             )
@@ -2195,7 +2079,6 @@ class SemanticRebindLoaderTests(unittest.TestCase):
                 "KR21Monoculture",
                 current,
                 paper_dir=paper_dir,
-                allow_historical_descriptor_migration=True,
             ),
             {},
         )

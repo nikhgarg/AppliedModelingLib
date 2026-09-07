@@ -22,7 +22,7 @@ from scripts import audit_conclusion_provenance as CONCLUSION
 from scripts import audit_evidence_integrity as EVIDENCE
 from scripts import audit_repository as REPOSITORY
 from scripts import source_record_current_revalidation as CURRENT
-from scripts.source_record_differential_revalidation import _raw_item_groups
+from scripts.source_record_obligation_groups import raw_source_record_obligation_groups
 from scripts.source_record_target_disposition import (
     project_source_record_response_association_pins,
     source_input_target_disposition_errors,
@@ -107,7 +107,7 @@ def raw_audit(*, configured: bool = True, direct: bool = False) -> dict[str, obj
 def regularity_entry(raw: dict[str, object], source_text: str) -> dict[str, object]:
     item = raw["boundary_input_items"][0]
     assert isinstance(item, dict)
-    groups, errors = _raw_item_groups(raw)
+    groups, errors = raw_source_record_obligation_groups(raw)
     assert not errors
     group = next(iter(groups.values()))
     sequence = REGULARITY.binder_sequence_from_declaration(DECLARATION)
@@ -249,7 +249,7 @@ class ConfiguredAssumptionFormalizationRegularityTests(unittest.TestCase):
     def test_structural_entry_projects_and_validates_without_navigation_names(self) -> None:
         temporary, _paper, _status, raw, entry, context = self.context_fixture()
         self.addCleanup(temporary.cleanup)
-        groups, errors = _raw_item_groups(raw)
+        groups, errors = raw_source_record_obligation_groups(raw)
         self.assertEqual(errors, {})
         group = next(iter(groups.values()))
         projected, error = project_source_record_response_association_pins(
@@ -325,7 +325,7 @@ class ConfiguredAssumptionFormalizationRegularityTests(unittest.TestCase):
         self.assertEqual(original_match.entry_sha256, renamed_match.entry_sha256)
         self.assertEqual(original_match.context_sha256, renamed_match.context_sha256)
 
-        groups, errors = _raw_item_groups(raw)
+        groups, errors = raw_source_record_obligation_groups(raw)
         self.assertEqual(errors, {})
         projected, projection_error = project_source_record_response_association_pins(
             next(iter(groups.values()))["raw_members"],
@@ -396,7 +396,7 @@ class ConfiguredAssumptionFormalizationRegularityTests(unittest.TestCase):
     def test_source_credit_fields_and_reviewer_context_pin_are_rejected(self) -> None:
         temporary, _paper, _status, raw, entry, context = self.context_fixture()
         self.addCleanup(temporary.cleanup)
-        groups, _ = _raw_item_groups(raw)
+        groups, _ = raw_source_record_obligation_groups(raw)
         group = next(iter(groups.values()))
         response = self.response(entry)
         response["source_target_disposition"] = "literal_source_match"

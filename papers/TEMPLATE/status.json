@@ -59,11 +59,6 @@
       "assumption_judgment_file": "papers/TEMPLATE/audit/assumption_match_llm.json",
       "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
     },
-    "llm_source_record_review": {
-      "source_record_audit_file": "papers/TEMPLATE/audit/source_record_audit.json",
-      "source_record_judgment_file": "papers/TEMPLATE/audit/source_record_match_llm.json",
-      "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
-    },
     "source_proof_fidelity_review": {
       "ledger_file": "papers/TEMPLATE/audit/source_proof_fidelity.json",
       "policy": "Audit source proof steps by source locator and mathematical claim, not by Lean declaration name. Completed papers use ledger schema 2. Every defect records status_impact as formalized_note, formalized_with_caveat, or partially_formalized plus a semantic rationale. Minor repairs with an unchanged substantive endpoint are notes; formalized with caveat is reserved for a substantial central source-paper error with a fully proved corrected endpoint; weaker Lean targets and added non-source assumptions are partial."

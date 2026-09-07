@@ -42,6 +42,49 @@ def _target_names(target: ast.expr) -> set[str]:
     return set()
 
 
+def _package_import_fallback_names(statement: ast.stmt) -> set[str]:
+    """Recognize one semantically identical package/direct import fallback.
+
+    Repository CLIs may be imported as ``scripts.module`` or executed from the
+    ``scripts`` directory.  The conventional ``if __package__`` form names the
+    same sibling module and imports the same symbols in both branches.  Treat
+    that exact form as one deterministic provider.  Every other conditional
+    definition remains hidden and therefore fails closed.
+    """
+
+    if (
+        not isinstance(statement, ast.If)
+        or not isinstance(statement.test, ast.Name)
+        or statement.test.id != "__package__"
+        or not isinstance(statement.test.ctx, ast.Load)
+        or len(statement.body) != 1
+        or len(statement.orelse) != 1
+        or not isinstance(statement.body[0], ast.ImportFrom)
+        or not isinstance(statement.orelse[0], ast.ImportFrom)
+    ):
+        return set()
+    package_import = statement.body[0]
+    direct_import = statement.orelse[0]
+    if (
+        package_import.level != 1
+        or direct_import.level != 0
+        or not package_import.module
+        or package_import.module != direct_import.module
+    ):
+        return set()
+    package_aliases = tuple(
+        (alias.name, alias.asname) for alias in package_import.names
+    )
+    direct_aliases = tuple((alias.name, alias.asname) for alias in direct_import.names)
+    if (
+        not package_aliases
+        or package_aliases != direct_aliases
+        or any(name == "*" for name, _alias in package_aliases)
+    ):
+        return set()
+    return {alias or name for name, alias in package_aliases}
+
+
 def _provided_names(statement: ast.stmt) -> set[str]:
     if isinstance(statement, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
         return {statement.name}
@@ -62,6 +105,9 @@ def _provided_names(statement: ast.stmt) -> set[str]:
         }
     if isinstance(statement, (ast.AnnAssign, ast.AugAssign)):
         return _target_names(statement.target)
+    package_fallback = _package_import_fallback_names(statement)
+    if package_fallback:
+        return package_fallback
     return set()
 
 

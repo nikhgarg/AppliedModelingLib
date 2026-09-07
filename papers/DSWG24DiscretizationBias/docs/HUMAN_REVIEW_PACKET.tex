@@ -4,10 +4,17 @@
 % Do not hand-edit generated packets; annotate the PDF or reconcile notes into
 % the paper-local human-review log.
 \documentclass[10pt]{article}
-\usepackage[margin=0.43in]{geometry}
+\usepackage[margin=0.43in,footskip=0.2in]{geometry}
 \usepackage{fontspec}
-\setmainfont{Latin Modern Roman}
-\setmonofont{DejaVu Sans Mono}
+% Use a Unicode-complete main face as well as a Unicode-complete code face.
+% Reviewer reasons and source labels can contain exact Greek symbols outside
+% verbatim blocks; silently dropping one would corrupt the review packet.
+\setmainfont{DejaVu Serif}
+% The broad DejaVu Sans Unicode coverage preserves Lean's mathematical glyphs
+% (including U+2216 set difference and superscript identifiers) in verbatim
+% review blocks.  Its proportional metrics are preferable to silently missing
+% exact semantic text from a narrower monospace font.
+\setmonofont{DejaVu Sans}
 \usepackage{hyperref}
 \usepackage{amssymb}
 \usepackage{fvextra}
@@ -15,7 +22,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.15em}
 \linespread{0.92}
-\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,breaklinks=true}
 \DefineVerbatimEnvironment{ReviewVerbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\scriptsize}
 \newcommand{\reviewerbox}{%
   \par\noindent\fbox{\parbox{0.96\linewidth}{\rule{0pt}{0.38in}}}\par
@@ -36,13 +43,13 @@ specifications, and hash-bound raw-source-to-Spec screening records.
 
 \noindent\textbf{Paper:} DSWG24DiscretizationBias\\
 \textbf{Paper id:} \texttt{DSWG24DiscretizationBias}\\
-\textbf{Source version:} arXiv:2405.16762; byte-pinned publication source record\\
+\textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright arXiv:2405.16762; byte-pinned publication source record}\\
 \textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
-\textbf{Rows:} 17\\
-\textbf{Generated:} 2026-08-19\\
+\textbf{Rows:} 9\\
+\textbf{Generated:} 2026-09-07\\
 \textbf{Source URL:} \href{https://arxiv.org/pdf/2405.16762}{official source}
 
-\noindent\fbox{\parbox{0.96\linewidth}{\textbf{Review status:} 0/17 source-claim screens; 0/9 library prerequisite screens. This is a review worksheet while those direct checks remain pending; it is not a final validation receipt.}}\par
+
 
 
 
@@ -55,268 +62,1438 @@ log.
 \section*{Open the interactive dashboard}
 The interactive dashboard is an optional alternative to using this PDF; it
 presents the same review surface rather than an additional review requirement.
-After forking and cloning (or pulling) EconCSLib, run the following from the
+After forking and cloning (or pulling) AppliedModelingLib, run the following from the
 repository root. The cache command is needed only the first time in a new clone.
 \begin{ReviewVerbatim}
-cd <your-EconCSLib-checkout>
+cd <your-repository-checkout>
 lake exe cache get
 python3 scripts/review_dashboard.py --paper DSWG24DiscretizationBias --serve
 \end{ReviewVerbatim}
 Open \url{http://127.0.0.1:8765/} in a browser and keep that terminal running
-while reviewing. The dashboard records saved annotations in this paper's
+while reviewing. The dashboard records saved annotations in this paper's local
 reviewer-owned review record.
 
 \section*{Contents}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{library-section-62111921f3668458}{Semantic library prerequisites (9; not paper claims)}
+\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (49; supporting context)}
+\item \hyperlink{paper-prerequisite-section-5ef5ef0364b6939c}{Paper-specific semantic prerequisites (11; not paper claims)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{library-prerequisite-1ba21d6a145843fe}{EconCSLib.Decision.MonotoneExpectation}
-\item \hyperlink{library-prerequisite-d23d58c11a4ba279}{EconCSLib.Decision.FiniteLinearExpectation}
-\item \hyperlink{library-prerequisite-cf8d30fbaa7eab2a}{EconCSLib.Decision.IsPointwiseMax}
-\item \hyperlink{library-prerequisite-aeeb723ddae150e9}{EconCSLib.Decision.averageScore}
-\item \hyperlink{library-prerequisite-d8de4d5952ae79e0}{EconCSLib.Decision.datasetAccuracy}
-\item \hyperlink{library-prerequisite-e0ab839a0c73984a}{EconCSLib.Decision.expectedDecisionAccuracy}
-\item \hyperlink{library-prerequisite-5f9b15d72189cab5}{EconCSLib.Decision.expectedObjective}
-\item \hyperlink{library-prerequisite-e5c7eedc40c11b7a}{EconCSLib.pmfExp}
-\item \hyperlink{library-prerequisite-7fec9dedef722fc8}{EconCSLib.pmfProb}
+\item \hyperlink{paper-prerequisite-c793e07e52a48893}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}bayes\allowbreak{}Optimal}
+\item \hyperlink{paper-prerequisite-c94cbc772446ffec}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}calibrated}
+\item \hyperlink{paper-prerequisite-46e579d6fcd53814}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Aggregate\allowbreak{}First\allowbreak{}Argmax}
+\item \hyperlink{paper-prerequisite-2e16c9b0a6f0db1c}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Argmax\allowbreak{}Rule}
+\item \hyperlink{paper-prerequisite-536b545abe995da0}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Independent\allowbreak{}Randomized\allowbreak{}Rule}
+\item \hyperlink{paper-prerequisite-45b940eee9bfbd29}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Independent\allowbreak{}Rule}
+\item \hyperlink{paper-prerequisite-29d817bb87f95d82}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Thompson\allowbreak{}Sampling\allowbreak{}Rule}
+\item \hyperlink{paper-prerequisite-f1caeaac865e715b}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Tie\allowbreak{}Broken\allowbreak{}Argmax\allowbreak{}Rule}
+\item \hyperlink{paper-prerequisite-ce0ba7b00b93c0fc}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}maximizes\allowbreak{}Equation1}
+\item \hyperlink{paper-prerequisite-b11323803f325211}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}posterior\allowbreak{}Simplex}
+\item \hyperlink{paper-prerequisite-e9ff5dcccf634407}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}reference\allowbreak{}Simplex\allowbreak{}At}
 \end{itemize}
-\item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (17)}
+\item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (9)}
 \begin{itemize}[leftmargin=1.2em]
-\item \hyperlink{source-claim-1966e78967344232}{theorem1ii\_perfect\_classifier\_zero\_biasSpec}
-\item \hyperlink{source-claim-94d82572ce30633e}{theorem2iii\_non\_argmax\_not\_paretoSpec}
-\item \hyperlink{source-claim-9ffb824c48c4cf97}{theorem2iii\_weighted\_objective\_maximizer\_agrees\_argmaxSpec}
-\item \hyperlink{source-claim-e99b78e6cf17d423}{tie\_broken\_argmax\_definitionSpec}
-\item \hyperlink{source-claim-4bfc3aed59b0dc06}{thompson\_sampling\_definitionSpec}
-\item \hyperlink{source-claim-4822dab29e865f72}{independent\_rule\_definitionSpec}
-\item \hyperlink{source-claim-39ae869114aca78a}{integer\_optimization\_rule\_definitionSpec}
-\item \hyperlink{source-claim-ec32b7cd29afa460}{bayes\_optimal\_definitionSpec}
-\item \hyperlink{source-claim-7d95c2576dd31d3f}{pareto\_optimality\_definitionSpec}
-\item \hyperlink{source-claim-4662dc8e8bb960d7}{nontrivial\_reference\_family\_definitionSpec}
-\item \hyperlink{source-claim-d69492a6cc9555ec}{posterior\_simplex\_definitionSpec}
-\item \hyperlink{source-claim-54a3ee9bbb8f086b}{calibration\_definitionSpec}
-\item \hyperlink{source-claim-861b407dcf52f582}{theorem1i\_no\_information\_biasSpec}
-\item \hyperlink{source-claim-d8ad786b7cc58022}{theorem1iii\_argmax\_bias\_le\_maeSpec}
-\item \hyperlink{source-claim-d6b9878258465151}{theorem1iii\_tight\_binary\_exampleSpec}
-\item \hyperlink{source-claim-82ddd45159ec7ca3}{theorem2i\_joint\_rule\_existsSpec}
-\item \hyperlink{source-claim-cc8ba41c41752422}{theorem2ii\_argmax\_accuracy\_maximizingSpec}
+\item \hyperlink{source-claim-1966e78967344232}{theorem1ii\_\allowbreak{}perfect\_\allowbreak{}classifier\_\allowbreak{}zero\_\allowbreak{}bias\allowbreak{}Spec}
+\item \hyperlink{source-claim-61c8bcc1f7628e92}{theorem2iii\_\allowbreak{}randomized\_\allowbreak{}non\_\allowbreak{}argmax\_\allowbreak{}not\_\allowbreak{}pareto\allowbreak{}Spec}
+\item \hyperlink{source-claim-1356bc033e8e977b}{theorem2iii\_\allowbreak{}randomized\_\allowbreak{}weighted\_\allowbreak{}objective\_\allowbreak{}maximizer\_\allowbreak{}agrees\_\allowbreak{}argmax\allowbreak{}Spec}
+\item \hyperlink{source-claim-4662dc8e8bb960d7}{nontrivial\_\allowbreak{}reference\_\allowbreak{}family\_\allowbreak{}definition\allowbreak{}Spec}
+\item \hyperlink{source-claim-861b407dcf52f582}{theorem1i\_\allowbreak{}no\_\allowbreak{}information\_\allowbreak{}bias\allowbreak{}Spec}
+\item \hyperlink{source-claim-d8ad786b7cc58022}{theorem1iii\_\allowbreak{}argmax\_\allowbreak{}bias\_\allowbreak{}le\_\allowbreak{}mae\allowbreak{}Spec}
+\item \hyperlink{source-claim-d6b9878258465151}{theorem1iii\_\allowbreak{}tight\_\allowbreak{}binary\_\allowbreak{}example\allowbreak{}Spec}
+\item \hyperlink{source-claim-82ddd45159ec7ca3}{theorem2i\_\allowbreak{}joint\_\allowbreak{}rule\_\allowbreak{}exists\allowbreak{}Spec}
+\item \hyperlink{source-claim-cc8ba41c41752422}{theorem2ii\_\allowbreak{}argmax\_\allowbreak{}accuracy\_\allowbreak{}maximizing\allowbreak{}Spec}
 \end{itemize}
 \end{itemize}
 
 \clearpage
-\hypertarget{library-section-62111921f3668458}{}
-\section*{Material library prerequisites}
-\hypertarget{library-prerequisite-1ba21d6a145843fe}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Decision.\allowbreak{}MonotoneExpectation}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
+\hypertarget{governing-declaration-section-5ef5ef0364b6939c}{}
+\section*{Governing Lean declarations}
+These exact graph-bound declaration bodies are retained by the displayed specifications or reviewed prerequisites. They are supporting context and do not add source-result rows or semantic judgments.
+\hypertarget{governing-declaration-06698b1aac1f5804}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}Is\allowbreak{}Pointwise\allowbreak{}Max}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-∀ {ω : Type u_1} (expect : (ω → ℝ) → ℝ) (f g : ω → ℝ), (∀ (x : ω), f x ≤ g x) → expect f ≤ expect g
+type:
+{ι : Type u_1} → {α : Type u_2} → (ι → α → ℝ) → (ι → α) → Prop
+
+value:
+fun {ι : Type u_1} {α : Type u_2} (score : ι → α → ℝ) (choose : ι → α) =>
+  ∀ (i : ι) (a : α), score i a ≤ score i (choose i)
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+
+\hypertarget{governing-declaration-eb5e05858b12cdd2}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}Monotone\allowbreak{}Expectation}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-def MonotoneExpectation {ω : Type*} (expect : (ω → ℝ) → ℝ) : Prop :=
-  ∀ f g, (∀ x, f x ≤ g x) → expect f ≤ expect g
+type:
+{ω : Type u_1} → ((ω → ℝ) → ℝ) → Prop
+
+value:
+fun {ω : Type u_1} (expect : (ω → ℝ) → ℝ) => ∀ (f g : ω → ℝ), (∀ (x : ω), f x ≤ g x) → expect f ≤ expect g
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-d23d58c11a4ba279}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Decision.\allowbreak{}FiniteLinearExpectation}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
+
+\hypertarget{governing-declaration-443446486047239c}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}Finite\allowbreak{}Linear\allowbreak{}Expectation}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-∀ {ω : Type u_1} (expect : (ω → ℝ) → ℝ),
-  EconCSLib.Decision.MonotoneExpectation expect ∧
-    (∀ (c : ℝ) (f : ω → ℝ), (expect fun x => c * f x) = c * expect f) ∧
-      ∀ (f g : ω → ℝ), (expect fun x => f x + g x) = expect f + expect g
+type:
+{ω : Type u_1} → ((ω → ℝ) → ℝ) → Prop
+
+value:
+fun {ω : Type u_1} (expect : (ω → ℝ) → ℝ) =>
+  AppliedModelingLib.Decision.MonotoneExpectation expect ∧
+    (∀ (c : ℝ) (f : ω → ℝ), (expect fun (x : ω) => c * f x) = c * expect f) ∧
+      ∀ (f g : ω → ℝ), (expect fun (x : ω) => f x + g x) = expect f + expect g
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-eb5e05858b12cdd2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}Monotone\allowbreak{}Expectation}
+\end{itemize}
+\hypertarget{governing-declaration-3088d80cd010ba5f}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}average\allowbreak{}Score}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-def FiniteLinearExpectation {ω : Type*} (expect : (ω → ℝ) → ℝ) : Prop :=
-  MonotoneExpectation expect ∧
-    (∀ c f, expect (fun x => c * f x) = c * expect f) ∧
-    (∀ f g, expect (fun x => f x + g x) = expect f + expect g)
+type:
+{ι : Type u_1} → {α : Type u_2} → [Fintype ι] → (ι → α → ℝ) → (ι → α) → ℝ
+
+value:
+fun {ι : Type u_1} {α : Type u_2} [Fintype ι] (score : ι → α → ℝ) (choose : ι → α) =>
+  (∑ i : ι, score i (choose i)) / ↑(Fintype.card ι)
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-cf8d30fbaa7eab2a}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Decision.\allowbreak{}IsPointwiseMax}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
+
+\hypertarget{governing-declaration-0cd266624e93f607}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}dataset\allowbreak{}Accuracy}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-∀ {ι : Type u_1} {α : Type u_2} (score : ι → α → ℝ) (choose : ι → α) (i : ι) (a : α), score i a ≤ score i (choose i)
+type:
+{ι : Type u_1} → {α : Type u_2} → [Fintype ι] → [DecidableEq α] → (ι → α) → (ι → α) → ℝ
+
+value:
+fun {ι : Type u_1} {α : Type u_2} [Fintype ι] [DecidableEq α] (truth decision : ι → α) =>
+  AppliedModelingLib.Decision.averageScore (fun (i : ι) (a : α) => if a = truth i then 1 else 0) decision
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-3088d80cd010ba5f}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}average\allowbreak{}Score}
+\end{itemize}
+\hypertarget{governing-declaration-61110afe97ed1775}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}expected\allowbreak{}Decision\allowbreak{}Accuracy}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-def IsPointwiseMax {ι α : Type*} (score : ι → α → ℝ) (choose : ι → α) : Prop :=
-  ∀ i a, score i a ≤ score i (choose i)
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-aeeb723ddae150e9}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Decision.\allowbreak{}averageScore}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{ι : Type u_1} →
-  {α : Type u_2} →
-    [inst : Fintype ι] → (score : ι → α → ℝ) → (choose : ι → α) → (∑ i, score i (choose i)) / ↑(Fintype.card ι)
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-noncomputable def averageScore {ι α : Type*} [Fintype ι]
-    (score : ι → α → ℝ) (choose : ι → α) : ℝ :=
-  (∑ i : ι, score i (choose i)) / (Fintype.card ι : ℝ)
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-d8de4d5952ae79e0}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Decision.\allowbreak{}datasetAccuracy}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
-{ι : Type u_1} →
-  {α : Type u_2} →
-    [inst : Fintype ι] →
-      [inst_1 : DecidableEq α] →
-        (truth decision : ι → α) → EconCSLib.Decision.averageScore (fun i a => if a = truth i then 1 else 0) decision
-\end{ReviewVerbatim}
-
-\paragraph{Exact Lean library declaration}
-\begin{ReviewVerbatim}
-noncomputable def datasetAccuracy {ι α : Type*} [Fintype ι] [DecidableEq α]
-    (truth decision : ι → α) : ℝ :=
-  averageScore (fun i a => if a = truth i then (1 : ℝ) else 0) decision
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-e0ab839a0c73984a}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Decision.\allowbreak{}expectedDecisionAccuracy}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
-\begin{ReviewVerbatim}
+type:
 {ω : Type u_1} →
   {σ : Type u_2} →
     {ι : Type u_3} →
-      {α : Type u_4} →
-        [inst : Fintype ι] →
-          [inst_1 : DecidableEq α] →
-            (expect : (ω → ℝ) → ℝ) →
-              (obs : ω → σ) →
-                (truth : ω → ι → α) →
-                  (rule : σ → ι → α) → expect fun x => EconCSLib.Decision.datasetAccuracy (truth x) (rule (obs x))
+      {α : Type u_4} → [Fintype ι] → [DecidableEq α] → ((ω → ℝ) → ℝ) → (ω → σ) → (ω → ι → α) → (σ → ι → α) → ℝ
+
+value:
+fun {ω : Type u_1} {σ : Type u_2} {ι : Type u_3} {α : Type u_4} [Fintype ι] [DecidableEq α] (expect : (ω → ℝ) → ℝ)
+    (obs : ω → σ) (truth : ω → ι → α) (rule : σ → ι → α) =>
+  expect fun (x : ω) => AppliedModelingLib.Decision.datasetAccuracy (truth x) (rule (obs x))
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-0cd266624e93f607}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}dataset\allowbreak{}Accuracy}
+\end{itemize}
+\hypertarget{governing-declaration-71856cc0344b281a}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}expected\allowbreak{}Objective}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-noncomputable def expectedDecisionAccuracy {ω σ ι α : Type*}
-    [Fintype ι] [DecidableEq α]
-    (expect : (ω → ℝ) → ℝ) (obs : ω → σ)
-    (truth : ω → ι → α) (rule : σ → ι → α) : ℝ :=
-  expect (fun x => datasetAccuracy (truth x) (rule (obs x)))
+type:
+{ω : Type u_1} → {σ : Type u_2} → {β : Type u_3} → ((ω → ℝ) → ℝ) → (ω → σ) → (σ → β → ℝ) → (σ → β) → ℝ
+
+value:
+fun {ω : Type u_1} {σ : Type u_2} {β : Type u_3} (expect : (ω → ℝ) → ℝ) (obs : ω → σ) (objective : σ → β → ℝ)
+    (rule : σ → β) =>
+  expect fun (x : ω) => objective (obs x) (rule (obs x))
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{library-prerequisite-5f9b15d72189cab5}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}Decision.\allowbreak{}expectedObjective}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
+
+\hypertarget{governing-declaration-28219918dd3306b5}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Prediction.\allowbreak{}Model}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
+type:
+Type u_1 → Type u_2 → Type (max u_1 u_2)
+
+value:
+fun (X : Type u_1) (Y : Type u_2) => X → Y
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-48c36d87443b2ef9}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Prediction.\allowbreak{}Multiclass\allowbreak{}Score}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+Type u_1 → Type u_2 → Type (max u_1 u_2)
+
+value:
+fun (X : Type u_1) (Y : Type u_2) => AppliedModelingLib.Learning.Prediction.Model X (Y → ℝ)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-28219918dd3306b5}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Prediction.\allowbreak{}Model}
+\end{itemize}
+\hypertarget{governing-declaration-d9f4aa229cbce6df}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Prediction.\allowbreak{}Is\allowbreak{}Argmax\allowbreak{}Rule}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} →
+  {Y : Type u_2} →
+    AppliedModelingLib.Learning.Prediction.MulticlassScore X Y → AppliedModelingLib.Learning.Prediction.Model X Y → Prop
+
+value:
+fun {X : Type u_1} {Y : Type u_2} (q : AppliedModelingLib.Learning.Prediction.MulticlassScore X Y)
+    (rule : AppliedModelingLib.Learning.Prediction.Model X Y) =>
+  AppliedModelingLib.Decision.IsPointwiseMax q rule
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-06698b1aac1f5804}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}Is\allowbreak{}Pointwise\allowbreak{}Max}
+\item \hyperlink{governing-declaration-28219918dd3306b5}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Prediction.\allowbreak{}Model}
+\item \hyperlink{governing-declaration-48c36d87443b2ef9}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Prediction.\allowbreak{}Multiclass\allowbreak{}Score}
+\end{itemize}
+\hypertarget{governing-declaration-d1592e772e7c7e3d}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Prediction.\allowbreak{}Is\allowbreak{}Simplex\allowbreak{}Valued}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} → {Y : Type u_2} → [Fintype Y] → AppliedModelingLib.Learning.Prediction.MulticlassScore X Y → Prop
+
+value:
+fun {X : Type u_1} {Y : Type u_2} [Fintype Y] (q : AppliedModelingLib.Learning.Prediction.MulticlassScore X Y) =>
+  (∀ (x : X), ∑ y : Y, q x y = 1) ∧ (∀ (x : X) (y : Y), 0 ≤ q x y) ∧ ∀ (x : X) (y : Y), q x y ≤ 1
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-48c36d87443b2ef9}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Prediction.\allowbreak{}Multiclass\allowbreak{}Score}
+\end{itemize}
+\hypertarget{governing-declaration-8e4b4389a4f6454b}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Exp}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{α : Type u_1} → [Fintype α] → PMF α → (α → ℝ) → ℝ
+
+value:
+fun {α : Type u_1} [Fintype α] (μ : PMF α) (f : α → ℝ) => ∑ a : α, (μ a).toReal * f a
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-9c38d53b9d664221}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Prob}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{α : Type u_1} → [Fintype α] → PMF α → (p : α → Prop) → [DecidablePred p] → ℝ
+
+value:
+fun {α : Type u_1} [Fintype α] (μ : PMF α) (p : α → Prop) [DecidablePred p] =>
+  AppliedModelingLib.pmfExp μ fun (a : α) => if p a then 1 else 0
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8e4b4389a4f6454b}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Exp}
+\end{itemize}
+\hypertarget{governing-declaration-48f10f2715c04df3}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}uniform\allowbreak{}PMF}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+(α : Type u_1) → [Fintype α] → [Nonempty α] → PMF α
+
+value:
+fun (α : Type u_1) [Fintype α] [Nonempty α] =>
+  PMF.ofFintype (fun (x : α) => (↑(Fintype.card α))⁻¹) (AppliedModelingLib.uniformPMF._proof_1 α)
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-6ffc06082b09b7ad}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}feature\allowbreak{}Marginal}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_3} → {Y : Type u_4} → [Fintype X] → [DecidableEq X] → [Fintype Y] → [DecidableEq Y] → PMF (X × Y) → PMF X
+
+value:
+fun {X : Type u_3} {Y : Type u_4} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] (μ : PMF (X × Y)) =>
+  PMF.map Prod.fst μ
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-6b30364bc30e2f1c}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}label\allowbreak{}Marginal}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_3} → {Y : Type u_4} → [Fintype X] → [DecidableEq X] → [Fintype Y] → [DecidableEq Y] → PMF (X × Y) → PMF Y
+
+value:
+fun {X : Type u_3} {Y : Type u_4} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] (μ : PMF (X × Y)) =>
+  PMF.map Prod.snd μ
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-7bdd5ebec3f67e16}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Aggregate\allowbreak{}Posterior}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_3} →
+  {Y : Type u_4} → [Fintype X] → [DecidableEq X] → [Fintype Y] → [DecidableEq Y] → PMF (X × Y) → (X → Y → ℝ) → Y → ℝ
+
+value:
+fun {X : Type u_3} {Y : Type u_4} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] (μ : PMF (X × Y))
+    (q : X → Y → ℝ) (y : Y) =>
+  AppliedModelingLib.pmfExp (DSWG24DiscretizationBias.Finite.featureMarginal μ) fun (x : X) => q x y
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8e4b4389a4f6454b}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Exp}
+\item \hyperlink{governing-declaration-6ffc06082b09b7ad}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}feature\allowbreak{}Marginal}
+\end{itemize}
+\hypertarget{governing-declaration-8f84d0f76e66fc93}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Marginal\allowbreak{}Label\allowbreak{}Share}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_3} →
+  {Y : Type u_4} → [Fintype X] → [DecidableEq X] → [Fintype Y] → [DecidableEq Y] → PMF (X × Y) → (X → Y) → Y → ℝ
+
+value:
+fun {X : Type u_3} {Y : Type u_4} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] (μ : PMF (X × Y))
+    (rule : X → Y) (y : Y) =>
+  AppliedModelingLib.pmfProb (DSWG24DiscretizationBias.Finite.featureMarginal μ) fun (x : X) => rule x = y
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-9c38d53b9d664221}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Prob}
+\item \hyperlink{governing-declaration-6ffc06082b09b7ad}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}feature\allowbreak{}Marginal}
+\end{itemize}
+\hypertarget{governing-declaration-5d2200dbd9b4b93d}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Bias}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_3} →
+  {Y : Type u_4} →
+    [Fintype X] → [DecidableEq X] → [Fintype Y] → [DecidableEq Y] → PMF (X × Y) → (X → Y) → (Y → ℝ) → Y → ℝ
+
+value:
+fun {X : Type u_3} {Y : Type u_4} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] (μ : PMF (X × Y))
+    (rule : X → Y) (pref : Y → ℝ) (y : Y) =>
+  DSWG24DiscretizationBias.Finite.paperMarginalLabelShare μ rule y - pref y
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8f84d0f76e66fc93}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Marginal\allowbreak{}Label\allowbreak{}Share}
+\end{itemize}
+\hypertarget{governing-declaration-f3bd0c0016772e11}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Aggregate\allowbreak{}Bias}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_3} →
+  {Y : Type u_4} →
+    [Fintype X] → [DecidableEq X] → [Fintype Y] → [DecidableEq Y] → PMF (X × Y) → (X → Y → ℝ) → (X → Y) → Y → ℝ
+
+value:
+fun {X : Type u_3} {Y : Type u_4} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] (μ : PMF (X × Y))
+    (q : X → Y → ℝ) (rule : X → Y) (y : Y) =>
+  DSWG24DiscretizationBias.Finite.paperBias μ rule (DSWG24DiscretizationBias.Finite.paperAggregatePosterior μ q) y
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-7bdd5ebec3f67e16}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Aggregate\allowbreak{}Posterior}
+\item \hyperlink{governing-declaration-5d2200dbd9b4b93d}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Bias}
+\end{itemize}
+\hypertarget{governing-declaration-9de2c431ac58b2a3}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Theorem1\allowbreak{}Tight\allowbreak{}Argmax}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+Unit → Fin 2
+
+value:
+fun (x : Unit) => 0
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-d4243b460c2c568f}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Theorem1\allowbreak{}Tight\allowbreak{}Mu}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+PMF (Unit × Fin 2)
+
+value:
+AppliedModelingLib.uniformPMF (Unit × Fin 2)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-48f10f2715c04df3}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}uniform\allowbreak{}PMF}
+\end{itemize}
+\hypertarget{governing-declaration-193c98b93e9de012}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Theorem1\allowbreak{}Tight\allowbreak{}Q}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+Unit → Fin 2 → ℝ
+
+value:
+fun (x : Unit) (x_1 : Fin 2) => 1 / 2
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-41ac4bb8a2edc19c}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Pareto.\allowbreak{}Pareto\allowbreak{}Dominates}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Rule : Type u_1} → (Rule → ℝ) → (Rule → ℝ) → Rule → Rule → Prop
+
+value:
+fun {Rule : Type u_1} (accuracy fidelity : Rule → ℝ) (better worse : Rule) =>
+  accuracy worse ≤ accuracy better ∧
+    fidelity worse ≤ fidelity better ∧ (accuracy worse < accuracy better ∨ fidelity worse < fidelity better)
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-90962900f461a9f9}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Pareto.\allowbreak{}Pareto\allowbreak{}Optimal}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Rule : Type u_1} → (Rule → ℝ) → (Rule → ℝ) → Rule → Prop
+
+value:
+fun {Rule : Type u_1} (accuracy fidelity : Rule → ℝ) (rule : Rule) =>
+  ¬∃ (better : Rule), DSWG24DiscretizationBias.Pareto.ParetoDominates accuracy fidelity better rule
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-41ac4bb8a2edc19c}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Pareto.\allowbreak{}Pareto\allowbreak{}Dominates}
+\end{itemize}
+\hypertarget{governing-declaration-d0facd526e2aa2ff}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Pareto.\allowbreak{}weighted\allowbreak{}Objective}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Rule : Type u_1} → ℝ → (Rule → ℝ) → (Rule → ℝ) → Rule → ℝ
+
+value:
+fun {Rule : Type u_1} (γ : ℝ) (accuracy fidelity : Rule → ℝ) (rule : Rule) =>
+  γ * accuracy rule + (1 - γ) * fidelity rule
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-71a4a73d8c8948eb}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}aggregate\allowbreak{}Posterior}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{N K : ℕ} → (Fin N → Fin K → ℝ) → Fin K → ℝ
+
+value:
+fun {N K : ℕ} (q : Fin N → Fin K → ℝ) (y : Fin K) => (∑ i : Fin N, q i y) / ↑N
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-2e16128ba60f3c18}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}classifier\allowbreak{}MAE}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} →
+  {Y : Type u_2} → [Fintype X] → [DecidableEq X] → [Fintype Y] → [DecidableEq Y] → PMF (X × Y) → (X → Y → ℝ) → ℝ
+
+value:
+fun {X : Type u_1} {Y : Type u_2} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] (μ : PMF (X × Y))
+    (q : X → Y → ℝ) =>
+  AppliedModelingLib.pmfExp (DSWG24DiscretizationBias.Finite.featureMarginal μ) fun (x : X) =>
+    ∑ y : Y, q x y * (1 - q x y)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8e4b4389a4f6454b}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Exp}
+\item \hyperlink{governing-declaration-6ffc06082b09b7ad}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}feature\allowbreak{}Marginal}
+\end{itemize}
+\hypertarget{governing-declaration-d2886661b52542f6}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}continuous\allowbreak{}Joint\allowbreak{}Aggregate\allowbreak{}Posterior}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} → {Y : Type u_2} → [inst : MeasurableSpace (X × Y)] → MeasureTheory.Measure (X × Y) → (X → Y → ℝ) → Y → ℝ
+
+value:
+fun {X : Type u_1} {Y : Type u_2} [MeasurableSpace (X × Y)] (μ : MeasureTheory.Measure (X × Y)) (q : X → Y → ℝ)
+    (y : Y) =>
+  ∫ (xy : X × Y), q xy.1 y ∂μ
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-302610b6fa0b99db}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}continuous\allowbreak{}Joint\allowbreak{}Aggregate\allowbreak{}Bias}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} →
+  {Y : Type u_2} →
+    [inst : MeasurableSpace (X × Y)] → [DecidableEq Y] → MeasureTheory.Measure (X × Y) → (X → Y → ℝ) → (X → Y) → Y → ℝ
+
+value:
+fun {X : Type u_1} {Y : Type u_2} [MeasurableSpace (X × Y)] [DecidableEq Y] (μ : MeasureTheory.Measure (X × Y))
+    (q : X → Y → ℝ) (rule : X → Y) (y : Y) =>
+  ∫ (xy : X × Y), if rule xy.1 = y then 1 else 0 ∂μ -
+    DSWG24DiscretizationBias.ProofBridge.continuousJointAggregatePosterior μ q y
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-d2886661b52542f6}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}continuous\allowbreak{}Joint\allowbreak{}Aggregate\allowbreak{}Posterior}
+\end{itemize}
+\hypertarget{governing-declaration-d07991e4ae99da3b}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}continuous\allowbreak{}Joint\allowbreak{}Classifier\allowbreak{}MAE}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} →
+  {Y : Type u_2} → [inst : MeasurableSpace (X × Y)] → [Fintype Y] → MeasureTheory.Measure (X × Y) → (X → Y → ℝ) → ℝ
+
+value:
+fun {X : Type u_1} {Y : Type u_2} [MeasurableSpace (X × Y)] [Fintype Y] (μ : MeasureTheory.Measure (X × Y))
+    (q : X → Y → ℝ) =>
+  ∫ (xy : X × Y), ∑ y : Y, q xy.1 y * (1 - q xy.1 y) ∂μ
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-7df1fb937c21cdf5}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}continuous\allowbreak{}Joint\allowbreak{}Prior\allowbreak{}Bias}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} →
+  {Y : Type u_2} → [inst : MeasurableSpace (X × Y)] → [DecidableEq Y] → MeasureTheory.Measure (X × Y) → (X → Y) → Y → ℝ
+
+value:
+fun {X : Type u_1} {Y : Type u_2} [MeasurableSpace (X × Y)] [DecidableEq Y] (μ : MeasureTheory.Measure (X × Y))
+    (rule : X → Y) (y : Y) =>
+  ∫ (xy : X × Y), if rule xy.1 = y then 1 else 0 ∂μ - ∫ (xy : X × Y), if xy.2 = y then 1 else 0 ∂μ
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-8e0892ece8e4e41c}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}expected\allowbreak{}Objective}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
 {ω : Type u_1} →
   {σ : Type u_2} →
-    {β : Type u_3} →
-      (expect : (ω → ℝ) → ℝ) →
-        (obs : ω → σ) → (objective : σ → β → ℝ) → (rule : σ → β) → expect fun x => objective (obs x) (rule (obs x))
+    {N K : ℕ} →
+      [NeZero K] →
+        ((ω → ℝ) → ℝ) → (ω → σ) → (ω → Fin N → Fin K) → ℝ → (σ → (Fin N → Fin K) → ℝ) → (σ → Fin N → Fin K) → ℝ
+
+value:
+fun {ω : Type u_1} {σ : Type u_2} {N K : ℕ} [NeZero K] (expect : (ω → ℝ) → ℝ) (observedDataset : ω → σ)
+    (trueLabels : ω → Fin N → Fin K) (γ : ℝ) (fidelityTerm : σ → (Fin N → Fin K) → ℝ) (rule : σ → Fin N → Fin K) =>
+  γ * AppliedModelingLib.Decision.expectedDecisionAccuracy expect observedDataset trueLabels rule +
+    (1 - γ) * AppliedModelingLib.Decision.expectedObjective expect observedDataset fidelityTerm rule
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-61110afe97ed1775}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}expected\allowbreak{}Decision\allowbreak{}Accuracy}
+\item \hyperlink{governing-declaration-71856cc0344b281a}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}expected\allowbreak{}Objective}
+\end{itemize}
+\hypertarget{governing-declaration-af44c4b45082ddcb}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}First\allowbreak{}Argmax}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
 \begin{ReviewVerbatim}
-noncomputable def expectedObjective {ω σ β : Type*}
-    (expect : (ω → ℝ) → ℝ) (obs : ω → σ)
-    (objective : σ → β → ℝ) (rule : σ → β) : ℝ :=
-  expect (fun x => objective (obs x) (rule (obs x)))
+type:
+{K : ℕ} → (Fin K → ℝ) → Fin K → Prop
+
+value:
+fun {K : ℕ} (score : Fin K → ℝ) (chosen : Fin K) =>
+  (∀ (y : Fin K), score y ≤ score chosen) ∧ ∀ (y : Fin K), score y = score chosen → ↑chosen ≤ ↑y
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
+
+\hypertarget{governing-declaration-105d567a51316da3}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}marginal\allowbreak{}Label\allowbreak{}Share}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{N K : ℕ} → (Fin N → Fin K) → Fin K → ℝ
+
+value:
+fun {N K : ℕ} (decision : Fin N → Fin K) (y : Fin K) => (∑ i : Fin N, if decision i = y then 1 else 0) / ↑N
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-63f8cdbf3ab80aed}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}bias}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{N K : ℕ} → (Fin N → Fin K) → (Fin K → ℝ) → Fin K → ℝ
+
+value:
+fun {N K : ℕ} (decision : Fin N → Fin K) (pref : Fin K → ℝ) (y : Fin K) =>
+  DSWG24DiscretizationBias.ProofBridge.marginalLabelShare decision y - pref y
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-105d567a51316da3}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}marginal\allowbreak{}Label\allowbreak{}Share}
+\end{itemize}
+\hypertarget{governing-declaration-2b57ec17c49d7147}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}fidelity}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{N K : ℕ} → (Fin N → Fin K) → (Fin K → ℝ) → ℝ
+
+value:
+fun {N K : ℕ} (decision : Fin N → Fin K) (pref : Fin K → ℝ) =>
+  -∑ y : Fin K, |DSWG24DiscretizationBias.ProofBridge.bias decision pref y|
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-63f8cdbf3ab80aed}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}bias}
+\end{itemize}
+\hypertarget{governing-declaration-78f0292bcb487fbc}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}equation1\allowbreak{}Objective}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{N K : ℕ} → ℝ → (Fin N → Fin K → ℝ) → (Fin K → ℝ) → (Fin N → Fin K) → ℝ
+
+value:
+fun {N K : ℕ} (γ : ℝ) (q : Fin N → Fin K → ℝ) (pref : Fin K → ℝ) (decision : Fin N → Fin K) =>
+  γ * AppliedModelingLib.Decision.averageScore q decision +
+    (1 - γ) * DSWG24DiscretizationBias.ProofBridge.fidelity decision pref
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-3088d80cd010ba5f}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}average\allowbreak{}Score}
+\item \hyperlink{governing-declaration-2b57ec17c49d7147}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}fidelity}
+\end{itemize}
+\hypertarget{governing-declaration-28e1fcee264c130f}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}perfect\allowbreak{}Classifier\allowbreak{}On\allowbreak{}Support}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} →
+  {Y : Type u_2} →
+    [Fintype X] → [DecidableEq X] → [Fintype Y] → [DecidableEq Y] → PMF (X × Y) → (X → Y → ℝ) → (X → Y) → Prop
+
+value:
+fun {X : Type u_1} {Y : Type u_2} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] (μ : PMF (X × Y))
+    (q : X → Y → ℝ) (rule : X → Y) =>
+  ∀ (x : X) (y : Y), μ (x, y) ≠ 0 → rule x = y ∧ q x y = 1 ∧ ∀ (a : Y), a ≠ y → q x a = 0
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-8260e4a6984dc105}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}prior}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} → {Y : Type u_2} → [Fintype X] → [DecidableEq X] → [Fintype Y] → [DecidableEq Y] → PMF (X × Y) → Y → ℝ
+
+value:
+fun {X : Type u_1} {Y : Type u_2} [Fintype X] [DecidableEq X] [Fintype Y] [DecidableEq Y] (μ : PMF (X × Y)) (y : Y) =>
+  ((DSWG24DiscretizationBias.Finite.labelMarginal μ) y).toReal
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-6b30364bc30e2f1c}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}label\allowbreak{}Marginal}
+\end{itemize}
+\hypertarget{governing-declaration-9631b3d6800a2bd3}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}source\allowbreak{}P\allowbreak{}Nq}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Sample : Type u_1} → {N K : ℕ} → (Sample → Fin N → Fin K → ℝ) → (Sample → Fin K) → (Sample → Fin K → ℝ) → Prop
+
+value:
+fun {Sample : Type u_1} {N K : ℕ} (posterior : Sample → Fin N → Fin K → ℝ) (aggregateArgmax : Sample → Fin K)
+    (prefAt : Sample → Fin K → ℝ) =>
+  DSWG24DiscretizationBias.ProofBridge.referenceSimplexAt prefAt ∧
+    (∀ (sample : Sample),
+        DSWG24DiscretizationBias.ProofBridge.isAggregateFirstArgmax (posterior sample) (aggregateArgmax sample)) ∧
+      ∀ (sample : Sample), 1 / ↑N ≤ prefAt sample (aggregateArgmax sample)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-46e579d6fcd53814}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Aggregate\allowbreak{}First\allowbreak{}Argmax}
+\item \hyperlink{paper-prerequisite-e9ff5dcccf634407}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}reference\allowbreak{}Simplex\allowbreak{}At}
+\end{itemize}
+\hypertarget{governing-declaration-fd6e69b98a707ae7}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}dataset\allowbreak{}Accuracy\allowbreak{}Score}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{N K : ℕ} → (Fin N → Fin K → ℝ) → (Fin N → Fin K) → ℝ
+
+value:
+fun {N K : ℕ} (posterior : Fin N → Fin K → ℝ) (decision : Fin N → Fin K) =>
+  AppliedModelingLib.Decision.averageScore posterior decision
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-3088d80cd010ba5f}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}average\allowbreak{}Score}
+\end{itemize}
+\hypertarget{governing-declaration-81ede32916dad99e}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}dataset\allowbreak{}Label\allowbreak{}Share}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{N K : ℕ} → (Fin N → Fin K) → Fin K → ℝ
+
+value:
+fun {N K : ℕ} (decision : Fin N → Fin K) (y : Fin K) => (∑ i : Fin N, if decision i = y then 1 else 0) / ↑N
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-2a64863d3ac17c16}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}dataset\allowbreak{}Fidelity}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{N K : ℕ} → (Fin K → ℝ) → (Fin N → Fin K) → ℝ
+
+value:
+fun {N K : ℕ} (pref : Fin K → ℝ) (decision : Fin N → Fin K) =>
+  -∑ y : Fin K, |DSWG24DiscretizationBias.Theorem2iii.datasetLabelShare decision y - pref y|
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-81ede32916dad99e}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}dataset\allowbreak{}Label\allowbreak{}Share}
+\end{itemize}
+\hypertarget{governing-declaration-daac633422a44729}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}expected\allowbreak{}Dataset\allowbreak{}Accuracy}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Sample : Type u_1} →
+  [Fintype Sample] →
+    [DecidableEq Sample] → {N K : ℕ} → PMF Sample → (Sample → Fin N → Fin K → ℝ) → (Sample → Fin N → Fin K) → ℝ
+
+value:
+fun {Sample : Type u_1} [Fintype Sample] [DecidableEq Sample] {N K : ℕ} (sampleLaw : PMF Sample)
+    (posterior : Sample → Fin N → Fin K → ℝ) (policy : Sample → Fin N → Fin K) =>
+  AppliedModelingLib.pmfExp sampleLaw fun (sample : Sample) =>
+    DSWG24DiscretizationBias.Theorem2iii.datasetAccuracyScore (posterior sample) (policy sample)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8e4b4389a4f6454b}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Exp}
+\item \hyperlink{governing-declaration-fd6e69b98a707ae7}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}dataset\allowbreak{}Accuracy\allowbreak{}Score}
+\end{itemize}
+\hypertarget{governing-declaration-8158479406f1d885}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}expected\allowbreak{}Dataset\allowbreak{}Fidelity\allowbreak{}At}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Sample : Type u_1} →
+  [Fintype Sample] → [DecidableEq Sample] → {N K : ℕ} → PMF Sample → (Sample → Fin K → ℝ) → (Sample → Fin N → Fin K) → ℝ
+
+value:
+fun {Sample : Type u_1} [Fintype Sample] [DecidableEq Sample] {N K : ℕ} (sampleLaw : PMF Sample)
+    (prefAt : Sample → Fin K → ℝ) (policy : Sample → Fin N → Fin K) =>
+  AppliedModelingLib.pmfExp sampleLaw fun (sample : Sample) =>
+    DSWG24DiscretizationBias.Theorem2iii.datasetFidelity (prefAt sample) (policy sample)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8e4b4389a4f6454b}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Exp}
+\item \hyperlink{governing-declaration-2a64863d3ac17c16}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}dataset\allowbreak{}Fidelity}
+\end{itemize}
+\hypertarget{governing-declaration-b906fbb2f231ab40}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}iid\allowbreak{}Sample\allowbreak{}PMF}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} → [Fintype X] → [DecidableEq X] → PMF X → (N : ℕ) → PMF (Fin N → X)
+
+value:
+fun {X : Type u_1} [Fintype X] [DecidableEq X] (μ : PMF X) (N : ℕ) =>
+  PMF.ofFintype (fun (sample : Fin N → X) => ∏ i : Fin N, μ (sample i))
+    (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF._proof_1 μ N)
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-05d42de5dba2851d}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}sampled\allowbreak{}Decision}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} → {N K : ℕ} → (X → Fin K) → (Fin N → X) → Fin N → Fin K
+
+value:
+fun {X : Type u_1} {N K : ℕ} (rule : X → Fin K) (sample : Fin N → X) (a : Fin N) => rule (sample a)
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-457b4184b0081169}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}sampled\allowbreak{}Posterior}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} → {N K : ℕ} → (X → Fin K → ℝ) → (Fin N → X) → Fin N → Fin K → ℝ
+
+value:
+fun {X : Type u_1} {N K : ℕ} (posterior : X → Fin K → ℝ) (sample : Fin N → X) (a : Fin N) (a_1 : Fin K) =>
+  posterior (sample a) a_1
+\end{ReviewVerbatim}
+
+
+\clearpage
+\hypertarget{paper-prerequisite-section-5ef5ef0364b6939c}{}
+\section*{Paper-specific semantic prerequisites}
+\hypertarget{paper-prerequisite-c793e07e52a48893}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}bayes\allowbreak{}Optimal}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}bayes\allowbreak{}Optimal\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 597-\allowbreak{}607\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+3.1.1    Continuous classifier and discretization rules
+Suppose we have a machine learning classifier q (e.g., trained on some other dataset) that makes continuous
+probability predictions for each class, given the data. Let q(y, x) denote the probability placed on class y
+
+
+
+                                                       10
+
+[form-feed in source extraction]
+given data x. For example, the Bayes optimal classifier is
+                                               q ∗ (y, x) ≜ Pr(Y = y|X = x).
+We will refer to p as the prior and q as our learned posterior. Let the simplex of possible probability vectors
+over the support Y be △Y , and let q(x) ∈ △Y be the vector of probabilities (q(y, x))y .
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Ω : Type u_1} →
+  {σ : Type u_2} →
+    [Fintype Ω] →
+      [DecidableEq Ω] →
+        [Fintype σ] →
+          [DecidableEq σ] → {N K : ℕ} → PMF Ω → (Ω → σ) → (Ω → Fin N → Fin K) → (σ → Fin N → Fin K → ℝ) → Prop
+
+value:
+fun {Ω : Type u_1} {σ : Type u_2} [Fintype Ω] [DecidableEq Ω] [Fintype σ] [DecidableEq σ] {N K : ℕ} (μ : PMF Ω)
+    (observedDataset : Ω → σ) (trueLabels : Ω → Fin N → Fin K) (posterior : σ → Fin N → Fin K → ℝ) =>
+  ∀ (xs : σ) (i : Fin N) (y : Fin K),
+    (AppliedModelingLib.pmfProb μ fun (w : Ω) => observedDataset w = xs ∧ trueLabels w i = y) =
+      posterior xs i y * AppliedModelingLib.pmfProb μ fun (w : Ω) => observedDataset w = xs
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-9c38d53b9d664221}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Prob}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source defines the Bayes classifier by q-\allowbreak{}star(y,x)=Pr(Y=y given X=x);\allowbreak{} the expanded finite target states the equivalent atom factorization Pr(X=xs and Y\_\allowbreak{}i=y)=posterior(xs,i,y) times Pr(X=xs), preserving every positive-\allowbreak{}mass conditional and leaving zero-\allowbreak{}mass conditionals unconstrained.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{library-prerequisite-e5c7eedc40c11b7a}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}pmfExp}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
+\hypertarget{paper-prerequisite-c94cbc772446ffec}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}calibrated}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}calibrated\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 635-\allowbreak{}658\par}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
-{α : Type u_1} → [inst : Fintype α] → [DecidableEq α] → (μ : PMF α) → (f : α → ℝ) → ∑ a, (μ a).toReal * f a
+3.2     Theoretical Results: Argmax bias and continuous classifier
+We first study the relationship between argmax bias and the properties of the continuous classifier. We show
+that discretization bias can occur even with unbiased (calibrated) continuous classifiers q, as long as it is
+uncertain (has non-zero error).
+    The following result holds for all calibrated classifiers. A given classifier q is calibrated when its contin-
+uous predictions are correct on average, Pr(Y = y|q(y, x) = c) = c.10 Note that the Bayes optimal classifier
+is calibrated.
+Theorem 1. Argmax bias depends on predictive uncertainty, i.e., how much information features x provide
+about the true class label. Consider calibrated classifier q and the argmax decision rule Dargmax . Let N > K
+and consider a reference distribution of either the aggregate posterior or the prior. Then,
+  (i). Suppose x provides no information and q(y, x) = Pr(y) for all x, y. Then, amplification bias is
+       maximized and all data points are classified as a plurality class:
+                                                  (
+                                                    1 − Pr(y), if y = arg maxw p(w),
+                            BIAS(y, Dargmax ) =
+                                                    − Pr(y),      otherwise.
+   9 Note that, though related, mean average error of the continuous predictor q(y, x) is not equivalent to expected zero-one
+
+loss of the discrete decisions. The latter, our measure of decision accuracy, also depends on how the continuous predictor is
+discretized.                                n                                           o
+  10 For all c of non-zero measure: ∀c ∈
+                                                 R
+                                             c : (x,y) I[q(y, x) = c]f (x, y)d(y, x) > 0 . Further note that calibration implies
+Bayesian consistency, i.e., the continuous model cumulatively assigns the proper mass to each class y: EX [q(y, x)] = Pr(y).
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+% report-context-presentation-sha256: dc1fa9810ac3a973e2d1a457fa41cd1dc4334b409511e9a462bf7ba03b1cc215
+\paragraph{Settled source reading}
+\begin{sloppypar}
+Calibration uses the standard conditional-\allowbreak{}expectation event identity intended by the source proof.\allowbreak{}
+\end{sloppypar}
+
+\paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
-noncomputable def pmfExp {α : Type*} [Fintype α] [DecidableEq α]
-    (μ : PMF α) (f : α → ℝ) : ℝ :=
-  ∑ a, (μ a).toReal * f a
+type:
+{X : Type u_1} →
+  {Y : Type u_2} →
+    [inst : MeasurableSpace (X × Y)] → [DecidableEq Y] → MeasureTheory.Measure (X × Y) → (X → Y → ℝ) → Prop
+
+value:
+fun {X : Type u_1} {Y : Type u_2} [MeasurableSpace (X × Y)] [DecidableEq Y] (μ : MeasureTheory.Measure (X × Y))
+    (q : X → Y → ℝ) =>
+  ∀ (y : Y) (s : Set ℝ),
+    MeasurableSet s →
+      ∫ (xy : X × Y), if q xy.1 y ∈ s then if xy.2 = y then 1 else 0 else 0 ∂μ =
+        ∫ (xy : X × Y), if q xy.1 y ∈ s then q xy.1 y else 0 ∂μ
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The approved source reading requires, for every label y and measurable score-\allowbreak{}value event A, equality between the mass of observations with Y = y and q\_\allowbreak{}y in A and the integral of q\_\allowbreak{}y over that same event.\allowbreak{} The expanded calibrated predicate states exactly this event-\allowbreak{}preimage integral identity for every y and measurable set s.\allowbreak{} Its displayed use in the Theorem 1(iii) Spec adds posteriorSimplex and coordinate measurability before assuming calibrated, so the paper use remains within the approved probabilistic score domain.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{library-prerequisite-7fec9dedef722fc8}{}
-\subsection*{\small\ttfamily\raggedright EconCSLib.\allowbreak{}pmfProb}
-\textbf{Source connection:} no explicit byte-pinned paper source connection is registered.
-\paragraph{Lean-expanded library semantic target}
+\hypertarget{paper-prerequisite-46e579d6fcd53814}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Aggregate\allowbreak{}First\allowbreak{}Argmax}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Aggregate\allowbreak{}First\allowbreak{}Argmax\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 749-\allowbreak{}755\par}
+\paragraph{Verbatim paper-source connection}
 \begin{ReviewVerbatim}
-{α : Type u_1} →
-  [inst : Fintype α] →
-    [inst_1 : DecidableEq α] →
-      (μ : PMF α) → (p : α → Prop) → [inst_2 : DecidablePred p] → EconCSLib.pmfExp μ fun a => if p a then 1 else 0
+q
+    For the result, we define the notion of non-trivial reference distributions PN     : a reference distribution
+                                                       1
+pq : {xi } → △NY is in P N if it assigns mass at least N to the most likely class in the  dataset, i.e., at least 1
+data point would be discretized to the most likely class arg maxy i q(y, xi ).13
+                                                                   P
+
+
+[Next verbatim source excerpt]
+
+Aggregate posterior reference distribution What is an appropriate reference distribution pref ? Of
+course, if we knew the true distribution of labels (e.g., the true fraction of each group in the voter file), we
+could measure and optimize fidelity with respect to it. However, this information is not often known. In this
+paper, we will thus primarily compare to the aggregate posterior: for a given set {xi }, what would the
+decision distribution be if we could make continuous decisions corresponding to the continuous classifier q,
+                                                                  1 X
+                                            pqagg (y, {xi }) =        q(y, xi ).
+                                                                  N i
 \end{ReviewVerbatim}
 
-\paragraph{Exact Lean library declaration}
+
+
+\paragraph{Lean-expanded paper semantic target}
 \begin{ReviewVerbatim}
-noncomputable def pmfProb {α : Type*} [Fintype α] [DecidableEq α]
-    (μ : PMF α) (p : α → Prop) [DecidablePred p] : ℝ :=
-  pmfExp μ (fun a => if p a then 1 else 0)
+type:
+{N K : ℕ} → (Fin N → Fin K → ℝ) → Fin K → Prop
+
+value:
+fun {N K : ℕ} (posterior : Fin N → Fin K → ℝ) (target : Fin K) =>
+  DSWG24DiscretizationBias.ProofBridge.isFirstArgmax (DSWG24DiscretizationBias.ProofBridge.aggregatePosterior posterior)
+    target
 \end{ReviewVerbatim}
 
-\paragraph{Recorded source-to-library screening}
-\textbf{Verdict:} \texttt{not recorded}
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-71a4a73d8c8948eb}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}aggregate\allowbreak{}Posterior}
+\item \hyperlink{governing-declaration-af44c4b45082ddcb}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}First\allowbreak{}Argmax}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source's dataset-\allowbreak{}most-\allowbreak{}likely class maximizes the sum of row posteriors, with a consistent tie order;\allowbreak{} the expanded target takes the first maximizer of the aggregate posterior, and division by positive dataset size does not change that argmax in the displayed N>K uses.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-2e16c9b0a6f0db1c}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Argmax\allowbreak{}Rule}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Argmax\allowbreak{}Rule\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 218\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Argmax rule assigns, for each data point, the most likely2 class: Dargmax ({q(xi }) ≜ {ŷi = arg maxy q(y, xi )}.
+
+[Next verbatim source excerpt]
+
+   2 Suppose ties are broken according to some consistent ordering over the classes.      In the event of ties, we will use
+arg maxy q(y, x) to denote the single class that is in the argmax set and is first in the consistent ordering among classes
+in the argmax set.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} → {Y : Type u_2} → (X → Y → ℝ) → (X → Y) → Prop
+
+value:
+fun {X : Type u_1} {Y : Type u_2} (q : X → Y → ℝ) (rule : X → Y) =>
+  AppliedModelingLib.Learning.Prediction.IsArgmaxRule q rule
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-d9f4aa229cbce6df}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Prediction.\allowbreak{}Is\allowbreak{}Argmax\allowbreak{}Rule}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The expanded predicate requires the selected label to attain the row-\allowbreak{}wise maximum.\allowbreak{} It relaxes the source's fixed tie ordering, but every source tie-\allowbreak{}broken argmax satisfies it and the displayed theorem1iii use therefore proves a valid strengthening covering every source-\allowbreak{}admissible rule without changing behavior on that domain.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-536b545abe995da0}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Independent\allowbreak{}Randomized\allowbreak{}Rule}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Independent\allowbreak{}Randomized\allowbreak{}Rule\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 615-\allowbreak{}618\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Decision (discretization) rules are as defined in Section 1.1. Our theoretical results distinguish between
+independent (e.g., argmax, threhsolding, Thompson sampling) and joint (e.g., our optimization approach)
+rules. Formally, with independent rules, there exists a (potentially randomized) function d such that
+Dd ({q(xi )}) = {ŷi = d(q(y, xi ))}.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} → {N K : ℕ} → ((Fin N → X) → (Fin N → Fin K) → ℝ) → Prop
+
+value:
+fun {X : Type u_1} {N K : ℕ} (jointProbability : (Fin N → X) → (Fin N → Fin K) → ℝ) =>
+  ∃ (rowProbability : X → Fin K → ℝ),
+    (∀ (x : X) (y : Fin K), 0 ≤ rowProbability x y) ∧
+      (∀ (x : X), ∑ y : Fin K, rowProbability x y = 1) ∧
+        ∀ (xs : Fin N → X) (decision : Fin N → Fin K),
+          jointProbability xs decision = ∏ i : Fin N, rowProbability (xs i) (decision i)
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source defines an independent potentially randomized rule by one common row-\allowbreak{}level randomized function d;\allowbreak{} the expanded target represents d as a nonnegative normalized row kernel and factors the conditional joint decision probability into the product of its row probabilities.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-45b940eee9bfbd29}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Independent\allowbreak{}Rule}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Independent\allowbreak{}Rule\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 225-\allowbreak{}228\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+These rules are all independent: the assigned label for a data point i depends on q(xi ) but not on other
+data points or their probability vectors {q(xj )}j̸=i .
+    In contrast, our proposed approach also includes joint decision optimization rules, which depend on the
+entire set of data points, as a solution to discretization bias.
+
+[Next verbatim source excerpt]
+
+data point xi . A (potentially randomized) decision (discretization) rule D : △NY →Y
+                                                                                      N
+                                                                                         is a rule that, given a
+                                   N
+set of probability vectors {q(xi )}i=1 associated with N data points, assigns each data point i a label ŷi ∈ Y.
+
+[Next verbatim source excerpt]
+
+    Decision (discretization) rules are as defined in Section 1.1. Our theoretical results distinguish between
+independent (e.g., argmax, threhsolding, Thompson sampling) and joint (e.g., our optimization approach)
+rules. Formally, with independent rules, there exists a (potentially randomized) function d such that
+Dd ({q(xi )}) = {ŷi = d(q(y, xi ))}.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} → {N K : ℕ} → ((Fin N → X) → Fin N → Fin K) → Prop
+
+value:
+fun {X : Type u_1} {N K : ℕ} (rule : (Fin N → X) → Fin N → Fin K) =>
+  ∃ (d : X → Fin K), ∀ (xs : Fin N → X) (i : Fin N), rule xs i = d (xs i)
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source says each assigned label depends only on its own row probability vector through one common function d;\allowbreak{} the expanded deterministic target is exactly the existence of d with rule(xs,i)=d(xs i) for every dataset and row.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-29d817bb87f95d82}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Thompson\allowbreak{}Sampling\allowbreak{}Rule}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Thompson\allowbreak{}Sampling\allowbreak{}Rule\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 222-\allowbreak{}223\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Thompson sampling for each data point i, samples a class y based on the probabilities q(y, xi ), i.e., ŷi = y
+    with probability q(y, xi ), and so in expectation will have labels matching the aggregate posterior.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{N K : ℕ} → (Fin N → Fin K → ℝ) → (Fin N → Fin K → ℝ) → Prop
+
+value:
+fun {N K : ℕ} (q selectionProbability : Fin N → Fin K → ℝ) =>
+  ∀ (i : Fin N) (y : Fin K), selectionProbability i y = q i y
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source defines Thompson sampling by selecting label y for row i with probability q(y,x\_\allowbreak{}i);\allowbreak{} the expanded target equates every row-\allowbreak{}label selection probability with the corresponding posterior probability.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-f1caeaac865e715b}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Tie\allowbreak{}Broken\allowbreak{}Argmax\allowbreak{}Rule}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Tie\allowbreak{}Broken\allowbreak{}Argmax\allowbreak{}Rule\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 215-\allowbreak{}231\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+1.1.2    Overview of decision rules
+Several rules are used in academia and in practice:
+
+Argmax rule assigns, for each data point, the most likely2 class: Dargmax ({q(xi }) ≜ {ŷi = arg maxy q(y, xi )}.
+Threshold at t rule assigns a label only if the argmax class has a probability of at least t, i.e., ŷi =
+    arg maxy q(y, xi ) if maxy q(y, xi ) ≥ t, otherwise i is left uncoded.
+
+Thompson sampling for each data point i, samples a class y based on the probabilities q(y, xi ), i.e., ŷi = y
+    with probability q(y, xi ), and so in expectation will have labels matching the aggregate posterior.
+
+    These rules are all independent: the assigned label for a data point i depends on q(xi ) but not on other
+data points or their probability vectors {q(xj )}j̸=i .
+    In contrast, our proposed approach also includes joint decision optimization rules, which depend on the
+entire set of data points, as a solution to discretization bias.
+   2 Suppose ties are broken according to some consistent ordering over the classes.      In the event of ties, we will use
+arg maxy q(y, x) to denote the single class that is in the argmax set and is first in the consistent ordering among classes
+in the argmax set.
+
+[Next verbatim source excerpt]
+
+Argmax rule assigns, for each data point, the most likely2 class: Dargmax ({q(xi }) ≜ {ŷi = arg maxy q(y, xi )}.
+Threshold at t rule assigns a label only if the argmax class has a probability of at least t, i.e., ŷi =
+    arg maxy q(y, xi ) if maxy q(y, xi ) ≥ t, otherwise i is left uncoded.
+
+Thompson sampling for each data point i, samples a class y based on the probabilities q(y, xi ), i.e., ŷi = y
+    with probability q(y, xi ), and so in expectation will have labels matching the aggregate posterior.
+
+    These rules are all independent: the assigned label for a data point i depends on q(xi ) but not on other
+data points or their probability vectors {q(xj )}j̸=i .
+    In contrast, our proposed approach also includes joint decision optimization rules, which depend on the
+entire set of data points, as a solution to discretization bias.
+   2 Suppose ties are broken according to some consistent ordering over the classes.      In the event of ties, we will use
+arg maxy q(y, x) to denote the single class that is in the argmax set and is first in the consistent ordering among classes
+in the argmax set.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{N K : ℕ} → (Fin N → Fin K → ℝ) → (Fin N → Fin K) → Prop
+
+value:
+fun {N K : ℕ} (q : Fin N → Fin K → ℝ) (rule : Fin N → Fin K) =>
+  ∀ (i : Fin N), DSWG24DiscretizationBias.ProofBridge.isFirstArgmax (q i) (rule i)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-af44c4b45082ddcb}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}First\allowbreak{}Argmax}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source chooses a row-\allowbreak{}wise maximum and resolves ties by a fixed consistent class ordering;\allowbreak{} the expanded target uses the natural Fin ordering, requires maximal score, and requires the chosen index to be first among all tied maxima for every row.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-ce0ba7b00b93c0fc}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}maximizes\allowbreak{}Equation1}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}maximizes\allowbreak{}Equation1\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 252-\allowbreak{}264\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Integer optimization rules directly optimize given objectives. We consider the rule that corresponds to
+     solving the following optimization problem, for a given γ, data points {xi }, and reference pref :
+                                                            N
+                                                                           !
+                      γ                                  1 X
+                   D ({q(xi )}, pref ) = arg max{ŷi } γ       q(ŷi , xi ) + (1 − γ)fid(pref , ŷ1:N ). (1)
+                                                         N i=1
+
+     The rule balances, parameterized by γ ∈ [0, 1], row-level scores (accuracy as measured by q) and
+     distributional fidelity.
+Aggregate posterior matching A special case of the joint optimization decision rules defined in Equa-
+    tion (1) is as γ → 0, leading to a rule that maximizes accuracy subject to the constraint that distri-
+    butional fidelity be as high as possible. We call such rules matching solutions, e.g., aggregate posterior
+
+[Next verbatim source excerpt]
+
+
+[form-feed in source extraction]
+    (2a) To measure bias, we use the distance between the marginal distribution of labels and a reference
+distribution pref . Let p̂marg (y) denote the fraction of datapoints with the label y:
+                                                                     N
+                                                                 1 X
+                                          p̂marg (y, ŷ1:N ) =         1[ŷi = y].
+                                                                 N i=1
+
+Then, bias is how much a class y is amplified by labels relative to the reference:
+
+                                    bias(y, ŷ1:N , pref ) ≜ p̂marg (y, ŷ1:N ) − pref (y).
+
+    (2b) As a summary statistic, we will further consider distributional fidelity, the negative sum of the
+absolute value of bias across classes (equivalently, the negative of the ell1 distance between the label and
+reference distributions).
+                                                        X
+                                 fid(pref , ŷ1:N ) ≜ −   bias(y, ŷ1:N , pref ) .
+                                                            y∈Y
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{N K : ℕ} → ℝ → (Fin N → Fin K → ℝ) → (Fin K → ℝ) → (Fin N → Fin K) → Prop
+
+value:
+fun {N K : ℕ} (γ : ℝ) (q : Fin N → Fin K → ℝ) (pref : Fin K → ℝ) (decision : Fin N → Fin K) =>
+  ∀ (other : Fin N → Fin K),
+    DSWG24DiscretizationBias.ProofBridge.equation1Objective γ q pref other ≤
+      DSWG24DiscretizationBias.ProofBridge.equation1Objective γ q pref decision
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-78f0292bcb487fbc}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}equation1\allowbreak{}Objective}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Equation (1) maximizes gamma times average selected posterior score plus one-\allowbreak{}minus-\allowbreak{}gamma times fidelity, where fidelity is the negative L1 bias;\allowbreak{} the expanded dependencies implement those formulas and the target compares the chosen decision against every alternative with the correct maximizing inequality.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-b11323803f325211}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}posterior\allowbreak{}Simplex}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}posterior\allowbreak{}Simplex\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 597-\allowbreak{}607\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+3.1.1    Continuous classifier and discretization rules
+Suppose we have a machine learning classifier q (e.g., trained on some other dataset) that makes continuous
+probability predictions for each class, given the data. Let q(y, x) denote the probability placed on class y
+
+
+
+                                                       10
+
+[form-feed in source extraction]
+given data x. For example, the Bayes optimal classifier is
+                                               q ∗ (y, x) ≜ Pr(Y = y|X = x).
+We will refer to p as the prior and q as our learned posterior. Let the simplex of possible probability vectors
+over the support Y be △Y , and let q(x) ∈ △Y be the vector of probabilities (q(y, x))y .
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{X : Type u_1} → {Y : Type u_2} → [Fintype Y] → (X → Y → ℝ) → Prop
+
+value:
+fun {X : Type u_1} {Y : Type u_2} [Fintype Y] (q : X → Y → ℝ) =>
+  AppliedModelingLib.Learning.Prediction.IsSimplexValued q
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-d1592e772e7c7e3d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Prediction.\allowbreak{}Is\allowbreak{}Simplex\allowbreak{}Valued}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source places every posterior vector q(x) in the label simplex;\allowbreak{} the expanded IsSimplexValued predicate requires its coordinates to be nonnegative, sum to one, and lie at most one, exactly the probability-\allowbreak{}vector condition.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-e9ff5dcccf634407}{}
+\subsection*{\small\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}reference\allowbreak{}Simplex\allowbreak{}At}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}reference\allowbreak{}Simplex\allowbreak{}At\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 749-\allowbreak{}755\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+q
+    For the result, we define the notion of non-trivial reference distributions PN     : a reference distribution
+                                                       1
+pq : {xi } → △NY is in P N if it assigns mass at least N to the most likely class in the  dataset, i.e., at least 1
+data point would be discretized to the most likely class arg maxy i q(y, xi ).13
+                                                                   P
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{Sample : Type u_1} → {K : ℕ} → (Sample → Fin K → ℝ) → Prop
+
+value:
+fun {Sample : Type u_1} {K : ℕ} (prefAt : Sample → Fin K → ℝ) =>
+  ∀ (sample : Sample), (∀ (y : Fin K), 0 ≤ prefAt sample y) ∧ ∑ y : Fin K, prefAt sample y = 1
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} The source's dataset-\allowbreak{}indexed reference distribution takes values in the label simplex;\allowbreak{} the expanded target states pointwise nonnegativity and unit total mass, while the displayed sourcePNq use separately supplies the required at-\allowbreak{}least-\allowbreak{}1/\allowbreak{}N mass on the tie-\allowbreak{}broken aggregate-\allowbreak{}posterior maximizer.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
@@ -356,37 +1533,8 @@ Bayesian consistency, i.e., the continuous model cumulatively assigns the proper
   (ii). Suppose the classifier is perfect, i.e., ∀(x, y) ∼ FXY , we have q(z, x) =                                                                                       Then, there
                                                                                     0,                                                                        otherwise.
         is no amplification bias, BIAS(y, Dargmax ) = 0.
-
-[Next verbatim source excerpt]
-
-Theorem 1. Argmax bias depends on predictive uncertainty, i.e., how much information features x provide
-about the true class label. Consider calibrated classifier q and the argmax decision rule Dargmax . Let N > K
-and consider a reference distribution of either the aggregate posterior or the prior. Then,
-  (i). Suppose x provides no information and q(y, x) = Pr(y) for all x, y. Then, amplification bias is
-       maximized and all data points are classified as a plurality class:
-                                                  (
-                                                    1 − Pr(y), if y = arg maxw p(w),
-                            BIAS(y, Dargmax ) =
-                                                    − Pr(y),      otherwise.
-   9 Note that, though related, mean average error of the continuous predictor q(y, x) is not equivalent to expected zero-one
-
-loss of the discrete decisions. The latter, our measure of decision accuracy, also depends on how the continuous predictor is
-discretized.                                n                                           o
-  10 For all c of non-zero measure: ∀c ∈
-                                                 R
-                                             c : (x,y) I[q(y, x) = c]f (x, y)d(y, x) > 0 . Further note that calibration implies
-Bayesian consistency, i.e., the continuous model cumulatively assigns the proper mass to each class y: EX [q(y, x)] = Pr(y).
-
-
-                                                              11
-
-[form-feed in source extraction]
-                                                                                   (
-                                                                                    1,                                                                        if z = y,
-  (ii). Suppose the classifier is perfect, i.e., ∀(x, y) ∼ FXY , we have q(z, x) =                                                                                       Then, there
-                                                                                    0,                                                                        otherwise.
-        is no amplification bias, BIAS(y, Dargmax ) = 0.
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
@@ -399,19 +1547,44 @@ Bayesian consistency, i.e., the continuous model cumulatively assigns the proper
         0
 \end{ReviewVerbatim}
 
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-7bdd5ebec3f67e16}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Aggregate\allowbreak{}Posterior}
+\item \hyperlink{governing-declaration-5d2200dbd9b4b93d}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Bias}
+\item \hyperlink{governing-declaration-28e1fcee264c130f}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}perfect\allowbreak{}Classifier\allowbreak{}On\allowbreak{}Support}
+\item \hyperlink{governing-declaration-8260e4a6984dc105}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}prior}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype X
+4. parameter: DecidableEq X
+5. parameter: Fintype Y
+6. parameter: DecidableEq Y
+7. parameter: PMF (X × Y)
+8. parameter: X → Y → ℝ
+9. parameter: X → Y
+10. parameter: Y
+11. assumption: DSWG24DiscretizationBias.ProofBridge.perfectClassifierOnSupport μ q rule
+12. conclusion: DSWG24DiscretizationBias.Finite.paperBias μ rule (DSWG24DiscretizationBias.ProofBridge.prior μ) y = 0 ∧
+  DSWG24DiscretizationBias.Finite.paperBias μ rule (DSWG24DiscretizationBias.Finite.paperAggregatePosterior μ q) y = 0
+\end{ReviewVerbatim}
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 DSWG24DiscretizationBias.PaperInterface.theorem1ii_perfect_classifier_zero_bias
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The support-\allowbreak{}sensitive perfect-\allowbreak{}classifier premise says that the induced decision is the true label and the score vector is one-\allowbreak{}hot on every positive-\allowbreak{}probability joint atom.\allowbreak{} The target then concludes zero amplification bias for every label under both the prior and aggregate-\allowbreak{}posterior references, exactly as in Theorem 1(ii).\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-94d82572ce30633e}{}
+\hypertarget{source-claim-61c8bcc1f7628e92}{}
 \section*{Review row 2}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 756-\allowbreak{}763\par}
 \paragraph{Verbatim source input}
@@ -427,37 +1600,90 @@ Theorem 2. Consider Bayes optimal q, and N > K. For all F :
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {X : Type u_1} [inst : Fintype X] [inst_1 : DecidableEq X] {N K : ℕ} (μ : PMF X) (posterior : X → Fin K → ℝ)
-  (rule argmaxRule : X → Fin K) (aggregateArgmax : (Fin N → X) → Fin K) (prefAt : (Fin N → X) → Fin K → ℝ),
-  (∀ (x : X), DSWG24DiscretizationBias.ProofBridge.isFirstArgmax (posterior x) (argmaxRule x)) →
-    DSWG24DiscretizationBias.ProofBridge.sourcePNq
-        (fun sample => DSWG24DiscretizationBias.Theorem2iii.sampledPosterior posterior sample) aggregateArgmax prefAt →
-      0 < N →
-        (DSWG24DiscretizationBias.Pareto.ParetoOptimal
-            (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetAccuracy
-              (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF μ N) fun sample =>
-              DSWG24DiscretizationBias.Theorem2iii.sampledPosterior posterior sample)
-            (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetFidelityAt
-              (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF μ N) prefAt)
-            fun sample => DSWG24DiscretizationBias.Theorem2iii.sampledDecision rule sample) →
-          (EconCSLib.pmfProb μ fun x => rule x ≠ argmaxRule x) = 0
+∀ {Z : Type u_1} {X : Type u_2} [inst : Fintype Z] [inst_1 : DecidableEq Z] {N K : ℕ} (ν : PMF Z) (feature : Z → X)
+  (posterior : X → Fin K → ℝ) (rule : Z → Fin K) (argmaxRule : X → Fin K) (aggregateArgmax : (Fin N → X) → Fin K)
+  (prefAt : (Fin N → X) → Fin K → ℝ),
+  2 ≤ K →
+    K < N →
+      (∀ (x : X), DSWG24DiscretizationBias.ProofBridge.isFirstArgmax (posterior x) (argmaxRule x)) →
+        (0 < AppliedModelingLib.pmfProb ν fun (z : Z) => rule z ≠ argmaxRule (feature z)) →
+          DSWG24DiscretizationBias.ProofBridge.sourcePNq
+              (fun (sample : Fin N → X) => DSWG24DiscretizationBias.Theorem2iii.sampledPosterior posterior sample)
+              aggregateArgmax prefAt →
+            0 < N →
+              ¬DSWG24DiscretizationBias.Pareto.ParetoOptimal
+                  (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetAccuracy
+                    (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF ν N) fun (sample : Fin N → Z) =>
+                    DSWG24DiscretizationBias.Theorem2iii.sampledPosterior
+                      (fun (z : Z) (y : Fin K) => posterior (feature z) y) sample)
+                  (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetFidelityAt
+                    (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF ν N) fun (sample : Fin N → Z) =>
+                    prefAt fun (i : Fin N) => feature (sample i))
+                  fun (sample : Fin N → Z) => DSWG24DiscretizationBias.Theorem2iii.sampledDecision rule sample
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-9c38d53b9d664221}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Prob}
+\item \hyperlink{governing-declaration-90962900f461a9f9}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Pareto.\allowbreak{}Pareto\allowbreak{}Optimal}
+\item \hyperlink{governing-declaration-af44c4b45082ddcb}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}First\allowbreak{}Argmax}
+\item \hyperlink{governing-declaration-9631b3d6800a2bd3}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}source\allowbreak{}P\allowbreak{}Nq}
+\item \hyperlink{governing-declaration-daac633422a44729}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}expected\allowbreak{}Dataset\allowbreak{}Accuracy}
+\item \hyperlink{governing-declaration-8158479406f1d885}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}expected\allowbreak{}Dataset\allowbreak{}Fidelity\allowbreak{}At}
+\item \hyperlink{governing-declaration-b906fbb2f231ab40}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}iid\allowbreak{}Sample\allowbreak{}PMF}
+\item \hyperlink{governing-declaration-05d42de5dba2851d}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}sampled\allowbreak{}Decision}
+\item \hyperlink{governing-declaration-457b4184b0081169}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}sampled\allowbreak{}Posterior}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype Z
+4. parameter: DecidableEq Z
+5. parameter: ℕ
+6. parameter: ℕ
+7. parameter: PMF Z
+8. parameter: Z → X
+9. parameter: X → Fin K → ℝ
+10. parameter: Z → Fin K
+11. parameter: X → Fin K
+12. parameter: (Fin N → X) → Fin K
+13. parameter: (Fin N → X) → Fin K → ℝ
+14. assumption: 2 ≤ K
+15. assumption: K < N
+16. assumption: ∀ (x : X), DSWG24DiscretizationBias.ProofBridge.isFirstArgmax (posterior x) (argmaxRule x)
+17. assumption: 0 < AppliedModelingLib.pmfProb ν fun (z : Z) => rule z ≠ argmaxRule (feature z)
+18. assumption: DSWG24DiscretizationBias.ProofBridge.sourcePNq
+  (fun (sample : Fin N → X) => DSWG24DiscretizationBias.Theorem2iii.sampledPosterior posterior sample) aggregateArgmax
+  prefAt
+19. assumption: 0 < N
+20. conclusion: ¬DSWG24DiscretizationBias.Pareto.ParetoOptimal
+    (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetAccuracy
+      (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF ν N) fun (sample : Fin N → Z) =>
+      DSWG24DiscretizationBias.Theorem2iii.sampledPosterior (fun (z : Z) (y : Fin K) => posterior (feature z) y) sample)
+    (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetFidelityAt
+      (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF ν N) fun (sample : Fin N → Z) =>
+      prefAt fun (i : Fin N) => feature (sample i))
+    fun (sample : Fin N → Z) => DSWG24DiscretizationBias.Theorem2iii.sampledDecision rule sample
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-DSWG24DiscretizationBias.PaperInterface.theorem2iii_non_argmax_not_pareto
+DSWG24DiscretizationBias.PaperInterface.theorem2iii_randomized_non_argmax_not_pareto
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The finite augmented state Z represents a feature draw together with any realized randomization;\allowbreak{} positive disagreement is therefore the source probability-\allowbreak{}one agreement condition in contrapositive form.\allowbreak{} The posterior-\allowbreak{}score expected-\allowbreak{}accuracy expression is the Bayes-\allowbreak{}reduced source metric, and the target retains K>=2, N>K, the nontrivial reference family, and Pareto nonoptimality.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
-\hypertarget{source-claim-9ffb824c48c4cf97}{}
+\hypertarget{source-claim-1356bc033e8e977b}{}
 \section*{Review row 3}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 756-\allowbreak{}763\par}
 \paragraph{Verbatim source input}
@@ -473,311 +1699,117 @@ Theorem 2. Consider Bayes optimal q, and N > K. For all F :
 \end{ReviewVerbatim}
 
 
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {X : Type u_1} [inst : Fintype X] [inst_1 : DecidableEq X] {N K : ℕ} (μ : PMF X) (posterior : X → Fin K → ℝ)
-  (rule argmaxRule : X → Fin K) (aggregateArgmax : (Fin N → X) → Fin K) (prefAt : (Fin N → X) → Fin K → ℝ) (γ : ℝ),
-  (∀ (x : X), DSWG24DiscretizationBias.ProofBridge.isFirstArgmax (posterior x) (argmaxRule x)) →
-    DSWG24DiscretizationBias.ProofBridge.sourcePNq
-        (fun sample => DSWG24DiscretizationBias.Theorem2iii.sampledPosterior posterior sample) aggregateArgmax prefAt →
-      0 ≤ γ →
-        γ < 1 →
-          0 < N →
-            (∀ (other : (Fin N → X) → Fin N → Fin K),
-                DSWG24DiscretizationBias.Pareto.weightedObjective γ
-                    (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetAccuracy
-                      (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF μ N) fun sample =>
-                      DSWG24DiscretizationBias.Theorem2iii.sampledPosterior posterior sample)
-                    (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetFidelityAt
-                      (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF μ N) prefAt)
-                    other ≤
-                  DSWG24DiscretizationBias.Pareto.weightedObjective γ
-                    (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetAccuracy
-                      (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF μ N) fun sample =>
-                      DSWG24DiscretizationBias.Theorem2iii.sampledPosterior posterior sample)
-                    (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetFidelityAt
-                      (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF μ N) prefAt)
-                    fun sample => DSWG24DiscretizationBias.Theorem2iii.sampledDecision rule sample) →
-              (EconCSLib.pmfProb μ fun x => rule x ≠ argmaxRule x) = 0
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-DSWG24DiscretizationBias.PaperInterface.theorem2iii_weighted_objective_maximizer_agrees_argmax
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-e99b78e6cf17d423}{}
-\section*{Review row 4}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 215-\allowbreak{}231\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-1.1.2    Overview of decision rules
-Several rules are used in academia and in practice:
-
-Argmax rule assigns, for each data point, the most likely2 class: Dargmax ({q(xi }) ≜ {ŷi = arg maxy q(y, xi )}.
-Threshold at t rule assigns a label only if the argmax class has a probability of at least t, i.e., ŷi =
-    arg maxy q(y, xi ) if maxy q(y, xi ) ≥ t, otherwise i is left uncoded.
-
-Thompson sampling for each data point i, samples a class y based on the probabilities q(y, xi ), i.e., ŷi = y
-    with probability q(y, xi ), and so in expectation will have labels matching the aggregate posterior.
-
-    These rules are all independent: the assigned label for a data point i depends on q(xi ) but not on other
-data points or their probability vectors {q(xj )}j̸=i .
-    In contrast, our proposed approach also includes joint decision optimization rules, which depend on the
-entire set of data points, as a solution to discretization bias.
-   2 Suppose ties are broken according to some consistent ordering over the classes.      In the event of ties, we will use
-arg maxy q(y, x) to denote the single class that is in the argmax set and is first in the consistent ordering among classes
-in the argmax set.
-
-[Next verbatim source excerpt]
-
-Argmax rule assigns, for each data point, the most likely2 class: Dargmax ({q(xi }) ≜ {ŷi = arg maxy q(y, xi )}.
-Threshold at t rule assigns a label only if the argmax class has a probability of at least t, i.e., ŷi =
-    arg maxy q(y, xi ) if maxy q(y, xi ) ≥ t, otherwise i is left uncoded.
-
-Thompson sampling for each data point i, samples a class y based on the probabilities q(y, xi ), i.e., ŷi = y
-    with probability q(y, xi ), and so in expectation will have labels matching the aggregate posterior.
-
-    These rules are all independent: the assigned label for a data point i depends on q(xi ) but not on other
-data points or their probability vectors {q(xj )}j̸=i .
-    In contrast, our proposed approach also includes joint decision optimization rules, which depend on the
-entire set of data points, as a solution to discretization bias.
-   2 Suppose ties are broken according to some consistent ordering over the classes.      In the event of ties, we will use
-arg maxy q(y, x) to denote the single class that is in the argmax set and is first in the consistent ordering among classes
-in the argmax set.
-\end{ReviewVerbatim}
-
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
-∀ {N K : ℕ} (q : Fin N → Fin K → ℝ) (rule : Fin N → Fin K),
-  DSWG24DiscretizationBias.ProofBridge.isTieBrokenArgmaxRule q rule ↔
-    ∀ (i : Fin N), DSWG24DiscretizationBias.ProofBridge.isFirstArgmax (q i) (rule i)
+∀ {Z : Type u_1} {X : Type u_2} [inst : Fintype Z] [inst_1 : DecidableEq Z] {N K : ℕ} (ν : PMF Z) (feature : Z → X)
+  (posterior : X → Fin K → ℝ) (rule : Z → Fin K) (argmaxRule : X → Fin K) (aggregateArgmax : (Fin N → X) → Fin K)
+  (prefAt : (Fin N → X) → Fin K → ℝ) (γ : ℝ),
+  2 ≤ K →
+    K < N →
+      (∀ (x : X), DSWG24DiscretizationBias.ProofBridge.isFirstArgmax (posterior x) (argmaxRule x)) →
+        (0 < AppliedModelingLib.pmfProb ν fun (z : Z) => rule z ≠ argmaxRule (feature z)) →
+          DSWG24DiscretizationBias.ProofBridge.sourcePNq
+              (fun (sample : Fin N → X) => DSWG24DiscretizationBias.Theorem2iii.sampledPosterior posterior sample)
+              aggregateArgmax prefAt →
+            0 ≤ γ →
+              γ < 1 →
+                0 < N →
+                  ¬∀ (other : (Fin N → Z) → Fin N → Fin K),
+                      DSWG24DiscretizationBias.Pareto.weightedObjective γ
+                          (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetAccuracy
+                            (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF ν N) fun (sample : Fin N → Z) =>
+                            DSWG24DiscretizationBias.Theorem2iii.sampledPosterior
+                              (fun (z : Z) (y : Fin K) => posterior (feature z) y) sample)
+                          (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetFidelityAt
+                            (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF ν N) fun (sample : Fin N → Z) =>
+                            prefAt fun (i : Fin N) => feature (sample i))
+                          other ≤
+                        DSWG24DiscretizationBias.Pareto.weightedObjective γ
+                          (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetAccuracy
+                            (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF ν N) fun (sample : Fin N → Z) =>
+                            DSWG24DiscretizationBias.Theorem2iii.sampledPosterior
+                              (fun (z : Z) (y : Fin K) => posterior (feature z) y) sample)
+                          (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetFidelityAt
+                            (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF ν N) fun (sample : Fin N → Z) =>
+                            prefAt fun (i : Fin N) => feature (sample i))
+                          fun (sample : Fin N → Z) => DSWG24DiscretizationBias.Theorem2iii.sampledDecision rule sample
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-9c38d53b9d664221}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}pmf\allowbreak{}Prob}
+\item \hyperlink{governing-declaration-d0facd526e2aa2ff}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Pareto.\allowbreak{}weighted\allowbreak{}Objective}
+\item \hyperlink{governing-declaration-af44c4b45082ddcb}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}First\allowbreak{}Argmax}
+\item \hyperlink{governing-declaration-9631b3d6800a2bd3}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}source\allowbreak{}P\allowbreak{}Nq}
+\item \hyperlink{governing-declaration-daac633422a44729}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}expected\allowbreak{}Dataset\allowbreak{}Accuracy}
+\item \hyperlink{governing-declaration-8158479406f1d885}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}expected\allowbreak{}Dataset\allowbreak{}Fidelity\allowbreak{}At}
+\item \hyperlink{governing-declaration-b906fbb2f231ab40}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}iid\allowbreak{}Sample\allowbreak{}PMF}
+\item \hyperlink{governing-declaration-05d42de5dba2851d}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}sampled\allowbreak{}Decision}
+\item \hyperlink{governing-declaration-457b4184b0081169}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Theorem2iii.\allowbreak{}sampled\allowbreak{}Posterior}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype Z
+4. parameter: DecidableEq Z
+5. parameter: ℕ
+6. parameter: ℕ
+7. parameter: PMF Z
+8. parameter: Z → X
+9. parameter: X → Fin K → ℝ
+10. parameter: Z → Fin K
+11. parameter: X → Fin K
+12. parameter: (Fin N → X) → Fin K
+13. parameter: (Fin N → X) → Fin K → ℝ
+14. parameter: ℝ
+15. assumption: 2 ≤ K
+16. assumption: K < N
+17. assumption: ∀ (x : X), DSWG24DiscretizationBias.ProofBridge.isFirstArgmax (posterior x) (argmaxRule x)
+18. assumption: 0 < AppliedModelingLib.pmfProb ν fun (z : Z) => rule z ≠ argmaxRule (feature z)
+19. assumption: DSWG24DiscretizationBias.ProofBridge.sourcePNq
+  (fun (sample : Fin N → X) => DSWG24DiscretizationBias.Theorem2iii.sampledPosterior posterior sample) aggregateArgmax
+  prefAt
+20. assumption: 0 ≤ γ
+21. assumption: γ < 1
+22. assumption: 0 < N
+23. conclusion: ¬∀ (other : (Fin N → Z) → Fin N → Fin K),
+    DSWG24DiscretizationBias.Pareto.weightedObjective γ
+        (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetAccuracy
+          (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF ν N) fun (sample : Fin N → Z) =>
+          DSWG24DiscretizationBias.Theorem2iii.sampledPosterior (fun (z : Z) (y : Fin K) => posterior (feature z) y)
+            sample)
+        (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetFidelityAt
+          (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF ν N) fun (sample : Fin N → Z) =>
+          prefAt fun (i : Fin N) => feature (sample i))
+        other ≤
+      DSWG24DiscretizationBias.Pareto.weightedObjective γ
+        (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetAccuracy
+          (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF ν N) fun (sample : Fin N → Z) =>
+          DSWG24DiscretizationBias.Theorem2iii.sampledPosterior (fun (z : Z) (y : Fin K) => posterior (feature z) y)
+            sample)
+        (DSWG24DiscretizationBias.Theorem2iii.expectedDatasetFidelityAt
+          (DSWG24DiscretizationBias.Theorem2iii.iidSamplePMF ν N) fun (sample : Fin N → Z) =>
+          prefAt fun (i : Fin N) => feature (sample i))
+        fun (sample : Fin N → Z) => DSWG24DiscretizationBias.Theorem2iii.sampledDecision rule sample
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-DSWG24DiscretizationBias.PaperInterface.tie_broken_argmax_definition
+DSWG24DiscretizationBias.PaperInterface.theorem2iii_randomized_weighted_objective_maximizer_agrees_argmax
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-4bfc3aed59b0dc06}{}
-\section*{Review row 5}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 222-\allowbreak{}223\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Thompson sampling for each data point i, samples a class y based on the probabilities q(y, xi ), i.e., ŷi = y
-    with probability q(y, xi ), and so in expectation will have labels matching the aggregate posterior.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {N K : ℕ} (q selectionProbability : Fin N → Fin K → ℝ),
-  DSWG24DiscretizationBias.ProofBridge.isThompsonSamplingRule q selectionProbability ↔
-    ∀ (i : Fin N) (y : Fin K), selectionProbability i y = q i y
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-DSWG24DiscretizationBias.PaperInterface.thompson_sampling_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-4822dab29e865f72}{}
-\section*{Review row 6}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 225-\allowbreak{}228\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-These rules are all independent: the assigned label for a data point i depends on q(xi ) but not on other
-data points or their probability vectors {q(xj )}j̸=i .
-    In contrast, our proposed approach also includes joint decision optimization rules, which depend on the
-entire set of data points, as a solution to discretization bias.
-
-[Next verbatim source excerpt]
-
-data point xi . A (potentially randomized) decision (discretization) rule D : △NY →Y
-                                                                                      N
-                                                                                         is a rule that, given a
-                                   N
-set of probability vectors {q(xi )}i=1 associated with N data points, assigns each data point i a label ŷi ∈ Y.
-
-[Next verbatim source excerpt]
-
-    Decision (discretization) rules are as defined in Section 1.1. Our theoretical results distinguish between
-independent (e.g., argmax, threhsolding, Thompson sampling) and joint (e.g., our optimization approach)
-rules. Formally, with independent rules, there exists a (potentially randomized) function d such that
-Dd ({q(xi )}) = {ŷi = d(q(y, xi ))}.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {X : Type u_1} {N K : ℕ} (rule : (Fin N → X) → Fin N → Fin K),
-  DSWG24DiscretizationBias.ProofBridge.isIndependentRule rule ↔
-    ∃ d, ∀ (xs : Fin N → X) (i : Fin N), rule xs i = d (xs i)
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-DSWG24DiscretizationBias.PaperInterface.independent_rule_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-39ae869114aca78a}{}
-\section*{Review row 7}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 252-\allowbreak{}264\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-Integer optimization rules directly optimize given objectives. We consider the rule that corresponds to
-     solving the following optimization problem, for a given γ, data points {xi }, and reference pref :
-                                                            N
-                                                                           !
-                      γ                                  1 X
-                   D ({q(xi )}, pref ) = arg max{ŷi } γ       q(ŷi , xi ) + (1 − γ)fid(pref , ŷ1:N ). (1)
-                                                         N i=1
-
-     The rule balances, parameterized by γ ∈ [0, 1], row-level scores (accuracy as measured by q) and
-     distributional fidelity.
-Aggregate posterior matching A special case of the joint optimization decision rules defined in Equa-
-    tion (1) is as γ → 0, leading to a rule that maximizes accuracy subject to the constraint that distri-
-    butional fidelity be as high as possible. We call such rules matching solutions, e.g., aggregate posterior
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {N K : ℕ} (γ : ℝ) (q : Fin N → Fin K → ℝ) (pref : Fin K → ℝ) (decision : Fin N → Fin K),
-  DSWG24DiscretizationBias.ProofBridge.maximizesEquation1 γ q pref decision ↔
-    ∀ (other : Fin N → Fin K),
-      DSWG24DiscretizationBias.ProofBridge.equation1Objective γ q pref other ≤
-        DSWG24DiscretizationBias.ProofBridge.equation1Objective γ q pref decision
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-DSWG24DiscretizationBias.PaperInterface.integer_optimization_rule_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-ec32b7cd29afa460}{}
-\section*{Review row 8}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 597-\allowbreak{}607\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-3.1.1    Continuous classifier and discretization rules
-Suppose we have a machine learning classifier q (e.g., trained on some other dataset) that makes continuous
-probability predictions for each class, given the data. Let q(y, x) denote the probability placed on class y
-
-
-
-                                                       10
-
-[form-feed in source extraction]
-given data x. For example, the Bayes optimal classifier is
-                                               q ∗ (y, x) ≜ Pr(Y = y|X = x).
-We will refer to p as the prior and q as our learned posterior. Let the simplex of possible probability vectors
-over the support Y be △Y , and let q(x) ∈ △Y be the vector of probabilities (q(y, x))y .
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {Ω : Type u_1} {σ : Type u_2} [inst : Fintype Ω] [inst_1 : DecidableEq Ω] [inst_2 : Fintype σ]
-  [inst_3 : DecidableEq σ] {N K : ℕ} (μ : PMF Ω) (observedDataset : Ω → σ) (trueLabels : Ω → Fin N → Fin K)
-  (posterior : σ → Fin N → Fin K → ℝ),
-  DSWG24DiscretizationBias.ProofBridge.bayesOptimal μ observedDataset trueLabels posterior ↔
-    ∀ (xs : σ) (i : Fin N) (y : Fin K),
-      (EconCSLib.pmfProb μ fun w => observedDataset w = xs ∧ trueLabels w i = y) =
-        posterior xs i y * EconCSLib.pmfProb μ fun w => observedDataset w = xs
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-DSWG24DiscretizationBias.PaperInterface.bayes_optimal_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-7d95c2576dd31d3f}{}
-\section*{Review row 9}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 620-\allowbreak{}633\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-3.1.2    Formal metrics and Pareto optimal decision-making
-For our theoretical results, we consider the expectations of our accuracy, fidelity, and bias metrics, calculated
-over the joint distribution of the data FXY over datasets of size N (and any randomness in the decision
-rule). The expected accuracy of a decision rule D together with continuous predictor q is thus
-                                     ACCN (D, q) = EFXY [acc(y1:N , D({q(xi )}))] .                                            (2)
-Analogously FIDN (D, q, pref ) is the expectation of fidelity and BIASN (y, D, q, pref ) is the expectation of bias.
-   For a given data distribution F , continuous classifier q, reference distribution pref , and dataset size, we
-want to make effective decisions. Given the multiple desiderata, we thus want Pareto optimal decision-
-making, i.e., to adopt a rule D that maximizes, for some γ ∈ (0, 1],
-                              γ
-                             ON (D, q, pref ) = γACCN (D, q) + (1 − γ)FIDN (D, q, pref ).                                      (3)
-The weight γ is task-dependent, set by a practitioner’s expertise for whether accuracy or distributional
-fidelity is more important.
-    When clear from context, we omit q, pref , and N from the arguments for BIAS, Oγ , ACC, and FID.
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {Rule : Type u_1} (accuracyMetric fidelityMetric : Rule → ℝ) (rule : Rule),
-  DSWG24DiscretizationBias.ProofBridge.paretoOptimal accuracyMetric fidelityMetric rule ↔
-    DSWG24DiscretizationBias.Pareto.ParetoOptimal accuracyMetric fidelityMetric rule
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-DSWG24DiscretizationBias.PaperInterface.pareto_optimality_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} This is the paired Bayes-\allowbreak{}reduced finite randomized endpoint.\allowbreak{} It retains the source regime, positive disagreement, and nontrivial reference condition, and says that the rule cannot maximize the weighted objective for 0<=gamma<1.\allowbreak{} That interval is the accepted clarification of the source's unless gamma=1 statement, not an economic caveat.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-4662dc8e8bb960d7}{}
-\section*{Review row 10}
+\section*{Review row 4}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 744-\allowbreak{}755\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -796,21 +1828,6 @@ data point would be discretized to the most likely class arg maxy i q(y, xi ).13
 
 [Next verbatim source excerpt]
 
-3.3     Results: Individual discretization versus joint optimization
-Above, we study how the continuous classifier’s properties induce discretization bias, when using the argmax
-rule. We now study discrete decision-making: given an imperfect but Bayes optimal classifier, how can
-we make unbiased decisions? We show that joint decision-making, as in the program in Equation (1), is
-necessary for Pareto optimality.
-                                                                                     q
-    For the result, we define the notion of non-trivial reference distributions PN     : a reference distribution
-                                                       1
-pq : {xi } → △NY is in P N if it assigns mass at least N to the most likely class in the  dataset, i.e., at least 1
-data point would be discretized to the most likely class arg maxy i q(y, xi ).13
-                                                                   P
-
-
-[Next verbatim source excerpt]
-
                                                                                      q
     For the result, we define the notion of non-trivial reference distributions PN     : a reference distribution
                                                        1
@@ -818,6 +1835,7 @@ pq : {xi } → △NY is in P N if it assigns mass at least N to the most likely 
 data point would be discretized to the most likely class arg maxy i q(y, xi ).13
                                                                    P
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
@@ -831,115 +1849,42 @@ data point would be discretized to the most likely class arg maxy i q(y, xi ).13
         ∀ (sample : Sample), 1 / ↑N ≤ prefAt sample (aggregateArgmax sample)
 \end{ReviewVerbatim}
 
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-46e579d6fcd53814}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Aggregate\allowbreak{}First\allowbreak{}Argmax}
+\item \hyperlink{paper-prerequisite-e9ff5dcccf634407}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}reference\allowbreak{}Simplex\allowbreak{}At}
+\item \hyperlink{governing-declaration-9631b3d6800a2bd3}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}source\allowbreak{}P\allowbreak{}Nq}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: ℕ
+3. parameter: ℕ
+4. parameter: Sample → Fin N → Fin K → ℝ
+5. parameter: Sample → Fin K
+6. parameter: Sample → Fin K → ℝ
+7. conclusion: DSWG24DiscretizationBias.ProofBridge.sourcePNq posterior aggregateArgmax prefAt ↔
+  DSWG24DiscretizationBias.ProofBridge.referenceSimplexAt prefAt ∧
+    (∀ (sample : Sample),
+        DSWG24DiscretizationBias.ProofBridge.isAggregateFirstArgmax (posterior sample) (aggregateArgmax sample)) ∧
+      ∀ (sample : Sample), 1 / ↑N ≤ prefAt sample (aggregateArgmax sample)
+\end{ReviewVerbatim}
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 DSWG24DiscretizationBias.PaperInterface.nontrivial_reference_family_definition
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-d69492a6cc9555ec}{}
-\section*{Review row 11}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 597-\allowbreak{}607\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-3.1.1    Continuous classifier and discretization rules
-Suppose we have a machine learning classifier q (e.g., trained on some other dataset) that makes continuous
-probability predictions for each class, given the data. Let q(y, x) denote the probability placed on class y
-
-
-
-                                                       10
-
-[form-feed in source extraction]
-given data x. For example, the Bayes optimal classifier is
-                                               q ∗ (y, x) ≜ Pr(Y = y|X = x).
-We will refer to p as the prior and q as our learned posterior. Let the simplex of possible probability vectors
-over the support Y be △Y , and let q(x) ∈ △Y be the vector of probabilities (q(y, x))y .
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {X : Type u_1} {Y : Type u_2} [inst : Fintype Y] (q : X → Y → ℝ),
-  DSWG24DiscretizationBias.ProofBridge.posteriorSimplex q ↔
-    (∀ (x : X), ∑ y, q x y = 1) ∧ (∀ (x : X) (y : Y), 0 ≤ q x y) ∧ ∀ (x : X) (y : Y), q x y ≤ 1
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-DSWG24DiscretizationBias.PaperInterface.posterior_simplex_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
-\reviewmatch{Matches source input}
-\noindent\textbf{Reviewer annotation}\par
-\reviewerbox
-\clearpage
-\hypertarget{source-claim-54a3ee9bbb8f086b}{}
-\section*{Review row 12}
-\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 635-\allowbreak{}658\par}
-\paragraph{Verbatim source input}
-\begin{ReviewVerbatim}
-3.2     Theoretical Results: Argmax bias and continuous classifier
-We first study the relationship between argmax bias and the properties of the continuous classifier. We show
-that discretization bias can occur even with unbiased (calibrated) continuous classifiers q, as long as it is
-uncertain (has non-zero error).
-    The following result holds for all calibrated classifiers. A given classifier q is calibrated when its contin-
-uous predictions are correct on average, Pr(Y = y|q(y, x) = c) = c.10 Note that the Bayes optimal classifier
-is calibrated.
-Theorem 1. Argmax bias depends on predictive uncertainty, i.e., how much information features x provide
-about the true class label. Consider calibrated classifier q and the argmax decision rule Dargmax . Let N > K
-and consider a reference distribution of either the aggregate posterior or the prior. Then,
-  (i). Suppose x provides no information and q(y, x) = Pr(y) for all x, y. Then, amplification bias is
-       maximized and all data points are classified as a plurality class:
-                                                  (
-                                                    1 − Pr(y), if y = arg maxw p(w),
-                            BIAS(y, Dargmax ) =
-                                                    − Pr(y),      otherwise.
-   9 Note that, though related, mean average error of the continuous predictor q(y, x) is not equivalent to expected zero-one
-
-loss of the discrete decisions. The latter, our measure of decision accuracy, also depends on how the continuous predictor is
-discretized.                                n                                           o
-  10 For all c of non-zero measure: ∀c ∈
-                                                 R
-                                             c : (x,y) I[q(y, x) = c]f (x, y)d(y, x) > 0 . Further note that calibration implies
-Bayesian consistency, i.e., the continuous model cumulatively assigns the proper mass to each class y: EX [q(y, x)] = Pr(y).
-\end{ReviewVerbatim}
-
-
-\paragraph{Expanded PaperInterface specification}
-\begin{ReviewVerbatim}
-∀ {X : Type u_1} {Y : Type u_2} [inst : MeasurableSpace (X × Y)] [inst_1 : DecidableEq Y]
-  (μ : MeasureTheory.Measure (X × Y)) (q : X → Y → ℝ),
-  DSWG24DiscretizationBias.ProofBridge.calibrated μ q ↔
-    ∀ (y : Y) (s : Set ℝ),
-      MeasurableSet s →
-        ∫ (xy : X × Y), if q xy.1 y ∈ s then if xy.2 = y then 1 else 0 else 0 ∂μ =
-          ∫ (xy : X × Y), if q xy.1 y ∈ s then q xy.1 y else 0 ∂μ
-\end{ReviewVerbatim}
-
-\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
-DSWG24DiscretizationBias.PaperInterface.calibration_definition
-\end{ReviewVerbatim}
-
-\paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
-\\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The source family is a dataset-\allowbreak{}indexed reference distribution in the label simplex that assigns at least 1/\allowbreak{}N mass to the dataset aggregate-\allowbreak{}posterior maximizer.\allowbreak{} The target states precisely the simplex, fixed-\allowbreak{}order aggregate argmax, and 1/\allowbreak{}N mass conditions for every dataset.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-861b407dcf52f582}{}
-\section*{Review row 13}
+\section*{Review row 5}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 642-\allowbreak{}650\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -955,19 +1900,49 @@ and consider a reference distribution of either the aggregate posterior or the p
 \end{ReviewVerbatim}
 
 
+
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
 ∀ {X : Type u_1} {Y : Type u_2} [inst : Fintype X] [inst_1 : DecidableEq X] [Nonempty X] [inst_3 : Fintype Y]
   [inst_4 : DecidableEq Y] (μ : PMF (X × Y)) (q : X → Y → ℝ) (z y : Y),
   (∀ (x : X) (a : Y), q x a = DSWG24DiscretizationBias.ProofBridge.prior μ a) →
     (∀ (a : Y), DSWG24DiscretizationBias.ProofBridge.prior μ a ≤ DSWG24DiscretizationBias.ProofBridge.prior μ z) →
-      (DSWG24DiscretizationBias.Finite.paperBias μ (fun x => z) (DSWG24DiscretizationBias.ProofBridge.prior μ) y =
+      (DSWG24DiscretizationBias.Finite.paperBias μ (fun (x : X) => z) (DSWG24DiscretizationBias.ProofBridge.prior μ) y =
           if z = y then 1 - DSWG24DiscretizationBias.ProofBridge.prior μ y
           else -DSWG24DiscretizationBias.ProofBridge.prior μ y) ∧
-        DSWG24DiscretizationBias.Finite.paperBias μ (fun x => z)
+        DSWG24DiscretizationBias.Finite.paperBias μ (fun (x : X) => z)
             (DSWG24DiscretizationBias.Finite.paperAggregatePosterior μ q) y =
           if z = y then 1 - DSWG24DiscretizationBias.ProofBridge.prior μ y
           else -DSWG24DiscretizationBias.ProofBridge.prior μ y
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-7bdd5ebec3f67e16}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Aggregate\allowbreak{}Posterior}
+\item \hyperlink{governing-declaration-5d2200dbd9b4b93d}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Bias}
+\item \hyperlink{governing-declaration-8260e4a6984dc105}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}prior}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: Fintype X
+4. parameter: DecidableEq X
+5. assumption: Nonempty X
+6. parameter: Fintype Y
+7. parameter: DecidableEq Y
+8. parameter: PMF (X × Y)
+9. parameter: X → Y → ℝ
+10. parameter: Y
+11. parameter: Y
+12. assumption: ∀ (x : X) (a : Y), q x a = DSWG24DiscretizationBias.ProofBridge.prior μ a
+13. assumption: ∀ (a : Y), DSWG24DiscretizationBias.ProofBridge.prior μ a ≤ DSWG24DiscretizationBias.ProofBridge.prior μ z
+14. conclusion: (DSWG24DiscretizationBias.Finite.paperBias μ (fun (x : X) => z) (DSWG24DiscretizationBias.ProofBridge.prior μ) y =
+    if z = y then 1 - DSWG24DiscretizationBias.ProofBridge.prior μ y
+    else -DSWG24DiscretizationBias.ProofBridge.prior μ y) ∧
+  DSWG24DiscretizationBias.Finite.paperBias μ (fun (x : X) => z)
+      (DSWG24DiscretizationBias.Finite.paperAggregatePosterior μ q) y =
+    if z = y then 1 - DSWG24DiscretizationBias.ProofBridge.prior μ y
+    else -DSWG24DiscretizationBias.ProofBridge.prior μ y
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -975,15 +1950,17 @@ DSWG24DiscretizationBias.PaperInterface.theorem1i_no_information_bias
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The no-\allowbreak{}information and plurality premises expose the source's q(y,x)=Pr(y) and plurality choice.\allowbreak{} The target gives the displayed bias formula for both source-\allowbreak{}permitted reference choices.\allowbreak{} The source's word maximized has no separate formal objective in the pinned statement, so the displayed formula is the complete mathematical conclusion here.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-d8ad786b7cc58022}{}
-\section*{Review row 14}
+\section*{Review row 6}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 667-\allowbreak{}673\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -996,6 +1973,11 @@ DSWG24DiscretizationBias.PaperInterface.theorem1i_no_information_bias
        class.
 \end{ReviewVerbatim}
 
+% report-context-presentation-sha256: dc1fa9810ac3a973e2d1a457fa41cd1dc4334b409511e9a462bf7ba03b1cc215
+\paragraph{Settled source reading}
+\begin{sloppypar}
+Calibration uses the standard conditional-\allowbreak{}expectation event identity intended by the source proof.\allowbreak{}
+\end{sloppypar}
 
 \paragraph{Expanded PaperInterface specification}
 \begin{ReviewVerbatim}
@@ -1005,10 +1987,45 @@ DSWG24DiscretizationBias.PaperInterface.theorem1i_no_information_bias
   Measurable argmaxRule →
     DSWG24DiscretizationBias.ProofBridge.isArgmaxRule q argmaxRule →
       DSWG24DiscretizationBias.ProofBridge.posteriorSimplex q →
-        (∀ (y : Y), Measurable fun xy => q xy.1 y) →
+        (∀ (y : Y), Measurable fun (xy : X × Y) => q xy.1 y) →
           DSWG24DiscretizationBias.ProofBridge.calibrated μ q →
             DSWG24DiscretizationBias.ProofBridge.continuousJointPriorBias μ argmaxRule y ≤
-              DSWG24DiscretizationBias.ProofBridge.continuousJointClassifierMAE μ q
+                DSWG24DiscretizationBias.ProofBridge.continuousJointClassifierMAE μ q ∧
+              DSWG24DiscretizationBias.ProofBridge.continuousJointAggregateBias μ q argmaxRule y ≤
+                DSWG24DiscretizationBias.ProofBridge.continuousJointClassifierMAE μ q
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-c94cbc772446ffec}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}calibrated}
+\item \hyperlink{governing-declaration-302610b6fa0b99db}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}continuous\allowbreak{}Joint\allowbreak{}Aggregate\allowbreak{}Bias}
+\item \hyperlink{governing-declaration-d07991e4ae99da3b}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}continuous\allowbreak{}Joint\allowbreak{}Classifier\allowbreak{}MAE}
+\item \hyperlink{governing-declaration-7df1fb937c21cdf5}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}continuous\allowbreak{}Joint\allowbreak{}Prior\allowbreak{}Bias}
+\item \hyperlink{paper-prerequisite-2e16c9b0a6f0db1c}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}is\allowbreak{}Argmax\allowbreak{}Rule}
+\item \hyperlink{paper-prerequisite-b11323803f325211}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}posterior\allowbreak{}Simplex}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: MeasurableSpace X
+4. parameter: MeasurableSpace Y
+5. assumption: MeasurableSingletonClass Y
+6. parameter: Fintype Y
+7. parameter: DecidableEq Y
+8. parameter: MeasureTheory.Measure (X × Y)
+9. assumption: MeasureTheory.IsFiniteMeasure μ
+10. parameter: X → Y → ℝ
+11. parameter: X → Y
+12. parameter: Y
+13. assumption: Measurable argmaxRule
+14. assumption: DSWG24DiscretizationBias.ProofBridge.isArgmaxRule q argmaxRule
+15. assumption: DSWG24DiscretizationBias.ProofBridge.posteriorSimplex q
+16. assumption: ∀ (y : Y), Measurable fun (xy : X × Y) => q xy.1 y
+17. assumption: DSWG24DiscretizationBias.ProofBridge.calibrated μ q
+18. conclusion: DSWG24DiscretizationBias.ProofBridge.continuousJointPriorBias μ argmaxRule y ≤
+    DSWG24DiscretizationBias.ProofBridge.continuousJointClassifierMAE μ q ∧
+  DSWG24DiscretizationBias.ProofBridge.continuousJointAggregateBias μ q argmaxRule y ≤
+    DSWG24DiscretizationBias.ProofBridge.continuousJointClassifierMAE μ q
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -1016,15 +2033,17 @@ DSWG24DiscretizationBias.PaperInterface.theorem1iii_argmax_bias_le_mae
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The selected source clause bounds each label's argmax bias by classifier MAE for either the prior or aggregate-\allowbreak{}posterior reference.\allowbreak{} The expanded target proves both corresponding inequalities:\allowbreak{} predicted argmax mass minus true-\allowbreak{}label mass and predicted argmax mass minus aggregate posterior are each at most the integral of the simplex score error sum q\_\allowbreak{}y(1-\allowbreak{}q\_\allowbreak{}y).\allowbreak{} Its weak pointwise-\allowbreak{}argmax premise includes the source argmax rule, posteriorSimplex supplies probability-\allowbreak{}vector scores, and the calibrated event identity is exactly the approved usual calibration reading.\allowbreak{} Finiteness and measurability are analytic well-\allowbreak{}formedness restrictions, while allowing any finite measure and any maximizing tie choice strengthens the bound on the source-\allowbreak{}admissible probability-\allowbreak{}distribution case.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-d6b9878258465151}{}
-\section*{Review row 15}
+\section*{Review row 7}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 667-\allowbreak{}673\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
@@ -1036,6 +2055,7 @@ DSWG24DiscretizationBias.PaperInterface.theorem1iii_argmax_bias_le_mae
        The bound is tight: there exist FXY and q such that Equation (4) holds with equality for the plurality
        class.
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
@@ -1046,27 +2066,71 @@ DSWG24DiscretizationBias.Finite.paperAggregateBias DSWG24DiscretizationBias.Fini
     DSWG24DiscretizationBias.Finite.paperTheorem1TightQ
 \end{ReviewVerbatim}
 
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-f3bd0c0016772e11}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Aggregate\allowbreak{}Bias}
+\item \hyperlink{governing-declaration-9de2c431ac58b2a3}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Theorem1\allowbreak{}Tight\allowbreak{}Argmax}
+\item \hyperlink{governing-declaration-d4243b460c2c568f}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Theorem1\allowbreak{}Tight\allowbreak{}Mu}
+\item \hyperlink{governing-declaration-193c98b93e9de012}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Finite.\allowbreak{}paper\allowbreak{}Theorem1\allowbreak{}Tight\allowbreak{}Q}
+\item \hyperlink{governing-declaration-2e16128ba60f3c18}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}classifier\allowbreak{}MAE}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. conclusion: DSWG24DiscretizationBias.Finite.paperAggregateBias DSWG24DiscretizationBias.Finite.paperTheorem1TightMu
+    DSWG24DiscretizationBias.Finite.paperTheorem1TightQ DSWG24DiscretizationBias.Finite.paperTheorem1TightArgmax 0 =
+  DSWG24DiscretizationBias.ProofBridge.classifierMAE DSWG24DiscretizationBias.Finite.paperTheorem1TightMu
+    DSWG24DiscretizationBias.Finite.paperTheorem1TightQ
+\end{ReviewVerbatim}
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 DSWG24DiscretizationBias.PaperInterface.theorem1iii_tight_binary_example
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The repaired named witness has one feature, two uniformly likely labels, posterior q(0)=q(1)=1/\allowbreak{}2, and the fixed first-\allowbreak{}class tie break.\allowbreak{} It is calibrated at the sole score value, its aggregate-\allowbreak{}posterior bias for class 0 is 1/\allowbreak{}2, and its classifier MAE is 1/\allowbreak{}2, exactly witnessing the source tightness assertion.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-82ddd45159ec7ca3}{}
-\section*{Review row 16}
+\section*{Review row 8}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 756-\allowbreak{}758\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
 Theorem 2. Consider Bayes optimal q, and N > K. For all F :
    (i). For every γ, pref there exists a joint decision-making rule that maximizes Oγ (D, q, pref ) in Equa-
         tion (3).
+
+[Next verbatim source excerpt]
+
+   Now, note that the objective can be decomposed using the tower property, as follows:
+ γ
+ON (D, q, pref ) = γACCN (D, q) + (1 − γ)FIDN (D, q, pref )
+                        [U+0002 control character]                                                                                     [U+0003 control character]
+                 = EF{X} EF{Y }|{X} [γacc(yi , D({q(xi )})) + (1 − γ)fid(pref , D({q(xi )})) | {Xi } = {xi }]
+                        "            "     N
+                                                                                                                      ##
+                                        1 X
+                 = EF{X} EF{Y }|{X} γ          I [D({q(xi )}) = yi ] + (1 − γ)fid(pref , D({q(xi )})) | {Xi } = {xi }
+                                       N i
+                        "            "     N
+                                                                                                                     ##
+                                        1 X
+                 = EF{X} EF{Y }|{X} γ          q(D({q(xj )})i , xi ) + (1 − γ)fid(pref , D({q(xi )})) | {Xi } = {xi }
+                                       N i
+
+   Where the last line follows from, given Bayes optimal q, we have for all ŷi
+
+                                            q(ŷi , xi ) = EFY |X [Y = ŷi |X = xi ].
+
+Thus, the optimization decision rule maximizes the inner expectation in the final line, for each given dataset
+                                                γ
+{xi }. Thus, the corresponding rule maximizes ON  (D, q, pref ), as desired.
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
@@ -1075,13 +2139,13 @@ Theorem 2. Consider Bayes optimal q, and N > K. For all F :
   2 ≤ K →
     K < N →
       ∀ (expect : (ω → ℝ) → ℝ),
-        EconCSLib.Decision.FiniteLinearExpectation expect →
+        AppliedModelingLib.Decision.FiniteLinearExpectation expect →
           ∀ (observedDataset : ω → σ) (trueLabels : ω → Fin N → Fin K) (γ : ℝ) (posterior : σ → Fin N → Fin K → ℝ)
             (fidelityTerm : σ → (Fin N → Fin K) → ℝ),
             (∀ (i : Fin N) (choose : σ → Fin K),
-                (expect fun x => if choose (observedDataset x) = trueLabels x i then 1 else 0) =
-                  expect fun x => posterior (observedDataset x) i (choose (observedDataset x))) →
-              ∃ optRule,
+                (expect fun (x : ω) => if choose (observedDataset x) = trueLabels x i then 1 else 0) =
+                  expect fun (x : ω) => posterior (observedDataset x) i (choose (observedDataset x))) →
+              ∃ (optRule : σ → Fin N → Fin K),
                 ∀ (rule : σ → Fin N → Fin K),
                   DSWG24DiscretizationBias.ProofBridge.expectedObjective expect observedDataset trueLabels γ
                       fidelityTerm rule ≤
@@ -1089,25 +2153,100 @@ Theorem 2. Consider Bayes optimal q, and N > K. For all F :
                       fidelityTerm optRule
 \end{ReviewVerbatim}
 
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-443446486047239c}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}Finite\allowbreak{}Linear\allowbreak{}Expectation}
+\item \hyperlink{governing-declaration-8e0892ece8e4e41c}{DSWG24\allowbreak{}Discretization\allowbreak{}Bias.\allowbreak{}Proof\allowbreak{}Bridge.\allowbreak{}expected\allowbreak{}Objective}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: ℕ
+4. parameter: ℕ
+5. assumption: NeZero K
+6. assumption: 2 ≤ K
+7. assumption: K < N
+8. parameter: (ω → ℝ) → ℝ
+9. assumption: AppliedModelingLib.Decision.FiniteLinearExpectation expect
+10. parameter: ω → σ
+11. parameter: ω → Fin N → Fin K
+12. parameter: ℝ
+13. parameter: σ → Fin N → Fin K → ℝ
+14. parameter: σ → (Fin N → Fin K) → ℝ
+15. assumption: ∀ (i : Fin N) (choose : σ → Fin K),
+  (expect fun (x : ω) => if choose (observedDataset x) = trueLabels x i then 1 else 0) =
+    expect fun (x : ω) => posterior (observedDataset x) i (choose (observedDataset x))
+16. conclusion: ∃ (optRule : σ → Fin N → Fin K),
+  ∀ (rule : σ → Fin N → Fin K),
+    DSWG24DiscretizationBias.ProofBridge.expectedObjective expect observedDataset trueLabels γ fidelityTerm rule ≤
+      DSWG24DiscretizationBias.ProofBridge.expectedObjective expect observedDataset trueLabels γ fidelityTerm optRule
+\end{ReviewVerbatim}
+
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
 DSWG24DiscretizationBias.PaperInterface.theorem2i_joint_rule_exists
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The governing source model at lines 590-\allowbreak{}595 defines |Y| = K >= 2, and Theorem 2 at lines 756-\allowbreak{}758 assumes N > K;\allowbreak{} these are exactly the target premises hK :\allowbreak{} 2 <= K and hNK :\allowbreak{} K < N.\allowbreak{} The Bayes-\allowbreak{}row identity and finite-\allowbreak{}linear expectation encode the tower-\allowbreak{}property conversion used in the displayed proof.\allowbreak{} The target quantifies over a generic gamma and fidelityTerm, so the paper's Equation (3) objective for every stated gamma and pref is a direct specialization, and the existential rule dominates every competing joint rule as claimed.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox
 \clearpage
 \hypertarget{source-claim-cc8ba41c41752422}{}
-\section*{Review row 17}
+\section*{Review row 9}
 \textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 760\par}
 \paragraph{Verbatim source input}
 \begin{ReviewVerbatim}
 (ii). The argmax decision rule Dargmax maximizes O1 (D, q, pref ), i.e., is accuracy maximizing.
+
+[Next verbatim source excerpt]
+
+Proof for Part (ii)
+    The result follows directly from the classifier being Bayes optimal – for each row, you cannot do better
+than picking the most likely class for that row.
+    Recall that D({q(xi )}) refers to the set of decisions ŷ1:N with dataset x1:N , where the decisions can be
+jointly made across data points. Note that, for the Bayes optimal classifier q ∗ , we have
+
+                                            EFY |X [I [Y = y] | X = x] = q ∗ (y, x)
+
+Thus, we have:
+  1
+ ON (D, q ∗ , ·) = ACCN (D, q ∗ )                                                                                          (26)
+                                        ∗
+               = EF [acc(y1:N , D({q (xi )}))]                                                                             (27)
+                    "                    #
+                      1 X
+               = EF          I [ŷi = y]                                                          let ŷi ≜ D({q ∗ (xj )}N
+                                                                                                                         j=1 )i
+                      N i
+                                                                                                                           (28)
+                         "             "                                       ##
+                                           1 X
+               = EF{X} EF{Y }|{X}              I [Yi = ŷi ] | {Xi } = {xi }                                 tower property
+                                           N i
+                                                                                                                           (29)
+                         "                                          #
+                             1 X
+               = EF{X}           EFY |X [I [Y = ŷi ] | X = xi ]                        independent sampling of datapoints
+                             N i
+                                                                                                                           (30)
+                         "                     #
+                             1 X ∗
+               = EF{X}           q (ŷi , xi )                                                                             (31)
+                             N i
+                         "                                  #
+                             1 X ∗           ∗
+               ≤ EF{X}           q (arg max q (y, xi ), xi )                                                               (32)
+                             N i         y
+
+                  1
+               ≜ ON (Dargmax , q ∗ , ·).                                                                                   (33)
 \end{ReviewVerbatim}
+
 
 
 \paragraph{Expanded PaperInterface specification}
@@ -1116,15 +2255,44 @@ DSWG24DiscretizationBias.PaperInterface.theorem2i_joint_rule_exists
   2 ≤ K →
     K < N →
       ∀ (expect : (ω → ℝ) → ℝ),
-        EconCSLib.Decision.FiniteLinearExpectation expect →
+        AppliedModelingLib.Decision.FiniteLinearExpectation expect →
           ∀ (observedDataset : ω → σ) (trueLabels : ω → Fin N → Fin K) (posterior : σ → Fin N → Fin K → ℝ)
             {decisionRule argmaxRule : σ → Fin N → Fin K},
-            (∀ (xs : σ), EconCSLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs)) →
+            (∀ (xs : σ), AppliedModelingLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs)) →
               (∀ (i : Fin N) (choose : σ → Fin K),
-                  (expect fun x => if choose (observedDataset x) = trueLabels x i then 1 else 0) =
-                    expect fun x => posterior (observedDataset x) i (choose (observedDataset x))) →
-                EconCSLib.Decision.expectedDecisionAccuracy expect observedDataset trueLabels decisionRule ≤
-                  EconCSLib.Decision.expectedDecisionAccuracy expect observedDataset trueLabels argmaxRule
+                  (expect fun (x : ω) => if choose (observedDataset x) = trueLabels x i then 1 else 0) =
+                    expect fun (x : ω) => posterior (observedDataset x) i (choose (observedDataset x))) →
+                AppliedModelingLib.Decision.expectedDecisionAccuracy expect observedDataset trueLabels decisionRule ≤
+                  AppliedModelingLib.Decision.expectedDecisionAccuracy expect observedDataset trueLabels argmaxRule
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-443446486047239c}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}Finite\allowbreak{}Linear\allowbreak{}Expectation}
+\item \hyperlink{governing-declaration-06698b1aac1f5804}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}Is\allowbreak{}Pointwise\allowbreak{}Max}
+\item \hyperlink{governing-declaration-61110afe97ed1775}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Decision.\allowbreak{}expected\allowbreak{}Decision\allowbreak{}Accuracy}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Type u_2
+3. parameter: ℕ
+4. parameter: ℕ
+5. assumption: NeZero K
+6. assumption: 2 ≤ K
+7. assumption: K < N
+8. parameter: (ω → ℝ) → ℝ
+9. assumption: AppliedModelingLib.Decision.FiniteLinearExpectation expect
+10. parameter: ω → σ
+11. parameter: ω → Fin N → Fin K
+12. parameter: σ → Fin N → Fin K → ℝ
+13. parameter: σ → Fin N → Fin K
+14. parameter: σ → Fin N → Fin K
+15. assumption: ∀ (xs : σ), AppliedModelingLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs)
+16. assumption: ∀ (i : Fin N) (choose : σ → Fin K),
+  (expect fun (x : ω) => if choose (observedDataset x) = trueLabels x i then 1 else 0) =
+    expect fun (x : ω) => posterior (observedDataset x) i (choose (observedDataset x))
+17. conclusion: Real.le✝ (AppliedModelingLib.Decision.expectedDecisionAccuracy expect observedDataset trueLabels decisionRule)
+  (AppliedModelingLib.Decision.expectedDecisionAccuracy expect observedDataset trueLabels argmaxRule)
 \end{ReviewVerbatim}
 
 \paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
@@ -1132,9 +2300,11 @@ DSWG24DiscretizationBias.PaperInterface.theorem2ii_argmax_accuracy_maximizing
 \end{ReviewVerbatim}
 
 \paragraph{Recorded source-to-Spec screening}
-\textbf{Verdict:} \texttt{not recorded}
+\textbf{Verdict:} \texttt{matches}
 \\
-\textbf{Reason:} not recorded
+{\raggedright
+\textbf{Reason:} The governing source model at lines 590-\allowbreak{}595 defines |Y| = K >= 2, and Theorem 2 at line 756 assumes N > K;\allowbreak{} these are exactly hK :\allowbreak{} 2 <= K and hNK :\allowbreak{} K < N.\allowbreak{} The pointwise-\allowbreak{}max premise and Bayes-\allowbreak{}row identity give the source proof's rowwise posterior comparison, and the conclusion compares the argmax rule against an arbitrary decision rule in expected accuracy, exactly the O\_\allowbreak{}1 claim.\allowbreak{} Source-\allowbreak{}permitted rule randomness is included by instantiating the generic expectation and observation carrier with the rule's random seed;\allowbreak{} the target does not exclude that source case.\allowbreak{}
+\par}
 \reviewmatch{Matches source input}
 \noindent\textbf{Reviewer annotation}\par
 \reviewerbox

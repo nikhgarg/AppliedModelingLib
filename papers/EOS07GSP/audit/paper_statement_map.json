@@ -1,4 +1,5 @@
 {
+  "approved_review_context_schema": 1,
   "generated_at": "2026-07-18T00:00:00Z",
   "items": {
     "definition4_locally_envy_free": {
@@ -6,14 +7,27 @@
         "definition4_locally_envy_free"
       ],
       "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:443-446",
+        "archival_source_quote_sha256": "127255d7111ece062f3728167d24e87e7c47fea15250beb7bf450eb37a717a3b",
+        "corrected_target_review_sha256": "8308dfa122457bfaaa5b1f9f0713fa7213530b255871bc4fc1fddf997d6e3763",
+        "corrected_target_sha256": "1d2ca7893994f5eb3c776f7cff2261e0be64807d578bb8a188da85c60c80eb18",
+        "governing_defect_ids": [
+          "EOS07-STATIC-UNASSIGNED-LEF-BOUNDARY-01"
+        ],
+        "schema": 1,
+        "statement": "Corrected Definition 4 retains the printed adjacent allocated-rank conditions and additionally requires every unassigned bidder to weakly prefer remaining unassigned to taking the bottom allocated slot at its recorded GSP payment."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
-        "EOS07GSP.PaperInterface.definition4_locally_envy_free"
+        "EOS07GSP.PaperInterface.corrected_definition4_locally_envy_free"
       ],
       "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.definition4_locally_envy_free",
+        "evidence_declaration": "EOS07GSP.PaperInterface.corrected_definition4_locally_envy_free",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.definition4_locally_envy_freeSpec"
+        "spec_declaration": "EOS07GSP.PaperInterface.corrected_definition4_locally_envy_freeSpec"
       },
       "source_anchor_evidence": [
         {
@@ -24,12 +38,27 @@
           "quoted_text_sha256": "9e4f7a948d49ab2a188679001cedd1d93ab606318330b4b60debc4b5b1ee4511"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "definition4.locally.envy.free",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.corrected_definition4_locally_envy_free",
+          "semantic_claim": "Definition 4 defines a locally envy-free equilibrium of the static GSP game as an equilibrium in which no player can improve by exchanging bids with the player ranked one position above; formally, for each allocated adjacent position the adjacent no-envy inequality holds.",
+          "source_locator": "cited publication:443-464",
+          "source_quote_sha256": "9e4f7a948d49ab2a188679001cedd1d93ab606318330b4b60debc4b5b1ee4511"
+        }
+      ],
+      "source_defect_ids": [
+        "EOS07-STATIC-UNASSIGNED-LEF-BOUNDARY-01"
+      ],
       "source_kind": "definition",
       "source_location": "cited publication:443-464",
+      "source_note": "Owner-approved corrected target. It is not claimed to be an archival equivalence: the source statement omits the bottom-slot condition needed by its Appendix proof when bidders exceed positions.",
+      "source_status": "corrected",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Definition 4 defines a locally envy-free equilibrium of the static GSP game as an equilibrium in which no player can improve by exchanging bids with the player ranked one position above; formally, for each allocated adjacent position the adjacent no-envy inequality holds.",
+      "statement": "Definition 4 says a static GSP equilibrium is locally envy-free when each allocated bidder cannot improve by exchanging bids with the bidder immediately above; the displayed condition omits an unassigned-bidder bottom-slot comparison.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.definition4_locally_envy_freeSpec"
+        "EOS07GSP.PaperInterface.corrected_definition4_locally_envy_freeSpec"
       ]
     },
     "first_price_running_example_profitable_revision_chain": {
@@ -55,6 +84,16 @@
           "quoted_text_sha256": "d966df681130afc5f83d9826928b0057bee40a48a10c4eaadeb9f84ae0de64ef"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "first.price.running.example.profitable.revision.chain",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.first_price_running_example_profitable_revision_chain",
+          "semantic_claim": "In the Section 2.2 first-price running example with two slots, click rates 200 and 100, and bidder values 10, 4, and 2, bidder 1 prefers the minimal top bid 2.02 to paying more for the same top slot, bidder 2 can profitably raise from 2.01 to 2.03 to take the top slot, and bidder 1 can then profitably raise to 2.04 to take the top slot back.",
+          "source_locator": "cited publication:239-248",
+          "source_quote_sha256": "d966df681130afc5f83d9826928b0057bee40a48a10c4eaadeb9f84ae0de64ef"
+        }
+      ],
       "source_kind": "example",
       "source_location": "cited publication:239-248",
       "source_url": "https://www.nber.org/papers/w11765",
@@ -68,14 +107,27 @@
         "lemma5_locally_envy_free_stable"
       ],
       "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:463-466",
+        "archival_source_quote_sha256": "dbe9eb17bd96e2763352fa3d510114c5a61cb6b57ff2cfae24c04a0fcd37fc07",
+        "corrected_target_review_sha256": "4d54f83bdf0394ef93dc6a391686cdfeded9941d8315ec67d6edcd81f2eaa110",
+        "corrected_target_sha256": "bcab54f860565c08a790f76a9db2a01a8ae399cc2ba9b08929aa1a6cd62fd8d6",
+        "governing_defect_ids": [
+          "EOS07-STATIC-UNASSIGNED-LEF-BOUNDARY-01"
+        ],
+        "schema": 1,
+        "statement": "On the finite strict ranked-GSP domain, the owner-approved corrected Definition 4 implies that the ordinary sorted-GSP outcome is a stable assignment."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
-        "EOS07GSP.PaperInterface.lemma5_locally_envy_free_stable"
+        "EOS07GSP.PaperInterface.corrected_lemma5_ranked_more_bidders_stable"
       ],
       "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.lemma5_locally_envy_free_stable",
+        "evidence_declaration": "EOS07GSP.PaperInterface.corrected_lemma5_ranked_more_bidders_stable",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.lemma5_locally_envy_free_stableSpec"
+        "spec_declaration": "EOS07GSP.PaperInterface.corrected_lemma5_ranked_more_bidders_stableSpec"
       },
       "source_anchor_evidence": [
         {
@@ -93,12 +145,27 @@
           "quoted_text_sha256": "6c01e808056d76f113b05e8ea82b194a81e92e41fda4646719b539fccbafe285"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma5.locally.envy.free.stable",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.corrected_lemma5_ranked_more_bidders_stable",
+          "semantic_claim": "Lemma 5 states that the outcome of any locally envy-free equilibrium of auction Gamma is a stable assignment; the appendix proof derives assortativity and telescopes adjacent no-envy inequalities.",
+          "source_locator": "cited publication:463-466",
+          "source_quote_sha256": "dbe9eb17bd96e2763352fa3d510114c5a61cb6b57ff2cfae24c04a0fcd37fc07"
+        }
+      ],
+      "source_defect_ids": [
+        "EOS07-STATIC-UNASSIGNED-LEF-BOUNDARY-01"
+      ],
       "source_kind": "lemma",
       "source_location": "cited publication:463-466 and cited publication:655-683",
+      "source_note": "Owner-approved corrected target. The finite proof retains the source's ordinary sorted-GSP mechanism and strict no-tie ranked ledger, but adds the disclosed all-unassigned bottom condition absent from the printed definition.",
+      "source_status": "corrected",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Lemma 5 states that the outcome of any locally envy-free equilibrium of auction Gamma is a stable assignment; the appendix proof derives assortativity and telescopes adjacent no-envy inequalities.",
+      "statement": "Lemma 5 says that the outcome of any locally envy-free equilibrium of auction Gamma is a stable assignment.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.lemma5_locally_envy_free_stableSpec"
+        "EOS07GSP.PaperInterface.corrected_lemma5_ranked_more_bidders_stableSpec"
       ]
     },
     "lemma6_tiebreak_ranked_gsp_stable_assignment_locally_envy_free": {
@@ -106,14 +173,27 @@
         "lemma6_tiebreak_ranked_gsp_stable_assignment_locally_envy_free"
       ],
       "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:466-467",
+        "archival_source_quote_sha256": "8d6ada7e15dd4fcc3d294783fffa2495c67f8dab2902b221022cef362d7be485",
+        "corrected_target_review_sha256": "1343838d864b4949cb4e015d8b765d4a6cc067d82c8b1e240488a7faad067e67",
+        "corrected_target_sha256": "72da63b8395a23116891f8f801d0ede6a66ec7d644b50be2a3746dea145a0020",
+        "governing_defect_ids": [
+          "EOS07-LEMMA6-STRICT-IMPLEMENTABILITY-02"
+        ],
+        "schema": 1,
+        "statement": "On the finite K>N ranked domain, a stable assignment with strictly positive utility for every assigned bidder has the owner-approved strict-surplus GSP implementation and locally-envy-free equilibrium route, preserving every assignment and each assigned bidder's payment."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
-        "EOS07GSP.PaperInterface.lemma6_tiebreak_ranked_gsp_stable_assignment_locally_envy_free"
+        "EOS07GSP.PaperInterface.corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibrium"
       ],
       "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.lemma6_tiebreak_ranked_gsp_stable_assignment_locally_envy_free",
+        "evidence_declaration": "EOS07GSP.PaperInterface.corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibrium",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.lemma6_tiebreak_ranked_gsp_stable_assignment_locally_envy_freeSpec"
+        "spec_declaration": "EOS07GSP.PaperInterface.corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibriumSpec"
       },
       "source_anchor_evidence": [
         {
@@ -131,12 +211,27 @@
           "quoted_text_sha256": "5072a4822e25dca8cf0cae378e5482c8c8bd9b408867aac5afc23954492c7d2d"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma6.tiebreak.ranked.gsp.stable.assignment.locally.envy.free",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibrium",
+          "semantic_claim": "Lemma 6 states that, when the number of bidders exceeds the number of positions, any stable assignment is an outcome of a locally envy-free GSP equilibrium; the appendix constructs bids from assignment payments.",
+          "source_locator": "cited publication:466-480",
+          "source_quote_sha256": "6d505f1d0233c19c4754fb4d9466b9f2ba1907023b825478e97d36d8eb75fe04"
+        }
+      ],
+      "source_defect_ids": [
+        "EOS07-LEMMA6-STRICT-IMPLEMENTABILITY-02"
+      ],
       "source_kind": "lemma",
       "source_location": "cited publication:466-480 and cited publication:685-714",
+      "source_note": "Owner-approved corrected target. The archival universal strict-bid construction has a zero-surplus counterexample; the amended target requires strictly positive realized utility for every assigned bidder and excludes clickless unassigned tail-payment records from its source-level outcome comparison.",
+      "source_status": "corrected",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Lemma 6 states that, when the number of bidders exceeds the number of positions, any stable assignment is an outcome of a locally envy-free GSP equilibrium; the appendix constructs bids from assignment payments.",
+      "statement": "Lemma 6 says that, when the number of bidders exceeds the number of available positions, any stable assignment is an outcome of a locally envy-free GSP equilibrium.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.lemma6_tiebreak_ranked_gsp_stable_assignment_locally_envy_freeSpec"
+        "EOS07GSP.PaperInterface.corrected_lemma6_ranked_more_bidders_constructs_tiebreak_equilibriumSpec"
       ]
     },
     "remark1_gsp_payments_weakly_dominate_vcg": {
@@ -155,15 +250,42 @@
       },
       "source_anchor_evidence": [
         {
-          "line_end": 386,
+          "line_end": 387,
           "line_start": 372,
           "publication_locator": "cited publication",
-          "quoted_text": "Remark 1 If all advertisers were to bid the same amounts under the two mechanisms, then each\nadvertiser’s payment would be at least as large under GSP as under VCG.\n10\nIn actual sponsored search auctions at Google and Yahoo!, advertisers can also choose to place “broad match”\nbids that match searches that include a keyword along with additional search terms.\n11\nThe actual practice at Overture is to show equal bids according to the order in which the bidders placed their\nbids.\n12\nAlthough we normalize the reserve price to zero, search engines charge the last bidder a non-zero reserve price.\n\n8\n\n\fThis is easy to show by induction on advertisers’ payments, starting with the last advertiser\nwho gets assigned a position. For i = min{K, N }, p(i) = pV,(i) = αi b(i+1) . For any i < min{K, N },",
-          "quoted_text_sha256": "9b4e6babc4c0917a7bf4b6bb5d679578cc1bcb9725b35935d6fd1398443e4325"
+          "quoted_text": "Remark 1 If all advertisers were to bid the same amounts under the two mechanisms, then each\nadvertiser’s payment would be at least as large under GSP as under VCG.\n10\nIn actual sponsored search auctions at Google and Yahoo!, advertisers can also choose to place “broad match”\nbids that match searches that include a keyword along with additional search terms.\n11\nThe actual practice at Overture is to show equal bids according to the order in which the bidders placed their\nbids.\n12\nAlthough we normalize the reserve price to zero, search engines charge the last bidder a non-zero reserve price.\n\n8\n\n\fThis is easy to show by induction on advertisers’ payments, starting with the last advertiser\nwho gets assigned a position. For i = min{K, N }, p(i) = pV,(i) = αi b(i+1) . For any i < min{K, N },\npV,(i) − pV,(i+1) = (αi − αi+1 )b(i+1) ≤ αi b(i+1) − αi+1 b(i+2) = p(i) − p(i+1) .",
+          "quoted_text_sha256": "e32af38bd43caa9f74cb25fe30e7baedd3d758a9346a8ca2e632096fd9573c06"
         }
       ],
-      "source_kind": "remark",
-      "source_location": "cited publication:372-386",
+      "source_claim_atoms": [
+        {
+          "id": "remark1.gsp.payments.weakly.dominate.vcg",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.remark1_gsp_payments_weakly_dominate_vcg",
+          "semantic_claim": "Remark 1 states that if advertisers bid the same amounts under GSP and VCG, each advertiser payment is at least as large under GSP as under VCG, with the recursive VCG-payment induction displayed immediately after the remark.",
+          "source_locator": "cited publication:372-373",
+          "source_quote_sha256": "03d4b45a03bd8d4eec51b8eedc0494efaf5699c7a792b2167d9de52ce284ee38"
+        }
+      ],
+      "source_kind": "claim",
+      "source_location": "cited publication:372-387",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "completed_statement_then_explanation",
+        "core_anchor": {
+          "line_end": 373,
+          "line_start": 372,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 1 If all advertisers were to bid the same amounts under the two mechanisms, then each\nadvertiser’s payment would be at least as large under GSP as under VCG.",
+          "quoted_text_sha256": "03d4b45a03bd8d4eec51b8eedc0494efaf5699c7a792b2167d9de52ce284ee38"
+        },
+        "presentation_kind": "claim",
+        "presentation_label": "Remark 1",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The source index conservatively retains the following induction paragraph, while the existing core contains the complete displayed Remark 1 payment-comparison statement and its immediate proof formula.",
+        "validated_at": "2026-09-03T20:07:50Z",
+        "validator": "Codex EOS07 source-inventory review"
+      },
       "source_url": "https://www.nber.org/papers/w11765",
       "statement": "Remark 1 states that if advertisers bid the same amounts under GSP and VCG, each advertiser payment is at least as large under GSP as under VCG, with the recursive VCG-payment induction displayed immediately after the remark.",
       "support_lean_declarations": [
@@ -193,7 +315,17 @@
           "quoted_text_sha256": "519bd65854c3fec75be816e1cb169b7fb161bd0f38b4460e68b45c91e1fa6dbd"
         }
       ],
-      "source_kind": "remark",
+      "source_claim_atoms": [
+        {
+          "id": "remark2.vcg.truthful",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.remark2_vcg_truthful",
+          "semantic_claim": "Remark 2 states that truth-telling is a dominant strategy under VCG, citing the standard VCG property.",
+          "source_locator": "cited publication:388-389",
+          "source_quote_sha256": "519bd65854c3fec75be816e1cb169b7fb161bd0f38b4460e68b45c91e1fa6dbd"
+        }
+      ],
+      "source_kind": "claim",
       "source_location": "cited publication:388-389",
       "source_url": "https://www.nber.org/papers/w11765",
       "statement": "Remark 2 states that truth-telling is a dominant strategy under VCG, citing the standard VCG property.",
@@ -217,15 +349,42 @@
       },
       "source_anchor_evidence": [
         {
-          "line_end": 401,
+          "line_end": 442,
           "line_start": 390,
           "publication_locator": "cited publication",
-          "quoted_text": "Remark 3 Truth-telling is not a dominant strategy under GSP.\nFor instance, consider a slight modification of the example from Section 2. There are still\nthree bidders, with values per click of $10, $4, and $2, and two positions. However, the clickthrough rates of these positions are now almost the same: the first position receives 200 clicks per\nhour, and the second one gets 199. If all players bid truthfully, then bidder 1’s payoff is equal to\n($10 − $4) ∗ 200 = $1200. If, instead, he shades his bid and bids only $3 per click, he will get the\nsecond position, and his payoff will be equal to ($10 − $2) ∗ 199 = $1592 > $1200.\n\n4\n\nStatic GSP and Locally Envy-Free Equilibria13\n\nAdvertisers bidding on Yahoo! and Google can change their bids very frequently. We therefore",
-          "quoted_text_sha256": "965c10bd55b2185bfc2edbf21d754bd957a8ed116f132085a5aa91c14254272e"
+          "quoted_text": "Remark 3 Truth-telling is not a dominant strategy under GSP.\nFor instance, consider a slight modification of the example from Section 2. There are still\nthree bidders, with values per click of $10, $4, and $2, and two positions. However, the clickthrough rates of these positions are now almost the same: the first position receives 200 clicks per\nhour, and the second one gets 199. If all players bid truthfully, then bidder 1’s payoff is equal to\n($10 − $4) ∗ 200 = $1200. If, instead, he shades his bid and bids only $3 per click, he will get the\nsecond position, and his payoff will be equal to ($10 − $2) ∗ 199 = $1592 > $1200.\n\n4\n\nStatic GSP and Locally Envy-Free Equilibria13\n\nAdvertisers bidding on Yahoo! and Google can change their bids very frequently. We therefore\nthink of these sponsored search auctions as continuous time or infinitely repeated games in which\nbidders originally have private information about their types, gradually learn the values of others,\nand can adjust their bids repeatedly. In principle, the sets of equilibria in such repeated games can\nbe very large, with players potentially punishing each other for deviations. However, the strategies\nrequired to support such equilibria are usually quite complex, requiring precise knowledge of the\nenvironment and careful implementation. It may not be reasonable to expect the advertisers to\nbe able to execute such strategies: they often manage thousands of keywords, and implementing\nsophisticated dynamic strategies for many keywords is likely to be prohibitively expensive and\ncomplex. In theory, advertisers could implement such strategies via automated robots, but at\npresent they cannot do so: bidding software must first be authorized by the search engines,14 and\nsearch engines are unlikely to permit sophisticated strategies that would allow bidders to collude\nand reduce revenues. Indeed, leading software for bidding at sponsored search auctions does not\nallow advertisers to condition their bids on the prior behavior of specific competitors.15\nWe therefore focus on simple strategies that bidders can reasonably execute, and we study the\nrest points of the bidding process: if the vector of bids stabilizes, at what bids can it stabilize?\nWe impose several assumptions and restrictions. First, we assume that all values are common\nknowledge: over time, bidders are likely to learn all relevant information about each other’s values.\n13\nAfter this research was completed, we found out that several of the results of this section were independently\ndiscovered by Hal Varian in unpublished work.\n14\nSee, e.g., http://www.content.overture.com/d/HKm/legal/zhhkrtc.jhtml (accessed August 18, 2005).\n15\nSee, e.g., Atlas Onepoint Rules-Based Bidding, http://www.atlasonepoint.com/products/bidmanager/rulesbased\n(accessed August 18, 2005), which lacks any bidding rule of this type.\n\n9\n\n\fSecond, since bids can be changed at any time, stable bids must be static best responses to each\nother—otherwise a bidder whose bid is not a best response would have an incentive to change\nit. Thus, we assume that the bids form an equilibrium in the static one-shot game of complete\ninformation. Third, what are the simple strategies that a bidder can use to increase his payoff,\nbeyond simple best responses to the other players’ bids?\nOne clear strategy is to try to force out the player who occupies the position immediately above.\nSuppose bidder k bids bk and is assigned to position i + 1 and bidder k 0 bids bk0 > bk and is assigned\nto position i. Note that if k raises his bid slightly, his own payoff does not change, but the payoff\nof the player above him decreases. Of course, player k 0 can retaliate, and the most he can do is to\nslightly underbid bidder k, effectively swapping places with him. If bidder k is better off after such\nretaliation, he will indeed want to force player k 0 out, and the vector of bids will change. Thus,\nif the vector converges to a rest point, an advertiser in position k should not want to “exchange”\npositions with the advertiser in position k − 1. We call such vectors of bids “locally envy-free.”",
+          "quoted_text_sha256": "c5f1ac744a6c99f49c9f86ea360a79f48e3e18225fe2812670315b9e8282f112"
         }
       ],
-      "source_kind": "remark",
-      "source_location": "cited publication:390-401",
+      "source_claim_atoms": [
+        {
+          "id": "remark3.gsp.not.truthful",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.remark3_gsp_not_truthful",
+          "semantic_claim": "Remark 3 states that truth-telling is not a dominant strategy under GSP and gives the two-slot, three-bidder deviation where bidder 1 shades to obtain the second position and higher payoff.",
+          "source_locator": "cited publication:390-395",
+          "source_quote_sha256": "5d57691bc98e3e669c5a3a795652113e6d7e46c20a1f9135b42c39f6a832f7db"
+        }
+      ],
+      "source_kind": "claim",
+      "source_location": "cited publication:390-442",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "completed_statement_then_explanation",
+        "core_anchor": {
+          "line_end": 395,
+          "line_start": 390,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 3 Truth-telling is not a dominant strategy under GSP.\nFor instance, consider a slight modification of the example from Section 2. There are still\nthree bidders, with values per click of $10, $4, and $2, and two positions. However, the clickthrough rates of these positions are now almost the same: the first position receives 200 clicks per\nhour, and the second one gets 199. If all players bid truthfully, then bidder 1’s payoff is equal to\n($10 − $4) ∗ 200 = $1200. If, instead, he shades his bid and bids only $3 per click, he will get the\nsecond position, and his payoff will be equal to ($10 − $2) ∗ 199 = $1592 > $1200.",
+          "quoted_text_sha256": "5d57691bc98e3e669c5a3a795652113e6d7e46c20a1f9135b42c39f6a832f7db"
+        },
+        "presentation_kind": "claim",
+        "presentation_label": "Remark 3",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The source index conservatively retains surrounding Section 2.4 prose, while the existing core contains the complete displayed Remark 3 non-truthfulness statement and its numerical counterexample.",
+        "validated_at": "2026-09-03T20:07:50Z",
+        "validator": "Codex EOS07 source-inventory review"
+      },
       "source_url": "https://www.nber.org/papers/w11765",
       "statement": "Remark 3 states that truth-telling is not a dominant strategy under GSP and gives the two-slot, three-bidder deviation where bidder 1 shades to obtain the second position and higher payoff.",
       "support_lean_declarations": [
@@ -253,6 +412,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Example. Suppose there are two slots on a page and three bidders. An ad in the first slot\nreceives 200 clicks per hour, while the second slot gets 100. Bidders 1, 2, and 3 have values per\nclick of $10, $4, and $2, respectively. Suppose bidder 2 bids $2.01, to guarantee that he gets a slot.\nThen bidder 1 will not want to bid more than $2.02—he does not need to pay more than that to\nget the top spot. But then bidder 2 will want to revise his bid to $2.03 to get the top spot, bidder\n1 will in turn raise his bid to $2.04, and so on. Clearly, there is no pure strategy equilibrium in the\none-shot version of the game, and so if bidders best respond to each other, they will want to revise\ntheir bids as often as possible. Figure 1 shows an example of this behavior on Overture.\n2.2.3\n\nGeneralized Second-Price Auctions\n\nUnder the generalized first-price auction, the bidder who could react to its competitors’ moves\nfastest had a substantial advantage. The mechanism therefore encouraged inefficient investments\nin gaming the system. It also created volatile prices that in turn caused allocative inefficiencies.\nGoogle addressed these problems when it introduced its own pay-per-click system, AdWords Select,\nin February 2002. Google also recognized that a bidder in position i will never want to pay more\nthan one bid increment above the bid of the advertiser in position (i + 1), and Google adopted\nthis principle in its newly-designed generalized second price auction mechanism. In the simplest\nGSP auction, an advertiser in position i pays a price per click equal to the bid of an advertiser in\nposition (i + 1) plus a minimum increment (typically $0.01). This second-price structure makes the\nmarket more user friendly and less susceptible to gaming.\nRecognizing these advantages, Yahoo!/Overture also switched to GSP. Let us describe the\nversion of GSP that it implemented.5 Every advertiser submits a bid. Advertisers are arranged\non the page in descending order of their bids. The advertiser in the first position pays a price per\nclick that equals the bid of the second advertiser plus an increment; the second advertiser pays the\nprice offered by the third advertiser plus an increment; and so forth.6\nExample (continued). Let us now consider the payments in the environment of the previous\nexample under GSP mechanism. If all advertisers bid truthfully, then bids are $10, $4, $2. Payments\nin GSP will be $4 and $2.7 Truth-telling is indeed an equilibrium in this example, because no bidder\ncan benefit by changing his bid. Note that total payments of bidders one and two are $800 and\n$200, respectively.\n5\n\nWe focus on Overture’s implementation, because Google’s system is somewhat more complex. However, it is\nstraightforward to generalize our analysis to Google’s mechanism.\n6\nFor this version of GSP to be efficient, it is necessary that the number of clicks received by an advertisement in\na given position depends on the ad’s position and not on the advertiser’s identity. Recognizing that this assumption\nmay not hold if some ads attract more clicks than others, Google adjusts effective bids based on ads’ click-through",
           "quoted_text_sha256": "72d15a69a3bc28ff75f8134752c7cb79b024b53846d82cf52bfb3d75dd075cd7"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "running.example.truthful.gsp.nash",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.running_example_truthful_gsp_nash",
+          "semantic_claim": "The running two-slot, three-bidder example has click rates 200 and 100 and values 10, 4, and 2; the text states truthful GSP bids are an equilibrium in this example.",
+          "source_locator": "cited publication:239-278",
+          "source_quote_sha256": "72d15a69a3bc28ff75f8134752c7cb79b024b53846d82cf52bfb3d75dd075cd7"
         }
       ],
       "source_kind": "example",
@@ -286,6 +455,16 @@
           "quoted_text_sha256": "00fc01760f9d2be847e7754a711b0f3e6c76213df10048dc9ca0c52a85562e2e"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "running.example.truthful.gsp.revenue.comparison",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.running_example_truthful_gsp_revenue_comparison",
+          "semantic_claim": "The running example computes GSP payments of 4 and 2 per click, VCG payments of 600 and 200 total, and states that VCG revenues are lower than GSP revenues in the example.",
+          "source_locator": "cited publication:266-315",
+          "source_quote_sha256": "00fc01760f9d2be847e7754a711b0f3e6c76213df10048dc9ca0c52a85562e2e"
+        }
+      ],
       "source_kind": "example",
       "source_location": "cited publication:266-315",
       "source_url": "https://www.nber.org/papers/w11765",
@@ -317,6 +496,16 @@
           "quoted_text_sha256": "67e7346150942d80f6e4057d4141f2483f47268f96259530e0b0b50fe6392012"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "stable.assignment",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.stable_assignment",
+          "semantic_claim": "The paper defines assignment game A by viewing each position as an agent seeking a match with an advertiser, assigning each advertiser-position pair (i, k) the value alpha_k s_i, and charging the advertiser p_ik for its position.",
+          "source_locator": "cited publication:459-462",
+          "source_quote_sha256": "67e7346150942d80f6e4057d4141f2483f47268f96259530e0b0b50fe6392012"
+        }
+      ],
       "source_kind": "definition",
       "source_location": "cited publication:459-462",
       "source_prose_definition_reconciliation": {
@@ -341,15 +530,9 @@
         "theorem7_bstar_locally_envy_free"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem7_bstar_locally_envy_free"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem7_bstar_locally_envy_free",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem7_bstar_locally_envy_freeSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "component_of_selected_result",
+      "scope_disposition_note": "The corrected finite full Theorem 7 target is the canonical mechanism-level locally-envy-free route; this outcome-only auxiliary lemma is not a separate source claim target.",
       "source_anchor_evidence": [
         {
           "line_end": 488,
@@ -366,13 +549,21 @@
           "quoted_text_sha256": "c4bff58af0c6875115f2c42244dadc86d900df8d2e2441767ebba216faecf7ec"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem7.bstar.locally.envy.free",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem7_bstar_locally_envy_free",
+          "semantic_claim": "Theorem 7 states that the B* strategy profile is locally envy-free; the proof checks that each bidder is indifferent between remaining in position and swapping with the bidder one position above.",
+          "source_locator": "cited publication:481-488",
+          "source_quote_sha256": "aad49a7fe2559010479fdc43464dbf5438753158c9300f35d4a97100d45b8058"
+        }
+      ],
       "source_kind": "theorem",
       "source_location": "cited publication:481-488 and cited publication:774-778",
+      "source_status": "support_only",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Theorem 7 states that the B* strategy profile is locally envy-free; the proof checks that each bidder is indifferent between remaining in position and swapping with the bidder one position above.",
-      "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem7_bstar_locally_envy_freeSpec"
-      ]
+      "statement": "Theorem 7 states that the B* strategy profile is locally envy-free; the proof checks that each bidder is indifferent between remaining in position and swapping with the bidder one position above."
     },
     "theorem7_bstar_payment_identity": {
       "aliases": [
@@ -404,6 +595,16 @@
           "quoted_text_sha256": "a3d4a1a856d7b6b125dfd2f3537468a62a75d9d36ed476af4a4b94ada21be564"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem7.bstar.payment.identity",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem7_bstar_payment_identity",
+          "semantic_claim": "The B* construction sets bid b_i* from the previous VCG payment divided by the previous click-through rate; the proof checks that the resulting next-price payments coincide with VCG payments.",
+          "source_locator": "cited publication:470-483",
+          "source_quote_sha256": "eee4da98a8df4e62a68a0ed939623e3a81f73dd3ddabf47d8cee7ba50b22edb0"
+        }
+      ],
       "source_kind": "theorem",
       "source_location": "cited publication:470-483 and cited publication:716-777",
       "source_url": "https://www.nber.org/papers/w11765",
@@ -417,14 +618,27 @@
         "theorem7_no_positive_transfer_conclusion"
       ],
       "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:481-490",
+        "archival_source_quote_sha256": "6868bad0017e05ccd7d70be175a500a070166b9ee6a0612dd20bf1e7a2871d60",
+        "corrected_target_review_sha256": "44f076077710c2517466a5712866825c94ea2092a7f4c6fd959c5492d9374ee6",
+        "corrected_target_sha256": "f06a231035f653b6174232c7ffbee1962a1be98121690e12d6d3522127bc6edd",
+        "governing_defect_ids": [
+          "EOS07-STATIC-UNASSIGNED-LEF-BOUNDARY-01"
+        ],
+        "schema": 1,
+        "statement": "On the finite strict ranked-GSP comparison domain, the owner-approved corrected Definition 4 yields a B-star locally-envy-free GSP equilibrium with VCG-equivalent positions and payments, whose actual seller revenue is weakly below every corrected comparison profile."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem7_no_positive_transfer_conclusion"
+        "EOS07GSP.PaperInterface.theorem7_finite_static_bstar_full_corrected"
       ],
       "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem7_no_positive_transfer_conclusion",
+        "evidence_declaration": "EOS07GSP.PaperInterface.theorem7_finite_static_bstar_full_corrected",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem7_no_positive_transfer_conclusionSpec"
+        "spec_declaration": "EOS07GSP.PaperInterface.theorem7_finite_static_bstar_full_correctedSpec"
       },
       "source_anchor_evidence": [
         {
@@ -442,12 +656,27 @@
           "quoted_text_sha256": "ddadeed79be928d46e245fd0685135c89e1638faaf230551908dc764eac948f8"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem7.no.positive.transfer.conclusion",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem7_finite_static_bstar_full_corrected",
+          "semantic_claim": "Theorem 7 concludes that the B* equilibrium has VCG-equivalent payments and that any other locally envy-free equilibrium yields seller revenue at least as high; the proof uses stable-assignment payment lower bounds.",
+          "source_locator": "cited publication:481-490",
+          "source_quote_sha256": "6868bad0017e05ccd7d70be175a500a070166b9ee6a0612dd20bf1e7a2871d60"
+        }
+      ],
+      "source_defect_ids": [
+        "EOS07-STATIC-UNASSIGNED-LEF-BOUNDARY-01"
+      ],
       "source_kind": "theorem",
       "source_location": "cited publication:481-490 and cited publication:780-796",
+      "source_note": "Owner-approved corrected target. The proof uses the source appendix's first-unassigned-bidder terminal payment and backward stable-payment induction; strict ranked bids make explicit the source footnote's no-tie convention rather than silently replacing random ties.",
+      "source_status": "corrected",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Theorem 7 concludes that the B* equilibrium has VCG-equivalent payments and that any other locally envy-free equilibrium yields seller revenue at least as high; the proof uses stable-assignment payment lower bounds.",
+      "statement": "Theorem 7 says that B-star is a locally envy-free GSP equilibrium with VCG-equivalent position and payment, and that every other locally envy-free equilibrium has seller revenue at least as high.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem7_no_positive_transfer_conclusionSpec"
+        "EOS07GSP.PaperInterface.theorem7_finite_static_bstar_full_correctedSpec"
       ]
     },
     "theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcome": {
@@ -455,15 +684,9 @@
         "theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcome"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcome"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcome",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcomeSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "component_of_selected_result",
+      "scope_disposition_note": "The corrected finite full Theorem 7 target is the canonical route for the same construction, VCG ledger, and seller comparison; this legacy restricted realization lemma is retained only as proof support.",
       "source_anchor_evidence": [
         {
           "line_end": 511,
@@ -480,28 +703,30 @@
           "quoted_text_sha256": "a3d4a1a856d7b6b125dfd2f3537468a62a75d9d36ed476af4a4b94ada21be564"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem7.ranked.gsp.bstar.mechanism.realizes.bstar.outcome",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcome",
+          "semantic_claim": "Theorem 7 constructs the B* profile, proves bid order is preserved, and shows each bidder position and payment coincide with VCG in the constructed equilibrium.",
+          "source_locator": "cited publication:481-511",
+          "source_quote_sha256": "9de5dd1342b01e7d2b0cdbf71552b238da00e4e9c2488b83d0e41f8231462ff0"
+        }
+      ],
       "source_kind": "theorem",
       "source_location": "cited publication:481-511 and cited publication:716-777",
+      "source_status": "support_only",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Theorem 7 constructs the B* profile, proves bid order is preserved, and shows each bidder position and payment coincide with VCG in the constructed equilibrium.",
-      "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem7_ranked_gsp_bstar_mechanism_realizes_bstar_outcomeSpec"
-      ]
+      "statement": "Theorem 7 constructs the B* profile, proves bid order is preserved, and shows each bidder position and payment coincide with VCG in the constructed equilibrium."
     },
     "theorem7_strict_tiebreak_gsp_comparison_conclusion": {
       "aliases": [
         "theorem7_strict_tiebreak_gsp_comparison_conclusion"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem7_strict_tiebreak_gsp_comparison_conclusion"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem7_strict_tiebreak_gsp_comparison_conclusion",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem7_strict_tiebreak_gsp_comparison_conclusionSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "component_of_selected_result",
+      "scope_disposition_note": "The corrected finite full Theorem 7 target carries the source comparison under the approved Definition 4 repair; the older equal-cardinality tie-break comparison is retained only as support.",
       "source_anchor_evidence": [
         {
           "line_end": 490,
@@ -518,27 +743,48 @@
           "quoted_text_sha256": "ddadeed79be928d46e245fd0685135c89e1638faaf230551908dc764eac948f8"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem7.strict.tiebreak.gsp.comparison.conclusion",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem7_strict_tiebreak_gsp_comparison_conclusion",
+          "semantic_claim": "Theorem 7 comparison component links locally envy-free GSP outcomes to stable assignments and VCG payment lower bounds, under the paper's ranked strict-order conventions.",
+          "source_locator": "cited publication:481-490",
+          "source_quote_sha256": "6868bad0017e05ccd7d70be175a500a070166b9ee6a0612dd20bf1e7a2871d60"
+        }
+      ],
       "source_kind": "theorem",
       "source_location": "cited publication:481-490 and cited publication:780-796",
+      "source_status": "support_only",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Theorem 7 comparison component links locally envy-free GSP outcomes to stable assignments and VCG payment lower bounds, under the paper's ranked strict-order conventions.",
-      "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem7_strict_tiebreak_gsp_comparison_conclusionSpec"
-      ]
+      "statement": "Theorem 7 comparison component links locally envy-free GSP outcomes to stable assignments and VCG payment lower bounds, under the paper's ranked strict-order conventions."
     },
     "theorem8_continuous_generalized_english_payoff_game_strict_values_main_conclusion_review": {
       "aliases": [
         "theorem8_continuous_full_history_bayes_ex_post_review"
       ],
       "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:528-546",
+        "archival_source_quote_sha256": "ef4affac2cd9a20b79b38306ef98446112e85da2ebeeae0518e3ed0312efbef3",
+        "corrected_target_review_sha256": "4b44c2cec0ab7457e0a3c9c23d780dbc2ce1cbed95bbf80c01b2ccca60982a55",
+        "corrected_target_sha256": "464bf1469ac71f5a7adcfc92de71ec2f2a65b65b2d8ae4352e505077fae1a88e",
+        "governing_defect_ids": [
+          "EOS07-THEOREM8-BIDDER-INDEXED-STRATEGY-SCOPE-03"
+        ],
+        "schema": 1,
+        "statement": "On the finite K=N+1 generalized-English domain, the owner-approved corrected Theorem 8 target proves the named continuous symmetric continuation plan is an ex-post PBE with bidder-indexed induced histories and beliefs, effective action uniqueness among symmetric continuation plans, and the terminal GSP-to-VCG ledger."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem8_continuous_generalized_english_payoff_game_strict_values_main_conclusion_review"
+        "EOS07GSP.PaperInterface.theorem8_finite_legal_history_pbe_terminal_vcg_ledger"
       ],
       "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem8_continuous_generalized_english_payoff_game_strict_values_main_conclusion_review",
+        "evidence_declaration": "EOS07GSP.PaperInterface.theorem8_finite_legal_history_pbe_terminal_vcg_ledger",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem8_continuous_generalized_english_payoff_game_strict_values_main_conclusion_reviewSpec"
+        "spec_declaration": "EOS07GSP.PaperInterface.theorem8_finite_legal_history_pbe_terminal_vcg_ledgerSpec"
       },
       "source_anchor_evidence": [
         {
@@ -556,12 +802,27 @@
           "quoted_text_sha256": "9a4067a4792efeebe71905d2fe89fdd4f3a2664669d7ee7b7119caaea2af593f"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem8.finite.legal.history.pbe.terminal.vcg.ledger",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem8_finite_legal_history_pbe_terminal_vcg_ledger",
+          "semantic_claim": "Theorem 8 states that the generalized English auction has a unique perfect Bayesian equilibrium with strategies continuous in valuations: an advertiser with value s_i drops out at price p_i(k,h,s_i)=s_i-(alpha_k/alpha_{k-1})(s_i-b_{k+1}); in this equilibrium each advertiser's position and payoff coincide with VCG, and the equilibrium is ex post.",
+          "source_locator": "cited publication:528-590",
+          "source_quote_sha256": "13296e085f7ff1bf13c4e209baee9420f640205948477328a15e17595a390d9e"
+        }
+      ],
+      "source_defect_ids": [
+        "EOS07-THEOREM8-BIDDER-INDEXED-STRATEGY-SCOPE-03"
+      ],
       "source_kind": "theorem",
       "source_location": "cited publication:528-590 and cited publication:800-940",
+      "source_note": "Owner-approved corrected target. The finite carrier has one common continuation plan which induces bidder-indexed history strategies and beliefs, so its uniqueness is explicitly restricted to symmetric continuation plans rather than arbitrary bidder-indexed profiles.",
+      "source_status": "corrected",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Theorem 8 states that the generalized English auction has a unique perfect Bayesian equilibrium with strategies continuous in valuations: an advertiser with value s_i drops out at price p_i(k,h,s_i)=s_i-(alpha_k/alpha_{k-1})(s_i-b_{k+1}); in this equilibrium each advertiser's position and payoff coincide with VCG, and the equilibrium is ex post.",
+      "statement": "Theorem 8 states a unique perfect Bayesian equilibrium with bidder-indexed continuous strategies p_i(k,h,s_i), VCG-equivalent positions and payoffs, and an ex-post best-response conclusion.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem8_continuous_generalized_english_payoff_game_strict_values_main_conclusion_reviewSpec"
+        "EOS07GSP.PaperInterface.theorem8_finite_legal_history_pbe_terminal_vcg_ledgerSpec"
       ]
     },
     "theorem8_continuous_source_local_best_response_support_unique_review": {
@@ -569,23 +830,11 @@
         "theorem8_continuous_source_local_best_response_support_unique_review"
       ],
       "claim_bearing": true,
+      "inventory_role": "proof_support",
       "lean_declarations": [
         "EOS07GSP.PaperInterface.theorem8_continuous_source_local_best_response_support_unique_review"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem8_continuous_source_local_best_response_support_unique_review",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem8_continuous_source_local_best_response_support_unique_reviewSpec"
-      },
       "source_anchor_evidence": [
-        {
-          "line_end": 571,
-          "line_start": 539,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 8 In the unique perfect Bayesian equilibrium of the generalized English auction with\nk\nstrategies continuous in si , an advertiser with value si drops out at price pi (k, h, si ) = si − ααk−1\n(si −\n\nbk+1 ). In this equilibrium, each advertiser’s resulting position and payoff are the same as in the\ndominant-strategy equilibrium of the game induced by VCG. This equilibrium is ex post: the strategy\nof each bidder is a best response to other bidders’ strategies regardless of their realized values.\nThe intuition of the proof is as follows. First, with k players remaining and the next highest\nbid equal to bk+1 , it is a dominated strategy for a player with value s to drop out before price p\nreaches the level at which he is indifferent between getting position k and paying bk+1 per click and\ngetting position k − 1 and paying p per click. Next, if for some set of types it is not optimal to drop\nout at this “borderline” price level, we can consider the lowest such type, and then once the clock\nreaches this price level, a player of this type will know that he has the lowest per-click value of the\n18\n\nIf several players drop out simultaneously, one of them is chosen randomly. Whenever a player drops out, the\nclock is stopped, and other players are also allowed to drop out; again, if several ones want to drop out, one is chosen\nrandomly. If several players end up dropping at the same price, the first one to drop out is placed in the lowest\nposition of the still available ones, the next one—to the position right above that, and so on.\n19\nWithout this restriction, multiple equilibria exist, even in the simplest English auction with two bidders and\none object. For example, suppose there is one object for sale and two bidders with independent private values for\nthis object distributed exponentially on [0, ∞). Consider the following pair of strategies. If a bidder’s value is in\nthe interval [0, 1] or in the interval [2, ∞), he drops out when the clock reaches his value. If bidder 1’s value is in\nthe interval (1, 2), he drops out at 1, and if bidder 2’s value is in the interval (1, 2), he drops out at 2. This pair of\nstrategies, together with appropriate beliefs, forms a perfect Bayesian equilibrium.\n\n12\n\n\fremaining players. But then he will also know that the other remaining players will only drop out\nat price levels at which he will find it unprofitable to compete with them for the higher positions.\nThe result of Theorem 8 resembles the classic result on the equivalence of the English auction",
-          "quoted_text_sha256": "08279eabd653073a1d1d2eec1c722379fa69a10307312f25927dd0c8ec24231e"
-        },
         {
           "line_end": 933,
           "line_start": 801,
@@ -594,12 +843,24 @@
           "quoted_text_sha256": "4498a29e6b54ee1bee5c5e5391c5c957ef9a7bf88568fe2bb5f90a1a947bb62d"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem8.continuous.source.local.best.response.support.unique.review",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem8_continuous_source_local_best_response_support_unique_review",
+          "semantic_claim": "Theorem 8's proof identifies the continuous dropout-price formula by excluding deviations above and below q, so continuous one-step best responses agree with q on the relevant support.",
+          "source_locator": "cited publication:801-933",
+          "source_quote_sha256": "4498a29e6b54ee1bee5c5e5391c5c957ef9a7bf88568fe2bb5f90a1a947bb62d"
+        }
+      ],
       "source_kind": "theorem",
-      "source_location": "cited publication:539-571 and cited publication:801-933",
+      "source_location": "cited publication:801-933",
+      "source_note": "Proof support only for the selected full legal-history Theorem 8 endpoint.",
+      "source_status": "support_only",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Theorem 8's proof identifies the continuous dropout-price formula by excluding deviations above and below q, so continuous one-step best responses agree with q on the relevant support.",
+      "statement": "The appendix's local q comparisons identify continuous one-step best responses on support.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem8_continuous_source_local_best_response_support_unique_reviewSpec"
+        "EOS07GSP.ProofBridge.theorem8_continuous_source_local_best_response_support_unique_review"
       ]
     },
     "theorem8_dropout_formula_eq_bstar_threshold": {
@@ -607,23 +868,11 @@
         "theorem8_dropout_formula_eq_bstar_threshold"
       ],
       "claim_bearing": true,
+      "inventory_role": "proof_support",
       "lean_declarations": [
         "EOS07GSP.PaperInterface.theorem8_dropout_formula_eq_bstar_threshold"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem8_dropout_formula_eq_bstar_threshold",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem8_dropout_formula_eq_bstar_thresholdSpec"
-      },
       "source_anchor_evidence": [
-        {
-          "line_end": 546,
-          "line_start": 539,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 8 In the unique perfect Bayesian equilibrium of the generalized English auction with\nk\nstrategies continuous in si , an advertiser with value si drops out at price pi (k, h, si ) = si − ααk−1\n(si −\n\nbk+1 ). In this equilibrium, each advertiser’s resulting position and payoff are the same as in the\ndominant-strategy equilibrium of the game induced by VCG. This equilibrium is ex post: the strategy\nof each bidder is a best response to other bidders’ strategies regardless of their realized values.",
-          "quoted_text_sha256": "3b4b98abb95f48e67ad398ff938c0b496781b290391f3343436295fdd8d49d8c"
-        },
         {
           "line_end": 823,
           "line_start": 801,
@@ -632,12 +881,24 @@
           "quoted_text_sha256": "242e8b63e46403e70d844cb426f5d388b73bd027dfd0f737818e671e3debef57"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem8.dropout.formula.eq.bstar.threshold",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem8_dropout_formula_eq_bstar_threshold",
+          "semantic_claim": "Theorem 8 states the dropout price formula p_i(k,h,s_i)=s_i-alpha_k/alpha_{k-1}(s_i-b_{k+1}); the appendix defines q by the same indifference equation.",
+          "source_locator": "cited publication:539-546",
+          "source_quote_sha256": "3b4b98abb95f48e67ad398ff938c0b496781b290391f3343436295fdd8d49d8c"
+        }
+      ],
       "source_kind": "formula",
-      "source_location": "cited publication:539-546 and cited publication:801-823",
+      "source_location": "cited publication:801-823",
+      "source_note": "Proof support only: the selected finite legal-history endpoint carries the printed Theorem 8 conclusion.",
+      "source_status": "support_only",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Theorem 8 states the dropout price formula p_i(k,h,s_i)=s_i-alpha_k/alpha_{k-1}(s_i-b_{k+1}); the appendix defines q by the same indifference equation.",
+      "statement": "The appendix's finite ranked threshold identity is proof support for Theorem 8's displayed dropout formula.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem8_dropout_formula_eq_bstar_thresholdSpec"
+        "EOS07GSP.PaperInterface.theorem8_ranked_dropout_formula_eq_bstar_threshold"
       ]
     },
     "theorem8_q_continuous_value_review": {
@@ -645,15 +906,10 @@
         "theorem8_q_continuous_value_review"
       ],
       "claim_bearing": true,
+      "inventory_role": "proof_support",
       "lean_declarations": [
         "EOS07GSP.PaperInterface.theorem8_q_continuous_value_review"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem8_q_continuous_value_review",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem8_q_continuous_value_reviewSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 546,
@@ -661,21 +917,26 @@
           "publication_locator": "cited publication",
           "quoted_text": "K 6= N + 1 require only minor modifications in the proof.) Click-through rates αn are commonly\nknown, with αN +1 ≡ 0. Bidders’ per-click valuations si are drawn from a continuous distribution\nF (·) on [0; +∞) with a continuous density function f (·) that is positive everywhere on (0, +∞).\nEach advertiser knows his valuation and the distribution of other advertisers’ valuations.\nThe strategy of an advertiser assigns the choice of dropping out or not for any history of the\ngame, given that the advertiser has not previously dropped out. In other words, the strategy can be\nrepresented as a function pi (k, h, si ), where si is the value per click of bidder i, pi is the price at which\nhe drops out, k is the number of bidders remaining (including bidder i), and h = (bk+1 , . . . , bK ) is\nthe history of prices at which bidders K, K − 1, . . . , k + 1 have dropped out. (As a result, the\nprice that bidder i would have to pay per click if he dropped out next is equal to bk+1 , unless the\nhistory is empty, in which case we say that bk+1 ≡ 0.)\nTheorem 8 In the unique perfect Bayesian equilibrium of the generalized English auction with\nk\nstrategies continuous in si , an advertiser with value si drops out at price pi (k, h, si ) = si − ααk−1\n(si −\n\nbk+1 ). In this equilibrium, each advertiser’s resulting position and payoff are the same as in the\ndominant-strategy equilibrium of the game induced by VCG. This equilibrium is ex post: the strategy\nof each bidder is a best response to other bidders’ strategies regardless of their realized values.",
           "quoted_text_sha256": "ef4affac2cd9a20b79b38306ef98446112e85da2ebeeae0518e3ed0312efbef3"
-        },
-        {
-          "line_end": 823,
-          "line_start": 801,
-          "publication_locator": "cited publication",
-          "quoted_text": "\fProof of Theorem 8\nFirst, note that in equilibrium, for any player i, any history h, and any number of remaining players\nk, the drop-out price pi (k, h, si ) tends to infinity as si tends to infinity. (Otherwise there would\nexist a player for whom it was optimal to deviate from his strategy and stay longer, for a sufficiently\nhigh value s.) Next, take any equilibrium of the generalized English auction. Note that if in this\nequilibrium pi (k, h, si ) > pi (k, h, s0i ) for some k, h, i, and types si < s0i , then it has to be the\ncase that both types si and s0i are indifferent between dropping out at pi (k, h, si ) and pi (k, h, s0i ).\n(Otherwise one of them would be able to increase his payoff by mimicking the other.) Consequently,\nwe can “swap” such players’ strategies, and therefore there exists an “observationally equivalent”\nequilibrium in which strategies are nondecreasing in types; also, they are still continuous in own\nvalues. Consider this equilibrium profile of strategies pi (k, h, si ).\nLet q(k, bk+1 , s) be such a price that a player with value s is indifferent between getting position\nk at price bk+1 and position k − 1 at price q(k, bk+1 , s). That is,\nαk−1 (s − q(k, bk+1 , s)) = αk (s − bk+1 )\nm\nq(k, bk+1 , s) = s −\n\nαk\n(s − bk+1 ).\nαk−1\n\nSlightly abusing notation, let q(k, h, s) = q(k, bk+1 , s), where bk+1 is the last bid at which a player\ndropped out in history h. (This player received position k + 1. If history h is empty, we set",
-          "quoted_text_sha256": "242e8b63e46403e70d844cb426f5d388b73bd027dfd0f737818e671e3debef57"
         }
       ],
-      "source_kind": "theorem",
-      "source_location": "cited publication:528-546 and cited publication:801-823",
+      "source_claim_atoms": [
+        {
+          "id": "theorem8.q.continuous.value.review",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem8_q_continuous_value_review",
+          "semantic_claim": "Theorem 8 restricts attention to strategies continuous in valuation, and the displayed q formula is affine, hence continuous, in the bidder value.",
+          "source_locator": "cited publication:528-546",
+          "source_quote_sha256": "ef4affac2cd9a20b79b38306ef98446112e85da2ebeeae0518e3ed0312efbef3"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:528-546",
+      "source_note": "Proof support only for the selected Theorem 8 endpoint.",
+      "source_status": "support_only",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Theorem 8 restricts attention to strategies continuous in valuation, and the displayed q formula is affine, hence continuous, in the bidder value.",
+      "statement": "The displayed q formula is continuous in an advertiser's own value.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem8_q_continuous_value_reviewSpec"
+        "EOS07GSP.ProofBridge.theorem8_q_continuous_value_review"
       ]
     },
     "theorem8_q_mem_interval_review": {
@@ -683,30 +944,37 @@
         "theorem8_q_mem_interval_review"
       ],
       "claim_bearing": true,
+      "inventory_role": "proof_support",
       "lean_declarations": [
         "EOS07GSP.PaperInterface.theorem8_q_mem_interval_review"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem8_q_mem_interval_review",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem8_q_mem_interval_reviewSpec"
-      },
       "source_anchor_evidence": [
         {
-          "line_end": 823,
-          "line_start": 801,
+          "line_end": 824,
+          "line_start": 812,
           "publication_locator": "cited publication",
-          "quoted_text": "\fProof of Theorem 8\nFirst, note that in equilibrium, for any player i, any history h, and any number of remaining players\nk, the drop-out price pi (k, h, si ) tends to infinity as si tends to infinity. (Otherwise there would\nexist a player for whom it was optimal to deviate from his strategy and stay longer, for a sufficiently\nhigh value s.) Next, take any equilibrium of the generalized English auction. Note that if in this\nequilibrium pi (k, h, si ) > pi (k, h, s0i ) for some k, h, i, and types si < s0i , then it has to be the\ncase that both types si and s0i are indifferent between dropping out at pi (k, h, si ) and pi (k, h, s0i ).\n(Otherwise one of them would be able to increase his payoff by mimicking the other.) Consequently,\nwe can “swap” such players’ strategies, and therefore there exists an “observationally equivalent”\nequilibrium in which strategies are nondecreasing in types; also, they are still continuous in own\nvalues. Consider this equilibrium profile of strategies pi (k, h, si ).\nLet q(k, bk+1 , s) be such a price that a player with value s is indifferent between getting position\nk at price bk+1 and position k − 1 at price q(k, bk+1 , s). That is,\nαk−1 (s − q(k, bk+1 , s)) = αk (s − bk+1 )\nm\nq(k, bk+1 , s) = s −\n\nαk\n(s − bk+1 ).\nαk−1\n\nSlightly abusing notation, let q(k, h, s) = q(k, bk+1 , s), where bk+1 is the last bid at which a player\ndropped out in history h. (This player received position k + 1. If history h is empty, we set",
-          "quoted_text_sha256": "242e8b63e46403e70d844cb426f5d388b73bd027dfd0f737818e671e3debef57"
+          "quoted_text": "Let q(k, bk+1 , s) be such a price that a player with value s is indifferent between getting position\nk at price bk+1 and position k − 1 at price q(k, bk+1 , s). That is,\nαk−1 (s − q(k, bk+1 , s)) = αk (s − bk+1 )\nm\nq(k, bk+1 , s) = s −\n\nαk\n(s − bk+1 ).\nαk−1\n\nSlightly abusing notation, let q(k, h, s) = q(k, bk+1 , s), where bk+1 is the last bid at which a player\ndropped out in history h. (This player received position k + 1. If history h is empty, we set\nbk+1 = 0.) We will now show that for any i, k, h, and si , pi (k, h, si ) = q(k, h, si ).",
+          "quoted_text_sha256": "ef8964cc94df247b2832ec1402c560cd58dab5a2053746e2cff69c9bf4358a1d"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem8.q.mem.interval.review",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem8_q_mem_interval_review",
+          "semantic_claim": "The q formula is defined by indifference between position k at price b_{k+1} and position k-1 at price q, placing q between the previous dropout price and the bidder value under the weak source conditions.",
+          "source_locator": "cited publication:801-823",
+          "source_quote_sha256": "242e8b63e46403e70d844cb426f5d388b73bd027dfd0f737818e671e3debef57"
         }
       ],
       "source_kind": "formula",
-      "source_location": "cited publication:801-823",
+      "source_location": "cited publication:812-824",
+      "source_note": "Proof support only for the selected Theorem 8 endpoint.",
+      "source_status": "support_only",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "The q formula is defined by indifference between position k at price b_{k+1} and position k-1 at price q, placing q between the previous dropout price and the bidder value under the weak source conditions.",
+      "statement": "The appendix's q construction remains within the stopped-clock feasible interval.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem8_q_mem_interval_reviewSpec"
+        "EOS07GSP.PaperInterface.theorem8_source_q_mem_interval"
       ]
     },
     "theorem8_q_step1_dropping_after_q_review": {
@@ -714,15 +982,10 @@
         "theorem8_q_step1_dropping_after_q_review"
       ],
       "claim_bearing": true,
+      "inventory_role": "proof_support",
       "lean_declarations": [
         "EOS07GSP.PaperInterface.theorem8_q_step1_dropping_after_q_review"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem8_q_step1_dropping_after_q_review",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem8_q_step1_dropping_after_q_reviewSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 924,
@@ -732,12 +995,24 @@
           "quoted_text_sha256": "d575e8699672ed167f238dca0a51bfb273933bf38ca302c2939a9d04ff2db177"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem8.q.step1.dropping.after.q.review",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem8_q_step1_dropping_after_q_review",
+          "semantic_claim": "Step 1 argues that dropping after q cannot be optimal; above q, the bidder strictly benefits by dropping slightly earlier or at the indifference price.",
+          "source_locator": "cited publication:833-924",
+          "source_quote_sha256": "d575e8699672ed167f238dca0a51bfb273933bf38ca302c2939a9d04ff2db177"
+        }
+      ],
       "source_kind": "theorem",
       "source_location": "cited publication:833-924",
+      "source_note": "Proof support only for the selected Theorem 8 endpoint.",
+      "source_status": "support_only",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Step 1 argues that dropping after q cannot be optimal; above q, the bidder strictly benefits by dropping slightly earlier or at the indifference price.",
+      "statement": "The appendix's Step 1 excludes dropout after the indifference price q.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem8_q_step1_dropping_after_q_reviewSpec"
+        "EOS07GSP.ProofBridge.theorem8_q_step1_dropping_after_q_review"
       ]
     },
     "theorem8_q_step2_waiting_before_q_review": {
@@ -745,15 +1020,10 @@
         "theorem8_q_step2_waiting_before_q_review"
       ],
       "claim_bearing": true,
+      "inventory_role": "proof_support",
       "lean_declarations": [
         "EOS07GSP.PaperInterface.theorem8_q_step2_waiting_before_q_review"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem8_q_step2_waiting_before_q_review",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem8_q_step2_waiting_before_q_reviewSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 933,
@@ -763,12 +1033,24 @@
           "quoted_text_sha256": "396db948666b8aced6e0d56bc63e21a1054c7b4ac76fefa176f329917e66a35a"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem8.q.step2.waiting.before.q.review",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem8_q_step2_waiting_before_q_review",
+          "semantic_claim": "Step 2 argues that if a bidder drops before q, waiting until q gives a strictly better payoff because another dropout occurs with positive probability and q is the indifference threshold.",
+          "source_locator": "cited publication:923-933",
+          "source_quote_sha256": "396db948666b8aced6e0d56bc63e21a1054c7b4ac76fefa176f329917e66a35a"
+        }
+      ],
       "source_kind": "theorem",
       "source_location": "cited publication:923-933",
+      "source_note": "Proof support only for the selected Theorem 8 endpoint.",
+      "source_status": "support_only",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Step 2 argues that if a bidder drops before q, waiting until q gives a strictly better payoff because another dropout occurs with positive probability and q is the indifference threshold.",
+      "statement": "The appendix's Step 2 excludes dropout before the indifference price q.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem8_q_step2_waiting_before_q_reviewSpec"
+        "EOS07GSP.ProofBridge.theorem8_q_step2_waiting_before_q_review"
       ]
     },
     "theorem8_q_strict_mem_interval_review": {
@@ -776,37 +1058,37 @@
         "theorem8_q_strict_mem_interval_review"
       ],
       "claim_bearing": true,
+      "inventory_role": "proof_support",
       "lean_declarations": [
         "EOS07GSP.PaperInterface.theorem8_q_strict_mem_interval_review"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem8_q_strict_mem_interval_review",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem8_q_strict_mem_interval_reviewSpec"
-      },
       "source_anchor_evidence": [
         {
-          "line_end": 823,
-          "line_start": 801,
+          "line_end": 824,
+          "line_start": 812,
           "publication_locator": "cited publication",
-          "quoted_text": "\fProof of Theorem 8\nFirst, note that in equilibrium, for any player i, any history h, and any number of remaining players\nk, the drop-out price pi (k, h, si ) tends to infinity as si tends to infinity. (Otherwise there would\nexist a player for whom it was optimal to deviate from his strategy and stay longer, for a sufficiently\nhigh value s.) Next, take any equilibrium of the generalized English auction. Note that if in this\nequilibrium pi (k, h, si ) > pi (k, h, s0i ) for some k, h, i, and types si < s0i , then it has to be the\ncase that both types si and s0i are indifferent between dropping out at pi (k, h, si ) and pi (k, h, s0i ).\n(Otherwise one of them would be able to increase his payoff by mimicking the other.) Consequently,\nwe can “swap” such players’ strategies, and therefore there exists an “observationally equivalent”\nequilibrium in which strategies are nondecreasing in types; also, they are still continuous in own\nvalues. Consider this equilibrium profile of strategies pi (k, h, si ).\nLet q(k, bk+1 , s) be such a price that a player with value s is indifferent between getting position\nk at price bk+1 and position k − 1 at price q(k, bk+1 , s). That is,\nαk−1 (s − q(k, bk+1 , s)) = αk (s − bk+1 )\nm\nq(k, bk+1 , s) = s −\n\nαk\n(s − bk+1 ).\nαk−1\n\nSlightly abusing notation, let q(k, h, s) = q(k, bk+1 , s), where bk+1 is the last bid at which a player\ndropped out in history h. (This player received position k + 1. If history h is empty, we set",
-          "quoted_text_sha256": "242e8b63e46403e70d844cb426f5d388b73bd027dfd0f737818e671e3debef57"
-        },
+          "quoted_text": "Let q(k, bk+1 , s) be such a price that a player with value s is indifferent between getting position\nk at price bk+1 and position k − 1 at price q(k, bk+1 , s). That is,\nαk−1 (s − q(k, bk+1 , s)) = αk (s − bk+1 )\nm\nq(k, bk+1 , s) = s −\n\nαk\n(s − bk+1 ).\nαk−1\n\nSlightly abusing notation, let q(k, h, s) = q(k, bk+1 , s), where bk+1 is the last bid at which a player\ndropped out in history h. (This player received position k + 1. If history h is empty, we set\nbk+1 = 0.) We will now show that for any i, k, h, and si , pi (k, h, si ) = q(k, h, si ).",
+          "quoted_text_sha256": "ef8964cc94df247b2832ec1402c560cd58dab5a2053746e2cff69c9bf4358a1d"
+        }
+      ],
+      "source_claim_atoms": [
         {
-          "line_end": 349,
-          "line_start": 344,
-          "publication_locator": "cited publication",
-          "quoted_text": "ad was placed in position i is αi . The value per click to bidder k is sk . Bidders are risk-neutral,\nand bidder k’s payoff from being in position i is equal to αi sk minus his payments to the search\nengine. Note that these assumptions imply that the number of times a particular position is clicked\ndoes not depend on the ads in this and other positions, and also that an advertiser’s value per click\ndoes not depend on the position in which its ad is displayed. Without loss of generality, positions\nare labeled in a descending order: for any j and k such that j < k, we have αj > αk .",
-          "quoted_text_sha256": "effba48b03b392ba50c38f7cd14497027412871448d90ca44bf9865ada88be27"
+          "id": "theorem8.q.strict.mem.interval.review",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem8_q_strict_mem_interval_review",
+          "semantic_claim": "Under the paper's strict descending click-through-rate convention and positive values, q lies strictly between the previous dropout price and the bidder value.",
+          "source_locator": "cited publication:801-823",
+          "source_quote_sha256": "242e8b63e46403e70d844cb426f5d388b73bd027dfd0f737818e671e3debef57"
         }
       ],
       "source_kind": "formula",
-      "source_location": "cited publication:801-823 and cited publication:344-349",
+      "source_location": "cited publication:812-824",
+      "source_note": "Proof support only for the selected Theorem 8 endpoint.",
+      "source_status": "support_only",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Under the paper's strict descending click-through-rate convention and positive values, q lies strictly between the previous dropout price and the bidder value.",
+      "statement": "Under strict adjacent click rates, the appendix's q lies strictly inside the source interval.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem8_q_strict_mem_interval_reviewSpec"
+        "EOS07GSP.PaperInterface.theorem8_source_q_strict_mem_interval"
       ]
     },
     "theorem8_strict_values_ex_post_local_deviation": {
@@ -814,23 +1096,11 @@
         "theorem8_continuous_full_history_bayes_ex_post_review"
       ],
       "claim_bearing": true,
+      "inventory_role": "proof_support",
       "lean_declarations": [
         "EOS07GSP.PaperInterface.theorem8_strict_values_ex_post_local_deviation"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "EOS07GSP.PaperInterface.theorem8_strict_values_ex_post_local_deviation",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "EOS07GSP.PaperInterface.theorem8_strict_values_ex_post_local_deviationSpec"
-      },
       "source_anchor_evidence": [
-        {
-          "line_end": 546,
-          "line_start": 528,
-          "publication_locator": "cited publication",
-          "quoted_text": "K 6= N + 1 require only minor modifications in the proof.) Click-through rates αn are commonly\nknown, with αN +1 ≡ 0. Bidders’ per-click valuations si are drawn from a continuous distribution\nF (·) on [0; +∞) with a continuous density function f (·) that is positive everywhere on (0, +∞).\nEach advertiser knows his valuation and the distribution of other advertisers’ valuations.\nThe strategy of an advertiser assigns the choice of dropping out or not for any history of the\ngame, given that the advertiser has not previously dropped out. In other words, the strategy can be\nrepresented as a function pi (k, h, si ), where si is the value per click of bidder i, pi is the price at which\nhe drops out, k is the number of bidders remaining (including bidder i), and h = (bk+1 , . . . , bK ) is\nthe history of prices at which bidders K, K − 1, . . . , k + 1 have dropped out. (As a result, the\nprice that bidder i would have to pay per click if he dropped out next is equal to bk+1 , unless the\nhistory is empty, in which case we say that bk+1 ≡ 0.)\nTheorem 8 In the unique perfect Bayesian equilibrium of the generalized English auction with\nk\nstrategies continuous in si , an advertiser with value si drops out at price pi (k, h, si ) = si − ααk−1\n(si −\n\nbk+1 ). In this equilibrium, each advertiser’s resulting position and payoff are the same as in the\ndominant-strategy equilibrium of the game induced by VCG. This equilibrium is ex post: the strategy\nof each bidder is a best response to other bidders’ strategies regardless of their realized values.",
-          "quoted_text_sha256": "ef4affac2cd9a20b79b38306ef98446112e85da2ebeeae0518e3ed0312efbef3"
-        },
         {
           "line_end": 583,
           "line_start": 578,
@@ -839,34 +1109,99 @@
           "quoted_text_sha256": "e0eec0763e91c4329ad5372abae3418a4e51fbf766bfa658c68a63c5c4007a85"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem8.strict.values.ex.post.local.deviation",
+          "identity_schema": 2,
+          "reviewed_lean_route": "EOS07GSP.PaperInterface.theorem8_strict_values_ex_post_local_deviation",
+          "semantic_claim": "Theorem 8 is ex post: the prescribed strategy is a best response regardless of realized values; the strict ranked-value source event gives the finite ex-post local-deviation condition.",
+          "source_locator": "cited publication:578-583",
+          "source_quote_sha256": "e0eec0763e91c4329ad5372abae3418a4e51fbf766bfa658c68a63c5c4007a85"
+        }
+      ],
       "source_kind": "theorem",
-      "source_location": "cited publication:528-546 and cited publication:578-583",
+      "source_location": "cited publication:578-583",
+      "source_note": "Proof support only: the selected endpoint gives the source's full finite legal-history ex-post statement.",
+      "source_status": "support_only",
       "source_url": "https://www.nber.org/papers/w11765",
-      "statement": "Theorem 8 is ex post: the prescribed strategy is a best response regardless of realized values; the strict ranked-value source event gives the finite ex-post local-deviation condition.",
+      "statement": "The strict-value finite source-event ex-post deviation calculation supports Theorem 8.",
       "support_lean_declarations": [
-        "EOS07GSP.PaperInterface.theorem8_strict_values_ex_post_local_deviationSpec"
+        "EOS07GSP.PaperInterface.theorem8_strict_values_named_strategy_ex_post_local_deviation"
       ]
     }
   },
   "paper": "EOS07GSP",
-  "publication_source_display_projection": {
-    "manifest": "audit/public_source_display_projection.json",
-    "raw_source_bytes_included": false,
+  "paper_interface_namespace": "EOS07GSP",
+  "publication_corrected_target_projection": {
+    "approval_material_included": false,
     "schema": 1
   },
   "schema": 1,
   "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
   "source_anchor_evidence_required": true,
   "source_artifact_sha256": "9094a9c8cd917b728cf872b7741a4de9b5636c5cdadd08b7bfcc4b7c64df9cbc",
+  "source_claim_atoms_schema": 1,
   "source_coverage_mode": "named_theoretical_statements",
   "source_curated": true,
   "source_inventory_kind": "source_text_curated",
   "source_inventory_policy": "Curated from the pinned NBER source text. Mathematical targets are the main-text first-price/GSP examples, Remarks 1--3, Definition 4, Lemmas 5--6, Theorem 7, Theorem 8 proof-step claims, and Theorem 8's continuous full-history legal-history ex-post PBE, effective uniqueness, and VCG-equivalent outcome. Narrative history and empirical market-size facts are contextual rather than theorem atoms. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
   "source_named_result_inventory_review": {
+    "candidate_presentations": [
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_001",
+        "presentation_label": "Remark 1",
+        "schema": 1,
+        "scope_disposition": "material_named_claim",
+        "semantic_basis": "Remark 1 is a direct, checkable same-bids GSP-versus-VCG payment comparison and is retained by the mapped direct source claim `remark1_gsp_payments_weakly_dominate_vcg`.",
+        "source_anchor": {
+          "line_end": 387,
+          "line_start": 372,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 1 If all advertisers were to bid the same amounts under the two mechanisms, then each\nadvertiser’s payment would be at least as large under GSP as under VCG.\n10\nIn actual sponsored search auctions at Google and Yahoo!, advertisers can also choose to place “broad match”\nbids that match searches that include a keyword along with additional search terms.\n11\nThe actual practice at Overture is to show equal bids according to the order in which the bidders placed their\nbids.\n12\nAlthough we normalize the reserve price to zero, search engines charge the last bidder a non-zero reserve price.\n\n8\n\n\fThis is easy to show by induction on advertisers’ payments, starting with the last advertiser\nwho gets assigned a position. For i = min{K, N }, p(i) = pV,(i) = αi b(i+1) . For any i < min{K, N },\npV,(i) − pV,(i+1) = (αi − αi+1 )b(i+1) ≤ αi b(i+1) − αi+1 b(i+2) = p(i) − p(i+1) .",
+          "quoted_text_sha256": "e32af38bd43caa9f74cb25fe30e7baedd3d758a9346a8ca2e632096fd9573c06"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_002",
+        "presentation_label": "Remark 2",
+        "schema": 1,
+        "scope_disposition": "material_named_claim",
+        "semantic_basis": "Remark 2 is a direct, checkable VCG truthfulness conclusion and is retained by the mapped direct source claim `remark2_vcg_truthful`.",
+        "source_anchor": {
+          "line_end": 389,
+          "line_start": 388,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 2 Truth-telling is a dominant strategy under VCG.\nThis is a well-known property of the VCG mechanism.",
+          "quoted_text_sha256": "519bd65854c3fec75be816e1cb169b7fb161bd0f38b4460e68b45c91e1fa6dbd"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_003",
+        "presentation_label": "Remark 3",
+        "schema": 1,
+        "scope_disposition": "material_named_claim",
+        "semantic_basis": "Remark 3 is a direct, checkable GSP non-truthfulness conclusion and is retained by the mapped direct source claim `remark3_gsp_not_truthful`.",
+        "source_anchor": {
+          "line_end": 442,
+          "line_start": 390,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark 3 Truth-telling is not a dominant strategy under GSP.\nFor instance, consider a slight modification of the example from Section 2. There are still\nthree bidders, with values per click of $10, $4, and $2, and two positions. However, the clickthrough rates of these positions are now almost the same: the first position receives 200 clicks per\nhour, and the second one gets 199. If all players bid truthfully, then bidder 1’s payoff is equal to\n($10 − $4) ∗ 200 = $1200. If, instead, he shades his bid and bids only $3 per click, he will get the\nsecond position, and his payoff will be equal to ($10 − $2) ∗ 199 = $1592 > $1200.\n\n4\n\nStatic GSP and Locally Envy-Free Equilibria13\n\nAdvertisers bidding on Yahoo! and Google can change their bids very frequently. We therefore\nthink of these sponsored search auctions as continuous time or infinitely repeated games in which\nbidders originally have private information about their types, gradually learn the values of others,\nand can adjust their bids repeatedly. In principle, the sets of equilibria in such repeated games can\nbe very large, with players potentially punishing each other for deviations. However, the strategies\nrequired to support such equilibria are usually quite complex, requiring precise knowledge of the\nenvironment and careful implementation. It may not be reasonable to expect the advertisers to\nbe able to execute such strategies: they often manage thousands of keywords, and implementing\nsophisticated dynamic strategies for many keywords is likely to be prohibitively expensive and\ncomplex. In theory, advertisers could implement such strategies via automated robots, but at\npresent they cannot do so: bidding software must first be authorized by the search engines,14 and\nsearch engines are unlikely to permit sophisticated strategies that would allow bidders to collude\nand reduce revenues. Indeed, leading software for bidding at sponsored search auctions does not\nallow advertisers to condition their bids on the prior behavior of specific competitors.15\nWe therefore focus on simple strategies that bidders can reasonably execute, and we study the\nrest points of the bidding process: if the vector of bids stabilizes, at what bids can it stabilize?\nWe impose several assumptions and restrictions. First, we assume that all values are common\nknowledge: over time, bidders are likely to learn all relevant information about each other’s values.\n13\nAfter this research was completed, we found out that several of the results of this section were independently\ndiscovered by Hal Varian in unpublished work.\n14\nSee, e.g., http://www.content.overture.com/d/HKm/legal/zhhkrtc.jhtml (accessed August 18, 2005).\n15\nSee, e.g., Atlas Onepoint Rules-Based Bidding, http://www.atlasonepoint.com/products/bidmanager/rulesbased\n(accessed August 18, 2005), which lacks any bidding rule of this type.\n\n9\n\n\fSecond, since bids can be changed at any time, stable bids must be static best responses to each\nother—otherwise a bidder whose bid is not a best response would have an incentive to change\nit. Thus, we assume that the bids form an equilibrium in the static one-shot game of complete\ninformation. Third, what are the simple strategies that a bidder can use to increase his payoff,\nbeyond simple best responses to the other players’ bids?\nOne clear strategy is to try to force out the player who occupies the position immediately above.\nSuppose bidder k bids bk and is assigned to position i + 1 and bidder k 0 bids bk0 > bk and is assigned\nto position i. Note that if k raises his bid slightly, his own payoff does not change, but the payoff\nof the player above him decreases. Of course, player k 0 can retaliate, and the most he can do is to\nslightly underbid bidder k, effectively swapping places with him. If bidder k is better off after such\nretaliation, he will indeed want to force player k 0 out, and the vector of bids will change. Thus,\nif the vector converges to a rest point, an advertiser in position k should not want to “exchange”\npositions with the advertiser in position k − 1. We call such vectors of bids “locally envy-free.”",
+          "quoted_text_sha256": "c5f1ac744a6c99f49c9f86ea360a79f48e3e18225fe2812670315b9e8282f112"
+        },
+        "visible_kind": "remark"
+      }
+    ],
     "complete": true,
-    "discovered_named_result_sha256": "b4a5f6af74d45056ff313b4499a5363a124c30e428a2560af697f8bd79b17a20",
+    "discovered_candidate_presentation_sha256": "7dc9bc789e96954eb984e7bcc63af1b19a379f6a425c8754acab1c7d420407ef",
+    "discovered_named_result_sha256": "8da099d59d9dc5d50d5e44b9ed702b05920f6771f83e2aa11f94aae17a06673f",
     "discovered_prose_definition_sha256": "4a30086e72da850141b26fde342d1492bcb3277b5ea664b0a21eb7f9d5553fce",
-    "method": "Current independent source-only reindex of the pinned cited publication reconciled Definition 4, Lemmas 5-6, and Theorems 7-8 to current byte-pinned source anchors. The direct source presentations, rather than map keys or Lean declarations, determine ordinary named-theory coverage.",
+    "method": "Read the complete byte-pinned cited publication source in source order; reconciled every mechanically discovered labelled candidate against the current curated inventory and direct source routes; found no additional material mathematical presentation.",
     "prose_definition_presentations": [
       {
         "defined_entity_kind": "object",
@@ -886,8 +1221,8 @@
     ],
     "schema": 1,
     "source_artifact_sha256": "9094a9c8cd917b728cf872b7741a4de9b5636c5cdadd08b7bfcc4b7c64df9cbc",
-    "validated_at": "2026-08-19T16:17:52Z",
-    "validator": "Codex EOS07 source-only named-result reconciliation"
+    "validated_at": "2026-09-03T20:10:23Z",
+    "validator": "Codex EOS07 source-inventory review, 2026-09-03"
   },
   "source_spec_correspondence_schema": 1,
   "source_url": "https://www.nber.org/papers/w11765",

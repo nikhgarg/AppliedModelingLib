@@ -1,5 +1,5 @@
-import EconCSLib.Foundations.Probability.FiniteExpectation
-import EconCSLib.Foundations.Probability.MeasureInequalities
+import AppliedModelingLib.Foundations.Probability.FiniteExpectation
+import AppliedModelingLib.Foundations.Probability.MeasureInequalities
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.Deriv.Pow
@@ -17,7 +17,7 @@ moment.
 
 namespace GHW01DigitalGoods
 
-open EconCSLib
+open AppliedModelingLib
 open scoped BigOperators
 
 noncomputable section

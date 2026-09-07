@@ -1,6 +1,6 @@
 import LG21TestOptionalPolicies.Section4LiteralGaussianSourceBridge
 import LG21TestOptionalPolicies.FullProfileGaussianMeanLawBridge
-import EconCSLib.Foundations.Probability.FiniteGaussianProfileMeanLaw
+import AppliedModelingLib.Foundations.Probability.FiniteGaussianProfileMeanLaw
 
 /-!
 # Literal Section 4 Gaussian mean-law bridge for LG21
@@ -15,8 +15,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory
-open EconCSLib.Probability
+open AppliedModelingLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib.Probability
 open scoped ENNReal NNReal ProbabilityTheory
 
 /-- Given a source-derived Gaussian law for the full non-test posterior mean,

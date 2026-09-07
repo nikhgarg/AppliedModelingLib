@@ -28,19 +28,30 @@ class PublicSourceDisplayProjectionTests(unittest.TestCase):
             "Equation (1). This standalone formula is not a named theorem.\n"
         )
         (self.folder / "source.txt").write_text(self.source_text, encoding="utf-8")
+        self.original_root = projection.ROOT
+        projection.ROOT = self.root
         self._write_map()
 
     def tearDown(self) -> None:
+        projection.ROOT = self.original_root
         self.temporary_directory.cleanup()
 
     @property
     def map_path(self) -> Path:
         return self.folder / "audit" / "paper_statement_map.json"
 
-    def _anchor(self, line_start: int, line_end: int) -> dict[str, object]:
-        quote = "\n".join(self.source_text.splitlines()[line_start - 1 : line_end])
+    def _anchor(
+        self,
+        line_start: int,
+        line_end: int,
+        *,
+        path: str = "source.txt",
+        source_text: str | None = None,
+    ) -> dict[str, object]:
+        text = self.source_text if source_text is None else source_text
+        quote = "\n".join(text.splitlines()[line_start - 1 : line_end])
         return {
-            "path": "source.txt",
+            "path": path,
             "line_start": line_start,
             "line_end": line_end,
             "quoted_text": quote,
@@ -87,6 +98,93 @@ class PublicSourceDisplayProjectionTests(unittest.TestCase):
             json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
+
+    def _add_semantic_transcription(self) -> str:
+        semantic_text = (
+            "Theorem 1. Every fixture object has that property.\n"
+            "The visual transcript includes its complete selected semantic surface.\n"
+        )
+        semantic_path = self.folder / "semantic-review.md"
+        semantic_path.write_text(semantic_text, encoding="utf-8")
+        pdf_bytes = b"%PDF-1.4\nfixture visual source\n"
+        (self.folder / "source.pdf").write_bytes(pdf_bytes)
+        payload = json.loads(self.map_path.read_text(encoding="utf-8"))
+        visual = {"path": "source.pdf", "sha256": _sha256(pdf_bytes)}
+        payload["source_text_companion"] = {
+            "schema": 1,
+            "canonical_text": {
+                "path": "source.txt",
+                "sha256": _sha256(self.source_text),
+            },
+            "visual_primary_scan": visual,
+            "transcript_input_scan": visual,
+            "extraction": {"tool": "pdftotext", "options": []},
+            "page_map": [
+                {"line_start": 1, "line_end": 3, "pdf_page": 1, "printed_page": 1}
+            ],
+            "visual_comparison_attestation": {
+                "complete": True,
+                "method": "Fixture visual comparison.",
+            },
+            "semantic_review_transcription": {
+                "schema": 1,
+                "path": "semantic-review.md",
+                "sha256": _sha256(semantic_text),
+                "controlling_visual_source": visual,
+                "complete_for_selected_semantic_surface": True,
+                "method": "Fixture visual transcription.",
+            },
+        }
+        payload["items"]["fixture_theorem"]["source_anchor_evidence"] = [
+            self._anchor(
+                1,
+                1,
+                path="semantic-review.md",
+                source_text=semantic_text,
+            )
+        ]
+        self.map_path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+        return semantic_text
+
+    def _add_cited_context(self) -> str:
+        cited_text = "Prior Result. Every cited fixture has a stable property.\n"
+        cited_path = self.folder / "cited.txt"
+        cited_path.write_text(cited_text, encoding="utf-8")
+        provenance = {
+            "schema": 1,
+            "source_url": "https://example.test/cited-fixture",
+            "source_artifact_sha256": _sha256(cited_text),
+            "paper_local_copy_path": "cited.txt",
+            "source_version": "fixture source record",
+        }
+        provenance_bytes = (
+            json.dumps(provenance, ensure_ascii=False, indent=2) + "\n"
+        ).encode("utf-8")
+        (self.folder / "cited.provenance.json").write_bytes(provenance_bytes)
+        payload = json.loads(self.map_path.read_text(encoding="utf-8"))
+        payload["cited_source_artifacts_schema"] = 1
+        payload["cited_source_artifacts"] = [
+            {
+                "id": "fixture_prior_result",
+                "path": "cited.txt",
+                "sha256": _sha256(cited_text),
+                "provenance_path": "cited.provenance.json",
+                "provenance_sha256": _sha256(provenance_bytes),
+                "source_url": "https://example.test/cited-fixture",
+                "semantic_roles": ["prior_result"],
+            }
+        ]
+        payload["items"]["fixture_theorem"]["semantic_context_requirements"].append(
+            {
+                "semantic_role": "prior_result",
+                "cited_source_artifact_id": "fixture_prior_result",
+                "source_anchor_evidence": [
+                    self._anchor(1, 1, path="cited.txt", source_text=cited_text)
+                ],
+            }
+        )
+        self.map_path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+        return cited_text
 
     def test_build_freezes_current_coverage_surface_without_full_raw_source(self) -> None:
         first = projection.build_public_source_display_projection(self.folder)
@@ -170,6 +268,107 @@ class PublicSourceDisplayProjectionTests(unittest.TestCase):
         with self.assertRaisesRegex(
             projection.PublicSourceDisplayProjectionError,
             "current byte-pinned canonical source artifact",
+        ):
+            projection.build_public_source_display_projection(self.folder)
+
+    def test_paper_and_repository_relative_aliases_resolve_to_the_same_source(
+        self,
+    ) -> None:
+        payload = json.loads(self.map_path.read_text(encoding="utf-8"))
+        payload["items"]["fixture_theorem"]["source_anchor_evidence"][0]["path"] = (
+            "papers/Fixture/source.txt"
+        )
+        self.map_path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+
+        built = projection.build_public_source_display_projection(self.folder)
+        self.assertEqual(
+            built["selected_source_items"]["fixture_theorem"]["source_anchors"][0][
+                "quoted_text"
+            ],
+            "Theorem 1. Every fixture object has that property.",
+        )
+
+    def test_selected_semantic_transcription_is_pinned_and_stale_bytes_fail_closed(
+        self,
+    ) -> None:
+        semantic_text = self._add_semantic_transcription()
+        built = projection.build_public_source_display_projection(self.folder)
+        self.assertEqual(
+            built["selected_source_items"]["fixture_theorem"]["source_anchors"][0][
+                "quoted_text"
+            ],
+            semantic_text.splitlines()[0],
+        )
+
+        (self.folder / "semantic-review.md").write_text(
+            semantic_text + "changed bytes\n", encoding="utf-8"
+        )
+        with self.assertRaises(projection.PublicSourceDisplayProjectionError):
+            projection.build_public_source_display_projection(self.folder)
+
+    def test_unregistered_source_path_is_rejected_even_when_its_quote_matches(self) -> None:
+        (self.folder / "unregistered.txt").write_text(
+            self.source_text, encoding="utf-8"
+        )
+        payload = json.loads(self.map_path.read_text(encoding="utf-8"))
+        payload["items"]["fixture_theorem"]["source_anchor_evidence"][0]["path"] = (
+            "unregistered.txt"
+        )
+        self.map_path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+
+        with self.assertRaisesRegex(
+            projection.PublicSourceDisplayProjectionError,
+            "canonical source artifact or its selected semantic transcription",
+        ):
+            projection.build_public_source_display_projection(self.folder)
+
+    def test_cited_source_requires_registered_id_role_path_and_current_bytes(self) -> None:
+        cited_text = self._add_cited_context()
+        built = projection.build_public_source_display_projection(self.folder)
+        cited_context = built["selected_source_items"]["fixture_theorem"][
+            "semantic_context"
+        ][1]
+        self.assertEqual(cited_context["semantic_role"], "prior_result")
+        self.assertEqual(cited_context["source_anchors"][0]["quoted_text"], cited_text.rstrip())
+
+        payload = json.loads(self.map_path.read_text(encoding="utf-8"))
+        cited_record = payload["items"]["fixture_theorem"][
+            "semantic_context_requirements"
+        ][1]
+        cited_record.pop("cited_source_artifact_id")
+        self.map_path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+        with self.assertRaisesRegex(
+            projection.PublicSourceDisplayProjectionError,
+            "canonical source artifact or its selected semantic transcription",
+        ):
+            projection.build_public_source_display_projection(self.folder)
+
+        cited_record["cited_source_artifact_id"] = "fixture_prior_result"
+        cited_record["semantic_role"] = "definition"
+        self.map_path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+        with self.assertRaisesRegex(
+            projection.PublicSourceDisplayProjectionError,
+            "unregistered semantic role",
+        ):
+            projection.build_public_source_display_projection(self.folder)
+
+        cited_record["semantic_role"] = "prior_result"
+        cited_record["source_anchor_evidence"][0]["path"] = "source.txt"
+        self.map_path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+        with self.assertRaisesRegex(
+            projection.PublicSourceDisplayProjectionError,
+            "pinned cited source artifact",
+        ):
+            projection.build_public_source_display_projection(self.folder)
+
+        cited_record["source_anchor_evidence"][0]["path"] = "cited.txt"
+        self.map_path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+        (self.folder / "cited.txt").write_text(
+            cited_text + "changed bytes\n", encoding="utf-8"
+        )
+        with self.assertRaisesRegex(
+            projection.PublicSourceDisplayProjectionError,
+            "cited source artifact registry is invalid",
         ):
             projection.build_public_source_display_projection(self.folder)
 

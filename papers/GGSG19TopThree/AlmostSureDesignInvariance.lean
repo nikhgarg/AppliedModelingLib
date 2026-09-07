@@ -1,5 +1,5 @@
 import GGSG19TopThree.MainTheorems
-import EconCSLib.Foundations.Probability.RenewalReward
+import AppliedModelingLib.Foundations.Probability.RenewalReward
 import Mathlib.Probability.Independence.InfinitePi
 
 /-!
@@ -15,8 +15,8 @@ open scoped BigOperators
 
 namespace GGSG19TopThree
 
-open EconCSLib.Probability
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib.Probability
+open AppliedModelingLib.SocialChoice.Ranking
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology
 
@@ -57,7 +57,7 @@ theorem ae_tendsto_finitePMFIidPath_empirical_mean
       Filter.Tendsto
         (fun N : ℕ =>
           (∑ voter ∈ Finset.range N, statistic (path voter)) / N)
-        Filter.atTop (nhds (EconCSLib.pmfExp law statistic)) := by
+        Filter.atTop (nhds (AppliedModelingLib.pmfExp law statistic)) := by
   letI : MeasurableSpace Signal := ⊤
   let P : Measure (ℕ → Signal) := finitePMFIidPathMeasure law
   let X : ℕ → (ℕ → Signal) → ℝ := fun voter path => statistic (path voter)
@@ -95,16 +95,16 @@ theorem ae_tendsto_finitePMFIidPath_empirical_mean
     intro voter
     exact (htoLaw voter).trans (htoLaw 0).symm
   have hslln :=
-    EconCSLib.ae_tendsto_empirical_mean_real_of_iid
+    AppliedModelingLib.ae_tendsto_empirical_mean_real_of_iid
       X hX_integrable hX_indep hX_ident
   have hmean :
-      (∫ path, X 0 path ∂P) = EconCSLib.pmfExp law statistic := by
+      (∫ path, X 0 path ∂P) = AppliedModelingLib.pmfExp law statistic := by
     calc
       (∫ path, X 0 path ∂P) =
           ∫ signal, statistic signal ∂law.toMeasure :=
         (htoLaw 0).integral_eq
-      _ = EconCSLib.pmfExp law statistic :=
-        (EconCSLib.pmfExp_eq_integral_toMeasure law statistic).symm
+      _ = AppliedModelingLib.pmfExp law statistic :=
+        (AppliedModelingLib.pmfExp_eq_integral_toMeasure law statistic).symm
   simpa [P, X, hmean] using hslln
 
 /--
@@ -114,7 +114,7 @@ on almost every canonical iid path.
 theorem ae_eventually_iidPath_score_gap_pos_of_pmfExp_pos
     {Signal : Type*} [Fintype Signal] [DecidableEq Signal]
     (law : PMF Signal) (gap : Signal → ℝ)
-    (hmean : 0 < EconCSLib.pmfExp law gap) :
+    (hmean : 0 < AppliedModelingLib.pmfExp law gap) :
     letI : MeasurableSpace Signal := ⊤
     ∀ᵐ path ∂finitePMFIidPathMeasure law,
       ∀ᶠ N : ℕ in Filter.atTop,
@@ -142,7 +142,7 @@ theorem ae_eventually_scoreTopSelectedSetOfCard_eq_of_crossTier_pmfExp_pos
     (winnerSet : Finset Candidate)
     (hmean :
       ∀ pair : CrossTierPair winnerSet,
-        0 < EconCSLib.pmfExp law
+        0 < AppliedModelingLib.pmfExp law
           (fun signal => score pair.hi signal - score pair.lo signal)) :
     letI : MeasurableSpace Signal := ⊤
     ∀ᵐ path ∂finitePMFIidPathMeasure law,
@@ -288,14 +288,14 @@ theorem ae_eventually_reverse_indicator_rankingPrefixScore_gap_pos
     fun k => if k = cut then 1 else 0
   letI : MeasurableSpace (Ranking n) := ⊤
   have hmean :
-      0 < EconCSLib.pmfExp law
+      0 < AppliedModelingLib.pmfExp law
         (fun ranking =>
           rankingPrefixScore diff lo ranking -
             rankingPrefixScore diff hi ranking) := by
-    rw [EconCSLib.pmfExp_sub]
-    change 0 < EconCSLib.pmfExp law
+    rw [AppliedModelingLib.pmfExp_sub]
+    change 0 < AppliedModelingLib.pmfExp law
         (prefixScoreFromEvent diff rankingInTopPrefix lo) -
-      EconCSLib.pmfExp law
+      AppliedModelingLib.pmfExp law
         (prefixScoreFromEvent diff rankingInTopPrefix hi)
     rw [
       pmfExp_prefixScoreFromEvent_eq_prefixExpectedScore,

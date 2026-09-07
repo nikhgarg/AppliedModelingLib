@@ -1,3 +1,4 @@
 import EOS07GSP.PaperInterface
+import EOS07GSP.ProofInterface
 import EOS07GSP.MainTheorems
 import EOS07GSP.PostPaperAudit

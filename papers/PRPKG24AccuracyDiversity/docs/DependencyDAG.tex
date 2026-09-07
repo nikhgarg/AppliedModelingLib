@@ -24,8 +24,9 @@
 \node[dag_result, dag_template_legend] (legRes) at (0,0) {formalized\\result};
 \node[dag_lemma, dag_template_legend] (legLem) at (4.2,0) {formalized\\lemma};
 \node[dag_model, dag_template_legend] (legDef) at (8.4,0) {formalized\\definition};
+\node[dag_unformalized, dag_template_legend] (legExtra) at (12.6,0) {supplemental\\illustration};
 }
-\daglegend{(legRes)(legLem)(legDef)}{Legend}
+\daglegend{(legRes)(legLem)(legDef)(legExtra)}{Legend}
 
 \begin{dagPaperBody}
 % Grid: source definitions, appendix machinery, main results, and corollaries.
@@ -43,11 +44,11 @@
   sequence homogeneity \\
   equation (6) limit shares
 };
-\node[dag_result] (Ex1) at (0,-3.8) {
+\node[dag_unformalized] (Ex1) at (0,-3.8) {
   \textbf{Example 1} \\
-  calibration example \\
-  log relaxation and \\
-  harmonic top-one split
+  supplemental illustration \\
+  continuous relaxation only \\
+  outside selected result scope
 };
 \node[dag_model] (Def3) at (0,-8.4) {
   \textbf{Definition 3} \\
@@ -150,7 +151,7 @@
 
 % --- Definition and source-identity edges. ---
 \draw[dag_arrow] (Def1.east) -- (Def2.west);
-\draw[dag_arrow] (Def1.south) -- (Ex1.north);
+\draw[dag_dashed_arrow] (Def1.south) -- (Ex1.north);
 \draw[dag_arrow] (Def3.east) -- (Prop5.west);
 
 % --- Theorem 1 paper route. ---

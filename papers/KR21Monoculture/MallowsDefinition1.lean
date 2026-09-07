@@ -10,8 +10,8 @@ only supplied the smaller collection of facts needed by Theorem 1.  This file
 closes that semantic gap at the literal finite-ranking surface.
 -/
 
-open EconCSLib Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped Topology
 
 namespace KR21Monoculture
@@ -97,7 +97,7 @@ theorem concreteMallowsPartition_tendsto_one {n : ℕ} (center : Ranking n) :
       atTop (nhds 1) := by
   have hcont : ContinuousAt (fun q : ℝ => mallowsPartition q center) 0 := by
     unfold mallowsPartition
-    exact EconCSLib.continuousAt_finset_sum
+    exact AppliedModelingLib.continuousAt_finset_sum
       (s := (Finset.univ : Finset (Ranking n)))
       (f := fun pi q => mallowsWeight q center pi)
       (fun pi _ => by
@@ -141,7 +141,7 @@ theorem concreteMallowsAccuracyFamily_sourceDefinition1
       center := by
   refine ⟨?_, concreteMallowsSpec_center_atom_tendsto_one center, ?_⟩
   · intro theta htheta pi
-    exact ⟨EconCSLib.continuousAt_of_epsilonContinuousAt
+    exact ⟨AppliedModelingLib.continuousAt_of_epsilonContinuousAt
       (concreteMallowsSpec_atom_continuity center htheta pi),
       concreteMallowsSpec_atom_differentiable center htheta pi⟩
   · intro thetaA thetaH hthetaH hthetaHA

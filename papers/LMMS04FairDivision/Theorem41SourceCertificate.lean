@@ -1,7 +1,7 @@
 import LMMS04FairDivision.Theorem41CaseOne
 import LMMS04FairDivision.Theorem41CaseTwo
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 namespace Theorem41

@@ -27,7 +27,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open ProbabilityTheory
 

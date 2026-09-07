@@ -1,11 +1,11 @@
-import EconCSLib.Foundations.Probability.FiniteSupportMGF
-import EconCSLib.Foundations.Probability.FiniteEmpiricalMultinomialCounts
-import EconCSLib.Foundations.Probability.FiniteProductMultinomialCounts
-import EconCSLib.Foundations.Probability.FiniteTypeLogMass
-import EconCSLib.Foundations.Probability.IIDLargeDeviations
-import EconCSLib.Foundations.Probability.LargeDeviations
-import EconCSLib.Foundations.Probability.Weighted
-import EconCSLib.SocialChoice.Ranking.Approval
+import AppliedModelingLib.Foundations.Probability.FiniteSupportMGF
+import AppliedModelingLib.Foundations.Probability.FiniteEmpiricalMultinomialCounts
+import AppliedModelingLib.Foundations.Probability.FiniteProductMultinomialCounts
+import AppliedModelingLib.Foundations.Probability.FiniteTypeLogMass
+import AppliedModelingLib.Foundations.Probability.IIDLargeDeviations
+import AppliedModelingLib.Foundations.Probability.LargeDeviations
+import AppliedModelingLib.Foundations.Probability.Weighted
+import AppliedModelingLib.SocialChoice.Ranking.Approval
 import Mathlib.Analysis.Convex.SpecificFunctions.Basic
 
 /-!
@@ -19,7 +19,7 @@ the finite aggregation step from pairwise error rates to outcome error rates.
 The finite Chernoff/LDP layer now includes reusable exact-rate constructors,
 including a support-aware stationary-tilt method-of-types route.  The
 formulas, finite aggregation, and most certificate-independent infrastructure
-are paper-independent and live in `EconCSLib`.
+are paper-independent and live in `AppliedModelingLib`.
 -/
 
 open scoped BigOperators
@@ -28,7 +28,7 @@ namespace GGSG19TopThree
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /-- Paper Definition: a sequence has large-deviation rate `r`. -/
 abbrev largeDeviationRate (A : ℕ → ℝ) (r : ℝ) : Prop :=
@@ -53,7 +53,7 @@ def prefixProbFromEvent
     (inPrefix : Signal → Candidate → Cut → Prop)
     [∀ signal candidate cut, Decidable (inPrefix signal candidate cut)]
     (candidate : Candidate) (cut : Cut) : ℝ :=
-  EconCSLib.pmfProb law (fun signal => inPrefix signal candidate cut)
+  AppliedModelingLib.pmfProb law (fun signal => inPrefix signal candidate cut)
 
 /-- One-voter prefix-score contribution induced by a prefix event. -/
 def prefixScoreFromEvent
@@ -77,14 +77,14 @@ Paper ranking-law top-prefix event: candidate `candidate` appears in the
 proper top prefix represented by `cut` in ranking `ranking`.
 -/
 def rankingInTopPrefix {n : ℕ}
-    (ranking : EconCSLib.SocialChoice.Ranking.Ranking n)
-    (candidate : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (ranking : AppliedModelingLib.SocialChoice.Ranking.Ranking n)
+    (candidate : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (cut : RankingProperPrefixCut n) : Prop :=
-  (EconCSLib.SocialChoice.Ranking.rankOf ranking candidate).val ≤ cut.val
+  (AppliedModelingLib.SocialChoice.Ranking.rankOf ranking candidate).val ≤ cut.val
 
 instance rankingInTopPrefix_decidable {n : ℕ}
-    (ranking : EconCSLib.SocialChoice.Ranking.Ranking n)
-    (candidate : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (ranking : AppliedModelingLib.SocialChoice.Ranking.Ranking n)
+    (candidate : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (cut : RankingProperPrefixCut n) :
     Decidable (rankingInTopPrefix ranking candidate cut) := by
   unfold rankingInTopPrefix
@@ -92,16 +92,16 @@ instance rankingInTopPrefix_decidable {n : ℕ}
 
 /-- Paper ranking-law top-prefix probability induced by a finite ranking law. -/
 def rankingTopPrefixProb {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
-    (candidate : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
+    (candidate : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (cut : RankingProperPrefixCut n) : ℝ :=
   prefixProbFromEvent law rankingInTopPrefix candidate cut
 
 /-- Prefix-score contribution for the paper's finite ranking model. -/
 def rankingPrefixScore {n : ℕ}
     (diff : RankingProperPrefixCut n → ℝ)
-    (candidate : EconCSLib.SocialChoice.Ranking.Candidate n)
-    (ranking : EconCSLib.SocialChoice.Ranking.Ranking n) : ℝ :=
+    (candidate : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
+    (ranking : AppliedModelingLib.SocialChoice.Ranking.Ranking n) : ℝ :=
   prefixScoreFromEvent diff rankingInTopPrefix candidate ranking
 
 /--
@@ -166,13 +166,13 @@ theorem pmfExp_prefixScoreFromEvent_eq_prefixExpectedScore
     (inPrefix : Signal → Candidate → Cut → Prop)
     [∀ signal candidate cut, Decidable (inPrefix signal candidate cut)]
     (candidate : Candidate) :
-    EconCSLib.pmfExp law
+    AppliedModelingLib.pmfExp law
         (prefixScoreFromEvent diff inPrefix candidate) =
       prefixExpectedScore diff
         (prefixProbFromEvent law inPrefix) candidate := by
   classical
-  unfold EconCSLib.pmfExp prefixScoreFromEvent prefixExpectedScore
-    prefixProbFromEvent EconCSLib.pmfProb
+  unfold AppliedModelingLib.pmfExp prefixScoreFromEvent prefixExpectedScore
+    prefixProbFromEvent AppliedModelingLib.pmfProb
   calc
     ∑ signal : Signal,
         (law signal).toReal *
@@ -378,14 +378,14 @@ theorem pmfExp_prefixScore_gap_pos_of_strictTopPrefixDominance
       StrictTopPrefixDominance (prefixProbFromEvent law inPrefix) hi lo)
     (hdiff : ReasonablePrefixWeights diff) :
     0 <
-      EconCSLib.pmfExp law
+      AppliedModelingLib.pmfExp law
         (fun signal =>
           prefixScoreFromEvent diff inPrefix hi signal -
             prefixScoreFromEvent diff inPrefix lo signal) := by
   have hsep :=
     (strictTopPrefixDominance_iff_allReasonablePrefixScoresSeparate
       (prefixProbFromEvent law inPrefix) hi lo).1 hdom diff hdiff
-  rw [EconCSLib.pmfExp_sub,
+  rw [AppliedModelingLib.pmfExp_sub,
     pmfExp_prefixScoreFromEvent_eq_prefixExpectedScore,
     pmfExp_prefixScoreFromEvent_eq_prefixExpectedScore]
   linarith
@@ -419,6 +419,16 @@ def pairwiseScoringRate {Signal : Type*} [Fintype Signal] [DecidableEq Signal]
     (law : PMF Signal) (hiScore loScore : Signal → ℝ) : ℝ :=
   finiteScoreGapChernoffRate law hiScore loScore
 
+/--
+Extended Chernoff rate for a pairwise score-gap error.  This is the source
+formula `- inf log MGF`, with `⊤` when the infimum is minus infinity.
+-/
+def pairwiseScoringExtendedRate
+    {Signal : Type*} [Fintype Signal] [DecidableEq Signal]
+    (law : PMF Signal) (hiScore loScore : Signal → ℝ) : WithTop ℝ :=
+  finiteRateFunctionTop law
+    (fun signal => hiScore signal - loScore signal) 0
+
 /-- Finite-sample pairwise mistake probability for iid score gaps. -/
 def pairwiseScoringErrorProb {Signal : Type*} [Fintype Signal] [DecidableEq Signal]
     (law : PMF Signal) (hiScore loScore : Signal → ℝ) (n : ℕ) : ℝ :=
@@ -435,14 +445,14 @@ theorem pairwiseScoringError_eventually_pos_of_negative_gap_prob
     {pDown : ℝ}
     (hDown : 0 < pDown)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown) :
     ∀ᶠ n : ℕ in Filter.atTop,
       0 < pairwiseScoringErrorProb law hiScore loScore n := by
   classical
   have hevent_pos :
-      0 < EconCSLib.pmfProb law
+      0 < AppliedModelingLib.pmfProb law
         (fun signal => hiScore signal - loScore signal = -1) := by
     rw [hDownProb]
     exact hDown
@@ -479,7 +489,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_support_nonneg_zero_g
         0 ≤ hiScore signal - loScore signal)
     {pZero : ℝ}
     (hZeroProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         pZero)
     (hZero_pos : 0 < pZero) :
@@ -490,6 +500,130 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_support_nonneg_zero_g
     finiteIidScoreLeftTail_exponentialRateCertificate_of_support_nonneg_zero_prob
       law (fun signal => hiScore signal - loScore signal)
       hsupport hZeroProb hZero_pos
+
+/--
+Pointwise Chernoff bound at the source rate for the one-sided zero-gap branch.
+The error event is exactly the event that every sampled score gap is zero.
+-/
+theorem pairwiseScoringErrorProb_le_exp_neg_pairwiseScoringRate_of_support_nonneg_zero_gap_prob
+    {Signal : Type*} [Fintype Signal] [DecidableEq Signal]
+    (law : PMF Signal) (hiScore loScore : Signal → ℝ)
+    (hsupport :
+      ∀ signal, 0 < (law signal).toReal →
+        0 ≤ hiScore signal - loScore signal)
+    {pZero : ℝ}
+    (hZeroProb :
+      AppliedModelingLib.pmfProb law
+          (fun signal => hiScore signal - loScore signal = 0) =
+        pZero)
+    (hZero_pos : 0 < pZero)
+    (n : ℕ) :
+    pairwiseScoringErrorProb law hiScore loScore n ≤
+      Real.exp (-(n : ℝ) * pairwiseScoringRate law hiScore loScore) := by
+  have hrate :
+      pairwiseScoringRate law hiScore loScore = -Real.log pZero := by
+    simpa [pairwiseScoringRate, finiteScoreGapChernoffRate] using
+      finiteChernoffRate_eq_neg_log_pmfProb_score_eq_zero_of_support_nonneg
+        law (fun signal => hiScore signal - loScore signal)
+        hsupport hZeroProb hZero_pos
+  apply le_of_eq
+  calc
+    pairwiseScoringErrorProb law hiScore loScore n = pZero ^ n := by
+      rw [pairwiseScoringErrorProb, finiteIidScoreGapLeftTailProb,
+        finiteIidScoreLeftTailProb_eq_zero_score_prob_pow_of_support_nonneg
+          law (fun signal => hiScore signal - loScore signal) hsupport n,
+        hZeroProb]
+    _ = (Real.exp (Real.log pZero)) ^ n := by
+      rw [Real.exp_log hZero_pos]
+    _ = Real.exp ((n : ℝ) * Real.log pZero) := by
+      rw [Real.exp_nat_mul]
+    _ = Real.exp (-(n : ℝ) * (-Real.log pZero)) := by
+      congr 1
+      ring
+    _ = Real.exp (-(n : ℝ) * pairwiseScoringRate law hiScore loScore) := by
+      rw [hrate]
+
+/--
+If every positive-mass score gap is strictly positive, the legacy real-valued
+Chernoff wrapper takes its default value zero because its log-MGF infimum is
+unbounded below.  The corresponding probability is zero for every positive
+sample size.
+-/
+theorem pairwiseScoringRate_eq_zero_of_support_pos
+    {Signal : Type*} [Fintype Signal] [DecidableEq Signal]
+    (law : PMF Signal) (hiScore loScore : Signal → ℝ)
+    (hsupport :
+      ∀ signal, 0 < (law signal).toReal →
+        0 < hiScore signal - loScore signal) :
+    pairwiseScoringRate law hiScore loScore = 0 := by
+  have hsupport_nonneg :
+      ∀ signal, 0 < (law signal).toReal →
+        0 ≤ hiScore signal - loScore signal := by
+    intro signal hmass
+    exact (hsupport signal hmass).le
+  have hzero_prob :
+      AppliedModelingLib.pmfProb law
+          (fun signal => hiScore signal - loScore signal = 0) = 0 := by
+    refine AppliedModelingLib.pmfProb_eq_zero_of_no_mass law
+      (fun signal => hiScore signal - loScore signal = 0) ?_
+    intro signal hgap_zero
+    by_cases hmass : 0 < (law signal).toReal
+    · have hgap_pos := hsupport signal hmass
+      exfalso
+      exact (lt_irrefl (0 : ℝ)) (by simpa [hgap_zero] using hgap_pos)
+    · exact le_antisymm (le_of_not_gt hmass) ENNReal.toReal_nonneg
+  have hmgf :
+      Filter.Tendsto
+        (fun z : ℝ =>
+          finiteMGF law (fun signal => hiScore signal - loScore signal) z)
+        Filter.atBot (nhds 0) := by
+    simpa [hzero_prob] using
+      finiteMGF_tendsto_pmfProb_score_eq_zero_atBot_of_support_nonneg
+        law (fun signal => hiScore signal - loScore signal) hsupport_nonneg
+  have hnotbdd :
+      ¬ BddBelow (Set.range fun z : ℝ =>
+        finiteLogMGF law (fun signal => hiScore signal - loScore signal) z) := by
+    rw [not_bddBelow_iff]
+    intro bound
+    rcases (hmgf.eventually_lt_const (Real.exp_pos bound)).exists with
+      ⟨z, hz⟩
+    refine ⟨finiteLogMGF law
+      (fun signal => hiScore signal - loScore signal) z, ⟨z, rfl⟩, ?_⟩
+    unfold finiteLogMGF
+    calc
+      Real.log
+          (finiteMGF law (fun signal => hiScore signal - loScore signal) z) <
+          Real.log (Real.exp bound) :=
+        Real.log_lt_log
+          (finiteMGF_pos law (fun signal => hiScore signal - loScore signal) z)
+          hz
+      _ = bound := Real.log_exp bound
+  unfold pairwiseScoringRate finiteScoreGapChernoffRate finiteChernoffRate
+  rw [Real.sInf_of_not_bddBelow hnotbdd]
+  norm_num
+
+/--
+Pointwise bound in the strict one-sided branch.  The real-valued source-rate
+wrapper is zero in this boundary case; the all-sample-size inequality follows
+from the probability bound by one, including the empty sample.
+-/
+theorem pairwiseScoringErrorProb_le_exp_neg_pairwiseScoringRate_of_support_pos
+    {Signal : Type*} [Fintype Signal] [DecidableEq Signal]
+    (law : PMF Signal) (hiScore loScore : Signal → ℝ)
+    (hsupport :
+      ∀ signal, 0 < (law signal).toReal →
+        0 < hiScore signal - loScore signal)
+    (n : ℕ) :
+    pairwiseScoringErrorProb law hiScore loScore n ≤
+      Real.exp (-(n : ℝ) * pairwiseScoringRate law hiScore loScore) := by
+  rw [pairwiseScoringRate_eq_zero_of_support_pos law hiScore loScore hsupport]
+  have hprob : pairwiseScoringErrorProb law hiScore loScore n ≤ 1 := by
+    exact AppliedModelingLib.pmfProb_le_one
+      (AppliedModelingLib.pmfProduct (Fin n) Signal law)
+      (fun sample : Fin n → Signal =>
+        finiteIidScoreSum
+          (fun signal => hiScore signal - loScore signal) sample ≤ 0)
+  simpa [pairwiseScoringErrorProb, finiteIidScoreGapLeftTailProb] using hprob
 
 /--
 Strict one-voter support boundary for Proposition 2: if every positive-mass
@@ -751,7 +885,7 @@ theorem pairwiseScoringErrorProb_le_exp_neg_pairwiseScoringRate_of_mean_nonneg_p
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -771,6 +905,77 @@ theorem pairwiseScoringErrorProb_le_exp_neg_pairwiseScoringRate_of_mean_nonneg_p
       law hiScore loScore hz_nonpos hstationary n
 
 /--
+Full finite-support Proposition 2 Chernoff bound.  A finite score-gap law
+with nonnegative expected gap has the displayed source bound for every sample
+size, including its one-sided zero-gap and strictly-positive-support cases.
+-/
+theorem pairwiseScoringErrorProb_le_exp_neg_pairwiseScoringRate_of_mean_nonneg
+    {Signal : Type*} [Fintype Signal] [DecidableEq Signal]
+    (law : PMF Signal) (hiScore loScore : Signal → ℝ)
+    (hmean :
+      0 ≤ AppliedModelingLib.pmfExp law
+        (fun signal => hiScore signal - loScore signal))
+    (n : ℕ) :
+    pairwiseScoringErrorProb law hiScore loScore n ≤
+      Real.exp (-(n : ℝ) * pairwiseScoringRate law hiScore loScore) := by
+  classical
+  let gap : Signal → ℝ := fun signal => hiScore signal - loScore signal
+  by_cases hneg : ∃ aNeg : Signal, 0 < (law aNeg).toReal ∧ gap aNeg < 0
+  · rcases hneg with ⟨aNeg, hmassNeg, hgapNeg⟩
+    have hbelow :
+        ∃ a, 0 < (law a).toReal ∧
+          gap a < AppliedModelingLib.pmfExp law gap := by
+      exact ⟨aNeg, hmassNeg, lt_of_lt_of_le hgapNeg hmean⟩
+    rcases
+        AppliedModelingLib.exists_support_value_gt_pmfExp_of_exists_value_lt_pmfExp
+          law gap hbelow with
+      ⟨aPos, hmassPos, hmean_lt_gap⟩
+    have hgapPos : 0 < gap aPos := lt_of_le_of_lt hmean hmean_lt_gap
+    exact
+      pairwiseScoringErrorProb_le_exp_neg_pairwiseScoringRate_of_mean_nonneg_pos_neg_atoms
+        law hiScore loScore hmean
+        (aPos := aPos) (aNeg := aNeg)
+        hmassPos (by simpa [gap] using hgapPos)
+        hmassNeg (by simpa [gap] using hgapNeg) n
+  · have hsupport_nonneg :
+        ∀ signal, 0 < (law signal).toReal → 0 ≤ gap signal := by
+      intro signal hmass
+      exact le_of_not_gt (fun hgap => hneg ⟨signal, hmass, hgap⟩)
+    by_cases hzero :
+        ∃ aZero : Signal, 0 < (law aZero).toReal ∧ gap aZero = 0
+    · rcases hzero with ⟨aZero, hmassZero, hgapZero⟩
+      let pZero : ℝ :=
+        AppliedModelingLib.pmfProb law (fun signal => gap signal = 0)
+      have hpZero_pos : 0 < pZero := by
+        dsimp [pZero]
+        exact
+          (AppliedModelingLib.pmfProb_pos_iff_exists_pos_mass
+            law (fun signal => gap signal = 0)).2
+            ⟨aZero, hgapZero, hmassZero⟩
+      exact
+        pairwiseScoringErrorProb_le_exp_neg_pairwiseScoringRate_of_support_nonneg_zero_gap_prob
+          law hiScore loScore
+          (by
+            intro signal hmass
+            simpa [gap] using hsupport_nonneg signal hmass)
+          (pZero := pZero) (by rfl) hpZero_pos n
+    · have hsupport_pos :
+          ∀ signal, 0 < (law signal).toReal → 0 < gap signal := by
+        intro signal hmass
+        have hnonneg := hsupport_nonneg signal hmass
+        have hne : gap signal ≠ 0 := by
+          intro hgap
+          exact hzero ⟨signal, hmass, hgap⟩
+        exact lt_of_le_of_ne hnonneg (Ne.symm hne)
+      exact
+        pairwiseScoringErrorProb_le_exp_neg_pairwiseScoringRate_of_support_pos
+          law hiScore loScore
+          (by
+            intro signal hmass
+            simpa [gap] using hsupport_pos signal hmass)
+          n
+
+/--
 Positive expected one-voter score gap gives some strictly positive exponential
 upper-bound rate for the iid pairwise mistake probability.  This is the
 probabilistic half of the paper's consistency argument before an exact Cramer
@@ -781,7 +986,7 @@ theorem pairwiseScoringError_exists_pos_expUpperBoundWithConst_of_expected_gap_p
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 <
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) :
     ∃ rate : ℝ,
       0 < rate ∧
@@ -801,7 +1006,7 @@ theorem pairwiseScoringError_exists_nonpos_dual_positive_rate
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 <
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) :
     ∃ z : ℝ,
       z ≤ 0 ∧
@@ -1020,8 +1225,8 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_tiltedWindow
     (hwindow :
       ∀ᶠ n : ℕ in Filter.atTop,
         lowerConst / (((n.succ : ℕ) : ℝ) ^ degree) ≤
-          EconCSLib.pmfProb
-            (EconCSLib.pmfProduct (Fin n) Signal
+          AppliedModelingLib.pmfProb
+            (AppliedModelingLib.pmfProduct (Fin n) Signal
               (finiteExponentialTilt law
                 (fun signal => hiScore signal - loScore signal) z))
             (fun sample : Fin n → Signal =>
@@ -1058,7 +1263,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_stationaryTiltedWindo
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1076,8 +1281,8 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_stationaryTiltedWindo
     (hwindow :
       ∀ᶠ n : ℕ in Filter.atTop,
         lowerConst / (((n.succ : ℕ) : ℝ) ^ degree) ≤
-          EconCSLib.pmfProb
-            (EconCSLib.pmfProduct (Fin n) Signal
+          AppliedModelingLib.pmfProb
+            (AppliedModelingLib.pmfProduct (Fin n) Signal
               (finiteExponentialTilt law
                 (fun signal => hiScore signal - loScore signal) z))
             (fun sample : Fin n → Signal =>
@@ -1106,7 +1311,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_pathLower_of_mean_non
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     (hbdd :
       BddBelow (Set.range fun z : ℝ =>
@@ -1132,7 +1337,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_pathLower_of_mean_non
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1160,7 +1365,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_tailLower_of_mean_non
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     (hbdd :
       BddBelow (Set.range fun z : ℝ =>
@@ -1187,7 +1392,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_tailLower_of_mean_non
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1235,7 +1440,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_empiricalTypeLower_of
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     (hbdd :
       BddBelow (Set.range fun z : ℝ =>
@@ -1258,7 +1463,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_empiricalTypeLower_of
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1305,7 +1510,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_bucketLower_of_mean_n
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     (hbdd :
       BddBelow (Set.range fun z : ℝ =>
@@ -1328,7 +1533,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_bucketLower_of_mean_n
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1373,7 +1578,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_countVectorLower_of_m
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     (hbdd :
       BddBelow (Set.range fun z : ℝ =>
@@ -1396,7 +1601,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_countVectorLower_of_m
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1507,7 +1712,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicCountVectorLo
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1550,7 +1755,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicEmpiricalType
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1594,7 +1799,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicEmpiricalType
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1642,7 +1847,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicCountVectorLo
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1690,7 +1895,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicCountVectorLo
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1753,7 +1958,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicCountVectorLo
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1809,7 +2014,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicCountVectorLo
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1859,7 +2064,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicCountVectorLo
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1909,7 +2114,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicCountVectorLo
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -1954,7 +2159,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicEmpiricalType
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2007,7 +2212,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicEmpiricalType
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2065,7 +2270,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicEmpiricalType
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2113,7 +2318,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicEmpiricalType
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2166,7 +2371,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_periodicEmpiricalType
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2225,7 +2430,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_stationary_tilted_mod
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2407,7 +2612,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_stationary_tilted_mod
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2525,7 +2730,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_stationary_tilted_mod
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2560,13 +2765,13 @@ theorem pairwiseScoringError_exponentialRateCertificate_or_boundary_of_mean_nonn
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) :
     ExponentialRateCertificate
         (pairwiseScoringErrorProb law hiScore loScore)
         (pairwiseScoringRate law hiScore loScore) ∨
       (∃ pZero : ℝ,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => hiScore signal - loScore signal = 0) =
           pZero ∧
         0 < pZero ∧
@@ -2581,10 +2786,10 @@ theorem pairwiseScoringError_exponentialRateCertificate_or_boundary_of_mean_nonn
   · rcases hneg with ⟨aNeg, hmassNeg, hgapNeg⟩
     have hbelow :
         ∃ a, 0 < (law a).toReal ∧
-          gap a < EconCSLib.pmfExp law gap := by
+          gap a < AppliedModelingLib.pmfExp law gap := by
       exact ⟨aNeg, hmassNeg, lt_of_lt_of_le hgapNeg hmean⟩
     rcases
-        EconCSLib.exists_support_value_gt_pmfExp_of_exists_value_lt_pmfExp
+        AppliedModelingLib.exists_support_value_gt_pmfExp_of_exists_value_lt_pmfExp
           law gap hbelow with
       ⟨aPos, hmassPos, hmean_lt_gap⟩
     have hgapPos : 0 < gap aPos := lt_of_le_of_lt hmean hmean_lt_gap
@@ -2603,11 +2808,11 @@ theorem pairwiseScoringError_exponentialRateCertificate_or_boundary_of_mean_nonn
         ∃ aZero : Signal, 0 < (law aZero).toReal ∧ gap aZero = 0
     · rcases hzero with ⟨aZero, hmassZero, hgapZero⟩
       let pZero : ℝ :=
-        EconCSLib.pmfProb law (fun signal => gap signal = 0)
+        AppliedModelingLib.pmfProb law (fun signal => gap signal = 0)
       have hpZero_pos : 0 < pZero := by
         dsimp [pZero]
         exact
-          (EconCSLib.pmfProb_pos_iff_exists_pos_mass
+          (AppliedModelingLib.pmfProb_pos_iff_exists_pos_mass
             law (fun signal => gap signal = 0)).2
             ⟨aZero, hgapZero, hmassZero⟩
       right
@@ -2651,7 +2856,7 @@ theorem pairwiseScoringError_source_or_zero_certificate_or_eventually_zero_of_me
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) :
     (∃ aPos aNeg : Signal,
       0 < (law aPos).toReal ∧
@@ -2662,7 +2867,7 @@ theorem pairwiseScoringError_source_or_zero_certificate_or_eventually_zero_of_me
           (pairwiseScoringErrorProb law hiScore loScore)
           (pairwiseScoringRate law hiScore loScore)) ∨
       (∃ pZero : ℝ,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => hiScore signal - loScore signal = 0) =
           pZero ∧
         0 < pZero ∧
@@ -2677,10 +2882,10 @@ theorem pairwiseScoringError_source_or_zero_certificate_or_eventually_zero_of_me
   · rcases hneg with ⟨aNeg, hmassNeg, hgapNeg⟩
     have hbelow :
         ∃ a, 0 < (law a).toReal ∧
-          gap a < EconCSLib.pmfExp law gap := by
+          gap a < AppliedModelingLib.pmfExp law gap := by
       exact ⟨aNeg, hmassNeg, lt_of_lt_of_le hgapNeg hmean⟩
     rcases
-        EconCSLib.exists_support_value_gt_pmfExp_of_exists_value_lt_pmfExp
+        AppliedModelingLib.exists_support_value_gt_pmfExp_of_exists_value_lt_pmfExp
           law gap hbelow with
       ⟨aPos, hmassPos, hmean_lt_gap⟩
     have hgapPos : 0 < gap aPos := lt_of_le_of_lt hmean hmean_lt_gap
@@ -2702,11 +2907,11 @@ theorem pairwiseScoringError_source_or_zero_certificate_or_eventually_zero_of_me
         ∃ aZero : Signal, 0 < (law aZero).toReal ∧ gap aZero = 0
     · rcases hzero with ⟨aZero, hmassZero, hgapZero⟩
       let pZero : ℝ :=
-        EconCSLib.pmfProb law (fun signal => gap signal = 0)
+        AppliedModelingLib.pmfProb law (fun signal => gap signal = 0)
       have hpZero_pos : 0 < pZero := by
         dsimp [pZero]
         exact
-          (EconCSLib.pmfProb_pos_iff_exists_pos_mass
+          (AppliedModelingLib.pmfProb_pos_iff_exists_pos_mass
             law (fun signal => gap signal = 0)).2
             ⟨aZero, hgapZero, hmassZero⟩
       right
@@ -2748,7 +2953,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_or_eventually_zero_of_me
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) :
     (∃ rate : ℝ,
       ExponentialRateCertificate
@@ -2776,7 +2981,7 @@ theorem pairwiseScoringError_hasExtendedExponentialRate_of_mean_nonneg
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal)) :
     ∃ rate : WithTop ℝ,
       HasExtendedExponentialRate
@@ -2792,6 +2997,242 @@ theorem pairwiseScoringError_hasExtendedExponentialRate_of_mean_nonneg
   · exact ⟨⊤, HasExtendedExponentialRate.infinite hzero⟩
 
 /--
+Exact extended-source-rate form of Proposition 2.  The finite branches agree
+with the printed `- inf log MGF`; a strictly positive score-gap support has
+infinite rate because errors are eventually absent.
+-/
+theorem pairwiseScoringError_hasExtendedExponentialRate_at_pairwiseScoringExtendedRate_of_mean_nonneg
+    {Signal : Type*} [Fintype Signal] [DecidableEq Signal]
+    (law : PMF Signal) (hiScore loScore : Signal → ℝ)
+    (hmean :
+      0 ≤ AppliedModelingLib.pmfExp law
+        (fun signal => hiScore signal - loScore signal)) :
+    HasExtendedExponentialRate
+      (pairwiseScoringErrorProb law hiScore loScore)
+      (pairwiseScoringExtendedRate law hiScore loScore) := by
+  classical
+  let gap : Signal → ℝ := fun signal => hiScore signal - loScore signal
+  by_cases hneg : ∃ aNeg : Signal, 0 < (law aNeg).toReal ∧ gap aNeg < 0
+  · rcases hneg with ⟨aNeg, hmassNeg, hgapNeg⟩
+    have hbelow :
+        ∃ a, 0 < (law a).toReal ∧
+          gap a < AppliedModelingLib.pmfExp law gap := by
+      exact ⟨aNeg, hmassNeg, lt_of_lt_of_le hgapNeg hmean⟩
+    rcases
+        AppliedModelingLib.exists_support_value_gt_pmfExp_of_exists_value_lt_pmfExp
+          law gap hbelow with
+      ⟨aPos, hmassPos, hmean_lt_gap⟩
+    have hgapPos : 0 < gap aPos := lt_of_le_of_lt hmean hmean_lt_gap
+    rcases
+        exists_nonpos_weighted_exp_score_sum_eq_zero_of_pmfExp_nonneg_pos_neg_atoms
+          law gap hmean hmassPos (by simpa [gap] using hgapPos)
+          hmassNeg (by simpa [gap] using hgapNeg) with
+      ⟨z, _hz, hstationary⟩
+    have hderiv :
+        HasDerivAt (fun z : ℝ => finiteLogMGF law gap z) 0 z := by
+      exact
+        finiteLogMGF_hasDerivAt_zero_of_weighted_exp_score_sum_eq_zero
+          law gap hstationary
+    have hrate :
+        pairwiseScoringRate law hiScore loScore =
+          -finiteLogMGF law gap z := by
+      simpa [finiteLogMGF] using
+        pairwiseScoringRate_eq_neg_log_base_of_stationary
+          (law := law) (hiScore := hiScore) (loScore := loScore)
+          (base := finiteMGF law gap z) (z0 := z) hstationary rfl
+    have htop :
+        pairwiseScoringExtendedRate law hiScore loScore =
+          (pairwiseScoringRate law hiScore loScore : WithTop ℝ) := by
+      unfold pairwiseScoringExtendedRate
+      rw [finiteRateFunctionTop_eq_eval_of_logMGF_hasDerivAt law gap 0 z hderiv]
+      rw [WithTop.coe_eq_coe]
+      simpa [finiteLegendreValue] using hrate.symm
+    rw [htop]
+    exact HasExtendedExponentialRate.finite
+      (pairwiseScoringError_exponentialRateCertificate_of_stationary_tilted_modal_log_support_of_mean_nonneg_pos_neg_atoms
+        law hiScore loScore hmean
+        (aPos := aPos) (aNeg := aNeg)
+        hmassPos (by simpa [gap] using hgapPos)
+        hmassNeg (by simpa [gap] using hgapNeg)).has_rate
+  · have hsupport_nonneg :
+        ∀ signal, 0 < (law signal).toReal → 0 ≤ gap signal := by
+      intro signal hmass
+      exact le_of_not_gt (fun hgap => hneg ⟨signal, hmass, hgap⟩)
+    by_cases hzero :
+        ∃ aZero : Signal, 0 < (law aZero).toReal ∧ gap aZero = 0
+    · rcases hzero with ⟨aZero, hmassZero, hgapZero⟩
+      let pZero : ℝ :=
+        AppliedModelingLib.pmfProb law (fun signal => gap signal = 0)
+      have hpZero_pos : 0 < pZero := by
+        dsimp [pZero]
+        exact
+          (AppliedModelingLib.pmfProb_pos_iff_exists_pos_mass
+            law (fun signal => gap signal = 0)).2
+            ⟨aZero, hgapZero, hmassZero⟩
+      have htop :
+          pairwiseScoringExtendedRate law hiScore loScore =
+            (-Real.log pZero : WithTop ℝ) := by
+        unfold pairwiseScoringExtendedRate
+        exact
+          finiteRateFunctionTop_eq_neg_log_pmfProb_score_eq_zero_of_support_nonneg
+            law gap
+            (by
+              intro signal hmass
+              simpa [gap] using hsupport_nonneg signal hmass)
+            (by rfl) hpZero_pos
+      rw [htop]
+      exact HasExtendedExponentialRate.finite
+        (pairwiseScoringError_exponentialRateCertificate_of_support_nonneg_zero_gap_prob
+          law hiScore loScore
+          (by
+            intro signal hmass
+            simpa [gap] using hsupport_nonneg signal hmass)
+          (pZero := pZero) (by rfl) hpZero_pos).has_rate
+    · have hsupport_pos :
+          ∀ signal, 0 < (law signal).toReal → 0 < gap signal := by
+        intro signal hmass
+        have hnonneg := hsupport_nonneg signal hmass
+        have hne : gap signal ≠ 0 := by
+          intro hgap
+          exact hzero ⟨signal, hmass, hgap⟩
+        exact lt_of_le_of_ne hnonneg (Ne.symm hne)
+      have htop : pairwiseScoringExtendedRate law hiScore loScore = ⊤ := by
+        unfold pairwiseScoringExtendedRate
+        exact finiteRateFunctionTop_eq_top_of_support_pos law gap
+          (by
+            intro signal hmass
+            simpa [gap] using hsupport_pos signal hmass)
+      rw [htop]
+      exact HasExtendedExponentialRate.infinite
+        (pairwiseScoringError_eventually_zero_of_support_pos
+          law hiScore loScore
+          (by
+            intro signal hmass
+            simpa [gap] using hsupport_pos signal hmass))
+
+/--
+Certificate-level form of the extended Proposition 2 rate.  A finite branch
+records the exact source rate; the remaining branch records both eventual
+absence of pairwise errors and the infinite source rate.
+-/
+theorem pairwiseScoringError_extendedRateCertificate_or_eventually_zero_of_mean_nonneg
+    {Signal : Type*} [Fintype Signal] [DecidableEq Signal]
+    (law : PMF Signal) (hiScore loScore : Signal → ℝ)
+    (hmean :
+      0 ≤ AppliedModelingLib.pmfExp law
+        (fun signal => hiScore signal - loScore signal)) :
+    (∃ rate : ℝ,
+      ExponentialRateCertificate
+          (pairwiseScoringErrorProb law hiScore loScore) rate ∧
+        pairwiseScoringExtendedRate law hiScore loScore =
+          (rate : WithTop ℝ)) ∨
+      ((∀ᶠ n in Filter.atTop,
+          pairwiseScoringErrorProb law hiScore loScore n = 0) ∧
+        pairwiseScoringExtendedRate law hiScore loScore = ⊤) := by
+  classical
+  let gap : Signal → ℝ := fun signal => hiScore signal - loScore signal
+  by_cases hneg : ∃ aNeg : Signal, 0 < (law aNeg).toReal ∧ gap aNeg < 0
+  · rcases hneg with ⟨aNeg, hmassNeg, hgapNeg⟩
+    have hbelow :
+        ∃ a, 0 < (law a).toReal ∧
+          gap a < AppliedModelingLib.pmfExp law gap := by
+      exact ⟨aNeg, hmassNeg, lt_of_lt_of_le hgapNeg hmean⟩
+    rcases
+        AppliedModelingLib.exists_support_value_gt_pmfExp_of_exists_value_lt_pmfExp
+          law gap hbelow with
+      ⟨aPos, hmassPos, hmean_lt_gap⟩
+    have hgapPos : 0 < gap aPos := lt_of_le_of_lt hmean hmean_lt_gap
+    rcases
+        exists_nonpos_weighted_exp_score_sum_eq_zero_of_pmfExp_nonneg_pos_neg_atoms
+          law gap hmean hmassPos (by simpa [gap] using hgapPos)
+          hmassNeg (by simpa [gap] using hgapNeg) with
+      ⟨z, _hz, hstationary⟩
+    have hderiv :
+        HasDerivAt (fun z : ℝ => finiteLogMGF law gap z) 0 z := by
+      exact
+        finiteLogMGF_hasDerivAt_zero_of_weighted_exp_score_sum_eq_zero
+          law gap hstationary
+    have hrate :
+        pairwiseScoringRate law hiScore loScore =
+          -finiteLogMGF law gap z := by
+      simpa [finiteLogMGF] using
+        pairwiseScoringRate_eq_neg_log_base_of_stationary
+          (law := law) (hiScore := hiScore) (loScore := loScore)
+          (base := finiteMGF law gap z) (z0 := z) hstationary rfl
+    have htop :
+        pairwiseScoringExtendedRate law hiScore loScore =
+          (pairwiseScoringRate law hiScore loScore : WithTop ℝ) := by
+      unfold pairwiseScoringExtendedRate
+      rw [finiteRateFunctionTop_eq_eval_of_logMGF_hasDerivAt law gap 0 z hderiv]
+      rw [WithTop.coe_eq_coe]
+      simpa [finiteLegendreValue] using hrate.symm
+    left
+    refine ⟨pairwiseScoringRate law hiScore loScore, ?_, htop⟩
+    exact
+      pairwiseScoringError_exponentialRateCertificate_of_stationary_tilted_modal_log_support_of_mean_nonneg_pos_neg_atoms
+        law hiScore loScore hmean
+        (aPos := aPos) (aNeg := aNeg)
+        hmassPos (by simpa [gap] using hgapPos)
+        hmassNeg (by simpa [gap] using hgapNeg)
+  · have hsupport_nonneg :
+        ∀ signal, 0 < (law signal).toReal → 0 ≤ gap signal := by
+      intro signal hmass
+      exact le_of_not_gt (fun hgap => hneg ⟨signal, hmass, hgap⟩)
+    by_cases hzero :
+        ∃ aZero : Signal, 0 < (law aZero).toReal ∧ gap aZero = 0
+    · rcases hzero with ⟨aZero, hmassZero, hgapZero⟩
+      let pZero : ℝ :=
+        AppliedModelingLib.pmfProb law (fun signal => gap signal = 0)
+      have hpZero_pos : 0 < pZero := by
+        dsimp [pZero]
+        exact
+          (AppliedModelingLib.pmfProb_pos_iff_exists_pos_mass
+            law (fun signal => gap signal = 0)).2
+            ⟨aZero, hgapZero, hmassZero⟩
+      have htop :
+          pairwiseScoringExtendedRate law hiScore loScore =
+            (-Real.log pZero : WithTop ℝ) := by
+        unfold pairwiseScoringExtendedRate
+        exact
+          finiteRateFunctionTop_eq_neg_log_pmfProb_score_eq_zero_of_support_nonneg
+            law gap
+            (by
+              intro signal hmass
+              simpa [gap] using hsupport_nonneg signal hmass)
+            (by rfl) hpZero_pos
+      left
+      refine ⟨-Real.log pZero, ?_, htop⟩
+      exact
+        pairwiseScoringError_exponentialRateCertificate_of_support_nonneg_zero_gap_prob
+          law hiScore loScore
+          (by
+            intro signal hmass
+            simpa [gap] using hsupport_nonneg signal hmass)
+          (pZero := pZero) (by rfl) hpZero_pos
+    · have hsupport_pos :
+          ∀ signal, 0 < (law signal).toReal → 0 < gap signal := by
+        intro signal hmass
+        have hnonneg := hsupport_nonneg signal hmass
+        have hne : gap signal ≠ 0 := by
+          intro hgap
+          exact hzero ⟨signal, hmass, hgap⟩
+        exact lt_of_le_of_ne hnonneg (Ne.symm hne)
+      have htop : pairwiseScoringExtendedRate law hiScore loScore = ⊤ := by
+        unfold pairwiseScoringExtendedRate
+        exact finiteRateFunctionTop_eq_top_of_support_pos law gap
+          (by
+            intro signal hmass
+            simpa [gap] using hsupport_pos signal hmass)
+      right
+      refine ⟨?_, htop⟩
+      exact
+        pairwiseScoringError_eventually_zero_of_support_pos
+          law hiScore loScore
+          (by
+            intro signal hmass
+            simpa [gap] using hsupport_pos signal hmass)
+
+/--
 Full-support convenience wrapper for
 `pairwiseScoringError_exponentialRateCertificate_of_stationary_tilted_modal_log_support`.
 -/
@@ -2800,7 +3241,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_stationary_tilted_mod
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2831,7 +3272,7 @@ theorem pairwiseScoringError_exponentialRateCertificate_of_empiricalTypeLower_wi
     (law : PMF Signal) (hiScore loScore : Signal → ℝ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => hiScore signal - loScore signal))
     {aPos aNeg : Signal}
     (hmassPos : 0 < (law aPos).toReal)
@@ -2959,7 +3400,7 @@ noncomputable def randomizedScoringSamplingLaw
     (hsum : (∑ rule : Rule, weight rule) = 1) :
     PMF (Rule × Signal) :=
   let ruleLaw : PMF Rule :=
-    EconCSLib.finiteWeightedPMF weight hweight
+    AppliedModelingLib.finiteWeightedPMF weight hweight
       (by simpa [hsum] using zero_lt_one)
   ruleLaw.bind (fun rule => law.map (fun signal => (rule, signal)))
 
@@ -2974,43 +3415,43 @@ theorem randomizedScoringSamplingLaw_pmfExp_eq_weighted_sum
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
     (f : Rule → Signal → ℝ) :
-    EconCSLib.pmfExp
+    AppliedModelingLib.pmfExp
         (randomizedScoringSamplingLaw law weight hweight hsum)
         (fun signal : Rule × Signal => f signal.1 signal.2) =
-      ∑ rule : Rule, weight rule * EconCSLib.pmfExp law (f rule) := by
+      ∑ rule : Rule, weight rule * AppliedModelingLib.pmfExp law (f rule) := by
   classical
   unfold randomizedScoringSamplingLaw
-  rw [EconCSLib.pmfExp_bind]
+  rw [AppliedModelingLib.pmfExp_bind]
   change
-    EconCSLib.pmfExp
-        (EconCSLib.finiteWeightedPMF weight hweight
+    AppliedModelingLib.pmfExp
+        (AppliedModelingLib.finiteWeightedPMF weight hweight
           (by simpa [hsum] using zero_lt_one))
         (fun rule =>
-          EconCSLib.pmfExp (law.map (fun signal => (rule, signal)))
+          AppliedModelingLib.pmfExp (law.map (fun signal => (rule, signal)))
             (fun signal : Rule × Signal => f signal.1 signal.2)) =
-      ∑ rule : Rule, weight rule * EconCSLib.pmfExp law (f rule)
+      ∑ rule : Rule, weight rule * AppliedModelingLib.pmfExp law (f rule)
   calc
-    EconCSLib.pmfExp
-        (EconCSLib.finiteWeightedPMF weight hweight
+    AppliedModelingLib.pmfExp
+        (AppliedModelingLib.finiteWeightedPMF weight hweight
           (by simpa [hsum] using zero_lt_one))
         (fun rule =>
-          EconCSLib.pmfExp (law.map (fun signal => (rule, signal)))
+          AppliedModelingLib.pmfExp (law.map (fun signal => (rule, signal)))
             (fun signal : Rule × Signal => f signal.1 signal.2))
         =
         ∑ rule : Rule,
           weight rule *
-            EconCSLib.pmfExp (law.map (fun signal => (rule, signal)))
+            AppliedModelingLib.pmfExp (law.map (fun signal => (rule, signal)))
               (fun signal : Rule × Signal => f signal.1 signal.2) := by
           exact
-            EconCSLib.finiteWeightedPMF_pmfExp_eq_weighted_sum_of_sum_eq_one
+            AppliedModelingLib.finiteWeightedPMF_pmfExp_eq_weighted_sum_of_sum_eq_one
               weight hweight hsum
               (fun rule =>
-                EconCSLib.pmfExp (law.map (fun signal => (rule, signal)))
+                AppliedModelingLib.pmfExp (law.map (fun signal => (rule, signal)))
                   (fun signal : Rule × Signal => f signal.1 signal.2))
-    _ = ∑ rule : Rule, weight rule * EconCSLib.pmfExp law (f rule) := by
+    _ = ∑ rule : Rule, weight rule * AppliedModelingLib.pmfExp law (f rule) := by
           refine Finset.sum_congr rfl ?_
           intro rule _
-          rw [EconCSLib.pmfExp_map]
+          rw [AppliedModelingLib.pmfExp_map]
 
 /--
 The actual randomized-scoring one-voter law has exactly the MGF used in the
@@ -3030,45 +3471,45 @@ theorem randomizedScoringSamplingLaw_finiteMGF_eq_mixtureMGF
   classical
   unfold randomizedScoringSamplingLaw
   change
-    EconCSLib.pmfExp
-        ((EconCSLib.finiteWeightedPMF weight hweight
+    AppliedModelingLib.pmfExp
+        ((AppliedModelingLib.finiteWeightedPMF weight hweight
           (by simpa [hsum] using zero_lt_one)).bind
           (fun rule => law.map (fun signal => (rule, signal))))
         (fun signal : Rule × Signal =>
           Real.exp (z * gap signal.1 signal.2)) =
       randomizedScoringMixtureMGF law weight gap z
-  rw [EconCSLib.pmfExp_bind]
+  rw [AppliedModelingLib.pmfExp_bind]
   calc
-    EconCSLib.pmfExp
-        (EconCSLib.finiteWeightedPMF weight hweight
+    AppliedModelingLib.pmfExp
+        (AppliedModelingLib.finiteWeightedPMF weight hweight
           (by simpa [hsum] using zero_lt_one))
         (fun rule : Rule =>
-          EconCSLib.pmfExp (law.map (fun signal => (rule, signal)))
+          AppliedModelingLib.pmfExp (law.map (fun signal => (rule, signal)))
             (fun signal : Rule × Signal =>
               Real.exp (z * gap signal.1 signal.2)))
         =
-        EconCSLib.pmfExp
-          (EconCSLib.finiteWeightedPMF weight hweight
+        AppliedModelingLib.pmfExp
+          (AppliedModelingLib.finiteWeightedPMF weight hweight
             (by simpa [hsum] using zero_lt_one))
           (fun rule : Rule => finiteMGF law (gap rule) z) := by
           exact
-            EconCSLib.pmfExp_congr
-              (EconCSLib.finiteWeightedPMF weight hweight
+            AppliedModelingLib.pmfExp_congr
+              (AppliedModelingLib.finiteWeightedPMF weight hweight
                 (by simpa [hsum] using zero_lt_one))
               (fun rule => by
                 have hmap :
-                    EconCSLib.pmfExp
+                    AppliedModelingLib.pmfExp
                         (law.map (fun signal => (rule, signal)))
                         (fun signal : Rule × Signal =>
                           Real.exp (z * gap signal.1 signal.2)) =
-                      EconCSLib.pmfExp law
+                      AppliedModelingLib.pmfExp law
                         (fun signal : Signal =>
                           Real.exp (z * gap rule signal)) := by
-                  rw [EconCSLib.pmfExp_map]
+                  rw [AppliedModelingLib.pmfExp_map]
                 simpa [finiteMGF] using hmap)
     _ = ∑ rule : Rule, weight rule * finiteMGF law (gap rule) z := by
-          unfold EconCSLib.pmfExp
-          simp [EconCSLib.finiteWeightedPMF_apply_toReal, hsum]
+          unfold AppliedModelingLib.pmfExp
+          simp [AppliedModelingLib.finiteWeightedPMF_apply_toReal, hsum]
     _ = randomizedScoringMixtureMGF law weight gap z := by
           rfl
 
@@ -3357,7 +3798,7 @@ def finiteScoreGapRelevantPairRateCertificate_of_support_nonneg_zero_gap_prob
         0 ≤ score (hi pair) signal - score (lo pair) signal)
     (hZeroProb :
       ∀ pair,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               score (hi pair) signal - score (lo pair) signal = 0) =
           pZero pair)
@@ -3390,7 +3831,7 @@ theorem finiteRelevantScoreGapAggregateError_hasExponentialRate_of_support_nonne
         0 ≤ score (hi pair) signal - score (lo pair) signal)
     (hZeroProb :
       ∀ pair,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               score (hi pair) signal - score (lo pair) signal = 0) =
           pZero pair)
@@ -3493,7 +3934,7 @@ theorem finiteRelevantScoreGapAggregateError_exists_pos_expUpperBoundWithConst
     (hmean :
       ∀ pair,
         0 <
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (fun signal => score (hi pair) signal - score (lo pair) signal)) :
     ∃ targetRate : ℝ,
       0 < targetRate ∧
@@ -3825,7 +4266,7 @@ def scoreTopSelectionErrorProb
     (winnerSet : Finset Candidate)
     (selected : (n : ℕ) → (Fin n → Signal) → Finset Candidate)
     (n : ℕ) : ℝ :=
-  EconCSLib.pmfProb (EconCSLib.pmfProduct (Fin n) Signal law)
+  AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProduct (Fin n) Signal law)
     (fun sample => selected n sample ≠ winnerSet)
 
 /--
@@ -3843,7 +4284,7 @@ def scoreTopTieredPrefixSelectionErrorProb
     (n : ℕ) : ℝ := by
   classical
   exact
-    EconCSLib.pmfProb (EconCSLib.pmfProduct (Fin n) Signal law)
+    AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProduct (Fin n) Signal law)
       (fun sample =>
         ∃ stage : Stage, selectedPrefix stage n sample ≠ targetPrefix stage)
 
@@ -3857,14 +4298,14 @@ theorem pairwiseScoringErrorProb_eq_iidSampleCandidateScore_le
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hi lo : Candidate) (n : ℕ) :
     pairwiseScoringErrorProb law (score hi) (score lo) n =
-      EconCSLib.pmfProb (EconCSLib.pmfProduct (Fin n) Signal law)
+      AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProduct (Fin n) Signal law)
         (fun sample : Fin n → Signal =>
           iidSampleCandidateScore score sample hi ≤
             iidSampleCandidateScore score sample lo) := by
   classical
   unfold pairwiseScoringErrorProb finiteIidScoreGapLeftTailProb
     finiteIidScoreLeftTailProb
-  refine EconCSLib.pmfProb_congr _ ?_
+  refine AppliedModelingLib.pmfProb_congr _ ?_
   intro sample
   unfold finiteIidScoreSum iidSampleCandidateScore
   rw [Finset.sum_sub_distrib]
@@ -3878,7 +4319,7 @@ theorem strictPairwiseScoringBeatProb_eq_one_sub_pairwiseScoringErrorProb
     {Candidate Signal : Type*} [Fintype Signal] [DecidableEq Signal]
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hi lo : Candidate) (n : ℕ) :
-    EconCSLib.pmfProb (EconCSLib.pmfProduct (Fin n) Signal law)
+    AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProduct (Fin n) Signal law)
         (fun sample : Fin n → Signal =>
           iidSampleCandidateScore score sample hi <
             iidSampleCandidateScore score sample lo) =
@@ -3886,8 +4327,8 @@ theorem strictPairwiseScoringBeatProb_eq_one_sub_pairwiseScoringErrorProb
   classical
   rw [pairwiseScoringErrorProb_eq_iidSampleCandidateScore_le
     law score lo hi n]
-  rw [← EconCSLib.pmfProb_compl]
-  refine EconCSLib.pmfProb_congr _ ?_
+  rw [← AppliedModelingLib.pmfProb_compl]
+  refine AppliedModelingLib.pmfProb_congr _ ?_
   intro sample
   simp [not_le]
 
@@ -3900,20 +4341,20 @@ theorem strictPairwiseScoringBeatProb_tendsto_one_of_expected_gap_neg
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     {hi lo : Candidate}
     (hmean :
-      EconCSLib.pmfExp law
+      AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal) < 0) :
     Filter.Tendsto
       (fun n : ℕ =>
-        EconCSLib.pmfProb (EconCSLib.pmfProduct (Fin n) Signal law)
+        AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProduct (Fin n) Signal law)
           (fun sample : Fin n → Signal =>
             iidSampleCandidateScore score sample hi <
               iidSampleCandidateScore score sample lo))
       Filter.atTop (nhds 1) := by
   have hmean_rev :
       0 <
-        EconCSLib.pmfExp law
+        AppliedModelingLib.pmfExp law
           (fun signal => score lo signal - score hi signal) := by
-    rw [EconCSLib.pmfExp_sub] at *
+    rw [AppliedModelingLib.pmfExp_sub] at *
     linarith
   rcases
       pairwiseScoringError_exists_pos_expUpperBoundWithConst_of_expected_gap_pos
@@ -3960,7 +4401,7 @@ theorem scoreTopSelectionErrorProb_le_crossTierPairwiseError_sum
       ∑ pair : CrossTierPair winnerSet,
         pairwiseScoringErrorProb law (score pair.hi) (score pair.lo) n := by
   classical
-  let μ := EconCSLib.pmfProduct (Fin n) Signal law
+  let μ := AppliedModelingLib.pmfProduct (Fin n) Signal law
   let pairEvent : CrossTierPair winnerSet → (Fin n → Signal) → Prop :=
     fun pair sample =>
       iidSampleCandidateScore score sample pair.hi ≤
@@ -3978,11 +4419,11 @@ theorem scoreTopSelectionErrorProb_le_crossTierPairwiseError_sum
         (hcard n sample) (htop n sample) hwrong
   have hselection_le_union :
       scoreTopSelectionErrorProb law score winnerSet selected n ≤
-        EconCSLib.pmfProb μ
+        AppliedModelingLib.pmfProb μ
           (fun sample => ∃ pair : CrossTierPair winnerSet,
             pair ∈ (Finset.univ : Finset (CrossTierPair winnerSet)) ∧
               pairEvent pair sample) := by
-    refine EconCSLib.pmfProb_le_of_imp μ
+    refine AppliedModelingLib.pmfProb_le_of_imp μ
       (fun sample => selected n sample ≠ winnerSet)
       (fun sample => ∃ pair : CrossTierPair winnerSet,
         pair ∈ (Finset.univ : Finset (CrossTierPair winnerSet)) ∧
@@ -3991,25 +4432,25 @@ theorem scoreTopSelectionErrorProb_le_crossTierPairwiseError_sum
     rcases herror_subset sample hwrong with ⟨pair, hpair⟩
     exact ⟨pair, by simp, hpair⟩
   have hunion :
-      EconCSLib.pmfProb μ
+      AppliedModelingLib.pmfProb μ
           (fun sample => ∃ pair : CrossTierPair winnerSet,
             pair ∈ (Finset.univ : Finset (CrossTierPair winnerSet)) ∧
               pairEvent pair sample) ≤
         ∑ pair ∈ (Finset.univ : Finset (CrossTierPair winnerSet)),
-          EconCSLib.pmfProb μ (pairEvent pair) :=
-    EconCSLib.pmfProb_exists_mem_le_sum
+          AppliedModelingLib.pmfProb μ (pairEvent pair) :=
+    AppliedModelingLib.pmfProb_exists_mem_le_sum
       (μ := μ) (s := (Finset.univ : Finset (CrossTierPair winnerSet)))
       (p := pairEvent)
   calc
     scoreTopSelectionErrorProb law score winnerSet selected n ≤
-        EconCSLib.pmfProb μ
+        AppliedModelingLib.pmfProb μ
           (fun sample => ∃ pair : CrossTierPair winnerSet,
             pair ∈ (Finset.univ : Finset (CrossTierPair winnerSet)) ∧
               pairEvent pair sample) := hselection_le_union
     _ ≤ ∑ pair ∈ (Finset.univ : Finset (CrossTierPair winnerSet)),
-          EconCSLib.pmfProb μ (pairEvent pair) := hunion
+          AppliedModelingLib.pmfProb μ (pairEvent pair) := hunion
     _ = ∑ pair : CrossTierPair winnerSet,
-          EconCSLib.pmfProb μ (pairEvent pair) := by simp
+          AppliedModelingLib.pmfProb μ (pairEvent pair) := by simp
     _ = ∑ pair : CrossTierPair winnerSet,
           pairwiseScoringErrorProb law (score pair.hi) (score pair.lo) n := by
           refine Finset.sum_congr rfl ?_
@@ -4045,7 +4486,7 @@ theorem scoreTopSelectionErrorProb_tendsto_zero_of_crossTierPairwiseError_sum
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
     tendsto_const_nhds hpair_tendsto ?_ ?_
   · exact Filter.Eventually.of_forall (fun n =>
-      EconCSLib.pmfProb_nonneg (EconCSLib.pmfProduct (Fin n) Signal law)
+      AppliedModelingLib.pmfProb_nonneg (AppliedModelingLib.pmfProduct (Fin n) Signal law)
         (fun sample => selected n sample ≠ winnerSet))
   · exact Filter.Eventually.of_forall (fun n =>
       scoreTopSelectionErrorProb_le_crossTierPairwiseError_sum
@@ -4070,7 +4511,7 @@ theorem scoreTopSelectionErrorProb_tendsto_one_of_crossTier_expected_gap_neg
         ScoreTopSelectedSet
           (iidSampleCandidateScore score sample) (selected n sample))
     (hmean :
-      EconCSLib.pmfExp law
+      AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal) < 0) :
     Filter.Tendsto
       (scoreTopSelectionErrorProb law score winnerSet selected)
@@ -4078,7 +4519,7 @@ theorem scoreTopSelectionErrorProb_tendsto_one_of_crossTier_expected_gap_neg
   have hbeat :
       Filter.Tendsto
         (fun n : ℕ =>
-          EconCSLib.pmfProb (EconCSLib.pmfProduct (Fin n) Signal law)
+          AppliedModelingLib.pmfProb (AppliedModelingLib.pmfProduct (Fin n) Signal law)
             (fun sample : Fin n → Signal =>
               iidSampleCandidateScore score sample hi <
                 iidSampleCandidateScore score sample lo))
@@ -4088,8 +4529,8 @@ theorem scoreTopSelectionErrorProb_tendsto_one_of_crossTier_expected_gap_neg
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
     hbeat tendsto_const_nhds ?_ ?_
   · exact Filter.Eventually.of_forall (fun n =>
-      EconCSLib.pmfProb_le_of_imp
-        (EconCSLib.pmfProduct (Fin n) Signal law)
+      AppliedModelingLib.pmfProb_le_of_imp
+        (AppliedModelingLib.pmfProduct (Fin n) Signal law)
         (fun sample : Fin n → Signal =>
           iidSampleCandidateScore score sample hi <
             iidSampleCandidateScore score sample lo)
@@ -4107,7 +4548,7 @@ theorem scoreTopSelectionErrorProb_tendsto_one_of_crossTier_expected_gap_neg
             htop n sample hhi_selected hlo_not_selected
           exact not_lt_of_ge hle hstrict))
   · exact Filter.Eventually.of_forall (fun n =>
-      EconCSLib.pmfProb_le_one (EconCSLib.pmfProduct (Fin n) Signal law)
+      AppliedModelingLib.pmfProb_le_one (AppliedModelingLib.pmfProduct (Fin n) Signal law)
         (fun sample : Fin n → Signal => selected n sample ≠ winnerSet))
 
 /--
@@ -4127,7 +4568,7 @@ theorem scoreTopSelectionErrorProb_not_tendsto_zero_of_crossTier_expected_gap_ne
         ScoreTopSelectedSet
           (iidSampleCandidateScore score sample) (selected n sample))
     (hmean :
-      EconCSLib.pmfExp law
+      AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal) < 0) :
     ¬ Filter.Tendsto
       (scoreTopSelectionErrorProb law score winnerSet selected)
@@ -4154,17 +4595,17 @@ theorem scoreTopTieredPrefixSelectionErrorProb_le_sum
         scoreTopSelectionErrorProb law score (targetPrefix stage)
           (selectedPrefix stage) n := by
   classical
-  let μ := EconCSLib.pmfProduct (Fin n) Signal law
+  let μ := AppliedModelingLib.pmfProduct (Fin n) Signal law
   let prefixEvent : Stage → (Fin n → Signal) → Prop :=
     fun stage sample => selectedPrefix stage n sample ≠ targetPrefix stage
   have hunion :
-      EconCSLib.pmfProb μ
+      AppliedModelingLib.pmfProb μ
           (fun sample =>
             ∃ stage, stage ∈ (Finset.univ : Finset Stage) ∧
               prefixEvent stage sample) ≤
         ∑ stage ∈ (Finset.univ : Finset Stage),
-          EconCSLib.pmfProb μ (prefixEvent stage) :=
-    EconCSLib.pmfProb_exists_mem_le_sum
+          AppliedModelingLib.pmfProb μ (prefixEvent stage) :=
+    AppliedModelingLib.pmfProb_exists_mem_le_sum
       (μ := μ) (s := (Finset.univ : Finset Stage))
       (p := prefixEvent)
   simpa [scoreTopTieredPrefixSelectionErrorProb, scoreTopSelectionErrorProb,
@@ -4187,8 +4628,8 @@ theorem scoreTopSelectionErrorProb_le_scoreTopTieredPrefixSelectionErrorProb
       scoreTopTieredPrefixSelectionErrorProb
         law score targetPrefix selectedPrefix n := by
   classical
-  refine EconCSLib.pmfProb_le_of_imp
-    (EconCSLib.pmfProduct (Fin n) Signal law)
+  refine AppliedModelingLib.pmfProb_le_of_imp
+    (AppliedModelingLib.pmfProduct (Fin n) Signal law)
     (fun sample => selectedPrefix stage n sample ≠ targetPrefix stage)
     (fun sample =>
       ∃ stage : Stage, selectedPrefix stage n sample ≠ targetPrefix stage)
@@ -4220,7 +4661,7 @@ theorem scoreTopSelectionErrorProb_tendsto_zero_of_tieredPrefixSelectionErrorPro
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
     tendsto_const_nhds htier ?_ ?_
   · exact Filter.Eventually.of_forall (fun n =>
-      EconCSLib.pmfProb_nonneg (EconCSLib.pmfProduct (Fin n) Signal law)
+      AppliedModelingLib.pmfProb_nonneg (AppliedModelingLib.pmfProduct (Fin n) Signal law)
         (fun sample => selectedPrefix stage n sample ≠ targetPrefix stage))
   · exact Filter.Eventually.of_forall (fun n =>
       scoreTopSelectionErrorProb_le_scoreTopTieredPrefixSelectionErrorProb
@@ -4262,7 +4703,7 @@ theorem scoreTopTieredPrefixSelectionErrorProb_tendsto_zero_of_prefix_errors
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
     tendsto_const_nhds hsum ?_ ?_
   · exact Filter.Eventually.of_forall (fun n =>
-      EconCSLib.pmfProb_nonneg (EconCSLib.pmfProduct (Fin n) Signal law)
+      AppliedModelingLib.pmfProb_nonneg (AppliedModelingLib.pmfProduct (Fin n) Signal law)
         (fun sample =>
           ∃ stage : Stage,
             selectedPrefix stage n sample ≠ targetPrefix stage))
@@ -4387,11 +4828,11 @@ theorem prefixScoringSelectionError_tendsto_one_of_reverse_prefix_expected_score
         winnerSet selected)
       Filter.atTop (nhds 1) := by
   have hmean :
-      EconCSLib.pmfExp law
+      AppliedModelingLib.pmfExp law
           (fun signal =>
             prefixScoreFromEvent diff inPrefix hi signal -
               prefixScoreFromEvent diff inPrefix lo signal) < 0 := by
-    rw [EconCSLib.pmfExp_sub,
+    rw [AppliedModelingLib.pmfExp_sub,
       pmfExp_prefixScoreFromEvent_eq_prefixExpectedScore,
       pmfExp_prefixScoreFromEvent_eq_prefixExpectedScore]
     exact sub_neg.mpr hreverse
@@ -4654,12 +5095,12 @@ asymptotically correct.
 -/
 theorem rankingPrefixScoringCanonicalSelectionError_tendsto_zero_on
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (diff : RankingProperPrefixCut n → ℝ)
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
     [Nonempty (CrossTierPair winnerSet)]
     (hdom :
-      ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+      ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
         hi ∈ winnerSet →
           lo ∉ winnerSet →
             ∀ cut : RankingProperPrefixCut n,
@@ -4678,8 +5119,8 @@ theorem rankingPrefixScoringCanonicalSelectionError_tendsto_zero_on
   simpa [rankingPrefixScore] using
     (prefixScoringCanonicalSelectionError_tendsto_zero_on
       (Cut := RankingProperPrefixCut n)
-      (Candidate := EconCSLib.SocialChoice.Ranking.Candidate n)
-      (Signal := EconCSLib.SocialChoice.Ranking.Ranking n)
+      (Candidate := AppliedModelingLib.SocialChoice.Ranking.Candidate n)
+      (Signal := AppliedModelingLib.SocialChoice.Ranking.Ranking n)
       (law := law)
       (diff := diff)
       (inPrefix := rankingInTopPrefix)
@@ -4696,13 +5137,13 @@ paper's finite ranking law and proper top-prefix cuts.
 -/
 theorem rankingPrefixScoringSelectionError_tendsto_zero_on
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (diff : RankingProperPrefixCut n → ℝ)
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
     (selected :
       (voters : ℕ) →
-        (Fin voters → EconCSLib.SocialChoice.Ranking.Ranking n) →
-          Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
+        (Fin voters → AppliedModelingLib.SocialChoice.Ranking.Ranking n) →
+          Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
     [Nonempty (CrossTierPair winnerSet)]
     (hcard :
       ∀ voters sample, (selected voters sample).card = winnerSet.card)
@@ -4712,7 +5153,7 @@ theorem rankingPrefixScoringSelectionError_tendsto_zero_on
           (iidSampleCandidateScore (rankingPrefixScore diff) sample)
           (selected voters sample))
     (hdom :
-      ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+      ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
         hi ∈ winnerSet →
           lo ∉ winnerSet →
             ∀ cut : RankingProperPrefixCut n,
@@ -4727,8 +5168,8 @@ theorem rankingPrefixScoringSelectionError_tendsto_zero_on
   simpa [rankingPrefixScore] using
     (prefixScoringSelectionError_tendsto_zero_on
       (Cut := RankingProperPrefixCut n)
-      (Candidate := EconCSLib.SocialChoice.Ranking.Candidate n)
-      (Signal := EconCSLib.SocialChoice.Ranking.Ranking n)
+      (Candidate := AppliedModelingLib.SocialChoice.Ranking.Candidate n)
+      (Signal := AppliedModelingLib.SocialChoice.Ranking.Ranking n)
       (law := law)
       (diff := diff)
       (inPrefix := rankingInTopPrefix)
@@ -4748,10 +5189,10 @@ score-top W-selector.
 -/
 theorem rankingPrefixScoringCanonicalSelectionError_tendsto_one_of_reverse_prefix_expected_score
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (diff : RankingProperPrefixCut n → ℝ)
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
-    {hi lo : EconCSLib.SocialChoice.Ranking.Candidate n}
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
+    {hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n}
     (hhi : hi ∈ winnerSet) (hlo : lo ∉ winnerSet)
     (hreverse :
       prefixExpectedScore diff (rankingTopPrefixProb law) hi <
@@ -4768,8 +5209,8 @@ theorem rankingPrefixScoringCanonicalSelectionError_tendsto_one_of_reverse_prefi
   simpa [rankingPrefixScore, rankingTopPrefixProb] using
     (prefixScoringCanonicalSelectionError_tendsto_one_of_reverse_prefix_expected_score
       (Cut := RankingProperPrefixCut n)
-      (Candidate := EconCSLib.SocialChoice.Ranking.Candidate n)
-      (Signal := EconCSLib.SocialChoice.Ranking.Ranking n)
+      (Candidate := AppliedModelingLib.SocialChoice.Ranking.Candidate n)
+      (Signal := AppliedModelingLib.SocialChoice.Ranking.Ranking n)
       (law := law)
       (diff := diff)
       (inPrefix := rankingInTopPrefix)
@@ -4788,9 +5229,9 @@ algebra.
 -/
 theorem rankingPrefixScoringCanonicalSelectionError_tendsto_one_of_reverse_top_prefix_prob
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
-    {hi lo : EconCSLib.SocialChoice.Ranking.Candidate n}
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
+    {hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n}
     (hhi : hi ∈ winnerSet) (hlo : lo ∉ winnerSet)
     {cut : RankingProperPrefixCut n}
     (hreverse :
@@ -4825,9 +5266,9 @@ corresponding indicator prefix score.
 -/
 theorem rankingPrefixScoringCanonicalSelectionError_not_tendsto_zero_of_reverse_top_prefix_prob
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
-    {hi lo : EconCSLib.SocialChoice.Ranking.Candidate n}
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
+    {hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n}
     (hhi : hi ∈ winnerSet) (hlo : lo ∉ winnerSet)
     {cut : RankingProperPrefixCut n}
     (hreverse :
@@ -4858,9 +5299,9 @@ score witnessing failure of asymptotic correctness.
 -/
 theorem rankingPrefixScoringCanonicalSelectionError_indicator_reasonable_and_not_tendsto_zero_of_reverse_top_prefix_prob
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
-    {hi lo : EconCSLib.SocialChoice.Ranking.Candidate n}
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
+    {hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n}
     (hhi : hi ∈ winnerSet) (hlo : lo ∉ winnerSet)
     {cut : RankingProperPrefixCut n}
     (hreverse :
@@ -4895,9 +5336,9 @@ consistent.
 -/
 theorem rankingStrictReverseTopPrefixProb_not_all_reasonable_prefix_score_consistency
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
-    {hi lo : EconCSLib.SocialChoice.Ranking.Candidate n}
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
+    {hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n}
     (hhi : hi ∈ winnerSet) (hlo : lo ∉ winnerSet)
     {cut : RankingProperPrefixCut n}
     (hreverse :
@@ -4930,8 +5371,8 @@ true winner.
 -/
 theorem rankingAllReasonablePrefixScoreConsistency_implies_weak_top_prefix_dominance
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
     (hall :
       ∀ diff : RankingProperPrefixCut n → ℝ,
         ReasonablePrefixWeights diff →
@@ -4944,7 +5385,7 @@ theorem rankingAllReasonablePrefixScoreConsistency_implies_weak_top_prefix_domin
                   (iidSampleCandidateScore (rankingPrefixScore diff) sample)
                   winnerSet))
             Filter.atTop (nhds 0)) :
-    ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+    ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
       hi ∈ winnerSet →
         lo ∉ winnerSet →
           ∀ cut : RankingProperPrefixCut n,
@@ -4969,10 +5410,10 @@ from this strict target-ranking/tier hypothesis.
 -/
 theorem rankingPrefixScoreConsistency_strict_forward_weak_necessary
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
     [Nonempty (CrossTierPair winnerSet)] :
-    ((∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+    ((∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
       hi ∈ winnerSet →
         lo ∉ winnerSet →
           ∀ cut : RankingProperPrefixCut n,
@@ -5000,7 +5441,7 @@ theorem rankingPrefixScoreConsistency_strict_forward_weak_necessary
                   (iidSampleCandidateScore (rankingPrefixScore diff) sample)
                   winnerSet))
             Filter.atTop (nhds 0)) →
-        ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+        ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
           hi ∈ winnerSet →
             lo ∉ winnerSet →
               ∀ cut : RankingProperPrefixCut n,
@@ -5022,17 +5463,17 @@ top-prefix condition, weak dominance upgrades to strict dominance.
 -/
 theorem rankingStrictPrefixDominance_iff_all_reasonable_prefix_score_consistency_of_no_cross_tier_prefix_ties
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
     [Nonempty (CrossTierPair winnerSet)]
     (hNoTie :
-      ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+      ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
         hi ∈ winnerSet →
           lo ∉ winnerSet →
             ∀ cut : RankingProperPrefixCut n,
               rankingTopPrefixProb law lo cut ≠
                 rankingTopPrefixProb law hi cut) :
-    (∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+    (∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
       hi ∈ winnerSet →
         lo ∉ winnerSet →
           ∀ cut : RankingProperPrefixCut n,
@@ -5069,9 +5510,9 @@ every reasonable ranking-prefix score rule.
 -/
 theorem rankingStrictPrefixDominance_iff_all_reasonable_prefix_score_separation
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n)) :
-    (∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n)) :
+    (∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
       hi ∈ winnerSet →
         lo ∉ winnerSet →
           ∀ cut : RankingProperPrefixCut n,
@@ -5079,7 +5520,7 @@ theorem rankingStrictPrefixDominance_iff_all_reasonable_prefix_score_separation
               rankingTopPrefixProb law hi cut) ↔
     (∀ diff : RankingProperPrefixCut n → ℝ,
       ReasonablePrefixWeights diff →
-        ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+        ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
           hi ∈ winnerSet →
             lo ∉ winnerSet →
               prefixExpectedScore diff (rankingTopPrefixProb law) lo <
@@ -5088,13 +5529,13 @@ theorem rankingStrictPrefixDominance_iff_all_reasonable_prefix_score_separation
   have hiff :=
     strictTopPrefixDominanceOn_iff_allReasonablePrefixScoresSeparateOn
       (topPrefixProb := rankingTopPrefixProb law)
-      (crossTier := fun hi lo : EconCSLib.SocialChoice.Ranking.Candidate n =>
+      (crossTier := fun hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n =>
         hi ∈ winnerSet ∧ lo ∉ winnerSet)
   constructor
   · intro hdom diff hdiff hi lo hhi hlo
     have hall :
         AllReasonablePrefixScoresSeparateOn (rankingTopPrefixProb law)
-          (fun hi lo : EconCSLib.SocialChoice.Ranking.Candidate n =>
+          (fun hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n =>
             hi ∈ winnerSet ∧ lo ∉ winnerSet) := by
       exact hiff.1 (by
         intro hi lo hcross cut
@@ -5103,7 +5544,7 @@ theorem rankingStrictPrefixDominance_iff_all_reasonable_prefix_score_separation
   · intro hall hi lo hhi hlo cut
     have hsep :
         AllReasonablePrefixScoresSeparateOn (rankingTopPrefixProb law)
-          (fun hi lo : EconCSLib.SocialChoice.Ranking.Candidate n =>
+          (fun hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n =>
             hi ∈ winnerSet ∧ lo ∉ winnerSet) := by
       intro hi lo hcross diff hdiff
       exact hall diff hdiff hi lo hcross.1 hcross.2
@@ -5117,11 +5558,11 @@ reasonable ranking-prefix score rule.
 -/
 theorem rankingTieredStrictPrefixDominance_iff_all_reasonable_prefix_score_separation
     {n Stage : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (targetPrefix :
-      Fin Stage → Finset (EconCSLib.SocialChoice.Ranking.Candidate n)) :
+      Fin Stage → Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n)) :
     (∀ stage : Fin Stage,
-      ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+      ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
         hi ∈ targetPrefix stage →
           lo ∉ targetPrefix stage →
             ∀ cut : RankingProperPrefixCut n,
@@ -5130,7 +5571,7 @@ theorem rankingTieredStrictPrefixDominance_iff_all_reasonable_prefix_score_separ
     (∀ diff : RankingProperPrefixCut n → ℝ,
       ReasonablePrefixWeights diff →
         ∀ stage : Fin Stage,
-          ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+          ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
             hi ∈ targetPrefix stage →
               lo ∉ targetPrefix stage →
                 prefixExpectedScore diff (rankingTopPrefixProb law) lo <
@@ -5156,11 +5597,11 @@ and W-selection goal.
 -/
 theorem rankingStrictPrefixDominance_implies_all_reasonable_prefix_score_consistency
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
     [Nonempty (CrossTierPair winnerSet)]
     (hdom :
-      ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+      ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
         hi ∈ winnerSet →
           lo ∉ winnerSet →
             ∀ cut : RankingProperPrefixCut n,
@@ -5191,13 +5632,13 @@ asymptotically correct.
 -/
 theorem rankingPrefixScoreSeparation_implies_all_reasonable_prefix_score_consistency
     {n : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
-    (winnerSet : Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
+    (winnerSet : Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
     [Nonempty (CrossTierPair winnerSet)]
     (hsep :
       ∀ diff : RankingProperPrefixCut n → ℝ,
         ReasonablePrefixWeights diff →
-          ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+          ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
             hi ∈ winnerSet →
               lo ∉ winnerSet →
                 prefixExpectedScore diff (rankingTopPrefixProb law) lo <
@@ -5214,7 +5655,7 @@ theorem rankingPrefixScoreSeparation_implies_all_reasonable_prefix_score_consist
                 winnerSet))
           Filter.atTop (nhds 0) := by
   have hdom :
-      ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+      ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
         hi ∈ winnerSet →
           lo ∉ winnerSet →
             ∀ cut : RankingProperPrefixCut n,
@@ -5235,15 +5676,15 @@ asymptotically.
 -/
 theorem rankingPrefixScoringCanonicalTieredPrefixSelectionError_tendsto_zero
     {n Stage : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (diff : RankingProperPrefixCut n → ℝ)
     (targetPrefix :
-      Fin Stage → Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
+      Fin Stage → Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
     (hnonempty :
       ∀ stage : Fin Stage, Nonempty (CrossTierPair (targetPrefix stage)))
     (hdom :
       ∀ stage : Fin Stage,
-        ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+        ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
           hi ∈ targetPrefix stage →
             lo ∉ targetPrefix stage →
               ∀ cut : RankingProperPrefixCut n,
@@ -5282,16 +5723,16 @@ asymptotically.
 -/
 theorem rankingPrefixScoreSeparation_implies_all_reasonable_tiered_prefix_score_consistency
     {n Stage : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (targetPrefix :
-      Fin Stage → Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
+      Fin Stage → Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
     (hnonempty :
       ∀ stage : Fin Stage, Nonempty (CrossTierPair (targetPrefix stage)))
     (hsep :
       ∀ diff : RankingProperPrefixCut n → ℝ,
         ReasonablePrefixWeights diff →
           ∀ stage : Fin Stage,
-            ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+            ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
               hi ∈ targetPrefix stage →
                 lo ∉ targetPrefix stage →
                   prefixExpectedScore diff (rankingTopPrefixProb law) lo <
@@ -5309,7 +5750,7 @@ theorem rankingPrefixScoreSeparation_implies_all_reasonable_tiered_prefix_score_
           Filter.atTop (nhds 0) := by
   have hdom :
       ∀ stage : Fin Stage,
-        ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+        ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
           hi ∈ targetPrefix stage →
             lo ∉ targetPrefix stage →
               ∀ cut : RankingProperPrefixCut n,
@@ -5331,21 +5772,21 @@ weak dominance to the strict source condition.
 -/
 theorem rankingTieredStrictPrefixDominance_iff_all_reasonable_tiered_prefix_score_consistency_of_no_cross_tier_prefix_ties
     {n Stage : ℕ}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (targetPrefix :
-      Fin Stage → Finset (EconCSLib.SocialChoice.Ranking.Candidate n))
+      Fin Stage → Finset (AppliedModelingLib.SocialChoice.Ranking.Candidate n))
     (hnonempty :
       ∀ stage : Fin Stage, Nonempty (CrossTierPair (targetPrefix stage)))
     (hNoTie :
       ∀ stage : Fin Stage,
-        ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+        ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
           hi ∈ targetPrefix stage →
             lo ∉ targetPrefix stage →
               ∀ cut : RankingProperPrefixCut n,
                 rankingTopPrefixProb law lo cut ≠
                   rankingTopPrefixProb law hi cut) :
     (∀ stage : Fin Stage,
-      ∀ hi lo : EconCSLib.SocialChoice.Ranking.Candidate n,
+      ∀ hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n,
         hi ∈ targetPrefix stage →
           lo ∉ targetPrefix stage →
             ∀ cut : RankingProperPrefixCut n,
@@ -5426,7 +5867,7 @@ def finiteScoreGapPairwiseRateCertificate_of_support_nonneg_zero_gap_prob
         0 ≤ score hi signal - score lo signal)
     (hZeroProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 0) =
           pZero hi lo)
     (hZero_pos : ∀ hi lo, 0 < pZero hi lo) :
@@ -5599,7 +6040,7 @@ def finiteScoreGapPairwiseRateCertificate_of_countVectorLower_witnesses_of_mean_
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5632,7 +6073,7 @@ def finiteScoreGapPairwiseRateCertificate_of_periodicCountVectorLower_witnesses_
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5674,7 +6115,7 @@ def finiteScoreGapPairwiseRateCertificate_of_empiricalTypeLower_witnesses_of_mea
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5709,7 +6150,7 @@ def finiteScoreGapPairwiseRateCertificate_of_empiricalTypeLower_of_mean_nonneg_p
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5749,7 +6190,7 @@ def finiteScoreGapPairwiseRateCertificate_of_stationary_tilted_modal_log_support
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5789,7 +6230,7 @@ def finiteScoreGapPairwiseRateCertificate_of_stationary_tilted_modal_log_support
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -5821,7 +6262,7 @@ def finiteScoreGapRelevantPairRateCertificate_of_stationary_tilted_modal_log_sup
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score (hi pair) signal - score (lo pair) signal))
     (aPos aNeg : Pair → Signal)
     (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
@@ -5858,7 +6299,7 @@ def finiteScoreGapPairwiseRateCertificate_of_stationary_tilted_modal_log_full_su
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -6571,7 +7012,7 @@ theorem exists_pos_of_nonneg_sum_eq_one
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1) :
     ∃ rule : Rule, 0 < weight rule :=
-  EconCSLib.exists_positive_weight_of_nonneg_sum_eq_one
+  AppliedModelingLib.exists_positive_weight_of_nonneg_sum_eq_one
     weight hweight hsum
 
 /--
@@ -6585,7 +7026,7 @@ theorem weighted_sum_pos_of_nonneg_sum_eq_one
     (hsum : (∑ rule : Rule, weight rule) = 1)
     (hvalue : ∀ rule, 0 < value rule) :
     0 < ∑ rule : Rule, weight rule * value rule :=
-  EconCSLib.weightedSum_pos_of_nonneg_sum_eq_one
+  AppliedModelingLib.weightedSum_pos_of_nonneg_sum_eq_one
     weight value hweight hsum hvalue
 
 theorem sqrt_weightedApprovalTerm
@@ -6958,11 +7399,11 @@ theorem approvalPairwiseError_exponentialRateCertificate_of_cramer_ternary_score
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     (C : FiniteIidScoreGapCramerCertificate law hiScore loScore) :
@@ -6978,17 +7419,17 @@ theorem approvalPairwiseError_exponentialRateCertificate_of_cramer_ternary_score
     have : (1 : ℝ) = -1 := hup.symm.trans hdown
     norm_num at this
   have hzero_prob :
-      EconCSLib.pmfProb law (fun signal => ¬up signal ∧ ¬down signal) =
+      AppliedModelingLib.pmfProb law (fun signal => ¬up signal ∧ ¬down signal) =
         1 - pUp - pDown := by
     have hsplit :=
-      EconCSLib.pmfProb_not_and_not_eq_one_sub_add_of_disjoint
+      AppliedModelingLib.pmfProb_not_and_not_eq_one_sub_add_of_disjoint
         law up down hdisjoint
     simpa [gap, up, down, hUpProb, hDownProb] using hsplit
   have hsum : pUp + pDown ≤ 1 := by
     have hnonneg :
-        0 ≤ EconCSLib.pmfProb law
+        0 ≤ AppliedModelingLib.pmfProb law
           (fun signal => ¬up signal ∧ ¬down signal) :=
-      EconCSLib.pmfProb_nonneg law
+      AppliedModelingLib.pmfProb_nonneg law
         (fun signal => ¬up signal ∧ ¬down signal)
     rw [hzero_prob] at hnonneg
     linarith
@@ -7020,11 +7461,11 @@ theorem finiteIidScoreGapCramerCertificate_of_approval_ternary_scores
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown) :
     FiniteIidScoreGapCramerCertificate law hiScore loScore :=
@@ -7048,11 +7489,11 @@ theorem approvalPairwiseError_exponentialRateCertificate_of_ternary_scores_lower
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     (hpos :
@@ -7075,17 +7516,17 @@ theorem approvalPairwiseError_exponentialRateCertificate_of_ternary_scores_lower
     have : (1 : ℝ) = -1 := hup.symm.trans hdown
     norm_num at this
   have hzero_prob :
-      EconCSLib.pmfProb law (fun signal => ¬up signal ∧ ¬down signal) =
+      AppliedModelingLib.pmfProb law (fun signal => ¬up signal ∧ ¬down signal) =
         1 - pUp - pDown := by
     have hsplit :=
-      EconCSLib.pmfProb_not_and_not_eq_one_sub_add_of_disjoint
+      AppliedModelingLib.pmfProb_not_and_not_eq_one_sub_add_of_disjoint
         law up down hdisjoint
     simpa [gap, up, down, hUpProb, hDownProb] using hsplit
   have hsum : pUp + pDown ≤ 1 := by
     have hnonneg :
-        0 ≤ EconCSLib.pmfProb law
+        0 ≤ AppliedModelingLib.pmfProb law
           (fun signal => ¬up signal ∧ ¬down signal) :=
-      EconCSLib.pmfProb_nonneg law
+      AppliedModelingLib.pmfProb_nonneg law
         (fun signal => ¬up signal ∧ ¬down signal)
     rw [hzero_prob] at hnonneg
     linarith
@@ -7129,11 +7570,11 @@ theorem approvalPairwiseError_exponentialRateCertificate_of_ternary_scores_poly_
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     {lowerConst : ℝ} (hlowerConst : 0 < lowerConst) (lowerDegree : ℕ)
@@ -7181,11 +7622,11 @@ theorem approvalPairwiseError_exponentialRateCertificate_of_ternary_scores
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown) :
     ExponentialRateCertificate
@@ -7208,7 +7649,7 @@ theorem approvalTernaryScore_support_nonneg_of_down_prob_zero
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hDownZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         0) :
     ∀ signal, 0 < (law signal).toReal →
@@ -7221,9 +7662,9 @@ theorem approvalTernaryScore_support_nonneg_of_down_prob_zero
   · rw [hzero]
   · have hprob_pos :
         0 <
-          EconCSLib.pmfProb law
+          AppliedModelingLib.pmfProb law
             (fun signal => hiScore signal - loScore signal = -1) :=
-      EconCSLib.pmfProb_pos_of_mass law
+      AppliedModelingLib.pmfProb_pos_of_mass law
         (fun signal => hiScore signal - loScore signal = -1)
         signal hneg hmass
     rw [hDownZero] at hprob_pos
@@ -7243,11 +7684,11 @@ theorem approvalTernaryScore_support_pos_of_down_zero_prob_zero
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hZeroZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         0)
     (hDownZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         0) :
     ∀ signal, 0 < (law signal).toReal →
@@ -7259,18 +7700,18 @@ theorem approvalTernaryScore_support_pos_of_down_zero_prob_zero
     norm_num
   · have hprob_pos :
         0 <
-          EconCSLib.pmfProb law
+          AppliedModelingLib.pmfProb law
             (fun signal => hiScore signal - loScore signal = 0) :=
-      EconCSLib.pmfProb_pos_of_mass law
+      AppliedModelingLib.pmfProb_pos_of_mass law
         (fun signal => hiScore signal - loScore signal = 0)
         signal hzero hmass
     rw [hZeroZero] at hprob_pos
     exact False.elim (lt_irrefl (0 : ℝ) hprob_pos)
   · have hprob_pos :
         0 <
-          EconCSLib.pmfProb law
+          AppliedModelingLib.pmfProb law
             (fun signal => hiScore signal - loScore signal = -1) :=
-      EconCSLib.pmfProb_pos_of_mass law
+      AppliedModelingLib.pmfProb_pos_of_mass law
         (fun signal => hiScore signal - loScore signal = -1)
         signal hneg hmass
     rw [hDownZero] at hprob_pos
@@ -7291,16 +7732,16 @@ theorem approvalPairwiseError_exponentialRateCertificate_of_ternary_scores_down_
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hZeroProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         pZero)
     (hZero_pos : 0 < pZero)
     (hDownZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         0) :
     ExponentialRateCertificate
@@ -7315,10 +7756,10 @@ theorem approvalPairwiseError_exponentialRateCertificate_of_ternary_scores_down_
     have : (1 : ℝ) = -1 := hup.symm.trans hdown
     norm_num at this
   have hzero_event :
-      EconCSLib.pmfProb law (fun signal => gap signal = 0) =
-        EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law (fun signal => gap signal = 0) =
+        AppliedModelingLib.pmfProb law
           (fun signal => ¬up signal ∧ ¬down signal) := by
-    refine EconCSLib.pmfProb_congr law ?_
+    refine AppliedModelingLib.pmfProb_congr law ?_
     intro signal
     constructor
     · intro hzero
@@ -7335,21 +7776,21 @@ theorem approvalPairwiseError_exponentialRateCertificate_of_ternary_scores_down_
       · exact hzero
       · exact False.elim (hnot.2 hneg)
   have hnot_up_down_prob :
-      EconCSLib.pmfProb law (fun signal => ¬up signal ∧ ¬down signal) =
+      AppliedModelingLib.pmfProb law (fun signal => ¬up signal ∧ ¬down signal) =
         1 - pUp := by
     have hsplit :=
-      EconCSLib.pmfProb_not_and_not_eq_one_sub_add_of_disjoint
+      AppliedModelingLib.pmfProb_not_and_not_eq_one_sub_add_of_disjoint
         law up down hdisjoint
     calc
-      EconCSLib.pmfProb law (fun signal => ¬up signal ∧ ¬down signal)
+      AppliedModelingLib.pmfProb law (fun signal => ¬up signal ∧ ¬down signal)
           = 1 - pUp - 0 := by
               simpa [gap, up, down, hUpProb, hDownZero] using hsplit
       _ = 1 - pUp := by ring
   have hpZero_eq : pZero = 1 - pUp := by
     calc
-      pZero = EconCSLib.pmfProb law (fun signal => gap signal = 0) := by
+      pZero = AppliedModelingLib.pmfProb law (fun signal => gap signal = 0) := by
           simpa [gap] using hZeroProb.symm
-      _ = EconCSLib.pmfProb law
+      _ = AppliedModelingLib.pmfProb law
           (fun signal => ¬up signal ∧ ¬down signal) := hzero_event
       _ = 1 - pUp := hnot_up_down_prob
   have hsupport :
@@ -7385,18 +7826,18 @@ def finiteScoreGapPairwiseRateCertificate_of_approval_ternary_scores_down_zero
           score hi signal - score lo signal = -1)
     (hUpProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 1) =
           pUp hi lo)
     (hZeroProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 0) =
           pZero hi lo)
     (hZero_pos : ∀ hi lo, 0 < pZero hi lo)
     (hDownZero :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = -1) =
           0) :
     PairwiseErrorRateCertificate Candidate where
@@ -7423,11 +7864,11 @@ theorem approvalPairwiseError_eventually_zero_of_ternary_scores_down_zero_zero_z
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hZeroZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         0)
     (hDownZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         0) :
     ∀ᶠ n in Filter.atTop,
@@ -7450,11 +7891,11 @@ theorem approvalPairwiseError_hasExpUpperBoundWithConst_of_ternary_scores_down_z
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hZeroZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         0)
     (hDownZero :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         0)
     (targetRate : ℝ) :
@@ -7476,30 +7917,30 @@ theorem pmfExp_ternary_gap_eq_prob_one_sub_prob_neg_one
     (law : PMF Signal) (gap : Signal → ℝ)
     (hgap :
       ∀ signal, gap signal = 1 ∨ gap signal = 0 ∨ gap signal = -1) :
-    EconCSLib.pmfExp law gap =
-      EconCSLib.pmfProb law (fun signal => gap signal = 1) -
-        EconCSLib.pmfProb law (fun signal => gap signal = -1) :=
-  EconCSLib.pmfExp_ternary_eq_prob_one_sub_prob_neg_one law gap hgap
+    AppliedModelingLib.pmfExp law gap =
+      AppliedModelingLib.pmfProb law (fun signal => gap signal = 1) -
+        AppliedModelingLib.pmfProb law (fun signal => gap signal = -1) :=
+  AppliedModelingLib.pmfExp_ternary_eq_prob_one_sub_prob_neg_one law gap hgap
 
 /--
 Expected K-approval score gap is the K-approval up probability minus the down
 probability.
 -/
 theorem kApprovalScoreGap_pmfExp_eq_upProb_sub_downProb
-    {n : ℕ} (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    {n : ℕ} (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n) :
-    EconCSLib.pmfExp law
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n) :
+    AppliedModelingLib.pmfExp law
         (fun π =>
-          EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi -
-            EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo) =
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo -
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo := by
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi -
+            AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo) =
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo -
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo := by
   rw [pmfExp_ternary_gap_eq_prob_one_sub_prob_neg_one]
-  · rw [← EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_eq_score_gap_one,
-      ← EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb_eq_score_gap_neg_one]
+  · rw [← AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_eq_score_gap_one,
+      ← AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb_eq_score_gap_neg_one]
   · intro π
-    exact EconCSLib.SocialChoice.Ranking.kApprovalScore_gap_ternary K π hi lo
+    exact AppliedModelingLib.SocialChoice.Ranking.kApprovalScore_gap_ternary K π hi lo
 
 /--
 Finite ternary approval trichotomy.  For any finite ternary score-gap law with
@@ -7518,15 +7959,15 @@ theorem approvalPairwiseError_exponentialRateCertificate_or_eventually_zero_of_t
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     (hZeroProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         pZero) :
     ExponentialRateCertificate
@@ -7544,12 +7985,12 @@ theorem approvalPairwiseError_exponentialRateCertificate_or_eventually_zero_of_t
   · have hpDown_nonneg : 0 ≤ pDown := by
       rw [← hDownProb]
       exact
-        EconCSLib.pmfProb_nonneg law
+        AppliedModelingLib.pmfProb_nonneg law
           (fun signal => hiScore signal - loScore signal = -1)
     have hpDown_zero : pDown = 0 :=
       le_antisymm (le_of_not_gt hDown_pos) hpDown_nonneg
     have hDownZero :
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => hiScore signal - loScore signal = -1) =
           0 := by
       simpa [hpDown_zero] using hDownProb
@@ -7561,7 +8002,7 @@ theorem approvalPairwiseError_exponentialRateCertificate_or_eventually_zero_of_t
     · have hpZero_nonneg : 0 ≤ pZero := by
         rw [← hZeroProb]
         exact
-          EconCSLib.pmfProb_nonneg law
+          AppliedModelingLib.pmfProb_nonneg law
             (fun signal => hiScore signal - loScore signal = 0)
       have hpZero_zero : pZero = 0 :=
         le_antisymm (le_of_not_gt hZero_pos) hpZero_nonneg
@@ -7587,15 +8028,15 @@ theorem approvalPairwiseError_hasExtendedExponentialRate_of_ternary_scores
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     (hZeroProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 0) =
         pZero) :
     ∃ rate : WithTop ℝ,
@@ -7626,11 +8067,11 @@ theorem approvalPairwiseError_tendsto_zero_of_ternary_scores
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown)
     (hrate_pos : 0 < approvalPairwiseRate pUp pDown) :
@@ -7659,11 +8100,11 @@ theorem approvalPairwiseError_tendsto_zero_of_ternary_scores_of_down_lt_up
           hiScore signal - loScore signal = 0 ∨
           hiScore signal - loScore signal = -1)
     (hUpProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = 1) =
         pUp)
     (hDownProb :
-      EconCSLib.pmfProb law
+      AppliedModelingLib.pmfProb law
           (fun signal => hiScore signal - loScore signal = -1) =
         pDown) :
     Filter.Tendsto
@@ -7679,39 +8120,39 @@ classification and the two nonzero-event identifications are discharged by the
 generic K-approval API.
 -/
 theorem kApprovalPairwiseError_exponentialRateCertificate
-    {n : ℕ} (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    {n : ℕ} (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     {pUp pDown : ℝ}
     (hUp : 0 < pUp) (hDown : 0 < pDown)
     (hle : pDown ≤ pUp)
     (hUpProb :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo = pUp)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo = pUp)
     (hDownProb :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo =
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo =
         pDown) :
     ExponentialRateCertificate
       (pairwiseScoringErrorProb law
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo))
       (approvalPairwiseRate pUp pDown) := by
   classical
   refine
     approvalPairwiseError_exponentialRateCertificate_of_ternary_scores
       law
-      (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-      (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo)
+      (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+      (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo)
       hUp hDown hle ?_ ?_ ?_
   · intro π
-    exact EconCSLib.SocialChoice.Ranking.kApprovalScore_gap_ternary
+    exact AppliedModelingLib.SocialChoice.Ranking.kApprovalScore_gap_ternary
       K π hi lo
   · rw [← hUpProb]
     exact
-      (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_eq_score_gap_one
+      (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_eq_score_gap_one
         law K hi lo).symm
   · rw [← hDownProb]
     exact
-      (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb_eq_score_gap_neg_one
+      (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb_eq_score_gap_neg_one
         law K hi lo).symm
 
 /--
@@ -7719,25 +8160,25 @@ Exact K-approval pairwise rate stated directly in terms of the ranking-law
 up/down event probabilities.
 -/
 theorem kApprovalPairwiseError_exponentialRateCertificate_of_probabilities
-    {n : ℕ} (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    {n : ℕ} (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hUp :
       0 <
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo)
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo)
     (hDown :
       0 <
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo)
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo)
     (hle :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo ≤
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo) :
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo ≤
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo) :
     ExponentialRateCertificate
       (pairwiseScoringErrorProb law
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo))
       (approvalPairwiseRate
-        (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo)
-        (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo)) :=
+        (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo)
+        (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo)) :=
   kApprovalPairwiseError_exponentialRateCertificate
     law K hi lo hUp hDown hle rfl rfl
 
@@ -7747,43 +8188,43 @@ law.  If the down-event has zero probability and the zero-gap event has
 positive probability, the source closed form with `pDown = 0` is exact.
 -/
 theorem kApprovalPairwiseError_exponentialRateCertificate_down_zero
-    {n : ℕ} (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    {n : ℕ} (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     {pUp pZero : ℝ}
     (hUpProb :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo = pUp)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo = pUp)
     (hZeroProb :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairZeroProb law K hi lo =
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairZeroProb law K hi lo =
         pZero)
     (hZero_pos : 0 < pZero)
     (hDownZero :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo =
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo =
         0) :
     ExponentialRateCertificate
       (pairwiseScoringErrorProb law
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo))
       (approvalPairwiseRate pUp 0) := by
   classical
   refine
     approvalPairwiseError_exponentialRateCertificate_of_ternary_scores_down_zero
       law
-      (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-      (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo)
+      (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+      (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo)
       ?_ ?_ ?_ hZero_pos ?_
   · intro π
-    exact EconCSLib.SocialChoice.Ranking.kApprovalScore_gap_ternary
+    exact AppliedModelingLib.SocialChoice.Ranking.kApprovalScore_gap_ternary
       K π hi lo
   · rw [← hUpProb]
     exact
-      (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_eq_score_gap_one
+      (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_eq_score_gap_one
         law K hi lo).symm
   · rw [← hZeroProb]
     rfl
   · rw [← hDownZero]
     exact
-      (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb_eq_score_gap_neg_one
+      (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb_eq_score_gap_neg_one
         law K hi lo).symm
 
 /--
@@ -7791,35 +8232,35 @@ Strict boundary K-approval pairwise errors are eventually empty directly from
 a finite ranking law.
 -/
 theorem kApprovalPairwiseError_eventually_zero_down_zero_zero_zero
-    {n : ℕ} (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    {n : ℕ} (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hZeroZero :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairZeroProb law K hi lo =
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairZeroProb law K hi lo =
         0)
     (hDownZero :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo =
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo =
         0) :
     ∀ᶠ sampleSize in Filter.atTop,
       pairwiseScoringErrorProb law
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo)
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo)
         sampleSize = 0 := by
   classical
   refine
     approvalPairwiseError_eventually_zero_of_ternary_scores_down_zero_zero_zero
       law
-      (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-      (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo)
+      (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+      (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo)
       ?_ ?_ ?_
   · intro π
-    exact EconCSLib.SocialChoice.Ranking.kApprovalScore_gap_ternary
+    exact AppliedModelingLib.SocialChoice.Ranking.kApprovalScore_gap_ternary
       K π hi lo
-  · simpa [EconCSLib.SocialChoice.Ranking.kApprovalPairZeroProb] using
+  · simpa [AppliedModelingLib.SocialChoice.Ranking.kApprovalPairZeroProb] using
       hZeroZero
   · rw [← hDownZero]
     exact
-      (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb_eq_score_gap_neg_one
+      (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb_eq_score_gap_neg_one
         law K hi lo).symm
 
 /--
@@ -7827,36 +8268,36 @@ Strict boundary K-approval pairwise errors admit an exponential upper bound at
 every target rate directly from a finite ranking law.
 -/
 theorem kApprovalPairwiseError_hasExpUpperBoundWithConst_down_zero_zero_zero
-    {n : ℕ} (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    {n : ℕ} (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hZeroZero :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairZeroProb law K hi lo =
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairZeroProb law K hi lo =
         0)
     (hDownZero :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo =
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo =
         0)
     (targetRate : ℝ) :
     HasExpUpperBoundWithConst
       (pairwiseScoringErrorProb law
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo))
       targetRate := by
   classical
   refine
     approvalPairwiseError_hasExpUpperBoundWithConst_of_ternary_scores_down_zero_zero_zero
       law
-      (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-      (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo)
+      (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+      (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo)
       ?_ ?_ ?_ targetRate
   · intro π
-    exact EconCSLib.SocialChoice.Ranking.kApprovalScore_gap_ternary
+    exact AppliedModelingLib.SocialChoice.Ranking.kApprovalScore_gap_ternary
       K π hi lo
-  · simpa [EconCSLib.SocialChoice.Ranking.kApprovalPairZeroProb] using
+  · simpa [AppliedModelingLib.SocialChoice.Ranking.kApprovalPairZeroProb] using
       hZeroZero
   · rw [← hDownZero]
     exact
-      (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb_eq_score_gap_neg_one
+      (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb_eq_score_gap_neg_one
         law K hi lo).symm
 
 /--
@@ -7866,41 +8307,41 @@ the exact iid pairwise exponential rate, or the strict one-sided boundary makes
 the iid pairwise mistake event eventually empty.
 -/
 theorem kApprovalPairwiseError_exponentialRateCertificate_or_eventually_zero
-    {n : ℕ} (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    {n : ℕ} (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hle :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo ≤
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo) :
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo ≤
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo) :
     ExponentialRateCertificate
         (pairwiseScoringErrorProb law
-          (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-          (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo))
+          (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+          (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo))
         (approvalPairwiseRate
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo)
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo)) ∨
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo)
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo)) ∨
       (∀ᶠ sampleSize in Filter.atTop,
         pairwiseScoringErrorProb law
-          (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-          (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo)
+          (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+          (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo)
           sampleSize = 0) := by
   classical
   refine
     approvalPairwiseError_exponentialRateCertificate_or_eventually_zero_of_ternary_scores
       (pZero :=
-        EconCSLib.SocialChoice.Ranking.kApprovalPairZeroProb law K hi lo)
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairZeroProb law K hi lo)
       law
-      (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-      (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo)
+      (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+      (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo)
       hle ?_ ?_ ?_ ?_
   · intro π
-    exact EconCSLib.SocialChoice.Ranking.kApprovalScore_gap_ternary
+    exact AppliedModelingLib.SocialChoice.Ranking.kApprovalScore_gap_ternary
       K π hi lo
   · exact
-      (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_eq_score_gap_one
+      (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_eq_score_gap_one
         law K hi lo).symm
   · exact
-      (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb_eq_score_gap_neg_one
+      (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb_eq_score_gap_neg_one
         law K hi lo).symm
   · rfl
 
@@ -7909,17 +8350,17 @@ Finite K-approval pairwise trichotomy directly from a ranking law as a single
 extended-rate statement.
 -/
 theorem kApprovalPairwiseError_hasExtendedExponentialRate
-    {n : ℕ} (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    {n : ℕ} (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hle :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo ≤
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo) :
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo ≤
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo) :
     ∃ rate : WithTop ℝ,
       HasExtendedExponentialRate
         (pairwiseScoringErrorProb law
-          (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-          (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo))
+          (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+          (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo))
         rate := by
   rcases
       kApprovalPairwiseError_exponentialRateCertificate_or_eventually_zero
@@ -7927,8 +8368,8 @@ theorem kApprovalPairwiseError_hasExtendedExponentialRate
     hfinite | hzero
   · exact
       ⟨(approvalPairwiseRate
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo)
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo) :
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo)
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo) :
         WithTop ℝ),
         HasExtendedExponentialRate.finite hfinite.has_rate⟩
   · exact ⟨⊤, HasExtendedExponentialRate.infinite hzero⟩
@@ -7938,22 +8379,22 @@ K-approval pairwise error probabilities for a finite ranking law tend to zero
 whenever the source closed-form pairwise approval rate is positive.
 -/
 theorem kApprovalPairwiseError_tendsto_zero
-    {n : ℕ} (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    {n : ℕ} (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     {pUp pDown : ℝ}
     (hUp : 0 < pUp) (hDown : 0 < pDown)
     (hle : pDown ≤ pUp)
     (hUpProb :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo = pUp)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo = pUp)
     (hDownProb :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo =
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo =
         pDown)
     (hrate_pos : 0 < approvalPairwiseRate pUp pDown) :
     Filter.Tendsto
       (pairwiseScoringErrorProb law
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo))
       Filter.atTop (nhds 0) :=
   (kApprovalPairwiseError_exponentialRateCertificate
     law K hi lo hUp hDown hle hUpProb hDownProb)
@@ -7964,23 +8405,23 @@ K-approval pairwise error probabilities for a finite ranking law tend to zero
 under the paper's strict up/down separation condition.
 -/
 theorem kApprovalPairwiseError_tendsto_zero_of_down_lt_up
-    {n : ℕ} (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    {n : ℕ} (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     {pUp pDown : ℝ}
     (hUp : 0 < pUp) (hDown : 0 < pDown)
     (hle : pDown ≤ pUp)
     (hsum : pUp + pDown ≤ 1)
     (hlt : pDown < pUp)
     (hUpProb :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo = pUp)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo = pUp)
     (hDownProb :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo =
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo =
         pDown) :
     Filter.Tendsto
       (pairwiseScoringErrorProb law
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo))
       Filter.atTop (nhds 0) :=
   kApprovalPairwiseError_tendsto_zero
     law K hi lo hUp hDown hle hUpProb hDownProb
@@ -7991,26 +8432,26 @@ K-approval pairwise error probabilities for a finite ranking law tend to zero
 under strict separation of the actual ranking-law up/down probabilities.
 -/
 theorem kApprovalPairwiseError_tendsto_zero_of_probabilities_down_lt_up
-    {n : ℕ} (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    {n : ℕ} (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hUp :
       0 <
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo)
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo)
     (hDown :
       0 <
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo)
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo)
     (hlt :
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo <
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo) :
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K hi lo <
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K hi lo) :
     Filter.Tendsto
       (pairwiseScoringErrorProb law
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π hi)
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π lo))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π hi)
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π lo))
       Filter.atTop (nhds 0) :=
   kApprovalPairwiseError_tendsto_zero_of_down_lt_up
     law K hi lo hUp hDown hlt.le
-    (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
+    (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
       law K hi lo)
     hlt rfl rfl
 
@@ -8021,29 +8462,29 @@ avoids forcing self-pairs, whose K-approval up/down probabilities are zero.
 -/
 def kApprovalRelevantPairRateCertificate
     {n : ℕ} {Pair : Type*}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (pUp pDown : Pair → ℝ)
     (hUp : ∀ pair, 0 < pUp pair)
     (hDown : ∀ pair, 0 < pDown pair)
     (hle : ∀ pair, pDown pair ≤ pUp pair)
     (hUpProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair) =
           pUp pair)
     (hDownProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) =
           pDown pair) :
     FiniteErrorRateCertificate Pair where
   errorProb :=
     fun pair =>
       pairwiseScoringErrorProb law
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
   rate := fun pair => approvalPairwiseRate (pUp pair) (pDown pair)
   has_rate := by
     intro pair
@@ -8059,33 +8500,33 @@ stated directly in terms of the ranking-law K-approval up/down probabilities.
 -/
 def kApprovalRelevantPairRateCertificate_of_probabilities
     {n : ℕ} {Pair : Type*}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hUp :
       ∀ pair,
         0 <
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair))
     (hDown :
       ∀ pair,
         0 <
-          EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair))
     (hle :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) ≤
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair)) :
     FiniteErrorRateCertificate Pair :=
   kApprovalRelevantPairRateCertificate
     law K hi lo
     (fun pair =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
         (hi pair) (lo pair))
     (fun pair =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
         (hi pair) (lo pair))
     hUp hDown hle (fun _ => rfl) (fun _ => rfl)
 
@@ -8095,32 +8536,32 @@ in the K-approval zero-down boundary case.
 -/
 def kApprovalRelevantPairRateCertificate_down_zero
     {n : ℕ} {Pair : Type*}
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (pUp pZero : Pair → ℝ)
     (hUpProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair) =
           pUp pair)
     (hZeroProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairZeroProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairZeroProb law K
             (hi pair) (lo pair) =
           pZero pair)
     (hZero_pos : ∀ pair, 0 < pZero pair)
     (hDownZero :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) =
           0) :
     FiniteErrorRateCertificate Pair where
   errorProb :=
     fun pair =>
       pairwiseScoringErrorProb law
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
   rate := fun pair => approvalPairwiseRate (pUp pair) 0
   has_rate := by
     intro pair
@@ -8143,6 +8584,24 @@ def finiteOutcomeLearningRate
     {Pair : Type*} [Fintype Pair] [Nonempty Pair]
     (rate : Pair → ℝ) : ℝ :=
   (Finset.univ : Finset Pair).inf' finiteUnivNonempty rate
+
+/--
+Finite outcome-learning rate in the extended source convention.  A pair that
+is error-free after a positive sample has rate `⊤` and therefore cannot lower
+the aggregate minimum when any finite-rate pair remains.
+-/
+def finiteOutcomeLearningExtendedRate
+    {Pair : Type*} [Fintype Pair] [Nonempty Pair]
+    (rate : Pair → WithTop ℝ) : WithTop ℝ :=
+  (Finset.univ : Finset Pair).inf' finiteUnivNonempty rate
+
+/-- The extended finite outcome-learning rate is bounded above by every pair rate. -/
+theorem finiteOutcomeLearningExtendedRate_le
+    {Pair : Type*} [Fintype Pair] [Nonempty Pair]
+    (rate : Pair → WithTop ℝ) (pair : Pair) :
+    finiteOutcomeLearningExtendedRate rate ≤ rate pair := by
+  unfold finiteOutcomeLearningExtendedRate
+  exact Finset.inf'_le rate (Finset.mem_univ pair)
 
 /-- A finite outcome-learning rate is realized by some pivotal pair. -/
 theorem finiteOutcomeLearningRate_exists_minimizer
@@ -8263,7 +8722,7 @@ theorem finiteRelevantScoreGapErrorSum_le_card_mul_exp_at_finiteOutcomeLearningR
     (hmean :
       ∀ pair,
         0 ≤
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (fun signal => score (hi pair) signal - score (lo pair) signal))
     {aPos aNeg : Pair → Signal}
     (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
@@ -8300,6 +8759,42 @@ theorem finiteRelevantScoreGapErrorSum_le_card_mul_exp_at_finiteOutcomeLearningR
       n
 
 /--
+Full finite-support Proposition 4 finite-`N` relevant-pair bound.  The
+pairwise source bound applies to every finite score-gap branch, so this needs
+no two-sided score-gap premise.
+-/
+theorem finiteRelevantScoreGapErrorSum_le_card_mul_exp_at_finiteOutcomeLearningRate_of_mean_nonneg
+    {Pair Candidate Signal : Type*} [Fintype Pair] [Nonempty Pair]
+    [Fintype Signal] [DecidableEq Signal]
+    (law : PMF Signal) (score : Candidate → Signal → ℝ)
+    (hi lo : Pair → Candidate)
+    (hmean :
+      ∀ pair,
+        0 ≤ AppliedModelingLib.pmfExp law
+          (fun signal => score (hi pair) signal - score (lo pair) signal))
+    (n : ℕ) :
+    (∑ pair : Pair,
+      finiteScoreGapPairwiseErrorProb law score (hi pair) (lo pair) n) ≤
+      (Fintype.card Pair : ℝ) *
+        Real.exp (-(n : ℝ) *
+          finiteOutcomeLearningRate
+            (fun pair : Pair =>
+              pairwiseScoringRate law
+                (score (hi pair)) (score (lo pair)))) := by
+  exact
+    finiteErrorSum_le_card_mul_exp_of_pairwise_rate_bounds
+      (fun pair n =>
+        finiteScoreGapPairwiseErrorProb law score (hi pair) (lo pair) n)
+      (fun pair : Pair =>
+        pairwiseScoringRate law (score (hi pair)) (score (lo pair)))
+      (by
+        intro pair n
+        simpa [finiteScoreGapPairwiseErrorProb] using
+          pairwiseScoringErrorProb_le_exp_neg_pairwiseScoringRate_of_mean_nonneg
+            law (score (hi pair)) (score (lo pair)) (hmean pair) n)
+      n
+
+/--
 Source-shaped Proposition 4 finite-`N` W-selection upper bound in the paper's
 coarse `M^2` form, at the realized finite outcome-learning rate.
 -/
@@ -8312,7 +8807,7 @@ theorem crossTierScoreGapErrorSum_le_candidate_card_sq_mul_exp_at_finiteOutcomeL
     (hmean :
       ∀ pair : CrossTierPair winnerSet,
         0 ≤
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (fun signal => score pair.hi signal - score pair.lo signal))
     {aPos aNeg : CrossTierPair winnerSet → Signal}
     (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
@@ -8396,12 +8891,12 @@ def approvalPairwiseRateCertificate_of_ternary_scores
           score hi signal - score lo signal = -1)
     (hUpProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 1) =
           pUp hi lo)
     (hDownProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = -1) =
           pDown hi lo) :
     PairwiseErrorRateCertificate Candidate where
@@ -8465,7 +8960,7 @@ def finiteScoreGapRelevantPairRateEnvelopeCertificate_of_mean_nonneg
     {minRate : ℝ}
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal =>
             score (hi pair) signal - score (lo pair) signal))
     (hsource_rate_ge :
@@ -8475,7 +8970,7 @@ def finiteScoreGapRelevantPairRateEnvelopeCertificate_of_mean_nonneg
             (score (hi pair)) (score (lo pair)))
     (hzero_rate_ge :
       ∀ pair pZero,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               score (hi pair) signal - score (lo pair) signal = 0) =
           pZero →
@@ -8521,7 +9016,7 @@ theorem outcomeError_hasExponentialRate_of_relevant_pairs_finite_support_exact_o
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal =>
             score (hi pair) signal - score (lo pair) signal))
     {pairWeight : Pair → ℝ} {minRate : ℝ}
@@ -8540,7 +9035,7 @@ theorem outcomeError_hasExponentialRate_of_relevant_pairs_finite_support_exact_o
             (score (hi pair)) (score (lo pair)))
     (hzero_rate_ge :
       ∀ pair pZero,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal =>
               score (hi pair) signal - score (lo pair) signal = 0) =
           pZero →
@@ -8578,7 +9073,7 @@ theorem outcomeError_hasExponentialRate_or_eventually_zero_of_relevant_pairs_fin
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal =>
             score (hi pair) signal - score (lo pair) signal))
     {pairWeight : Pair → ℝ}
@@ -8642,7 +9137,7 @@ theorem outcomeError_hasExtendedExponentialRate_of_relevant_pairs_finite_support
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal =>
             score (hi pair) signal - score (lo pair) signal))
     {pairWeight : Pair → ℝ}
@@ -8666,6 +9161,187 @@ theorem outcomeError_hasExtendedExponentialRate_of_relevant_pairs_finite_support
   · exact ⟨⊤, HasExtendedExponentialRate.infinite hzero⟩
 
 /--
+Exact extended-source-rate form of Proposition 4.  The aggregate rate is the
+finite minimum of the pairwise extended rates; when every pair is eventually
+error-free, that minimum is `⊤`.
+-/
+theorem outcomeError_hasExtendedExponentialRate_at_finiteOutcomeLearningExtendedRate_of_relevant_pairs_finite_support
+    {Pair Candidate Signal : Type*} [Fintype Pair] [Nonempty Pair]
+    [DecidableEq Pair] [Fintype Signal] [DecidableEq Signal]
+    (law : PMF Signal) (score : Candidate → Signal → ℝ)
+    (hi lo : Pair → Candidate)
+    (hmean :
+      ∀ pair,
+        0 ≤ AppliedModelingLib.pmfExp law
+          (fun signal =>
+            score (hi pair) signal - score (lo pair) signal))
+    {pairWeight : Pair → ℝ}
+    (hweight : ∀ pair, 0 ≤ pairWeight pair)
+    (hweight_pos : ∀ pair, 0 < pairWeight pair) :
+    HasExtendedExponentialRate
+      (fun sampleSize =>
+        ∑ pair : Pair,
+          pairWeight pair *
+            finiteScoreGapPairwiseErrorProb law score
+              (hi pair) (lo pair) sampleSize)
+      (finiteOutcomeLearningExtendedRate
+        (fun pair : Pair =>
+          pairwiseScoringExtendedRate law
+            (score (hi pair)) (score (lo pair)))) := by
+  classical
+  let errorProb : Pair → ℕ → ℝ :=
+    fun pair sampleSize =>
+      finiteScoreGapPairwiseErrorProb law score
+        (hi pair) (lo pair) sampleSize
+  let sourceRate : Pair → WithTop ℝ :=
+    fun pair =>
+      pairwiseScoringExtendedRate law
+        (score (hi pair)) (score (lo pair))
+  have hcase :
+      ∀ pair : Pair,
+        (∃ rate_i : ℝ,
+          ExponentialRateCertificate (errorProb pair) rate_i ∧
+            sourceRate pair = (rate_i : WithTop ℝ)) ∨
+          ((∀ᶠ sampleSize in Filter.atTop,
+            errorProb pair sampleSize = 0) ∧ sourceRate pair = ⊤) := by
+    intro pair
+    rcases
+        pairwiseScoringError_extendedRateCertificate_or_eventually_zero_of_mean_nonneg
+          law (score (hi pair)) (score (lo pair)) (hmean pair) with
+      hfinite | hzero
+    · left
+      rcases hfinite with ⟨rate_i, hcert, hrate⟩
+      exact ⟨rate_i,
+        by simpa [errorProb, finiteScoreGapPairwiseErrorProb] using hcert,
+        by simpa [sourceRate] using hrate⟩
+    · right
+      exact ⟨by simpa [errorProb, finiteScoreGapPairwiseErrorProb] using hzero.1,
+        by simpa [sourceRate] using hzero.2⟩
+  by_cases hfinite_exists :
+      ∃ pair : Pair, ∃ rate_i : ℝ,
+        ExponentialRateCertificate (errorProb pair) rate_i ∧
+          sourceRate pair = (rate_i : WithTop ℝ)
+  · have hcase_for_sum :
+        ∀ pair : Pair,
+          (∃ rate_i : ℝ,
+            ExponentialRateCertificate (errorProb pair) rate_i ∧
+              sourceRate pair = (rate_i : WithTop ℝ)) ∨
+            (∀ᶠ sampleSize in Filter.atTop,
+              errorProb pair sampleSize = 0) := by
+      intro pair
+      rcases hcase pair with hfinite | hzero
+      · exact Or.inl hfinite
+      · exact Or.inr hzero.1
+    rcases
+        finite_weighted_sum_hasExponentialRate_with_min_component_payload_or_eventually_zero_of_cert_or_eventually_zero
+          (p := errorProb) (weight := pairWeight)
+          (fun pair rate_i => sourceRate pair = (rate_i : WithTop ℝ))
+          hweight hweight_pos hcase_for_sum with
+      hsum | hsum_zero
+    · rcases hsum with
+        ⟨pairMin, minRate, hmin_cert, hmin_payload, hcase_ge, hsum_rate⟩
+      have hrate_eq :
+          finiteOutcomeLearningExtendedRate sourceRate =
+            (minRate : WithTop ℝ) := by
+        apply le_antisymm
+        · calc
+            finiteOutcomeLearningExtendedRate sourceRate ≤ sourceRate pairMin :=
+              finiteOutcomeLearningExtendedRate_le sourceRate pairMin
+            _ = (minRate : WithTop ℝ) := hmin_payload
+        · unfold finiteOutcomeLearningExtendedRate
+          apply Finset.le_inf'
+          intro pair _
+          rcases hcase_ge pair with hfinite | hzero
+          · rcases hfinite with ⟨rate_i, hmin_le_rate_i, hcert_i⟩
+            rcases hcase pair with hsource | hsource_zero
+            · rcases hsource with ⟨sourceRate_i, hsource_cert, hsource_eq⟩
+              have hrate_i_eq : sourceRate_i = rate_i :=
+                HasExponentialRate.unique hsource_cert.has_rate hcert_i.has_rate
+              rw [hsource_eq, hrate_i_eq]
+              exact WithTop.coe_le_coe.mpr hmin_le_rate_i
+            · have hfalse : False := by
+                rcases (hcert_i.eventually_pos.and hsource_zero.1).exists with
+                  ⟨sampleSize, hpos, hzero⟩
+                exact (ne_of_gt hpos) hzero
+              exact hfalse.elim
+          · rcases hcase pair with hsource | hsource_zero
+            · rcases hsource with ⟨sourceRate_i, hsource_cert, _hsource_eq⟩
+              have hfalse : False := by
+                rcases (hsource_cert.eventually_pos.and hzero).exists with
+                  ⟨sampleSize, hpos, hzero_at⟩
+                exact (ne_of_gt hpos) hzero_at
+              exact hfalse.elim
+            · rw [hsource_zero.2]
+              exact le_top
+      rw [show
+        finiteOutcomeLearningExtendedRate
+          (fun pair : Pair =>
+            pairwiseScoringExtendedRate law
+              (score (hi pair)) (score (lo pair))) =
+          finiteOutcomeLearningExtendedRate sourceRate by rfl,
+        hrate_eq]
+      exact HasExtendedExponentialRate.finite (by
+        simpa [errorProb] using hsum_rate)
+    · exfalso
+      rcases hfinite_exists with ⟨pair, rate_i, hcert, _hrate⟩
+      have herror_nonneg : ∀ pair sampleSize, 0 ≤ errorProb pair sampleSize := by
+        intro pair sampleSize
+        unfold errorProb finiteScoreGapPairwiseErrorProb
+        unfold pairwiseScoringErrorProb finiteIidScoreGapLeftTailProb
+        exact
+          AppliedModelingLib.pmfProb_nonneg
+            (AppliedModelingLib.pmfProduct (Fin sampleSize) Signal law) _
+      rcases (hcert.eventually_pos.and hsum_zero).exists with
+        ⟨sampleSize, hpos, hzero⟩
+      have hterm_pos :
+          0 < pairWeight pair * errorProb pair sampleSize :=
+        mul_pos (hweight_pos pair) hpos
+      have hterm_le :
+          pairWeight pair * errorProb pair sampleSize ≤
+            ∑ other : Pair, pairWeight other * errorProb other sampleSize := by
+        exact Finset.single_le_sum
+          (fun other _ => mul_nonneg (hweight other) (herror_nonneg other sampleSize))
+          (Finset.mem_univ pair)
+      rw [hzero] at hterm_le
+      exact (not_lt_of_ge hterm_le) hterm_pos
+  · have hzero_all :
+        ∀ pair : Pair,
+          ∀ᶠ sampleSize in Filter.atTop,
+            errorProb pair sampleSize = 0 := by
+      intro pair
+      rcases hcase pair with hfinite | hzero
+      · exfalso
+        rcases hfinite with ⟨rate_i, hcert, hrate⟩
+        exact hfinite_exists ⟨pair, rate_i, hcert, hrate⟩
+      · exact hzero.1
+    have hsource_top : ∀ pair : Pair, sourceRate pair = ⊤ := by
+      intro pair
+      rcases hcase pair with hfinite | hzero
+      · exfalso
+        rcases hfinite with ⟨rate_i, hcert, hrate⟩
+        exact hfinite_exists ⟨pair, rate_i, hcert, hrate⟩
+      · exact hzero.2
+    have hsum_zero :
+        ∀ᶠ sampleSize in Filter.atTop,
+          (∑ pair : Pair, pairWeight pair * errorProb pair sampleSize) = 0 :=
+      finite_weighted_sum_eventually_zero
+        (p := errorProb) (weight := pairWeight) hzero_all
+    have hrate_top : finiteOutcomeLearningExtendedRate sourceRate = ⊤ := by
+      apply le_antisymm le_top
+      unfold finiteOutcomeLearningExtendedRate
+      apply Finset.le_inf'
+      intro pair _
+      rw [hsource_top pair]
+    rw [show
+      finiteOutcomeLearningExtendedRate
+        (fun pair : Pair =>
+          pairwiseScoringExtendedRate law
+            (score (hi pair)) (score (lo pair))) =
+        finiteOutcomeLearningExtendedRate sourceRate by rfl,
+      hrate_top]
+    exact HasExtendedExponentialRate.infinite (by simpa [errorProb] using hsum_zero)
+
+/--
 Proposition 4 exact finite aggregation specialized to K-approval over the
 finite set of relevant ordered pairs.  The input probabilities are the source
 up/down events from Proposition 3, and the conclusion is the exact
@@ -8673,21 +9349,21 @@ minimum-rate aggregate over those relevant pairs.
 -/
 theorem outcomeError_hasExponentialRate_of_kApproval_relevant_pairs
     {n : ℕ} {Pair : Type*} [Fintype Pair] [DecidableEq Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (pUp pDown : Pair → ℝ)
     (hUp : ∀ pair, 0 < pUp pair)
     (hDown : ∀ pair, 0 < pDown pair)
     (hle : ∀ pair, pDown pair ≤ pUp pair)
     (hUpProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair) =
           pUp pair)
     (hDownProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) =
           pDown pair)
     {pairWeight : Pair → ℝ} {minRate : ℝ}
@@ -8715,29 +9391,29 @@ probability is eventually zero in the strict boundary case.
 -/
 def kApprovalRelevantPairRateEnvelopeCertificate
     {n : ℕ} {Pair : Type*} [Fintype Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     {minRate : ℝ}
     (hle :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) ≤
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair))
     (hrate_ge :
       ∀ pair,
         minRate ≤
           approvalPairwiseRate
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
               (hi pair) (lo pair))
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
               (hi pair) (lo pair))) :
     FiniteErrorRateEnvelopeCertificate Pair minRate where
   errorProb := fun pair sampleSize =>
     pairwiseScoringErrorProb law
-      (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
-      (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
+      (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
+      (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
       sampleSize
   component := by
     intro pair
@@ -8748,9 +9424,9 @@ def kApprovalRelevantPairRateEnvelopeCertificate
     · left
       refine
         ⟨approvalPairwiseRate
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
               (hi pair) (lo pair))
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
               (hi pair) (lo pair)),
           hrate_ge pair, ?_⟩
       simpa using hcert
@@ -8767,14 +9443,14 @@ zero.
 -/
 theorem outcomeError_hasExponentialRate_of_kApproval_relevant_pairs_exact_or_eventually_zero
     {n : ℕ} {Pair : Type*} [Fintype Pair] [DecidableEq Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hle :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) ≤
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair))
     {pairWeight : Pair → ℝ} {minRate : ℝ}
     (hweight : ∀ pair, 0 ≤ pairWeight pair)
@@ -8784,28 +9460,28 @@ theorem outcomeError_hasExponentialRate_of_kApproval_relevant_pairs_exact_or_eve
       ExponentialRateCertificate
         (pairwiseScoringErrorProb law
           (fun π =>
-            EconCSLib.SocialChoice.Ranking.kApprovalScore K π (hi pairMin))
+            AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (hi pairMin))
           (fun π =>
-            EconCSLib.SocialChoice.Ranking.kApprovalScore K π (lo pairMin)))
+            AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (lo pairMin)))
         (approvalPairwiseRate
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pairMin) (lo pairMin))
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pairMin) (lo pairMin))))
     (hrate_min :
       approvalPairwiseRate
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pairMin) (lo pairMin))
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pairMin) (lo pairMin)) =
         minRate)
     (hrate_ge :
       ∀ pair,
         minRate ≤
           approvalPairwiseRate
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
               (hi pair) (lo pair))
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
               (hi pair) (lo pair))) :
     HasExponentialRate
       (fun sampleSize =>
@@ -8813,9 +9489,9 @@ theorem outcomeError_hasExponentialRate_of_kApproval_relevant_pairs_exact_or_eve
           pairWeight pair *
             pairwiseScoringErrorProb law
               (fun π =>
-                EconCSLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
+                AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
               (fun π =>
-                EconCSLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
+                AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
               sampleSize)
       minRate := by
   let C :=
@@ -8837,14 +9513,14 @@ aggregate either has some exact finite exponential rate or is eventually zero.
 -/
 theorem outcomeError_hasExponentialRate_or_eventually_zero_of_kApproval_relevant_pairs_trichotomy
     {n : ℕ} {Pair : Type*} [Fintype Pair] [DecidableEq Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hle :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) ≤
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair))
     {pairWeight : Pair → ℝ}
     (hweight : ∀ pair, 0 ≤ pairWeight pair)
@@ -8856,9 +9532,9 @@ theorem outcomeError_hasExponentialRate_or_eventually_zero_of_kApproval_relevant
             pairWeight pair *
               pairwiseScoringErrorProb law
                 (fun π =>
-                  EconCSLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
+                  AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
                 (fun π =>
-                  EconCSLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
+                  AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
                 sampleSize)
         minRate) ∨
       (∀ᶠ sampleSize in Filter.atTop,
@@ -8866,15 +9542,15 @@ theorem outcomeError_hasExponentialRate_or_eventually_zero_of_kApproval_relevant
           pairWeight pair *
             pairwiseScoringErrorProb law
               (fun π =>
-                EconCSLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
+                AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
               (fun π =>
-                EconCSLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
+                AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
               sampleSize) = 0) := by
   let errorProb : Pair → ℕ → ℝ :=
     fun pair sampleSize =>
       pairwiseScoringErrorProb law
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
-        (fun π => EconCSLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
+        (fun π => AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
         sampleSize
   have hcase :
       ∀ pair : Pair,
@@ -8890,9 +9566,9 @@ theorem outcomeError_hasExponentialRate_or_eventually_zero_of_kApproval_relevant
     · left
       exact
         ⟨approvalPairwiseRate
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
               (hi pair) (lo pair))
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
               (hi pair) (lo pair)),
           by simpa [errorProb] using hcert⟩
     · right
@@ -8908,14 +9584,14 @@ statement.  The `⊤` branch records strict-boundary eventual zero error.
 -/
 theorem outcomeError_hasExtendedExponentialRate_of_kApproval_relevant_pairs_trichotomy
     {n : ℕ} {Pair : Type*} [Fintype Pair] [DecidableEq Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hle :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) ≤
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair))
     {pairWeight : Pair → ℝ}
     (hweight : ∀ pair, 0 ≤ pairWeight pair)
@@ -8927,9 +9603,9 @@ theorem outcomeError_hasExtendedExponentialRate_of_kApproval_relevant_pairs_tric
             pairWeight pair *
               pairwiseScoringErrorProb law
                 (fun π =>
-                  EconCSLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
+                  AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (hi pair))
                 (fun π =>
-                  EconCSLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
+                  AppliedModelingLib.SocialChoice.Ranking.kApprovalScore K π (lo pair))
                 sampleSize)
         rate := by
   rcases
@@ -8952,20 +9628,20 @@ the positive-probability exact-rate certificate.
 theorem randomizedKApprovalOutcomeError_hasExponentialRate_or_eventually_zero_of_mixed_expected_gap_nonneg
     {n : ℕ} {Rule Pair : Type*}
     [Fintype Rule] [DecidableEq Rule] [Fintype Pair] [DecidableEq Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
     (hmean :
       ∀ pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (randomizedScoringSamplingLaw law weight hweight hsum)
-            (fun signal : Rule × EconCSLib.SocialChoice.Ranking.Ranking n =>
-              EconCSLib.SocialChoice.Ranking.kApprovalScore
+            (fun signal : Rule × AppliedModelingLib.SocialChoice.Ranking.Ranking n =>
+              AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
                   (K signal.1) signal.2 (hi pair) -
-                EconCSLib.SocialChoice.Ranking.kApprovalScore
+                AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
                   (K signal.1) signal.2 (lo pair)))
     {pairWeight : Pair → ℝ}
     (hpairWeight : ∀ pair, 0 ≤ pairWeight pair)
@@ -8977,11 +9653,11 @@ theorem randomizedKApprovalOutcomeError_hasExponentialRate_or_eventually_zero_of
             pairWeight pair *
               pairwiseScoringErrorProb
                 (randomizedScoringSamplingLaw law weight hweight hsum)
-                (fun signal : Rule × EconCSLib.SocialChoice.Ranking.Ranking n =>
-                  EconCSLib.SocialChoice.Ranking.kApprovalScore
+                (fun signal : Rule × AppliedModelingLib.SocialChoice.Ranking.Ranking n =>
+                  AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
                     (K signal.1) signal.2 (hi pair))
-                (fun signal : Rule × EconCSLib.SocialChoice.Ranking.Ranking n =>
-                  EconCSLib.SocialChoice.Ranking.kApprovalScore
+                (fun signal : Rule × AppliedModelingLib.SocialChoice.Ranking.Ranking n =>
+                  AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
                     (K signal.1) signal.2 (lo pair))
                 sampleSize)
         minRate) ∨
@@ -8990,21 +9666,21 @@ theorem randomizedKApprovalOutcomeError_hasExponentialRate_or_eventually_zero_of
           pairWeight pair *
             pairwiseScoringErrorProb
               (randomizedScoringSamplingLaw law weight hweight hsum)
-              (fun signal : Rule × EconCSLib.SocialChoice.Ranking.Ranking n =>
-                EconCSLib.SocialChoice.Ranking.kApprovalScore
+              (fun signal : Rule × AppliedModelingLib.SocialChoice.Ranking.Ranking n =>
+                AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
                   (K signal.1) signal.2 (hi pair))
-              (fun signal : Rule × EconCSLib.SocialChoice.Ranking.Ranking n =>
-                EconCSLib.SocialChoice.Ranking.kApprovalScore
+              (fun signal : Rule × AppliedModelingLib.SocialChoice.Ranking.Ranking n =>
+                AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
                   (K signal.1) signal.2 (lo pair))
               sampleSize) = 0) := by
   let randomizedLaw :
-      PMF (Rule × EconCSLib.SocialChoice.Ranking.Ranking n) :=
+      PMF (Rule × AppliedModelingLib.SocialChoice.Ranking.Ranking n) :=
     randomizedScoringSamplingLaw law weight hweight hsum
   let score :
-      EconCSLib.SocialChoice.Ranking.Candidate n →
-        Rule × EconCSLib.SocialChoice.Ranking.Ranking n → ℝ :=
+      AppliedModelingLib.SocialChoice.Ranking.Candidate n →
+        Rule × AppliedModelingLib.SocialChoice.Ranking.Ranking n → ℝ :=
     fun candidate signal =>
-      EconCSLib.SocialChoice.Ranking.kApprovalScore
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
         (K signal.1) signal.2 candidate
   simpa [randomizedLaw, score] using
     outcomeError_hasExponentialRate_or_eventually_zero_of_relevant_pairs_finite_support_trichotomy
@@ -9023,20 +9699,20 @@ extended-rate statement for the actual randomized one-voter sampling law.
 theorem randomizedKApprovalOutcomeError_hasExtendedExponentialRate_of_mixed_expected_gap_nonneg
     {n : ℕ} {Rule Pair : Type*}
     [Fintype Rule] [DecidableEq Rule] [Fintype Pair] [DecidableEq Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
     (hmean :
       ∀ pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (randomizedScoringSamplingLaw law weight hweight hsum)
-            (fun signal : Rule × EconCSLib.SocialChoice.Ranking.Ranking n =>
-              EconCSLib.SocialChoice.Ranking.kApprovalScore
+            (fun signal : Rule × AppliedModelingLib.SocialChoice.Ranking.Ranking n =>
+              AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
                   (K signal.1) signal.2 (hi pair) -
-                EconCSLib.SocialChoice.Ranking.kApprovalScore
+                AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
                   (K signal.1) signal.2 (lo pair)))
     {pairWeight : Pair → ℝ}
     (hpairWeight : ∀ pair, 0 ≤ pairWeight pair)
@@ -9048,11 +9724,11 @@ theorem randomizedKApprovalOutcomeError_hasExtendedExponentialRate_of_mixed_expe
             pairWeight pair *
               pairwiseScoringErrorProb
                 (randomizedScoringSamplingLaw law weight hweight hsum)
-                (fun signal : Rule × EconCSLib.SocialChoice.Ranking.Ranking n =>
-                  EconCSLib.SocialChoice.Ranking.kApprovalScore
+                (fun signal : Rule × AppliedModelingLib.SocialChoice.Ranking.Ranking n =>
+                  AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
                     (K signal.1) signal.2 (hi pair))
-                (fun signal : Rule × EconCSLib.SocialChoice.Ranking.Ranking n =>
-                  EconCSLib.SocialChoice.Ranking.kApprovalScore
+                (fun signal : Rule × AppliedModelingLib.SocialChoice.Ranking.Ranking n =>
+                  AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
                     (K signal.1) signal.2 (lo pair))
                 sampleSize)
         rate := by
@@ -9071,24 +9747,24 @@ set of relevant ordered pairs in the zero-down boundary case.
 -/
 theorem outcomeError_hasExponentialRate_of_kApproval_relevant_pairs_down_zero
     {n : ℕ} {Pair : Type*} [Fintype Pair] [DecidableEq Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (pUp pZero : Pair → ℝ)
     (hUpProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair) =
           pUp pair)
     (hZeroProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairZeroProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairZeroProb law K
             (hi pair) (lo pair) =
           pZero pair)
     (hZero_pos : ∀ pair, 0 < pZero pair)
     (hDownZero :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) =
           0)
     {pairWeight : Pair → ℝ} {minRate : ℝ}
@@ -9113,24 +9789,24 @@ The minimizing relevant pair is chosen internally from finiteness.
 -/
 theorem outcomeError_hasExponentialRate_of_kApproval_relevant_pairs_down_zero_at_finiteOutcomeLearningRate
     {n : ℕ} {Pair : Type*} [Fintype Pair] [Nonempty Pair] [DecidableEq Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (pUp pZero : Pair → ℝ)
     (hUpProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair) =
           pUp pair)
     (hZeroProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairZeroProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairZeroProb law K
             (hi pair) (lo pair) =
           pZero pair)
     (hZero_pos : ∀ pair, 0 < pZero pair)
     (hDownZero :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) =
           0)
     {pairWeight : Pair → ℝ}
@@ -9158,21 +9834,21 @@ but the minimizing relevant pair is chosen internally from finiteness.
 -/
 theorem outcomeError_hasExponentialRate_of_kApproval_relevant_pairs_at_finiteOutcomeLearningRate
     {n : ℕ} {Pair : Type*} [Fintype Pair] [Nonempty Pair] [DecidableEq Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (pUp pDown : Pair → ℝ)
     (hUp : ∀ pair, 0 < pUp pair)
     (hDown : ∀ pair, 0 < pDown pair)
     (hle : ∀ pair, pDown pair ≤ pUp pair)
     (hUpProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair) =
           pUp pair)
     (hDownProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) =
           pDown pair)
     {pairWeight : Pair → ℝ}
@@ -9200,21 +9876,21 @@ weak ordering assumption from strict up/down separation on every relevant pair.
 -/
 theorem outcomeError_hasExponentialRate_of_kApproval_relevant_pairs_at_finiteOutcomeLearningRate_of_down_lt_up
     {n : ℕ} {Pair : Type*} [Fintype Pair] [Nonempty Pair] [DecidableEq Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (pUp pDown : Pair → ℝ)
     (hUp : ∀ pair, 0 < pUp pair)
     (hDown : ∀ pair, 0 < pDown pair)
     (hlt : ∀ pair, pDown pair < pUp pair)
     (hUpProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair) =
           pUp pair)
     (hDownProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) =
           pDown pair)
     {pairWeight : Pair → ℝ}
@@ -9236,24 +9912,24 @@ directly in terms of the ranking-law up/down event probabilities.
 -/
 theorem outcomeError_hasExponentialRate_of_kApproval_relevant_pairs_at_finiteOutcomeLearningRate_of_probabilities_down_lt_up
     {n : ℕ} {Pair : Type*} [Fintype Pair] [Nonempty Pair] [DecidableEq Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hUp :
       ∀ pair,
         0 <
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair))
     (hDown :
       ∀ pair,
         0 <
-          EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair))
     (hlt :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) <
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair))
     {pairWeight : Pair → ℝ}
     (hweight : ∀ pair, 0 ≤ pairWeight pair)
@@ -9265,17 +9941,17 @@ theorem outcomeError_hasExponentialRate_of_kApproval_relevant_pairs_at_finiteOut
       (finiteOutcomeLearningRate
         (fun pair : Pair =>
           approvalPairwiseRate
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
               (hi pair) (lo pair))
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
               (hi pair) (lo pair)))) :=
   outcomeError_hasExponentialRate_of_kApproval_relevant_pairs_at_finiteOutcomeLearningRate_of_down_lt_up
     law K hi lo
     (fun pair =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
         (hi pair) (lo pair))
     (fun pair =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
         (hi pair) (lo pair))
     hUp hDown hlt (fun _ => rfl) (fun _ => rfl)
     hweight hweight_pos
@@ -9287,21 +9963,21 @@ approval rates makes the weighted finite outcome-error aggregate tend to zero.
 -/
 theorem outcomeError_tendsto_zero_of_kApproval_relevant_pairs
     {n : ℕ} {Pair : Type*} [Fintype Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (pUp pDown : Pair → ℝ)
     (hUp : ∀ pair, 0 < pUp pair)
     (hDown : ∀ pair, 0 < pDown pair)
     (hle : ∀ pair, pDown pair ≤ pUp pair)
     (hUpProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair) =
           pUp pair)
     (hDownProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) =
           pDown pair)
     {pairWeight : Pair → ℝ} {rateFloor : ℝ}
@@ -9325,9 +10001,9 @@ constraint on every relevant pair make the finite minimum rate positive.
 -/
 theorem outcomeError_tendsto_zero_of_kApproval_relevant_pairs_of_down_lt_up
     {n : ℕ} {Pair : Type*} [Fintype Pair] [Nonempty Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (pUp pDown : Pair → ℝ)
     (hUp : ∀ pair, 0 < pUp pair)
     (hDown : ∀ pair, 0 < pDown pair)
@@ -9335,12 +10011,12 @@ theorem outcomeError_tendsto_zero_of_kApproval_relevant_pairs_of_down_lt_up
     (hlt : ∀ pair, pDown pair < pUp pair)
     (hUpProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair) =
           pUp pair)
     (hDownProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) =
           pDown pair)
     {pairWeight : Pair → ℝ}
@@ -9373,21 +10049,21 @@ constraint discharged from the disjointness of K-approval up/down events.
 -/
 theorem outcomeError_tendsto_zero_of_kApproval_relevant_pairs_of_down_lt_up_auto_sum
     {n : ℕ} {Pair : Type*} [Fintype Pair] [Nonempty Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (pUp pDown : Pair → ℝ)
     (hUp : ∀ pair, 0 < pUp pair)
     (hDown : ∀ pair, 0 < pDown pair)
     (hlt : ∀ pair, pDown pair < pUp pair)
     (hUpProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair) =
           pUp pair)
     (hDownProb :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) =
           pDown pair)
     {pairWeight : Pair → ℝ}
@@ -9404,7 +10080,7 @@ theorem outcomeError_tendsto_zero_of_kApproval_relevant_pairs_of_down_lt_up_auto
   intro pair
   rw [← hUpProb pair, ← hDownProb pair]
   exact
-    EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
+    AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
       law K (hi pair) (lo pair)
 
 /--
@@ -9413,24 +10089,24 @@ terms of the ranking-law up/down event probabilities.
 -/
 theorem outcomeError_tendsto_zero_of_kApproval_relevant_pairs_of_probabilities_down_lt_up
     {n : ℕ} {Pair : Type*} [Fintype Pair] [Nonempty Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : ℕ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hUp :
       ∀ pair,
         0 <
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair))
     (hDown :
       ∀ pair,
         0 <
-          EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair))
     (hlt :
       ∀ pair,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
             (hi pair) (lo pair) <
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
             (hi pair) (lo pair))
     {pairWeight : Pair → ℝ}
     (hweight : ∀ pair, 0 ≤ pairWeight pair) :
@@ -9442,10 +10118,10 @@ theorem outcomeError_tendsto_zero_of_kApproval_relevant_pairs_of_probabilities_d
   outcomeError_tendsto_zero_of_kApproval_relevant_pairs_of_down_lt_up_auto_sum
     law K hi lo
     (fun pair =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law K
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law K
         (hi pair) (lo pair))
     (fun pair =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law K
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law K
         (hi pair) (lo pair))
     hUp hDown hlt (fun _ => rfl) (fun _ => rfl) hweight
 
@@ -9515,7 +10191,7 @@ theorem outcomeError_hasExponentialRate_of_finite_score_gap_periodicCountVectorL
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -9567,7 +10243,7 @@ theorem outcomeError_hasExponentialRate_of_finite_score_gap_empiricalTypeLower_w
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -9651,7 +10327,7 @@ theorem outcomeError_hasExponentialRate_of_finite_score_gap_pathLower_of_mean_no
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -9758,7 +10434,7 @@ theorem outcomeError_hasExponentialRate_of_finite_score_gap_tailLower_of_mean_no
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -9865,7 +10541,7 @@ theorem outcomeError_hasExponentialRate_of_finite_score_gap_empiricalTypeLower_o
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -9911,7 +10587,7 @@ theorem outcomeError_hasExponentialRate_of_stationary_tilted_modal_log_support
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -9958,7 +10634,7 @@ theorem outcomeError_hasExponentialRate_of_stationary_tilted_modal_log_support_a
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -10007,7 +10683,7 @@ theorem outcomeError_hasExponentialRate_of_stationary_tilted_modal_log_support_o
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -10045,7 +10721,7 @@ theorem outcomeError_hasExponentialRate_of_relevant_pairs_stationary_tilted_moda
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score (hi pair) signal - score (lo pair) signal))
     (aPos aNeg : Pair → Signal)
     (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
@@ -10090,7 +10766,7 @@ theorem outcomeError_hasExponentialRate_of_relevant_pairs_stationary_tilted_moda
     (hi lo : Pair → Candidate)
     (hmean :
       ∀ pair,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score (hi pair) signal - score (lo pair) signal))
     (aPos aNeg : Pair → Signal)
     (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
@@ -10137,7 +10813,7 @@ theorem crossTierOutcomeError_hasExponentialRate_of_stationary_tilted_modal_log_
     [Nonempty (CrossTierPair winnerSet)]
     (hmean :
       ∀ pair : CrossTierPair winnerSet,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score pair.hi signal - score pair.lo signal))
     (aPos aNeg : CrossTierPair winnerSet → Signal)
     (hmassPos : ∀ pair, 0 < (law (aPos pair)).toReal)
@@ -10171,7 +10847,7 @@ theorem crossTierOutcomeError_hasExponentialRate_of_stationary_tilted_modal_log_
     simp [
       finiteScoreGapRelevantPairRateCertificate_of_stationary_tilted_modal_log_support_of_mean_nonneg_pos_neg_atoms,
       finiteScoreGapPairwiseErrorProb,
-      EconCSLib.Probability.FiniteErrorRateCertificate.aggregateError]
+      AppliedModelingLib.Probability.FiniteErrorRateCertificate.aggregateError]
 
 /--
 Proposition 4 exact finite aggregation at the finite outcome-learning rate.
@@ -10185,7 +10861,7 @@ theorem outcomeError_hasExponentialRate_of_stationary_tilted_modal_log_support_o
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -10225,7 +10901,7 @@ theorem outcomeError_hasExponentialRate_of_stationary_tilted_modal_log_full_supp
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -10314,7 +10990,7 @@ theorem outcomeError_hasExponentialRate_of_finite_score_gap_bucketLower_of_mean_
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -10421,7 +11097,7 @@ theorem outcomeError_hasExponentialRate_of_finite_score_gap_countVectorLower_of_
     (law : PMF Signal) (score : Candidate → Signal → ℝ)
     (hmean :
       ∀ hi lo : Candidate,
-        0 ≤ EconCSLib.pmfExp law
+        0 ≤ AppliedModelingLib.pmfExp law
           (fun signal => score hi signal - score lo signal))
     (aPos aNeg : Candidate → Candidate → Signal)
     (hmassPos : ∀ hi lo, 0 < (law (aPos hi lo)).toReal)
@@ -10534,12 +11210,12 @@ theorem outcomeError_hasExponentialRate_of_approval_ternary_scores
           score hi signal - score lo signal = -1)
     (hUpProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 1) =
           pUp hi lo)
     (hDownProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = -1) =
           pDown hi lo)
     {pairWeight : Candidate → Candidate → ℝ} {minRate : ℝ}
@@ -10580,12 +11256,12 @@ theorem outcomeError_tendsto_zero_of_approval_ternary_scores
           score hi signal - score lo signal = -1)
     (hUpProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = 1) =
           pUp hi lo)
     (hDownProb :
       ∀ hi lo,
-        EconCSLib.pmfProb law
+        AppliedModelingLib.pmfProb law
             (fun signal => score hi signal - score lo signal = -1) =
           pDown hi lo)
     {pairWeight : Candidate → Candidate → ℝ} {rateFloor : ℝ}
@@ -10735,7 +11411,7 @@ theorem randomizedScoring_outcomeRate_le_static_of_weighted_score_of_zero_score_
     (hsum : (∑ rule : Rule, weight rule) = 1)
     (hzero_pos :
       ∀ pair,
-        0 < EconCSLib.pmfProb law (fun signal => staticGap pair signal = 0)) :
+        0 < AppliedModelingLib.pmfProb law (fun signal => staticGap pair signal = 0)) :
     finiteOutcomeLearningRate
         (fun pair : Pair =>
           randomizedScoringMixtureRate law weight (gap pair)) ≤
@@ -10833,7 +11509,7 @@ theorem randomizedScoringActual_outcomeRate_le_static_of_weighted_score_of_zero_
     (hsum : (∑ rule : Rule, weight rule) = 1)
     (hzero_pos :
       ∀ pair,
-        0 < EconCSLib.pmfProb law (fun signal => staticGap pair signal = 0)) :
+        0 < AppliedModelingLib.pmfProb law (fun signal => staticGap pair signal = 0)) :
     finiteOutcomeLearningRate
         (fun pair : Pair =>
           finiteChernoffRate
@@ -11121,7 +11797,7 @@ theorem randomizedScoringPrefixActual_outcomeRate_le_static_of_weighted_score_of
     (hzero_pos :
       ∀ pair,
         0 <
-          EconCSLib.pmfProb law
+          AppliedModelingLib.pmfProb law
             (fun signal =>
               prefixScoreFromEvent
                   (fun cut => ∑ rule : Rule, weight rule * diff rule cut)
@@ -11433,7 +12109,7 @@ theorem randomizedScoringPrefixActual_crossTier_static_selection_and_automatic_s
   have hmean :
       ∀ pair : CrossTierPair winnerSet,
         0 ≤
-          EconCSLib.pmfExp law
+          AppliedModelingLib.pmfExp law
             (fun signal =>
               prefixScoreFromEvent staticDiff inPrefix pair.hi signal -
                 prefixScoreFromEvent staticDiff inPrefix pair.lo signal) := by
@@ -11612,15 +12288,15 @@ theorem randomizedApproval_pairwiseRate_le_static_or_mixed_boundary
       hbase_pos hmixed_base_pos
   · have hmixedUp_nonneg : 0 ≤ mixedUp := by
       rw [hmixedUp]
-      exact (EconCSLib.weightedPairProb_valid
+      exact (AppliedModelingLib.weightedPairProb_valid
         weight pUp pDown hweight hsum hUp hDown hprob).1
     have hmixedDown_nonneg : 0 ≤ mixedDown := by
       rw [hmixedDown]
-      exact (EconCSLib.weightedPairProb_valid
+      exact (AppliedModelingLib.weightedPairProb_valid
         weight pUp pDown hweight hsum hUp hDown hprob).2.1
     have hmixed_prob : mixedUp + mixedDown ≤ 1 := by
       rw [hmixedUp, hmixedDown]
-      exact (EconCSLib.weightedPairProb_valid
+      exact (AppliedModelingLib.weightedPairProb_valid
         weight pUp pDown hweight hsum hUp hDown hprob).2.2
     have hmixed_base_nonneg :
         0 ≤ approvalPairwiseBase mixedUp mixedDown :=
@@ -11723,47 +12399,47 @@ rate, or a static rule lies on the degenerate zero-base boundary.
 -/
 theorem randomizedKApproval_pairwiseRate_le_static_of_valid_probabilities_or_static_boundary
     {n : ℕ} {Rule : Type*} [Fintype Rule] [Nonempty Rule]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n) :
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n) :
     (∃ rule : Rule,
       approvalPairwiseRate
           (∑ rule : Rule,
             weight rule *
-              EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+              AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
                 law (K rule) hi lo)
           (∑ rule : Rule,
             weight rule *
-              EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+              AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
                 law (K rule) hi lo) ≤
         approvalPairwiseRate
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) hi lo)
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) hi lo)) ∨
       (∃ rule : Rule,
         approvalPairwiseBase
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) hi lo)
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) hi lo) = 0) :=
   randomizedApproval_pairwiseRate_le_static_of_valid_probabilities_or_static_boundary
     weight
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
     rfl rfl hweight hsum
     (fun rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_nonneg
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_nonneg
         law (K rule) hi lo)
     (fun rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb_nonneg
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb_nonneg
         law (K rule) hi lo)
     (fun rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
         law (K rule) hi lo)
 
 /--
@@ -11774,41 +12450,41 @@ with zero-base static boundaries interpreted as top extended rates.
 -/
 theorem randomizedKApproval_pairwiseRate_le_static_extended
     {n : ℕ} {Rule : Type*} [Fintype Rule] [Nonempty Rule]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n) :
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n) :
     ∃ rule : Rule,
       (approvalPairwiseRate
           (∑ rule : Rule,
             weight rule *
-              EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+              AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
                 law (K rule) hi lo)
           (∑ rule : Rule,
             weight rule *
-              EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+              AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
                 law (K rule) hi lo) : WithTop ℝ) ≤
         approvalPairwiseExtendedRate
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) hi lo)
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) hi lo) :=
   randomizedApproval_pairwiseRate_le_static_extended_of_valid_probabilities
     weight
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
     rfl rfl hweight hsum
     (fun rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_nonneg
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_nonneg
         law (K rule) hi lo)
     (fun rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb_nonneg
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb_nonneg
         law (K rule) hi lo)
     (fun rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
         law (K rule) hi lo)
 
 /--
@@ -11817,22 +12493,22 @@ is nonnegative.
 -/
 theorem randomizedKApproval_mixedPairUpProb_nonneg
     {n : ℕ} {Rule : Type*} [Fintype Rule]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
     (hweight : ∀ rule, 0 ≤ weight rule)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n) :
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n) :
     0 ≤
       ∑ rule : Rule,
         weight rule *
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) hi lo := by
-  exact EconCSLib.weightedSum_nonneg
+  exact AppliedModelingLib.weightedSum_nonneg
     weight
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
     hweight
     (fun rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_nonneg
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_nonneg
         law (K rule) hi lo)
 
 /--
@@ -11841,25 +12517,25 @@ component has positive up-error probability.
 -/
 theorem randomizedKApproval_mixedPairUpProb_pos
     {n : ℕ} {Rule : Type*} [Fintype Rule]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hUp_pos :
       ∀ rule,
         0 <
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) hi lo) :
     0 <
       ∑ rule : Rule,
         weight rule *
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) hi lo :=
-  EconCSLib.weightedSum_pos_of_nonneg_sum_eq_one
+  AppliedModelingLib.weightedSum_pos_of_nonneg_sum_eq_one
     weight
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
     hweight hsum hUp_pos
 
 /--
@@ -11868,28 +12544,28 @@ K-approval component has positive up-error probability.
 -/
 theorem randomizedKApproval_mixedPairUpProb_pos_of_positive_component
     {n : ℕ} {Rule : Type*} [Fintype Rule]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
     (hweight : ∀ rule, 0 ≤ weight rule)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     {rule₀ : Rule}
     (hweight_pos : 0 < weight rule₀)
     (hUp_pos :
       0 <
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
           law (K rule₀) hi lo) :
     0 <
       ∑ rule : Rule,
         weight rule *
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) hi lo :=
-  EconCSLib.weightedSum_pos_of_positive_component
+  AppliedModelingLib.weightedSum_pos_of_positive_component
     weight
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
     hweight
     (fun rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_nonneg
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_nonneg
         law (K rule) hi lo)
     hweight_pos hUp_pos
 
@@ -11899,22 +12575,22 @@ is nonnegative.
 -/
 theorem randomizedKApproval_mixedPairDownProb_nonneg
     {n : ℕ} {Rule : Type*} [Fintype Rule]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
     (hweight : ∀ rule, 0 ≤ weight rule)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n) :
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n) :
     0 ≤
       ∑ rule : Rule,
         weight rule *
-          EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) hi lo := by
-  exact EconCSLib.weightedSum_nonneg
+  exact AppliedModelingLib.weightedSum_nonneg
     weight
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
     hweight
     (fun rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb_nonneg
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb_nonneg
         law (K rule) hi lo)
 
 /--
@@ -11923,25 +12599,25 @@ component has positive down-error probability.
 -/
 theorem randomizedKApproval_mixedPairDownProb_pos
     {n : ℕ} {Rule : Type*} [Fintype Rule]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hDown_pos :
       ∀ rule,
         0 <
-          EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) hi lo) :
     0 <
       ∑ rule : Rule,
         weight rule *
-          EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) hi lo :=
-  EconCSLib.weightedSum_pos_of_nonneg_sum_eq_one
+  AppliedModelingLib.weightedSum_pos_of_nonneg_sum_eq_one
     weight
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
     hweight hsum hDown_pos
 
 /--
@@ -11950,28 +12626,28 @@ K-approval component has positive down-error probability.
 -/
 theorem randomizedKApproval_mixedPairDownProb_pos_of_positive_component
     {n : ℕ} {Rule : Type*} [Fintype Rule]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
     (hweight : ∀ rule, 0 ≤ weight rule)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     {rule₀ : Rule}
     (hweight_pos : 0 < weight rule₀)
     (hDown_pos :
       0 <
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
           law (K rule₀) hi lo) :
     0 <
       ∑ rule : Rule,
         weight rule *
-          EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) hi lo :=
-  EconCSLib.weightedSum_pos_of_positive_component
+  AppliedModelingLib.weightedSum_pos_of_positive_component
     weight
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
     hweight
     (fun rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb_nonneg
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb_nonneg
         law (K rule) hi lo)
     hweight_pos hDown_pos
 
@@ -11982,30 +12658,30 @@ orientation.
 -/
 theorem randomizedKApproval_mixedPairDownProb_le_upProb
     {n : ℕ} {Rule : Type*} [Fintype Rule]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
     (hweight : ∀ rule, 0 ≤ weight rule)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hle :
       ∀ rule,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) hi lo ≤
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) hi lo) :
     (∑ rule : Rule,
         weight rule *
-          EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) hi lo) ≤
       ∑ rule : Rule,
         weight rule *
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) hi lo :=
-  EconCSLib.weightedSum_le_weightedSum_of_pointwise_le
+  AppliedModelingLib.weightedSum_le_weightedSum_of_pointwise_le
     weight
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
     hweight hle
 
 /--
@@ -12015,40 +12691,40 @@ sampling law has nonnegative expected score gap on that pair.
 -/
 theorem randomizedKApproval_mixedExpectedGap_nonneg_of_static_down_le_up
     {n : ℕ} {Rule : Type*} [Fintype Rule] [DecidableEq Rule]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (hle :
       ∀ rule,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) hi lo ≤
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) hi lo) :
     0 ≤
-      EconCSLib.pmfExp
+      AppliedModelingLib.pmfExp
         (randomizedScoringSamplingLaw law weight hweight hsum)
-        (fun signal : Rule × EconCSLib.SocialChoice.Ranking.Ranking n =>
-          EconCSLib.SocialChoice.Ranking.kApprovalScore
+        (fun signal : Rule × AppliedModelingLib.SocialChoice.Ranking.Ranking n =>
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
               (K signal.1) signal.2 hi -
-            EconCSLib.SocialChoice.Ranking.kApprovalScore
+            AppliedModelingLib.SocialChoice.Ranking.kApprovalScore
               (K signal.1) signal.2 lo) := by
-  let gap : Rule → EconCSLib.SocialChoice.Ranking.Ranking n → ℝ :=
+  let gap : Rule → AppliedModelingLib.SocialChoice.Ranking.Ranking n → ℝ :=
     fun rule π =>
-      EconCSLib.SocialChoice.Ranking.kApprovalScore (K rule) π hi -
-        EconCSLib.SocialChoice.Ranking.kApprovalScore (K rule) π lo
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalScore (K rule) π hi -
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalScore (K rule) π lo
   change
     0 ≤
-      EconCSLib.pmfExp
+      AppliedModelingLib.pmfExp
         (randomizedScoringSamplingLaw law weight hweight hsum)
-        (fun signal : Rule × EconCSLib.SocialChoice.Ranking.Ranking n =>
+        (fun signal : Rule × AppliedModelingLib.SocialChoice.Ranking.Ranking n =>
           gap signal.1 signal.2)
   rw [randomizedScoringSamplingLaw_pmfExp_eq_weighted_sum]
   exact
-    EconCSLib.weightedSum_nonneg weight
+    AppliedModelingLib.weightedSum_nonneg weight
       (fun rule : Rule =>
-        EconCSLib.pmfExp law (gap rule))
+        AppliedModelingLib.pmfExp law (gap rule))
       hweight
       (fun rule => by
         dsimp [gap]
@@ -12061,29 +12737,29 @@ one-voter error law.
 -/
 theorem randomizedKApproval_mixedPairProb_sum_le_one
     {n : ℕ} {Rule : Type*} [Fintype Rule]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
-    (hi lo : EconCSLib.SocialChoice.Ranking.Candidate n) :
+    (hi lo : AppliedModelingLib.SocialChoice.Ranking.Candidate n) :
     (∑ rule : Rule,
         weight rule *
-          EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) hi lo) +
       (∑ rule : Rule,
         weight rule *
-          EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+          AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) hi lo) ≤
         1 := by
-  exact EconCSLib.weightedPairProb_sum_le_one
+  exact AppliedModelingLib.weightedPairProb_sum_le_one
     weight
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb law (K rule) hi lo)
     (fun rule : Rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb law (K rule) hi lo)
     hweight hsum
     (fun rule =>
-      EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
+      AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
         law (K rule) hi lo)
 
 /--
@@ -12549,9 +13225,9 @@ component weakly beats the randomized finite outcome rate.
 theorem randomizedKApproval_outcomeRate_le_static_from_static_pivotal_pair_or_mixed_boundary
     {n : ℕ} {Rule Pair : Type*}
     [Fintype Rule] [Nonempty Rule] [Fintype Pair] [Nonempty Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (pivotal : Pair)
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
@@ -12559,23 +13235,23 @@ theorem randomizedKApproval_outcomeRate_le_static_from_static_pivotal_pair_or_mi
       ∀ rule,
         0 <
           approvalPairwiseBase
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
               law (K rule) (hi pivotal) (lo pivotal))
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
               law (K rule) (hi pivotal) (lo pivotal)))
     (hstatic_pivotal :
       ∀ rule,
         finiteOutcomeLearningRate
           (fun pair : Pair =>
             approvalPairwiseRate
-              (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+              (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
                 law (K rule) (hi pair) (lo pair))
-              (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+              (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
                 law (K rule) (hi pair) (lo pair))) =
           approvalPairwiseRate
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
               law (K rule) (hi pivotal) (lo pivotal))
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
               law (K rule) (hi pivotal) (lo pivotal))) :
     ∃ rule : Rule,
       finiteOutcomeLearningRate
@@ -12583,53 +13259,53 @@ theorem randomizedKApproval_outcomeRate_le_static_from_static_pivotal_pair_or_mi
             approvalPairwiseRate
               (∑ rule : Rule,
                 weight rule *
-                  EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+                  AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
                     law (K rule) (hi pair) (lo pair))
               (∑ rule : Rule,
                 weight rule *
-                  EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+                  AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
                     law (K rule) (hi pair) (lo pair))) ≤
         finiteOutcomeLearningRate
           (fun pair : Pair =>
             approvalPairwiseRate
-              (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+              (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
                 law (K rule) (hi pair) (lo pair))
-              (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+              (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
                 law (K rule) (hi pair) (lo pair))) := by
   exact
     kApprovalOutcome_no_randomization_of_static_pivotal_pair_or_mixed_boundary
       weight
       (fun rule : Rule =>
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
           law (K rule) (hi pivotal) (lo pivotal))
       (fun rule : Rule =>
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
           law (K rule) (hi pivotal) (lo pivotal))
       (fun rule : Rule => fun pair : Pair =>
         approvalPairwiseRate
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) (hi pair) (lo pair))
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) (hi pair) (lo pair)))
       (fun pair : Pair =>
         approvalPairwiseRate
           (∑ rule : Rule,
             weight rule *
-              EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+              AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
                 law (K rule) (hi pair) (lo pair))
           (∑ rule : Rule,
             weight rule *
-              EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+              AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
                 law (K rule) (hi pair) (lo pair)))
       pivotal rfl rfl hweight hsum
       (fun rule =>
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_nonneg
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_nonneg
           law (K rule) (hi pivotal) (lo pivotal))
       (fun rule =>
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb_nonneg
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb_nonneg
           law (K rule) (hi pivotal) (lo pivotal))
       (fun rule =>
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
           law (K rule) (hi pivotal) (lo pivotal))
       hbase_pos hstatic_pivotal
       (fun rule => rfl) rfl
@@ -12644,9 +13320,9 @@ formula.
 theorem randomizedKApproval_outcomeRate_le_static_from_static_pivotal_pair_valid_probabilities_or_static_boundary
     {n : ℕ} {Rule Pair : Type*}
     [Fintype Rule] [Nonempty Rule] [Fintype Pair] [Nonempty Pair]
-    (law : PMF (EconCSLib.SocialChoice.Ranking.Ranking n))
+    (law : PMF (AppliedModelingLib.SocialChoice.Ranking.Ranking n))
     (K : Rule → ℕ) (weight : Rule → ℝ)
-    (hi lo : Pair → EconCSLib.SocialChoice.Ranking.Candidate n)
+    (hi lo : Pair → AppliedModelingLib.SocialChoice.Ranking.Candidate n)
     (pivotal : Pair)
     (hweight : ∀ rule, 0 ≤ weight rule)
     (hsum : (∑ rule : Rule, weight rule) = 1)
@@ -12655,14 +13331,14 @@ theorem randomizedKApproval_outcomeRate_le_static_from_static_pivotal_pair_valid
         finiteOutcomeLearningRate
           (fun pair : Pair =>
             approvalPairwiseRate
-              (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+              (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
                 law (K rule) (hi pair) (lo pair))
-              (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+              (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
                 law (K rule) (hi pair) (lo pair))) =
           approvalPairwiseRate
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
               law (K rule) (hi pivotal) (lo pivotal))
-            (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+            (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
               law (K rule) (hi pivotal) (lo pivotal))) :
     (∃ rule : Rule,
       finiteOutcomeLearningRate
@@ -12670,59 +13346,59 @@ theorem randomizedKApproval_outcomeRate_le_static_from_static_pivotal_pair_valid
             approvalPairwiseRate
               (∑ rule : Rule,
                 weight rule *
-                  EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+                  AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
                     law (K rule) (hi pair) (lo pair))
               (∑ rule : Rule,
                 weight rule *
-                  EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+                  AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
                     law (K rule) (hi pair) (lo pair))) ≤
         finiteOutcomeLearningRate
           (fun pair : Pair =>
             approvalPairwiseRate
-              (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+              (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
                 law (K rule) (hi pair) (lo pair))
-              (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+              (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
                 law (K rule) (hi pair) (lo pair)))) ∨
       (∃ rule : Rule,
         approvalPairwiseBase
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) (hi pivotal) (lo pivotal))
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) (hi pivotal) (lo pivotal)) = 0) := by
   exact
     kApprovalOutcome_no_randomization_of_static_pivotal_pair_valid_probabilities_or_static_boundary
       weight
       (fun rule : Rule =>
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
           law (K rule) (hi pivotal) (lo pivotal))
       (fun rule : Rule =>
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
           law (K rule) (hi pivotal) (lo pivotal))
       (fun rule : Rule => fun pair : Pair =>
         approvalPairwiseRate
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
             law (K rule) (hi pair) (lo pair))
-          (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+          (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
             law (K rule) (hi pair) (lo pair)))
       (fun pair : Pair =>
         approvalPairwiseRate
           (∑ rule : Rule,
             weight rule *
-              EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+              AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
                 law (K rule) (hi pair) (lo pair))
           (∑ rule : Rule,
             weight rule *
-              EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+              AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
                 law (K rule) (hi pair) (lo pair)))
       pivotal rfl rfl hweight hsum
       (fun rule =>
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_nonneg
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_nonneg
           law (K rule) (hi pivotal) (lo pivotal))
       (fun rule =>
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb_nonneg
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb_nonneg
           law (K rule) (hi pivotal) (lo pivotal))
       (fun rule =>
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb_add_downProb_le_one
           law (K rule) (hi pivotal) (lo pivotal))
       hstatic_pivotal (fun rule => rfl) rfl
 
@@ -13320,11 +13996,11 @@ def constructedWSelectionRankingTopPrefixProb :
 
 /-- The three-candidate ranking universe used by the constructed example. -/
 abbrev ConstructedWSelectionRanking1Candidate :=
-  EconCSLib.SocialChoice.Ranking.Candidate 1
+  AppliedModelingLib.SocialChoice.Ranking.Candidate 1
 
 /-- Actual three-candidate rankings for the constructed example. -/
 abbrev ConstructedWSelectionRanking1 :=
-  EconCSLib.SocialChoice.Ranking.Ranking 1
+  AppliedModelingLib.SocialChoice.Ranking.Ranking 1
 
 /-- Embed the source candidate names into the canonical `Fin 3` ranking universe. -/
 def constructedWSelectionCandidateToRanking1 :
@@ -13364,7 +14040,7 @@ theorem constructedWSelectionRankingToRanking1_inTopPrefix
         cut ↔
       constructedWSelectionRankingInTopPrefix ranking candidate cut := by
   cases ranking <;> cases candidate <;> fin_cases cut <;>
-    norm_num [rankingInTopPrefix, EconCSLib.SocialChoice.Ranking.rankOf,
+    norm_num [rankingInTopPrefix, AppliedModelingLib.SocialChoice.Ranking.rankOf,
       constructedWSelectionRankingToRanking1,
       constructedWSelectionCandidateToRanking1,
       constructedWSelectionRankingInTopPrefix,
@@ -13393,7 +14069,7 @@ theorem constructedWSelectionRankingTopPrefixProb_eq
       constructedWSelectionTopPrefixProb candidate cut := by
   cases candidate <;> fin_cases cut <;>
     unfold constructedWSelectionRankingTopPrefixProb prefixProbFromEvent
-      EconCSLib.pmfProb EconCSLib.pmfExp <;>
+      AppliedModelingLib.pmfProb AppliedModelingLib.pmfExp <;>
     rw [show (Finset.univ : Finset ConstructedWSelectionRanking) =
         ({hij, hji, ihj, ijh, jhi, jih} :
           Finset ConstructedWSelectionRanking) by
@@ -13415,9 +14091,9 @@ theorem constructedWSelectionRanking1TopPrefixProb_eq
       constructedWSelectionTopPrefixProb candidate cut := by
   unfold rankingTopPrefixProb prefixProbFromEvent
     constructedWSelectionRanking1Law
-  rw [EconCSLib.pmfProb_map]
+  rw [AppliedModelingLib.pmfProb_map]
   have hprob :
-      EconCSLib.pmfProb constructedWSelectionRankingLaw
+      AppliedModelingLib.pmfProb constructedWSelectionRankingLaw
           (fun ranking =>
             rankingInTopPrefix
               (constructedWSelectionRankingToRanking1 ranking)
@@ -13426,7 +14102,7 @@ theorem constructedWSelectionRanking1TopPrefixProb_eq
         constructedWSelectionRankingTopPrefixProb candidate cut := by
     unfold constructedWSelectionRankingTopPrefixProb prefixProbFromEvent
     exact
-      EconCSLib.pmfProb_congr
+      AppliedModelingLib.pmfProb_congr
         constructedWSelectionRankingLaw
         (by
           intro ranking
@@ -13582,16 +14258,16 @@ def constructedWSelectionRandomizedDown : ConstructedWSelectionPair → ℝ
 
 theorem constructedWSelectionRanking1K1UpProb_eq
     (pair : ConstructedWSelectionPair) :
-    EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+    AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
         constructedWSelectionRanking1Law 1
         (constructedWSelectionCandidateToRanking1 winner)
         (constructedWSelectionPairLoserToRanking1 pair) =
       constructedWSelectionK1Up pair := by
   cases pair <;>
-    unfold EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+    unfold AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
       constructedWSelectionRanking1Law <;>
-    rw [EconCSLib.pmfProb_map] <;>
-    unfold EconCSLib.pmfProb EconCSLib.pmfExp <;>
+    rw [AppliedModelingLib.pmfProb_map] <;>
+    unfold AppliedModelingLib.pmfProb AppliedModelingLib.pmfExp <;>
     rw [show (Finset.univ : Finset ConstructedWSelectionRanking) =
         ({hij, hji, ihj, ijh, jhi, jih} :
           Finset ConstructedWSelectionRanking) by
@@ -13602,24 +14278,24 @@ theorem constructedWSelectionRanking1K1UpProb_eq
       constructedWSelectionRankingToRanking1,
       constructedWSelectionCandidateToRanking1,
       constructedWSelectionPairLoserToRanking1,
-      EconCSLib.SocialChoice.Ranking.approvedByK,
-      EconCSLib.SocialChoice.Ranking.rankOf,
+      AppliedModelingLib.SocialChoice.Ranking.approvedByK,
+      AppliedModelingLib.SocialChoice.Ranking.rankOf,
       constructedWSelectionK1Up, constructedWSelectionProb,
       Equiv.swap_apply_def] <;>
     norm_num
 
 theorem constructedWSelectionRanking1K1DownProb_eq
     (pair : ConstructedWSelectionPair) :
-    EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+    AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
         constructedWSelectionRanking1Law 1
         (constructedWSelectionCandidateToRanking1 winner)
         (constructedWSelectionPairLoserToRanking1 pair) =
       constructedWSelectionK1Down pair := by
   cases pair <;>
-    unfold EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+    unfold AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
       constructedWSelectionRanking1Law <;>
-    rw [EconCSLib.pmfProb_map] <;>
-    unfold EconCSLib.pmfProb EconCSLib.pmfExp <;>
+    rw [AppliedModelingLib.pmfProb_map] <;>
+    unfold AppliedModelingLib.pmfProb AppliedModelingLib.pmfExp <;>
     rw [show (Finset.univ : Finset ConstructedWSelectionRanking) =
         ({hij, hji, ihj, ijh, jhi, jih} :
           Finset ConstructedWSelectionRanking) by
@@ -13630,24 +14306,24 @@ theorem constructedWSelectionRanking1K1DownProb_eq
       constructedWSelectionRankingToRanking1,
       constructedWSelectionCandidateToRanking1,
       constructedWSelectionPairLoserToRanking1,
-      EconCSLib.SocialChoice.Ranking.approvedByK,
-      EconCSLib.SocialChoice.Ranking.rankOf,
+      AppliedModelingLib.SocialChoice.Ranking.approvedByK,
+      AppliedModelingLib.SocialChoice.Ranking.rankOf,
       constructedWSelectionK1Down, constructedWSelectionProb,
       Equiv.swap_apply_def] <;>
     norm_num
 
 theorem constructedWSelectionRanking1K2UpProb_eq
     (pair : ConstructedWSelectionPair) :
-    EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+    AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
         constructedWSelectionRanking1Law 2
         (constructedWSelectionCandidateToRanking1 winner)
         (constructedWSelectionPairLoserToRanking1 pair) =
       constructedWSelectionK2Up pair := by
   cases pair <;>
-    unfold EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+    unfold AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
       constructedWSelectionRanking1Law <;>
-    rw [EconCSLib.pmfProb_map] <;>
-    unfold EconCSLib.pmfProb EconCSLib.pmfExp <;>
+    rw [AppliedModelingLib.pmfProb_map] <;>
+    unfold AppliedModelingLib.pmfProb AppliedModelingLib.pmfExp <;>
     rw [show (Finset.univ : Finset ConstructedWSelectionRanking) =
         ({hij, hji, ihj, ijh, jhi, jih} :
           Finset ConstructedWSelectionRanking) by
@@ -13658,24 +14334,24 @@ theorem constructedWSelectionRanking1K2UpProb_eq
       constructedWSelectionRankingToRanking1,
       constructedWSelectionCandidateToRanking1,
       constructedWSelectionPairLoserToRanking1,
-      EconCSLib.SocialChoice.Ranking.approvedByK,
-      EconCSLib.SocialChoice.Ranking.rankOf,
+      AppliedModelingLib.SocialChoice.Ranking.approvedByK,
+      AppliedModelingLib.SocialChoice.Ranking.rankOf,
       constructedWSelectionK2Up, constructedWSelectionProb,
       Equiv.swap_apply_def] <;>
     norm_num
 
 theorem constructedWSelectionRanking1K2DownProb_eq
     (pair : ConstructedWSelectionPair) :
-    EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+    AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
         constructedWSelectionRanking1Law 2
         (constructedWSelectionCandidateToRanking1 winner)
         (constructedWSelectionPairLoserToRanking1 pair) =
       constructedWSelectionK2Down pair := by
   cases pair <;>
-    unfold EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+    unfold AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
       constructedWSelectionRanking1Law <;>
-    rw [EconCSLib.pmfProb_map] <;>
-    unfold EconCSLib.pmfProb EconCSLib.pmfExp <;>
+    rw [AppliedModelingLib.pmfProb_map] <;>
+    unfold AppliedModelingLib.pmfProb AppliedModelingLib.pmfExp <;>
     rw [show (Finset.univ : Finset ConstructedWSelectionRanking) =
         ({hij, hji, ihj, ijh, jhi, jih} :
           Finset ConstructedWSelectionRanking) by
@@ -13686,19 +14362,19 @@ theorem constructedWSelectionRanking1K2DownProb_eq
       constructedWSelectionRankingToRanking1,
       constructedWSelectionCandidateToRanking1,
       constructedWSelectionPairLoserToRanking1,
-      EconCSLib.SocialChoice.Ranking.approvedByK,
-      EconCSLib.SocialChoice.Ranking.rankOf,
+      AppliedModelingLib.SocialChoice.Ranking.approvedByK,
+      AppliedModelingLib.SocialChoice.Ranking.rankOf,
       constructedWSelectionK2Down, constructedWSelectionProb,
       Equiv.swap_apply_def] <;>
     norm_num
 
 theorem constructedWSelectionRanking1RandomizedUpProb_eq_average
     (pair : ConstructedWSelectionPair) :
-    (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+    (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
           constructedWSelectionRanking1Law 1
           (constructedWSelectionCandidateToRanking1 winner)
           (constructedWSelectionPairLoserToRanking1 pair) +
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
           constructedWSelectionRanking1Law 2
           (constructedWSelectionCandidateToRanking1 winner)
           (constructedWSelectionPairLoserToRanking1 pair)) / 2 =
@@ -13712,11 +14388,11 @@ theorem constructedWSelectionRanking1RandomizedUpProb_eq_average
 
 theorem constructedWSelectionRanking1RandomizedDownProb_eq_average
     (pair : ConstructedWSelectionPair) :
-    (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+    (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
           constructedWSelectionRanking1Law 1
           (constructedWSelectionCandidateToRanking1 winner)
           (constructedWSelectionPairLoserToRanking1 pair) +
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
           constructedWSelectionRanking1Law 2
           (constructedWSelectionCandidateToRanking1 winner)
           (constructedWSelectionPairLoserToRanking1 pair)) / 2 =
@@ -13731,11 +14407,11 @@ theorem constructedWSelectionRanking1RandomizedDownProb_eq_average
 /-- Actual 50/50 randomized approval up-probabilities from K=1 and K=2. -/
 def constructedWSelectionRanking1RandomizedApprovalUp
     (pair : ConstructedWSelectionPair) : ℝ :=
-  (EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+  (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
       constructedWSelectionRanking1Law 1
       (constructedWSelectionCandidateToRanking1 winner)
       (constructedWSelectionPairLoserToRanking1 pair) +
-    EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+    AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
       constructedWSelectionRanking1Law 2
       (constructedWSelectionCandidateToRanking1 winner)
       (constructedWSelectionPairLoserToRanking1 pair)) / 2
@@ -13743,11 +14419,11 @@ def constructedWSelectionRanking1RandomizedApprovalUp
 /-- Actual 50/50 randomized approval down-probabilities from K=1 and K=2. -/
 def constructedWSelectionRanking1RandomizedApprovalDown
     (pair : ConstructedWSelectionPair) : ℝ :=
-  (EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+  (AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
       constructedWSelectionRanking1Law 1
       (constructedWSelectionCandidateToRanking1 winner)
       (constructedWSelectionPairLoserToRanking1 pair) +
-    EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+    AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
       constructedWSelectionRanking1Law 2
       (constructedWSelectionCandidateToRanking1 winner)
       (constructedWSelectionPairLoserToRanking1 pair)) / 2
@@ -14254,7 +14930,7 @@ theorem constructedWSelectionStaticBaseRate_pos :
 /-- Actual K-approval up-probabilities for the four static cutoffs on `Ranking 1`. -/
 def constructedWSelectionRanking1StaticKUp
     (K : Fin 4) (pair : ConstructedWSelectionPair) : ℝ :=
-  EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb
+  AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb
     constructedWSelectionRanking1Law K.val
     (constructedWSelectionCandidateToRanking1 winner)
     (constructedWSelectionPairLoserToRanking1 pair)
@@ -14262,7 +14938,7 @@ def constructedWSelectionRanking1StaticKUp
 /-- Actual K-approval down-probabilities for the four static cutoffs on `Ranking 1`. -/
 def constructedWSelectionRanking1StaticKDown
     (K : Fin 4) (pair : ConstructedWSelectionPair) : ℝ :=
-  EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb
+  AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb
     constructedWSelectionRanking1Law K.val
     (constructedWSelectionCandidateToRanking1 winner)
     (constructedWSelectionPairLoserToRanking1 pair)
@@ -14286,8 +14962,8 @@ theorem constructedWSelectionRanking1StaticKOutcomeRate_le_staticBaseRate
       simp [constructedWSelectionRanking1StaticKRate,
         constructedWSelectionRanking1StaticKUp,
         constructedWSelectionRanking1StaticKDown,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb,
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb,
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb,
         approvalPairwiseRate_zero_zero]
     change finiteOutcomeLearningRate
         (constructedWSelectionRanking1StaticKRate (0 : Fin 4)) ≤
@@ -14330,8 +15006,8 @@ theorem constructedWSelectionRanking1StaticKOutcomeRate_le_staticBaseRate
       simp [constructedWSelectionRanking1StaticKRate,
         constructedWSelectionRanking1StaticKUp,
         constructedWSelectionRanking1StaticKDown,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairUpProb,
-        EconCSLib.SocialChoice.Ranking.kApprovalPairDownProb,
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairUpProb,
+        AppliedModelingLib.SocialChoice.Ranking.kApprovalPairDownProb,
         approvalPairwiseRate_zero_zero]
     change finiteOutcomeLearningRate
         (constructedWSelectionRanking1StaticKRate (3 : Fin 4)) ≤

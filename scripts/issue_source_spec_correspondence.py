@@ -23,13 +23,31 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT / "scripts") not in sys.path:
-    sys.path.insert(0, str(ROOT / "scripts"))
+for import_root in (ROOT, ROOT / "scripts"):
+    value = str(import_root)
+    if value not in sys.path:
+        sys.path.insert(0, value)
 
-import audit_evidence_integrity as integrity  # noqa: E402
-import audit_repository as repository  # noqa: E402
-import refresh_source_spec_correspondence as refresh  # noqa: E402
-import review_dashboard_packet as packet  # noqa: E402
+try:  # Keep one canonical module identity under package and direct execution.
+    from scripts import audit_evidence_integrity as integrity
+    from scripts import audit_repository as repository
+    from scripts import refresh_source_spec_correspondence as refresh
+    from scripts.current_closeout import review_surface
+    from scripts.obligation_routes import (
+        EvidenceRoute,
+        EvidenceRouteSet,
+        ObligationRouteError,
+    )
+except ModuleNotFoundError:  # Direct execution from a copied scripts directory.
+    import audit_evidence_integrity as integrity
+    import audit_repository as repository
+    import refresh_source_spec_correspondence as refresh
+    from current_closeout import review_surface
+    from obligation_routes import (
+        EvidenceRoute,
+        EvidenceRouteSet,
+        ObligationRouteError,
+    )
 
 
 REVIEW_SCHEMA = 1
@@ -47,7 +65,10 @@ def read_object(path: Path) -> dict[str, Any]:
 
 
 def atomic_write(path: Path, value: Mapping[str, Any]) -> None:
-    encoded = json.dumps(value, indent=2, sort_keys=False) + "\n"
+    # Paper statement maps contain verbatim Unicode source excerpts. Preserve
+    # their human-facing representation instead of rewriting every non-ASCII
+    # character as a JSON escape when adding a correspondence record.
+    encoded = json.dumps(value, indent=2, sort_keys=False, ensure_ascii=False) + "\n"
     descriptor, name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
     temporary = Path(name)
     try:
@@ -93,6 +114,17 @@ def checked_review(
             errors.append("ledger source_atom_bindings must cover every current source atom once")
         if any(not str(binding.get("semantic_bridge") or "").strip() for binding in bindings):
             errors.append("every ledger source_atom_binding needs semantic_bridge text")
+        if len(atom_ids) > 1 and any(
+            not integrity.meaningful_semantic_text(
+                binding.get("overlap_justification")
+            )
+            for binding in bindings
+        ):
+            errors.append(
+                "every multi-atom ledger source_atom_binding needs a substantive "
+                "overlap_justification because the issuer binds it to the complete "
+                "expanded Spec surface"
+            )
     terminal = raw.get("closure_terminal_disposition")
     if not isinstance(terminal, Mapping):
         errors.append("ledger closure_terminal_disposition must be an object")
@@ -112,24 +144,26 @@ def checked_review(
 
 
 def _source_record_for_spec(
-    source_map: Mapping[str, Any], specification: str
+    source_map: Mapping[str, Any],
+    specification: str,
+    *,
+    route_by_specification: Mapping[str, EvidenceRoute],
 ) -> Mapping[str, Any] | None:
     raw_items = source_map.get("items")
     if not isinstance(raw_items, Mapping):
         return None
-    matches = [
-        item
-        for item in raw_items.values()
-        if isinstance(item, Mapping)
-        and isinstance(item.get("semantic_contract"), Mapping)
-        and str(item["semantic_contract"].get("spec_declaration") or "").strip()
-        == specification
-    ]
-    return matches[0] if len(matches) == 1 else None
+    route = route_by_specification.get(specification)
+    raw = raw_items.get(route.source_item_id) if route is not None else None
+    return raw if isinstance(raw, Mapping) else None
 
 
 def current_matching_screening(
-    paper_dir: Path, source_map: Mapping[str, Any], specification: str
+    paper_dir: Path,
+    source_map: Mapping[str, Any],
+    specification: str,
+    *,
+    route_by_specification: Mapping[str, EvidenceRoute] | None = None,
+    semantic_targets_override: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> str:
     """Require the current semantic screen appropriate to the source target.
 
@@ -140,30 +174,38 @@ def current_matching_screening(
     corrected target could never receive the separate realization receipt.
     """
 
-    interface_items = packet._paperinterface_items(paper_dir)
-    # A completed human-review packet already contains Lean-produced expanded
-    # targets, bound to the exact hash of every paper-local Lean source. Reuse
-    # that current cache when available; source-bundle and interface hashes
-    # are rechecked below. This is an evidence-preserving transport shortcut,
-    # not a stale-document exception, and avoids rerunning the expensive
-    # transparent-display pass merely to issue a downstream receipt.
-    cache = packet._current_packet_lean_cache(paper_dir, interface_items)
-    cached_targets = (
-        cache.get("semantic_targets")
-        if isinstance(cache, Mapping)
-        else None
-    )
-    if isinstance(cached_targets, Mapping) and specification in cached_targets:
-        semantic_targets = {specification: dict(cached_targets[specification])}
+    if route_by_specification is None:
+        try:
+            route_by_specification = EvidenceRouteSet.from_source_map(
+                source_map,
+            ).result_route_by_specification()
+        except ObligationRouteError as error:
+            return f"source map has invalid typed routes: {error}"
+
+    if semantic_targets_override is not None:
+        target = semantic_targets_override.get(specification)
+        if not isinstance(target, Mapping):
+            return "shared Lean-expanded Spec target is unavailable"
+        semantic_targets = {specification: dict(target)}
     else:
         try:
-            semantic_targets = packet.semantic_expanded_spec_targets(
-                paper_dir, [specification]
+            projection = review_surface.load_current_v11_review_graph_projection(
+                ROOT, paper_dir
             )
-        except ValueError as error:
-            return "could not obtain the current Lean-expanded Spec target: " + str(error)
-    rows = packet._v11_screening_rows(
-        paper_dir, source_map, interface_items, semantic_targets
+        except (OSError, RuntimeError, TypeError, ValueError) as error:
+            return "could not read the current Lean-expanded Spec target: " + str(error)
+        if projection is None:
+            return (
+                "current Lean review graph checkpoint is unavailable; run "
+                f"python3 scripts/closeout_reuse_plan.py --paper {paper_dir.name} "
+                "and execute its graph-preparation action"
+            )
+        target = projection.semantic_targets.get(specification)
+        if not isinstance(target, Mapping):
+            return "current Lean review graph omits the selected Spec target"
+        semantic_targets = {specification: dict(target)}
+    rows = review_surface.current_v11_screening_rows(
+        paper_dir, source_map, semantic_targets
     )
     row = rows.get(specification)
     if not isinstance(row, Mapping):
@@ -171,7 +213,11 @@ def current_matching_screening(
     if row.get("current") is not True:
         return "raw-source-to-expanded-Spec screening is stale or malformed"
     verdict = str(row.get("judgment") or "").strip().lower()
-    record = _source_record_for_spec(source_map, specification)
+    record = _source_record_for_spec(
+        source_map,
+        specification,
+        route_by_specification=route_by_specification,
+    )
     if verdict == "matches":
         if (
             isinstance(record, Mapping)
@@ -224,13 +270,17 @@ def correspondence(
     for binding in review["source_atom_bindings"]:
         assert isinstance(binding, Mapping)
         atom = atom_by_id[str(binding["source_atom_id"])]
-        bindings.append(
-            {
-                "source_atom_sha256": integrity.source_claim_atom_semantic_sha256(atom),
-                "spec_component_sha256s": [surface],
-                "semantic_bridge": str(binding["semantic_bridge"]).strip(),
-            }
-        )
+        result_binding = {
+            "source_atom_sha256": integrity.source_claim_atom_semantic_sha256(atom),
+            "spec_component_sha256s": [surface],
+            "semantic_bridge": str(binding["semantic_bridge"]).strip(),
+        }
+        overlap_justification = str(
+            binding.get("overlap_justification") or ""
+        ).strip()
+        if overlap_justification:
+            result_binding["overlap_justification"] = overlap_justification
+        bindings.append(result_binding)
     terminal = review["closure_terminal_disposition"]
     assert isinstance(terminal, Mapping)
     terminal_atom = atom_by_id[str(terminal["source_atom_id"])]
@@ -289,13 +339,20 @@ def issue(root: Path, paper: str, ledger_path: Path, keys: list[str], write: boo
     raw_items = source_map.get("items")
     if not isinstance(raw_items, Mapping):
         return [], ["source map has no items object"]
+    try:
+        route_set = EvidenceRouteSet.from_source_map(
+            source_map,
+        )
+        route_by_source_item = route_set.by_source_item()
+        route_by_specification = route_set.result_route_by_specification()
+    except ObligationRouteError as error:
+        return [], [f"source map has invalid typed routes: {error}"]
     if not keys:
         keys = [
-            str(key) for key, item in raw_items.items()
-            if isinstance(item, Mapping)
+            route.source_item_id
+            for route in route_set.result_routes()
+            if isinstance((item := raw_items.get(route.source_item_id)), Mapping)
             and item.get(integrity.SOURCE_SPEC_CORRESPONDENCE_KEY) is None
-            and isinstance(item.get("semantic_contract"), Mapping)
-            and str(item["semantic_contract"].get("spec_declaration") or "").strip()
             and isinstance(item.get(integrity.SOURCE_CLAIM_ATOMS_KEY), list)
             and item[integrity.SOURCE_CLAIM_ATOMS_KEY]
         ]
@@ -303,8 +360,8 @@ def issue(root: Path, paper: str, ledger_path: Path, keys: list[str], write: boo
     errors: list[str] = []
     for key in keys:
         item = raw_items.get(key)
-        contract = item.get("semantic_contract") if isinstance(item, Mapping) else None
-        specification = str(contract.get("spec_declaration") or "").strip() if isinstance(contract, Mapping) else ""
+        route = route_by_source_item.get(key)
+        specification = route.spec_declaration if route is not None else ""
         atoms = item.get(integrity.SOURCE_CLAIM_ATOMS_KEY) if isinstance(item, Mapping) else None
         atom_ids = {
             str(atom.get("id") or "").strip()
@@ -313,17 +370,60 @@ def issue(root: Path, paper: str, ledger_path: Path, keys: list[str], write: boo
         if not specification or not atom_ids:
             errors.append(f"{key}: source map item lacks a strict semantic contract")
             continue
-        screening_error = current_matching_screening(folder, source_map, specification)
         review, review_errors = checked_review(
             ledger, paper=paper, key=key, specification=specification, atom_ids=atom_ids
         )
-        if screening_error:
-            errors.append(f"{key}: {screening_error}")
         if review_errors:
             errors.extend(f"{key}: {error}" for error in review_errors)
-        if not screening_error and not review_errors:
+        if not review_errors:
             assert isinstance(item, Mapping) and review is not None
             selected.append((key, dict(item), review))
+    if errors:
+        return [], errors
+
+    specifications = sorted(
+        {
+            route_by_source_item[key].spec_declaration
+            for key, _item, _review in selected
+        }
+    )
+    try:
+        projection = review_surface.load_current_v11_review_graph_projection(
+            root, folder
+        )
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        return [], [
+            "could not read the current Lean-expanded Spec surface: " + str(error)
+        ]
+    if projection is None:
+        return [], [
+            "current Lean review graph checkpoint is unavailable; run "
+            f"python3 scripts/closeout_reuse_plan.py --paper {paper} and execute "
+            "its graph-preparation action"
+        ]
+    missing_targets = sorted(
+        set(specifications) - set(projection.semantic_targets)
+    )
+    if missing_targets:
+        return [], [
+            "current Lean review graph omits selected Spec targets: "
+            + ", ".join(missing_targets)
+        ]
+    semantic_targets = {
+        specification: dict(projection.semantic_targets[specification])
+        for specification in specifications
+    }
+    for key, _item, _review in selected:
+        specification = route_by_source_item[key].spec_declaration
+        screening_error = current_matching_screening(
+            folder,
+            source_map,
+            specification,
+            route_by_specification=route_by_specification,
+            semantic_targets_override=semantic_targets,
+        )
+        if screening_error:
+            errors.append(f"{key}: {screening_error}")
     if errors:
         return [], errors
     closures, closure_errors = refresh.current_lean_closures(
@@ -336,7 +436,7 @@ def issue(root: Path, paper: str, ledger_path: Path, keys: list[str], write: boo
     updated_items = updated["items"]
     issued = []
     for key, item, review in selected:
-        specification = str(item["semantic_contract"]["spec_declaration"])
+        specification = route_by_source_item[key].spec_declaration
         record, record_errors = correspondence(item, review, closures.get(specification, {}))
         if record_errors:
             errors.extend(f"{key}: {error}" for error in record_errors)

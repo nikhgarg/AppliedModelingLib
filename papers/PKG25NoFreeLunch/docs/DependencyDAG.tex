@@ -5,146 +5,97 @@
 \begin{tikzpicture}[
   x=1cm,
   y=1cm,
-  every node/.append style={outer sep=4pt}
+  every node/.append style={outer sep=4pt, font=\sffamily\normalsize}
 ]
 
 \dagPaperMetadata
   {A No Free Lunch Theorem for Human-AI Collaboration}
-  {Peng, Garg, Kleinberg}
+  {K. Peng, N. Garg, J. Kleinberg}
   {AAAI}
   {2025}
   {https://ojs.aaai.org/index.php/AAAI/article/view/33574}
 
 \dagPaperLegendRightOfMetadata{
-\node[dag_result, dag_template_legend] (legRes) at (0,0) {checked named\\result};
-\node[dag_lemma, dag_template_legend] (legLem) at (4.0,0) {checked\\construction};
-\node[dag_model, dag_template_legend] (legDef) at (8.0,0) {checked finite\\definition};
-\node[dag_partial, dag_template_legend] (legPart) at (12.0,0) {partial source\\coverage};
-\node[dag_template_note, dag_template_legend, text width=2.72cm]
-  (legNote) at (16.0,0) {formalized source note\\(not a caveat)};
+\node[dag_model, dag_template_legend] (legModel) at (0,0) {formalized\\model};
+\node[dag_lemma, dag_template_legend] (legConstruction) at (4.3,0) {formalized\\construction};
+\node[dag_result, dag_template_legend] (legResult) at (8.6,0) {formalized\\result};
+\node[dag_template_note, dag_template_legend] (legNote) at (12.9,0) {source clarification\\or correction};
 }
-\daglegend{(legRes)(legLem)(legDef)(legPart)(legNote)}{Legend}
+\daglegend{(legModel)(legConstruction)(legResult)(legNote)}{Legend}
 
 \begin{dagPaperBody}
 
-\node[font=\sffamily\bfseries\Large, align=center, text width=22cm]
-  (Class) at (6,0.6) {
-  Status: partially formalized because of three coverage boundaries;\\
-  Theorem 1 is checked and no central-result caveat is claimed
+\node[dag_model, text width=5.3cm] (JointLaw) at (-2,-4.2) {
+  \textbf{Calibrated joint-law model} \\
+  measurable $[0,1]$ predictors, event calibration, and agent accuracies
 };
 
-% The three yellow nodes are the only drivers of partial status.
-\node[dag_partial, text width=5.2cm] (GeneralDomain) at (-5,-2.0) {
-  \textbf{Partial boundary 1} \\
-  full arbitrary probability-space\\
-  collaboration-setting universe\\
-  \emph{abstract inclusion bridge checked}
+\node[dag_model, text width=5.3cm] (Strategy) at (6,-4.2) {
+  \textbf{Strategy model} \\
+  unit-cube strategy domain, nonempty agent domain, collaboration accuracy,
+  reliability, and Definition 4 non-collaboration
 };
 
-\node[dag_model, text width=5.2cm] (Finite) at (2,-2.0) {
-  \textbf{Finite calibrated settings} \\
-  mass, label probability, predictions,\\
-  calibration, induced accuracies
+\node[dag_model, text width=5.3cm] (Partition) at (14,-4.2) {
+  \textbf{Finite witness infrastructure} \\
+  measurable partitions, null-cell value, and exact predictor realization
 };
 
-\node[dag_partial, text width=5.2cm] (Partitions) at (9,-2.0) {
-  \textbf{Partial boundary 2} \\
-  general partition-to-predictor recipe\\
-  \emph{every proof partition checked}
-};
-
-\node[dag_partial, text width=5.2cm] (Epsilon) at (16,-2.0) {
-  \textbf{Partial boundary 3} \\
-  full $\epsilon<1/2$ S1 family\\
-  \emph{$\epsilon=1/4$ checked}
-};
-
-\node[dag_lemma, text width=4.8cm] (Mixture) at (-5,-6.4) {
+\node[dag_lemma, text width=5.2cm] (Prop6) at (-2,-10.0) {
   \textbf{Proposition 6} \\
-  disjoint-union mixture; mass, label,\\
-  predictor, and accuracy equations
+  full-joint-law simplex mixture and both weighted accuracy equations
 };
 
-\node[dag_lemma, text width=4.8cm] (Lemma8) at (2,-6.4) {
+\node[dag_lemma, text width=5.2cm] (Lemma8) at (6,-10.0) {
   \textbf{Lemma 8} \\
-  odds-mass witness, calibration,\\
-  weak/strict accuracy dominance
+  calibrated bad-profile witness with one strict and all weak accuracy gaps
 };
 
-\node[dag_lemma, text width=4.8cm] (S1) at (9,-6.4) {
-  \textbf{Proposition 9: $S_1$} \\
-  checked $\epsilon=1/4$ instance;\\
-  accuracies $7/12$ and $3/4$
+\node[dag_lemma, text width=5.2cm] (P9Witnesses) at (14,-10.0) {
+  \textbf{Proposition 9 witnesses} \\
+  positive-$\epsilon$ $S_1$, normalized $S_2$, and explicit $7/8$--$1/8$ mixture
 };
 
-\node[dag_lemma, text width=4.8cm] (S2) at (16,-6.4) {
-  \textbf{Proposition 9: $S_2$} \\
-  paired odds witnesses, calibration,\\
-  and strict gap for agent $k$
-};
-
-\node[dag_result, text width=5.3cm] (Prop7) at (-0.5,-10.8) {
+\node[dag_result, text width=5.5cm] (Prop7) at (2,-15.8) {
   \textbf{Proposition 7} \\
-  finite reliability forces one fixed\\
-  off-half deferral coordinate
+  reliability forces one fixed off-half deferral agent
 };
 
-\node[dag_result, text width=5.3cm] (Prop9) at (12.5,-10.8) {
+\node[dag_result, text width=5.5cm] (Prop9) at (10,-15.8) {
   \textbf{Proposition 9} \\
-  finite reliability forces one fixed\\
-  tie label; final weights $7/8,1/8$
+  fixed off-half deferral plus reliability forces one fixed half-slice label
 };
 
-\node[dag_result, text width=8.5cm] (Main) at (6,-15.0) {
-  \textbf{Theorem 1 --- checked forward implication} \\
-  source reliability in any domain containing all finite\\
-  calibrated witnesses implies non-collaboration
+\node[dag_result, text width=9.2cm, minimum width=9.6cm] (Theorem1) at (6,-21.5) {
+  \textbf{Theorem 1 --- formalized} \\
+  every reliable collaboration strategy is non-collaborative
 };
 
-\draw[dag_dashed_arrow] (GeneralDomain.east) -- node[above, font=\scriptsize]
-  {accuracy-preserving inclusion} (Finite.west);
-\draw[dag_arrow] (Finite.south west) -- (Mixture.north east);
-\draw[dag_arrow] (Finite.south) -- (Lemma8.north);
-\draw[dag_dashed_arrow] (Partitions.south west) -- (Lemma8.north east);
-\draw[dag_arrow] (Finite.south east) -- (S1.north west);
-\draw[dag_arrow] (Finite.east) -- ++(1.4,0) |- (S2.north);
-\draw[dag_dashed_arrow] (Partitions.south east) -- (S2.north west);
-\draw[dag_dashed_arrow] (Epsilon.south west) -- (S1.north east);
-\draw[dag_arrow] (Mixture.south) -- ++(0,-1.0) -| (Prop7.north west);
-\draw[dag_arrow] (Lemma8.south) -- (Prop7.north east);
-\draw[dag_arrow] (Mixture.south east) -- ++(0,-0.8) -| (Prop9.north west);
-\draw[dag_arrow] (S1.south) -- (Prop9.north west);
-\draw[dag_arrow] (S2.south) -- (Prop9.north east);
-\draw[dag_arrow] (Prop7.south) -- ++(0,-1.0) -| (Main.north west);
-\draw[dag_arrow] (Prop9.south) -- ++(0,-1.0) -| (Main.north east);
+\draw[dag_arrow] (JointLaw) -- (Prop6);
+\draw[dag_arrow] (JointLaw.south east) -- (Lemma8.north west);
+\draw[dag_arrow] (Strategy.south) -- (Lemma8.north);
+\draw[dag_arrow] (Partition.south west) -- (Lemma8.north east);
+\draw[dag_arrow] (JointLaw.south east) -- (P9Witnesses.north west);
+\draw[dag_arrow] (Strategy.south east) -- (P9Witnesses.north west);
+\draw[dag_arrow] (Partition) -- (P9Witnesses);
+\draw[dag_arrow] (Prop6.south east) -- (Prop7.north west);
+\draw[dag_arrow] (Lemma8.south west) -- (Prop7.north east);
+\draw[dag_arrow] (Prop6.south east) -- ++(0,-1.0) -| (Prop9.north west);
+\draw[dag_arrow] (P9Witnesses.south west) -- (Prop9.north east);
+\draw[dag_arrow] (Prop7) -- (Theorem1.north west);
+\draw[dag_arrow] (Prop9) -- (Theorem1.north east);
 
-% Gray nodes record source clarifications and never drive partial/caveat status.
-\node[font=\sffamily\bfseries\large, align=center] at (6,-18.0)
-  {Three source clarifications --- not caveats and not partial-status drivers};
-
-\node[dag_template_note, text width=6.1cm] (LossNote) at (-4.5,-20.0) {
-  \textbf{Note 1: loss/accuracy label.}
-  $\mathrm{E}|\widehat Y-Y|$ is loss; Lean proves expected correctness is its
-  complement.
+\node[dag_template_note, text width=20.5cm, align=left] (Notes) at (6,-26.2) {
+  \textbf{Source clarifications and corrections --- not caveats.}
+  Event calibration makes the null-fiber reading explicit; the strategy acts
+  on the unit cube with at least one agent; finite measurable cells make the
+  partition recipe well-defined. The checked formalization also establishes the
+  loss/accuracy complement, half-tie counterexample, Proposition 6 index,
+  boundary-converse counterexample, positive-$\epsilon$ domain, and repaired
+  Proposition 9 denominator. The forward Theorem 1 statement is unchanged.
 };
 
-\node[dag_template_note, text width=6.1cm] (TieNote) at (6,-20.0) {
-  \textbf{Note 2: half-tie strictness.}
-  The strict-gap form is used for $\eta\ne1/2$; the $\eta=1/2$ boundary is
-  treated as a tie.
-};
-
-\node[dag_template_note, text width=6.1cm] (IffNote) at (16.5,-20.0) {
-  \textbf{Note 3: Definition 4 boundary.}
-  Definition 4 exempts boundary profiles; the displayed Theorem 1 forward
-  implication is unchanged.
-};
-
-\node[dag_template_note, text width=20.5cm, align=center] (Inventory) at (6,-23.3) {
-  \textbf{Selected source accounting: 45 atomic items.}
-  36 direct-routed items and 6 support-only items; the remaining source notes
-  are recorded as scoped mathematical clarifications.
-};
+\draw[dag_dashed_arrow] (Notes.north) -- (Theorem1.south);
 
 \end{dagPaperBody}
 \end{tikzpicture}

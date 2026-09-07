@@ -18,7 +18,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory Set
 open scoped ENNReal NNReal ProbabilityTheory
 
 /-- An RCD-mean no-access output equals the base-indexed Gaussian mean whenever

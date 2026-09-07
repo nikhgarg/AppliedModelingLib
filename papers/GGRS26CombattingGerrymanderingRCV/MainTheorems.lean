@@ -1,4 +1,4 @@
-import EconCSLib.SocialChoice.Voting
+import AppliedModelingLib.SocialChoice.Voting
 import Mathlib.Algebra.Order.Floor.Div
 import Mathlib.Algebra.Order.Floor.Semifield
 
@@ -30,7 +30,7 @@ compact human-review subset in `PaperInterface.lean`.
 
 namespace GGRS26CombattingGerrymanderingRCV
 
-open EconCSLib.SocialChoice.Voting
+open AppliedModelingLib.SocialChoice.Voting
 
 /-- Source-facing alias for approval ballots used by the Thiele/PAV comparison. -/
 abbrev PartyApprovalBallot (Candidate : Type*) := ApprovalBallot Candidate
@@ -62,7 +62,7 @@ Lemma C.1 interval characterization for the PAV party seat count:
 `y_R (M + 1) - 1 <= n_R < y_R (M + 1)`.
 -/
 def pavSeatInterval (seatCount : ℕ) (partyShare : ℝ) (seats : ℕ) : Prop :=
-  EconCSLib.SocialChoice.Voting.pavSeatInterval seatCount partyShare seats
+  AppliedModelingLib.SocialChoice.Voting.pavSeatInterval seatCount partyShare seats
 
 /--
 Adjacent PAV marginal optimality conditions used in the proof of Lemma C.1.
@@ -71,7 +71,7 @@ These are the source proof's two neighboring-seat inequalities after clearing
 positive denominators.
 -/
 def pavSeatMarginalConditions (seatCount : ℕ) (partyShare : ℝ) (seats : ℕ) : Prop :=
-  EconCSLib.SocialChoice.Voting.pavSeatMarginalConditions seatCount partyShare seats
+  AppliedModelingLib.SocialChoice.Voting.pavSeatMarginalConditions seatCount partyShare seats
 
 /--
 The source proof's adjacent PAV marginal conditions imply the Lemma C.1
@@ -82,7 +82,7 @@ theorem pavSeatInterval_of_marginalConditions {seatCount seats : ℕ} {partyShar
     (hmarg : pavSeatMarginalConditions seatCount partyShare seats) :
     pavSeatInterval seatCount partyShare seats := by
   simpa [pavSeatMarginalConditions, pavSeatInterval] using
-    (EconCSLib.SocialChoice.Voting.pavSeatInterval_of_marginalConditions
+    (AppliedModelingLib.SocialChoice.Voting.pavSeatInterval_of_marginalConditions
       (seatCount := seatCount) (seats := seats) (partyShare := partyShare)
       hpos hle hseat hmarg)
 
@@ -95,7 +95,7 @@ theorem pavSeatInterval_seatShareRounded {seatCount seats : ℕ} {partyShare : �
     (hinterval : pavSeatInterval seatCount partyShare seats) :
     seatShareRounded seatCount partyShare seats := by
   simpa [pavSeatInterval, seatShareRounded] using
-    (EconCSLib.SocialChoice.Voting.pavSeatInterval_roundedSeatShare
+    (AppliedModelingLib.SocialChoice.Voting.pavSeatInterval_roundedSeatShare
       (seatCount := seatCount) (seats := seats) (partyShare := partyShare)
       hpos hle hinterval)
 
@@ -134,7 +134,7 @@ theorem pavSeatMinArgmax_seatInterval {seatCount seats : ℕ} {partyShare : ℝ}
     (hmin : pavSeatMinArgmax seatCount partyShare seats) :
     pavSeatInterval seatCount partyShare seats := by
   simpa [pavSeatMinArgmax, pavSeatScore, pavSeatInterval] using
-    (EconCSLib.SocialChoice.Voting.pavSeatInterval_of_isMinArgmaxOn
+    (AppliedModelingLib.SocialChoice.Voting.pavSeatInterval_of_isMinArgmaxOn
       (seatCount := seatCount) (seats := seats) (partyShare := partyShare)
       hpos hle hmin)
 

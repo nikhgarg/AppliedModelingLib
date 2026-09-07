@@ -18,8 +18,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
-open EconCSLib.Probability
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib.Probability
 open scoped ENNReal NNReal ProbabilityTheory
 
 /-- Under an explicit active-branch selection, the selected optional profile's

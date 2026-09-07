@@ -1,6 +1,6 @@
 import LG21TestOptionalPolicies.ObservedAccessReportRequiredSelectedGaussianClosure
 import LG21TestOptionalPolicies.ReportRequiredFullPublicPositiveMassUnraveling
-import EconCSLib.Foundations.Probability.GaussianSignalKernelRCD
+import AppliedModelingLib.Foundations.Probability.GaussianSignalKernelRCD
 
 /-!
 # Base-mass promotion for observed-access report-required testing
@@ -15,7 +15,7 @@ namespace LG21TestOptionalPolicies
 noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
-open EconCSLib Probability
+open AppliedModelingLib Probability
 open scoped ENNReal ProbabilityTheory
 
 /-- A positive global report-required no-take event has a positive-mass set
@@ -129,37 +129,37 @@ theorem lg21_reportRequired_gaussianLocation_positive_noTake_mass_split_reporter
     (htake : Measurable (fun profileSkill : Base × ℝ =>
       take profileSkill.1 profileSkill.2))
     (hpositive : 0 < (baseLaw ⊗ₘ
-      EconCSLib.Probability.gaussianLocationKernel baseMean hbaseMean baseVariance)
+      AppliedModelingLib.Probability.gaussianLocationKernel baseMean hbaseMean baseVariance)
       (lg21ReportRequiredFullPublicNoTakeSet take)) :
     (0 < baseLaw
       (Function.support
         (selectionMass
-          (EconCSLib.Probability.gaussianLocationKernel
+          (AppliedModelingLib.Probability.gaussianLocationKernel
             baseMean hbaseMean baseVariance)
           (lg21ReportRequiredFullPublicNoTakeSet take)) ∩
         Function.support
           (selectionMass
-            (EconCSLib.Probability.gaussianLocationKernel
+            (AppliedModelingLib.Probability.gaussianLocationKernel
               baseMean hbaseMean baseVariance)
             (lg21ReportRequiredFullPublicTakeSet take)))) ∨
     (0 < baseLaw
       (Function.support
         (selectionMass
-          (EconCSLib.Probability.gaussianLocationKernel
+          (AppliedModelingLib.Probability.gaussianLocationKernel
             baseMean hbaseMean baseVariance)
           (lg21ReportRequiredFullPublicNoTakeSet take)) ∩
         {base | selectionMass
-          (EconCSLib.Probability.gaussianLocationKernel
+          (AppliedModelingLib.Probability.gaussianLocationKernel
             baseMean hbaseMean baseVariance)
           (lg21ReportRequiredFullPublicTakeSet take) base = 0})) := by
   letI : IsMarkovKernel
-      (EconCSLib.Probability.gaussianLocationKernel
+      (AppliedModelingLib.Probability.gaussianLocationKernel
         baseMean hbaseMean baseVariance) :=
-    EconCSLib.Probability.gaussianLocationKernel_isMarkov
+    AppliedModelingLib.Probability.gaussianLocationKernel_isMarkov
       baseMean hbaseMean baseVariance
   exact lg21_reportRequired_positive_noTake_mass_split_reporterFibres
     baseLaw
-    (EconCSLib.Probability.gaussianLocationKernel
+    (AppliedModelingLib.Probability.gaussianLocationKernel
       baseMean hbaseMean baseVariance)
     take htake hpositive
 
@@ -173,13 +173,13 @@ theorem lg21_reportRequired_gaussianLocation_take_selectionMass
     (priorVariance : NNReal)
     (take : Base → ℝ → Bool) (base : Base) :
     selectionMass
-      (EconCSLib.Probability.gaussianLocationKernel
+      (AppliedModelingLib.Probability.gaussianLocationKernel
         baseMean hbaseMean priorVariance)
       (lg21ReportRequiredFullPublicTakeSet take) base =
       gaussianReal (baseMean base) priorVariance
         {skill | take base skill = true} := by
   rw [selectionMass,
-    EconCSLib.Probability.gaussianLocationKernel_apply]
+    AppliedModelingLib.Probability.gaussianLocationKernel_apply]
   congr 1
 
 /-- On a Gaussian base fibre, the global full-public no-take event reduces to
@@ -190,13 +190,13 @@ theorem lg21_reportRequired_gaussianLocation_noTake_selectionMass
     (priorVariance : NNReal)
     (take : Base → ℝ → Bool) (base : Base) :
     selectionMass
-      (EconCSLib.Probability.gaussianLocationKernel
+      (AppliedModelingLib.Probability.gaussianLocationKernel
         baseMean hbaseMean priorVariance)
       (lg21ReportRequiredFullPublicNoTakeSet take) base =
       gaussianReal (baseMean base) priorVariance
         {skill | take base skill = false} := by
   rw [selectionMass,
-    EconCSLib.Probability.gaussianLocationKernel_apply]
+    AppliedModelingLib.Probability.gaussianLocationKernel_apply]
   congr 1
 
 /--
@@ -229,7 +229,7 @@ theorem lg21_reportRequired_coexistingFibres_null_of_ae_selectedGaussianPBO
     (htestLaw : ∀ skill base,
       E.testLaw skill base = gaussianReal skill noiseVariance.toNNReal)
     (hreportedPBO : ∀ᵐ base ∂normalizedSelectedBase baseLaw
-      (EconCSLib.Probability.gaussianLocationKernel
+      (AppliedModelingLib.Probability.gaussianLocationKernel
         baseMean hbaseMean priorVariance.toNNReal)
       (lg21ReportRequiredFullPublicTakeSet
         (fun publicBase latentSkill => E.takeDecision latentSkill publicBase)),
@@ -245,7 +245,7 @@ theorem lg21_reportRequired_coexistingFibres_null_of_ae_selectedGaussianPBO
             (baseMean base) priorVariance noiseVariance score)
           {skill | E.takeDecision skill base = true})
     (hnoTakePBO : ∀ᵐ base ∂normalizedSelectedBase baseLaw
-      (EconCSLib.Probability.gaussianLocationKernel
+      (AppliedModelingLib.Probability.gaussianLocationKernel
         baseMean hbaseMean priorVariance.toNNReal)
       (lg21ReportRequiredFullPublicNoTakeSet
         (fun publicBase latentSkill => E.takeDecision latentSkill publicBase)),
@@ -255,22 +255,22 @@ theorem lg21_reportRequired_coexistingFibres_null_of_ae_selectedGaussianPBO
     baseLaw
       (Function.support
         (selectionMass
-          (EconCSLib.Probability.gaussianLocationKernel
+          (AppliedModelingLib.Probability.gaussianLocationKernel
             baseMean hbaseMean priorVariance.toNNReal)
           (lg21ReportRequiredFullPublicNoTakeSet
             (fun publicBase latentSkill => E.takeDecision latentSkill publicBase))) ∩
         Function.support
           (selectionMass
-            (EconCSLib.Probability.gaussianLocationKernel
+            (AppliedModelingLib.Probability.gaussianLocationKernel
               baseMean hbaseMean priorVariance.toNNReal)
             (lg21ReportRequiredFullPublicTakeSet
               (fun publicBase latentSkill => E.takeDecision latentSkill publicBase)))) = 0 := by
   let skillKernel : Kernel Base ℝ :=
-    EconCSLib.Probability.gaussianLocationKernel
+    AppliedModelingLib.Probability.gaussianLocationKernel
       baseMean hbaseMean priorVariance.toNNReal
   letI : IsMarkovKernel skillKernel := by
     dsimp [skillKernel]
-    exact EconCSLib.Probability.gaussianLocationKernel_isMarkov
+    exact AppliedModelingLib.Probability.gaussianLocationKernel_isMarkov
       baseMean hbaseMean priorVariance.toNNReal
   let take : Base → ℝ → Bool := fun publicBase latentSkill =>
     E.takeDecision latentSkill publicBase

@@ -1,4 +1,4 @@
-import EconCSLib.Algorithms.Online.AdWords
+import AppliedModelingLib.Algorithms.Online.AdWords
 
 /-!
 # Paper Extensions for AdWords and Generalized Online Matching
@@ -8,7 +8,7 @@ the same Balance/MSVV proof on suitable effective bids. This file records those
 finite reductions without disturbing the core AdWords proof.
 -/
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Online
 
 namespace AdWordsInstance
@@ -848,4 +848,4 @@ theorem withSlotsDistinctChoice_runAssignment_per_page_distinct
 end AdWordsInstance
 
 end Online
-end EconCSLib
+end AppliedModelingLib

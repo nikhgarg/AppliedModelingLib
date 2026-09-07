@@ -25,109 +25,157 @@ import sys
 import subprocess
 import urllib.parse
 import tempfile
-from contextlib import contextmanager
-from contextvars import ContextVar
 from dataclasses import dataclass, field as dataclass_field
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from threading import Lock
-from types import MappingProxyType
 from xml.etree import ElementTree
 from typing import Any, Callable, Iterable, Iterator, Mapping
 
-try:
-    from scripts.lean_signature_manifest import (
-        RepositoryBuildInputSnapshotProvider,
-        repository_build_input_snapshot,
-        paper_owned_module_names_in_import_closure,
-        run_lean_semantic_contract_matches,
-        run_lean_semantic_contract_transparency_checks,
-        run_lean_transparent_library_declaration_displays,
-        run_lean_transparent_paper_spec_displays,
-        run_lean_signature_manifests,
-        signature_manifest_cache_context,
-        signature_manifest_cache_context_sha256,
-        signature_manifest_digest,
-    )
-    from scripts.authenticated_manifest_store import (
-        configured_review_row_proposition_graph_sha256,
-        current_source_bound_manifest_bindings,
-        elaborated_proposition_graph_sha256,
-        merge_authenticated_manifest_store,
-        prime_attested_resume_manifests_with_current_revalidation,
-        prime_exact_context_attested_resume_manifests,
-        prime_authenticated_manifest_store,
-        prime_authenticated_manifest_store_with_item_revalidation,
-    )
-    from scripts.source_artifact_companion import source_text_companion_validation_issues
-    from scripts.source_archive_surface import source_archive_surface_validation_issues
-    from scripts.source_coverage_scope import (
-        DEEP_PAPER_WITH_ALL_PROSE_CLAIMS,
-        SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
-        deep_source_coverage_attestation_error,
-        filter_source_inventory_for_coverage,
-        source_index_byte_pinned_anchor_item_ids,
-        source_item_has_explicit_nonordinary_obligation,
-        source_named_result_environment_kinds_from_map,
-        source_coverage_mode_from_map,
-        source_coverage_mode_migration_error,
-        source_coverage_modes_compatible,
-        source_item_scope_classification_errors,
-        source_item_coverage_sha256,
-        source_item_effective_route_policy,
-        source_map_structural_errors,
-        source_presentation_aliases,
-        source_prose_definition_inventory_errors,
-    )
-except ModuleNotFoundError:  # Direct `python scripts/review_dashboard.py` execution.
-    from lean_signature_manifest import (
-        RepositoryBuildInputSnapshotProvider,
-        repository_build_input_snapshot,
-        paper_owned_module_names_in_import_closure,
-        run_lean_semantic_contract_matches,
-        run_lean_semantic_contract_transparency_checks,
-        run_lean_transparent_library_declaration_displays,
-        run_lean_transparent_paper_spec_displays,
-        run_lean_signature_manifests,
-        signature_manifest_cache_context,
-        signature_manifest_cache_context_sha256,
-        signature_manifest_digest,
-    )
-    from authenticated_manifest_store import (
-        configured_review_row_proposition_graph_sha256,
-        current_source_bound_manifest_bindings,
-        elaborated_proposition_graph_sha256,
-        merge_authenticated_manifest_store,
-        prime_attested_resume_manifests_with_current_revalidation,
-        prime_exact_context_attested_resume_manifests,
-        prime_authenticated_manifest_store,
-        prime_authenticated_manifest_store_with_item_revalidation,
-    )
-    from source_artifact_companion import source_text_companion_validation_issues
-    from source_archive_surface import source_archive_surface_validation_issues
-    from source_coverage_scope import (
-        DEEP_PAPER_WITH_ALL_PROSE_CLAIMS,
-        SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
-        deep_source_coverage_attestation_error,
-        filter_source_inventory_for_coverage,
-        source_index_byte_pinned_anchor_item_ids,
-        source_item_has_explicit_nonordinary_obligation,
-        source_named_result_environment_kinds_from_map,
-        source_coverage_mode_from_map,
-        source_coverage_mode_migration_error,
-        source_coverage_modes_compatible,
-        source_item_scope_classification_errors,
-        source_item_coverage_sha256,
-        source_item_effective_route_policy,
-        source_map_structural_errors,
-        source_presentation_aliases,
-        source_prose_definition_inventory_errors,
-    )
+# Use the same canonical package imports under `python scripts/...` and
+# `python -m scripts...`; individual dependencies do not need fallback copies.
+if __package__ in {None, ""}:
+    repository_root = str(Path(__file__).resolve().parents[1])
+    if repository_root not in sys.path:
+        sys.path.insert(0, repository_root)
+
+from scripts.lean_signature_manifest import (
+    RepositoryBuildInputSnapshotProvider,
+    repository_build_input_snapshot,
+    paper_owned_module_names_in_import_closure,
+    review_claim_target_text,
+    run_lean_semantic_contract_matches,
+    run_lean_semantic_contract_transparency_checks,
+    run_lean_signature_manifests,
+    signature_manifest_cache_context,
+    signature_manifest_cache_context_sha256,
+    signature_manifest_digest,
+)
+from scripts.authenticated_manifest_store import (
+    configured_review_row_proposition_graph_sha256,
+    current_source_bound_manifest_bindings,
+    elaborated_proposition_graph_sha256,
+    merge_authenticated_manifest_store,
+    prime_attested_resume_manifests_with_current_revalidation,
+    prime_exact_context_attested_resume_manifests,
+    prime_authenticated_manifest_store,
+    prime_authenticated_manifest_store_with_item_revalidation,
+)
+from scripts.source_artifact_companion import (
+    semantic_review_source_identity,
+    source_text_companion_validation_issues,
+)
+from scripts.source_record_semantic_reuse import (
+    CurrentSemanticReuseAuthority,
+)
+from scripts.review_dashboard_html import render_static_html
+from scripts.review_dashboard_cli import (
+    _format_name_sample,
+    print_assumption_audit_warnings,
+    print_paper_coverage_audit_warnings,
+    print_statement_audit_warnings,
+    print_surface_audit_warnings,
+)
+from scripts.dashboard_audit_inputs import (
+    DashboardAuditInputs,
+    DashboardFrozenInputError,
+    _dashboard_audit_inputs,
+    _dashboard_file_bytes_override,
+    _dashboard_is_file,
+    _dashboard_json_payload,
+    _dashboard_read_bytes,
+    _dashboard_read_text,
+    dashboard_audit_input_scope,
+)
+from scripts.configured_paper_inputs import (
+    configured_dashboard_audit_input_paths,
+)
+from scripts.semantic_obligation_review import (
+    CONDITIONAL_BOUNDARY_RESOLUTION,
+    NAME_ONLY_SEMANTIC_EVIDENCE_RE,
+    NAME_ONLY_SOURCE_COVERAGE_REASON_RE,
+    SOURCE_DEFINITION_SEMANTIC_KINDS,
+    SOURCE_DIRECT_EXPRESSION_SEMANTIC_KINDS,
+    _normalize_llm_match_judgment,
+    _normalize_llm_match_resolution,
+    semantic_obligation_ledger_error,
+    signature_manifest_atom_digest,
+)
+from scripts.source_archive_surface import source_archive_surface_validation_issues
+from scripts.closeout_pipeline import (
+    CloseoutPipelineError,
+    EvidenceRouteSet,
+    typed_route_validation_required,
+)
+from scripts.source_coverage_scope import (
+    DEEP_PAPER_WITH_ALL_PROSE_CLAIMS,
+    KNOWN_SOURCE_PRESENTATION_KINDS,
+    deep_source_coverage_attestation_error,
+    filter_source_inventory_for_coverage,
+    source_index_byte_pinned_anchor_item_ids,
+    source_item_has_explicit_nonordinary_obligation,
+    source_named_result_environment_kinds_from_map,
+    source_coverage_mode_from_map,
+    source_coverage_mode_migration_error,
+    source_coverage_modes_compatible,
+    source_item_scope_classification_errors,
+    source_item_coverage_sha256,
+    source_item_coverage_receipt_matches,
+    source_item_coverage_receipt_shape_is_reusable,
+    source_item_effective_route_policy,
+    source_map_structural_errors,
+    source_presentation_aliases,
+    source_prose_definition_inventory_errors,
+)
+from scripts.source_claim_policy import (
+    NON_NAMED_COMPUTATIONAL_ILLUSTRATION,
+    SOURCE_ARTIFACT_SHA256_RE,
+    SOURCE_CATALOGUED_NONFORMAL_OBSERVATION_KINDS,
+    SOURCE_DECLARED_OPEN_NONRESULT_OBSERVATION,
+    SOURCE_FILE_LINE_ANCHOR_RE,
+    USER_APPROVED_SCOPE_EXCLUSION,
+    source_inventory_anchor_quote_text as _source_inventory_anchor_quote_text,
+    source_anchor_paths_match as _source_anchor_paths_match,
+    source_inventory_item_is_named_claim as _shared_source_inventory_item_is_named_claim,
+    source_inventory_item_is_named_algorithm_block as _source_inventory_item_is_named_algorithm_block,
+    source_inventory_item_requires_proof_evidence as _shared_source_inventory_item_requires_proof_evidence,
+    source_inventory_item_scope_classification_error as _shared_source_inventory_item_scope_classification_error,
+    source_inventory_item_user_approved_scope_exclusion_error as _shared_source_inventory_item_user_approved_scope_exclusion_error,
+    source_inventory_search_text as _shared_source_inventory_search_text,
+    source_text_has_general_computational_claim as _source_text_has_general_computational_claim,
+    source_text_has_general_result_assertion as _source_text_has_general_result_assertion,
+)
+from scripts.current_closeout.review_surface import (
+    current_dashboard_semantic_reuse_authority,
+    bind_current_v11_source_spec_screening,
+    _source_item_corrected_target,
+    _source_item_is_corrected_target,
+    _source_item_coverage_statement,
+    _source_item_coverage_location,
+    _prepared_library_prerequisites,
+)
+from scripts.source_display_projection import (
+    public_source_display_coverage_surface,
+)
+from scripts.source_review_input import (
+    normalize_statement as _shared_normalize_statement,
+    source_anchor_file_error as _shared_source_anchor_file_error,
+    source_semantic_input_bundle as _shared_source_semantic_input_bundle,
+    statement_digest as _shared_statement_digest,
+)
+from scripts.corrected_target_identity import (
+    corrected_target_record_digest as _shared_corrected_target_record_digest,
+    corrected_target_review_digest,
+)
+from scripts.semantic_prerequisite_projection import (
+    LIBRARY_SEMANTIC_REVIEW_SCHEMA,  # noqa: F401 -- public dashboard schema API
+    LIBRARY_SEMANTIC_TARGET_PROTOCOL,  # noqa: F401 -- public dashboard schema API
+    REQUIRED_LLM_LIBRARY_SEMANTIC_REVIEW_PROMPT_VERSION,  # noqa: F401 -- public API
+)
 
 
 ROOT = Path(
-    os.environ.get("ECONCSLIB_REPO_ROOT", Path(__file__).resolve().parents[1])
+    os.environ.get("APPLIEDMODELINGLIB_REPO_ROOT", Path(__file__).resolve().parents[1])
 ).resolve()
 PAPERS_DIR = ROOT / "papers"
 AUDIT_CONFIG = PAPERS_DIR / "audit_config.json"
@@ -152,12 +200,12 @@ DEFAULT_LLM_REVIEW_SURFACE_FILE = f"{PAPER_AUDIT_DIR}/review_surface_llm.json"
 V11_RAW_SOURCE_SPEC_SCREENING_FILE = (
     f"{PAPER_AUDIT_DIR}/v11_raw_source_spec_screening.json"
 )
-V11_RAW_SOURCE_SPEC_SCREENING_SCHEMA = 2
+V11_RAW_SOURCE_SPEC_SCREENING_SCHEMA = 3
 V11_RAW_SOURCE_SPEC_SCREENING_PROMPT_VERSION = (
-    "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2"
+    "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
 )
 V11_RAW_SOURCE_SPEC_LEAN_TARGET_PROTOCOL = (
-    "lean_transparent_paper_expansion_v1"
+    "lean_transparent_paper_expansion_with_claim_atoms_v2"
 )
 DEFAULT_LLM_PAPER_COVERAGE_FILE = f"{PAPER_AUDIT_DIR}/paper_coverage_llm.json"
 DEFAULT_LLM_DEFECT_SUPPORT_FILE = f"{PAPER_AUDIT_DIR}/defect_support_match_llm.json"
@@ -166,7 +214,7 @@ DEFAULT_LIBRARY_SEMANTIC_REVIEW_FILE = f"{PAPER_AUDIT_DIR}/library_semantic_revi
 DEFAULT_ASSUMPTION_SOURCE_FILE = "Assumptions.lean"
 REQUIRED_LLM_LEAN_TO_TEX_PROMPT_VERSION = "lean-to-tex-v3-strict-context-free-semantic-inputs"
 REQUIRED_LLM_STATEMENT_PROMPT_VERSION = (
-    "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2"
+    "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
 )
 # Prompt labels identify the producer instructions, while these contracts
 # identify the semantic obligations that make an existing row reusable.  A
@@ -177,13 +225,8 @@ REQUIRED_LLM_LEAN_TO_TEX_SEMANTIC_CONTRACT_VERSION = (
     "lean-to-tex-semantic-inputs-v3"
 )
 REQUIRED_LLM_STATEMENT_SEMANTIC_CONTRACT_VERSION = (
-    "statement-match-verbatim-source-anchor-expanded-spec-v11"
+    "statement-match-verbatim-source-anchor-expanded-spec-with-prerequisites-v12"
 )
-REQUIRED_LLM_LIBRARY_SEMANTIC_REVIEW_PROMPT_VERSION = (
-    "library-statement-match-v2-verbatim-source-anchor-lean-display-exact-code"
-)
-LIBRARY_SEMANTIC_REVIEW_SCHEMA = 1
-LIBRARY_SEMANTIC_TARGET_PROTOCOL = "lean-library-display-plus-exact-code-v1"
 LLM_LEAN_TO_TEX_PROMPT_SEMANTIC_CONTRACTS: dict[str, str] = {
     REQUIRED_LLM_LEAN_TO_TEX_PROMPT_VERSION: (
         REQUIRED_LLM_LEAN_TO_TEX_SEMANTIC_CONTRACT_VERSION
@@ -221,15 +264,7 @@ PUBLIC_SOURCE_DISPLAY_PROJECTION_GENERATOR = (
 PUBLIC_SOURCE_DISPLAY_PROJECTION_MANIFEST = (
     "audit/public_source_display_projection.json"
 )
-PUBLIC_SOURCE_DISPLAY_PROJECTION_STATE = "release_projected_excerpt"
-LOCAL_SOURCE_CONNECTION_STATE = "locally_byte_verified"
 PUBLICATION_SOURCE_LOCATOR = "cited publication"
-# This is an explicit human-scope disposition for a source-visible claim.  It
-# is deliberately not a source classification: the claim remains visible in
-# the inventory and must carry byte-pinned source evidence.
-USER_APPROVED_SCOPE_EXCLUSION = "user_approved_scope_exclusion"
-USER_APPROVED_SCOPE_EXCLUSION_SCHEMA = 1
-USER_APPROVED_SCOPE_EXCLUSION_APPROVAL_KIND = "explicit_user_instruction"
 # A mechanically generated sidecar can record its frozen inputs without being
 # evidence.  Readers must reject this marker until an independent reviewer
 # deletes it after supplying the actual translation or semantic judgment.
@@ -246,9 +281,27 @@ SOURCE_ROUTE_KINDS = {
 CORRECTED_SOURCE_STATEMENT_STATUS = "corrected_source_statement"
 CORRECTED_TARGET_SCHEMA = 1
 CORRECTED_TARGET_COVERAGE = "covered_corrected_target"
+PAPER_PREREQUISITE_COVERAGE_IDENTITY_SCHEMA = 1
+PAPER_PREREQUISITE_COVERAGE_TARGET_KIND = "paper_semantic_prerequisite"
+PAPER_PREREQUISITE_LEDGER_SCHEMA = 1
+PAPER_PREREQUISITE_LEDGER_PROMPT_VERSION = (
+    "paper-prerequisite-match-v2-verbatim-source-anchor-lean-expanded-target-exact-code"
+)
+PAPER_PREREQUISITE_LEDGER_TARGET_PROTOCOL = (
+    "lean_paper_declaration_display_v1"
+)
 CORRECTED_TARGET_ROUTE_KIND = "approved_corrected_target"
 CORRECTED_TARGET_MATCH_RESOLUTION = "approved_corrected_target"
 CORRECTED_TARGET_ROUTE_RELATION = "proves_approved_corrected_target"
+APPROVED_CORRECTED_TARGET_MATCH = "matches_approved_corrected_target"
+# A corrected target is not a literal archival match, but it is an admissible
+# positive semantic verdict once the map-pinned approval binding has been
+# checked. Keep the exact verdict on review cards; use this set only where a
+# consumer needs to know whether a current reviewed target is positive.
+POSITIVE_SEMANTIC_MATCH_JUDGMENTS = frozenset(
+    {"matches", APPROVED_CORRECTED_TARGET_MATCH}
+)
+APPROVED_CORRECTED_TARGET_PROTOCOL = "approved_corrected_target_v1"
 SOURCE_MODEL_ROUTE_RELATIONS = {
     "equivalent_model_convention",
     "shared_model_convention",
@@ -288,208 +341,6 @@ SEMANTIC_BRIDGE_DECLARATION_FIELDS = (
     "paper_equivalence_declarations",
     "source_equivalence_declarations",
     "library_bridge_declarations",
-)
-EXACT_SOURCE_LOCATOR_RE = re.compile(
-    r"(?:"
-    r"\b(?:page|p\.?)\s*\d+|"
-    r"\bappendix\s+[A-Z0-9]+|"
-    r"\b(?:section|theorem|lemma|proposition|corollary|definition|equation|"
-    r"remark|claim|line)s?\s+(?:[A-Z]?\d[\w.()/-]*|[A-Z](?:\.\d+)*)|"
-    r"§\s*[A-Z0-9]+|"
-    r"\b[\w./-]+\.(?:tex|txt|md|pdf):\d+"
-    r")",
-    re.I,
-)
-NAME_ONLY_SOURCE_COVERAGE_REASON_RE = re.compile(
-    r"exactly matches current dashboard row name|"
-    r"exact source-key|"
-    r"\bname[-_ ]?match(?:ed|es|ing)?\b|"
-    r"\bmatched by name\b",
-    re.I,
-)
-NAME_ONLY_SEMANTIC_EVIDENCE_RE = re.compile(
-    r"\b(?:names? match|matched by name|same (?:theorem|lemma|definition|function|"
-    r"field|predicate|wrapper) name|same identifier|identifiers? (?:match|coincide)|"
-    r"same symbol|matching labels?|same label|phrase overlap|same wording)\b",
-    re.I,
-)
-PROFILE_QUANTIFICATION_SCOPES = {
-    "not_profile_based",
-    "fixed_profile",
-    "all_profiles",
-    "existential_profile",
-    "mixed_profile_scope",
-}
-QUANTIFICATION_RELATIONS = {
-    "equivalent",
-    "source_stronger",
-    "lean_stronger",
-    "incomparable",
-}
-SOURCE_ALGORITHM_CLAIM_LEVELS = {
-    "not_algorithmic",
-    "existence",
-    "executable",
-    "polynomial_time",
-}
-LEAN_ALGORITHM_CLAIM_LEVELS = SOURCE_ALGORITHM_CLAIM_LEVELS | {
-    "noncomputable_existence"
-}
-RUNNER_PROVENANCE_KINDS = {
-    "not_applicable",
-    "same_formalized_runner",
-    "proved_refinement",
-    "independent_characterization",
-    "missing",
-}
-RESULT_PROVENANCE_KINDS = {
-    "not_applicable",
-    "runner_derived",
-    "preservation_bridge",
-    "independent_characterization",
-    "missing",
-}
-LEGACY_FIDELITY_RISK_REVIEW_VERSION = (
-    "fidelity-risk-review-v2-shape-action-witness-count-execution"
-)
-FIDELITY_RISK_REVIEW_VERSION = (
-    "fidelity-risk-review-v3-shape-action-witness-count-generic-execution"
-)
-SUPPORTED_FIDELITY_RISK_REVIEW_VERSIONS = {
-    LEGACY_FIDELITY_RISK_REVIEW_VERSION,
-    FIDELITY_RISK_REVIEW_VERSION,
-}
-LEGACY_FIDELITY_EXECUTION_SCOPE_FIELDS = (
-    ("source_quota_turnout_scope", "source quota/turnout scope"),
-    ("lean_quota_turnout_scope", "Lean quota/turnout scope"),
-    ("source_seat_termination_scope", "source seat-count/stopping scope"),
-    ("lean_seat_termination_scope", "Lean seat-count/stopping scope"),
-    ("source_round_scope", "source round/executor scope"),
-    ("lean_round_scope", "Lean round/executor scope"),
-    ("source_arithmetic_domain", "source arithmetic domain"),
-    ("lean_arithmetic_domain", "Lean arithmetic domain"),
-    ("source_cost_claim_scope", "source cost/complexity scope"),
-    ("lean_cost_claim_scope", "Lean cost/complexity scope"),
-    ("global_claim_bridge_basis", "global-claim bridge basis"),
-)
-FIDELITY_EXECUTION_SCOPE_FIELDS = (
-    ("source_input_scope", "source input scope"),
-    ("lean_input_scope", "Lean input scope"),
-    ("source_state_transition_scope", "source state-transition scope"),
-    ("lean_state_transition_scope", "Lean state-transition scope"),
-    ("source_termination_scope", "source termination scope"),
-    ("lean_termination_scope", "Lean termination scope"),
-    ("source_numeric_representation", "source numeric representation"),
-    ("lean_numeric_representation", "Lean numeric representation"),
-    ("source_cost_scope", "source cost/complexity scope"),
-    ("lean_cost_scope", "Lean cost/complexity scope"),
-    ("global_claim_bridge_basis", "global-claim bridge basis"),
-)
-FIDELITY_RISK_DIMENSIONS = {
-    "output_shape",
-    "adversarial_action_space",
-    "coherent_extrema_witness",
-    "cardinality_fibers",
-    "execution_claim_scope",
-}
-FIDELITY_RISK_RELATIONS = {
-    "equivalent",
-    "source_stronger",
-    "lean_stronger",
-    "incomparable",
-    "uncertain",
-}
-COHERENT_EXTREMA_WITNESS_STATUSES = {
-    "not_required",
-    "same_coherent_witness",
-    "proved_jointly_realizable",
-    "separate_witnesses_only",
-    "missing",
-}
-COUNTING_SEMANTICS = {
-    "syntactic_family_cardinality",
-    "nonempty_realized_fibers",
-    "other",
-}
-SURJECTIVITY_STATUSES = {
-    "not_required",
-    "definitionally_surjective",
-    "proved_surjective",
-    "missing",
-}
-SEMANTIC_WORLD_ROLES = {"source", "lean", "shared"}
-SEMANTIC_WORLD_BRIDGE_RELATIONS = {
-    "definitionally_equal",
-    "equivalent",
-    "refines",
-    "simulates",
-    "preserves_result",
-}
-OPERATIONAL_COMPLEXITY_REVIEW_VERSION = (
-    "operational-complexity-review-v1-transitive-work-accounting"
-)
-OPERATIONAL_WORK_CATEGORIES = {
-    "traversal_enumeration_length",
-    "duplicate_multiplicity",
-    "materialization_rebuilding",
-    "representation_container_primitives",
-    "exact_rational_bit_growth",
-}
-OPERATIONAL_WORK_STATUSES = {
-    "charged",
-    "proved_absent",
-    "not_applicable",
-    "missing",
-    "excluded_by_claim",
-}
-FULL_RUNTIME_MATCH_WORK_STATUSES = {
-    "charged",
-    "proved_absent",
-    "not_applicable",
-}
-CLOSURE_ELIMINATION_EVIDENCE_KINDS = {
-    "generated_ir_call_graph",
-    "cost_threaded_executor",
-}
-NAMED_DEFINITION_CLASSIFICATIONS = {
-    "substantive",
-    "self_characterizing",
-    "routing_only",
-}
-NUMERIC_SEMANTIC_RELATIONS = {
-    "definitionally_equal",
-    "proved_equivalent",
-    "witness_specific_equivalent",
-    "different",
-    "uncertain",
-}
-DISCRETE_SEMANTIC_RELATIONS = NUMERIC_SEMANTIC_RELATIONS
-NUMERIC_SEMANTIC_CONSTANTS = {
-    "Add.add",
-    "Div.div",
-    "HAdd.hAdd",
-    "HDiv.hDiv",
-    "HMul.hMul",
-    "HSub.hSub",
-    "LE.le",
-    "LT.lt",
-    "Mul.mul",
-    "Nat.div",
-    "OfNat.ofNat",
-    "Sub.sub",
-}
-DISCRETE_SEMANTIC_CONSTANT_PREFIXES = (
-    "List.contains",
-    "List.drop",
-    "List.erase",
-    "List.filter",
-    "List.find",
-    "List.get",
-    "List.head",
-    "List.idxOf",
-    "List.lookup",
-    "List.mem",
-    "List.tail",
 )
 REVIEW_SURFACE_SCHEMA = 1
 REVIEW_SOURCE_FILENAME = "PaperInterface.lean"
@@ -595,23 +446,6 @@ APPROVED_ASSUMPTION_JUDGMENTS = {
     "documented_caveat",
     "partial_boundary",
 }
-# `conditional_boundary` is the historical sidecar token. The user-facing
-# term is deliberately narrower: the source conclusion is exact and every
-# additional Lean input is explicit and audited.
-VISIBLE_PREMISE_BOUNDARY_LABEL = "visible-premise boundary"
-CONDITIONAL_BOUNDARY_RESOLUTION = "conditional_boundary"
-CONDITIONAL_BOUNDARY_RESOLUTION_ALIASES = {
-    "conditional_boundary",
-    "visible_premise_boundary",
-    "visible-premise-boundary",
-    "visible premise boundary",
-    "accepted_boundary",
-    "known_boundary",
-    "external_library_boundary",
-    "known_dependence_on_external_library",
-    "known_external_library_dependence",
-    "intentional_mismatch",
-}
 APPROVED_ASSUMPTION_PREMISE_JUDGMENTS = {
     "paper_assumption",
     "paper_condition",
@@ -671,7 +505,7 @@ SOURCE_TEXT_ASSUMPTION_PREMISE_JUDGMENTS = {
 DECL_RE = re.compile(
     r"^(?P<indent>\s*)(?:(?:@\[[^\]]+\]|@[A-Za-z_][A-Za-z0-9_]*(?:\([^)]*\))?)\s+)*"
     r"(?:(?:noncomputable|private|protected)\s+)*"
-    r"(?P<kind>theorem|lemma|def|abbrev|axiom|structure|class|inductive)\s+"
+    r"(?P<kind>theorem|lemma|def|abbrev|instance|axiom|structure|class|inductive)\s+"
     r"(?P<name>[A-Za-z_][A-Za-z0-9_']*(?:\.[A-Za-z_][A-Za-z0-9_']*)*)\b"
 )
 EXPORT_OPEN_RE = re.compile(
@@ -787,224 +621,6 @@ AGENT_PREVIEW_CACHE: dict[str, dict[str, str]] = {}
 SIGNATURE_MANIFEST_CACHE: dict[str, dict[str, dict[str, Any]]] = {}
 
 
-class DashboardFrozenInputError(RuntimeError):
-    """A strict dashboard read was not present in its immutable input bundle."""
-
-
-def _immutable_json_mutation(*_args: object, **_kwargs: object) -> None:
-    raise TypeError("frozen dashboard JSON cannot be mutated")
-
-
-class _FrozenJsonDict(dict[str, Any]):
-    """A ``dict``-compatible recursively immutable JSON object."""
-
-    __setitem__ = _immutable_json_mutation
-    __delitem__ = _immutable_json_mutation
-    clear = _immutable_json_mutation
-    pop = _immutable_json_mutation
-    popitem = _immutable_json_mutation
-    setdefault = _immutable_json_mutation
-    update = _immutable_json_mutation
-    __ior__ = _immutable_json_mutation
-
-
-class _FrozenJsonList(list[Any]):
-    """A ``list``-compatible recursively immutable JSON array."""
-
-    __setitem__ = _immutable_json_mutation
-    __delitem__ = _immutable_json_mutation
-    append = _immutable_json_mutation
-    clear = _immutable_json_mutation
-    extend = _immutable_json_mutation
-    insert = _immutable_json_mutation
-    pop = _immutable_json_mutation
-    remove = _immutable_json_mutation
-    reverse = _immutable_json_mutation
-    sort = _immutable_json_mutation
-    __iadd__ = _immutable_json_mutation
-    __imul__ = _immutable_json_mutation
-
-
-def _freeze_dashboard_json(value: Any) -> Any:
-    """Freeze parsed JSON while preserving ``dict``/``list`` compatibility."""
-
-    if isinstance(value, dict):
-        frozen = _FrozenJsonDict()
-        for key, item in value.items():
-            dict.__setitem__(frozen, key, _freeze_dashboard_json(item))
-        return frozen
-    if isinstance(value, list):
-        frozen_list = _FrozenJsonList()
-        list.extend(frozen_list, (_freeze_dashboard_json(item) for item in value))
-        return frozen_list
-    return value
-
-
-@dataclass(frozen=True)
-class DashboardAuditInputs:
-    """Exact file bytes used by one strict dashboard extraction.
-
-    ``file_snapshots`` is the complete authority for dashboard-facing file
-    reads while this bundle is active. Values are immutable bytes; ``None``
-    explicitly records that a path was absent when the transaction started.
-    A path omitted from the mapping is not treated as absent: a direct read of
-    it fails closed. This distinction prevents a closeout from silently mixing
-    frozen status/sidecar inputs with later live repository contents.
-
-    Paths may be absolute or relative to ``repository_root``. Each JSON object
-    is parsed at most once and retained as a recursively immutable, ordinary
-    ``dict``/``list``-compatible value shared by all dashboard lanes.
-    """
-
-    repository_root: Path
-    file_snapshots: Mapping[str, bytes | None]
-    _json_payload_cache: dict[str, dict[str, Any] | None] = dataclass_field(
-        init=False,
-        repr=False,
-        compare=False,
-    )
-    _json_payload_lock: Lock = dataclass_field(init=False, repr=False, compare=False)
-
-    def __post_init__(self) -> None:
-        root = self.repository_root.resolve()
-        normalized: dict[str, bytes | None] = {}
-        for raw_path, raw_value in self.file_snapshots.items():
-            path = Path(raw_path)
-            if not path.is_absolute():
-                path = root / path
-            try:
-                key = path.resolve().relative_to(root).as_posix()
-            except (OSError, RuntimeError, ValueError) as exc:
-                raise ValueError(
-                    f"dashboard audit input is outside repository root: {raw_path}"
-                ) from exc
-            if key in normalized:
-                raise ValueError(f"duplicate dashboard audit input path: {key}")
-            if raw_value is not None and not isinstance(raw_value, bytes):
-                raise TypeError(
-                    "dashboard audit input values must be bytes or None; "
-                    f"got {type(raw_value).__name__} for {key}"
-                )
-            normalized[key] = raw_value
-        object.__setattr__(self, "repository_root", root)
-        object.__setattr__(self, "file_snapshots", MappingProxyType(normalized))
-        object.__setattr__(self, "_json_payload_cache", {})
-        object.__setattr__(self, "_json_payload_lock", Lock())
-
-    @classmethod
-    def from_file_snapshots(
-        cls,
-        repository_root: Path,
-        snapshots: Mapping[Path | str, bytes | str | None],
-    ) -> DashboardAuditInputs:
-        """Build an immutable bundle from caller-acquired exact snapshots."""
-
-        encoded: dict[str, bytes | None] = {}
-        for path, value in snapshots.items():
-            encoded[str(path)] = value.encode("utf-8") if isinstance(value, str) else value
-        return cls(repository_root=repository_root, file_snapshots=encoded)
-
-    def _key(self, path: Path) -> str:
-        try:
-            return path.resolve().relative_to(self.repository_root).as_posix()
-        except (OSError, RuntimeError, ValueError) as exc:
-            raise DashboardFrozenInputError(
-                f"dashboard attempted to read outside frozen repository: {path}"
-            ) from exc
-
-    def has_snapshot(self, path: Path) -> bool:
-        """Whether the transaction explicitly recorded ``path``."""
-
-        return self._key(path) in self.file_snapshots
-
-    def is_file(self, path: Path) -> bool:
-        """Return frozen file presence, rejecting an unrecorded path."""
-
-        key = self._key(path)
-        if key not in self.file_snapshots:
-            raise DashboardFrozenInputError(
-                f"missing frozen dashboard input: {key}"
-            )
-        return self.file_snapshots[key] is not None
-
-    def read_bytes(self, path: Path) -> bytes:
-        """Return exact frozen bytes, rejecting absent or unrecorded paths."""
-
-        key = self._key(path)
-        if key not in self.file_snapshots:
-            raise DashboardFrozenInputError(
-                f"missing frozen dashboard input: {key}"
-            )
-        value = self.file_snapshots[key]
-        if value is None:
-            raise DashboardFrozenInputError(
-                f"frozen dashboard input was absent: {key}"
-            )
-        return value
-
-    def read_text(self, path: Path) -> str:
-        """Decode exact frozen bytes as UTF-8."""
-
-        try:
-            return self.read_bytes(path).decode("utf-8")
-        except UnicodeDecodeError as exc:
-            raise DashboardFrozenInputError(
-                f"frozen dashboard input is not UTF-8: {self._key(path)}"
-            ) from exc
-
-    def json_payload(self, path: Path) -> dict[str, Any] | None:
-        """Return one cached immutable JSON object; absence returns ``None``."""
-
-        if not self.is_file(path):
-            return None
-        key = self._key(path)
-        with self._json_payload_lock:
-            if key in self._json_payload_cache:
-                return self._json_payload_cache[key]
-            try:
-                payload = json.loads(self.read_bytes(path))
-            except json.JSONDecodeError as exc:
-                raise DashboardFrozenInputError(
-                    f"invalid frozen dashboard JSON: {key}"
-                ) from exc
-            frozen = (
-                _freeze_dashboard_json(payload)
-                if isinstance(payload, dict)
-                else None
-            )
-            self._json_payload_cache[key] = frozen
-            return frozen
-
-    def existing_files_under(
-        self, folder: Path, *, suffix: str | None = None
-    ) -> tuple[Path, ...]:
-        """Return frozen-present files directly below ``folder``."""
-
-        folder_key = self._key(folder).rstrip("/")
-        prefix = f"{folder_key}/" if folder_key else ""
-        paths: list[Path] = []
-        for key, value in self.file_snapshots.items():
-            if value is None or not key.startswith(prefix):
-                continue
-            relative = key[len(prefix) :]
-            if not relative or "/" in relative:
-                continue
-            path = self.repository_root / key
-            if suffix is None or path.suffix.lower() == suffix.lower():
-                paths.append(path)
-        return tuple(sorted(paths))
-
-    def file_bytes_override(self) -> Mapping[Path, bytes | None]:
-        """Return a read-only absolute-path view for exact-byte validators."""
-
-        return MappingProxyType(
-            {
-                self.repository_root / relative_path: value
-                for relative_path, value in self.file_snapshots.items()
-            }
-        )
-
-
 _DASHBOARD_CANONICAL_LEGACY_SIDECARS: tuple[tuple[str, str], ...] = (
     (DEFAULT_LLM_LEAN_TO_TEX_FILE, "lean_to_tex_llm.json"),
     (DEFAULT_LLM_STATEMENT_JUDGE_FILE, "statement_match_llm.json"),
@@ -1017,86 +633,6 @@ _DASHBOARD_CANONICAL_LEGACY_SIDECARS: tuple[tuple[str, str], ...] = (
     (f"{PAPER_AUDIT_DIR}/source_record_audit.json", "source_record_audit.json"),
     (f"{PAPER_AUDIT_DIR}/source_record_match_llm.json", "source_record_match_llm.json"),
 )
-_DASHBOARD_STATUS_FILE_FIELDS = frozenset(
-    {
-        "source_file",
-        "human_source_file",
-        "assumption_source_file",
-        "ledger_file",
-        "lean_to_tex_file",
-        "match_judgment_file",
-        "review_surface_audit_file",
-        "paper_coverage_audit_file",
-        "defect_support_judgment_file",
-        "assumption_judgment_file",
-        "source_record_audit_file",
-        "source_record_judgment_file",
-        "final_validation_report",
-        "review_entrypoint",
-    }
-)
-_DASHBOARD_MAP_FILE_FIELDS = frozenset(
-    {
-        "path",
-        "source_artifact_path",
-        "source_text_file",
-    }
-)
-
-
-def _dashboard_configured_paper_path(
-    repository_root: Path,
-    folder: Path,
-    raw_path: object,
-) -> Path | None:
-    """Resolve one configured paper-local path without reading the filesystem."""
-
-    if not isinstance(raw_path, str) or not raw_path.strip():
-        return None
-    relative = Path(raw_path.strip())
-    if relative.is_absolute():
-        raise DashboardFrozenInputError(
-            f"dashboard input path must be repository- or paper-relative: {raw_path}"
-        )
-    anchor = repository_root if relative.parts[:1] == ("papers",) else folder
-    try:
-        resolved = Path(os.path.abspath(anchor / relative))
-        resolved.relative_to(folder)
-    except ValueError as exc:
-        raise DashboardFrozenInputError(
-            f"dashboard input path escapes paper folder: {raw_path}"
-        ) from exc
-    return resolved
-
-
-def _dashboard_mapping_file_values(
-    value: object,
-    *,
-    field_names: frozenset[str],
-) -> Iterator[object]:
-    """Yield structured file-field values from a JSON-compatible object."""
-
-    if isinstance(value, Mapping):
-        for raw_key, item in value.items():
-            key = str(raw_key)
-            if key in field_names:
-                yield item
-            yield from _dashboard_mapping_file_values(item, field_names=field_names)
-    elif isinstance(value, list):
-        for item in value:
-            yield from _dashboard_mapping_file_values(item, field_names=field_names)
-
-
-def _dashboard_companion_file_values(statement_map: Mapping[str, Any]) -> Iterator[object]:
-    """Yield exact file descriptors from the source-text companion schema."""
-
-    companion = statement_map.get("source_text_companion")
-    if not isinstance(companion, Mapping):
-        return
-    for field in ("canonical_text", "visual_primary_scan", "transcript_input_scan"):
-        descriptor = companion.get(field)
-        if isinstance(descriptor, Mapping):
-            yield descriptor.get("path")
 
 
 def required_dashboard_audit_input_paths(
@@ -1106,50 +642,36 @@ def required_dashboard_audit_input_paths(
     statement_map_bytes: bytes | None,
     repository_root: Path = ROOT,
 ) -> tuple[Path, ...]:
-    """Return the bounded exact-file set needed by strict dashboard checks.
+    """Return the bounded exact-file set needed by legacy dashboard checks.
 
-    Discovery is derived only from caller-supplied status/map bytes and fixed
-    dashboard conventions. The collector performs no file read, existence
-    probe, glob, or directory walk. Callers must snapshot every returned path,
-    recording ``None`` for absence, before constructing
-    :class:`DashboardAuditInputs`.
+    The dashboard presentation path still supports conventional source names
+    and historical sidecar aliases. Current graph-native closeout uses
+    :func:`configured_v11_evidence_input_paths` instead, so merely creating
+    an unselected conventional file cannot mutate an in-flight v11 audit.
+    Neither collector reads, probes, globs, or walks the filesystem.
     """
 
-    root = Path(os.path.abspath(repository_root))
+    paths = set(
+        configured_dashboard_audit_input_paths(
+            folder,
+            status_bytes=status_bytes,
+            statement_map_bytes=statement_map_bytes,
+            repository_root=repository_root,
+        )
+    )
     paper_folder = Path(os.path.abspath(folder))
-    try:
-        paper_folder.relative_to(root)
-    except ValueError as exc:
-        raise DashboardFrozenInputError(
-            f"paper folder is outside dashboard repository root: {folder}"
-        ) from exc
-    try:
-        status_payload = json.loads(status_bytes)
-    except json.JSONDecodeError as exc:
-        raise DashboardFrozenInputError("strict dashboard status snapshot is invalid JSON") from exc
-    if not isinstance(status_payload, Mapping):
-        raise DashboardFrozenInputError("strict dashboard status snapshot is not an object")
-    if statement_map_bytes is None:
-        statement_map: Mapping[str, Any] = {}
-    else:
-        try:
-            raw_map = json.loads(statement_map_bytes)
-        except json.JSONDecodeError as exc:
-            raise DashboardFrozenInputError(
-                "strict dashboard statement-map snapshot is invalid JSON"
-            ) from exc
-        if not isinstance(raw_map, Mapping):
-            raise DashboardFrozenInputError(
-                "strict dashboard statement-map snapshot is not an object"
-            )
-        statement_map = raw_map
-
-    paths: set[Path] = {
-        paper_folder / DEFAULT_PAPER_STATUS_FILE,
-        paper_folder / REVIEW_SOURCE_FILENAME,
-        paper_folder / DEFAULT_ASSUMPTION_SOURCE_FILE,
-        paper_folder / FINAL_VALIDATION_REPORT_FILE,
-    }
+    paths.update(
+        {
+            paper_folder / DEFAULT_PAPER_STATUS_FILE,
+            paper_folder / REVIEW_SOURCE_FILENAME,
+            paper_folder / DEFAULT_ASSUMPTION_SOURCE_FILE,
+            paper_folder / FINAL_VALIDATION_REPORT_FILE,
+            # `_human_review_intake_order` consults this optional legacy input
+            # before falling back to the v11 review-surface order. Snapshot an
+            # absent file so a strict dashboard does not probe live state.
+            paper_folder / PAPER_AUDIT_DIR / "intake_freeze.json",
+        }
+    )
     for canonical, legacy in _DASHBOARD_CANONICAL_LEGACY_SIDECARS:
         paths.add(paper_folder / canonical)
         paths.add(paper_folder / legacy)
@@ -1159,88 +681,11 @@ def required_dashboard_audit_input_paths(
         paths.add(paper_folder / pattern.format(name=paper_folder.name))
     for pattern in PAPER_PDF_PRIORITY:
         paths.add(paper_folder / pattern.format(name=paper_folder.name))
-
-    for raw_path in _dashboard_mapping_file_values(
-        status_payload,
-        field_names=_DASHBOARD_STATUS_FILE_FIELDS,
-    ):
-        resolved = _dashboard_configured_paper_path(root, paper_folder, raw_path)
-        if resolved is not None:
-            paths.add(resolved)
-    for raw_path in _dashboard_mapping_file_values(
-        statement_map,
-        field_names=_DASHBOARD_MAP_FILE_FIELDS,
-    ):
-        resolved = _dashboard_configured_paper_path(root, paper_folder, raw_path)
-        if resolved is not None:
-            paths.add(resolved)
-    for raw_path in _dashboard_companion_file_values(statement_map):
-        resolved = _dashboard_configured_paper_path(root, paper_folder, raw_path)
-        if resolved is not None:
-            paths.add(resolved)
     return tuple(sorted(paths))
 
 
 # Compatibility for the shorter name advertised during initial integration.
 required_dashboard_input_paths = required_dashboard_audit_input_paths
-
-
-_ACTIVE_DASHBOARD_AUDIT_INPUTS: ContextVar[DashboardAuditInputs | None] = ContextVar(
-    "active_dashboard_audit_inputs", default=None
-)
-
-
-@contextmanager
-def dashboard_audit_input_scope(
-    audit_inputs: DashboardAuditInputs | None,
-) -> Iterator[None]:
-    """Activate exact dashboard inputs for nested legacy helper calls."""
-
-    if audit_inputs is None:
-        yield
-        return
-    token = _ACTIVE_DASHBOARD_AUDIT_INPUTS.set(audit_inputs)
-    try:
-        yield
-    finally:
-        _ACTIVE_DASHBOARD_AUDIT_INPUTS.reset(token)
-
-
-def _dashboard_audit_inputs() -> DashboardAuditInputs | None:
-    return _ACTIVE_DASHBOARD_AUDIT_INPUTS.get()
-
-
-def _dashboard_is_file(path: Path) -> bool:
-    inputs = _dashboard_audit_inputs()
-    return inputs.is_file(path) if inputs is not None else path.is_file()
-
-
-def _dashboard_read_bytes(path: Path) -> bytes:
-    inputs = _dashboard_audit_inputs()
-    return inputs.read_bytes(path) if inputs is not None else path.read_bytes()
-
-
-def _dashboard_read_text(path: Path) -> str:
-    inputs = _dashboard_audit_inputs()
-    return inputs.read_text(path) if inputs is not None else path.read_text(encoding="utf-8")
-
-
-def _dashboard_file_bytes_override() -> Mapping[Path, bytes | None] | None:
-    """Return the active transaction's exact bytes for shared validators."""
-
-    inputs = _dashboard_audit_inputs()
-    return inputs.file_bytes_override() if inputs is not None else None
-
-
-def _dashboard_json_payload(path: Path) -> dict[str, Any] | None:
-    inputs = _dashboard_audit_inputs()
-    if inputs is not None:
-        return inputs.json_payload(path)
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return None
-    return payload if isinstance(payload, dict) else None
 
 
 def _normalize_name_key(name: str) -> str:
@@ -1376,6 +821,12 @@ class ReviewItem:
     interface_source: str = ""
     lean_signature_manifest: dict[str, Any] | None = None
     lean_signature_sha256: str = ""
+    # Coverage can point either to an ordinary elaborated result row or to an
+    # already-reviewed paper-semantic prerequisite card.  The latter is not a
+    # fabricated theorem row: this typed identity binds the prerequisite
+    # ledger's exact source bundle, Lean target, route, judgment, and protocol.
+    coverage_target_kind: str = ""
+    coverage_target_identity_sha256: str = ""
     source_status: str = ""
     source_note: str = ""
     llm_match_judgment: str = ""
@@ -1423,6 +874,13 @@ class ReviewItem:
     line_number: int = 0
     slice_id: str = "all"
     slice_title: str = "All statements"
+
+
+# Quarantined counterexamples/refutations are not paper claims and therefore
+# never enter the dashboard row list.  Coverage validation still needs their
+# exact Lean-elaborated statements and manifests.  Keep that separate support
+# surface in the same cache transaction as the ordinary rows.
+QUARANTINED_SUPPORT_REVIEW_ITEM_CACHE: dict[str, dict[str, ReviewItem]] = {}
 
 
 def find_review_source_file(folder: Path) -> Path | None:
@@ -1651,15 +1109,15 @@ def split_source_metadata(text: str) -> tuple[str, str, str]:
 
 
 def normalize_statement(text: str) -> str:
-    """Normalize statement text for drift comparisons."""
+    """Compatibility wrapper for shared statement normalization."""
 
-    return re.sub(r"\s+", " ", text.strip())
+    return _shared_normalize_statement(text)
 
 
 def statement_digest(text: str) -> str:
-    """Generate a stable digest for a statement snapshot."""
+    """Compatibility wrapper for the shared statement digest."""
 
-    return hashlib.sha256(normalize_statement(text).encode("utf-8")).hexdigest()
+    return _shared_statement_digest(text)
 
 
 def corrected_target_digest(raw: Any) -> str:
@@ -1670,21 +1128,7 @@ def corrected_target_digest(raw: Any) -> str:
     pin so a later edit cannot silently keep old coverage credit.
     """
 
-    payload = dict(raw) if isinstance(raw, dict) else raw
-    if isinstance(payload, dict):
-        payload.pop("corrected_target_sha256", None)
-    return hashlib.sha256(
-        json.dumps(payload, ensure_ascii=True, sort_keys=True, separators=(",", ":")).encode(
-            "utf-8"
-        )
-    ).hexdigest()
-
-
-def _source_item_is_corrected_target(item: dict[str, Any]) -> bool:
-    return (
-        str(item.get("coverage_status") or "").strip().lower()
-        == CORRECTED_SOURCE_STATEMENT_STATUS
-    )
+    return _shared_corrected_target_record_digest(raw)
 
 
 def _corrected_target_primary_declaration(item: dict[str, Any]) -> str | None:
@@ -1704,6 +1148,25 @@ def _corrected_target_primary_declaration(item: dict[str, Any]) -> str | None:
     if not isinstance(declaration, str) or not declaration.strip():
         return None
     return declaration.strip()
+
+
+def _corrected_target_semantic_bundle_declarations(item: dict[str, Any]) -> list[str]:
+    """Return an explicit non-credit semantic bundle for a corrected model.
+
+    A corrected theorem has one paper-facing endpoint. A corrected source
+    algorithm or model may instead have several bounded declarations that each
+    need the same source-to-Lean comparison; this is review input, not extra
+    theorem coverage.
+    """
+
+    if str(item.get("inventory_role") or "").strip() != "source_semantic_declaration":
+        return []
+    if isinstance(item.get("semantic_contract"), dict):
+        return []
+    declarations = _normalize_string_list(item.get("lean_declarations"))
+    if not declarations or len(declarations) != len(set(declarations)):
+        return []
+    return declarations
 
 
 def _corrected_target_coverage_rows_match_primary(
@@ -1797,6 +1260,8 @@ def source_item_statement_routing_declarations(item: dict[str, Any]) -> list[str
     routed = list(direct)
     routed.extend(_source_item_specification_statement_routing_declarations(item))
     if _source_item_is_corrected_target(item):
+        if not routed:
+            routed.extend(_corrected_target_semantic_bundle_declarations(item))
         return list(dict.fromkeys(routed))
     for field in SEMANTIC_BRIDGE_DECLARATION_FIELDS:
         routed.extend(_normalize_string_list(item.get(field)))
@@ -1817,64 +1282,17 @@ def _source_item_specification_statement_routing_declarations(
     return list(dict.fromkeys(routed))
 
 
-def _source_item_corrected_target(item: dict[str, Any]) -> dict[str, Any] | None:
-    """Return the structured corrected target only when its basic shape is usable.
-
-    Full map-schema and source-ledger validation lives in
-    ``audit_evidence_integrity.py``.  Dashboard checks still fail closed here
-    when a source route or coverage row tries to use a malformed target.
-    """
-
-    target = item.get("corrected_target")
-    if not isinstance(target, dict):
-        return None
-    if target.get("schema") != CORRECTED_TARGET_SCHEMA:
-        return None
-    statement = str(target.get("statement") or "").strip()
-    if not statement:
-        return None
-    return target
-
-
-def _source_item_coverage_statement(item: dict[str, Any]) -> tuple[str, str]:
-    """Return the statement/digest a coverage row is allowed to credit.
-
-    Ordinary source items use the archival source statement.  A corrected item
-    is intentionally different: only its explicit repaired target may be
-    matched to Lean, while the archival statement remains visible in the
-    inventory and never receives proof credit.
-    """
-
-    if _source_item_is_corrected_target(item):
-        target = _source_item_corrected_target(item)
-        if target is None:
-            return "", ""
-        statement = normalize_statement(str(target.get("statement") or ""))
-        return statement, statement_digest(statement)
-    statement = normalize_statement(str(item.get("statement") or ""))
-    return statement, statement_digest(statement) if statement else ""
-
-
-def _source_item_coverage_location(item: dict[str, Any]) -> str:
-    """Return the archival anchor associated with the reviewed target."""
-
-    if _source_item_is_corrected_target(item):
-        target = _source_item_corrected_target(item)
-        if target is None:
-            return ""
-        return str(target.get("archival_source_locator") or "").strip()
-    return str(item.get("source_location") or "").strip()
-
-
 def _source_item_corrected_target_metadata_error(item: dict[str, Any]) -> str:
     """Return a compact fail-closed error for dashboard corrected-target use."""
 
     if not _source_item_is_corrected_target(item):
         return "source item is not marked corrected_source_statement"
-    if _corrected_target_primary_declaration(item) is None:
+    primary = _corrected_target_primary_declaration(item)
+    semantic_bundle = _corrected_target_semantic_bundle_declarations(item)
+    if primary is None and not semantic_bundle:
         return (
-            "lean_declarations must be an exact one-element string list naming "
-            "the complete corrected-target endpoint"
+            "lean_declarations must name one complete corrected-target endpoint "
+            "or a bounded source-semantic declaration bundle"
         )
     if _normalize_string_list(item.get("proof_lean_declarations")):
         return (
@@ -1912,6 +1330,13 @@ def _source_item_corrected_target_metadata_error(item: dict[str, Any]) -> str:
         target
     ):
         return "corrected_target has a stale corrected-target record digest"
+    recorded_review_digest = str(
+        target.get("corrected_target_review_sha256") or ""
+    ).strip().lower()
+    if recorded_review_digest and recorded_review_digest != corrected_target_review_digest(
+        target
+    ):
+        return "corrected_target has a stale corrected-target review digest"
     return ""
 
 
@@ -1930,6 +1355,14 @@ def lean_statement_digest_candidates(
     for text in (interface_source, lean_statement):
         if text and text.strip():
             digests.add(statement_digest(text))
+            # Source-record semantic-parent receipts identify the exact
+            # declaration bytes, whereas ordinary dashboard statement reviews
+            # use the normalized display digest.  Both are current only for
+            # the same source text, so retain the literal digest as a
+            # compatible freshness candidate instead of treating a
+            # byte-pinned source-assumption receipt as stale merely because
+            # its whitespace is significant to the source-record ledger.
+            digests.add(hashlib.sha256(text.encode("utf-8")).hexdigest())
     return digests
 
 
@@ -2123,7 +1556,6 @@ def agent_preview_comment(
         text = re.sub(r"\s+", " ", comment).strip()
         return text[:AGENT_PREVIEW_MAX_LEN]
     return "(no auto-generated preview available)"
-
 
 
 def parse_report_texts(report_path: Path) -> dict[str, str]:
@@ -2388,10 +1820,15 @@ def parse_paper_statement_map(folder: Path) -> dict[str, str]:
             # evidence for a paper-facing theorem.
             _add_statement_variant(statements, key.strip(), archival_text)
             primary_declaration = _corrected_target_primary_declaration(raw_item)
-            if corrected_text and primary_declaration:
+            corrected_declarations = (
+                [primary_declaration]
+                if primary_declaration
+                else _corrected_target_semantic_bundle_declarations(raw_item)
+            )
+            if corrected_text and corrected_declarations:
                 for declaration in list(
                     dict.fromkeys(
-                        [primary_declaration]
+                        corrected_declarations
                         + _source_item_specification_statement_routing_declarations(
                             raw_item
                         )
@@ -2453,12 +1890,10 @@ def paper_statement_inventory(folder: Path) -> dict[str, dict[str, Any]]:
             # an exact locator.  Preserve the map-level pin on each inventory item
             # so the source-first coverage check can enforce that requirement before
             # an item is allowed to leave the theorem-review lane.
-            map_source_artifact_path = str(
-                payload.get("source_artifact_path") or ""
-            ).strip()
-            map_source_artifact_sha256 = str(
-                payload.get("source_artifact_sha256") or ""
-            ).strip()
+            (
+                map_source_artifact_path,
+                map_source_artifact_sha256,
+            ) = semantic_review_source_identity(payload)
             map_source_anchor_evidence_required = (
                 payload.get("source_anchor_evidence_required") is True
             )
@@ -2590,6 +2025,14 @@ def paper_statement_inventory(folder: Path) -> dict[str, dict[str, Any]]:
                     inventory[key]["model_convention_ids"] = raw_item.get(
                         "model_convention_ids"
                     )
+                if "inventory_role" in raw_item:
+                    # Preserve the absence of this v11 support-lane marker on
+                    # historic ordinary items.  An empty synthetic field would
+                    # alter their source semantic pins despite no source or
+                    # semantic-routing change.
+                    inventory[key]["inventory_role"] = str(
+                        raw_item.get("inventory_role") or ""
+                    ).strip().lower()
                 if SOURCE_DEFINITION_PARTITION_FIELD in raw_item:
                     inventory[key][SOURCE_DEFINITION_PARTITION_FIELD] = raw_item.get(
                         SOURCE_DEFINITION_PARTITION_FIELD
@@ -3593,6 +3036,40 @@ def paper_source_map_structural_errors(folder: Path) -> list[str]:
             payload
         ),
     )
+    # The raw source-record producer rejects malformed semantic-context
+    # requirements before it can issue evidence.  Run that same shared shape
+    # validator in the cheap source-map preflight so an old hybrid
+    # role/location record cannot consume a full Lean scan merely to discover
+    # a deterministic schema error.
+    try:
+        from scripts.audit_evidence_integrity import (
+            semantic_context_requirement_shape_findings,
+        )
+        status_payload = _dashboard_json_payload(folder / DEFAULT_PAPER_STATUS_FILE) or {}
+        status = (
+            str(status_payload.get("status") or "paper draft")
+            if isinstance(status_payload, Mapping)
+            else "paper draft"
+        )
+        map_path = folder / PAPER_STATEMENT_MAP_FILE
+        errors.extend(
+            "semantic_context_requirements: " + str(finding.message)
+            for finding in semantic_context_requirement_shape_findings(
+                folder,
+                status,
+                map_path,
+                payload,
+            )
+        )
+    except Exception as error:  # noqa: BLE001 - preflight must fail closed.
+        errors.append(
+            "semantic_context_requirements validator failed: " + str(error)
+        )
+    if typed_route_validation_required(payload):
+        try:
+            EvidenceRouteSet.from_source_map(payload)
+        except CloseoutPipelineError as exc:
+            errors.append("typed_evidence_routes: " + str(exc))
     raw_items = payload.get("items")
     source_inventory = paper_statement_inventory(folder)
     if isinstance(raw_items, Mapping):
@@ -3657,12 +3134,6 @@ def paper_source_map_structural_errors(folder: Path) -> list[str]:
         )
     )
     return sorted(set(errors))
-
-
-def paper_source_coverage_mode(folder: Path) -> tuple[str, str]:
-    """Return the source-inventory coverage mode and any configuration error."""
-
-    return source_coverage_mode_from_map(paper_statement_map_payload(folder))
 
 
 def paper_coverage_inventory(
@@ -3871,477 +3342,15 @@ def source_anchor_quote_identity(
     )
 
 
-def _verbatim_anchor_quotes(
-    anchors: object,
-    *,
-    label: str,
-) -> tuple[list[str], list[str], str]:
-    """Validate and return one ordered raw-source anchor bundle.
-
-    This helper is deliberately narrower than the map's human-oriented
-    ``statement`` field.  It returns only source bytes which can be shown to a
-    reviewer or supplied to an LLM semantic judge; explanatory map prose is
-    never part of the result.
-    """
-
-    if not isinstance(anchors, list) or not anchors:
-        return [], [], f"{label} has no byte-pinned source_anchor_evidence"
-    quotes: list[str] = []
-    quote_digests: list[str] = []
-    for index, raw_anchor in enumerate(anchors):
-        if not isinstance(raw_anchor, Mapping):
-            return [], [], f"{label} source anchor {index} is not an object"
-        quote = raw_anchor.get("quoted_text")
-        recorded = str(raw_anchor.get("quoted_text_sha256") or "").strip().lower()
-        if not isinstance(quote, str) or not quote:
-            return [], [], f"{label} source anchor {index} has no quoted_text"
-        normalized = quote.replace("\r\n", "\n").replace("\r", "\n")
-        actual = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
-        if not re.fullmatch(r"[0-9a-f]{64}", recorded) or recorded != actual:
-            return [], [], f"{label} source anchor {index} quoted_text_sha256 is stale"
-        quotes.append(normalized)
-        quote_digests.append(actual)
-    return quotes, quote_digests, ""
-
-
 def source_anchor_file_error(folder: Path, source_record: Mapping[str, Any]) -> str:
-    """Verify every displayed raw anchor against the current paper bytes.
+    """Compatibility wrapper for exact transaction-aware source validation."""
 
-    Source-map anchors also receive repository-wide integrity checks, but a
-    library or paper-local prerequisite may use a direct anchor without adding
-    a denominator row to that map.  Those direct connections need the same
-    file/range validation before they can feed a semantic judgment.
-    """
-
-    anchors = source_record.get("source_anchor_evidence")
-    if not isinstance(anchors, list) or not anchors:
-        return "no byte-pinned source_anchor_evidence is registered"
-    for index, raw_anchor in enumerate(anchors):
-        label = f"source anchor {index}"
-        if not isinstance(raw_anchor, Mapping):
-            return label + " is not an object"
-        raw_path = str(raw_anchor.get("path") or "").strip()
-        start = raw_anchor.get("line_start")
-        end = raw_anchor.get("line_end")
-        quote = raw_anchor.get("quoted_text")
-        if (
-            not raw_path
-            or not isinstance(start, int)
-            or isinstance(start, bool)
-            or not isinstance(end, int)
-            or isinstance(end, bool)
-            or start <= 0
-            or end < start
-            or not isinstance(quote, str)
-            or not quote
-        ):
-            return label + " lacks a valid path, line range, or quote"
-        # Source maps historically permit a source path relative either to the
-        # paper folder (``source/main.tex``) or to the repository root
-        # (``papers/Paper/source/main.tex``).  The packet/reissue lane must
-        # validate the same safe forms as evidence integrity, rather than
-        # interpreting the latter a second time beneath the paper folder.
-        # In both cases it accepts only a path that resolves back inside this
-        # exact paper; a repository-relative path can never broaden the file
-        # access boundary.
-        candidates = [(folder / raw_path).resolve()]
-        repository_candidate = (ROOT / raw_path).resolve()
-        if repository_candidate not in candidates:
-            candidates.append(repository_candidate)
-        path = next(
-            (
-                candidate
-                for candidate in candidates
-                if candidate.is_file()
-                and candidate.is_relative_to(folder.resolve())
-            ),
-            candidates[0],
-        )
-        try:
-            path.relative_to(folder.resolve())
-            lines = path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n").split("\n")
-        except (OSError, UnicodeDecodeError, ValueError) as exc:
-            return label + " cannot read the declared source path: " + str(exc)
-        # A terminal newline produces one trailing empty split element.  The
-        # numbered source lines themselves remain 1-indexed and unchanged.
-        if end > len(lines) - (1 if lines and lines[-1] == "" else 0):
-            return label + " line range is outside the declared source file"
-        actual = "\n".join(lines[start - 1 : end])
-        normalized_quote = quote.replace("\r\n", "\n").replace("\r", "\n")
-        if actual != normalized_quote:
-            return label + " quote does not equal the current declared source slice"
-    return ""
-
-
-SEMANTIC_CONTEXT_ROLES = frozenset(
-    {
-        "definition",
-        "model",
-        "model_construction",
-        "scope",
-        "prior_result",
-        "stated_antecedent",
-    }
-)
-
-
-def _public_display_anchor_bundle(
-    anchors: object,
-    *,
-    label: str,
-) -> tuple[tuple[tuple[int, int, str, str, str], ...], str]:
-    """Return one safe public-excerpt anchor bundle, or a precise error.
-
-    This is intentionally not a substitute for :func:`source_anchor_file_error`.
-    It validates only the self-contained release excerpt identity that a public
-    packet can display after the private audit has removed the source file.
-    """
-
-    if not isinstance(anchors, list) or not anchors:
-        return (), f"{label} has no source anchors"
-    out: list[tuple[int, int, str, str, str]] = []
-    for index, raw_anchor in enumerate(anchors):
-        anchor_label = f"{label} source anchor {index}"
-        if not isinstance(raw_anchor, Mapping):
-            return (), f"{anchor_label} is not an object"
-        # A public display projection must never retain a filesystem path.  A
-        # map that still has one must use the strict local-byte path instead.
-        if "path" in raw_anchor:
-            return (), f"{anchor_label} retains a local source path"
-        line_start = raw_anchor.get("line_start")
-        line_end = raw_anchor.get("line_end")
-        locator = str(raw_anchor.get("publication_locator") or "").strip()
-        quote = raw_anchor.get("quoted_text")
-        digest = str(raw_anchor.get("quoted_text_sha256") or "").strip().lower()
-        if (
-            not isinstance(line_start, int)
-            or isinstance(line_start, bool)
-            or line_start < 1
-            or not isinstance(line_end, int)
-            or isinstance(line_end, bool)
-            or line_end < line_start
-        ):
-            return (), f"{anchor_label} lacks a valid line span"
-        if locator != PUBLICATION_SOURCE_LOCATOR:
-            return (), f"{anchor_label} has no public publication locator"
-        if not isinstance(quote, str) or not quote:
-            return (), f"{anchor_label} has no quoted_text"
-        normalized_quote = quote.replace("\r\n", "\n").replace("\r", "\n")
-        actual_digest = hashlib.sha256(normalized_quote.encode("utf-8")).hexdigest()
-        if not re.fullmatch(r"[0-9a-f]{64}", digest) or digest != actual_digest:
-            return (), f"{anchor_label} quoted_text_sha256 is stale"
-        out.append((line_start, line_end, locator, normalized_quote, digest))
-    return tuple(out), ""
-
-
-def _public_display_context_bundles(
-    record: Mapping[str, Any],
-    *,
-    field: str,
-    label: str,
-) -> tuple[tuple[tuple[str, tuple[tuple[int, int, str, str, str], ...]], ...], str]:
-    """Return ordered display-only semantic-context identities.
-
-    ``paper_statement_map.json`` uses ``semantic_context_requirements``;
-    the frozen public manifest uses the shorter ``semantic_context``.  The
-    two representations intentionally carry only a role and exact anchors.
-    """
-
-    raw_contexts = record.get(field)
-    if raw_contexts is None:
-        return (), ""
-    if not isinstance(raw_contexts, list):
-        return (), f"{label} {field} is not a list"
-    out: list[tuple[str, tuple[tuple[int, int, str, str, str], ...]]] = []
-    for index, raw_context in enumerate(raw_contexts):
-        context_label = f"{label} semantic context {index}"
-        if not isinstance(raw_context, Mapping):
-            return (), f"{context_label} is not an object"
-        role = str(raw_context.get("semantic_role") or "").strip()
-        if role not in SEMANTIC_CONTEXT_ROLES:
-            return (), f"{context_label} has no permitted semantic_role"
-        anchors, error = _public_display_anchor_bundle(
-            raw_context.get("source_anchor_evidence")
-            if field == "semantic_context_requirements"
-            else raw_context.get("source_anchors"),
-            label=context_label,
-        )
-        if error:
-            return (), error
-        out.append((role, anchors))
-    return tuple(out), ""
-
-
-def _public_display_record_matches_manifest(
-    source_record: Mapping[str, Any],
-    manifest_item: Mapping[str, Any],
-    *,
-    label: str,
-) -> str:
-    """Check one projected source record against its frozen manifest entry."""
-
-    actual_anchors, actual_error = _public_display_anchor_bundle(
-        source_record.get("source_anchor_evidence"), label=label
-    )
-    if actual_error:
-        return actual_error
-    expected_anchors, expected_error = _public_display_anchor_bundle(
-        manifest_item.get("source_anchors"), label=f"{label} manifest"
-    )
-    if expected_error:
-        return expected_error
-    if actual_anchors != expected_anchors:
-        return f"{label} source anchors do not match the frozen public manifest"
-    actual_contexts, actual_context_error = _public_display_context_bundles(
+    return _shared_source_anchor_file_error(
+        folder,
         source_record,
-        field="semantic_context_requirements",
-        label=label,
+        repository_root=ROOT,
+        file_bytes_override=_dashboard_file_bytes_override(),
     )
-    if actual_context_error:
-        return actual_context_error
-    expected_contexts, expected_context_error = _public_display_context_bundles(
-        manifest_item,
-        field="semantic_context",
-        label=f"{label} manifest",
-    )
-    if expected_context_error:
-        return expected_context_error
-    if actual_contexts != expected_contexts:
-        return f"{label} semantic context does not match the frozen public manifest"
-    return ""
-
-
-def public_source_display_projection_state(folder: Path) -> dict[str, Any]:
-    """Validate a release-only source-excerpt manifest without source bytes.
-
-    The private audit's byte-level source checks intentionally do *not* call
-    this helper.  It exists solely for a public dashboard/packet to identify a
-    cryptographically bound, frozen display surface after raw source files and
-    private source paths have been omitted from the release.
-    """
-
-    source_map = paper_statement_map_payload(folder)
-    marker = source_map.get(PUBLIC_SOURCE_DISPLAY_PROJECTION_FIELD)
-    if marker is None:
-        return {
-            "active": False,
-            "valid": False,
-            "errors": (),
-            "selected_source_item_ids": (),
-            "source_coverage_mode": "",
-        }
-    errors: list[str] = []
-    if not isinstance(marker, Mapping):
-        errors.append("public source display marker is not an object")
-    else:
-        if marker.get("schema") != PUBLIC_SOURCE_DISPLAY_PROJECTION_SCHEMA:
-            errors.append("public source display marker has an unsupported schema")
-        if marker.get("manifest") != PUBLIC_SOURCE_DISPLAY_PROJECTION_MANIFEST:
-            errors.append("public source display marker names an unexpected manifest")
-        if marker.get("raw_source_bytes_included") is not False:
-            errors.append("public source display marker does not declare omitted raw source bytes")
-
-    map_path = folder / PAPER_STATEMENT_MAP_FILE
-    try:
-        map_sha256 = hashlib.sha256(_dashboard_read_bytes(map_path)).hexdigest()
-    except OSError as exc:
-        errors.append("cannot read public paper statement map: " + str(exc))
-        map_sha256 = ""
-    manifest_path = folder / PUBLIC_SOURCE_DISPLAY_PROJECTION_FILE
-    manifest = _dashboard_json_payload(manifest_path)
-    if manifest is None:
-        errors.append("public source display manifest is unreadable")
-        manifest = {}
-
-    expected_manifest_path = (
-        f"papers/{folder.name}/{PUBLIC_SOURCE_DISPLAY_PROJECTION_FILE}"
-    )
-    source_mode, source_mode_error = source_coverage_mode_from_map(source_map)
-    if source_mode_error:
-        errors.append("public source display map has an invalid source coverage mode")
-    if manifest:
-        if manifest.get("schema") != PUBLIC_SOURCE_DISPLAY_PROJECTION_SCHEMA:
-            errors.append("public source display manifest has an unsupported schema")
-        if manifest.get("generator") != PUBLIC_SOURCE_DISPLAY_PROJECTION_GENERATOR:
-            errors.append("public source display manifest has an unexpected generator")
-        if str(manifest.get("paper_id") or "").strip() != folder.name:
-            errors.append("public source display manifest names a different paper")
-        if manifest.get("public_manifest_path") != expected_manifest_path:
-            errors.append("public source display manifest has an unexpected public path")
-        if manifest.get("raw_source_artifact_included") is not False:
-            errors.append("public source display manifest does not declare omitted raw source bytes")
-        if (
-            manifest.get("raw_source_display_material")
-            != "selected_byte_pinned_source_anchor_quotes"
-        ):
-            errors.append("public source display manifest has an unexpected source material policy")
-        if str(manifest.get("public_source_map_sha256") or "").strip().lower() != map_sha256:
-            errors.append("public source display manifest does not match the public source map")
-        for field in (
-            "private_source_map_sha256",
-            "public_source_map_sha256",
-            "source_artifact_sha256",
-        ):
-            if not re.fullmatch(
-                r"[0-9a-f]{64}", str(manifest.get(field) or "").strip().lower()
-            ):
-                errors.append(f"public source display manifest has no valid {field}")
-        if source_mode and manifest.get("source_coverage_mode") != source_mode:
-            errors.append("public source display manifest source coverage mode differs from the map")
-
-    raw_ids = manifest.get("selected_source_item_ids") if manifest else None
-    raw_items = manifest.get("selected_source_items") if manifest else None
-    selected_ids: list[str] = []
-    if not isinstance(raw_ids, list):
-        errors.append("public source display manifest selected_source_item_ids is not a list")
-    else:
-        selected_ids = [str(item_id).strip() for item_id in raw_ids]
-        if any(not item_id for item_id in selected_ids):
-            errors.append("public source display manifest has an empty selected source-item ID")
-        if selected_ids != sorted(selected_ids) or len(selected_ids) != len(set(selected_ids)):
-            errors.append("public source display manifest selected source-item IDs are not unique sorted IDs")
-    if not isinstance(raw_items, Mapping):
-        errors.append("public source display manifest selected_source_items is not an object")
-        raw_items = {}
-    if set(raw_items) != set(selected_ids):
-        errors.append("public source display manifest item records do not match selected source-item IDs")
-    map_items = source_map.get("items") if isinstance(source_map.get("items"), Mapping) else {}
-    for item_id in selected_ids:
-        map_item = map_items.get(item_id)
-        manifest_item = raw_items.get(item_id)
-        if not isinstance(map_item, Mapping):
-            errors.append(f"public source display item `{item_id}` is absent from the map")
-            continue
-        if not isinstance(manifest_item, Mapping):
-            errors.append(f"public source display item `{item_id}` is not an object")
-            continue
-        error = _public_display_record_matches_manifest(
-            map_item,
-            manifest_item,
-            label=f"public source display item `{item_id}`",
-        )
-        if error:
-            errors.append(error)
-
-    valid = not errors
-    return {
-        "active": True,
-        "valid": valid,
-        "errors": tuple(sorted(set(errors))),
-        "manifest": manifest if valid else {},
-        "selected_source_item_ids": tuple(selected_ids) if valid else (),
-        "source_coverage_mode": source_mode if valid else "",
-        "state": PUBLIC_SOURCE_DISPLAY_PROJECTION_STATE if valid else "",
-    }
-
-
-def public_source_display_coverage_surface(folder: Path) -> dict[str, Any]:
-    """Return the frozen source-item denominator for browser display only.
-
-    This helper intentionally does not call :func:`paper_coverage_inventory`.
-    In a public release there is no raw source artifact to re-index, and using
-    this frozen selection must never make a CLI source-index or audit gate pass.
-    """
-
-    state = public_source_display_projection_state(folder)
-    if not state.get("valid"):
-        return {
-            "available": False,
-            "state": "",
-            "selected_source_item_ids": (),
-            "source_item_count": 0,
-            "source_coverage_mode": "",
-            "display_only": False,
-            "raw_source_locally_revalidated": False,
-            "audit_current": False,
-        }
-    selected_ids = tuple(state.get("selected_source_item_ids") or ())
-    return {
-        "available": True,
-        "state": PUBLIC_SOURCE_DISPLAY_PROJECTION_STATE,
-        "selected_source_item_ids": selected_ids,
-        "source_item_count": len(selected_ids),
-        "source_coverage_mode": str(state.get("source_coverage_mode") or ""),
-        "display_only": True,
-        "raw_source_locally_revalidated": False,
-        "audit_current": False,
-    }
-
-
-def source_anchor_display_state(
-    folder: Path,
-    source_record: Mapping[str, Any],
-    *,
-    source_item_key: str = "",
-) -> tuple[str, str]:
-    """Return a rendering-only source-connection state or the strict error.
-
-    A local checkout always takes the exact byte-reading path first.  Only a
-    valid public marker plus a manifest whose excerpts exactly bind this
-    record can use ``release_projected_excerpt``.  Callers must keep that
-    state display-only; it is not a current audit or source-byte receipt.
-    """
-
-    strict_error = source_anchor_file_error(folder, source_record)
-    if not strict_error:
-        return LOCAL_SOURCE_CONNECTION_STATE, ""
-    state = public_source_display_projection_state(folder)
-    if not state.get("valid"):
-        return "", strict_error
-    manifest = state.get("manifest")
-    selected_items = (
-        manifest.get("selected_source_items")
-        if isinstance(manifest, Mapping)
-        and isinstance(manifest.get("selected_source_items"), Mapping)
-        else {}
-    )
-    key = str(source_item_key or "").strip()
-    if key and isinstance(selected_items.get(key), Mapping):
-        error = _public_display_record_matches_manifest(
-            source_record,
-            selected_items[key],
-            label=f"source item `{key}`",
-        )
-        if not error:
-            return PUBLIC_SOURCE_DISPLAY_PROJECTION_STATE, ""
-    # A material library primitive may be connected directly to a source
-    # definition that serves as context for a selected source claim rather
-    # than to that claim's primary presentation.  Allow that exact individual
-    # excerpt bundle too, but never a subset or a rearrangement of a bundle.
-    actual_anchors, actual_error = _public_display_anchor_bundle(
-        source_record.get("source_anchor_evidence"), label="source connection"
-    )
-    actual_contexts, actual_context_error = _public_display_context_bundles(
-        source_record,
-        field="semantic_context_requirements",
-        label="source connection",
-    )
-    if not actual_error and not actual_context_error and not actual_contexts:
-        for item_id, raw_item in selected_items.items():
-            if not isinstance(raw_item, Mapping):
-                continue
-            expected_anchors, expected_error = _public_display_anchor_bundle(
-                raw_item.get("source_anchors"),
-                label=f"public source display item `{item_id}`",
-            )
-            if not expected_error and actual_anchors == expected_anchors:
-                return PUBLIC_SOURCE_DISPLAY_PROJECTION_STATE, ""
-            raw_contexts = raw_item.get("semantic_context")
-            if not isinstance(raw_contexts, list):
-                continue
-            for context_index, raw_context in enumerate(raw_contexts):
-                if not isinstance(raw_context, Mapping):
-                    continue
-                context_anchors, context_error = _public_display_anchor_bundle(
-                    raw_context.get("source_anchors"),
-                    label=(
-                        f"public source display item `{item_id}` "
-                        f"semantic context {context_index}"
-                    ),
-                )
-                if not context_error and actual_anchors == context_anchors:
-                    return PUBLIC_SOURCE_DISPLAY_PROJECTION_STATE, ""
-    return "", strict_error
 
 
 def source_semantic_input_bundle(
@@ -4349,62 +3358,34 @@ def source_semantic_input_bundle(
     *,
     require_context_roles: bool = False,
 ) -> tuple[str, str, str]:
-    """Return raw source text and its exact v11 semantic-input identity.
+    """Compatibility wrapper for the shared exact source-review bundle."""
 
-    A semantic input begins with the source item's displayed presentation and
-    then appends any map-declared semantic-context requirements. Each
-    component is a byte-pinned quote. Under v11, every contextual component
-    also declares a bounded semantic role: a definition, source model or
-    construction, scope condition, prior stated result, or stated antecedent.
-    This makes clear that context interprets a displayed source claim; it
-    cannot be an inferred proof derivation used to strengthen that claim. The
-    requirements' explanation is intentionally excluded: it helps a human
-    curate source context, but it is a paraphrase and cannot supply source
-    semantics to the judge.
+    return _shared_source_semantic_input_bundle(
+        source_item,
+        require_context_roles=require_context_roles,
+    )
+
+
+def statement_review_requires_verbatim_source_inputs(
+    raw: Mapping[str, Any],
+    *,
+    prompt_version: str = "",
+) -> bool:
+    """Return whether a statement receipt is governed by the raw-source contract.
+
+    Consumers outside a complete sidecar envelope use the row's explicit
+    protocol marker.  A caller that is validating a current sidecar may also
+    supply its prompt version, which makes a missing protocol marker fail
+    closed.  Historical receipt transport deliberately does not infer a new
+    raw-source obligation from a reused prompt label alone.
     """
 
-    quotes, quote_digests, error = _verbatim_anchor_quotes(
-        source_item.get("source_anchor_evidence"), label="source item"
+    return (
+        str(prompt_version or "").strip()
+        == REQUIRED_LLM_STATEMENT_PROMPT_VERSION
+        or str(raw.get("source_input_protocol") or "").strip()
+        == "verbatim_source_anchor_bundle_v1"
     )
-    if error:
-        return "", "", error
-    requirements = source_item.get("semantic_context_requirements")
-    if requirements is not None:
-        if not isinstance(requirements, list):
-            return "", "", "semantic_context_requirements is not a list"
-        for index, requirement in enumerate(requirements):
-            if not isinstance(requirement, Mapping):
-                return "", "", f"semantic context {index} is not an object"
-            if require_context_roles:
-                role = str(requirement.get("semantic_role") or "").strip()
-                if role not in SEMANTIC_CONTEXT_ROLES:
-                    return (
-                        "",
-                        "",
-                        f"semantic context {index} has no permitted semantic_role",
-                    )
-            context_quotes, context_digests, context_error = _verbatim_anchor_quotes(
-                requirement.get("source_anchor_evidence"),
-                label=f"semantic context {index}",
-            )
-            if context_error:
-                return "", "", context_error
-            quotes.extend(context_quotes)
-            quote_digests.extend(context_digests)
-    identity = hashlib.sha256(
-        json.dumps(
-            {
-                "schema": 1,
-                "source_anchor_quote_sha256": quote_digests,
-            },
-            ensure_ascii=True,
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode("utf-8")
-    ).hexdigest()
-    # A fixed separator makes the source input reconstructible without adding
-    # an invented mathematical sentence between independent source excerpts.
-    return "\n\n[Next verbatim source excerpt]\n\n".join(quotes), identity, ""
 
 
 def source_route_pin_error(
@@ -4595,7 +3576,15 @@ def source_route_pin_error(
                 require_context_roles=require_verbatim_source_inputs,
             )
         )
-        del expected_semantic_input_text
+        # The paper-statement target is the literal source text supplied to
+        # the reviewer.  The bundle identity separately binds that text to its
+        # anchors and permitted context; it is not itself a statement digest.
+        # Comparing the target to the bundle digest would make a properly
+        # pinned verbatim review impossible whenever the bundle carries its
+        # structural provenance in addition to the text.
+        expected_verbatim_statement_digest = statement_digest(
+            expected_semantic_input_text
+        )
         recorded_digest = str(raw_route.get("source_statement_sha256") or "").strip()
         recorded_location = str(raw_route.get("source_location") or "").strip()
         if not expected_statement or not expected_digest or not expected_location:
@@ -4640,7 +3629,7 @@ def source_route_pin_error(
         )
         source_target_routes.append(
             (
-                expected_semantic_input_identity
+                expected_verbatim_statement_digest
                 if require_verbatim_source_inputs
                 else expected_digest,
                 route_kind,
@@ -4986,6 +3975,15 @@ def paper_statement_inventory_digest(inventory: dict[str, dict[str, Any]]) -> st
             "source": str(item.get("source") or ""),
             "coverage_status": str(item.get("coverage_status") or "").strip().lower(),
             "protocol_role": str(item.get("protocol_role") or "").strip().lower(),
+            **(
+                {
+                    "inventory_role": str(
+                        item.get("inventory_role") or ""
+                    ).strip().lower()
+                }
+                if "inventory_role" in item
+                else {}
+            ),
             "corrected_target": item.get("corrected_target"),
             "source_kind": str(item.get("source_kind") or "").strip().lower(),
             "claim_bearing": item.get("claim_bearing"),
@@ -5091,7 +4089,11 @@ def paper_coverage_inventory_digest(
 
 
 def _coverage_item_source_digest_is_current(
-    coverage_item: dict[str, Any], source_item: dict[str, Any], mode: str
+    coverage_item: dict[str, Any],
+    source_item: dict[str, Any],
+    mode: str,
+    *,
+    legacy_navigation_key: str | None = None,
 ) -> bool:
     """Return per-item freshness without treating aggregate-map drift as stale.
 
@@ -5100,26 +4102,21 @@ def _coverage_item_source_digest_is_current(
     sidecars record this field and can safely reuse unchanged item judgments.
     """
 
-    if (
-        coverage_item.get("source_item_coverage_digest_schema")
-        != SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA
-    ):
-        return False
-    recorded = str(
-        coverage_item.get("source_item_coverage_sha256") or ""
-    ).strip().lower()
-    if not recorded:
-        return False
-    return recorded == source_item_coverage_sha256(source_item, mode)
+    return source_item_coverage_receipt_matches(
+        source_item,
+        mode,
+        digest_schema=coverage_item.get("source_item_coverage_digest_schema"),
+        digest=coverage_item.get("source_item_coverage_sha256"),
+        legacy_navigation_key=legacy_navigation_key,
+    )
 
 
 def _coverage_item_has_current_source_digest_schema(item: dict[str, Any]) -> bool:
     """Return whether a sidecar item can use semantic item-level freshness."""
 
-    return (
-        item.get("source_item_coverage_digest_schema")
-        == SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA
-        and bool(str(item.get("source_item_coverage_sha256") or "").strip())
+    return source_item_coverage_receipt_shape_is_reusable(
+        digest_schema=item.get("source_item_coverage_digest_schema"),
+        digest=item.get("source_item_coverage_sha256"),
     )
 
 
@@ -5141,22 +4138,24 @@ def _semantic_coverage_item_bindings(
         key: key for key in inventory if isinstance(audit_items.get(key), dict)
     }
     used = set(bindings.values())
-    candidates_by_digest: dict[str, list[str]] = {}
-    for audit_key, raw_item in audit_items.items():
-        if audit_key in used or not isinstance(raw_item, dict):
-            continue
-        if not _coverage_item_has_current_source_digest_schema(raw_item):
-            continue
-        digest = str(raw_item.get("source_item_coverage_sha256") or "").strip().lower()
-        if digest:
-            candidates_by_digest.setdefault(digest, []).append(str(audit_key))
-
     ambiguous: list[str] = []
     for source_key, source_item in inventory.items():
         if source_key in bindings:
             continue
-        digest = source_item_coverage_sha256(source_item, mode)
-        candidates = sorted(candidates_by_digest.get(digest, []))
+        candidates = sorted(
+            str(audit_key)
+            for audit_key, raw_item in audit_items.items()
+            if audit_key not in used
+            and isinstance(raw_item, dict)
+            and _coverage_item_has_current_source_digest_schema(raw_item)
+            and source_item_coverage_receipt_matches(
+                source_item,
+                mode,
+                digest_schema=raw_item.get("source_item_coverage_digest_schema"),
+                digest=raw_item.get("source_item_coverage_sha256"),
+                legacy_navigation_key=str(audit_key),
+            )
+        )
         if len(candidates) == 1:
             bindings[source_key] = candidates[0]
             used.add(candidates[0])
@@ -5167,8 +4166,194 @@ def _semantic_coverage_item_bindings(
     return bindings, ambiguous
 
 
+@dataclass(frozen=True)
+class _CoverageBindingFreshness:
+    """One authoritative source-item/coverage-sidecar freshness projection.
+
+    The fast inventory precheck and the full dashboard need different
+    presentation detail, but they must not independently decide which saved
+    judgment belongs to a source item or whether that judgment is current.
+    Keeping this state typed and row-local prevents aggregate/navigation drift
+    from acquiring a second acceptance meaning in either consumer.
+    """
+
+    audit: dict[str, Any]
+    audit_items: dict[str, Any]
+    coverage_item_bindings: dict[str, str]
+    ambiguous_semantic_item_bindings: tuple[str, ...]
+    bound_audit_items: dict[str, dict[str, Any]]
+    inventory_hash: str
+    recorded_inventory_hash: str
+    recorded_mode: str
+    mode_mismatch: bool
+    aggregate_current: bool
+    source_artifact_current: bool
+    missing_coverage: tuple[str, ...]
+    extra_coverage: tuple[str, ...]
+    out_of_mode_coverage: tuple[str, ...]
+    missing_statement_digest: tuple[str, ...]
+    stale_statement: tuple[str, ...]
+    stale_source_items: tuple[str, ...]
+    semantic_reuse_anchor_errors: dict[str, list[str]]
+    unverified_reused_source_items: tuple[str, ...]
+    legacy_unpinned_items: tuple[str, ...]
+
+
+def _coverage_binding_freshness(
+    folder: Path,
+    full_inventory: dict[str, dict[str, Any]],
+    inventory: dict[str, dict[str, Any]],
+    mode: str,
+    statement_map_payload: dict[str, Any],
+    *,
+    presentation_aliases: Iterable[str] = (),
+) -> _CoverageBindingFreshness:
+    """Bind and validate saved coverage rows exactly once for both consumers."""
+
+    audit = load_llm_paper_coverage_audit(folder)
+    audit_items = audit.get("items") if isinstance(audit.get("items"), dict) else {}
+    coverage_item_bindings, ambiguous_semantic_item_bindings = (
+        _semantic_coverage_item_bindings(inventory, audit_items, mode)
+    )
+    bound_audit_items = {
+        source_key: audit_items[audit_key]
+        for source_key, audit_key in coverage_item_bindings.items()
+        if isinstance(audit_items.get(audit_key), dict)
+    }
+    inventory_hash = paper_coverage_inventory_digest(
+        inventory,
+        mode=mode,
+        statement_map_payload=statement_map_payload,
+    )
+    full_inventory_hash = paper_statement_inventory_digest(full_inventory)
+    recorded_inventory_hash = str(
+        audit.get("paper_statement_inventory_sha256") or ""
+    ).strip()
+    recorded_mode = str(audit.get("source_coverage_mode") or "").strip()
+    mode_mismatch = bool(
+        recorded_mode and not source_coverage_modes_compatible(recorded_mode, mode)
+    )
+    missing_coverage = tuple(
+        sorted(key for key in inventory if key not in bound_audit_items)
+    )
+    used_audit_keys = set(coverage_item_bindings.values())
+    extra_coverage = tuple(
+        sorted(
+            key
+            for key in audit_items
+            if key not in full_inventory and key not in used_audit_keys
+        )
+    )
+    alias_keys = set(presentation_aliases)
+    out_of_mode_coverage = tuple(
+        sorted(
+            key
+            for key in audit_items
+            if key in full_inventory
+            and key not in inventory
+            and key not in alias_keys
+        )
+    )
+    missing_statement_digest = tuple(
+        sorted(
+            key
+            for key, item in bound_audit_items.items()
+            if not str(item.get("statement_sha256") or "").strip()
+        )
+    )
+    stale_statement = tuple(
+        sorted(
+            key
+            for key, item in bound_audit_items.items()
+            if str(item.get("statement_sha256") or "").strip()
+            and str(item.get("statement_sha256") or "").strip()
+            != _source_item_coverage_statement(inventory[key])[1]
+        )
+    )
+    aggregate_current = recorded_inventory_hash in {
+        inventory_hash,
+        # Pre-mode sidecars used the full inventory hash. They remain valid
+        # when the full inventory itself is unchanged.
+        full_inventory_hash,
+    }
+    source_artifact_current = _coverage_audit_source_artifact_is_current(
+        audit, statement_map_payload
+    )
+    source_artifact_identity_declared = _source_artifact_identity_is_declared(
+        statement_map_payload
+    )
+    source_artifact_identity_recorded = _coverage_audit_records_source_artifact_identity(
+        audit
+    )
+    current_item_keys: list[str] = []
+    stale_source_items: list[str] = []
+    for key, item in bound_audit_items.items():
+        if not _coverage_item_has_current_source_digest_schema(item):
+            continue
+        if _coverage_item_source_digest_is_current(
+            item,
+            inventory[key],
+            mode,
+            legacy_navigation_key=coverage_item_bindings.get(key),
+        ):
+            current_item_keys.append(key)
+        else:
+            stale_source_items.append(key)
+    # Per-item semantic identity deliberately excludes navigation locators.
+    # Exact quote validation remains mandatory on every proposed reuse.
+    semantic_reuse_anchor_errors = _semantic_reuse_source_anchor_errors(
+        folder, current_item_keys
+    )
+    legacy_unpinned_items = tuple(
+        sorted(
+            key
+            for key, item in bound_audit_items.items()
+            if not _coverage_item_has_current_source_digest_schema(item)
+            and (
+                not aggregate_current
+                or (
+                    source_artifact_identity_declared
+                    and source_artifact_identity_recorded
+                    and not source_artifact_current
+                )
+            )
+        )
+    )
+    return _CoverageBindingFreshness(
+        audit=audit,
+        audit_items=audit_items,
+        coverage_item_bindings=coverage_item_bindings,
+        ambiguous_semantic_item_bindings=tuple(ambiguous_semantic_item_bindings),
+        bound_audit_items=bound_audit_items,
+        inventory_hash=inventory_hash,
+        recorded_inventory_hash=recorded_inventory_hash,
+        recorded_mode=recorded_mode,
+        mode_mismatch=mode_mismatch,
+        aggregate_current=aggregate_current,
+        source_artifact_current=source_artifact_current,
+        missing_coverage=missing_coverage,
+        extra_coverage=extra_coverage,
+        out_of_mode_coverage=out_of_mode_coverage,
+        missing_statement_digest=missing_statement_digest,
+        stale_statement=stale_statement,
+        stale_source_items=tuple(sorted(stale_source_items)),
+        semantic_reuse_anchor_errors=semantic_reuse_anchor_errors,
+        unverified_reused_source_items=tuple(sorted(semantic_reuse_anchor_errors)),
+        legacy_unpinned_items=legacy_unpinned_items,
+    )
+
+
 def _current_row_signature_digest(row_item: ReviewItem) -> str:
-    """Return one row's verified elaborated-signature digest, if available."""
+    """Return one row's verified coverage-target identity, if available."""
+
+    if row_item.coverage_target_kind == PAPER_PREREQUISITE_COVERAGE_TARGET_KIND:
+        digest = str(row_item.coverage_target_identity_sha256 or "").strip().lower()
+        if (
+            not row_item.llm_match_stale
+            and SOURCE_ARTIFACT_SHA256_RE.fullmatch(digest)
+        ):
+            return digest
+        return ""
 
     manifest = row_item.lean_signature_manifest
     if not isinstance(manifest, dict):
@@ -5181,6 +4366,217 @@ def _current_row_signature_digest(row_item: ReviewItem) -> str:
     if str(row_item.lean_signature_sha256 or "").strip().lower() != digest:
         return ""
     return digest
+
+
+def paper_prerequisite_coverage_identity_sha256(
+    *,
+    paper_declaration: str,
+    source_item: str,
+    source_input_bundle_sha256: str,
+    paper_semantic_target_sha256: str,
+    judgment: str,
+    prompt_version: str,
+    target_protocol: str,
+) -> str:
+    """Bind one direct source-definition coverage target to reviewed semantics."""
+
+    values = {
+        "paper_declaration": paper_declaration.strip(),
+        "source_item": source_item.strip(),
+        "source_input_bundle_sha256": source_input_bundle_sha256.strip().lower(),
+        "paper_semantic_target_sha256": paper_semantic_target_sha256.strip().lower(),
+        "judgment": judgment.strip().lower(),
+        "prompt_version": prompt_version.strip(),
+        "target_protocol": target_protocol.strip(),
+    }
+    if (
+        not values["paper_declaration"]
+        or not values["source_item"]
+        or not SOURCE_ARTIFACT_SHA256_RE.fullmatch(
+            values["source_input_bundle_sha256"]
+        )
+        or not SOURCE_ARTIFACT_SHA256_RE.fullmatch(
+            values["paper_semantic_target_sha256"]
+        )
+        or values["judgment"] != "matches"
+        or values["prompt_version"] != PAPER_PREREQUISITE_LEDGER_PROMPT_VERSION
+        or values["target_protocol"]
+        != PAPER_PREREQUISITE_LEDGER_TARGET_PROTOCOL
+    ):
+        return ""
+    return statement_digest(
+        json.dumps(
+            {
+                "schema": PAPER_PREREQUISITE_COVERAGE_IDENTITY_SCHEMA,
+                **values,
+            },
+            ensure_ascii=True,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+    )
+
+
+def paper_semantic_prerequisite_coverage_review_items(
+    folder: Path,
+    inventory: Mapping[str, dict[str, Any]],
+    claim_items: Iterable[ReviewItem],
+    *,
+    semantic_targets_by_name_override: Mapping[str, Mapping[str, Any]] | None = None,
+) -> dict[str, ReviewItem]:
+    """Project current paper-prerequisite judgments into typed coverage targets.
+
+    This is a reference projection, not another semantic review.  The
+    prerequisite lane remains responsible for proving the Lean target current;
+    coverage proves only that every source presentation is routed to the exact
+    already-reviewed target.  The projection independently requires that target
+    in the authenticated current packet graph.  A stale source bundle or Lean
+    target, wrong source item, non-direct declaration, malformed protocol, or
+    non-match yields no current target identity and therefore fails closed in
+    the ordinary coverage pin checks.
+    """
+
+    if semantic_targets_by_name_override is None:
+        specification_names = sorted(
+            {
+                str(item.full_name or "").strip()
+                for item in claim_items
+                if str(item.full_name or "").strip().endswith("Spec")
+            }
+        )
+        try:
+            from scripts.current_closeout import review_surface as packet
+
+            packet_cache = packet._current_packet_lean_cache(  # type: ignore[attr-defined]
+                folder,
+                specification_names,
+            )
+        except Exception:  # noqa: BLE001 - missing authority fails closed below.
+            packet_cache = None
+        raw_targets = (
+            packet.paper_semantic_review_targets_from_cache(packet_cache)
+            if isinstance(packet_cache, Mapping)
+            else None
+        )
+        semantic_targets_by_name = (
+            raw_targets if isinstance(raw_targets, Mapping) else {}
+        )
+    else:
+        semantic_targets_by_name = semantic_targets_by_name_override
+
+    ledger = _dashboard_json_payload(
+        folder / PAPER_AUDIT_DIR / "paper_semantic_prerequisites.json"
+    )
+    if not isinstance(ledger, Mapping):
+        return {}
+    prompt_version = str(ledger.get("prompt_version") or "").strip()
+    target_protocol = str(ledger.get("target_protocol") or "").strip()
+    ledger_current = bool(
+        ledger.get("schema") == PAPER_PREREQUISITE_LEDGER_SCHEMA
+        and ledger.get("paper") == folder.name
+        and prompt_version == PAPER_PREREQUISITE_LEDGER_PROMPT_VERSION
+        and target_protocol == PAPER_PREREQUISITE_LEDGER_TARGET_PROTOCOL
+    )
+    raw_items = ledger.get("items")
+    if not isinstance(raw_items, Mapping):
+        return {}
+
+    projected: dict[str, ReviewItem] = {}
+    for raw_name, raw_entry in raw_items.items():
+        name = str(raw_name or "").strip()
+        if not name or not isinstance(raw_entry, Mapping):
+            continue
+        source_key = str(raw_entry.get("source_item") or "").strip()
+        source_item = inventory.get(source_key)
+        if not isinstance(source_item, dict):
+            continue
+        direct_declarations = source_item_direct_coverage_declarations(source_item)
+        if name not in direct_declarations:
+            continue
+        source_input, source_digest, source_error = source_semantic_input_bundle(
+            source_item,
+            require_context_roles=True,
+        )
+        target_digest = str(
+            raw_entry.get("paper_semantic_target_sha256") or ""
+        ).strip().lower()
+        current_target = semantic_targets_by_name.get(name)
+        current_target_digest = (
+            str(current_target.get("display_sha256") or "").strip().lower()
+            if isinstance(current_target, Mapping)
+            else ""
+        )
+        judgment = str(raw_entry.get("judgment") or "").strip().lower()
+        identity = paper_prerequisite_coverage_identity_sha256(
+            paper_declaration=name,
+            source_item=source_key,
+            source_input_bundle_sha256=source_digest,
+            paper_semantic_target_sha256=target_digest,
+            judgment=judgment,
+            prompt_version=prompt_version,
+            target_protocol=target_protocol,
+        )
+        current = bool(
+            ledger_current
+            and not source_error
+            and str(raw_entry.get("paper_declaration") or "").strip() == name
+            and str(
+                raw_entry.get("source_input_bundle_sha256") or ""
+            ).strip().lower()
+            == source_digest
+            and str(
+                raw_entry.get("paper_semantic_target_protocol") or ""
+            ).strip()
+            == target_protocol
+            and current_target_digest == target_digest
+            and identity
+            and str(raw_entry.get("validator") or "").strip()
+            and str(raw_entry.get("validator_type") or "").strip()
+            and str(raw_entry.get("validated_at") or "").strip()
+        )
+        _coverage_statement, coverage_statement_digest = (
+            _source_item_coverage_statement(source_item)
+        )
+        coverage_location = _source_item_coverage_location(source_item)
+        projected[name] = ReviewItem(
+            name=name,
+            full_name=name,
+            kind="def",
+            lean_statement=name,
+            paper_statement=source_input,
+            agent_statement=str(raw_entry.get("reason") or "").strip(),
+            lean_signature_sha256=identity,
+            coverage_target_kind=PAPER_PREREQUISITE_COVERAGE_TARGET_KIND,
+            coverage_target_identity_sha256=identity,
+            source_item_key=source_key,
+            source_input_bundle_sha256=source_digest,
+            verbatim_source_input=source_input,
+            llm_match_judgment=judgment,
+            llm_match_reason=str(raw_entry.get("reason") or "").strip(),
+            llm_match_stale=not current,
+            llm_match_source="paper_semantic_prerequisites.json",
+            llm_match_validator=str(raw_entry.get("validator") or "").strip(),
+            llm_match_validator_type=str(
+                raw_entry.get("validator_type") or ""
+            ).strip(),
+            llm_match_validated_at=str(
+                raw_entry.get("validated_at") or ""
+            ).strip(),
+            llm_match_lean_statement_sha256=target_digest,
+            llm_match_lean_signature_sha256=identity,
+            llm_match_paper_statement_sha256=(
+                statement_digest(source_input) if source_input else ""
+            ),
+            llm_match_source_routes=[
+                {
+                    "source_item": source_key,
+                    "source_statement_sha256": coverage_statement_digest,
+                    "source_location": coverage_location,
+                    "route_kind": "direct",
+                }
+            ],
+        )
+    return projected
 
 
 def _current_row_signature_index(
@@ -5496,32 +4892,6 @@ def load_llm_defect_support_audit(
     }
 
 
-def _normalize_llm_match_judgment(raw: Any) -> str:
-    """Normalize LLM match verdicts for dashboard display."""
-
-    if isinstance(raw, bool):
-        return "matches" if raw else "mismatch"
-    value = str(raw or "").strip().lower()
-    if value in {"match", "matches", "yes", "true", "equivalent", "same"}:
-        return "matches"
-    if value in {"mismatch", "does_not_match", "does not match", "no", "false", "different"}:
-        return "mismatch"
-    if value in {"uncertain", "unknown", "unsure", "partial", "needs_review"}:
-        return "uncertain"
-    return value
-
-
-def _normalize_llm_match_resolution(raw: Any) -> str:
-    """Normalize optional LLM statement-match resolution categories."""
-
-    value = re.sub(r"[\s-]+", "_", str(raw or "").strip().lower())
-    if not value or value in {"none", "unresolved", "open"}:
-        return ""
-    if value in CONDITIONAL_BOUNDARY_RESOLUTION_ALIASES:
-        return CONDITIONAL_BOUNDARY_RESOLUTION
-    return value
-
-
 def _normalize_paper_coverage_judgment(raw: Any) -> str:
     """Normalize paper-level source-coverage verdicts."""
 
@@ -5638,1706 +5008,6 @@ def is_proposition_specification_manifest(manifest: Any) -> bool:
         return False
     level = result_type.get("level")
     return isinstance(level, dict) and level.get("tag") == "zero"
-
-
-def signature_manifest_atom_digest(atom: Any) -> str:
-    """Hash one name-free manifest atom for v10 Lean-obligation routing."""
-
-    if not isinstance(atom, dict):
-        return ""
-    payload = {
-        "ref": str(atom.get("ref") or "").strip(),
-        "role": str(atom.get("role") or "").strip(),
-        "canonical": atom.get("canonical"),
-    }
-    if payload["role"] != "conclusion":
-        payload["binder_info"] = str(atom.get("binder_info") or "").strip()
-    if not payload["ref"] or not payload["role"] or payload["canonical"] is None:
-        return ""
-    return hashlib.sha256(
-        json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode(
-            "utf-8"
-        )
-    ).hexdigest()
-
-
-def operational_complexity_review_error(
-    raw: Any, expected_complexity_conclusion_id: str
-) -> str:
-    """Validate operational evidence required for a full polynomial-time match.
-
-    Identifiers in this review route graph edges and conclusion references only.
-    Runtime credit comes from expanded operation semantics, complete reachable-
-    branch coverage, a worst-case recurrence, and explicit work accounting.
-    """
-
-    if not isinstance(raw, dict):
-        return "polynomial-time match is missing operational_complexity_review"
-
-    def required_string(value: Any) -> str:
-        return value.strip() if isinstance(value, str) else ""
-
-    def substantive(value: Any) -> bool:
-        text = required_string(value)
-        return len(text) >= 20 and not NAME_ONLY_SEMANTIC_EVIDENCE_RE.search(text)
-
-    if required_string(raw.get("schema_version")) != OPERATIONAL_COMPLEXITY_REVIEW_VERSION:
-        return "operational complexity review has an invalid schema_version"
-
-    for field, label in (
-        ("executor_semantics", "executor semantics"),
-        ("input_domain", "input domain"),
-        ("input_size_measure", "input-size measure"),
-    ):
-        if not substantive(raw.get(field)):
-            return f"operational complexity review lacks substantive {label}"
-
-    graph = raw.get("dependency_graph")
-    if not isinstance(graph, dict):
-        return "operational complexity review has no dependency_graph object"
-    nodes = graph.get("nodes")
-    edges = graph.get("edges")
-    roots = graph.get("root_node_ids")
-    if not isinstance(nodes, list) or not nodes:
-        return "operational dependency graph has no nodes"
-    if not isinstance(edges, list):
-        return "operational dependency graph has no edges list"
-    if not isinstance(roots, list) or not roots:
-        return "operational dependency graph has no root_node_ids"
-
-    node_ids: set[str] = set()
-    adjacency: dict[str, set[str]] = {}
-    node_work_categories: set[str] = set()
-    for node in nodes:
-        if not isinstance(node, dict):
-            return "operational dependency graph node is not an object"
-        node_id = required_string(node.get("id"))
-        if not node_id or node_id in node_ids:
-            return "operational dependency graph node has a missing or duplicate id"
-        if not substantive(node.get("operation_semantics")):
-            return "operational dependency graph node lacks substantive operation semantics"
-        if not substantive(node.get("reachable_branch_domain")):
-            return "operational dependency graph node lacks a reachable branch domain"
-        categories = node.get("work_accounting_categories")
-        if not isinstance(categories, list) or not categories:
-            return "operational dependency graph node has no work-accounting categories"
-        normalized_categories = [required_string(item) for item in categories]
-        if any(not item for item in normalized_categories):
-            return "operational dependency graph node has an empty work category"
-        if len(normalized_categories) != len(set(normalized_categories)):
-            return "operational dependency graph node has duplicate work categories"
-        if set(normalized_categories) - OPERATIONAL_WORK_CATEGORIES:
-            return "operational dependency graph node has an unknown work category"
-        node_work_categories.update(normalized_categories)
-        node_ids.add(node_id)
-        adjacency[node_id] = set()
-
-    normalized_roots = [required_string(item) for item in roots]
-    if any(not item for item in normalized_roots):
-        return "operational dependency graph has an empty root node id"
-    if len(normalized_roots) != len(set(normalized_roots)):
-        return "operational dependency graph has duplicate root node ids"
-    if set(normalized_roots) - node_ids:
-        return "operational dependency graph references an unknown root node"
-
-    for edge in edges:
-        if not isinstance(edge, dict):
-            return "operational dependency graph edge is not an object"
-        from_node = required_string(edge.get("from_node_id"))
-        to_node = required_string(edge.get("to_node_id"))
-        if from_node not in node_ids or to_node not in node_ids:
-            return "operational dependency graph edge has an unknown endpoint"
-        if not substantive(edge.get("invocation_semantics")):
-            return "operational dependency graph edge lacks invocation semantics"
-        if not substantive(edge.get("branch_condition")):
-            return "operational dependency graph edge lacks a branch condition"
-        adjacency[from_node].add(to_node)
-
-    reachable = set(normalized_roots)
-    frontier = list(normalized_roots)
-    while frontier:
-        current = frontier.pop()
-        for dependency in adjacency[current]:
-            if dependency not in reachable:
-                reachable.add(dependency)
-                frontier.append(dependency)
-    if reachable != node_ids:
-        return "operational dependency graph contains a node unreachable from its roots"
-    if graph.get("transitive_closure_complete") is not True:
-        return "operational dependency graph does not certify complete transitive closure"
-    if graph.get("all_reachable_branches_complete") is not True:
-        return "operational dependency graph does not cover every reachable branch"
-    if not substantive(graph.get("coverage_basis")):
-        return "operational dependency graph lacks a substantive coverage basis"
-
-    if not substantive(raw.get("worst_case_recurrence")):
-        return "operational complexity review lacks a worst-case recurrence"
-    if not substantive(raw.get("worst_case_bound")):
-        return "operational complexity review lacks a worst-case bound"
-    conclusion_id = required_string(raw.get("complexity_lean_conclusion_id"))
-    if not conclusion_id or conclusion_id != expected_complexity_conclusion_id:
-        return "operational complexity review is not bound to the complexity conclusion"
-    if not substantive(raw.get("complexity_statement_binding")):
-        return "operational complexity review lacks a semantic complexity-statement binding"
-
-    work_items = raw.get("work_accounting")
-    if not isinstance(work_items, list):
-        return "operational complexity review has no work_accounting list"
-    recorded_categories: set[str] = set()
-    for item in work_items:
-        if not isinstance(item, dict):
-            return "operational work-accounting item is not an object"
-        category = required_string(item.get("category")).lower()
-        if category not in OPERATIONAL_WORK_CATEGORIES:
-            return "operational work-accounting item has an invalid category"
-        if category in recorded_categories:
-            return "operational work-accounting has a duplicate category"
-        recorded_categories.add(category)
-        status = required_string(item.get("status")).lower()
-        if status not in OPERATIONAL_WORK_STATUSES:
-            return "operational work-accounting item has an invalid status"
-        if status not in FULL_RUNTIME_MATCH_WORK_STATUSES:
-            return (
-                "polynomial-time match has missing or excluded_by_claim "
-                "operational work"
-            )
-        if status == "charged" and category not in node_work_categories:
-            return (
-                "charged operational work category is not linked to a dependency "
-                "graph node"
-            )
-        for field, label in (
-            ("operation_semantics", "operation semantics"),
-            (
-                "worst_case_charge_or_absence_basis",
-                "worst-case charge or absence basis",
-            ),
-            ("evidence_basis", "evidence basis"),
-        ):
-            if not substantive(item.get(field)):
-                return f"operational work-accounting item lacks substantive {label}"
-    if recorded_categories != OPERATIONAL_WORK_CATEGORIES:
-        return "operational work-accounting does not cover every required category"
-
-    closure = raw.get("closure_elimination")
-    if not isinstance(closure, dict):
-        return "operational complexity review has no closure_elimination object"
-    material = closure.get("material")
-    if not isinstance(material, bool):
-        return "closure_elimination has no Boolean material field"
-    if not material:
-        if not substantive(closure.get("non_material_basis")):
-            return "non-material closure elimination lacks a substantive basis"
-        return ""
-
-    evidence_kind = required_string(closure.get("evidence_kind")).lower()
-    if evidence_kind not in CLOSURE_ELIMINATION_EVIDENCE_KINDS:
-        return "material closure elimination has an invalid evidence_kind"
-    for field, label in (
-        ("evidence_artifact_sha256", "evidence artifact"),
-        ("audited_source_sha256", "audited source"),
-    ):
-        digest = required_string(closure.get(field))
-        if re.fullmatch(r"[0-9a-f]{64}", digest) is None:
-            return f"material closure elimination lacks a valid {label} SHA-256 pin"
-    if not required_string(closure.get("evidence_locator")):
-        return "material closure elimination has no evidence locator"
-    for field, label in (
-        ("old_dependency_semantics", "old dependency semantics"),
-        ("semantic_binding", "semantic artifact/source binding"),
-        ("elimination_basis", "dependency-elimination basis"),
-    ):
-        if not substantive(closure.get(field)):
-            return f"material closure elimination lacks substantive {label}"
-    if closure.get("symbol_names_used_as_evidence") is not False:
-        return "material closure elimination may not use symbol names as evidence"
-    return ""
-
-
-def fidelity_risk_review_error(
-    raw: Any,
-    source_obligations: dict[str, str],
-    lean_obligations: dict[str, str],
-    verdict: str,
-    source_algorithm_level: str,
-) -> str:
-    """Validate source/Lean fidelity hazards without using declaration names.
-
-    The statement manifest and obligation ledger identify where a fact occurs,
-    but identifiers do not establish its semantics.  This review forces an
-    independent comparison of five recurring failure modes and binds every
-    positive match to a visible Lean conclusion.
-    """
-
-    if not isinstance(raw, dict):
-        return "semantic scope review has no fidelity_risk_review object"
-    schema_version = raw.get("schema_version")
-    if (
-        not isinstance(schema_version, str)
-        or schema_version not in SUPPORTED_FIDELITY_RISK_REVIEW_VERSIONS
-    ):
-        return "fidelity risk review has an invalid schema_version"
-
-    dimensions = raw.get("dimensions")
-    if not isinstance(dimensions, dict):
-        return "fidelity risk review has no dimensions object"
-    dimension_names = set(dimensions)
-    if dimension_names != FIDELITY_RISK_DIMENSIONS:
-        missing = sorted(FIDELITY_RISK_DIMENSIONS - dimension_names)
-        extra = sorted(dimension_names - FIDELITY_RISK_DIMENSIONS)
-        details: list[str] = []
-        if missing:
-            details.append("missing " + ", ".join(missing))
-        if extra:
-            details.append("unknown " + ", ".join(extra))
-        return "fidelity risk review dimensions are incomplete: " + "; ".join(details)
-
-    def required_string(value: Any) -> str:
-        return value.strip() if isinstance(value, str) else ""
-
-    def substantive(value: Any) -> bool:
-        text = required_string(value)
-        return len(text) >= 20 and not NAME_ONLY_SEMANTIC_EVIDENCE_RE.search(text)
-
-    def obligation_ids(
-        value: Any, known: dict[str, str], label: str
-    ) -> tuple[set[str], str]:
-        if not isinstance(value, list) or not value:
-            return set(), f"{label} must be a nonempty list"
-        normalized = [required_string(item) for item in value]
-        if any(not item for item in normalized):
-            return set(), f"{label} contains an empty obligation id"
-        if len(normalized) != len(set(normalized)):
-            return set(), f"{label} contains duplicate obligation ids"
-        if set(normalized) - set(known):
-            return set(), f"{label} references unknown obligation ids"
-        return set(normalized), ""
-
-    conclusion_ids = {
-        key for key, kind in lean_obligations.items() if kind == "conclusion"
-    }
-    normalized: dict[str, dict[str, Any]] = {}
-    for name in sorted(FIDELITY_RISK_DIMENSIONS):
-        item = dimensions.get(name)
-        if not isinstance(item, dict):
-            return f"fidelity risk dimension `{name}` is not an object"
-        applicable = item.get("applicable")
-        if not isinstance(applicable, bool):
-            return f"fidelity risk dimension `{name}` has no Boolean applicable field"
-        normalized[name] = item
-        if not applicable:
-            if not substantive(item.get("absence_basis")):
-                return f"fidelity risk dimension `{name}` lacks a substantive absence_basis"
-            continue
-
-        _, error = obligation_ids(
-            item.get("source_obligation_ids"),
-            source_obligations,
-            f"fidelity risk dimension `{name}` source_obligation_ids",
-        )
-        if error:
-            return error
-        lean_ids, error = obligation_ids(
-            item.get("lean_obligation_ids"),
-            lean_obligations,
-            f"fidelity risk dimension `{name}` lean_obligation_ids",
-        )
-        if error:
-            return error
-        for field, label in (
-            ("source_semantics", "source semantics"),
-            ("lean_semantics", "Lean semantics"),
-            ("relation_basis", "relation basis"),
-        ):
-            if not substantive(item.get(field)):
-                return f"fidelity risk dimension `{name}` lacks substantive {label}"
-        relation = required_string(item.get("relation")).lower()
-        if relation not in FIDELITY_RISK_RELATIONS:
-            return f"fidelity risk dimension `{name}` has an invalid relation"
-        if verdict == "matches":
-            if relation != "equivalent":
-                return (
-                    f"matches judgment records non-equivalent `{name}` semantics"
-                )
-            if not substantive(item.get("lean_evidence_statement")):
-                return (
-                    f"matching fidelity risk dimension `{name}` lacks a substantive "
-                    "Lean evidence statement"
-                )
-            evidence_id = required_string(item.get("lean_evidence_conclusion_id"))
-            if evidence_id not in conclusion_ids:
-                return (
-                    f"matching fidelity risk dimension `{name}` is not bound to a "
-                    "Lean conclusion obligation"
-                )
-            if evidence_id not in lean_ids:
-                return (
-                    f"matching fidelity risk dimension `{name}` evidence conclusion "
-                    "is not among its reviewed Lean obligations"
-                )
-
-    output_shape = normalized["output_shape"]
-    if output_shape.get("applicable"):
-        for field, label in (
-            ("source_output_shape", "source output arity/shape"),
-            ("lean_output_shape", "Lean output arity/shape"),
-            ("projection_terminal_policy", "projection and terminal-component policy"),
-            ("arity_basis", "arity comparison basis"),
-        ):
-            if not substantive(output_shape.get(field)):
-                return f"output-shape review lacks substantive {label}"
-
-    action_space = normalized["adversarial_action_space"]
-    if action_space.get("applicable"):
-        for field, label in (
-            ("source_action_space", "source action-space semantics"),
-            ("lean_action_space", "Lean action-space semantics"),
-            ("carrier_capacity_basis", "carrier/capacity basis"),
-            ("duplicate_interaction_basis", "duplicate-interaction basis"),
-            ("nonvacuity_basis", "nonvacuity basis"),
-        ):
-            if not substantive(action_space.get(field)):
-                return f"adversarial action-space review lacks substantive {label}"
-        source_nonvacuous = action_space.get("source_nonvacuous")
-        lean_nonvacuous = action_space.get("lean_nonvacuous")
-        if not isinstance(source_nonvacuous, bool) or not isinstance(
-            lean_nonvacuous, bool
-        ):
-            return "adversarial action-space review lacks Boolean nonvacuity judgments"
-        if verdict == "matches" and not (source_nonvacuous and lean_nonvacuous):
-            return (
-                "matching universal adversarial transformation has a vacuous or "
-                "ill-formed legal action space"
-            )
-
-    extrema = normalized["coherent_extrema_witness"]
-    if extrema.get("applicable"):
-        for field, label in (
-            ("source_extrema_semantics", "source extrema semantics"),
-            ("lean_extrema_semantics", "Lean extrema semantics"),
-            ("coherent_witness_basis", "coherent-witness basis"),
-            ("runner_refinement_basis", "actual-runner/refinement basis"),
-        ):
-            if not substantive(extrema.get(field)):
-                return f"coherent-extrema review lacks substantive {label}"
-        source_combines = extrema.get("source_combines_candidatewise_extrema")
-        lean_combines = extrema.get("lean_combines_candidatewise_extrema")
-        if not isinstance(source_combines, bool) or not isinstance(
-            lean_combines, bool
-        ):
-            return "coherent-extrema review lacks Boolean candidatewise-combination judgments"
-        witness_status = required_string(extrema.get("coherent_witness_status")).lower()
-        if witness_status not in COHERENT_EXTREMA_WITNESS_STATUSES:
-            return "coherent-extrema review has an invalid coherent_witness_status"
-        if (source_combines or lean_combines) and witness_status == "not_required":
-            return "candidatewise extrema are combined without a coherent-witness audit"
-        if verdict == "matches" and witness_status not in {
-            "not_required",
-            "same_coherent_witness",
-            "proved_jointly_realizable",
-        }:
-            return (
-                "matching extrema claim combines bounds that are not realized by one "
-                "coherent witness"
-            )
-
-    counting = normalized["cardinality_fibers"]
-    if counting.get("applicable"):
-        for field, label in (
-            ("source_counted_object", "source counted object"),
-            ("lean_counted_object", "Lean counted object"),
-            ("realized_fiber_semantics", "realized-fiber semantics"),
-            ("surjectivity_basis", "surjectivity basis"),
-        ):
-            if not substantive(counting.get(field)):
-                return f"cardinality/fiber review lacks substantive {label}"
-        source_counting = required_string(counting.get("source_counting_semantics")).lower()
-        lean_counting = required_string(counting.get("lean_counting_semantics")).lower()
-        if source_counting not in COUNTING_SEMANTICS or lean_counting not in COUNTING_SEMANTICS:
-            return "cardinality/fiber review has invalid counting semantics"
-        source_exact = counting.get("source_claims_exact_cardinality")
-        lean_exact = counting.get("lean_claims_exact_cardinality")
-        if not isinstance(source_exact, bool) or not isinstance(lean_exact, bool):
-            return "cardinality/fiber review lacks Boolean exact-cardinality judgments"
-        if verdict == "matches" and source_exact != lean_exact:
-            return "matches judgment confuses exact cardinality with a bound"
-        status = required_string(counting.get("surjectivity_status")).lower()
-        if status not in SURJECTIVITY_STATUSES:
-            return "cardinality/fiber review has an invalid surjectivity_status"
-        crosses_family_fibers = {
-            source_counting,
-            lean_counting,
-        } == {"syntactic_family_cardinality", "nonempty_realized_fibers"}
-        claims_family_fiber_equality = counting.get(
-            "claims_syntactic_family_equals_realized_fibers"
-        )
-        if not isinstance(claims_family_fiber_equality, bool):
-            return (
-                "cardinality/fiber review lacks a Boolean "
-                "claims_syntactic_family_equals_realized_fibers field"
-            )
-        surjectivity_required = (
-            claims_family_fiber_equality
-            or (verdict == "matches" and source_exact and crosses_family_fibers)
-        )
-        if surjectivity_required and status not in {
-            "definitionally_surjective",
-            "proved_surjective",
-        }:
-            return (
-                "exact syntactic-family/realized-fiber equality lacks surjectivity evidence"
-            )
-        if status in {"definitionally_surjective", "proved_surjective"}:
-            if not substantive(counting.get("surjectivity_statement")):
-                return "surjectivity evidence lacks a substantive mathematical statement"
-            surjectivity_id = required_string(
-                counting.get("surjectivity_lean_conclusion_id")
-            )
-            if surjectivity_id not in conclusion_ids:
-                return "surjectivity evidence is not bound to a Lean conclusion obligation"
-            counting_lean_ids = {
-                required_string(item)
-                for item in counting.get("lean_obligation_ids", [])
-            }
-            if surjectivity_id not in counting_lean_ids:
-                return (
-                    "surjectivity evidence conclusion is not among the cardinality "
-                    "dimension's reviewed Lean obligations"
-                )
-
-    execution_scope = normalized["execution_claim_scope"]
-    if source_algorithm_level != "not_algorithmic" and not execution_scope.get(
-        "applicable"
-    ):
-        return "algorithmic row lacks an applicable execution-claim scope review"
-    if execution_scope.get("applicable"):
-        execution_fields = (
-            LEGACY_FIDELITY_EXECUTION_SCOPE_FIELDS
-            if schema_version == LEGACY_FIDELITY_RISK_REVIEW_VERSION
-            else FIDELITY_EXECUTION_SCOPE_FIELDS
-        )
-        for field, label in execution_fields:
-            if not substantive(execution_scope.get(field)):
-                return f"execution-claim scope review lacks substantive {label}"
-    return ""
-
-
-def semantic_scope_review_error(
-    raw: Any,
-    source_obligations: dict[str, str],
-    lean_obligations: dict[str, str],
-    lean_manifest_atoms: dict[str, dict[str, Any]],
-    verdict: str,
-    *,
-    require_source_definition_semantics_review: bool = False,
-) -> str:
-    """Validate the name-independent semantic-world review for one row.
-
-    The declaration manifest freezes the Lean type, but one final proposition
-    atom may contain several logically unrelated conjuncts.  In particular,
-    runner success and a self-characterizing predicate about an independently
-    supplied output do not establish that the runner produced or preserves that
-    output. V10 therefore requires the reviewer to record profile scope,
-    definition expansion, algorithmic strength, runner/result provenance,
-    fidelity-risk dimensions, and every bridge between distinct semantic
-    worlds. The enumerated relations are checked structurally; the mathematical
-    truth of the prose remains an independent source-review obligation.  A
-    source-definition route has one extra structural review because a
-    total Lean definition can otherwise conceal a source-domain extension or
-    an omitted operational guarantee.
-    """
-
-    if not isinstance(raw, dict):
-        return "missing `semantic_scope_review` object"
-
-    def required_string(value: Any) -> str:
-        return value.strip() if isinstance(value, str) else ""
-
-    def substantive(value: Any) -> bool:
-        text = required_string(value)
-        return len(text) >= 20 and not NAME_ONLY_SEMANTIC_EVIDENCE_RE.search(text)
-
-    def canonical_contains_constant(value: Any, predicate: Callable[[str], bool]) -> bool:
-        if isinstance(value, list):
-            return any(canonical_contains_constant(item, predicate) for item in value)
-        if not isinstance(value, dict):
-            return False
-        if value.get("tag") == "const" and predicate(str(value.get("name") or "")):
-            return True
-        return any(canonical_contains_constant(item, predicate) for item in value.values())
-
-    def lean_atom_has_numeric_semantics(obligation_id: str) -> bool:
-        atom = lean_manifest_atoms.get(obligation_id) or {}
-        return canonical_contains_constant(
-            atom.get("canonical"), lambda name: name in NUMERIC_SEMANTIC_CONSTANTS
-        )
-
-    def lean_atom_has_discrete_semantics(obligation_id: str) -> bool:
-        atom = lean_manifest_atoms.get(obligation_id) or {}
-        return canonical_contains_constant(
-            atom.get("canonical"),
-            lambda name: name.startswith(DISCRETE_SEMANTIC_CONSTANT_PREFIXES),
-        )
-
-    def lean_atom_has_expanded_definition(obligation_id: str) -> bool:
-        atom = lean_manifest_atoms.get(obligation_id) or {}
-
-        def contains_expansion(value: Any) -> bool:
-            if isinstance(value, list):
-                return any(contains_expansion(item) for item in value)
-            if not isinstance(value, dict):
-                return False
-            if value.get("tag") in {
-                "definition",
-                "inductive",
-                "inlined_definition",
-                "local_constructor",
-                "local_inductive",
-                "local_recursor",
-                "local_theorem",
-            }:
-                return True
-            return any(contains_expansion(item) for item in value.values())
-
-        return contains_expansion(atom.get("canonical"))
-
-    def lean_conclusion_exposes_equivalence(obligation_id: str) -> bool:
-        atom = lean_manifest_atoms.get(obligation_id) or {}
-        return canonical_contains_constant(
-            atom.get("canonical"), lambda name: name in {"Eq", "Iff"}
-        )
-
-    def obligation_id_list(
-        value: Any, field: str, known: dict[str, str], *, nonempty: bool
-    ) -> tuple[set[str], str]:
-        if not isinstance(value, list):
-            return set(), f"{field} is not a list"
-        normalized = [required_string(item) for item in value]
-        if any(not item for item in normalized):
-            return set(), f"{field} contains an empty obligation id"
-        if len(normalized) != len(set(normalized)):
-            return set(), f"{field} contains duplicate obligation ids"
-        if nonempty and not normalized:
-            return set(), f"{field} must not be empty"
-        unknown = set(normalized) - set(known)
-        if unknown:
-            return set(), f"{field} references unknown obligation ids"
-        return set(normalized), ""
-
-    def operator_review_coverage_error(
-        review: dict[str, Any],
-        items: list[Any],
-        *,
-        source_item_field: str,
-        lean_item_field: str,
-        non_source_field: str,
-        non_lean_field: str,
-        label: str,
-        lean_absence_conflict: Callable[[str], bool],
-    ) -> str:
-        covered_source: set[str] = set()
-        covered_lean: set[str] = set()
-        for item in items:
-            if not isinstance(item, dict):
-                return f"{label} review item is not an object"
-            source_ids, error = obligation_id_list(
-                item.get(source_item_field),
-                f"{label} review item {source_item_field}",
-                source_obligations,
-                nonempty=True,
-            )
-            if error:
-                return error
-            lean_ids, error = obligation_id_list(
-                item.get(lean_item_field),
-                f"{label} review item {lean_item_field}",
-                lean_obligations,
-                nonempty=True,
-            )
-            if error:
-                return error
-            covered_source.update(source_ids)
-            covered_lean.update(lean_ids)
-        non_source, error = obligation_id_list(
-            review.get(non_source_field),
-            non_source_field,
-            source_obligations,
-            nonempty=False,
-        )
-        if error:
-            return error
-        non_lean, error = obligation_id_list(
-            review.get(non_lean_field),
-            non_lean_field,
-            lean_obligations,
-            nonempty=False,
-        )
-        if error:
-            return error
-        if covered_source & non_source:
-            return f"{label} source obligations are both reviewed and classified absent"
-        if covered_lean & non_lean:
-            return f"{label} Lean obligations are both reviewed and classified absent"
-        if covered_source | non_source != set(source_obligations):
-            return f"{label} review does not cover every source obligation"
-        if covered_lean | non_lean != set(lean_obligations):
-            return f"{label} review does not cover every Lean obligation"
-        conflicts = sorted(item for item in non_lean if lean_absence_conflict(item))
-        if conflicts:
-            return (
-                f"{label} review classifies manifest-visible operator semantics as absent: "
-                + ", ".join(conflicts)
-            )
-        return ""
-
-    source_scope = required_string(raw.get("source_quantification")).lower()
-    lean_scope = required_string(raw.get("lean_quantification")).lower()
-    scope_relation = required_string(raw.get("quantification_relation")).lower()
-    if source_scope not in PROFILE_QUANTIFICATION_SCOPES:
-        return "semantic scope review has an invalid source_quantification"
-    if lean_scope not in PROFILE_QUANTIFICATION_SCOPES:
-        return "semantic scope review has an invalid lean_quantification"
-    if scope_relation not in QUANTIFICATION_RELATIONS:
-        return "semantic scope review has an invalid quantification_relation"
-    if not substantive(raw.get("source_quantification_basis")):
-        return "semantic scope review lacks a substantive source quantification basis"
-    if not substantive(raw.get("lean_quantification_basis")):
-        return "semantic scope review lacks a substantive Lean quantification basis"
-    if verdict == "matches":
-        if scope_relation != "equivalent":
-            return "matches judgment records non-equivalent source/Lean quantification"
-        fixed_or_global = {
-            "fixed_profile",
-            "all_profiles",
-            "existential_profile",
-        }
-        if source_scope in fixed_or_global and lean_scope in fixed_or_global:
-            if source_scope != lean_scope:
-                return "matches judgment confuses fixed-, existential-, and all-profile scope"
-        elif source_scope != lean_scope:
-            return "matches judgment records different source/Lean profile scope"
-
-    definition_review = raw.get("named_definition_review")
-    if not isinstance(definition_review, dict):
-        return "semantic scope review has no named_definition_review object"
-    definitions_present = definition_review.get("definitions_present")
-    if not isinstance(definitions_present, bool):
-        return "named_definition_review has no Boolean definitions_present"
-    definition_items = definition_review.get("items")
-    if not isinstance(definition_items, list):
-        return "named_definition_review has no items list"
-    if definitions_present != bool(definition_items):
-        return "named_definition_review presence flag does not match its items"
-    if not definitions_present and not substantive(
-        definition_review.get("absence_basis")
-    ):
-        return "named_definition_review lacks a substantive absence_basis"
-    covered_definition_obligations: set[str] = set()
-    for item in definition_items:
-        if not isinstance(item, dict):
-            return "named definition review item is not an object"
-        obligation_ids, error = obligation_id_list(
-            item.get("lean_obligation_ids"),
-            "named definition review item lean_obligation_ids",
-            lean_obligations,
-            nonempty=True,
-        )
-        if error:
-            return error
-        covered_definition_obligations.update(obligation_ids)
-    non_definition_obligations, error = obligation_id_list(
-        definition_review.get("non_definition_lean_obligation_ids"),
-        "non_definition_lean_obligation_ids",
-        lean_obligations,
-        nonempty=False,
-    )
-    if error:
-        return error
-    if covered_definition_obligations & non_definition_obligations:
-        return "Lean obligations are both definition-reviewed and classified definition-free"
-    if covered_definition_obligations | non_definition_obligations != set(
-        lean_obligations
-    ):
-        return "named definition review does not cover every Lean obligation"
-    hidden_expansions = sorted(
-        item
-        for item in non_definition_obligations
-        if lean_atom_has_expanded_definition(item)
-    )
-    if hidden_expansions:
-        return (
-            "named definition review classifies manifest-expanded definitions as absent: "
-            + ", ".join(hidden_expansions)
-        )
-    for item in definition_items:
-        if not isinstance(item, dict):
-            return "named definition review item is not an object"
-        if not required_string(item.get("surface_expression")):
-            return "named definition review item has no surface_expression"
-        if not substantive(item.get("unfolded_semantics")):
-            return "named definition review item lacks substantive unfolded semantics"
-        if not substantive(item.get("expansion_basis")):
-            return "named definition review item lacks a substantive expansion basis"
-        recursive_dependencies = item.get("recursive_result_dependencies")
-        if not isinstance(recursive_dependencies, list):
-            return "named definition review item has no recursive_result_dependencies list"
-        recursive_complete = item.get("recursive_expansion_complete")
-        if not isinstance(recursive_complete, bool):
-            return "named definition review item has no Boolean recursive_expansion_complete"
-        seen_dependencies: set[str] = set()
-        for dependency in recursive_dependencies:
-            if not isinstance(dependency, dict):
-                return "recursive named-definition dependency is not an object"
-            dependency_expression = required_string(
-                dependency.get("surface_expression")
-            )
-            if not dependency_expression or dependency_expression in seen_dependencies:
-                return "recursive named-definition dependency is missing or duplicated"
-            seen_dependencies.add(dependency_expression)
-            if not substantive(dependency.get("unfolded_semantics")):
-                return (
-                    "recursive named-definition dependency lacks substantive "
-                    "unfolded semantics"
-                )
-            if not substantive(dependency.get("expansion_basis")):
-                return (
-                    "recursive named-definition dependency lacks a substantive "
-                    "expansion basis"
-                )
-        if verdict == "matches" and not recursive_complete:
-            return (
-                "matches judgment has an incomplete recursive named-definition expansion"
-            )
-        classification = required_string(item.get("classification")).lower()
-        if classification not in NAMED_DEFINITION_CLASSIFICATIONS:
-            return "named definition review item has an invalid classification"
-        used_as_evidence = item.get("used_as_source_conclusion_evidence")
-        if not isinstance(used_as_evidence, bool):
-            return (
-                "named definition review item has no Boolean "
-                "used_as_source_conclusion_evidence"
-            )
-        if classification == "self_characterizing" and used_as_evidence:
-            return (
-                "self-characterizing definition cannot justify a source conclusion; "
-                "require runner-derived provenance or a preservation/refinement bridge"
-            )
-
-    # This is deliberately keyed by the pinned source item's semantic kind
-    # (see the caller), not by a declaration name.  It is separate from the
-    # recursive named-definition expansion above: that expansion asks what a
-    # Lean wrapper means, while this review asks whether the source *defined
-    # object* has been extended, totalized, or stripped of an advertised
-    # operational property.
-    source_definition_review = raw.get("source_definition_semantics_review")
-    if require_source_definition_semantics_review and not isinstance(
-        source_definition_review, dict
-    ):
-        return (
-            "source-expression route lacks "
-            "source_definition_semantics_review"
-        )
-    if source_definition_review is not None:
-        if not isinstance(source_definition_review, dict):
-            return "source_definition_semantics_review is not an object"
-        source_ids, error = obligation_id_list(
-            source_definition_review.get("source_obligation_ids"),
-            "source_definition_semantics_review source_obligation_ids",
-            source_obligations,
-            nonempty=True,
-        )
-        if error:
-            return error
-        lean_ids, error = obligation_id_list(
-            source_definition_review.get("lean_obligation_ids"),
-            "source_definition_semantics_review lean_obligation_ids",
-            lean_obligations,
-            nonempty=True,
-        )
-        if error:
-            return error
-        # A source-facing definition review must cover the full visible
-        # interface.  Reviewing just its result lets a hidden domain premise
-        # or an instance-carried domain restriction escape the comparison.
-        if source_ids != set(source_obligations):
-            return (
-                "source_definition_semantics_review does not cover every "
-                "source obligation"
-            )
-        if lean_ids != set(lean_obligations):
-            return (
-                "source_definition_semantics_review does not cover every "
-                "Lean obligation"
-            )
-
-        for source_field, lean_field, relation_field, label in (
-            (
-                "source_legal_domain",
-                "lean_legal_domain",
-                "domain_relation",
-                "legal domain",
-            ),
-            (
-                "source_outside_domain_behavior",
-                "lean_outside_domain_behavior",
-                "outside_domain_relation",
-                "outside-domain/totalization behavior",
-            ),
-            (
-                "source_operational_semantics",
-                "lean_operational_semantics",
-                "operational_relation",
-                "operational meaning",
-            ),
-        ):
-            if not substantive(source_definition_review.get(source_field)):
-                return (
-                    "source_definition_semantics_review lacks substantive source "
-                    f"{label}"
-                )
-            if not substantive(source_definition_review.get(lean_field)):
-                return (
-                    "source_definition_semantics_review lacks substantive Lean "
-                    f"{label}"
-                )
-            relation = required_string(
-                source_definition_review.get(relation_field)
-            ).lower()
-            if relation not in SOURCE_DEFINITION_SEMANTIC_RELATIONS:
-                return (
-                    "source_definition_semantics_review has invalid "
-                    f"{relation_field}"
-                )
-            if verdict == "matches" and relation != "equivalent":
-                return (
-                    "matches judgment records non-equivalent source-definition "
-                    f"{label}"
-                )
-
-        property_status = required_string(
-            source_definition_review.get("advertised_property_status")
-        ).lower()
-        if property_status not in SOURCE_DEFINITION_PROPERTY_STATUSES:
-            return (
-                "source_definition_semantics_review has invalid "
-                "advertised_property_status"
-            )
-        properties = source_definition_review.get("advertised_properties")
-        if not isinstance(properties, list):
-            return "source_definition_semantics_review has no advertised_properties list"
-        if property_status == "no_advertised_properties":
-            if properties:
-                return (
-                    "no_advertised_properties status cannot carry advertised "
-                    "property entries"
-                )
-            if not substantive(
-                source_definition_review.get("no_advertised_properties_basis")
-            ):
-                return (
-                    "source_definition_semantics_review lacks substantive "
-                    "no_advertised_properties_basis"
-                )
-        elif not properties:
-            return (
-                "properties_reviewed source-definition status requires at least "
-                "one advertised property"
-            )
-
-        seen_property_ids: set[str] = set()
-        conclusion_ids = {
-            key for key, kind in lean_obligations.items() if kind == "conclusion"
-        }
-        source_conclusion_ids = {
-            key for key, kind in source_obligations.items() if kind == "conclusion"
-        }
-        for property_item in properties:
-            if not isinstance(property_item, dict):
-                return "source-definition advertised property is not an object"
-            property_id = required_string(property_item.get("id"))
-            if not property_id or property_id in seen_property_ids:
-                return "source-definition advertised property has a missing or duplicate id"
-            seen_property_ids.add(property_id)
-            for field, label in (
-                ("source_property", "source property"),
-                ("lean_realization", "Lean realization"),
-                ("evidence_basis", "evidence basis"),
-            ):
-                if not substantive(property_item.get(field)):
-                    return (
-                        "source-definition advertised property lacks substantive "
-                        f"{label}"
-                    )
-            property_source_ids, error = obligation_id_list(
-                property_item.get("source_obligation_ids"),
-                "source-definition advertised property source_obligation_ids",
-                source_obligations,
-                nonempty=True,
-            )
-            if error:
-                return error
-            property_lean_ids, error = obligation_id_list(
-                property_item.get("lean_obligation_ids"),
-                "source-definition advertised property lean_obligation_ids",
-                lean_obligations,
-                nonempty=True,
-            )
-            if error:
-                return error
-            if not (property_source_ids & source_conclusion_ids):
-                return (
-                    "source-definition advertised property is not bound to a "
-                    "source conclusion obligation"
-                )
-            if not (property_lean_ids & conclusion_ids):
-                return (
-                    "source-definition advertised property is not bound to a "
-                    "Lean conclusion obligation"
-                )
-            relation = required_string(property_item.get("relation")).lower()
-            if relation not in SOURCE_DEFINITION_SEMANTIC_RELATIONS:
-                return "source-definition advertised property has an invalid relation"
-            if verdict == "matches" and relation != "equivalent":
-                return (
-                    "matches judgment records a non-equivalent source-definition "
-                    "advertised property"
-                )
-            evidence_kind = required_string(
-                property_item.get("lean_evidence_kind")
-            ).lower()
-            if evidence_kind not in SOURCE_DEFINITION_PROPERTY_EVIDENCE_KINDS:
-                return (
-                    "source-definition advertised property has an invalid "
-                    "lean_evidence_kind"
-                )
-            if verdict == "matches" and evidence_kind == "missing":
-                return (
-                    "matches judgment has an advertised source-definition property "
-                    "without Lean evidence"
-                )
-            if evidence_kind in {
-                "paper_interface_equivalence",
-                "paper_interface_conclusion",
-            }:
-                evidence_conclusion_id = required_string(
-                    property_item.get("lean_evidence_conclusion_id")
-                )
-                if evidence_conclusion_id not in conclusion_ids:
-                    return (
-                        "source-definition advertised property paper-interface evidence "
-                        "is not a Lean conclusion obligation"
-                    )
-                if evidence_conclusion_id not in property_lean_ids:
-                    return (
-                        "source-definition advertised property paper-interface evidence "
-                        "is not bound to its Lean obligations"
-                    )
-                if (
-                    evidence_kind == "paper_interface_equivalence"
-                    and not lean_conclusion_exposes_equivalence(evidence_conclusion_id)
-                ):
-                    return (
-                        "source-definition advertised property equivalence evidence "
-                        "does not explicitly contain equality or iff"
-                    )
-            elif evidence_kind == "expanded_definition_body":
-                if not any(
-                    (lean_manifest_atoms.get(obligation_id) or {})
-                    .get("canonical", {})
-                    .get("tag")
-                    == "definition"
-                    for obligation_id in property_lean_ids & conclusion_ids
-                ):
-                    return (
-                        "source-definition advertised property claims expanded "
-                        "definition-body evidence without a definition-valued Lean conclusion"
-                    )
-
-    numeric_review = raw.get("numeric_semantics_review")
-    if not isinstance(numeric_review, dict):
-        return "semantic scope review has no numeric_semantics_review object"
-    formulas_present = numeric_review.get("formulas_present")
-    if not isinstance(formulas_present, bool):
-        return "numeric_semantics_review has no Boolean formulas_present"
-    numeric_items = numeric_review.get("items")
-    if not isinstance(numeric_items, list):
-        return "numeric_semantics_review has no items list"
-    if formulas_present != bool(numeric_items):
-        return "numeric_semantics_review presence flag does not match its items"
-    if not formulas_present and not substantive(numeric_review.get("absence_basis")):
-        return "numeric_semantics_review lacks a substantive absence_basis"
-    coverage_error = operator_review_coverage_error(
-        numeric_review,
-        numeric_items,
-        source_item_field="source_obligation_ids",
-        lean_item_field="lean_obligation_ids",
-        non_source_field="non_numeric_source_obligation_ids",
-        non_lean_field="non_numeric_lean_obligation_ids",
-        label="numeric semantics",
-        lean_absence_conflict=lean_atom_has_numeric_semantics,
-    )
-    if coverage_error:
-        return coverage_error
-    conclusion_ids = {
-        key for key, kind in lean_obligations.items() if kind == "conclusion"
-    }
-    seen_numeric_item_ids: set[str] = set()
-    for item in numeric_items:
-        if not isinstance(item, dict):
-            return "numeric semantics review item is not an object"
-        item_id = required_string(item.get("id"))
-        if not item_id or item_id in seen_numeric_item_ids:
-            return "numeric semantics review item has a missing or duplicate id"
-        seen_numeric_item_ids.add(item_id)
-        if not required_string(item.get("source_expression")):
-            return "numeric semantics review item has no source_expression"
-        if not required_string(item.get("lean_expression")):
-            return "numeric semantics review item has no lean_expression"
-        for field, label in (
-            ("source_domain", "source domain"),
-            ("lean_domain", "Lean domain"),
-            ("source_operations", "source operations"),
-            ("lean_operations", "Lean operations"),
-            ("source_coercions", "source coercion review"),
-            ("lean_coercions", "Lean coercion review"),
-            ("source_division", "source division convention"),
-            ("lean_division", "Lean division convention"),
-            ("source_rounding", "source rounding behavior"),
-            ("lean_rounding", "Lean rounding behavior"),
-            ("source_normalization", "source normalization"),
-            ("lean_normalization", "Lean normalization"),
-            ("source_strictness", "source strictness"),
-            ("lean_strictness", "Lean strictness"),
-            ("source_zero_denominator", "source zero-denominator behavior"),
-            ("lean_zero_denominator", "Lean zero-denominator behavior"),
-            ("relation_basis", "relation basis"),
-        ):
-            if not substantive(item.get(field)):
-                return f"numeric semantics review item lacks a substantive {label}"
-        relation = required_string(item.get("relation")).lower()
-        if relation not in NUMERIC_SEMANTIC_RELATIONS:
-            return "numeric semantics review item has an invalid relation"
-        if relation in {"proved_equivalent", "witness_specific_equivalent"}:
-            conclusion_id = required_string(
-                item.get("lean_equivalence_conclusion_id")
-            )
-            if conclusion_id not in conclusion_ids:
-                return (
-                    "numeric semantics equivalence is not exposed by a Lean "
-                    "conclusion obligation"
-                )
-            if conclusion_id not in set(item.get("lean_obligation_ids") or []):
-                return (
-                    "numeric semantics equivalence conclusion is not bound to the "
-                    "reviewed Lean obligations"
-                )
-            if not lean_conclusion_exposes_equivalence(conclusion_id):
-                return (
-                    "numeric semantics equivalence conclusion does not explicitly "
-                    "contain equality or iff"
-                )
-            if not substantive(item.get("lean_equivalence_statement")):
-                return "numeric semantics equivalence lacks its explicit Lean statement"
-        if verdict == "matches" and relation not in {
-            "definitionally_equal",
-            "proved_equivalent",
-        }:
-            return (
-                "matches judgment records non-equivalent or witness-only numeric semantics"
-            )
-
-    discrete_review = raw.get("discrete_semantics_review")
-    if not isinstance(discrete_review, dict):
-        return "semantic scope review has no discrete_semantics_review object"
-    operations_present = discrete_review.get("operations_present")
-    if not isinstance(operations_present, bool):
-        return "discrete_semantics_review has no Boolean operations_present"
-    discrete_items = discrete_review.get("items")
-    if not isinstance(discrete_items, list):
-        return "discrete_semantics_review has no items list"
-    if operations_present != bool(discrete_items):
-        return "discrete_semantics_review presence flag does not match its items"
-    if not operations_present and not substantive(discrete_review.get("absence_basis")):
-        return "discrete_semantics_review lacks a substantive absence_basis"
-    coverage_error = operator_review_coverage_error(
-        discrete_review,
-        discrete_items,
-        source_item_field="source_obligation_ids",
-        lean_item_field="lean_obligation_ids",
-        non_source_field="non_discrete_source_obligation_ids",
-        non_lean_field="non_discrete_lean_obligation_ids",
-        label="discrete semantics",
-        lean_absence_conflict=lean_atom_has_discrete_semantics,
-    )
-    if coverage_error:
-        return coverage_error
-    seen_discrete_item_ids: set[str] = set()
-    for item in discrete_items:
-        if not isinstance(item, dict):
-            return "discrete semantics review item is not an object"
-        item_id = required_string(item.get("id"))
-        if not item_id or item_id in seen_discrete_item_ids:
-            return "discrete semantics review item has a missing or duplicate id"
-        seen_discrete_item_ids.add(item_id)
-        if not required_string(item.get("source_expression")):
-            return "discrete semantics review item has no source_expression"
-        if not required_string(item.get("lean_expression")):
-            return "discrete semantics review item has no lean_expression"
-        for field, label in (
-            ("source_domain", "source domain"),
-            ("lean_domain", "Lean domain"),
-            ("source_operation", "source operation"),
-            ("lean_operation", "Lean operation"),
-            ("source_order_sensitivity", "source order sensitivity"),
-            ("lean_order_sensitivity", "Lean order sensitivity"),
-            ("relation_basis", "relation basis"),
-        ):
-            if not substantive(item.get(field)):
-                return f"discrete semantics review item lacks a substantive {label}"
-        relation = required_string(item.get("relation")).lower()
-        if relation not in DISCRETE_SEMANTIC_RELATIONS:
-            return "discrete semantics review item has an invalid relation"
-        if relation in {"proved_equivalent", "witness_specific_equivalent"}:
-            conclusion_id = required_string(
-                item.get("lean_equivalence_conclusion_id")
-            )
-            if conclusion_id not in conclusion_ids:
-                return (
-                    "discrete semantics equivalence is not exposed by a Lean "
-                    "conclusion obligation"
-                )
-            if conclusion_id not in set(item.get("lean_obligation_ids") or []):
-                return (
-                    "discrete semantics equivalence conclusion is not bound to the "
-                    "reviewed Lean obligations"
-                )
-            if not lean_conclusion_exposes_equivalence(conclusion_id):
-                return (
-                    "discrete semantics equivalence conclusion does not explicitly "
-                    "contain equality or iff"
-                )
-            if not substantive(item.get("lean_equivalence_statement")):
-                return "discrete semantics equivalence lacks its explicit Lean statement"
-        if verdict == "matches" and relation not in {
-            "definitionally_equal",
-            "proved_equivalent",
-        }:
-            return (
-                "matches judgment records non-equivalent or witness-only discrete semantics"
-            )
-
-    algorithm_review = raw.get("algorithm_review")
-    if not isinstance(algorithm_review, dict):
-        return "semantic scope review has no algorithm_review object"
-    source_level = required_string(algorithm_review.get("source_claim_level")).lower()
-    lean_level = required_string(algorithm_review.get("lean_claim_level")).lower()
-    runner_provenance = required_string(
-        algorithm_review.get("runner_provenance")
-    ).lower()
-    result_provenance = required_string(
-        algorithm_review.get("result_provenance")
-    ).lower()
-    if source_level not in SOURCE_ALGORITHM_CLAIM_LEVELS:
-        return "algorithm review has an invalid source_claim_level"
-    if lean_level not in LEAN_ALGORITHM_CLAIM_LEVELS:
-        return "algorithm review has an invalid lean_claim_level"
-    if runner_provenance not in RUNNER_PROVENANCE_KINDS:
-        return "algorithm review has an invalid runner_provenance"
-    if result_provenance not in RESULT_PROVENANCE_KINDS:
-        return "algorithm review has an invalid result_provenance"
-    if not substantive(algorithm_review.get("source_claim_basis")):
-        return "algorithm review lacks a substantive source_claim_basis"
-    if not substantive(algorithm_review.get("lean_claim_basis")):
-        return "algorithm review lacks a substantive lean_claim_basis"
-
-    fidelity_error = fidelity_risk_review_error(
-        raw.get("fidelity_risk_review"),
-        source_obligations,
-        lean_obligations,
-        verdict,
-        source_level,
-    )
-    if fidelity_error:
-        return fidelity_error
-
-    worlds = raw.get("semantic_worlds")
-    if not isinstance(worlds, list) or not worlds:
-        return "semantic scope review has no semantic_worlds"
-    world_roles: dict[str, str] = {}
-    for world in worlds:
-        if not isinstance(world, dict):
-            return "semantic world is not an object"
-        world_id = required_string(world.get("id"))
-        role = required_string(world.get("role")).lower()
-        if not world_id or world_id in world_roles:
-            return "semantic world has a missing or duplicate id"
-        if role not in SEMANTIC_WORLD_ROLES:
-            return f"semantic world `{world_id}` has an invalid role"
-        if not substantive(world.get("semantics")):
-            return f"semantic world `{world_id}` lacks substantive semantics"
-        world_roles[world_id] = role
-    if "shared" not in set(world_roles.values()) and not {
-        "source",
-        "lean",
-    }.issubset(set(world_roles.values())):
-        return "semantic worlds do not identify shared semantics or both source and Lean worlds"
-
-    bridges = raw.get("world_bridges")
-    if not isinstance(bridges, list):
-        return "semantic scope review has no world_bridges list"
-    normalized_bridges: list[dict[str, str]] = []
-    for bridge in bridges:
-        if not isinstance(bridge, dict):
-            return "semantic world bridge is not an object"
-        from_world = required_string(bridge.get("from_world"))
-        to_world = required_string(bridge.get("to_world"))
-        relation = required_string(bridge.get("relation")).lower()
-        statement = required_string(bridge.get("statement"))
-        conclusion_id = required_string(bridge.get("lean_conclusion_id"))
-        if (
-            from_world not in world_roles
-            or to_world not in world_roles
-            or from_world == to_world
-        ):
-            return "semantic world bridge has invalid endpoints"
-        if relation not in SEMANTIC_WORLD_BRIDGE_RELATIONS:
-            return "semantic world bridge has an invalid relation"
-        if not substantive(statement):
-            return "semantic world bridge lacks a substantive mathematical statement"
-        if conclusion_id not in conclusion_ids:
-            return "semantic world bridge is not exposed by a Lean conclusion obligation"
-        normalized_bridges.append(
-            {
-                "from": from_world,
-                "to": to_world,
-                "relation": relation,
-                "statement": statement,
-            }
-        )
-
-    if verdict != "matches":
-        return ""
-
-    source_worlds = {
-        key for key, role in world_roles.items() if role in {"source", "shared"}
-    }
-    lean_worlds = {
-        key for key, role in world_roles.items() if role in {"lean", "shared"}
-    }
-
-    def has_bridge(relations: set[str], expected_statement: str = "") -> bool:
-        return any(
-            bridge["from"] in source_worlds
-            and bridge["to"] in lean_worlds
-            and bridge["from"] != bridge["to"]
-            and bridge["relation"] in relations
-            and (not expected_statement or bridge["statement"] == expected_statement)
-            for bridge in normalized_bridges
-        )
-
-    separate_worlds = "shared" not in set(world_roles.values())
-
-    def separate_worlds_bridge_error() -> str:
-        if not separate_worlds:
-            return ""
-        if not has_bridge(
-            {"definitionally_equal", "equivalent", "refines", "simulates"}
-        ):
-            return (
-                "separate source and Lean semantic worlds have no exposed equality, "
-                "equivalence, refinement, or simulation bridge"
-            )
-        if not has_bridge(
-            {"definitionally_equal", "equivalent", "preserves_result"}
-        ):
-            return (
-                "separate source and Lean semantic worlds have no exposed "
-                "result-preservation bridge"
-            )
-        return ""
-
-    compatible_lean_levels = {
-        "not_algorithmic": {"not_algorithmic"},
-        "existence": {"existence", "noncomputable_existence"},
-        "executable": {"executable"},
-        "polynomial_time": {"polynomial_time"},
-    }
-    if lean_level not in compatible_lean_levels[source_level]:
-        return (
-            "matches judgment conflates noncomputable existence, executable output, "
-            "and polynomial-time claims"
-        )
-
-    if source_level == "not_algorithmic":
-        if runner_provenance != "not_applicable" or result_provenance != "not_applicable":
-            return "non-algorithmic row records algorithm runner/result provenance"
-        world_error = separate_worlds_bridge_error()
-        if world_error:
-            return world_error
-        return ""
-
-    if source_level == "existence":
-        if runner_provenance not in {
-            "not_applicable",
-            "same_formalized_runner",
-            "proved_refinement",
-        }:
-            return "existence-only match records unsupported runner refinement"
-        if result_provenance not in {
-            "not_applicable",
-            "runner_derived",
-            "preservation_bridge",
-        }:
-            return "existence-only match records unsupported result provenance"
-        world_error = separate_worlds_bridge_error()
-        if world_error:
-            return world_error
-        if runner_provenance == "same_formalized_runner" and separate_worlds:
-            return "same runner provenance has no shared semantic world"
-        if runner_provenance == "proved_refinement":
-            if result_provenance != "preservation_bridge":
-                return (
-                    "a cross-world existence refinement needs an exposed "
-                    "result-preservation bridge"
-                )
-        else:
-            return ""
-
-    if runner_provenance in {"independent_characterization", "missing", "not_applicable"}:
-        return (
-            "algorithmic match lacks source-runner provenance; an independent "
-            "characterization is not a refinement"
-        )
-    if result_provenance in {"independent_characterization", "missing", "not_applicable"}:
-        return (
-            "algorithmic match lacks runner-derived result provenance or an exposed "
-            "preservation bridge"
-        )
-
-    if result_provenance == "runner_derived":
-        if not substantive(algorithm_review.get("runner_result_statement")):
-            return "runner-derived result provenance lacks a substantive result statement"
-        runner_result_id = required_string(
-            algorithm_review.get("runner_result_lean_conclusion_id")
-        )
-        if runner_result_id not in conclusion_ids:
-            return "runner-derived result is not exposed by a Lean conclusion obligation"
-
-    if runner_provenance == "proved_refinement":
-        if result_provenance != "preservation_bridge":
-            return (
-                "a refined source runner needs an exposed result-preservation bridge; "
-                "success of the Lean runner alone is insufficient"
-            )
-        statement = required_string(algorithm_review.get("refinement_statement"))
-        if not substantive(statement):
-            return "proved runner refinement lacks a substantive refinement statement"
-        if not has_bridge(
-            {"definitionally_equal", "refines", "simulates", "equivalent"},
-            statement,
-        ):
-            return "proved runner refinement has no exposed source-to-Lean world bridge"
-    elif runner_provenance == "same_formalized_runner":
-        if "shared" not in set(world_roles.values()):
-            return "same runner provenance has no shared semantic world"
-
-    if result_provenance == "preservation_bridge":
-        statement = required_string(
-            algorithm_review.get("result_preservation_statement")
-        )
-        if not substantive(statement):
-            return "result preservation provenance lacks a substantive bridge statement"
-        if not has_bridge(
-            {"definitionally_equal", "preserves_result", "equivalent"}, statement
-        ):
-            return "result preservation is not exposed as a source-to-Lean world bridge"
-
-    if source_level == "polynomial_time":
-        if not substantive(algorithm_review.get("complexity_statement")):
-            return "polynomial-time match has no substantive complexity statement"
-        if not substantive(algorithm_review.get("arithmetic_model")):
-            return "polynomial-time match has no explicit arithmetic/representation model"
-        complexity_id = required_string(
-            algorithm_review.get("complexity_lean_conclusion_id")
-        )
-        if complexity_id not in conclusion_ids:
-            return "polynomial-time claim is not exposed by a Lean conclusion obligation"
-    return ""
-
-
-def semantic_obligation_ledger_error(
-    raw: Any,
-    signature_manifest: dict[str, Any] | None = None,
-    *,
-    require_source_definition_semantics_review: bool = False,
-) -> str:
-    """Validate the atom-by-atom source/Lean comparison behind a judgment.
-
-    Declaration names and prose similarity are not evidence that a theorem's
-    assumptions and conclusions agree. A v10 statement judgment therefore
-    carries explicit semantic obligations and relations between them. It also
-    requires an exact partition of the binder-name-independent atoms extracted
-    from the elaborated Lean type. This is a structural fail-closed check; an
-    independent reviewer still has to judge whether the recorded formulas and
-    implications are mathematically right.
-    """
-
-    if not isinstance(raw, dict):
-        return "judgment is not an object"
-    source = raw.get("source_obligations")
-    lean = raw.get("lean_obligations")
-    alignment = raw.get("obligation_alignment")
-    if not isinstance(source, list) or not isinstance(lean, list):
-        return "missing source_obligations/lean_obligations lists"
-    if not isinstance(alignment, list):
-        return "missing obligation_alignment list"
-
-    if not isinstance(signature_manifest, dict):
-        return "Lean declaration manifest is unavailable"
-    manifest_digest = str(signature_manifest.get("sha256") or "").strip()
-    recorded_manifest_digest = str(raw.get("lean_signature_sha256") or "").strip()
-    if not manifest_digest:
-        return "Lean declaration manifest has no canonical digest"
-    if signature_manifest_digest(signature_manifest) != manifest_digest:
-        return "Lean declaration manifest canonical digest is invalid"
-    if not recorded_manifest_digest:
-        return "judgment has no `lean_signature_sha256`"
-    if recorded_manifest_digest != manifest_digest:
-        return "judgment Lean declaration manifest digest is stale"
-    manifest_atoms = signature_manifest.get("atoms")
-    if not isinstance(manifest_atoms, list) or not manifest_atoms:
-        return "Lean declaration manifest has no atoms"
-    manifest_roles: dict[str, str] = {}
-    manifest_atom_digests: dict[str, str] = {}
-    manifest_atoms_by_ref: dict[str, dict[str, Any]] = {}
-    for atom in manifest_atoms:
-        if not isinstance(atom, dict):
-            return "Lean declaration manifest atom is not an object"
-        ref = str(atom.get("ref") or "").strip()
-        role = str(atom.get("role") or "").strip().lower()
-        if not ref or ref in manifest_roles:
-            return "Lean declaration manifest has a missing/duplicate atom ref"
-        if role not in {"parameter", "assumption", "conclusion"}:
-            return f"Lean declaration manifest atom `{ref}` has invalid role"
-        manifest_roles[ref] = role
-        manifest_atoms_by_ref[ref] = atom
-        atom_digest = signature_manifest_atom_digest(atom)
-        if not atom_digest:
-            return f"Lean declaration manifest atom `{ref}` has no canonical digest"
-        manifest_atom_digests[ref] = atom_digest
-
-    def required_string(value: Any) -> str:
-        return value.strip() if isinstance(value, str) else ""
-
-    def obligation_index(values: list[Any], side: str) -> tuple[dict[str, str], str]:
-        out: dict[str, str] = {}
-        for value in values:
-            if not isinstance(value, dict):
-                return {}, f"{side} obligation is not an object"
-            key = required_string(value.get("id"))
-            kind = required_string(value.get("kind")).lower()
-            if not key or key in out:
-                return {}, f"{side} obligation has a missing/duplicate id"
-            if kind not in {"parameter", "assumption", "conclusion"}:
-                return {}, f"{side} obligation `{key}` has invalid kind"
-            if side == "source":
-                statement = required_string(value.get("statement"))
-                if not statement:
-                    return {}, f"source obligation `{key}` has no semantic statement"
-                source_location = required_string(value.get("source_location"))
-                if not source_location:
-                    return {}, f"source obligation `{key}` has no source location"
-                if not EXACT_SOURCE_LOCATOR_RE.search(source_location):
-                    return {}, f"source obligation `{key}` has no exact source locator"
-            elif "statement" in value:
-                return {}, (
-                    f"Lean obligation `{key}` supplies unaudited prose in `statement`; "
-                    "v7 binds it only through signature_ref/signature_atom_sha256"
-                )
-            out[key] = kind
-        if not any(kind == "conclusion" for kind in out.values()):
-            return {}, f"{side} ledger has no conclusion"
-        return out, ""
-
-    source_index, error = obligation_index(source, "source")
-    if error:
-        return error
-    lean_index, error = obligation_index(lean, "Lean")
-    if error:
-        return error
-
-    covered_manifest_refs: dict[str, str] = {}
-    lean_manifest_atoms: dict[str, dict[str, Any]] = {}
-    for value in lean:
-        key = required_string(value.get("id"))
-        ref = required_string(value.get("signature_ref"))
-        if not ref:
-            return f"Lean obligation `{key}` has no `signature_ref`"
-        if ref not in manifest_roles:
-            return f"Lean obligation `{key}` references unknown signature atom `{ref}`"
-        if ref in covered_manifest_refs:
-            return f"Lean signature atom `{ref}` is referenced by multiple obligations"
-        if lean_index[key] != manifest_roles[ref]:
-            return f"Lean obligation `{key}` kind does not match signature atom `{ref}` role"
-        recorded_atom_digest = required_string(value.get("signature_atom_sha256"))
-        if not recorded_atom_digest:
-            return f"Lean obligation `{key}` has no `signature_atom_sha256`"
-        if recorded_atom_digest != manifest_atom_digests[ref]:
-            return f"Lean obligation `{key}` signature atom digest is stale"
-        covered_manifest_refs[ref] = key
-        lean_manifest_atoms[key] = manifest_atoms_by_ref[ref]
-    missing_manifest_refs = set(manifest_roles) - set(covered_manifest_refs)
-    if missing_manifest_refs:
-        return "Lean obligations omit signature atom(s): " + ", ".join(
-            sorted(missing_manifest_refs)
-        )
-
-    aligned_source: set[str] = set()
-    aligned_lean: set[str] = set()
-    has_directional_alignment = False
-    for value in alignment:
-        if not isinstance(value, dict):
-            return "obligation alignment entry is not an object"
-        source_id = required_string(value.get("source_id"))
-        lean_id = required_string(value.get("lean_id"))
-        relation = required_string(value.get("relation")).lower()
-        basis = required_string(value.get("semantic_basis"))
-        bridge = required_string(value.get("bridge_statement"))
-        if source_id not in source_index or lean_id not in lean_index:
-            return "obligation alignment references an unknown id"
-        if source_index[source_id] != lean_index[lean_id]:
-            return "obligation alignment mixes assumption and conclusion kinds"
-        if relation not in {"equivalent", "source_implies_lean", "lean_implies_source"}:
-            return "obligation alignment has an invalid semantic relation"
-        if not basis:
-            return "obligation alignment lacks a semantic basis"
-        if NAME_ONLY_SEMANTIC_EVIDENCE_RE.search(basis):
-            return "obligation alignment semantic_basis relies on names instead of semantics"
-        if not bridge:
-            return "obligation alignment lacks an explicit semantic bridge statement"
-        if NAME_ONLY_SEMANTIC_EVIDENCE_RE.search(bridge):
-            return "obligation alignment bridge_statement relies on names instead of semantics"
-        aligned_source.add(source_id)
-        aligned_lean.add(lean_id)
-        has_directional_alignment = has_directional_alignment or relation != "equivalent"
-
-    source_conclusions = {
-        key for key, kind in source_index.items() if kind == "conclusion"
-    }
-    source_inputs = {
-        key for key, kind in source_index.items() if kind in {"parameter", "assumption"}
-    }
-    lean_inputs = {
-        key for key, kind in lean_index.items() if kind in {"parameter", "assumption"}
-    }
-    lean_conclusions = {
-        key for key, kind in lean_index.items() if kind == "conclusion"
-    }
-    missing_conclusions = source_conclusions - aligned_source
-    missing_source_inputs = source_inputs - aligned_source
-    unjustified_inputs = lean_inputs - aligned_lean
-    missing_lean_conclusions = lean_conclusions - aligned_lean
-
-    def recorded_gap_ids(field: str) -> tuple[set[str], str]:
-        values = raw.get(field)
-        if not isinstance(values, list):
-            return set(), f"missing explicit `{field}` list"
-        if any(not isinstance(value, str) or not value.strip() for value in values):
-            return set(), f"`{field}` must contain nonempty obligation ids"
-        normalized = [value.strip() for value in values]
-        if len(normalized) != len(set(normalized)):
-            return set(), f"`{field}` contains duplicate obligation ids"
-        return set(normalized), ""
-
-    unmatched, error = recorded_gap_ids("unmatched_source_conclusions")
-    if error:
-        return error
-    unjustified, error = recorded_gap_ids("unjustified_lean_inputs")
-    if error:
-        return error
-    if unmatched != missing_conclusions:
-        return "`unmatched_source_conclusions` does not equal the unmatched source conclusion ids"
-    unmatched_inputs, error = recorded_gap_ids("unmatched_source_inputs")
-    if error:
-        return error
-    unmatched_lean_conclusions, error = recorded_gap_ids("unmatched_lean_conclusions")
-    if error:
-        return error
-    if unmatched_inputs != missing_source_inputs:
-        return "`unmatched_source_inputs` does not equal the unmatched source input ids"
-    if unjustified != unjustified_inputs:
-        return "`unjustified_lean_inputs` does not equal the unjustified Lean input ids"
-    if unmatched_lean_conclusions != missing_lean_conclusions:
-        return "`unmatched_lean_conclusions` does not equal the unmatched Lean conclusion ids"
-
-    verdict = _normalize_llm_match_judgment(
-        raw.get("judgment")
-        or raw.get("verdict")
-        or raw.get("status")
-        or raw.get("matches")
-    )
-    resolution = _normalize_llm_match_resolution(
-        raw.get("resolution")
-        or raw.get("accepted_resolution")
-        or raw.get("review_resolution")
-    )
-    # A visible-premise boundary may differ from the source only by its
-    # explicitly recorded extra Lean inputs.  It must not use the mismatch
-    # verdict to bypass checks for weakened quantification, computational
-    # capability, runner provenance, or cross-world result preservation.
-    scope_verdict = (
-        "matches"
-        if verdict == "matches"
-        or (
-            verdict == "mismatch"
-            and resolution == CONDITIONAL_BOUNDARY_RESOLUTION
-        )
-        else verdict
-    )
-    scope_error = semantic_scope_review_error(
-        raw.get("semantic_scope_review"),
-        source_index,
-        lean_index,
-        lean_manifest_atoms,
-        scope_verdict,
-        require_source_definition_semantics_review=(
-            require_source_definition_semantics_review
-        ),
-    )
-    if scope_error:
-        return scope_error
-    semantic_scope = raw.get("semantic_scope_review")
-    algorithm_review = (
-        semantic_scope.get("algorithm_review")
-        if isinstance(semantic_scope, dict)
-        and isinstance(semantic_scope.get("algorithm_review"), dict)
-        else {}
-    )
-    source_claim_level = str(
-        algorithm_review.get("source_claim_level") or ""
-    ).strip().lower()
-    lean_claim_level = str(
-        algorithm_review.get("lean_claim_level") or ""
-    ).strip().lower()
-    if (
-        verdict == "matches"
-        and source_claim_level == "polynomial_time"
-        and lean_claim_level == "polynomial_time"
-    ):
-        complexity_error = operational_complexity_review_error(
-            raw.get("operational_complexity_review"),
-            str(
-                algorithm_review.get("complexity_lean_conclusion_id") or ""
-            ).strip(),
-        )
-        if complexity_error:
-            return complexity_error
-    all_gaps = unmatched | unmatched_inputs | unjustified | unmatched_lean_conclusions
-    if verdict == "matches" and (all_gaps or has_directional_alignment):
-        return "matches judgment records a semantic obligation gap"
-    if verdict in {"mismatch", "uncertain"} and not (all_gaps or has_directional_alignment):
-        return f"{verdict} judgment records no semantic obligation gap"
-    return ""
 
 
 def _is_conditional_boundary_judgment(judgment: dict[str, Any]) -> bool:
@@ -7603,8 +5273,10 @@ def load_llm_statement_judgments(
                     inventory=source_route_inventory,
                     require_statement_target=True,
                     require_verbatim_source_inputs=(
-                        item_prompt_version
-                        == REQUIRED_LLM_STATEMENT_PROMPT_VERSION
+                        statement_review_requires_verbatim_source_inputs(
+                            raw_value,
+                            prompt_version=item_prompt_version,
+                        )
                     ),
                 )
                 if require_source_routes
@@ -7802,7 +5474,10 @@ def _llm_statement_judgment_is_stale(
             or not source_input_bundle_sha256
             or recorded_signature != signature_sha256
             or recorded_lean != statement_digest(lean_statement)
-            or recorded_paper != source_input_bundle_sha256
+            # The semantic target is the literal source text supplied to the
+            # reviewer.  The distinct bundle digest binds that text to its
+            # byte-pinned anchors and permitted context.
+            or recorded_paper != statement_digest(paper_statement)
             or recorded_source_input != source_input_bundle_sha256
             or str(judgment.get("source_input_protocol") or "").strip()
             != "verbatim_source_anchor_bundle_v1"
@@ -7859,7 +5534,6 @@ def _semantic_statement_judgment_identity(
         if not (
             SOURCE_ARTIFACT_SHA256_RE.fullmatch(source_input)
             and SOURCE_ARTIFACT_SHA256_RE.fullmatch(direct_lean)
-            and values[1] == source_input
         ):
             return None
         return ("v11", values[0], source_input, direct_lean)
@@ -9006,6 +6680,9 @@ def load_review_slice_payload(
                 slices = review_surface.get("slices")
                 assumption_names = review_surface.get("assumption_names")
                 auxiliary_names = review_surface.get("auxiliary_names")
+                quarantined_auxiliary_names = review_surface.get(
+                    "quarantined_auxiliary_names"
+                )
                 source_definition_names = review_surface.get("source_definition_names")
                 proposition_spec_proofs = review_surface.get("proposition_spec_proofs")
                 source_component_statement_routes = review_surface.get(
@@ -9034,6 +6711,10 @@ def load_review_slice_payload(
                     payload["assumption_names"] = assumption_names
                 if isinstance(auxiliary_names, list):
                     payload["auxiliary_names"] = auxiliary_names
+                if isinstance(quarantined_auxiliary_names, list):
+                    payload["quarantined_auxiliary_names"] = (
+                        quarantined_auxiliary_names
+                    )
                 if isinstance(source_definition_names, list):
                     payload["source_definition_names"] = source_definition_names
                 if isinstance(proposition_spec_proofs, dict):
@@ -9053,6 +6734,7 @@ def load_review_slice_payload(
                     or "slices" in payload
                     or "assumption_names" in payload
                     or "auxiliary_names" in payload
+                    or "quarantined_auxiliary_names" in payload
                     or "source_definition_names" in payload
                     or "proposition_spec_proofs" in payload
                     or "source_component_statement_routes" in payload
@@ -9121,6 +6803,22 @@ def review_auxiliary_names(folder: Path) -> set[str]:
     return {str(name).strip() for name in names if str(name).strip()}
 
 
+def review_quarantined_auxiliary_names(folder: Path) -> set[str]:
+    """Return auxiliary proof rows barred from paper-claim review credit."""
+
+    payload = load_review_slice_payload(folder)
+    names = payload.get("quarantined_auxiliary_names")
+    if not isinstance(names, list):
+        return set()
+    return {str(name).strip() for name in names if str(name).strip()}
+
+
+def quarantined_support_review_items(folder: Path) -> dict[str, ReviewItem]:
+    """Return exact cached support rows without exposing them as paper claims."""
+
+    return QUARANTINED_SUPPORT_REVIEW_ITEM_CACHE.get(str(folder.resolve()), {})
+
+
 def review_source_definition_names(folder: Path) -> set[str]:
     """Return reviewed Prop definitions explicitly classified as source definitions."""
 
@@ -9145,6 +6843,28 @@ def review_proposition_spec_proofs(folder: Path) -> dict[str, str]:
     }
 
 
+def _configured_proposition_spec_proof_declaration(
+    specification: ReviewItem,
+) -> str:
+    """Resolve one configured proof name relative to its exact Spec namespace.
+
+    ``status.json`` deliberately permits concise proof names because the
+    specification card already fixes the namespace.  The resulting full name
+    is nevertheless an exact declaration coordinate: no global short-name
+    lookup or spelling heuristic is used for Lean-Meta proof credit.
+    """
+
+    proof_name = str(specification.proposition_spec_proof or "").strip()
+    if not proof_name:
+        return ""
+    if "." in proof_name:
+        return proof_name
+    specification_name = str(specification.full_name or "").strip()
+    if "." not in specification_name:
+        return ""
+    return specification_name.rsplit(".", 1)[0] + "." + proof_name
+
+
 def attach_current_lean_semantic_contract_results(
     folder: Path,
     interface_path: Path,
@@ -9159,31 +6879,32 @@ def attach_current_lean_semantic_contract_results(
     does not recreate either semantic operation.
     """
 
-    by_full_name = {
-        item.full_name: item for item in items if str(item.full_name or "").strip()
-    }
-    by_short_name: dict[str, list[ReviewItem]] = {}
-    for item in items:
-        by_short_name.setdefault(item.name, []).append(item)
+    source_contract_routes: dict[str, tuple[str, str, str]] = {}
+    source_map = paper_statement_map_payload(folder)
+    if isinstance(source_map, Mapping) and typed_route_validation_required(source_map):
+        route_set = EvidenceRouteSet.from_source_map(
+            source_map,
+        )
+        for route in route_set.result_routes():
+            if route.evidence_mode in {"proves", "definitionally_realizes"}:
+                source_contract_routes[route.spec_declaration] = (
+                    route.spec_declaration,
+                    route.evidence_declaration,
+                    route.evidence_mode,
+                )
 
     requested: list[tuple[ReviewItem, tuple[str, str, str]]] = []
     for specification in items:
-        proof_name = str(specification.proposition_spec_proof or "").strip()
-        if not proof_name or specification.proposition_spec_role != "proof_routed":
-            continue
-        proof_full_name = proof_name
-        evidence = by_full_name.get(proof_name)
-        if evidence is None:
-            candidates = by_short_name.get(proof_name, [])
-            if len(candidates) == 1:
-                evidence = candidates[0]
-        if evidence is not None:
-            proof_full_name = evidence.full_name
-        elif "." not in proof_full_name:
-            proof_full_name = f"{folder.name}.{proof_full_name}"
-        if not specification.full_name or not proof_full_name:
-            continue
-        route = (specification.full_name, proof_full_name, "proves")
+        route = source_contract_routes.get(str(specification.full_name or ""))
+        if route is None:
+            if specification.proposition_spec_role != "proof_routed":
+                continue
+            proof_full_name = _configured_proposition_spec_proof_declaration(
+                specification
+            )
+            if not specification.full_name or not proof_full_name:
+                continue
+            route = (specification.full_name, proof_full_name, "proves")
         requested.append((specification, route))
 
     if not requested:
@@ -9230,27 +6951,62 @@ def attach_current_lean_semantic_contract_results(
         )
 
 
+def cached_semantic_contract_results_need_refresh(
+    folder: Path,
+    items: Iterable[ReviewItem],
+) -> bool:
+    """Return whether a selected exact source contract lacks a Lean verdict."""
+
+    source_map = paper_statement_map_payload(folder)
+    specs: set[str] = set()
+    if isinstance(source_map, Mapping) and typed_route_validation_required(source_map):
+        route_set = EvidenceRouteSet.from_source_map(
+            source_map,
+        )
+        specs = {
+            route.spec_declaration
+            for route in route_set.result_routes()
+            if route.evidence_mode in {"proves", "definitionally_realizes"}
+        }
+    return any(
+        str(item.full_name or "").strip() in specs
+        and (
+            not isinstance(item.semantic_contract_lean_match_verified, bool)
+            or not isinstance(
+                item.semantic_contract_lean_transparency_verified, bool
+            )
+        )
+        for item in items
+    )
+
+
 def is_assumption_item_name(name: str) -> bool:
     """Heuristic for assumption declarations before status.json has been filled."""
 
     return bool(ASSUMPTION_DECL_NAME_RE.search(name))
 
 
-def review_item_matches_slice_rule(item: ReviewItem, rule: dict[str, Any]) -> bool:
-    """Check whether an item belongs to one review slice rule."""
+def review_row_matches_slice_rule(
+    name: str,
+    line_number: int,
+    rule: Mapping[str, Any],
+) -> bool:
+    """Check one typed row coordinate against a configured review slice."""
 
     names = rule.get("names")
-    if isinstance(names, list) and item.name in {str(name) for name in names}:
+    if isinstance(names, list) and name in {str(value) for value in names}:
         return True
 
     prefixes = rule.get("prefixes")
-    if isinstance(prefixes, list) and any(item.name.startswith(str(prefix)) for prefix in prefixes):
+    if isinstance(prefixes, list) and any(
+        name.startswith(str(prefix)) for prefix in prefixes
+    ):
         return True
 
     pattern = rule.get("name_regex")
     if isinstance(pattern, str) and pattern.strip():
         try:
-            if re.search(pattern, item.name):
+            if re.search(pattern, name):
                 return True
         except re.error:
             pass
@@ -9258,12 +7014,18 @@ def review_item_matches_slice_rule(item: ReviewItem, rule: dict[str, Any]) -> bo
     line_start = rule.get("line_start")
     line_end = rule.get("line_end")
     if isinstance(line_start, int) or isinstance(line_end, int):
-        start_ok = not isinstance(line_start, int) or item.line_number >= line_start
-        end_ok = not isinstance(line_end, int) or item.line_number <= line_end
+        start_ok = not isinstance(line_start, int) or line_number >= line_start
+        end_ok = not isinstance(line_end, int) or line_number <= line_end
         if start_ok and end_ok:
             return True
 
     return False
+
+
+def review_item_matches_slice_rule(item: ReviewItem, rule: dict[str, Any]) -> bool:
+    """Check whether a legacy parsed item belongs to one review slice rule."""
+
+    return review_row_matches_slice_rule(item.name, item.line_number, rule)
 
 
 def _review_name_survives_surface_filter(
@@ -9368,6 +7130,111 @@ def filter_items_by_slice(
     if items and {item.slice_id for item in items} == {"all"}:
         return items
     return filtered
+
+
+def attach_review_slices_to_mappings(
+    folder: Path,
+    rows: Iterable[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    """Attach navigation slices to an already selected typed claim surface.
+
+    Current-protocol presentation never needs to manufacture a parser-shaped
+    ``ReviewItem`` merely to assign navigation labels. Claim selection already
+    belongs to ``PreparedReviewSurface``; legacy include/auxiliary filters must
+    not run again here. The same slice predicate remains shared with historical
+    parsed rows above.
+    """
+
+    selected: list[dict[str, Any]] = []
+    for raw in rows:
+        row = dict(raw)
+        name = str(row.get("name") or "").strip()
+        if not name:
+            raise ValueError("typed prepared claim has no navigation name")
+        selected.append(row)
+
+    rules = review_slice_rules(folder)
+    if not rules:
+        for row in selected:
+            row["slice_id"] = "all"
+            row["slice_title"] = "All statements"
+        return selected
+
+    payload = load_review_slice_payload(folder)
+    fallback_title = str(payload.get("fallback_title") or "Other statements")
+    fallback_id = _safe_slice_id(str(payload.get("fallback_id") or "other"))
+    for row in selected:
+        name = str(row.get("name") or "").strip()
+        line_number = row.get("line_number")
+        line = line_number if isinstance(line_number, int) else 0
+        for rule in rules:
+            if review_row_matches_slice_rule(name, line, rule):
+                row["slice_id"] = str(rule["id"])
+                row["slice_title"] = str(rule["title"])
+                break
+        else:
+            row["slice_id"] = fallback_id
+            row["slice_title"] = fallback_title
+    return selected
+
+
+def filter_mapping_rows_by_slice(
+    rows: list[dict[str, Any]],
+    paper_name: str,
+    slice_filter: str | None,
+) -> list[dict[str, Any]]:
+    """Apply the historical slice-selector semantics to typed rows."""
+
+    if not slice_filter or not slice_filter.strip():
+        return rows
+    normalized = slice_filter.strip()
+    paper_part = ""
+    slice_part = normalized
+    if "::" in normalized:
+        paper_part, slice_part = normalized.split("::", 1)
+        if paper_part and paper_part != paper_name:
+            return []
+    slice_part = _safe_slice_id(slice_part)
+    filtered = [row for row in rows if row.get("slice_id") == slice_part]
+    if filtered:
+        return filtered
+    if rows and {str(row.get("slice_id") or "") for row in rows} == {"all"}:
+        return rows
+    return filtered
+
+
+def summarize_mapping_review_slices(
+    rows: Iterable[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    """Summarize typed review slices without a legacy row conversion."""
+
+    order: list[str] = []
+    by_id: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        slice_id = str(row.get("slice_id") or "all")
+        line_number = row.get("line_number")
+        line = line_number if isinstance(line_number, int) else 0
+        if slice_id not in by_id:
+            order.append(slice_id)
+            by_id[slice_id] = {
+                "id": slice_id,
+                "title": str(row.get("slice_title") or slice_id),
+                "count": 0,
+                "first_line": line or None,
+                "last_line": line or None,
+            }
+        summary = by_id[slice_id]
+        summary["count"] += 1
+        if line:
+            first_line = summary.get("first_line")
+            last_line = summary.get("last_line")
+            summary["first_line"] = (
+                line if first_line is None else min(first_line, line)
+            )
+            summary["last_line"] = (
+                line if last_line is None else max(last_line, line)
+            )
+    return [by_id[slice_id] for slice_id in order]
 
 
 def _is_interface_decl_boundary(line: str) -> bool:
@@ -9504,7 +7371,7 @@ def collect_review_decl_text(lines: list[str], start: int, kind: str) -> tuple[s
             top_level_let=top_level_let,
         )
         if assignment_index is not None:
-            if kind in {"def", "abbrev"}:
+            if kind in {"def", "abbrev", "instance"}:
                 while j + 1 < len(lines) and not _is_interface_decl_boundary(lines[j + 1]):
                     j += 1
                     sig_lines.append(lines[j])
@@ -9648,6 +7515,9 @@ def parse_interface_items(
     include_names = review_filter_names(paper_folder)
     assumption_names = review_assumption_names(paper_folder)
     auxiliary_names = review_auxiliary_names(paper_folder)
+    quarantined_auxiliary_names = review_quarantined_auxiliary_names(
+        paper_folder
+    )
     source_definition_names = review_source_definition_names(paper_folder)
     proposition_spec_proofs = review_proposition_spec_proofs(paper_folder)
     assumption_judgments = load_llm_assumption_judgments(paper_folder)
@@ -9688,6 +7558,8 @@ def parse_interface_items(
             if _review_name_survives_surface_filter(
                 row[1], include_names, assumption_names, auxiliary_names
             )
+            or row[1] in quarantined_auxiliary_names
+            or row[2] in quarantined_auxiliary_names
         ]
 
     check_maps: dict[Path, dict[str, str]] = {}
@@ -9790,6 +7662,29 @@ def parse_interface_items(
                 paper_folder, resume_bindings, context, completed
             )
 
+        def manifest_batch_progress(event: Mapping[str, Any]) -> None:
+            if progress is None:
+                return
+            batch = int(event.get("batch_number") or 0)
+            total = int(event.get("batch_total") or 0)
+            roots = int(event.get("root_count") or 0)
+            status = str(event.get("status") or "unknown")
+            message = (
+                f"Lean manifest surface {source_module}: "
+                f"batch {batch}/{total} {status} ({roots} roots"
+            )
+            if status == "finished":
+                message += (
+                    f"; {int(event.get('completed_count') or 0)} complete; "
+                    f"{int(event.get('missing_count') or 0)} missing"
+                )
+            progress(message + ")")
+
+        manifest_progress_kwargs: dict[str, object] = {}
+        if progress is not None:
+            manifest_progress_kwargs["progress_callback"] = (
+                manifest_batch_progress
+            )
         signature_maps[source_path] = run_lean_signature_manifests(
             ROOT,
             source_module,
@@ -9798,6 +7693,7 @@ def parse_interface_items(
             semantic_dependency_modules=dependency_modules,
             build_input_provider=build_input_provider,
             manifest_checkpoint=checkpoint,
+            **manifest_progress_kwargs,
         )
         missing_declarations = sorted(
             set(declaration_names) - set(signature_maps[source_path])
@@ -10038,6 +7934,18 @@ def parse_interface_items(
         out,
         build_input_provider=build_input_provider,
     )
+    support_items: dict[str, ReviewItem] = {}
+    for item in out:
+        if (
+            item.name in quarantined_auxiliary_names
+            or item.full_name in quarantined_auxiliary_names
+        ):
+            support_items[item.name] = item
+            if item.full_name:
+                support_items[item.full_name] = item
+    QUARANTINED_SUPPORT_REVIEW_ITEM_CACHE[
+        str(paper_folder.resolve())
+    ] = support_items
     result = apply_review_slices(paper_folder, out)
     if (
         owns_build_input_provider
@@ -11200,6 +9108,8 @@ def current_review_signature_manifest_source_coordinates(
 def current_review_signature_manifest_bindings(
     folder: Path,
     validated_configured_review_rows: Iterable[Mapping[str, Any]],
+    *,
+    semantic_reuse_authority: CurrentSemanticReuseAuthority | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Project independently validated raw rows onto exact dashboard sources.
 
@@ -11258,10 +9168,27 @@ def current_review_signature_manifest_bindings(
             exact_source = _dashboard_read_bytes(source_path)
         except (OSError, RuntimeError, ValueError, DashboardFrozenInputError):
             continue
+        current_source_sha256 = hashlib.sha256(exact_source).hexdigest()
+        semantic_source_revalidated = bool(
+            isinstance(semantic_reuse_authority, CurrentSemanticReuseAuthority)
+            and qualified in semantic_reuse_authority.reviewed_declarations
+            and any(
+                relative
+                == source_path.resolve().relative_to(root).as_posix()
+                and state == "present"
+                and digest == current_source_sha256
+                for relative, state, digest in (
+                    semantic_reuse_authority.watched_repository_material
+                )
+            )
+        )
         if (
             recorded_source != source_path.resolve()
             or not re.fullmatch(r"[0-9a-f]{64}", source_sha256)
-            or hashlib.sha256(exact_source).hexdigest() != source_sha256
+            or (
+                current_source_sha256 != source_sha256
+                and not semantic_source_revalidated
+            )
             or not re.fullmatch(r"[0-9a-f]{64}", signature_sha256)
             or not re.fullmatch(r"[0-9a-f]{64}", dependency_sha256)
             or not re.fullmatch(r"[0-9a-f]{64}", proposition_graph_sha256)
@@ -11312,20 +9239,12 @@ def _prior_review_manifest_reuse_inputs(
     if not isinstance(raw_payload, dict) or not isinstance(cache_payload, dict):
         return None
     try:
-        try:
-            from scripts.audit_evidence_integrity import (
-                source_record_raw_scan_completeness_error,
-            )
-            from scripts.source_record_integrity import (
-                source_record_audit_receipt_error,
-            )
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (  # type: ignore[no-redef]
-                source_record_raw_scan_completeness_error,
-            )
-            from source_record_integrity import (  # type: ignore[no-redef]
-                source_record_audit_receipt_error,
-            )
+        from scripts.audit_evidence_integrity import (
+            source_record_raw_scan_completeness_error,
+        )
+        from scripts.source_record_integrity import (
+            source_record_audit_receipt_error,
+        )
         if source_record_audit_receipt_error(
             raw_payload
         ) or source_record_raw_scan_completeness_error(raw_payload):
@@ -11422,6 +9341,7 @@ def prime_review_signature_manifest_store(
     *,
     allow_migration_write: bool = True,
     validated_configured_review_rows: Iterable[Mapping[str, Any]] | None = None,
+    semantic_reuse_authority: CurrentSemanticReuseAuthority | None = None,
 ) -> dict[str, Any]:
     """Seed exact-context roots from current source or closeout bindings.
 
@@ -11480,8 +9400,34 @@ def prime_review_signature_manifest_store(
     )
     raw_bindings: dict[str, dict[str, Any]] = {}
     raw_bindings = current_review_signature_manifest_bindings(
-        folder, configured_rows
+        folder,
+        configured_rows,
+        semantic_reuse_authority=semantic_reuse_authority,
     )
+    semantic_revalidated_bindings: dict[str, dict[str, str]] = {}
+    if isinstance(semantic_reuse_authority, CurrentSemanticReuseAuthority):
+        configured_names = {
+            str(row.get("qualified_declaration") or "").strip()
+            for row in configured_rows
+            if isinstance(row, Mapping)
+        }
+        if (
+            configured_names
+            and configured_names
+            == set(semantic_reuse_authority.reviewed_declarations)
+        ):
+            semantic_revalidated_bindings = {
+                qualified: {
+                    field: str(binding.get(field) or "").strip().lower()
+                    for field in (
+                        "elaborated_signature_sha256",
+                        "semantic_dependency_sha256",
+                        "elaborated_proposition_graph_sha256",
+                    )
+                }
+                for qualified, binding in raw_bindings.items()
+                if qualified in configured_names
+            }
     bindings: dict[str, dict[str, Any]] = {
         qualified: dict(binding)
         for qualified, binding in source_bindings.items()
@@ -11505,6 +9451,8 @@ def prime_review_signature_manifest_store(
             paper_dir=folder,
             current_declaration_bindings=bindings,
             current_contexts=current_contexts,
+            requested_declarations=bindings,
+            semantic_revalidated_bindings=semantic_revalidated_bindings,
             context_provider=_unavailable_manifest_cache_context,
         )
     else:
@@ -11629,7 +9577,96 @@ def publish_review_signature_manifest_store(
     )
 
 
-def rebind_cached_review_sidecars(folder: Path, items: list[ReviewItem]) -> None:
+def _rebind_cached_v11_source_spec_sidecar(
+    folder: Path,
+    items: list[ReviewItem],
+    *,
+    semantic_reuse_authority: CurrentSemanticReuseAuthority | None = None,
+) -> None:
+    """Project v11 judgments only from an exact-current bounded Lean cache."""
+
+    specification_names = sorted(
+        {
+            str(item.full_name or "").strip()
+            for item in items
+            if str(item.full_name or "").strip().endswith("Spec")
+        }
+    )
+    if not specification_names:
+        return
+    try:
+        from scripts.current_closeout import review_surface as packet
+
+        if packet._current_packet_lean_cache(
+            folder,
+            specification_names,
+            semantic_reuse_authority=semantic_reuse_authority,
+        ) is None:
+            return
+    except Exception:  # noqa: BLE001 - unavailable cache fails closed.
+        return
+    claim_rows = human_review_claim_items(
+        folder,
+        items,
+        semantic_reuse_authority=semantic_reuse_authority,
+    )
+    bind_current_v11_source_spec_screening(folder, claim_rows)
+
+    _project_v11_claim_rows_onto_review_items(items, claim_rows)
+
+
+def _project_v11_claim_rows_onto_review_items(
+    items: list[ReviewItem],
+    claim_rows: list[dict[str, Any]],
+) -> None:
+    """Project authenticated v11 claim evidence onto strict audit rows.
+
+    Human claim assembly may authenticate a current expanded-Spec target even
+    when an older serialized row cache cannot itself be rebound without a
+    fresh projection.  Statement and coverage checks consume ``ReviewItem``
+    objects, while the dashboard and packet consume claim dictionaries.  Keep
+    those two views consistent by copying only the already-authenticated v11
+    fields from the latter onto the exact matching declaration.
+    """
+
+    claims_by_name = {
+        str(row.get("full_name") or "").strip(): row
+        for row in claim_rows
+        if str(row.get("full_name") or "").strip()
+    }
+    v11_fields = (
+        "llm_match_judgment",
+        "llm_match_reason",
+        "llm_match_stale",
+        "llm_match_source",
+        "llm_match_validator",
+        "llm_match_validator_type",
+        "llm_match_validated_at",
+        "llm_match_lean_statement_sha256",
+        "llm_match_paper_statement_sha256",
+        "llm_match_resolution",
+        "llm_match_boundary_type",
+        "llm_match_boundary_names",
+        "llm_match_conditional_premises",
+        "llm_match_resolution_reason",
+        "llm_match_source_routes",
+    )
+    for item in items:
+        claim = claims_by_name.get(str(item.full_name or "").strip())
+        if not isinstance(claim, Mapping) or claim.get("llm_match_source") != Path(
+            V11_RAW_SOURCE_SPEC_SCREENING_FILE
+        ).name:
+            continue
+        for field in v11_fields:
+            setattr(item, field, claim.get(field, getattr(item, field)))
+
+
+def rebind_cached_review_sidecars(
+    folder: Path,
+    items: list[ReviewItem],
+    *,
+    semantic_reuse_authority: CurrentSemanticReuseAuthority | None = None,
+) -> None:
     """Refresh mutable LLM evidence without re-extracting Lean signatures.
 
     The cache owns syntactic declarations, elaborated signatures, and source
@@ -11752,6 +9789,15 @@ def rebind_cached_review_sidecars(folder: Path, items: list[ReviewItem]) -> None
             or bool(assumption_judgment.get("prompt_version_stale"))
             or bool(assumption_judgment.get("metadata_missing"))
         )
+    # The v11 raw-source screen is the authoritative row-local semantic
+    # judgment for transparent Specs. Project it onto strict coverage rows
+    # only when the bounded packet cache authenticates the current expanded
+    # Spec surface; never trigger an implicit Lean walk from a cache rebind.
+    _rebind_cached_v11_source_spec_sidecar(
+        folder,
+        items,
+        semantic_reuse_authority=semantic_reuse_authority,
+    )
     SIGNATURE_MANIFEST_CACHE[str(folder.resolve())] = manifests
 
 
@@ -11763,6 +9809,7 @@ def load_cached_review_rows(
     build_input_provider: RepositoryBuildInputSnapshotProvider | None = None,
     persist_rebind: bool = True,
     cache_payload: Mapping[str, Any] | None = None,
+    semantic_reuse_authority: CurrentSemanticReuseAuthority | None = None,
 ) -> list[ReviewItem] | None:
     """Load cached rows when their exact payload still matches current inputs.
 
@@ -11951,6 +9998,11 @@ def load_cached_review_rows(
             raw_premise_judgments if isinstance(raw_premise_judgments, dict) else {}
         )
         paper_statement_image_url = str(raw_row.get("paper_statement_image_url") or "").strip()
+        source_item_key = str(raw_row.get("source_item_key") or "").strip()
+        source_input_bundle_sha256 = str(
+            raw_row.get("source_input_bundle_sha256") or ""
+        ).strip().lower()
+        verbatim_source_input = str(raw_row.get("verbatim_source_input") or "")
         line_number = int(raw_row.get("line_number") or 0)
         slice_id = _safe_slice_id(str(raw_row.get("slice_id") or "all"))
         slice_title = str(raw_row.get("slice_title") or "All statements").strip()
@@ -12010,6 +10062,9 @@ def load_cached_review_rows(
                 llm_assumption_paper_statement_sha256=llm_assumption_paper_statement_sha256,
                 llm_assumption_premise_judgments=llm_assumption_premise_judgments,
                 paper_statement_image_url=paper_statement_image_url,
+                source_item_key=source_item_key,
+                source_input_bundle_sha256=source_input_bundle_sha256,
+                verbatim_source_input=verbatim_source_input,
                 line_number=line_number,
                 slice_id=slice_id,
                 slice_title=slice_title or slice_id,
@@ -12043,7 +10098,24 @@ def load_cached_review_rows(
             return None
         out = rebound
     if out:
-        rebind_cached_review_sidecars(folder, out)
+        rebind_cached_review_sidecars(
+            folder,
+            out,
+            semantic_reuse_authority=semantic_reuse_authority,
+        )
+        semantic_contract_rebound = cached_semantic_contract_results_need_refresh(
+            folder, out
+        )
+        if semantic_contract_rebound:
+            provider = build_input_provider or RepositoryBuildInputSnapshotProvider(
+                ROOT
+            )
+            attach_current_lean_semantic_contract_results(
+                folder,
+                review_source_file(folder),
+                out,
+                build_input_provider=provider,
+            )
         if persist_rebind and (
             report_changed
             or statement_map_changed
@@ -12051,6 +10123,7 @@ def load_cached_review_rows(
             or status_rebind_changed
             or static_status_changed
             or direct_route_statement_stale
+            or semantic_contract_rebound
         ):
             payload["hashes"] = hashes
             payload["rows"] = [item.__dict__ for item in out]
@@ -12063,10 +10136,63 @@ def load_cached_review_rows(
                 # The returned rows remain valid. Failure to persist only
                 # causes a later cheap report-text rebind.
                 pass
+    configured_support = review_quarantined_auxiliary_names(folder)
+    support_items: dict[str, ReviewItem] = {}
+    raw_support_rows = payload.get("quarantined_support_rows")
+    if configured_support:
+        if not isinstance(raw_support_rows, list):
+            return None
+        for raw_row in raw_support_rows:
+            if not isinstance(raw_row, dict):
+                return None
+            name = str(raw_row.get("name") or "").strip()
+            full_name = str(raw_row.get("full_name") or "").strip()
+            if name not in configured_support and full_name not in configured_support:
+                return None
+            manifest = raw_row.get("lean_signature_manifest")
+            signature = str(raw_row.get("lean_signature_sha256") or "").strip()
+            lean_statement = str(raw_row.get("lean_statement") or "").strip()
+            if (
+                not name
+                or not lean_statement
+                or not isinstance(manifest, dict)
+                or not signature
+                or signature_manifest_digest(manifest) != signature
+                or str(manifest.get("sha256") or "").strip() != signature
+            ):
+                return None
+            item = ReviewItem(
+                name=name,
+                kind=str(raw_row.get("kind") or "").strip(),
+                lean_statement=lean_statement,
+                paper_statement=str(raw_row.get("paper_statement") or ""),
+                agent_statement=str(raw_row.get("agent_statement") or ""),
+                full_name=full_name,
+                interface_source=str(raw_row.get("interface_source") or ""),
+                lean_signature_manifest=manifest,
+                lean_signature_sha256=signature,
+                line_number=int(raw_row.get("line_number") or 0),
+            )
+            support_items[name] = item
+            if full_name:
+                support_items[full_name] = item
+        resolved_support = {
+            configured
+            for configured in configured_support
+            if configured in support_items
+            or configured.rsplit(".", 1)[-1] in support_items
+        }
+        if resolved_support != configured_support:
+            return None
+    QUARANTINED_SUPPORT_REVIEW_ITEM_CACHE[str(folder.resolve())] = support_items
     return out or None
 
 
-def load_interactive_cached_review_rows(folder: Path) -> list[ReviewItem] | None:
+def load_interactive_cached_review_rows(
+    folder: Path,
+    *,
+    semantic_reuse_authority: CurrentSemanticReuseAuthority | None = None,
+) -> list[ReviewItem] | None:
     """Reuse a cache for human review without rewalking the Lean universe.
 
     A dashboard page is a statement-review surface, not a new proof-closeout
@@ -12108,6 +10234,7 @@ def load_interactive_cached_review_rows(folder: Path) -> list[ReviewItem] | None
         folder,
         source_hashes=hashes,
         cache_payload=payload,
+        semantic_reuse_authority=semantic_reuse_authority,
     )
 
 
@@ -12130,6 +10257,13 @@ def write_cached_review_rows(
         ),
         "hashes": source_hashes if source_hashes is not None else _cache_source_hashes(folder),
         "rows": [item.__dict__ for item in items],
+        "quarantined_support_rows": [
+            item.__dict__
+            for item in {
+                id(item): item
+                for item in quarantined_support_review_items(folder).values()
+            }.values()
+        ],
     }
     if signature_contexts is not None:
         payload["signature_contexts"] = signature_contexts
@@ -12159,6 +10293,7 @@ def review_items_for_paper(
     build_input_provider: RepositoryBuildInputSnapshotProvider | None = None,
     audit_inputs: DashboardAuditInputs | None = None,
     validated_configured_review_rows: Iterable[Mapping[str, Any]] | None = None,
+    semantic_reuse_authority: CurrentSemanticReuseAuthority | None = None,
     progress: Callable[[str], None] | None = None,
     publish_manifest_store: bool = False,
 ) -> list[ReviewItem]:
@@ -12170,6 +10305,11 @@ def review_items_for_paper(
     """
 
     if audit_inputs is not None:
+        semantic_kwargs: dict[str, object] = {}
+        if semantic_reuse_authority is not None:
+            semantic_kwargs["semantic_reuse_authority"] = (
+                semantic_reuse_authority
+            )
         with dashboard_audit_input_scope(audit_inputs):
             return review_items_for_paper(
                 folder,
@@ -12183,6 +10323,7 @@ def review_items_for_paper(
                 ),
                 progress=progress,
                 publish_manifest_store=publish_manifest_store,
+                **semantic_kwargs,
             )
 
     # The ordinary browser path needs the current review statements, not a
@@ -12192,7 +10333,10 @@ def review_items_for_paper(
     # needed.  Strict checks and explicit cache refreshes deliberately bypass
     # this branch and retain the full Lean-closure validation below.
     if use_cache and not require_current_signatures:
-        cached = load_interactive_cached_review_rows(folder)
+        cached = load_interactive_cached_review_rows(
+            folder,
+            semantic_reuse_authority=semantic_reuse_authority,
+        )
         if cached is not None:
             if render_images:
                 attach_rendered_statement_images(folder, cached)
@@ -12252,6 +10396,11 @@ def review_items_for_paper(
             f"current Lean manifest contexts ready ({len(signature_contexts)} modules)"
         )
         try:
+            semantic_prime_kwargs: dict[str, object] = {}
+            if semantic_reuse_authority is not None:
+                semantic_prime_kwargs["semantic_reuse_authority"] = (
+                    semantic_reuse_authority
+                )
             prime_diagnostics = prime_review_signature_manifest_store(
                 folder,
                 signature_contexts,
@@ -12259,6 +10408,7 @@ def review_items_for_paper(
                 validated_configured_review_rows=(
                     validated_configured_review_rows
                 ),
+                **semantic_prime_kwargs,
             )
             # An interactive refresh has no transaction-owned raw rows, so the
             # primary prime intentionally declines to read mutable cache state.
@@ -12485,6 +10635,59 @@ def semantic_statement_review_items(
     ]
 
 
+def _current_bound_v11_statement_judgment(
+    item: ReviewItem,
+) -> dict[str, Any] | None:
+    """Return a v11 judgment attached by the current cache-rebind transaction.
+
+    ``_rebind_cached_v11_source_spec_sidecar`` clears/reloads ordinary sidecars
+    first and attaches these fields only after the exact current packet cache
+    and raw-source/expanded-Spec ledger match.  These checks prevent a partial
+    or hand-constructed row from acquiring the same authority after that
+    transaction boundary.
+    """
+
+    if (
+        item.llm_match_source
+        != Path(V11_RAW_SOURCE_SPEC_SCREENING_FILE).name
+        or item.llm_match_stale
+        or not item.full_name.endswith("Spec")
+    ):
+        return None
+    judgment = _normalize_llm_match_judgment(item.llm_match_judgment)
+    if judgment not in {
+        *POSITIVE_SEMANTIC_MATCH_JUDGMENTS,
+        "mismatch",
+        "uncertain",
+    }:
+        return None
+    if (
+        item.llm_match_paper_statement_sha256
+        != statement_digest(item.paper_statement)
+        or not SOURCE_ARTIFACT_SHA256_RE.fullmatch(
+            item.llm_match_lean_statement_sha256
+        )
+        or not SOURCE_ARTIFACT_SHA256_RE.fullmatch(
+            item.source_input_bundle_sha256
+        )
+        or not item.llm_match_validator.strip()
+        or not item.llm_match_validated_at.strip()
+    ):
+        return None
+    return {
+        "judgment": judgment,
+        "reason": item.llm_match_reason,
+        "source": item.llm_match_source,
+        "validator": item.llm_match_validator,
+        "validator_type": item.llm_match_validator_type,
+        "validated_at": item.llm_match_validated_at,
+        "lean_statement_sha256": item.llm_match_lean_statement_sha256,
+        "paper_statement_sha256": item.llm_match_paper_statement_sha256,
+        "source_input_bundle_sha256": item.source_input_bundle_sha256,
+        "current_bound_v11": True,
+    }
+
+
 def review_surface_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[str, Any]:
     """Summarize row-count thresholds and optional LLM review-surface audit status."""
 
@@ -12573,41 +10776,57 @@ def library_semantic_review_summary(
         [dict(entry) for entry in entries_override]
         if entries_override is not None
         else human_review_library_prerequisites(
-            folder, [item.__dict__ for item in items]
+            folder,
+            [item.__dict__ for item in items],
+            semantic_targets_override={},
         )
     )
+    return semantic_prerequisite_review_summary(entries)
+
+
+def semantic_prerequisite_review_summary(
+    entries: Iterable[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Summarize prepared prerequisite cards without rediscovering them.
+
+    This helper is presentation-only. Its inputs have already been selected
+    and source-bound by the typed packet surface; it neither parses Lean nor
+    grants closeout acceptance.
+    """
+
+    prepared_entries = [dict(entry) for entry in entries]
     pending = [
         str(entry.get("lean_name") or "")
-        for entry in entries
+        for entry in prepared_entries
         if not entry.get("verbatim_source_input")
         or str(entry.get("semantic_judgment") or "") == "not recorded"
     ]
     stale = [
         str(entry.get("lean_name") or "")
-        for entry in entries
+        for entry in prepared_entries
         if str(entry.get("semantic_judgment") or "") != "not recorded"
         and not bool(entry.get("semantic_current"))
     ]
     mismatch = [
         str(entry.get("lean_name") or "")
-        for entry in entries
+        for entry in prepared_entries
         if bool(entry.get("semantic_current"))
         and str(entry.get("semantic_judgment") or "") == "mismatch"
     ]
     uncertain = [
         str(entry.get("lean_name") or "")
-        for entry in entries
+        for entry in prepared_entries
         if bool(entry.get("semantic_current"))
         and str(entry.get("semantic_judgment") or "") == "uncertain"
     ]
     matches = sum(
         1
-        for entry in entries
+        for entry in prepared_entries
         if bool(entry.get("semantic_current"))
         and str(entry.get("semantic_judgment") or "") == "matches"
     )
     return {
-        "row_count": len(entries),
+        "row_count": len(prepared_entries),
         "current_matches": matches,
         "pending": pending,
         "pending_count": len(pending),
@@ -12662,18 +10881,24 @@ def statement_translation_audit_summary(
     semantic_judgment_index = _semantic_statement_judgment_index(judgments)
 
     for item in statement_items:
-        semantic_key, semantic_judgment, semantic_ambiguous = (
-            _current_semantic_statement_judgment_for_item(
-                item,
-                judgments,
-                identity_index=semantic_judgment_index,
+        bound_v11_judgment = _current_bound_v11_statement_judgment(item)
+        if bound_v11_judgment is not None:
+            semantic_key = item.name
+            semantic_judgment = bound_v11_judgment
+            semantic_ambiguous = False
+        else:
+            semantic_key, semantic_judgment, semantic_ambiguous = (
+                _current_semantic_statement_judgment_for_item(
+                    item,
+                    judgments,
+                    identity_index=semantic_judgment_index,
+                )
             )
-        )
         if semantic_ambiguous:
             ambiguous_semantic_judgment.append(item.name)
         if semantic_judgment is not None:
             semantic_current_judgment_count += 1
-            if semantic_key != item.name:
+            if bound_v11_judgment is None and semantic_key != item.name:
                 semantic_rebound_judgment.append(item.name)
 
         # Lean-to-TeX drafts are optional explanatory renderings.  They are
@@ -12707,7 +10932,7 @@ def statement_translation_audit_summary(
             continue
 
         value = str(judgment.get("judgment") or "").strip()
-        if value == "matches":
+        if value in POSITIVE_SEMANTIC_MATCH_JUDGMENTS:
             matches += 1
         elif value == "mismatch":
             mismatch.append(item.name)
@@ -12719,7 +10944,7 @@ def statement_translation_audit_summary(
             uncertain.append(item.name)
         else:
             unknown.append(item.name)
-        if _llm_statement_judgment_is_stale(
+        if bound_v11_judgment is None and _llm_statement_judgment_is_stale(
             judgment,
             signature_sha256=item.lean_signature_sha256,
             lean_statement=item.lean_statement,
@@ -12745,7 +10970,7 @@ def statement_translation_audit_summary(
     return {
         "row_count": len(statement_items),
         "draft_count": len(draft_entries),
-        "judgment_count": len(judgments),
+        "judgment_count": max(len(judgments), semantic_current_judgment_count),
         "matches": matches,
         "mismatch_count": len(mismatch),
         "conditional_boundary_count": len(conditional_boundary),
@@ -12774,7 +10999,7 @@ def statement_translation_audit_summary(
         "missing_judgment": missing_judgment,
         "stale_judgment": stale_judgment,
         "missing_obligation_ledger": missing_obligation_ledger,
-        "has_completed_audit": bool(judgments),
+        "has_completed_audit": bool(judgments or semantic_current_judgment_count),
         "all_uncertain": all_uncertain,
         "library_prerequisites": library_prerequisites,
         "needs_attention": needs_attention,
@@ -12838,51 +11063,6 @@ def _is_statement_map_source(source: object) -> bool:
     return str(source or "") == PAPER_STATEMENT_MAP_FILE
 
 
-SOURCE_NAMED_CLAIM_RE = re.compile(
-    r"""
-    (?ix)
-    (?:
-        # Literal theorem environments and TeX cross references, including a
-        # source extracted directly from TeX rather than rendered prose.
-        \\begin\s*\{\s*(?:theorem|lemma|proposition|corollary|claim|thm|lem|prop|cor)\*?\s*\}
-      | \\(?:auto|[cC]|eq)?ref\s*\{\s*(?:(?:thm|theorem|lem|lemma|prop|proposition|cor|corollary|claim)[^}]*)\}
-        # Rendered and TeX-ish named references: ``Theorem 2``,
-        # ``Lemma~\\ref{lem:main}``, and ``(Proposition A.1)``.
-      | \b(?:theorem|lemma|proposition|corollary|claim)\b\s*
-        (?:~|\\[,;! ]*|:)?\s*
-        (?:
-            \\(?:auto|[cC]|eq)?ref\s*\{[^}]+\}
-          | \\label\s*\{[^}]+\}
-          | \(?\s*(?:(?-i:[A-Z])(?:\.\d+)+(?:[a-z])?|(?-i:[A-Z])?\d+(?:\.\d+)*(?:[a-z])?|(?-i:[A-Z]))\s*\)?
-        )
-    )
-    """,
-    re.IGNORECASE | re.VERBOSE | re.MULTILINE,
-)
-SOURCE_NAMED_RESULT_PRESENTATION_RE = re.compile(
-    r"""
-    (?imx)
-    (?:
-        \\begin\s*\{\s*(?:theorem|lemma|proposition|corollary|claim|thm|lem|prop|cor)\*?\s*\}
-      | ^\s*(?:\\(?:textbf|emph|textit|paragraph)\s*\{?\s*)?
-        \b(?:theorem|lemma|proposition|corollary|claim)\b\s*
-        (?:~|\\[,;! ]*|:)?\s*
-        (?:
-            \\(?:auto|[cC]|eq)?ref\s*\{[^}]+\}
-          | \\label\s*\{[^}]+\}
-          | \(?\s*(?:(?-i:[A-Z])(?:\.\d+)+(?:[a-z])?|(?-i:[A-Z])?\d+(?:\.\d+)*(?:[a-z])?|(?-i:[A-Z]))\s*\)?
-        )
-      | \b(?:theorem|lemma|proposition|corollary|claim)\b\s*
-        (?:~|\\[,;! ]*|:)?\s*
-        (?:
-            \\(?:auto|[cC]|eq)?ref\s*\{[^}]+\}
-          | \(?\s*(?:(?-i:[A-Z])(?:\.\d+)+(?:[a-z])?|(?-i:[A-Z])?\d+(?:\.\d+)*(?:[a-z])?|(?-i:[A-Z]))\s*\)?
-        )
-        (?:(?![.!?;\n]).){0,80}?\b(?:states?|proves?|establishes?|shows?|asserts?|claims?|guarantees?)\b
-    )
-    """,
-    re.IGNORECASE | re.VERBOSE | re.MULTILINE,
-)
 # The broad presentation matcher above also recognizes an in-text theorem
 # reference.  Scope exclusions need the narrower question: does the *anchored
 # item itself* begin as a labelled formal result?  This pattern intentionally
@@ -12906,24 +11086,6 @@ SOURCE_NAMED_RESULT_HEADING_RE = re.compile(
     """,
     re.IGNORECASE | re.VERBOSE | re.MULTILINE,
 )
-SOURCE_NAMED_ALGORITHM_BLOCK_RE = re.compile(
-    r"""
-    (?ix)
-    (?:
-        \\begin\s*\{\s*(?:algorithm|algorithmic|procedure|method)\*?\s*\}
-      | \\caption\s*\{[^}]*\b(?:algorithm|procedure|method)\b
-      | \b(?:algorithm|procedure|method)\b\s*
-        (?:~|\\[,;! ]*|:)?\s*
-        (?:
-            \\(?:auto|[cC]|eq)?ref\s*\{[^}]+\}
-          | \d+(?:\.\d+)*(?:[a-z])?
-          | (?-i:[A-Z])[A-Za-z0-9_.-]*
-          | :
-        )
-    )
-    """,
-    re.IGNORECASE | re.VERBOSE | re.MULTILINE,
-)
 # Keep performance detection contextual.  In particular, the words
 # ``exponential``, ``quadratic``, ``linear``, and ``polynomial`` alone are
 # ordinary mathematical vocabulary (distributions, utilities, regressions,
@@ -12931,148 +11093,16 @@ SOURCE_NAMED_ALGORITHM_BLOCK_RE = re.compile(
 # not promoted merely because it contains a number.  The patterns below look
 # for resource terminology, asymptotic notation, or a general algorithmic
 # behavior instead.
-SOURCE_COMPLEXITY_TERMINOLOGY_RE = re.compile(
-    r"\b(?:"
-    r"run(?:ning)?\s+time|runtime|time\s+complexity|space\s+complexity|"
-    r"strongly\s+polynomial|polytime|polynomial[-\s]?(?:query|queries)|"
-    r"fixed[-\s]?parameter[-\s]?tractable|fpt|"
-    r"(?:polynomial|linear|quadratic|exponential)\s*(?:[-\s]+)"
-    r"(?:time|runtime|space|work|steps?|operations?|queries|iterations?)|"
-    r"(?:number|count)\s+of\s+(?:arithmetic\s+)?"
-    r"(?:steps?|operations?|queries|iterations?)"
-    r")\b",
-    re.IGNORECASE,
-)
-SOURCE_BIG_O_COMPLEXITY_RE = re.compile(
-    r"""
-    (?ix)
-    (?:
-        (?<![A-Za-z])(?:O|o|Ω|Θ)\s*(?:\\!\s*)?(?:\\left\s*)?\(
-      | \\(?:mathcal|mathrm|operatorname)\s*\{\s*(?:O|o|Omega|Theta|Ω|Θ)\s*\}
-        \s*(?:\\!\s*)?(?:\\left\s*)?\(
-      | \\(?:mathcal|mathrm)\s+(?:O|o|Omega|Theta|Ω|Θ)
-        \s*(?:\\!\s*)?(?:\\left\s*)?\(
-    )
-    """,
-    re.IGNORECASE | re.VERBOSE,
-)
-SOURCE_ALGORITHM_BEHAVIOR_RE = re.compile(
-    r"""
-    (?ix)
-    \b(?:algorithm|procedure|method)\b
-    (?:(?![.!?;\n]).){0,120}?
-    \b(?:
-        runs?|executes?|takes?|terminates?|halts?|outputs?|produces?|returns?|
-        computes?|finds?|achieves?|guarantees?
-    )\b
-    | \b(?:algorithm|procedure|method)\b(?:(?![.!?;\n]).){0,120}?
-      \bis\s+(?:correct|optimal)\b
-    """,
-    re.IGNORECASE | re.VERBOSE,
-)
-SOURCE_GENERAL_OUTPUT_GUARANTEE_RE = re.compile(
-    r"""
-    (?ix)
-    \b(?:outputs?|produces?|returns?|computes?|finds?|terminates?|halts?)\b
-    (?:(?![.!?;\n]).){0,120}?
-    \b(?:for|on)\s+(?:every|all|each|any)\s+(?:input|instance|case|problem)\b
-    """,
-    re.IGNORECASE | re.VERBOSE,
-)
-SOURCE_RESOURCE_BOUND_RE = re.compile(
-    r"""
-    (?ix)
-    \b(?:takes?|requires?|uses?|needs?)\b
-    (?:(?![.!?;\n]).){0,100}?
-    \b(?:time|steps?|operations?|queries|iterations?)\b
-    """,
-    re.IGNORECASE | re.VERBOSE,
-)
-SOURCE_CONTEXTUAL_EFFICIENCY_RE = re.compile(
-    r"""
-    (?ix)
-    (?:
-        \b(?:computationally|algorithmically)\s+(?:efficient|tractable|scalable|fast)\b
-      | \b(?:efficient|tractable|scalable|fast)\s+(?:algorithm|procedure|method|implementation)\b
-      | \b(?:algorithm|procedure|method)\b(?:(?![.!?;\n]).){0,80}?
-        \b(?:efficient|tractable|scalable|fast)\b
-      | \b(?:computed|solved|implemented|tested|evaluated|verified)\s+efficiently\b
-    )
-    """,
-    re.IGNORECASE | re.VERBOSE,
-)
 # The computational-illustration exception is intentionally a narrow positive
 # classification.  A Figure/Table/plot label only tells us where source prose
 # appears; it does not establish that the prose is a finite numerical,
 # simulation, or empirical observation.  These are source-language cues only:
 # source-map keys and Lean declarations are deliberately not inputs.
-SOURCE_FINITE_OBSERVATION_CONCRETE_CUE_RE = re.compile(
-    r"""
-    (?ix)
-    \b(?:
-        simulation|simulated|benchmark|experiment(?:al)?|numerical|
-        comput(?:ation|ational|ed|ing)|calibration|empirical|data\s*set|
-        sample|observation|measurement|estimate
-    )\b
-    | \b(?:n|k|m)\s*=\s*\d+\b
-    | \b\d+\s*[- ]?(?:candidate|firm|voter|agent|instance|setting|parameter)s?\b
-    """,
-    re.IGNORECASE | re.VERBOSE,
-)
-SOURCE_FINITE_OBSERVATION_REPORT_RE = re.compile(
-    r"""
-    (?ix)
-    \b(?:
-        reports?|depicts?|plots?|illustrates?|shows?|observes?|finds?|records?|
-        displays?|outputs?|estimates?|computes?|calculates?|verif(?:y|ies|ied)
-    )\b
-    """,
-    re.IGNORECASE | re.VERBOSE,
-)
 # A source may phrase a paper result in ordinary prose instead of attaching a
 # theorem number.  Such a claim is still in scope.  The positive finite-
 # observation requirement below catches unrecognised mathematical assertions;
 # this pattern gives the common correctness/existence/optimality family a
 # direct, audit-visible rejection reason.
-SOURCE_GENERAL_RESULT_ASSERTION_RE = re.compile(
-    r"""
-    (?ix)
-    (?:
-        \b(?:if|when|whenever|provided\s+that|assuming)\b
-        (?:(?![.!?;\n]).){0,160}?
-        \b(?:then|holds?|implies?|is|are|remains?|becomes?)\b
-      | \b(?:for|on)\s+(?:all|every|each|any)\s+
-        (?:admissible\s+)?
-        (?:input|instance|case|problem|profile|parameter(?:\s+value)?|model|distribution)\b
-      | \b(?:always|never|universally|in\s+general|for\s+arbitrary)\b
-      | \b(?:there\s+(?:is|are|exists?)|exists?|existence)\b
-      | \b(?:correct(?:ness)?|strategy[-\s]?proof(?:ness)?|truthful(?:ness)?|sound(?:ness)?|complete(?:ness)?|incentive[-\s]?compatib(?:le|ility)|condorcet[-\s]?consisten(?:t|cy)|monotonicity|anonymity|proportionality)\b
-      | \b(?:optimality|pareto[-\s]?optimal|globally\s+optimal|maximi[sz](?:e|es|ing)|minimi[sz](?:e|es|ing))\b
-      | \b(?:approximation|competitive)\s+ratio\b|\bbounded\s+regret\b
-      | \b(?:guarantees?|ensures?|certifies?|elects?)\b
-        (?:(?![.!?;\n]).){0,100}?
-        \b(?:winner|outcome|allocation|matching)\b
-      | \b(?:rule|mechanism|method|approach|procedure|algorithm|solution)\b
-        (?:(?![.!?;\n]).){0,80}?
-        \b(?:satisfies|meets|obeys)\b
-      | \b(?:algorithm|procedure|method|mechanism|approach|implementation|solution)\b
-        (?:(?![.!?;\n]).){0,80}?
-        \b(?:is|are|remains?|becomes?|achieves?|attains?|guarantees?|provides?|yields?|has|have)\b
-        (?:(?![.!?;\n]).){0,80}?
-        \b(?:correct|optimal|efficient|accurate|tractable|scalable|fast|performance|approximation|competitive)\b
-      | \b(?:is|are|remains?|becomes?)\b
-        (?:(?![.!?;\n]).){0,40}?
-        \b(?:correct|optimal|efficient|accurate|tractable|scalable|fast|strategyproof)\b
-    )
-    """,
-    re.IGNORECASE | re.VERBOSE,
-)
-SOURCE_ARTIFACT_SHA256_RE = re.compile(r"^[0-9a-f]{64}$", re.IGNORECASE)
-SOURCE_FILE_LINE_ANCHOR_RE = re.compile(
-    r"(?P<path>(?:[A-Za-z0-9_.-]+/)*[A-Za-z0-9_.-]+\.(?:tex|txt|md|pdf)):"
-    r"(?P<start>[1-9]\d*)(?:-(?P<end>[1-9]\d*))?",
-    re.IGNORECASE,
-)
 SOURCE_RESULT_KINDS = {
     "theorem",
     "proposition",
@@ -13080,119 +11110,6 @@ SOURCE_RESULT_KINDS = {
     "corollary",
     "claim",
     "runtime_claim",
-}
-SOURCE_VOCABULARY_KINDS = {"definition", "predicate_vocabulary"}
-# Source definitions need a distinct semantic review from theorem proof
-# evidence.  A definition can compile while quietly extending a partial source
-# operation, replacing a probability law by an unnormalised formula, or naming
-# a selector without the advertised attainment property.  This classification
-# comes from the source inventory, never from a Lean declaration or map key.
-SOURCE_DEFINITION_SEMANTIC_KINDS = {"definition", "predicate_vocabulary"}
-# This deliberately extends only the direct-route semantic-review gate below.
-# Formula/equation kinds remain outside definition partition and coverage rules:
-# they need a domain/totalization review, but are not thereby source definitions.
-SOURCE_DIRECT_EXPRESSION_SEMANTIC_KINDS = (
-    SOURCE_DEFINITION_SEMANTIC_KINDS
-    | {"formula", "equation", "algorithmic_formula"}
-)
-SOURCE_DEFINITION_SEMANTIC_RELATIONS = {
-    "equivalent",
-    "source_stronger",
-    "lean_stronger",
-    "incomparable",
-    "uncertain",
-}
-SOURCE_DEFINITION_PROPERTY_STATUSES = {
-    "properties_reviewed",
-    "no_advertised_properties",
-}
-SOURCE_DEFINITION_PROPERTY_EVIDENCE_KINDS = {
-    "expanded_definition_body",
-    "paper_interface_equivalence",
-    "paper_interface_conclusion",
-    "missing",
-}
-SOURCE_CATALOGUED_NONFORMAL_OBSERVATION_KINDS = {"example", "remark"}
-# An explicit user scope decision covers only an independent, unnumbered prose
-# assertion.  These source kinds are the only inventory presentations that can
-# carry that disposition.  This is source metadata, not a Lean declaration or
-# map-key convention: every candidate is also checked against its pinned source
-# presentation below.
-USER_APPROVED_UNNUMBERED_PROSE_SOURCE_KINDS = {
-    "example",
-    "remark",
-    "prose_assertion",
-}
-USER_APPROVED_SCOPE_EXCLUSION_FORMAL_KINDS = (
-    SOURCE_RESULT_KINDS | SOURCE_VOCABULARY_KINDS
-)
-NON_NAMED_COMPUTATIONAL_ILLUSTRATION = "non_named_computational_illustration"
-# This source-only lane is intentionally narrow.  The exact pinned source
-# excerpt must itself declare the matter open, so source-map keys and Lean
-# helper names cannot turn an ordinary unproved result into a non-claim.
-SOURCE_DECLARED_OPEN_NONRESULT_OBSERVATION = (
-    "source_declared_open_nonresult_observation"
-)
-SOURCE_DECLARED_OPEN_NONRESULT_RE = re.compile(
-    r"""
-    (?ix)
-    (?:
-        \b(?:remains?|is)\s+(?:an\s+)?open\s+(?:question|problem|issue|case)\b
-      | \b(?:we|the\s+(?:paper|work|article))\s+(?:leave|do\s+not\s+(?:resolve|settle|know))
-        (?:(?![.!?;\n]).){0,120}?\bopen\b
-      | \b(?:open\s+(?:question|problem|issue)|future\s+work)\b
-      | \bconjecture\b
-      | \b(?:it\s+is\s+not\s+known|remains?\s+unresolved)\b
-    )
-    """,
-    re.IGNORECASE | re.VERBOSE,
-)
-SOURCE_POSITIVE_RESULT_PRESENTATION_RE = re.compile(
-    r"""
-    (?ix)
-    (?:
-        \b(?:we|this\s+(?:paper|work|article)|our\s+(?:main\s+)?(?:result|analysis))\b
-        (?:(?![.!?;\n]).){0,100}?
-        \b(?:prove|show|establish|demonstrate|derive|obtain|give|provide|guarantee|ensure)\b
-      | \b(?:theorem|lemma|proposition|corollary|claim)\b
-        (?:(?![.!?;\n]).){0,100}?
-        \b(?:proves?|shows?|establishes?|demonstrates?|guarantees?|asserts?)\b
-    )
-    """,
-    re.IGNORECASE | re.VERBOSE,
-)
-SOURCE_SCOPE_CLASSIFICATIONS = {
-    NON_NAMED_COMPUTATIONAL_ILLUSTRATION,
-    SOURCE_DECLARED_OPEN_NONRESULT_OBSERVATION,
-}
-USER_APPROVED_SCOPE_EXCLUSION_TIMESTAMP_RE = re.compile(
-    r"^\d{4}-\d{2}-\d{2}(?:[T ][0-2]\d:[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z|[+-][0-2]\d:[0-5]\d)?)?$"
-)
-SOURCE_INVENTORY_KINDS = SOURCE_RESULT_KINDS | SOURCE_VOCABULARY_KINDS | {
-    "formula",
-    "equation",
-    "algorithmic_formula",
-    "model",
-    "algorithm",
-    "assumption",
-    "example",
-    "remark",
-    "figure",
-    "table",
-    "caption",
-    "figure_caption",
-    "table_caption",
-    "simulation",
-    "empirical_observation",
-    "computational_observation",
-    "implementation_measurement",
-    # A source-visible unnumbered assertion is retained in the inventory but
-    # has no inherent theorem-label semantics.  Its explicit user-scope lane
-    # still requires claim-bearing/source-anchor validation below.
-    "prose_assertion",
-    # Named conjectures/open questions are catalogue-visible but have a
-    # dedicated source-declared-open non-proof disposition.
-    "open_problem",
 }
 
 
@@ -13212,16 +11129,25 @@ def source_inventory_precheck_summary(folder: Path) -> dict[str, Any]:
     deep_attestation_error = deep_source_coverage_attestation_error(
         statement_map_payload, mode
     )
-    audit = load_llm_paper_coverage_audit(folder)
-    audit_items = audit.get("items") if isinstance(audit.get("items"), dict) else {}
-    coverage_item_bindings, ambiguous_semantic_item_bindings = (
-        _semantic_coverage_item_bindings(inventory, audit_items, mode)
+    raw_map_items = statement_map_payload.get("items")
+    presentation_aliases, _presentation_alias_errors = source_presentation_aliases(
+        raw_map_items
     )
-    bound_audit_items = {
-        source_key: audit_items[audit_key]
-        for source_key, audit_key in coverage_item_bindings.items()
-        if isinstance(audit_items.get(audit_key), dict)
-    }
+    coverage_state = _coverage_binding_freshness(
+        folder,
+        full_inventory,
+        inventory,
+        mode,
+        statement_map_payload,
+        presentation_aliases=presentation_aliases,
+    )
+    audit = coverage_state.audit
+    audit_items = coverage_state.audit_items
+    coverage_item_bindings = coverage_state.coverage_item_bindings
+    ambiguous_semantic_item_bindings = list(
+        coverage_state.ambiguous_semantic_item_bindings
+    )
+    bound_audit_items = coverage_state.bound_audit_items
     audit_required = paper_coverage_audit_required(folder, inventory)
     mode_migration_error = source_coverage_mode_migration_error(
         statement_map_payload, require_explicit=audit_required
@@ -13238,90 +11164,23 @@ def source_inventory_precheck_summary(folder: Path) -> dict[str, Any]:
             ]
         )
     )
-    inventory_hash = paper_coverage_inventory_digest(
-        inventory, mode=mode, statement_map_payload=statement_map_payload
+    inventory_hash = coverage_state.inventory_hash
+    recorded_inventory_hash = coverage_state.recorded_inventory_hash
+    recorded_mode = coverage_state.recorded_mode
+    mode_mismatch = coverage_state.mode_mismatch
+    missing_coverage = list(coverage_state.missing_coverage)
+    extra_coverage = list(coverage_state.extra_coverage)
+    out_of_mode_coverage = list(coverage_state.out_of_mode_coverage)
+    missing_statement_digest = list(coverage_state.missing_statement_digest)
+    stale_statement = list(coverage_state.stale_statement)
+    aggregate_current = coverage_state.aggregate_current
+    source_artifact_current = coverage_state.source_artifact_current
+    stale_source_items = list(coverage_state.stale_source_items)
+    semantic_reuse_anchor_errors = coverage_state.semantic_reuse_anchor_errors
+    unverified_reused_source_items = list(
+        coverage_state.unverified_reused_source_items
     )
-    full_inventory_hash = paper_statement_inventory_digest(full_inventory)
-    recorded_inventory_hash = str(
-        audit.get("paper_statement_inventory_sha256") or ""
-    ).strip()
-    recorded_mode = str(audit.get("source_coverage_mode") or "").strip()
-    mode_mismatch = bool(
-        recorded_mode and not source_coverage_modes_compatible(recorded_mode, mode)
-    )
-    missing_coverage = sorted(key for key in inventory if key not in bound_audit_items)
-    # A legacy deep sidecar may contain useful completed work for observations
-    # that are outside ordinary named-theory closeout. Keep it visible but do
-    # not make it a new default obligation.
-    extra_coverage = sorted(
-        key
-        for key in audit_items
-        if key not in full_inventory and key not in set(coverage_item_bindings.values())
-    )
-    out_of_mode_coverage = sorted(
-        key for key in audit_items if key in full_inventory and key not in inventory
-    )
-    missing_statement_digest = sorted(
-        key
-        for key, item in bound_audit_items.items()
-        if not str(item.get("statement_sha256") or "").strip()
-    )
-    stale_statement = sorted(
-        key
-        for key, item in bound_audit_items.items()
-        if str(item.get("statement_sha256") or "").strip()
-        and str(item.get("statement_sha256") or "").strip()
-        != _source_item_coverage_statement(inventory[key])[1]
-    )
-    aggregate_current = recorded_inventory_hash in {
-        inventory_hash,
-        # Pre-mode sidecars used the full inventory hash. They remain valid
-        # when the full inventory itself is unchanged.
-        full_inventory_hash,
-    }
-    source_artifact_current = _coverage_audit_source_artifact_is_current(
-        audit, statement_map_payload
-    )
-    source_artifact_identity_declared = _source_artifact_identity_is_declared(
-        statement_map_payload
-    )
-    source_artifact_identity_recorded = _coverage_audit_records_source_artifact_identity(
-        audit
-    )
-    stale_source_items = sorted(
-        key
-        for key, item in bound_audit_items.items()
-        if _coverage_item_has_current_source_digest_schema(item)
-        and not _coverage_item_source_digest_is_current(item, inventory[key], mode)
-    )
-    # Source semantic identity deliberately excludes navigation locators so a
-    # harmless line shift does not reopen an LLM judgment. Byte anchors are
-    # cheap to validate, however, and must be checked on every normal read: a
-    # moved map anchor with unchanged source bytes would otherwise evade both
-    # the aggregate semantic digest and the artifact-identity comparison.
-    semantic_reuse_anchor_errors = _semantic_reuse_source_anchor_errors(
-        folder,
-        [
-            key
-            for key, item in bound_audit_items.items()
-            if _coverage_item_has_current_source_digest_schema(item)
-            and _coverage_item_source_digest_is_current(item, inventory[key], mode)
-        ],
-    )
-    unverified_reused_source_items = sorted(semantic_reuse_anchor_errors)
-    legacy_unpinned_items = sorted(
-        key
-        for key, item in bound_audit_items.items()
-        if not _coverage_item_has_current_source_digest_schema(item)
-        and (
-            not aggregate_current
-            or (
-                source_artifact_identity_declared
-                and source_artifact_identity_recorded
-                and not source_artifact_current
-            )
-        )
-    )
+    legacy_unpinned_items = list(coverage_state.legacy_unpinned_items)
     missing_source_url = sorted(
         key
         for key, item in inventory.items()
@@ -13344,7 +11203,7 @@ def source_inventory_precheck_summary(folder: Path) -> dict[str, Any]:
         if _is_statement_map_source(item.get("source"))
         and str(item.get("source_kind") or "").strip()
         and str(item.get("source_kind") or "").strip().lower()
-        not in SOURCE_INVENTORY_KINDS
+        not in KNOWN_SOURCE_PRESENTATION_KINDS
     )
     source_scope_classification_errors = (
         _source_scope_classification_errors(inventory, bound_audit_items)
@@ -13385,7 +11244,18 @@ def source_inventory_precheck_summary(folder: Path) -> dict[str, Any]:
             for item in bound_audit_items.values()
         )
     )
-    stale_inventory = bool(audit_items and not aggregate_current)
+    # The aggregate digest is a discovery fallback for old unpinned rows, not
+    # an independent semantic receipt. Additions/removals and mode drift are
+    # already checked explicitly, while every modern row carries its own
+    # source identity. Do not reopen those rows merely because their generated
+    # aggregate container changed.
+    aggregate_receipt_required = any(
+        not _coverage_item_has_current_source_digest_schema(item)
+        for item in bound_audit_items.values()
+    )
+    stale_inventory = bool(
+        audit_items and not aggregate_current and aggregate_receipt_required
+    )
     prompt_version_stale = bool(
         audit_items
         and str(audit.get("prompt_version") or "").strip()
@@ -13613,543 +11483,25 @@ SOURCE_NON_TARGET_REASONS = (
 )
 
 
-def _source_inventory_core_text(item: dict[str, Any]) -> str:
-    """Return the source assertion and locator, excluding curator-only metadata.
-
-    A map key, Lean declaration, or an explanatory note is navigation metadata,
-    not evidence that the source itself stated a formal result.  This narrower
-    view is used when deciding whether an attempted computational-illustration
-    exemption is describing an actual source theorem/algorithm rather than
-    merely mentioning one in its curator's explanation.
-    """
-
-    fields = (
-        item.get("title"),
-        item.get("statement"),
-        item.get("source_location"),
-    )
-    return "\n".join(str(field or "") for field in fields if str(field or "").strip())
-
-
-def _source_text_has_general_computational_claim(text: str) -> bool:
-    """Return whether source prose asserts general computational behavior.
-
-    This intentionally does not classify bare mathematical adjectives such as
-    ``exponential`` or ``quadratic``.  It recognizes resource bounds, Big-O
-    notation, and behavior promised by an algorithm/procedure/method instead.
-    """
-
-    return bool(
-        SOURCE_COMPLEXITY_TERMINOLOGY_RE.search(text)
-        or SOURCE_BIG_O_COMPLEXITY_RE.search(text)
-        or SOURCE_ALGORITHM_BEHAVIOR_RE.search(text)
-        or SOURCE_GENERAL_OUTPUT_GUARANTEE_RE.search(text)
-        or SOURCE_RESOURCE_BOUND_RE.search(text)
-        or SOURCE_CONTEXTUAL_EFFICIENCY_RE.search(text)
-    )
-
-
-def _source_text_has_general_result_assertion(text: str) -> bool:
-    """Return whether ordinary source prose makes a general paper-result claim.
-
-    This complements the algorithmic/resource-bound detector.  It intentionally
-    keys off source words and quantifiers, rather than source-map navigation keys
-    or Lean declaration spelling, so an unnumbered existence/correctness/
-    optimality result cannot be hidden as an illustration.
-    """
-
-    return bool(SOURCE_GENERAL_RESULT_ASSERTION_RE.search(text))
-
-
-def _source_text_has_finite_computational_observation(text: str) -> bool:
-    """Return whether one source sentence presents a finite observed result.
-
-    Requiring both a concrete finite-observation cue and a reporting verb keeps
-    the exception positive and narrow.  A display label such as ``Figure 1``
-    cannot by itself turn a general source conclusion into an excluded example.
-    """
-
-    sentences = re.split(r"[.!?;]+", text.replace("\n", " "))
-    return any(
-        SOURCE_FINITE_OBSERVATION_CONCRETE_CUE_RE.search(sentence)
-        and SOURCE_FINITE_OBSERVATION_REPORT_RE.search(sentence)
-        for sentence in sentences
-    )
-
-
-def _source_inventory_item_is_named_algorithm_block(item: dict[str, Any]) -> bool:
-    """Return whether the source identifies an Algorithm/Procedure/Method block.
-
-    The source kind is an explicit source-map classification, not a Lean name;
-    literal headers/ref forms catch maps produced from TeX or prose inventories.
-    """
-
-    if str(item.get("source_kind") or "").strip().lower() == "algorithm":
-        return True
-    return bool(SOURCE_NAMED_ALGORITHM_BLOCK_RE.search(_source_inventory_core_text(item)))
-
-
-def _source_anchor_paths_match(left: str, right: str) -> bool:
-    """Compare source paths without treating a map key as source evidence."""
-
-    normalized_left = left.replace("\\", "/").lstrip("./")
-    normalized_right = right.replace("\\", "/").lstrip("./")
-    return (
-        normalized_left == normalized_right
-        or normalized_left.endswith("/" + normalized_right)
-        or normalized_right.endswith("/" + normalized_left)
-    )
-
-
-def _source_inventory_anchor_quote_text(item: dict[str, Any]) -> tuple[str, str]:
-    """Return the declared source-anchor quote, or an evidence-shape error.
-
-    The full evidence-integrity gate independently checks these quotes against
-    the byte-pinned source artifact.  This local check makes the dashboard's
-    scope classifier consume only quotes tied to its declared file-and-line
-    anchors, rather than trusting a curator's paraphrase in ``statement`` or
-    ``source_evidence``.
-    """
-
-    source_location = str(item.get("source_location") or "").strip()
-    anchors = [
-        (
-            match.group("path"),
-            int(match.group("start")),
-            int(match.group("end") or match.group("start")),
-        )
-        for match in SOURCE_FILE_LINE_ANCHOR_RE.finditer(source_location)
-    ]
-    if not anchors:
-        return (
-            "",
-            "requires byte-verified source_anchor_evidence tied to exact "
-            "file:line source anchors",
-        )
-
-    raw_evidence = item.get("source_anchor_evidence")
-    if not isinstance(raw_evidence, list) or not raw_evidence:
-        return (
-            "",
-            "requires a nonempty byte-verified source_anchor_evidence list",
-        )
-
-    quotes: list[str | None] = [None] * len(anchors)
-    for raw_entry in raw_evidence:
-        if not isinstance(raw_entry, dict):
-            return "", "source_anchor_evidence entries must be objects"
-        raw_path = str(raw_entry.get("path") or "").strip()
-        line_start = raw_entry.get("line_start")
-        line_end = raw_entry.get("line_end")
-        if (
-            not raw_path
-            or not isinstance(line_start, int)
-            or isinstance(line_start, bool)
-            or not isinstance(line_end, int)
-            or isinstance(line_end, bool)
-        ):
-            return (
-                "",
-                "source_anchor_evidence entries require path, line_start, and line_end",
-            )
-        matches = [
-            index
-            for index, (anchor_path, anchor_start, anchor_end) in enumerate(anchors)
-            if _source_anchor_paths_match(raw_path, anchor_path)
-            and line_start == anchor_start
-            and line_end == anchor_end
-        ]
-        if len(matches) != 1 or quotes[matches[0]] is not None:
-            return (
-                "",
-                "source_anchor_evidence must provide exactly one quote for each "
-                "declared source anchor",
-            )
-        raw_quote = raw_entry.get("quoted_text")
-        raw_quote_digest = raw_entry.get("quoted_text_sha256")
-        if not isinstance(raw_quote, str) or not raw_quote:
-            return "", "source_anchor_evidence quoted_text must be a nonempty string"
-        quote = raw_quote.replace("\r\n", "\n").replace("\r", "\n")
-        if (
-            not isinstance(raw_quote_digest, str)
-            or not SOURCE_ARTIFACT_SHA256_RE.fullmatch(raw_quote_digest.strip())
-            or hashlib.sha256(quote.encode("utf-8")).hexdigest()
-            != raw_quote_digest.strip().lower()
-        ):
-            return (
-                "",
-                "source_anchor_evidence quoted_text_sha256 must match the "
-                "normalized quoted_text",
-            )
-        quotes[matches[0]] = quote
-
-    if any(quote is None for quote in quotes):
-        return (
-            "",
-            "source_anchor_evidence must provide exactly one quote for each "
-            "declared source anchor",
-        )
-    return "\n".join(quote for quote in quotes if quote is not None), ""
-
-
-def _source_location_has_pinned_artifact_anchor(item: dict[str, Any]) -> str:
-    """Return an error unless a scoped item names a pinned artifact and anchor.
-
-    `audit_evidence_integrity.py` verifies bytes and, when opted in, quoted
-    anchor slices.  The dashboard's cheap source-inventory gate additionally
-    requires the exception itself to name that same artifact and an exact
-    locator, so a free-form ``source_evidence`` string cannot waive review.
-    """
-
-    artifact_path = str(item.get("source_artifact_path") or "").strip()
-    artifact_sha256 = str(item.get("source_artifact_sha256") or "").strip()
-    source_location = str(item.get("source_location") or "").strip()
-    if not artifact_path:
-        return (
-            "non_named_computational_illustration requires a pinned "
-            "source_artifact_path"
-        )
-    if not SOURCE_ARTIFACT_SHA256_RE.fullmatch(artifact_sha256):
-        return (
-            "non_named_computational_illustration requires a valid pinned "
-            "source_artifact_sha256"
-        )
-    canonical_path = str(item.get("canonical_source_artifact_path") or "").strip()
-    canonical_sha256 = str(
-        item.get("canonical_source_artifact_sha256") or ""
-    ).strip()
-    if canonical_path and (
-        artifact_path.replace("\\", "/").lstrip("./")
-        != canonical_path.replace("\\", "/").lstrip("./")
-    ):
-        return (
-            "non_named_computational_illustration must use the source map's "
-            "canonical pinned source artifact"
-        )
-    if canonical_sha256 and artifact_sha256.lower() != canonical_sha256.lower():
-        return (
-            "non_named_computational_illustration must use the source map's "
-            "canonical source_artifact_sha256"
-        )
-    if not EXACT_SOURCE_LOCATOR_RE.search(source_location):
-        return (
-            "non_named_computational_illustration requires an exact "
-            "source_location anchor"
-        )
-
-    artifact_suffix = Path(artifact_path).suffix.lower()
-    file_anchors = list(SOURCE_FILE_LINE_ANCHOR_RE.finditer(source_location))
-    if artifact_suffix in {".tex", ".txt", ".md"}:
-        if not file_anchors:
-            return (
-                "non_named_computational_illustration requires a file:line "
-                "anchor into the pinned source artifact"
-            )
-        normalized_artifact = artifact_path.replace("\\", "/").lstrip("./")
-        normalized_anchor_paths = {
-            match.group("path").replace("\\", "/").lstrip("./")
-            for match in file_anchors
-        }
-        if not any(
-            anchor_path == normalized_artifact
-            or normalized_artifact.endswith("/" + anchor_path)
-            or anchor_path.endswith("/" + normalized_artifact)
-            for anchor_path in normalized_anchor_paths
-        ):
-            return (
-                "non_named_computational_illustration source_location must name "
-                "the pinned source artifact"
-            )
-
-    _, quote_error = _source_inventory_anchor_quote_text(item)
-    if quote_error:
-        return f"non_named_computational_illustration {quote_error}"
-    return ""
-
-
 def _source_inventory_item_is_named_claim(key: str, item: dict[str, Any]) -> bool:
-    """Return whether a source inventory item should have row-level statement audit."""
+    """Compatibility wrapper for the shared source-only claim classifier."""
 
     del key  # Map keys are navigation metadata, not semantic source evidence.
-    return bool(SOURCE_NAMED_CLAIM_RE.search(_source_inventory_search_text("", item)))
-
-
-def _source_inventory_item_is_named_result_presentation(item: dict[str, Any]) -> bool:
-    """Return whether the source assertion itself presents a formal result.
-
-    A cross-reference such as ``By Theorem 2`` is still review-visible, but it
-    is not a new theorem endpoint.  A theorem/lemma/proposition heading or TeX
-    environment is an endpoint and cannot be credited by a Lean definition.
-    """
-
-    return bool(
-        SOURCE_NAMED_RESULT_PRESENTATION_RE.search(_source_inventory_core_text(item))
-    )
+    return _shared_source_inventory_item_is_named_claim(item)
 
 
 def _source_inventory_item_scope_classification_error(item: dict[str, Any]) -> str:
-    """Return an error when an explicit source-scope classification is unsafe."""
+    """Compatibility wrapper for shared source-only scope policy."""
 
-    classification = str(item.get("source_scope_classification") or "").strip().lower()
-    if not classification:
-        return ""
-    if classification not in SOURCE_SCOPE_CLASSIFICATIONS:
-        return f"unknown source_scope_classification `{classification}`"
-    if classification == SOURCE_DECLARED_OPEN_NONRESULT_OBSERVATION:
-        if item.get("claim_bearing") is not False:
-            return "source_declared_open_nonresult_observation requires claim_bearing: false"
-        if str(item.get("coverage_status") or "").strip().lower() != "source_declared_open":
-            return (
-                "source_declared_open_nonresult_observation requires coverage_status "
-                "`source_declared_open`"
-            )
-        if str(item.get("protocol_role") or "").strip().lower() != "source_declared_open":
-            return (
-                "source_declared_open_nonresult_observation requires protocol_role "
-                "`source_declared_open`"
-            )
-        if str(item.get("source_kind") or "").strip().lower() not in {
-            "remark",
-            "open_problem",
-        }:
-            return (
-                "source_declared_open_nonresult_observation requires source_kind "
-                "`remark` or `open_problem`"
-            )
-        artifact_error = _source_location_has_pinned_artifact_anchor(item)
-        if artifact_error:
-            return artifact_error
-        if not str(item.get("scope_reason") or "").strip():
-            return (
-                "source_declared_open_nonresult_observation requires a "
-                "source-grounded scope_reason"
-            )
-        if not str(item.get("source_evidence") or "").strip():
-            return "source_declared_open_nonresult_observation requires source_evidence"
-        source_quote, quote_error = _source_inventory_anchor_quote_text(item)
-        if quote_error:
-            return f"source_declared_open_nonresult_observation {quote_error}"
-        if not SOURCE_DECLARED_OPEN_NONRESULT_RE.search(source_quote):
-            return (
-                "source_declared_open_nonresult_observation requires an explicit "
-                "unresolved/open declaration in the byte-verified source quote"
-            )
-        if (
-            SOURCE_NAMED_RESULT_PRESENTATION_RE.search(source_quote)
-            or SOURCE_POSITIVE_RESULT_PRESENTATION_RE.search(source_quote)
-        ):
-            return (
-                "source_declared_open_nonresult_observation cannot combine its open "
-                "observation with a positive named or ordinary result assertion"
-            )
-        return ""
-
-    assert classification == NON_NAMED_COMPUTATIONAL_ILLUSTRATION
-    if item.get("claim_bearing") is not False:
-        return "non_named_computational_illustration requires claim_bearing: false"
-    source_kind = str(item.get("source_kind") or "").strip().lower()
-    if source_kind not in SOURCE_CATALOGUED_NONFORMAL_OBSERVATION_KINDS:
-        return (
-            "non_named_computational_illustration requires source_kind "
-            "`example` or `remark`"
-        )
-    artifact_error = _source_location_has_pinned_artifact_anchor(item)
-    if artifact_error:
-        return artifact_error
-    source_assertion = _source_inventory_core_text(item)
-    source_quote, quote_error = _source_inventory_anchor_quote_text(item)
-    if quote_error:
-        return f"non_named_computational_illustration {quote_error}"
-    source_title = str(item.get("title") or "").strip()
-    source_statement = str(item.get("statement") or "").strip()
-    source_location = str(item.get("source_location") or "").strip()
-    source_evidence = str(item.get("source_evidence") or "").strip()
-    source_presentation = "\n".join(
-        text
-        for text in (source_title, source_statement, source_location, source_evidence)
-        if text
-    )
-    # A source-evidence note may accurately cite a different theorem while
-    # explaining why a figure is only illustrative.  Reject a formal result
-    # reference in the item being classified, rather than a contextual mention
-    # in that explanatory note; the ordinary inventory review path still sees
-    # named references anywhere outside a validated illustration exemption.
-    if SOURCE_NAMED_CLAIM_RE.search(source_assertion) or SOURCE_NAMED_CLAIM_RE.search(
-        source_quote
-    ):
-        return (
-            "non_named_computational_illustration cannot label a named formal "
-            "statement or theorem reference"
-        )
-    if _source_text_has_general_computational_claim(
-        "\n".join((source_presentation, source_quote))
-    ):
-        return (
-            "non_named_computational_illustration cannot label a general "
-            "algorithmic, runtime, complexity, or performance assertion"
-        )
-    if _source_text_has_general_result_assertion(
-        "\n".join((source_presentation, source_quote))
-    ):
-        return (
-            "non_named_computational_illustration cannot label a general "
-            "correctness, existence, optimality, or mathematical assertion"
-        )
-    if _source_inventory_item_is_named_algorithm_block(item) or SOURCE_NAMED_ALGORITHM_BLOCK_RE.search(
-        source_quote
-    ):
-        return (
-            "non_named_computational_illustration cannot label a named "
-            "Algorithm, Procedure, or Method block"
-        )
-    if not _source_text_has_finite_computational_observation(source_quote):
-        return (
-            "non_named_computational_illustration requires a literal finite "
-            "observation/report in the byte-verified source quote"
-        )
-    if not str(item.get("scope_reason") or "").strip():
-        return "non_named_computational_illustration requires a source-grounded scope_reason"
-    if not str(item.get("source_evidence") or "").strip():
-        return "non_named_computational_illustration requires source_evidence"
-    return ""
+    return _shared_source_inventory_item_scope_classification_error(item)
 
 
 def _source_inventory_item_user_approved_scope_exclusion_error(
     item: dict[str, Any],
 ) -> str:
-    """Validate a user-approved exclusion without changing source semantics.
+    """Compatibility wrapper for shared source-only approval policy."""
 
-    This deliberately consumes only the source-map item, its pinned quote, and
-    the structured human approval.  It never infers eligibility from a map key,
-    Lean declaration, or a word such as ``simulation``.  A source-visible claim
-    remains claim-bearing for inventory purposes; the user is choosing scope,
-    not asserting that the source made no claim.
-    """
-
-    raw_approval = item.get(USER_APPROVED_SCOPE_EXCLUSION)
-    if raw_approval is None:
-        return ""
-    if not isinstance(raw_approval, dict):
-        return "user_approved_scope_exclusion must be an object"
-    if raw_approval.get("schema") != USER_APPROVED_SCOPE_EXCLUSION_SCHEMA:
-        return (
-            "user_approved_scope_exclusion.schema must be "
-            f"{USER_APPROVED_SCOPE_EXCLUSION_SCHEMA}"
-        )
-    if (
-        str(raw_approval.get("approval_kind") or "").strip()
-        != USER_APPROVED_SCOPE_EXCLUSION_APPROVAL_KIND
-    ):
-        return (
-            "user_approved_scope_exclusion.approval_kind must be "
-            f"`{USER_APPROVED_SCOPE_EXCLUSION_APPROVAL_KIND}`"
-        )
-    approval_reference = str(raw_approval.get("approval_reference") or "").strip()
-    if len(approval_reference) < 8:
-        return (
-            "user_approved_scope_exclusion.approval_reference must identify "
-            "the explicit user instruction"
-        )
-    approved_at = str(raw_approval.get("approved_at") or "").strip()
-    if not USER_APPROVED_SCOPE_EXCLUSION_TIMESTAMP_RE.fullmatch(approved_at):
-        return (
-            "user_approved_scope_exclusion.approved_at must be an ISO-like "
-            "date or timestamp"
-        )
-    for field in ("reason", "source_evidence"):
-        text = str(raw_approval.get(field) or "").strip()
-        if len(text) < 8:
-            return f"user_approved_scope_exclusion.{field} must be nonempty source-facing text"
-        if NAME_ONLY_SOURCE_COVERAGE_REASON_RE.search(text):
-            return (
-                f"user_approved_scope_exclusion.{field} cannot rely on a "
-                "declaration name or map key"
-            )
-    if item.get("claim_bearing") is not True:
-        return (
-            "user_approved_scope_exclusion must keep the source assertion "
-            "claim_bearing: true"
-        )
-    if str(item.get("source_scope_classification") or "").strip():
-        return (
-            "user_approved_scope_exclusion cannot coexist with a "
-            "source_scope_classification"
-        )
-    if str(item.get("inventory_role") or "").strip().lower() == "proof_support":
-        return (
-            "user_approved_scope_exclusion cannot remove an assertion marked "
-            "as proof_support for a retained paper result"
-        )
-    source_kind = str(item.get("source_kind") or "").strip().lower()
-    if source_kind in USER_APPROVED_SCOPE_EXCLUSION_FORMAL_KINDS:
-        return (
-            "user_approved_scope_exclusion is limited to an unnumbered prose "
-            "assertion and cannot exclude a source-labelled formal target"
-        )
-    if source_kind not in USER_APPROVED_UNNUMBERED_PROSE_SOURCE_KINDS:
-        return (
-            "user_approved_scope_exclusion requires an unnumbered prose "
-            "inventory kind (`example`, `remark`, or `prose_assertion`)"
-        )
-    source_locator = str(raw_approval.get("source_locator") or "").strip()
-    source_location = str(item.get("source_location") or "").strip()
-    if not source_locator:
-        return "user_approved_scope_exclusion.source_locator must be a concrete source anchor"
-    if source_locator != source_location:
-        return (
-            "user_approved_scope_exclusion.source_locator must exactly match "
-            "the source item's source_location"
-        )
-    if not list(SOURCE_FILE_LINE_ANCHOR_RE.finditer(source_locator)):
-        return (
-            "user_approved_scope_exclusion.source_locator requires an exact "
-            "file:line anchor"
-        )
-    source_quote, quote_error = _source_inventory_anchor_quote_text(item)
-    if quote_error:
-        return f"user_approved_scope_exclusion {quote_error}"
-    # The kind narrows the inventory lane, but the pinned presentation remains
-    # decisive.  A curator cannot relabel a theorem-like source block as a
-    # remark to avoid a proof obligation.  Cross-references in explanatory
-    # evidence are intentionally irrelevant; this inspects only the asserted
-    # source item and its byte-verified quote.
-    source_core = _source_inventory_core_text(item)
-    if (
-        SOURCE_NAMED_RESULT_HEADING_RE.search(source_core)
-        or SOURCE_NAMED_RESULT_HEADING_RE.search(source_quote)
-        or SOURCE_NAMED_ALGORITHM_BLOCK_RE.search(source_core)
-        or SOURCE_NAMED_ALGORITHM_BLOCK_RE.search(source_quote)
-    ):
-        return (
-            "user_approved_scope_exclusion cannot exclude a source-labelled "
-            "formal result, theorem-like displayed statement, or named algorithm"
-        )
-    quoted_digest = str(
-        raw_approval.get("source_anchor_quote_sha256") or ""
-    ).strip().lower()
-    if not SOURCE_ARTIFACT_SHA256_RE.fullmatch(quoted_digest):
-        return (
-            "user_approved_scope_exclusion.source_anchor_quote_sha256 must be "
-            "a SHA-256 digest"
-        )
-    expected_digest = hashlib.sha256(source_quote.encode("utf-8")).hexdigest()
-    if quoted_digest != expected_digest:
-        return (
-            "user_approved_scope_exclusion.source_anchor_quote_sha256 must pin "
-            "the byte-verified source anchor quote"
-        )
-    return ""
-
-
-def _source_inventory_item_has_valid_user_approved_scope_exclusion(
-    item: dict[str, Any],
-) -> bool:
-    """Return whether a source item has a complete explicit user exclusion."""
-
-    return (
-        item.get(USER_APPROVED_SCOPE_EXCLUSION) is not None
-        and not _source_inventory_item_user_approved_scope_exclusion_error(item)
-    )
+    return _shared_source_inventory_item_user_approved_scope_exclusion_error(item)
 
 
 def _source_inventory_item_is_catalogued_nonformal_observation(
@@ -14323,16 +11675,10 @@ def _scoped_source_anchor_evidence_errors(folder: Path) -> list[str]:
     if not isinstance(payload, dict):
         return []
     try:
-        try:
-            from scripts.audit_evidence_integrity import (
-                scoped_source_map_payload,
-                source_anchor_evidence_findings,
-            )
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                scoped_source_map_payload,
-                source_anchor_evidence_findings,
-            )
+        from scripts.audit_evidence_integrity import (
+            scoped_source_map_payload,
+            source_anchor_evidence_findings,
+        )
         mode, _mode_error = source_coverage_mode_from_map(payload)
         scoped_payload, _scoped_items = scoped_source_map_payload(
             payload,
@@ -14378,12 +11724,7 @@ def _source_named_result_inventory_errors(folder: Path) -> list[str]:
         else "paper draft"
     )
     try:
-        try:
-            from scripts.audit_evidence_integrity import source_named_result_inventory_findings
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                source_named_result_inventory_findings,
-            )
+        from scripts.audit_evidence_integrity import source_named_result_inventory_findings
         findings = source_named_result_inventory_findings(
             folder,
             status,
@@ -14435,10 +11776,7 @@ def _semantic_reuse_source_anchor_errors(
     # quote against the current canonical bytes before its old judgment moves.
     scoped_payload["source_anchor_evidence_required"] = True
     try:
-        try:
-            from scripts.audit_evidence_integrity import source_anchor_evidence_findings
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import source_anchor_evidence_findings
+        from scripts.audit_evidence_integrity import source_anchor_evidence_findings
         findings = source_anchor_evidence_findings(
             folder,
             "formalized",
@@ -14473,47 +11811,10 @@ def _semantic_reuse_source_anchor_errors(
 def _source_inventory_item_requires_proof_evidence(
     key: str, item: dict[str, Any]
 ) -> bool:
-    """Return whether direct coverage must include a Lean proof declaration.
+    """Compatibility wrapper for the shared source-only proof boundary."""
 
-    The primary classification is the structured source kind.  A legacy
-    statement-map item without that classification fails closed: it may not use
-    a matching ``def``/``abbrev`` row as evidence that a paper-facing result was
-    proved.  Explicit source definitions and predicate vocabulary retain their
-    ordinary translation-only coverage lane.  Fallback TeX inventories use the
-    existing source-label classifier because they have no statement-map schema.
-    """
-
-    source_kind = str(item.get("source_kind") or "").strip().lower()
-    if source_item_effective_route_policy(item)["is_support_only"]:
-        # A named intermediate result remains in the source inventory and
-        # needs its explicit support route, but it is not a second direct
-        # theorem-proof obligation once the map has classified it as support.
-        return False
-    # A source definition or premise is review-visible, but it is not proof
-    # evidence merely because the inventory correctly records it as a claim or
-    # governing condition.  These lanes require exact source-to-Lean
-    # translation/provenance checks rather than a theorem/lemma declaration.
-    if source_kind in {"assumption", "model"}:
-        return False
-    if source_kind in SOURCE_VOCABULARY_KINDS:
-        return False
-    if source_kind in SOURCE_RESULT_KINDS:
-        return True
-    if item.get("claim_bearing") is True:
-        return True
-    source_text = _source_inventory_search_text(key, item)
-    if (
-        _source_text_has_general_computational_claim(source_text)
-        or _source_text_has_general_result_assertion(source_text)
-    ):
-        return True
-    if _source_inventory_item_is_named_result_presentation(item):
-        return True
-    if source_kind:
-        return source_kind in SOURCE_RESULT_KINDS
-    if _is_statement_map_source(item.get("source")):
-        return True
-    return _source_inventory_item_is_named_claim(key, item)
+    del key  # Map keys are navigation metadata, not semantic source evidence.
+    return _shared_source_inventory_item_requires_proof_evidence(item)
 
 
 def _source_inventory_item_is_quarantined_defect(item: dict[str, Any]) -> bool:
@@ -14584,18 +11885,11 @@ def _validated_source_proof_defects(folder: Path) -> dict[str, dict[str, Any]]:
     ledger_path: Path | None = None
     ledger_error = ""
     try:
-        try:
-            from scripts.audit_evidence_integrity import (
-                source_proof_fidelity_config,
-                source_proof_fidelity_findings,
-                source_proof_fidelity_ledger_path,
-            )
-        except ModuleNotFoundError:
-            from audit_evidence_integrity import (
-                source_proof_fidelity_config,
-                source_proof_fidelity_findings,
-                source_proof_fidelity_ledger_path,
-            )
+        from scripts.audit_evidence_integrity import (
+            source_proof_fidelity_config,
+            source_proof_fidelity_findings,
+            source_proof_fidelity_ledger_path,
+        )
         if source_proof_fidelity_config(status_payload) is None:
             return {}
         ledger_path, ledger_error = source_proof_fidelity_ledger_path(folder, status_payload)
@@ -14827,23 +12121,77 @@ def defect_support_judgment_error(
 
 
 def _source_inventory_search_text(key: str, item: dict[str, Any]) -> str:
-    """Return literal source-facing text used for policy classification.
-
-    ``source_status`` is repository bookkeeping, not a source quotation. Its
-    route/quarantine effects are handled by ``source_item_effective_route_policy``
-    at the explicit policy branches below; free status wording cannot create or
-    suppress a source theorem/claim classification through text matching.
-    """
+    """Compatibility wrapper for shared source-only presentation text."""
 
     del key  # Source-map keys and Lean aliases must not drive semantic routing.
-    fields = [
-        item.get("title"),
-        item.get("statement"),
-        item.get("source_location"),
-        item.get("source_evidence"),
-        item.get("source_note"),
+    return _shared_source_inventory_search_text(item)
+
+
+def _source_inventory_item_is_explicit_proof_support(item: dict[str, Any]) -> bool:
+    """Return whether an item is an auditable proof-support record.
+
+    This is deliberately narrower than the generic ``support_only`` route.
+    A named intermediate proposition can be essential evidence about a printed
+    proof while not being a separate claim on the paper's human-review surface.
+    It may take that lane only when the source map says so explicitly and
+    names the transparent, proof-routed source result that owns the route.
+    The coverage ledger independently checks that that ownership is current.
+    """
+
+    if not source_item_effective_route_policy(item)["is_support_only"]:
+        return False
+    if str(item.get("inventory_role") or "").strip() != "proof_support":
+        return False
+    if str(item.get("source_kind") or "").strip().lower() not in SOURCE_RESULT_KINDS:
+        return False
+    return bool(_normalize_string_list(item.get("support_lean_declarations")))
+
+
+def _proof_support_declaration_names(value: Any) -> list[str]:
+    """Normalize configured FQNs to the dashboard's reviewed declaration names."""
+
+    return [
+        declaration.rsplit(".", 1)[-1]
+        for declaration in _normalize_string_list(value)
     ]
-    return " ".join(str(field or "") for field in fields)
+
+
+def _proof_support_coverage_error(
+    source_item: dict[str, Any],
+    coverage_item: dict[str, Any],
+    row_items: dict[str, ReviewItem],
+) -> str:
+    """Return an error unless a support-only item names exact proof-routed Specs.
+
+    This validation is intentionally separate from direct source-to-Spec
+    coverage.  It keeps proof-support material byte-pinned and reviewable,
+    while preventing it from earning a second paper-claim row or disguising a
+    support declaration that points only to a wrapper or implementation helper.
+    """
+
+    configured = _proof_support_declaration_names(
+        source_item.get("support_lean_declarations")
+    )
+    recorded = _normalize_string_list(coverage_item.get("support_declarations"))
+    if not configured:
+        return "proof-support source item has no configured support declaration"
+    if len(set(configured)) != len(configured):
+        return "configured proof-support declarations are duplicated"
+    if len(set(recorded)) != len(recorded):
+        return "recorded proof-support declarations are duplicated"
+    if set(recorded) != set(configured):
+        return "recorded support declarations do not exactly match the source-map proof-support route"
+    for declaration in configured:
+        row_item = row_items.get(declaration)
+        if row_item is None:
+            return f"proof-support declaration {declaration} is absent from the current review surface"
+        if not row_item.is_proposition_spec:
+            return f"proof-support declaration {declaration} is not a transparent proposition Spec"
+        if row_item.proposition_spec_role != "proof_routed":
+            return f"proof-support declaration {declaration} is not a proof-routed source result"
+        if not str(row_item.proposition_spec_proof or "").strip():
+            return f"proof-support declaration {declaration} has no paired proof endpoint"
+    return ""
 
 
 def _source_inventory_item_requires_review_row(key: str, item: dict[str, Any]) -> bool:
@@ -14858,6 +12206,12 @@ def _source_inventory_item_requires_review_row(key: str, item: dict[str, Any]) -
     """
 
     if _source_inventory_item_is_catalogued_nonformal_observation(item):
+        return False
+    if _source_inventory_item_is_explicit_proof_support(item):
+        # The separate coverage lane below still requires a byte-pinned source
+        # record, an explicit route to a transparent proof-routed Spec, and a
+        # current source-to-Lean audit of that enclosing claim.  The support
+        # item is not itself another human-facing paper claim.
         return False
     # An attempted exception is not an exception until every source-facing
     # condition above validates.  Otherwise a malformed pin or mislabeled
@@ -14887,7 +12241,7 @@ def _source_inventory_item_requires_review_row(key: str, item: dict[str, Any]) -
         "external_support_only_vocabulary"
     ]:
         return False
-    if source_kind in SOURCE_VOCABULARY_KINDS:
+    if source_kind in SOURCE_DEFINITION_SEMANTIC_KINDS:
         return True
     lowered = text.lower()
     if any(reason in lowered for reason in SOURCE_NON_TARGET_REASONS):
@@ -14911,6 +12265,8 @@ def _coverage_review_row_signature_errors(
     rows: list[str],
     raw_pins: Any,
     row_items: dict[str, ReviewItem],
+    *,
+    current_signature_by_row: Mapping[str, str],
 ) -> list[str]:
     """Return failures for the elaborated-signature binding of one coverage link.
 
@@ -14943,27 +12299,15 @@ def _coverage_review_row_signature_errors(
         if row_item is None:
             # `invalid_row_links` gives the primary diagnosis for an absent row.
             continue
-        manifest = row_item.lean_signature_manifest
-        if not isinstance(manifest, dict):
+        current_digest = str(current_signature_by_row.get(row_name) or "")
+        if not current_digest:
             errors.append(
-                f"{_coverage_link_label(source_key, row_name)}: current elaborated Lean signature manifest is unavailable"
+                f"{_coverage_link_label(source_key, row_name)}: current typed semantic-review target identity is unavailable or invalid"
             )
             continue
-        manifest_digest = signature_manifest_digest(manifest)
-        recorded_manifest_digest = str(manifest.get("sha256") or "").strip().lower()
-        current_digest = str(row_item.lean_signature_sha256 or "").strip().lower()
-        if (
-            not manifest_digest
-            or recorded_manifest_digest != manifest_digest
-            or current_digest != manifest_digest
-        ):
+        if pins.get(row_name) != current_digest:
             errors.append(
-                f"{_coverage_link_label(source_key, row_name)}: current elaborated normalized Lean signature digest is unavailable or invalid"
-            )
-            continue
-        if pins.get(row_name) != manifest_digest:
-            errors.append(
-                f"{_coverage_link_label(source_key, row_name)}: review-row elaborated Lean signature digest is missing or stale"
+                f"{_coverage_link_label(source_key, row_name)}: review-target semantic identity digest is missing or stale"
             )
     return errors
 
@@ -14978,11 +12322,6 @@ def _review_item_statement_audit_target_sha256(row_item: ReviewItem) -> str:
     """
 
     displayed_target = statement_digest(row_item.paper_statement)
-    if (
-        row_item.source_input_bundle_sha256
-        and not row_item.llm_match_stale
-    ):
-        return row_item.source_input_bundle_sha256
     if row_item.is_assumption or row_item.llm_match_stale:
         return displayed_target
     component_target = str(
@@ -15019,11 +12358,11 @@ def _row_statement_match_record(
     _source_statement, source_statement_sha256 = _source_item_coverage_statement(
         source_item
     )
-    _source_input, source_input_bundle_sha256, source_input_error = (
+    source_input, _source_input_bundle_sha256, source_input_error = (
         source_semantic_input_bundle(source_item)
     )
-    if not source_input_error and source_input_bundle_sha256:
-        source_statement_sha256 = source_input_bundle_sha256
+    if not source_input_error and source_input:
+        source_statement_sha256 = statement_digest(source_input)
     row_paper_statement_sha256 = statement_digest(row_item.paper_statement)
     row_statement_audit_target_sha256 = (
         _review_item_statement_audit_target_sha256(row_item)
@@ -15135,41 +12474,55 @@ def _current_schema2_review_manifest_error(item: ReviewItem) -> str:
     return ""
 
 
-def _semantic_contract_spec_evidence_lean_error(
-    specification: ReviewItem,
-    evidence: ReviewItem,
-) -> str:
-    """Require the artifact-pinned Lean verdict for a Spec/proof contract.
+def _current_schema2_review_manifest_surface_error(item: ReviewItem) -> str:
+    """Require the exact proposition root without duplicating v11 closure."""
 
-    The schema-2 manifests below establish that both endpoints are current and
-    of the right declaration kinds. Semantic equality and transparent
-    dependency expansion are deliberately delegated to Lean Meta.
-    """
+    manifest = item.lean_signature_manifest
+    if not isinstance(manifest, dict) or manifest.get("schema") != 2:
+        return "has no schema-2 elaborated manifest"
+    digest = str(manifest.get("sha256") or "").strip().lower()
+    if not digest or signature_manifest_digest(manifest) != digest:
+        return "has no valid canonical schema-2 manifest digest"
+    if str(item.lean_signature_sha256 or "").strip().lower() != digest:
+        return "has no current review-row schema-2 manifest pin"
+    proposition_graph = manifest.get("elaborated_proposition_graph")
+    if not isinstance(proposition_graph, dict) or proposition_graph.get(
+        "complete"
+    ) is not True:
+        return "has no complete schema-2 proposition receipt"
+    return ""
 
-    spec_manifest_error = _current_schema2_review_manifest_error(specification)
+
+def _semantic_contract_spec_lean_receipt_error(specification: ReviewItem) -> str:
+    """Require the current Lean-owned evidence common to every Spec contract."""
+
+    current_v11_root = bool(
+        specification.llm_match_source
+        == Path(V11_RAW_SOURCE_SPEC_SCREENING_FILE).name
+        and specification.llm_match_stale is False
+        and str(specification.llm_match_judgment or "").strip()
+        in POSITIVE_SEMANTIC_MATCH_JUDGMENTS
+    )
+    # The current v11 transaction already owns complete semantic dependency,
+    # proof, import, and axiom closure. Coverage checks its exact proposition
+    # root and Lean-Meta Spec/proof contract without requiring an older second
+    # recursive-manifest producer to succeed as well. Legacy lanes retain the
+    # complete schema-2 dependency requirement above.
+    spec_manifest_error = (
+        _current_schema2_review_manifest_surface_error(specification)
+        if current_v11_root
+        else _current_schema2_review_manifest_error(specification)
+    )
     if spec_manifest_error:
         return f"semantic-contract Spec {spec_manifest_error}"
-    evidence_manifest_error = _current_schema2_review_manifest_error(evidence)
-    if evidence_manifest_error:
-        return f"semantic-contract evidence {evidence_manifest_error}"
     spec_manifest = specification.lean_signature_manifest
-    evidence_manifest = evidence.lean_signature_manifest
-    assert isinstance(spec_manifest, dict) and isinstance(evidence_manifest, dict)
+    assert isinstance(spec_manifest, dict)
     if (
         _review_item_declaration_kind(specification) != "definition"
         or spec_manifest.get("declaration_kind") != "definition"
         or spec_manifest.get("conclusion_mode") != "type_and_value"
     ):
         return "semantic-contract Spec is not a transparent definition"
-    if (
-        _review_item_declaration_kind(evidence) not in LEAN_PROOF_DECLARATION_KINDS
-        or str(evidence.kind or "").strip().lower()
-        not in LEAN_PROOF_DECLARATION_KINDS
-        or evidence.is_assumption
-        or evidence_manifest.get("declaration_kind") != "theorem"
-        or evidence_manifest.get("conclusion_mode") != "type_only"
-    ):
-        return "semantic-contract evidence is not an actual proved theorem"
     if specification.semantic_contract_lean_transparency_verified is not True:
         return (
             "semantic-contract Spec has no current Lean-AST transitive "
@@ -15179,6 +12532,37 @@ def _semantic_contract_spec_evidence_lean_error(
         return (
             "Lean Meta did not establish the exact Spec/evidence semantic contract"
         )
+    return ""
+
+
+def _semantic_contract_spec_evidence_lean_error(
+    specification: ReviewItem,
+    evidence: ReviewItem,
+) -> str:
+    """Require the artifact-pinned Lean verdict for a visible Spec/proof pair.
+
+    The schema-2 manifests establish that both visible endpoints are current
+    and of the right declaration kinds. Semantic equality and transparent
+    dependency expansion are deliberately delegated to Lean Meta.
+    """
+
+    spec_error = _semantic_contract_spec_lean_receipt_error(specification)
+    if spec_error:
+        return spec_error
+    evidence_manifest_error = _current_schema2_review_manifest_error(evidence)
+    if evidence_manifest_error:
+        return f"semantic-contract evidence {evidence_manifest_error}"
+    evidence_manifest = evidence.lean_signature_manifest
+    assert isinstance(evidence_manifest, dict)
+    if (
+        _review_item_declaration_kind(evidence) not in LEAN_PROOF_DECLARATION_KINDS
+        or str(evidence.kind or "").strip().lower()
+        not in LEAN_PROOF_DECLARATION_KINDS
+        or evidence.is_assumption
+        or evidence_manifest.get("declaration_kind") != "theorem"
+        or evidence_manifest.get("conclusion_mode") != "type_only"
+    ):
+        return "semantic-contract evidence is not an actual proved theorem"
     return ""
 
 
@@ -15242,11 +12626,13 @@ def _semantic_contract_spec_coverage_proof_row(
         return None, contract_error
     if str(owner.full_name or "").strip() != spec_declaration:
         return None, "coverage row is not the contract's exact qualified Spec owner"
+    configured_evidence_declaration = _configured_proposition_spec_proof_declaration(
+        owner
+    )
     if (
         owner.is_proposition_spec is not True
         or owner.proposition_spec_role != "proof_routed"
-        or owner.proposition_spec_proof
-        not in {evidence_declaration, evidence_declaration.rsplit(".", 1)[-1]}
+        or configured_evidence_declaration != evidence_declaration
     ):
         return None, "coverage row is not explicitly configured as the contract Spec"
 
@@ -15258,15 +12644,85 @@ def _semantic_contract_spec_coverage_proof_row(
         for item in row_items.values()
         if str(item.full_name or "").strip() == evidence_declaration
     ]
-    if len(evidence_candidates) != 1:
+    if len(evidence_candidates) > 1:
         return None, "contract evidence does not resolve to one exact reviewed declaration"
-    evidence = evidence_candidates[0]
-    lean_contract_error = _semantic_contract_spec_evidence_lean_error(
-        owner, evidence
-    )
+    if len(evidence_candidates) == 1:
+        evidence = evidence_candidates[0]
+        lean_contract_error = _semantic_contract_spec_evidence_lean_error(
+            owner, evidence
+        )
+        if lean_contract_error:
+            return None, lean_contract_error
+        return evidence, ""
+
+    # The v11 source-statement surface intentionally excludes the paired
+    # theorem when a transparent ``Spec : Prop`` owns the source review.  Its
+    # exact theorem status and equality to the Spec have already been checked
+    # by Lean Meta above; give it proof credit without manufacturing a second
+    # source-facing review card or widening the statement-review denominator.
+    lean_contract_error = _semantic_contract_spec_lean_receipt_error(owner)
     if lean_contract_error:
         return None, lean_contract_error
-    return evidence, ""
+    return (
+        ReviewItem(
+            name=evidence_declaration.rsplit(".", 1)[-1],
+            full_name=evidence_declaration,
+            kind="theorem",
+            lean_statement="",
+            paper_statement="",
+            agent_statement="",
+            source_status="auxiliary Lean-Meta proof credit",
+        ),
+        "",
+    )
+
+
+def _definitionally_realized_spec_coverage_error(
+    source_item: dict[str, Any],
+    owner: ReviewItem,
+    *,
+    semantic_contract_schema: object,
+) -> str:
+    """Validate a direct source definition owned by a transparent Spec.
+
+    Definitions require semantic realization, not a manufactured theorem.
+    Lean Meta already checks that the configured evidence declaration unfolds
+    to the transparent Spec; this route only verifies the exact contract roles
+    and the current authenticated receipt.
+    """
+
+    if (
+        not isinstance(semantic_contract_schema, int)
+        or isinstance(semantic_contract_schema, bool)
+        or semantic_contract_schema not in {1, 2}
+    ):
+        return "source map has no supported semantic-contract schema"
+    contract = source_item.get("semantic_contract")
+    if not isinstance(contract, dict):
+        return "source item has no explicit Spec/evidence semantic contract"
+    allowed_contract_fields = {
+        "spec_declaration",
+        "evidence_declaration",
+        "evidence_mode",
+        "semantic_shape",
+    }
+    spec_declaration = str(contract.get("spec_declaration") or "").strip()
+    evidence_declaration = str(contract.get("evidence_declaration") or "").strip()
+    if (
+        set(contract) != allowed_contract_fields
+        or not spec_declaration
+        or not evidence_declaration
+        or spec_declaration == evidence_declaration
+        or str(contract.get("evidence_mode") or "").strip()
+        != "definitionally_realizes"
+        or str(contract.get("semantic_shape") or "").strip() != "plain"
+    ):
+        return "source item has a malformed definitionally-realizes Spec/evidence contract"
+    if str(owner.full_name or "").strip() != spec_declaration:
+        return "coverage row is not the contract's exact qualified Spec owner"
+    if source_item_direct_coverage_declarations(source_item) != [evidence_declaration]:
+        return "contract evidence is not the sole explicit direct source endpoint"
+    return _semantic_contract_spec_lean_receipt_error(owner)
 
 
 def _coverage_proof_evidence_row(
@@ -15377,12 +12833,25 @@ def _coverage_route_error(
             for declaration in allowed_rows
         )
         if not is_direct_owner and not definition_component_routes:
-            _evidence, contract_error = _semantic_contract_spec_coverage_proof_row(
-                source_item,
-                row_item,
-                row_items or {},
-                semantic_contract_schema=semantic_contract_schema,
+            contract = source_item.get("semantic_contract")
+            evidence_mode = (
+                str(contract.get("evidence_mode") or "").strip()
+                if isinstance(contract, dict)
+                else ""
             )
+            if evidence_mode == "definitionally_realizes":
+                contract_error = _definitionally_realized_spec_coverage_error(
+                    source_item,
+                    row_item,
+                    semantic_contract_schema=semantic_contract_schema,
+                )
+            else:
+                _evidence, contract_error = _semantic_contract_spec_coverage_proof_row(
+                    source_item,
+                    row_item,
+                    row_items or {},
+                    semantic_contract_schema=semantic_contract_schema,
+                )
             if contract_error:
                 return (
                     "row is not an explicit direct source route or an exact "
@@ -15545,10 +13014,10 @@ def _corrected_target_contract_spec_navigation_matches(
         return True
     if len(review_rows) != 1 or not isinstance(source_inventory, dict):
         return False
-    prefix = f"{paper_name}.PaperInterface."
+    paper_prefix = f"{paper_name}." if paper_name else ""
     short_name = spec_declaration.rsplit(".", 1)[-1]
     if (
-        not spec_declaration.startswith(prefix)
+        (paper_prefix and not spec_declaration.startswith(paper_prefix))
         or not short_name
         or review_rows != [short_name]
     ):
@@ -15565,7 +13034,7 @@ def _corrected_target_contract_spec_navigation_matches(
         )
         if (
             not candidate_error
-            and candidate_spec.startswith(prefix)
+            and (not paper_prefix or candidate_spec.startswith(paper_prefix))
             and candidate_spec.rsplit(".", 1)[-1] == short_name
         ):
             configured_specs.add(candidate_spec)
@@ -15693,25 +13162,23 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
         _is_statement_map_source(item.get("source"))
         for item in inventory.values()
     )
-    inventory_hash = paper_coverage_inventory_digest(
-        inventory,
-        mode=source_coverage_mode,
-        statement_map_payload=statement_map_payload,
-    )
-    full_inventory_hash = paper_statement_inventory_digest(full_inventory)
     surface_hash = review_surface_digest(items)
-    audit = load_llm_paper_coverage_audit(folder)
-    audit_items = audit.get("items") if isinstance(audit.get("items"), dict) else {}
-    coverage_item_bindings, ambiguous_semantic_item_bindings = (
-        _semantic_coverage_item_bindings(
-            inventory, audit_items, source_coverage_mode
-        )
+    coverage_state = _coverage_binding_freshness(
+        folder,
+        full_inventory,
+        inventory,
+        source_coverage_mode,
+        statement_map_payload,
+        presentation_aliases=presentation_aliases,
     )
-    bound_audit_items = {
-        source_key: audit_items[audit_key]
-        for source_key, audit_key in coverage_item_bindings.items()
-        if isinstance(audit_items.get(audit_key), dict)
-    }
+    audit = coverage_state.audit
+    audit_items = coverage_state.audit_items
+    coverage_item_bindings = coverage_state.coverage_item_bindings
+    ambiguous_semantic_item_bindings = list(
+        coverage_state.ambiguous_semantic_item_bindings
+    )
+    bound_audit_items = coverage_state.bound_audit_items
+    inventory_hash = coverage_state.inventory_hash
     audit_required = paper_coverage_audit_required(folder, inventory)
     mode_migration_error = source_coverage_mode_migration_error(
         statement_map_payload, require_explicit=audit_required
@@ -15734,6 +13201,12 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
         and not has_explicit_inventory
     )
     row_names = {item.name for item in items}
+    prerequisite_coverage_rows = paper_semantic_prerequisite_coverage_review_items(
+        folder,
+        inventory,
+        items,
+    )
+    coverage_row_names = row_names | set(prerequisite_coverage_rows)
 
     missing_inventory = audit_required and not has_explicit_inventory
     missing_required = audit_required and not audit_items
@@ -15759,7 +13232,7 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
         if _is_statement_map_source(item.get("source"))
         and str(item.get("source_kind") or "").strip()
         and str(item.get("source_kind") or "").strip().lower()
-        not in SOURCE_INVENTORY_KINDS
+        not in KNOWN_SOURCE_PRESENTATION_KINDS
     )
     source_scope_classification_errors = (
         _source_scope_classification_errors(inventory, bound_audit_items)
@@ -15773,103 +13246,40 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
     source_named_result_inventory_errors = _source_named_result_inventory_errors(
         folder
     )
-    missing_coverage = sorted(key for key in inventory if key not in bound_audit_items)
-    extra_coverage = sorted(
-        key
-        for key in audit_items
-        if key not in full_inventory and key not in set(coverage_item_bindings.values())
-    )
-    out_of_mode_coverage = sorted(
-        key
-        for key in audit_items
-        if key in full_inventory
-        and key not in inventory
-        and key not in presentation_aliases
-    )
-    missing_statement_digest = sorted(
-        key
-        for key, item in bound_audit_items.items()
-        if not str(item.get("statement_sha256") or "").strip()
-    )
-    stale_statement = sorted(
-        key
-        for key, item in bound_audit_items.items()
-        if str(item.get("statement_sha256") or "").strip()
-        and str(item.get("statement_sha256") or "").strip()
-        != _source_item_coverage_statement(inventory[key])[1]
-    )
+    missing_coverage = list(coverage_state.missing_coverage)
+    extra_coverage = list(coverage_state.extra_coverage)
+    out_of_mode_coverage = list(coverage_state.out_of_mode_coverage)
+    missing_statement_digest = list(coverage_state.missing_statement_digest)
+    stale_statement = list(coverage_state.stale_statement)
     invalid_row_links = sorted(
         {
             row
             for item in bound_audit_items.values()
             for row in _normalize_string_list(item.get("review_rows"))
-            if row not in row_names
+            if row not in coverage_row_names
         }
     )
-    recorded_inventory_hash = str(audit.get("paper_statement_inventory_sha256") or "").strip()
-    recorded_source_coverage_mode = str(
-        audit.get("source_coverage_mode") or ""
-    ).strip()
-    source_coverage_mode_mismatch = bool(
-        recorded_source_coverage_mode
-        and not source_coverage_modes_compatible(
-            recorded_source_coverage_mode, source_coverage_mode
-        )
-    )
+    recorded_inventory_hash = coverage_state.recorded_inventory_hash
+    recorded_source_coverage_mode = coverage_state.recorded_mode
+    source_coverage_mode_mismatch = coverage_state.mode_mismatch
     recorded_surface_hash = str(audit.get("review_surface_sha256") or "").strip()
-    aggregate_inventory_current = recorded_inventory_hash in {
-        inventory_hash,
-        # A legacy full-inventory sidecar can still supply current judgments
-        # for the ordinary subset when its full source inventory is unchanged.
-        full_inventory_hash,
-    }
-    source_artifact_current = _coverage_audit_source_artifact_is_current(
-        audit, statement_map_payload
+    aggregate_inventory_current = coverage_state.aggregate_current
+    source_artifact_current = coverage_state.source_artifact_current
+    aggregate_receipt_required = any(
+        not _coverage_item_has_current_source_digest_schema(item)
+        for item in bound_audit_items.values()
     )
-    source_artifact_identity_declared = _source_artifact_identity_is_declared(
-        statement_map_payload
+    stale_inventory = bool(
+        audit_items
+        and not aggregate_inventory_current
+        and aggregate_receipt_required
     )
-    source_artifact_identity_recorded = _coverage_audit_records_source_artifact_identity(
-        audit
+    stale_source_items = list(coverage_state.stale_source_items)
+    semantic_reuse_anchor_errors = coverage_state.semantic_reuse_anchor_errors
+    unverified_reused_source_items = list(
+        coverage_state.unverified_reused_source_items
     )
-    stale_inventory = bool(audit_items and not aggregate_inventory_current)
-    stale_source_items = sorted(
-        key
-        for key, item in bound_audit_items.items()
-        if _coverage_item_has_current_source_digest_schema(item)
-        and not _coverage_item_source_digest_is_current(
-            item, inventory[key], source_coverage_mode
-        )
-    )
-    # Keep per-item semantic reuse inexpensive without trusting a locator that
-    # changed beneath the same source semantic digest. This byte check is
-    # source-only and therefore far cheaper than another Lean extraction or
-    # LLM review.
-    semantic_reuse_anchor_errors = _semantic_reuse_source_anchor_errors(
-        folder,
-        [
-            key
-            for key, item in bound_audit_items.items()
-            if _coverage_item_has_current_source_digest_schema(item)
-            and _coverage_item_source_digest_is_current(
-                item, inventory[key], source_coverage_mode
-            )
-        ],
-    )
-    unverified_reused_source_items = sorted(semantic_reuse_anchor_errors)
-    legacy_unpinned_items = sorted(
-        key
-        for key, item in bound_audit_items.items()
-        if not _coverage_item_has_current_source_digest_schema(item)
-        and (
-            not aggregate_inventory_current
-            or (
-                source_artifact_identity_declared
-                and source_artifact_identity_recorded
-                and not source_artifact_current
-            )
-        )
-    )
+    legacy_unpinned_items = list(coverage_state.legacy_unpinned_items)
     stale_surface = bool(audit_items and recorded_surface_hash and recorded_surface_hash != surface_hash)
     audit_kind = str(audit.get("audit_kind") or "").strip()
     audit_source_grounded = bool(audit.get("source_grounded") is True)
@@ -15922,7 +13332,23 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
         )
     )
     row_items = {item.name: item for item in items}
+    # Source definitions are direct semantic coverage targets even though they
+    # are prerequisite cards rather than result-Spec denominator rows.  Reuse
+    # their existing reviewed identities; do not manufacture duplicate claim
+    # rows or second LLM judgments.
+    for name, prerequisite in prerequisite_coverage_rows.items():
+        if name not in row_items:
+            row_items[name] = prerequisite
+    # Counterexample/refutation rows are exact Lean review inputs for the
+    # defect-support lane, but never paper claims.  Their cache shares the
+    # current interface/status/Lean-closure transaction with `items` above.
+    row_items.update(quarantined_support_review_items(folder))
     current_rows_by_signature = _current_row_signature_index(row_items)
+    current_signature_by_row = {
+        row_name: digest
+        for digest, row_names in current_rows_by_signature.items()
+        for row_name in row_names
+    }
     effective_audit_items: dict[str, dict[str, Any]] = {}
     semantic_row_rebindings: list[str] = []
     for source_key, raw_item in bound_audit_items.items():
@@ -15942,7 +13368,7 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
             row
             for item in effective_audit_items.values()
             for row in _normalize_string_list(item.get("review_rows"))
-            if row not in row_names
+            if row not in coverage_row_names
         }
     )
     require_source_routes = llm_statement_source_routes_required(folder)
@@ -16086,6 +13512,8 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
     semantic_contract_spec_proof_links: list[str] = []
     quarantined_defect_support: list[str] = []
     invalid_quarantined_defect_support: list[str] = []
+    audited_proof_support: list[str] = []
+    invalid_proof_support: list[str] = []
     quarantined_defect_direct_coverage: list[str] = []
     support_only_named_claims: list[str] = []
     support_only_required_source_items: list[str] = []
@@ -16136,6 +13564,7 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
                     rows,
                     item.get("review_row_signature_sha256"),
                     row_items,
+                    current_signature_by_row=current_signature_by_row,
                 )
             )
             reason = str(item.get("reason") or "").strip()
@@ -16215,7 +13644,8 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
             matching_row_items = [
                 row_item
                 for row_item in linked_row_items
-                if str(row_item.llm_match_judgment or "").strip() == "matches"
+                if str(row_item.llm_match_judgment or "").strip()
+                in POSITIVE_SEMANTIC_MATCH_JUDGMENTS
             ]
             if (
                 result_requires_proof
@@ -16277,24 +13707,45 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
                 elif recorded_paper_digest != row_audit_target_digest:
                     row_statement_match_wrong_statement_digest.append(link_label)
                 # A corrected-target coverage row can certify only the explicit
-                # repaired statement. Its route may be pinned correctly while
-                # its row-local review still examined archival wording.
+                # repaired statement. The v11 row-local review nevertheless
+                # receives the literal archival source anchor; its approved
+                # target is carried by the exact route and resolution rather
+                # than by pretending that the archival quote has corrected
+                # wording.
                 if _source_item_is_corrected_target(inventory[key]):
-                    _target_statement, target_digest = _source_item_coverage_statement(
-                        inventory[key]
-                    )
-                    if row_paper_digest != target_digest:
-                        row_statement_match_mismatch.append(link_label)
+                    if row_item.source_input_bundle_sha256:
+                        archival_input, _input_identity, archival_input_error = (
+                            source_semantic_input_bundle(inventory[key])
+                        )
+                        if (
+                            archival_input_error
+                            or row_paper_digest
+                            != statement_digest(archival_input)
+                        ):
+                            row_statement_match_mismatch.append(link_label)
+                    else:
+                        # Pre-v11 review rows carried the approved target
+                        # itself rather than a raw source-input bundle.
+                        _target_statement, target_digest = (
+                            _source_item_coverage_statement(inventory[key])
+                        )
+                        if row_paper_digest != target_digest:
+                            row_statement_match_mismatch.append(link_label)
                 judgment = str(row_item.llm_match_judgment or "").strip()
                 resolution = _normalize_llm_match_resolution(row_item.llm_match_resolution)
                 if row_item.llm_match_stale:
                     row_statement_match_stale.append(link_label)
                 if not judgment:
                     row_statement_match_missing.append(link_label)
-                elif judgment == "matches":
+                elif judgment in POSITIVE_SEMANTIC_MATCH_JUDGMENTS:
                     if (
                         _source_item_is_corrected_target(inventory[key])
                         and resolution != CORRECTED_TARGET_MATCH_RESOLUTION
+                    ):
+                        row_statement_match_mismatch.append(link_label)
+                    elif (
+                        judgment == APPROVED_CORRECTED_TARGET_MATCH
+                        and not _source_item_is_corrected_target(inventory[key])
                     ):
                         row_statement_match_mismatch.append(link_label)
                 elif judgment == "mismatch" and resolution == CONDITIONAL_BOUNDARY_RESOLUTION:
@@ -16334,9 +13785,17 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
                 support_without_reason.append(key)
             if not source_evidence:
                 support_without_source_evidence.append(key)
-            if _source_inventory_item_is_quarantined_defect(inventory[key]):
+            if _source_inventory_item_is_explicit_proof_support(inventory[key]):
+                proof_support_error = _proof_support_coverage_error(
+                    inventory[key], item, row_items
+                )
+                if proof_support_error:
+                    invalid_proof_support.append(f"{key}: {proof_support_error}")
+                else:
+                    audited_proof_support.append(key)
+            elif _source_inventory_item_is_quarantined_defect(inventory[key]):
                 configured_support = set(
-                    _normalize_string_list(
+                    _proof_support_declaration_names(
                         inventory[key].get("support_lean_declarations")
                     )
                 )
@@ -16452,6 +13911,7 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
             or support_without_declarations
             or support_without_reason
             or support_without_source_evidence
+            or invalid_proof_support
             or invalid_quarantined_defect_support
             or defect_support_judgment_errors
             or required_out_of_scope
@@ -16485,6 +13945,7 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
         or result_covered_without_proof_rows
         or result_matched_only_by_definition_rows
         or quarantined_defect_direct_coverage
+        or invalid_proof_support
         or invalid_quarantined_defect_support
         or defect_support_judgment_errors
     )
@@ -16505,6 +13966,8 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
         "corrected_target_covered_count": len(corrected_target_covered),
         "conditional_boundary_count": len(conditional_boundary),
         "support_only_count": len(support_only),
+        "audited_proof_support_count": len(audited_proof_support),
+        "invalid_proof_support_count": len(invalid_proof_support),
         "quarantined_defect_support_count": len(quarantined_defect_support),
         "invalid_quarantined_defect_support_count": len(
             invalid_quarantined_defect_support
@@ -16646,6 +14109,8 @@ def paper_coverage_audit_summary(folder: Path, items: list[ReviewItem]) -> dict[
         "conditional_boundary": conditional_boundary,
         "corrected_target_covered": corrected_target_covered,
         "support_only": support_only,
+        "audited_proof_support": audited_proof_support,
+        "invalid_proof_support": invalid_proof_support,
         "quarantined_defect_support": quarantined_defect_support,
         "invalid_quarantined_defect_support": invalid_quarantined_defect_support,
         "defect_support_judgment_errors": defect_support_judgment_errors,
@@ -16897,482 +14362,8 @@ def read_all_log_entries(
     return entries
 
 
-# A material reusable primitive is a mathematical object from this repository's
-# library that appears in a paper-facing Spec.  These are not an opaque trusted
-# glossary: each record points to the exact Lean declaration that is shown to
-# reviewers and (for a current semantic judgment) must be paired with an exact
-# source item in ``audit/library_semantic_review.json``.  Foundational Lean and
-# Mathlib syntax such as ``Nat``, ``Finset``, or ``And`` remain foundation
-# terminals; they are version-pinned by Lean's closure receipt rather than
-# pretending that a paper independently defines natural numbers or finite sets.
-HUMAN_REVIEW_LIBRARY_PREREQUISITES: tuple[dict[str, Any], ...] = (
-    {
-        "lean_name": "EconCSLib.FairDivision.Bundle",
-        "label": "Bundle Item",
-        "source_path": "EconCSLib/SocialChoice/FairDivision/IndivisibleGoods.lean",
-        "line_start": 17,
-        "line_end": 18,
-    },
-    {
-        "lean_name": "EconCSLib.FairDivision.Allocation",
-        "label": "Allocation Agent Item",
-        "source_path": "EconCSLib/SocialChoice/FairDivision/IndivisibleGoods.lean",
-        "line_start": 20,
-        "line_end": 21,
-    },
-    {
-        "lean_name": "EconCSLib.FairDivision.IsAllocationOf",
-        "label": "IsAllocationOf allocation chores",
-        "source_path": "EconCSLib/SocialChoice/FairDivision/IndivisibleGoods.lean",
-        "line_start": 80,
-        "line_end": 83,
-    },
-    {
-        "lean_name": "EconCSLib.FairDivision.ChoreCost",
-        "label": "ChoreCost Agent Item",
-        "source_path": "EconCSLib/SocialChoice/FairDivision/Chores.lean",
-        "line_start": 28,
-        "line_end": 29,
-    },
-    {
-        "lean_name": "EconCSLib.FairDivision.additiveChoreCost",
-        "label": "additiveChoreCost",
-        "source_path": "EconCSLib/SocialChoice/FairDivision/Chores.lean",
-        "line_start": 70,
-        "line_end": 73,
-    },
-    {
-        "lean_name": "EconCSLib.FairDivision.EnvyFreeForChores",
-        "label": "EnvyFreeForChores",
-        "source_path": "EconCSLib/SocialChoice/FairDivision/Chores.lean",
-        "line_start": 242,
-        "line_end": 246,
-    },
-    {
-        "lean_name": "EconCSLib.FairDivision.EFXForChores",
-        "label": "EFXForChores",
-        "source_path": "EconCSLib/SocialChoice/FairDivision/Chores.lean",
-        "line_start": 248,
-        "line_end": 253,
-    },
-    {
-        "lean_name": "EconCSLib.FairDivision.ParetoDominatesForChores",
-        "label": "ParetoDominatesForChores",
-        "source_path": "EconCSLib/SocialChoice/FairDivision/Chores.lean",
-        "line_start": 1178,
-        "line_end": 1183,
-    },
-    {
-        "lean_name": "EconCSLib.FairDivision.ParetoOptimalForChores",
-        "label": "ParetoOptimalForChores",
-        "source_path": "EconCSLib/SocialChoice/FairDivision/Chores.lean",
-        "line_start": 1185,
-        "line_end": 1191,
-    },
-    {
-        "lean_name": "EconCSLib.FairDivision.AdditiveChoreInstance",
-        "label": "AdditiveChoreInstance",
-        "source_path": "EconCSLib/SocialChoice/FairDivision/Chores.lean",
-        "line_start": 1193,
-        "line_end": 1201,
-    },
-    {
-        "lean_name": "EconCSLib.Matching.Assignment",
-        "label": "Assignment M W",
-        "surface_aliases": ("Assignment",),
-        "source_path": "EconCSLib/Markets/Matching/Basic.lean",
-        "line_start": 9,
-        "line_end": 13,
-    },
-    {
-        "lean_name": "EconCSLib.Matching.valM",
-        "label": "valM",
-        "surface_aliases": ("valM",),
-        "source_path": "EconCSLib/Markets/Matching/Basic.lean",
-        "line_start": 168,
-        "line_end": 172,
-    },
-    {
-        "lean_name": "EconCSLib.Matching.valW",
-        "label": "valW",
-        "surface_aliases": ("valW",),
-        "source_path": "EconCSLib/Markets/Matching/Basic.lean",
-        "line_start": 174,
-        "line_end": 178,
-    },
-    {
-        "lean_name": "EconCSLib.Matching.ManyToOneAssignment",
-        "label": "ManyToOneAssignment Applicants Colleges",
-        "surface_aliases": ("ManyToOneAssignment",),
-        "source_path": "EconCSLib/Markets/Matching/ManyToOne.lean",
-        "line_start": 26,
-        "line_end": 30,
-    },
-    {
-        "lean_name": "EconCSLib.Matching.ManyToOneAssignment.RespectsQuota",
-        "label": "ManyToOneAssignment.RespectsQuota",
-        "surface_aliases": ("RespectsQuota",),
-        "source_path": "EconCSLib/Markets/Matching/ManyToOne.lean",
-        "line_start": 34,
-        "line_end": 37,
-    },
-    {
-        "lean_name": "EconCSLib.Matching.ManyToOne.valApplicant",
-        "label": "ManyToOne.valApplicant",
-        "surface_aliases": ("ManyToOne.valApplicant",),
-        "source_path": "EconCSLib/Markets/Matching/ManyToOne.lean",
-        "line_start": 245,
-        "line_end": 250,
-    },
-    {
-        "lean_name": "EconCSLib.Matching.MenStrictPreferenceProfile",
-        "label": "MenStrictPreferenceProfile",
-        "surface_aliases": ("MenStrictPreferenceProfile",),
-        "source_path": "EconCSLib/Markets/Matching/DeferredAcceptance.lean",
-        "line_start": 2986,
-        "line_end": 2988,
-    },
-    {
-        "lean_name": "EconCSLib.Matching.WomenStrictPreferenceProfile",
-        "label": "WomenStrictPreferenceProfile",
-        "surface_aliases": ("WomenStrictPreferenceProfile",),
-        "source_path": "EconCSLib/Markets/Matching/DeferredAcceptance.lean",
-        "line_start": 3083,
-        "line_end": 3085,
-    },
-    {
-        "lean_name": "EconCSLib.Matching.AllPairsAcceptable",
-        "label": "AllPairsAcceptable",
-        "surface_aliases": ("AllPairsAcceptable",),
-        "source_path": "EconCSLib/Markets/Matching/DeferredAcceptance.lean",
-        "line_start": 3087,
-        "line_end": 3092,
-    },
-)
-
-# Lean's direct-constant inventory reports structure projections separately.
-# A reviewer should see the one source-facing structure declaration that gives
-# those projections their mathematical meaning, not duplicate cards containing
-# the same record definition.  Any direct declaration absent from this map is
-# its own review target and must be registered with a bounded source range.
-LIBRARY_REVIEW_OWNER_BY_DIRECT_DECLARATION: dict[str, str] = {
-    "EconCSLib.Matching.Assignment.m_match": "EconCSLib.Matching.Assignment",
-    "EconCSLib.Matching.Assignment.w_match": "EconCSLib.Matching.Assignment",
-    "EconCSLib.Matching.ManyToOneAssignment.app_match": (
-        "EconCSLib.Matching.ManyToOneAssignment"
-    ),
-    "EconCSLib.Matching.ManyToOneAssignment.college_roster": (
-        "EconCSLib.Matching.ManyToOneAssignment"
-    ),
-    "EconCSLib.Matching.ManyToOneAssignment.mk": (
-        "EconCSLib.Matching.ManyToOneAssignment"
-    ),
-    "EconCSLib.FairDivision.AdditiveChoreInstance.chores": (
-        "EconCSLib.FairDivision.AdditiveChoreInstance"
-    ),
-    "EconCSLib.FairDivision.AdditiveChoreInstance.cost": (
-        "EconCSLib.FairDivision.AdditiveChoreInstance"
-    ),
-    "EconCSLib.FairDivision.AdditiveChoreInstance.nonneg": (
-        "EconCSLib.FairDivision.AdditiveChoreInstance"
-    ),
-}
-
-
-def library_review_owner_declaration(lean_name: object) -> str:
-    """Return the reviewable declaration owning one direct Lean constant."""
-
-    name = str(lean_name or "").strip()
-    return LIBRARY_REVIEW_OWNER_BY_DIRECT_DECLARATION.get(name, name)
-
-
 def _human_review_short_name(value: object) -> str:
     return str(value or "").strip().rsplit(".", 1)[-1]
-
-
-_DIRECT_ECONCSLIB_DECLARATION_RE = re.compile(
-    r"(?<![A-Za-z0-9_.])(EconCSLib(?:\.[A-Za-z_][A-Za-z0-9_']*)+)"
-)
-
-
-def direct_material_library_declaration_names(
-    claims: Iterable[Mapping[str, Any]],
-) -> set[str]:
-    """Return explicitly named EconCSLib definitions on a review surface.
-
-    This is deliberately a completeness backstop, not a source-semantic
-    matcher: a source-facing Spec that spells a reusable EconCSLib declaration
-    must either register that declaration for its own raw-source review or
-    fail visibly.  We do not try to turn Lean/Mathlib terminals into paper
-    definitions, and we do not infer an unqualified name from its spelling.
-    The shared registry covers deliberately supported open-namespace aliases;
-    direct qualified references cannot disappear merely because a maintainer
-    forgot to add them to that convenience registry.
-    """
-
-    names: set[str] = set()
-    for claim in claims:
-        for field in ("interface_source", "lean_statement"):
-            source = str(claim.get(field) or "")
-            names.update(_DIRECT_ECONCSLIB_DECLARATION_RE.findall(source))
-        raw_owners = claim.get("library_review_owner_declarations")
-        if isinstance(raw_owners, (list, tuple, set)):
-            names.update(
-                library_review_owner_declaration(name)
-                for name in raw_owners
-                if str(name or "").strip().startswith("EconCSLib.")
-            )
-    return names
-
-
-_LIBRARY_SEMANTIC_TARGET_CACHE: dict[
-    tuple[str, str, tuple[str, ...], bool], tuple[dict[str, dict[str, Any]], dict[str, str]]
-] = {}
-
-
-def library_semantic_targets(
-    folder: Path,
-    direct_names: Iterable[str],
-    *,
-    require_build: bool = True,
-) -> tuple[dict[str, dict[str, Any]], dict[str, str]]:
-    """Return the source-review target for every material library primitive.
-
-    Lean delta-reduces each direct reusable `def` at its own root.  Any
-    reusable name left in that body becomes another card, so one wrapper
-    cannot hide a second library definition.  Compiler-generated recursive
-    helpers are opened by Lean under their source declaration root and never
-    become synthetic cards.  The exact bounded source code remains visible
-    beside every target, including opaque/non-definition declarations where
-    Lean correctly exposes only the elaborated signature.
-    """
-
-    roots = {
-        library_review_owner_declaration(name)
-        for name in direct_names
-        if str(name or "").strip().startswith("EconCSLib.")
-    }
-    if not roots:
-        return {}, {}
-    interface_path = folder / "PaperInterface.lean"
-    try:
-        source_module = review_source_module(folder, interface_path)
-        interface_digest = hashlib.sha256(interface_path.read_bytes()).hexdigest()
-    except (OSError, ValueError) as exc:
-        return {}, {name: "could not identify PaperInterface import: " + str(exc) for name in roots}
-    cache_key = (
-        str(folder.resolve()),
-        interface_digest,
-        tuple(sorted(roots)),
-        require_build,
-    )
-    cached = _LIBRARY_SEMANTIC_TARGET_CACHE.get(cache_key)
-    if cached is not None:
-        return cached
-
-    targets: dict[str, dict[str, Any]] = {}
-    errors: dict[str, str] = {}
-    pending = set(roots)
-    # A finite, explicit cap makes a pathological library dependency cycle a
-    # visible audit failure instead of an unbounded dashboard traversal.
-    while pending and len(targets) < 512:
-        batch = sorted(pending - set(targets) - set(errors))
-        if not batch:
-            break
-        displayed = run_lean_transparent_library_declaration_displays(
-            ROOT,
-            source_module,
-            batch,
-            timeout_seconds=180,
-            build_timeout_seconds=600,
-            require_build=require_build,
-        )
-        missing = set(batch) - set(displayed)
-        for name in sorted(missing):
-            errors[name] = "Lean could not produce the current library semantic target"
-        for name, target in displayed.items():
-            targets[name] = dict(target)
-            for dependency in target.get("direct_library_declarations", ()):
-                owner = library_review_owner_declaration(dependency)
-                if owner not in targets and owner not in errors:
-                    pending.add(owner)
-        pending.difference_update(batch)
-    pending.difference_update(set(targets) | set(errors))
-    if pending:
-        for name in sorted(pending):
-            errors[name] = "library semantic-target closure exceeded 512 declarations"
-    result = (targets, errors)
-    _LIBRARY_SEMANTIC_TARGET_CACHE[cache_key] = result
-    return result
-
-
-_DISCOVERED_LIBRARY_DECLARATION_SOURCES: dict[
-    str, tuple[str, str, str, str, int | None, int | None]
-] = {}
-_DISCOVERED_LIBRARY_DECLARATION_SOURCE_INDEX_READY = False
-
-
-def _prime_discovered_library_declaration_source_index() -> None:
-    """Index bounded EconCSLib declarations once for dynamic Lean targets."""
-
-    global _DISCOVERED_LIBRARY_DECLARATION_SOURCE_INDEX_READY
-    if _DISCOVERED_LIBRARY_DECLARATION_SOURCE_INDEX_READY:
-        return
-    _DISCOVERED_LIBRARY_DECLARATION_SOURCE_INDEX_READY = True
-    library_root = ROOT / "EconCSLib"
-    if not library_root.is_dir():
-        return
-    for path in sorted(library_root.rglob("*.lean")):
-        for _kind, _short, full_name, source, _comment, line, source_path in (
-            parse_review_source_declarations(path)
-        ):
-            name = str(full_name or "").strip()
-            declaration = str(source or "").strip()
-            if not name or not declaration or name in _DISCOVERED_LIBRARY_DECLARATION_SOURCES:
-                continue
-            try:
-                relative = source_path.resolve().relative_to(ROOT).as_posix()
-            except ValueError:
-                continue
-            line_start = int(line)
-            _DISCOVERED_LIBRARY_DECLARATION_SOURCES[name] = (
-                declaration,
-                hashlib.sha256(declaration.encode("utf-8")).hexdigest(),
-                "",
-                relative,
-                line_start,
-                line_start + declaration.count("\n"),
-            )
-
-
-def _discovered_library_definition_source(
-    lean_name: str,
-) -> tuple[str, str, str, str, int | None, int | None]:
-    """Locate an exact EconCSLib declaration when no static card exists yet.
-
-    This is source-location discovery only: it does not infer semantics from a
-    name.  The target name comes from Lean's elaborated dependency output, and
-    the returned declaration bytes are still pinned in the per-paper review
-    ledger before they count as reviewed.
-    """
-
-    cached = _DISCOVERED_LIBRARY_DECLARATION_SOURCES.get(lean_name)
-    if cached is not None:
-        return cached
-    library_root = ROOT / "EconCSLib"
-    if not library_root.is_dir():
-        result = ("", "", "EconCSLib source directory is unavailable", "", None, None)
-        _DISCOVERED_LIBRARY_DECLARATION_SOURCES[lean_name] = result
-        return result
-    _prime_discovered_library_declaration_source_index()
-    cached = _DISCOVERED_LIBRARY_DECLARATION_SOURCES.get(lean_name)
-    if cached is not None:
-        return cached
-    result = ("", "", "library declaration is not registered or discoverable", "", None, None)
-    _DISCOVERED_LIBRARY_DECLARATION_SOURCES[lean_name] = result
-    return result
-
-
-def _library_definition_source_details(
-    template: Mapping[str, Any],
-) -> tuple[str, str, str, str, int | None, int | None]:
-    """Return one registered library declaration and its exact code digest.
-
-    The registry stores bounded source locations rather than hand-written
-    paraphrases.  A missing or changed declaration is therefore visible as an
-    unavailable dependency, never silently shown as an old glossary entry.
-    """
-
-    raw_path = str(template.get("source_path") or "").strip()
-    start = template.get("line_start")
-    end = template.get("line_end")
-    if (
-        not raw_path
-        or not isinstance(start, int)
-        or not isinstance(end, int)
-        or start <= 0
-        or end < start
-    ):
-        lean_name = str(template.get("lean_name") or "").strip()
-        return _discovered_library_definition_source(lean_name)
-    path = ROOT / raw_path
-    try:
-        path.resolve().relative_to(ROOT)
-        lines = path.read_text(encoding="utf-8").splitlines()
-    except (OSError, UnicodeDecodeError, ValueError) as exc:
-        return "", "", f"could not read registered library declaration: {exc}", "", None, None
-    if end > len(lines):
-        return "", "", "registered library declaration range is outside its source file", "", None, None
-    definition = "\n".join(lines[start - 1 : end]).strip()
-    if not definition:
-        return "", "", "registered library declaration range is empty", "", None, None
-    digest = hashlib.sha256(definition.encode("utf-8")).hexdigest()
-    return definition, digest, "", raw_path, start, end
-
-
-def _library_definition_source(
-    template: Mapping[str, Any],
-) -> tuple[str, str, str]:
-    """Backward-compatible declaration source extractor without its locator."""
-
-    definition, digest, error, _path, _start, _end = _library_definition_source_details(
-        template
-    )
-    return definition, digest, error
-
-
-def _library_semantic_review_payload(folder: Path) -> tuple[Mapping[str, Any], str]:
-    """Load an optional per-paper source-to-library review ledger.
-
-    This lane deliberately reuses the paper statement map's raw source item.
-    It never accepts a glossary explanation as the source side of the
-    comparison, and an absent ledger is an explicit pending review rather than
-    an implicit trust decision.
-    """
-
-    path = folder / DEFAULT_LIBRARY_SEMANTIC_REVIEW_FILE
-    if not _dashboard_is_file(path):
-        return {}, "no library semantic-review ledger is recorded"
-    payload = _dashboard_json_payload(path)
-    if not isinstance(payload, Mapping):
-        return {}, "library semantic-review ledger is unreadable"
-    if payload.get("schema") != LIBRARY_SEMANTIC_REVIEW_SCHEMA:
-        return {}, "library semantic-review ledger has an unsupported schema"
-    if str(payload.get("paper") or "").strip() != folder.name:
-        return {}, "library semantic-review ledger names a different paper"
-    if (
-        str(payload.get("prompt_version") or "").strip()
-        != REQUIRED_LLM_LIBRARY_SEMANTIC_REVIEW_PROMPT_VERSION
-    ):
-        return {}, "library semantic-review ledger has a stale or missing prompt version"
-    if (
-        str(payload.get("target_protocol") or "").strip()
-        != LIBRARY_SEMANTIC_TARGET_PROTOCOL
-    ):
-        return {}, "library semantic-review ledger has a stale or missing target protocol"
-    return payload, ""
-
-
-def _source_map_items_by_key(payload: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
-    """Index the map's source items without treating navigation prose as evidence."""
-
-    raw_items = payload.get("items")
-    if isinstance(raw_items, Mapping):
-        return {
-            str(key): value
-            for key, value in raw_items.items()
-            if str(key).strip() and isinstance(value, Mapping)
-        }
-    if isinstance(raw_items, list):
-        out: dict[str, Mapping[str, Any]] = {}
-        for raw in raw_items:
-            if not isinstance(raw, Mapping):
-                continue
-            key = str(raw.get("id") or raw.get("source_item") or "").strip()
-            if key:
-                out[key] = raw
-        return out
-    return {}
 
 
 def human_review_library_prerequisites(
@@ -17382,283 +14373,26 @@ def human_review_library_prerequisites(
     require_build: bool = True,
     semantic_targets_override: Mapping[str, Mapping[str, Any]] | None = None,
     semantic_target_errors_override: Mapping[str, str] | None = None,
+    source_map_payload: Mapping[str, Any] | None = None,
+    ledger_payload: Mapping[str, Any] | None = None,
+    declaration_sources_override: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
-    """Return material library definitions and their source-match status.
+    """Project saved graph targets into source-connected library cards."""
 
-    A reusable library name may simplify paper code, but it does not bypass
-    paper-source fidelity.  Each displayed prerequisite has (i) exact Lean
-    declaration text from the library, (ii) an explicitly selected byte-pinned
-    paper source item, and (iii) a freshness-checked raw-source-to-definition
-    semantic judgment.  The source item's own raw bundle is used verbatim,
-    exactly as for a paper-local Spec.  An absent connection or judgment is
-    shown as pending and cannot be mistaken for a checked definition.
-    """
-
-    surface = "\n".join(
-        str(claim.get(field) or "")
-        for claim in claims
-        for field in ("interface_source", "lean_statement")
-    )
-    direct_names = direct_material_library_declaration_names(claims)
     if semantic_targets_override is None:
-        semantic_targets, semantic_target_errors = library_semantic_targets(
-            folder,
-            direct_names,
-            require_build=require_build,
+        raise ValueError(
+            "dashboard library prerequisites require saved Lean graph targets"
         )
-    else:
-        semantic_targets = {
-            str(name).strip(): dict(target)
-            for name, target in semantic_targets_override.items()
-            if str(name).strip() and isinstance(target, Mapping)
-        }
-        semantic_target_errors = {
-            str(name).strip(): str(error)
-            for name, error in (semantic_target_errors_override or {}).items()
-            if str(name).strip() and str(error).strip()
-        }
-    # Lean may report a structure projection while the review surface already
-    # maps that projection to its one owning structure.  Normalize every
-    # closure name here as well as at discovery time, so an older staged
-    # display cache cannot resurrect a duplicate projection card.
-    normalized_targets: dict[str, dict[str, Any]] = {}
-    for raw_name, target in semantic_targets.items():
-        owner = library_review_owner_declaration(raw_name)
-        if owner == raw_name or owner not in normalized_targets:
-            normalized_targets[owner] = target
-    normalized_target_errors: dict[str, str] = {}
-    for raw_name, error in semantic_target_errors.items():
-        owner = library_review_owner_declaration(raw_name)
-        if owner not in normalized_target_errors:
-            normalized_target_errors[owner] = error
-    semantic_targets = normalized_targets
-    semantic_target_errors = normalized_target_errors
-    material_names = set(direct_names) | set(semantic_targets) | set(semantic_target_errors)
-    try:
-        source_map = paper_statement_map_payload(folder)
-    except Exception:  # noqa: BLE001 - a missing map leaves a visible pending item.
-        source_map = {}
-    source_items = _source_map_items_by_key(source_map)
-    ledger, ledger_error = _library_semantic_review_payload(folder)
-    raw_ledger_items = ledger.get("items") if isinstance(ledger, Mapping) else {}
-    ledger_items = raw_ledger_items if isinstance(raw_ledger_items, Mapping) else {}
-
-    # The shared registry covers frequently used EconCSLib vocabulary.  A
-    # paper may additionally declare a material library primitive in its
-    # ledger, with the same bounded Lean source location fields.  This keeps
-    # the rule general rather than making semantic checking depend on whether a
-    # maintainer happened to add the name to this convenience list.
-    templates = list(HUMAN_REVIEW_LIBRARY_PREREQUISITES)
-    known_names = {
-        str(template.get("lean_name") or "").strip() for template in templates
-    }
-    for raw_name, raw in ledger_items.items():
-        if not isinstance(raw, Mapping):
-            continue
-        lean_name = str(raw.get("library_declaration") or raw_name or "").strip()
-        if not lean_name or lean_name in known_names:
-            continue
-        templates.append(
-            {
-                "lean_name": lean_name,
-                "label": str(raw.get("label") or lean_name).strip(),
-                "source_path": str(raw.get("library_source_path") or "").strip(),
-                "line_start": raw.get("library_line_start"),
-                "line_end": raw.get("library_line_end"),
-            }
-        )
-        known_names.add(lean_name)
-
-    # A direct declaration selected by Lean's expanded semantic target may be
-    # newer than the convenience registry.  Locate its exact library source
-    # declaration deterministically so the reviewer sees code rather than an
-    # opaque name; absence remains an explicit review failure below.
-    for lean_name in sorted(material_names - known_names):
-        templates.append({"lean_name": lean_name, "label": lean_name})
-        known_names.add(lean_name)
-
-    entries: list[dict[str, Any]] = []
-    for template in templates:
-        lean_name = str(template.get("lean_name") or "").strip()
-        aliases = template.get("surface_aliases")
-        alias_values = (
-            [str(alias).strip() for alias in aliases if str(alias).strip()]
-            if isinstance(aliases, (list, tuple))
-            else []
-        )
-        used = lean_name in material_names or lean_name in surface or any(
-            re.search(rf"(?<![A-Za-z0-9_.]){re.escape(alias)}(?![A-Za-z0-9_])", surface)
-            for alias in alias_values
-        )
-        if not lean_name or not used:
-            continue
-        (
-            definition,
-            definition_digest,
-            definition_error,
-            definition_source_path,
-            definition_line_start,
-            definition_line_end,
-        ) = _library_definition_source_details(template)
-        semantic_target = semantic_targets.get(lean_name, {})
-        semantic_target_display = str(semantic_target.get("display") or "").strip()
-        semantic_target_digest = str(
-            semantic_target.get("display_sha256") or ""
-        ).strip().lower()
-        semantic_target_kind = str(
-            semantic_target.get("declaration_kind") or ""
-        ).strip()
-        semantic_target_error = str(semantic_target_errors.get(lean_name) or "").strip()
-        if not semantic_target_display and not semantic_target_error:
-            semantic_target_error = "Lean produced no library semantic target"
-        raw = ledger_items.get(lean_name)
-        if not isinstance(raw, Mapping):
-            raw = next(
-                (
-                    candidate
-                    for candidate in ledger_items.values()
-                    if isinstance(candidate, Mapping)
-                    and str(candidate.get("library_declaration") or "").strip()
-                    == lean_name
-                ),
-                {},
-            )
-        raw = raw if isinstance(raw, Mapping) else {}
-        source_item_key = str(raw.get("source_item") or "").strip()
-        source_item = source_items.get(source_item_key)
-        source_input = ""
-        source_digest = ""
-        source_error = ""
-        source_locator = ""
-        source_connection_state = ""
-        if source_item_key and source_item is None:
-            source_error = (
-                f"registered source item `{source_item_key}` is absent from the statement map"
-            )
-        elif source_item is not None:
-            source_locator = str(source_item.get("source_location") or "not recorded")
-            source_error = source_anchor_file_error(folder, source_item)
-            if source_error:
-                source_connection_state, display_error = source_anchor_display_state(
-                    folder,
-                    source_item,
-                    source_item_key=source_item_key,
-                )
-                if not display_error:
-                    source_error = ""
-            if not source_error:
-                source_input, source_digest, source_error = source_semantic_input_bundle(
-                    source_item, require_context_roles=True
-                )
-        elif isinstance(raw.get("source_anchor_evidence"), list):
-            # A source model/definition may be material to a library primitive
-            # without being an independently counted paper claim.  Permit that
-            # precise source connector, but give it the same byte-pinned bundle
-            # validation and context-role restrictions as a map item.
-            source_locator = str(raw.get("source_location") or "not recorded")
-            source_error = source_anchor_file_error(folder, raw)
-            if source_error:
-                source_connection_state, display_error = source_anchor_display_state(
-                    folder,
-                    raw,
-                )
-                if not display_error:
-                    source_error = ""
-            if not source_error:
-                source_input, source_digest, source_error = source_semantic_input_bundle(
-                    raw, require_context_roles=True
-                )
-        else:
-            source_error = "no explicit byte-pinned paper source connection is registered"
-
-        judgment = str(raw.get("judgment") or "").strip().lower()
-        has_metadata = bool(
-            str(raw.get("validator") or "").strip()
-            and str(raw.get("validated_at") or "").strip()
-        )
-        current = bool(
-            not ledger_error
-            and not definition_error
-            and not semantic_target_error
-            and bool(semantic_target_display)
-            and not source_error
-            and judgment in {"matches", "mismatch", "uncertain"}
-            and str(raw.get("library_declaration") or "").strip() == lean_name
-            and (
-                (source_item_key and str(raw.get("source_item") or "").strip() == source_item_key)
-                or (not source_item_key and isinstance(raw.get("source_anchor_evidence"), list))
-            )
-            and str(raw.get("source_input_bundle_sha256") or "").strip().lower()
-            == source_digest
-            and str(raw.get("library_definition_sha256") or "").strip().lower()
-            == definition_digest
-            and str(raw.get("library_semantic_target_sha256") or "").strip().lower()
-            == semantic_target_digest
-            and str(raw.get("library_semantic_target_protocol") or "").strip()
-            == LIBRARY_SEMANTIC_TARGET_PROTOCOL
-            and str(raw.get("library_source_path") or "").strip()
-            == definition_source_path
-            and raw.get("library_line_start") == definition_line_start
-            and raw.get("library_line_end") == definition_line_end
-            and has_metadata
-            # A public display projection can show the already-pinned excerpt,
-            # but it deliberately cannot make a local source-byte semantic
-            # screen current.
-            and source_connection_state != PUBLIC_SOURCE_DISPLAY_PROJECTION_STATE
-        )
-        if ledger_error:
-            review_status = ledger_error
-        elif definition_error:
-            review_status = definition_error
-        elif semantic_target_error:
-            review_status = semantic_target_error
-        elif source_error:
-            review_status = source_error
-        elif not judgment:
-            review_status = "source connection is registered; semantic judgment is pending"
-        elif source_connection_state == PUBLIC_SOURCE_DISPLAY_PROJECTION_STATE:
-            review_status = "release-projected excerpt (display only)"
-        elif not current:
-            review_status = "recorded library semantic judgment is stale or incomplete"
-        else:
-            review_status = "current"
-        entries.append(
-            {
-                "lean_name": lean_name,
-                "label": str(template.get("label") or lean_name).strip(),
-                "library_source_path": definition_source_path,
-                "library_line_start": definition_line_start,
-                "library_line_end": definition_line_end,
-                "library_definition": definition,
-                "library_definition_sha256": definition_digest,
-                "library_definition_error": definition_error,
-                "library_semantic_target": semantic_target_display,
-                "library_semantic_target_sha256": semantic_target_digest,
-                "library_semantic_target_kind": semantic_target_kind,
-                "library_semantic_target_error": semantic_target_error,
-                # Preserve Lean-reported direct edges for the packet's
-                # dependency-first display ordering.  These are presentation
-                # edges only; the Lean closure itself remains the audit
-                # authority.
-                "direct_library_declarations": list(
-                    semantic_target.get("direct_library_declarations", ())
-                ),
-                "source_item": source_item_key,
-                "source_locator": source_locator,
-                "verbatim_source_input": source_input,
-                "source_input_bundle_sha256": source_digest,
-                "source_connection_error": source_error,
-                "source_connection_state": source_connection_state,
-                "source_connection_display_only": (
-                    source_connection_state == PUBLIC_SOURCE_DISPLAY_PROJECTION_STATE
-                ),
-                "semantic_judgment": judgment or "not recorded",
-                "semantic_reason": str(raw.get("reason") or "").strip(),
-                "semantic_current": current,
-                "semantic_status": review_status,
-            }
-        )
-    return entries
+    return _prepared_library_prerequisites(
+        folder,
+        claims,
+        require_build=require_build,
+        semantic_targets_override=semantic_targets_override,
+        semantic_target_errors_override=semantic_target_errors_override,
+        source_map_payload=source_map_payload,
+        ledger_payload=ledger_payload,
+        declaration_sources_override=declaration_sources_override,
+    )
 
 
 def _human_review_intake_order(folder: Path) -> dict[str, int]:
@@ -17699,7 +14433,12 @@ def _human_review_intake_order(folder: Path) -> dict[str, int]:
     return order
 
 
-def human_review_claim_items(folder: Path, items: list[ReviewItem]) -> list[dict[str, Any]]:
+def human_review_claim_items(
+    folder: Path,
+    items: list[ReviewItem],
+    *,
+    semantic_reuse_authority: CurrentSemanticReuseAuthority | None = None,
+) -> list[dict[str, Any]]:
     """Project raw Lean declarations to source-claim and assumption review rows.
 
     A transparent ``Spec`` and its paired theorem are deliberately separate
@@ -17721,23 +14460,47 @@ def human_review_claim_items(folder: Path, items: list[ReviewItem]) -> list[dict
     map_records = (
         list(raw_map_items.items()) if isinstance(raw_map_items, Mapping) else []
     )
+    typed_routes = (
+        EvidenceRouteSet.from_source_map(source_map)
+        if isinstance(source_map, Mapping)
+        and typed_route_validation_required(source_map)
+        else None
+    )
+    route_by_source_item = (
+        typed_routes.by_source_item() if typed_routes is not None else {}
+    )
+    proof_support_declarations = {
+        str(declaration).strip()
+        for _source_key, raw_record in map_records
+        if isinstance(raw_record, Mapping)
+        and _source_inventory_item_is_explicit_proof_support(dict(raw_record))
+        for declaration in _normalize_string_list(
+            raw_record.get("support_lean_declarations")
+        )
+        if str(declaration).strip()
+    }
     intake_order = _human_review_intake_order(folder)
     selected: list[tuple[int, int, dict[str, Any]]] = []
     covered: set[str] = set()
     for source_index, (source_key, raw_record) in enumerate(map_records):
         if not isinstance(raw_record, Mapping):
             continue
-        contract = raw_record.get("semantic_contract")
-        spec = (
-            str(contract.get("spec_declaration") or "").strip()
-            if isinstance(contract, Mapping)
-            else ""
-        )
-        proof = (
-            str(contract.get("evidence_declaration") or "").strip()
-            if isinstance(contract, Mapping)
-            else ""
-        )
+        typed_route = route_by_source_item.get(str(source_key))
+        if typed_route is not None:
+            spec = typed_route.spec_declaration
+            proof = typed_route.evidence_declaration
+        else:
+            contract = raw_record.get("semantic_contract")
+            spec = (
+                str(contract.get("spec_declaration") or "").strip()
+                if isinstance(contract, Mapping)
+                else ""
+            )
+            proof = (
+                str(contract.get("evidence_declaration") or "").strip()
+                if isinstance(contract, Mapping)
+                else ""
+            )
         if not spec:
             routes = raw_record.get("spec_lean_declarations")
             if isinstance(routes, list):
@@ -17764,7 +14527,10 @@ def human_review_claim_items(folder: Path, items: list[ReviewItem]) -> list[dict
             covered.add(proof)
 
     for fallback_index, item in enumerate(items, start=len(selected)):
-        if item.full_name in covered:
+        if (
+            item.full_name in covered
+            or item.full_name in proof_support_declarations
+        ):
             continue
         record = dict(item.__dict__)
         record["human_claim_title"] = item.name
@@ -17781,48 +14547,36 @@ def human_review_claim_items(folder: Path, items: list[ReviewItem]) -> list[dict
     )
     if not specification_names:
         return records
-    # A packet closeout has already obtained these exact Lean-elaborated
-    # displays in bounded stages.  Reuse that cache for an interactive page
-    # only when the packet helper authenticates the current paper-local Lean
-    # tree and exact Spec name set; otherwise fall back to a fresh Lean walk.
-    cached_targets: Mapping[str, Any] | None = None
+    # Rendering consumes only an authenticated retained display.  Missing
+    # packet transport remains visible on the row; a dashboard request never
+    # starts Lean or replays the retired native packet producer.
     try:
-        try:
-            from scripts import review_dashboard_packet as packet
-        except ModuleNotFoundError:
-            import review_dashboard_packet as packet  # type: ignore
-        packet_cache = packet._current_packet_lean_cache(  # type: ignore[attr-defined]
-            folder, specification_names
+        from scripts.current_closeout import review_surface
+
+        packet_cache = review_surface._current_packet_lean_cache(
+            folder,
+            specification_names,
+            semantic_reuse_authority=semantic_reuse_authority,
         )
         raw_targets = (
             packet_cache.get("semantic_targets")
             if isinstance(packet_cache, Mapping)
             else None
         )
-        if isinstance(raw_targets, Mapping) and set(raw_targets) == set(specification_names):
-            cached_targets = raw_targets
-    except Exception:  # noqa: BLE001 - a cache is an interactive optimization.
-        cached_targets = None
-    try:
-        if cached_targets is not None:
-            targets = cached_targets
+        if isinstance(raw_targets, Mapping) and set(raw_targets) == set(
+            specification_names
+        ):
+            targets = raw_targets
+            expansion_error = ""
         else:
-            source_path = folder / REVIEW_SOURCE_FILENAME
-            source_module = review_source_module(folder, source_path)
-            paper_modules = paper_owned_module_names_in_import_closure(
-                ROOT, folder, source_module
+            targets = {}
+            expansion_error = (
+                "retained Lean-expanded Spec targets are unavailable; prepare "
+                "the current Lean review graph before opening this dashboard"
             )
-            targets = run_lean_transparent_paper_spec_displays(
-                ROOT,
-                source_module,
-                specification_names,
-                paper_modules,
-            )
-    except Exception as exc:  # The dashboard must show a missing expansion visibly.
+    except Exception as exc:  # Keep malformed retained data visible on every row.
         targets = {}
         expansion_error = str(exc)
-    else:
-        expansion_error = ""
     for record in records:
         name = str(record.get("full_name") or "").strip()
         target = targets.get(name)
@@ -17831,105 +14585,42 @@ def human_review_claim_items(folder: Path, items: list[ReviewItem]) -> list[dict
             record["semantic_expanded_statement_sha256"] = str(
                 target.get("display_sha256") or ""
             )
+            record["review_claim_manifest_sha256"] = str(
+                target.get("review_claim_manifest_sha256") or ""
+            )
+            record["review_claim_atoms_sha256"] = str(
+                target.get("review_claim_atoms_sha256") or ""
+            )
+            record["review_claim_atoms"] = list(
+                target.get("review_claim_atoms", ())
+            )
+            try:
+                record["source_review_target_sha256"] = statement_digest(
+                    review_claim_target_text(target)
+                )
+            except ValueError:
+                record["source_review_target_sha256"] = ""
             record["library_review_owner_declarations"] = list(
                 target.get("library_declarations", ())
             )
             record["paper_semantic_prerequisite_declarations"] = list(
                 target.get("prerequisite_declarations", ())
             )
+            record["semantic_target_kind"] = str(
+                target.get("semantic_target_kind") or "spec_proposition"
+            )
+            record["semantic_review_declaration"] = str(
+                target.get("semantic_review_declaration") or name
+            )
+            record["semantic_target_protocol"] = str(
+                target.get("lean_target_protocol")
+                or V11_RAW_SOURCE_SPEC_LEAN_TARGET_PROTOCOL
+            )
         elif name.endswith("Spec"):
             record["semantic_expansion_error"] = (
                 expansion_error or "Lean did not return a complete semantic expansion"
             )
     return records
-
-
-def bind_current_v11_source_spec_screening(
-    folder: Path,
-    claim_rows: list[dict[str, Any]],
-) -> None:
-    """Attach a current v11 raw-source/expanded-Spec verdict to claim cards.
-
-    The interactive dashboard and the mark-up packet share one semantic row
-    per paper source claim.  A legacy ``statement_match_llm.json`` may still
-    describe paired implementation declarations, so it is not a substitute
-    for the v11 source-to-transparent-Spec screen.  This projection accepts a
-    v11 row only when it binds the exact displayed source bundle, current
-    PaperInterface bytes, and the Lean-elaborated expanded Spec shown on the
-    card.
-    """
-
-    path = folder / V11_RAW_SOURCE_SPEC_SCREENING_FILE
-    payload = _dashboard_json_payload(path)
-    if not isinstance(payload, Mapping):
-        return
-    if (
-        payload.get("schema") != V11_RAW_SOURCE_SPEC_SCREENING_SCHEMA
-        or payload.get("paper") != folder.name
-        or payload.get("prompt_version")
-        != V11_RAW_SOURCE_SPEC_SCREENING_PROMPT_VERSION
-    ):
-        return
-    raw_items = payload.get("items")
-    if not isinstance(raw_items, Mapping):
-        return
-    interface_sha256 = _file_sha256(folder / REVIEW_SOURCE_FILENAME)
-    payload_validator = str(payload.get("validator") or "").strip()
-    payload_validated_at = str(payload.get("validated_at") or "").strip()
-    for row in claim_rows:
-        full_name = str(row.get("full_name") or "").strip()
-        raw = raw_items.get(full_name)
-        if not full_name or not isinstance(raw, Mapping):
-            continue
-        verdict = _normalize_llm_match_judgment(raw.get("judgment"))
-        source_sha256 = str(row.get("source_input_bundle_sha256") or "").strip()
-        expanded_sha256 = str(
-            row.get("semantic_expanded_statement_sha256") or ""
-        ).strip()
-        current = bool(
-            verdict in {"matches", "mismatch", "uncertain"}
-            and source_sha256
-            and raw.get("source_input_bundle_sha256") == source_sha256
-            and raw.get("paper_statement_sha256") == source_sha256
-            and raw.get("lean_expanded_statement_sha256") == expanded_sha256
-            and raw.get("paper_interface_sha256") == interface_sha256
-            and raw.get("source_input_protocol")
-            == "verbatim_source_anchor_bundle_v1"
-            and raw.get("lean_target_protocol")
-            == V11_RAW_SOURCE_SPEC_LEAN_TARGET_PROTOCOL
-            and raw.get("semantic_target_declaration") == full_name
-            and bool(str(raw.get("validator") or payload_validator).strip())
-            and bool(str(raw.get("validated_at") or payload_validated_at).strip())
-        )
-        if not current:
-            continue
-        row.update(
-            {
-                "llm_match_judgment": verdict,
-                "llm_match_reason": str(raw.get("reason") or "").strip(),
-                "llm_match_stale": False,
-                "llm_match_source": path.name,
-                "llm_match_validator": str(
-                    raw.get("validator") or payload_validator
-                ).strip(),
-                "llm_match_validator_type": str(
-                    raw.get("validator_type")
-                    or payload.get("validator_type")
-                    or "llm_as_judge"
-                ).strip(),
-                "llm_match_validated_at": str(
-                    raw.get("validated_at") or payload_validated_at
-                ).strip(),
-                "llm_match_lean_statement_sha256": expanded_sha256,
-                "llm_match_paper_statement_sha256": source_sha256,
-                "llm_match_resolution": "",
-                "llm_match_boundary_type": "",
-                "llm_match_boundary_names": [],
-                "llm_match_conditional_premises": [],
-                "llm_match_resolution_reason": "",
-                "llm_match_source_routes": [],
-            }
-        )
 
 
 def human_review_presentation_sections(
@@ -18067,6 +14758,563 @@ def browser_review_item(item: Mapping[str, Any]) -> dict[str, Any]:
     return payload
 
 
+@dataclass(frozen=True)
+class _CurrentSemanticReviewSurface:
+    """Current claim and prerequisite evidence used by one renderer."""
+
+    human_claims: list[dict[str, Any]]
+    library_prerequisites: list[dict[str, Any]]
+    library_summary: dict[str, Any]
+    paper_prerequisites: list[dict[str, Any]] = dataclass_field(default_factory=list)
+    paper_prerequisite_summary: dict[str, Any] = dataclass_field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class _PreparedDashboardSurface:
+    """Typed browser projection and its nonaccepting display summaries."""
+
+    all_claims: list[dict[str, Any]]
+    selected_claims: list[dict[str, Any]]
+    semantic_surface: _CurrentSemanticReviewSurface
+    presentation_sections: list[dict[str, Any]]
+    slices: list[dict[str, Any]]
+    surface_audit: dict[str, Any]
+    statement_audit: dict[str, Any]
+    paper_coverage_audit: dict[str, Any]
+    assumption_audit: dict[str, Any]
+
+
+def _prepared_claim_semantic_state(row: Mapping[str, Any]) -> str:
+    """Return the fail-closed current semantic state of one prepared card."""
+
+    judgment = _normalize_llm_match_judgment(row.get("llm_match_judgment"))
+    if judgment == APPROVED_CORRECTED_TARGET_MATCH:
+        judgment = "matches"
+    source_text = str(
+        row.get("verbatim_source_input") or row.get("paper_statement") or ""
+    )
+    lean_text = str(
+        row.get("semantic_expanded_statement") or row.get("lean_statement") or ""
+    )
+    source_digest = str(row.get("source_input_bundle_sha256") or "").strip()
+    lean_digest = str(
+        row.get("semantic_expanded_statement_sha256") or ""
+    ).strip()
+    current = bool(
+        row.get("llm_match_current")
+        and not row.get("llm_match_stale")
+        and source_text
+        and lean_text
+        and SOURCE_ARTIFACT_SHA256_RE.fullmatch(source_digest)
+        and SOURCE_ARTIFACT_SHA256_RE.fullmatch(lean_digest)
+        and str(row.get("llm_match_lean_statement_sha256") or "").strip()
+        == lean_digest
+        and str(row.get("llm_match_paper_statement_sha256") or "").strip()
+        == statement_digest(source_text)
+    )
+    if not current:
+        return "stale" if judgment else "missing"
+    if judgment in {"matches", "mismatch", "uncertain"}:
+        return judgment
+    return "unknown"
+
+
+def _prepared_statement_audit_summary(
+    claims: Iterable[Mapping[str, Any]],
+    library_summary: Mapping[str, Any],
+    paper_prerequisite_summary: Mapping[str, Any],
+    *,
+    authority: str,
+) -> dict[str, Any]:
+    """Summarize the cards on screen without replaying strict audit ledgers."""
+
+    rows = [dict(row) for row in claims]
+    buckets: dict[str, list[str]] = {
+        "matches": [],
+        "mismatch": [],
+        "uncertain": [],
+        "stale": [],
+        "missing": [],
+        "unknown": [],
+    }
+    for row in rows:
+        name = str(row.get("name") or row.get("full_name") or "unnamed")
+        buckets[_prepared_claim_semantic_state(row)].append(name)
+    needs_attention = bool(
+        buckets["mismatch"]
+        or buckets["uncertain"]
+        or buckets["stale"]
+        or buckets["missing"]
+        or buckets["unknown"]
+        or library_summary.get("needs_attention")
+        or paper_prerequisite_summary.get("needs_attention")
+    )
+    return {
+        "row_count": len(rows),
+        "draft_count": 0,
+        "judgment_count": len(rows) - len(buckets["missing"]),
+        "matches": len(buckets["matches"]),
+        "mismatch_count": len(buckets["mismatch"]),
+        "unresolved_mismatch_count": len(buckets["mismatch"]),
+        "uncertain_count": len(buckets["uncertain"]),
+        "unknown_count": len(buckets["unknown"]),
+        "missing_judgment_count": len(buckets["missing"]),
+        "stale_judgment_count": len(buckets["stale"]),
+        "mismatch": buckets["mismatch"],
+        "unresolved_mismatch": buckets["mismatch"],
+        "uncertain": buckets["uncertain"],
+        "unknown": buckets["unknown"],
+        "missing_judgment": buckets["missing"],
+        "stale_judgment": buckets["stale"],
+        "has_completed_audit": bool(rows) and not needs_attention,
+        "library_prerequisites": dict(library_summary),
+        "paper_prerequisites": dict(paper_prerequisite_summary),
+        "presentation_only": True,
+        "presentation_authority": authority,
+        "needs_attention": needs_attention,
+    }
+
+
+def _prepared_surface_audit_summary(
+    claims: Iterable[Mapping[str, Any]],
+    *,
+    authority: str,
+    accepted_graph: bool,
+) -> dict[str, Any]:
+    """Describe typed route selection without reloading a legacy sidecar."""
+
+    rows = list(claims)
+    row_count = len(rows)
+    audit_required = row_count > REVIEW_SURFACE_LLM_AUDIT_THRESHOLD
+    oversize = row_count >= REVIEW_SURFACE_WARN_THRESHOLD
+    recorded = accepted_graph and audit_required
+    missing_required = audit_required and not recorded
+    return {
+        "row_count": row_count,
+        "llm_threshold": REVIEW_SURFACE_LLM_AUDIT_THRESHOLD,
+        "warn_threshold": REVIEW_SURFACE_WARN_THRESHOLD,
+        "audit_required": audit_required,
+        "oversize": oversize,
+        "missing_required": missing_required,
+        "stale": False,
+        "judgment": "passes" if recorded else "",
+        "unknown_judgment": False,
+        "reason": "",
+        "source": "accepted obligation graph" if recorded else "",
+        "has_completed_audit": recorded,
+        "presentation_only": True,
+        "presentation_authority": authority,
+        "needs_attention": missing_required,
+        "has_warning": missing_required or oversize,
+    }
+
+
+def _prepared_paper_coverage_summary(
+    claims: Iterable[Mapping[str, Any]],
+    paper_prerequisites: Iterable[Mapping[str, Any]],
+    library_prerequisites: Iterable[Mapping[str, Any]],
+    *,
+    authority: str,
+) -> dict[str, Any]:
+    """Report exact source-card coverage without replaying strict manifests."""
+
+    cards: list[tuple[str, str, str]] = []
+    for row in claims:
+        cards.append(
+            (
+                str(
+                    row.get("source_item_key")
+                    or row.get("human_claim_source_key")
+                    or ""
+                ).strip(),
+                str(row.get("name") or row.get("full_name") or "unnamed"),
+                _prepared_claim_semantic_state(row),
+            )
+        )
+    for entry in [*paper_prerequisites, *library_prerequisites]:
+        judgment = str(entry.get("semantic_judgment") or "").strip()
+        if not entry.get("semantic_current"):
+            state = "stale" if judgment and judgment != "not recorded" else "missing"
+        elif judgment in {"matches", "mismatch", "uncertain"}:
+            state = judgment
+        else:
+            state = "unknown"
+        cards.append(
+            (
+                str(entry.get("source_item") or "").strip(),
+                str(entry.get("lean_name") or "unnamed prerequisite"),
+                state,
+            )
+        )
+
+    by_source_item: dict[str, list[tuple[str, str]]] = {}
+    anonymous: list[tuple[str, str]] = []
+    for source_item, label, state in cards:
+        if source_item:
+            by_source_item.setdefault(source_item, []).append((label, state))
+        else:
+            anonymous.append((label, state))
+    states: dict[str, str] = {}
+    for source_item, rows in by_source_item.items():
+        row_states = {state for _label, state in rows}
+        if "mismatch" in row_states:
+            states[source_item] = "mismatch"
+        elif "uncertain" in row_states:
+            states[source_item] = "uncertain"
+        elif "stale" in row_states:
+            states[source_item] = "stale"
+        elif "missing" in row_states:
+            states[source_item] = "missing"
+        elif "unknown" in row_states:
+            states[source_item] = "unknown"
+        elif row_states == {"matches"}:
+            states[source_item] = "matches"
+        else:
+            states[source_item] = "unknown"
+    for index, (label, state) in enumerate(anonymous, start=1):
+        states[f"[unbound {index}] {label}"] = state if state != "matches" else "missing"
+
+    names = lambda state: sorted(
+        source_item for source_item, value in states.items() if value == state
+    )
+    covered = names("matches")
+    mismatch = names("mismatch")
+    uncertain = names("uncertain")
+    stale = names("stale")
+    missing = names("missing")
+    unknown = names("unknown")
+    needs_attention = bool(mismatch or uncertain or stale or missing or unknown)
+    return {
+        "inventory_count": len(states),
+        "coverage_item_count": len(cards),
+        "covered_count": len(covered),
+        "direct_covered_count": len(covered),
+        "missing_count": len(missing),
+        "uncertain_count": len(uncertain),
+        "unknown_count": len(unknown),
+        "stale_statement_count": len(stale),
+        "semantic_mismatch_count": len(mismatch),
+        "covered": covered,
+        "missing": missing,
+        "uncertain": uncertain,
+        "unknown": unknown,
+        "stale_statement": stale,
+        "semantic_mismatch": mismatch,
+        "has_completed_audit": bool(states) and not needs_attention,
+        "presentation_only": True,
+        "presentation_authority": authority,
+        "needs_attention": needs_attention,
+        "source_to_lean_needs_attention": needs_attention,
+    }
+
+
+def _prepared_assumption_audit_summary(
+    claims: Iterable[Mapping[str, Any]],
+    *,
+    authority: str,
+    accepted_graph: bool,
+) -> dict[str, Any]:
+    """Expose recorded assumption status without pretending to rerun its gate."""
+
+    assumptions = [dict(row) for row in claims if bool(row.get("is_assumption"))]
+    missing = [] if accepted_graph else [
+        str(row.get("name") or row.get("full_name") or "unnamed")
+        for row in assumptions
+    ]
+    digest_payload = [
+        {
+            "name": str(row.get("full_name") or row.get("name") or ""),
+            "source_input_bundle_sha256": str(
+                row.get("source_input_bundle_sha256") or ""
+            ),
+            "semantic_expanded_statement_sha256": str(
+                row.get("semantic_expanded_statement_sha256") or ""
+            ),
+        }
+        for row in assumptions
+    ]
+    surface_sha256 = hashlib.sha256(
+        json.dumps(
+            digest_payload,
+            ensure_ascii=True,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+    return {
+        "row_count": len(assumptions),
+        "configured_count": len(assumptions),
+        # The accepted graph proves the recorded premise lane complete, but
+        # this presentation projection does not reinterpret its finer
+        # paper-assumption/paper-condition classification.
+        "paper_assumption_count": 0,
+        "missing_judgment_count": len(missing),
+        "missing_judgment": missing,
+        "has_completed_audit": bool(assumptions) and accepted_graph,
+        "assumption_surface_sha256": surface_sha256,
+        "presentation_only": True,
+        "presentation_authority": authority,
+        "needs_attention": bool(missing),
+        "has_warning": bool(missing),
+    }
+
+
+def _typed_prepared_dashboard_surface(
+    folder: Path,
+    slice_filter: str | None,
+) -> _PreparedDashboardSurface | None:
+    """Project a role-typed packet surface without the base row-cache parser.
+
+    Untyped historical papers return ``None`` and retain their parser-backed
+    dashboard.  Once a source map selects the role-typed protocol, a missing
+    or invalid prepared surface fails visibly instead of falling through to a
+    second Python/Lean discovery path.
+    """
+
+    source_map = paper_statement_map_payload(folder)
+    if not typed_route_validation_required(source_map):
+        return None
+    from scripts.current_closeout.review_surface import prepared_review_surface
+
+    prepared = prepared_review_surface(folder.name)
+    all_claims = attach_review_slices_to_mappings(
+        folder,
+        [
+            {
+                **dict(row),
+                "line_number": int(row.get("line_number") or 0),
+            }
+            for row, _records, _proof in prepared.claim_rows
+        ],
+    )
+    selected_claims = filter_mapping_rows_by_slice(
+        all_claims, folder.name, slice_filter
+    )
+    selected_names = {
+        str(row.get("full_name") or "").strip() for row in selected_claims
+    }
+    presentation_sections: list[dict[str, Any]] = []
+    for raw_title, section_rows in prepared.claim_sections:
+        names = [
+            str(row.get("full_name") or "").strip()
+            for row, _records, _proof in section_rows
+            if str(row.get("full_name") or "").strip() in selected_names
+        ]
+        if not names:
+            continue
+        title = str(raw_title or "Source claims")
+        section: dict[str, Any] = {"title": title, "names": names}
+        if title == "Source-model assumptions":
+            section["kind"] = "source_model_assumptions"
+        presentation_sections.append(section)
+    library_prerequisites = [
+        dict(entry) for entry in prepared.library_prerequisites
+    ]
+    paper_prerequisites = [dict(entry) for entry in prepared.paper_prerequisites]
+    library_summary = semantic_prerequisite_review_summary(library_prerequisites)
+    paper_summary = semantic_prerequisite_review_summary(paper_prerequisites)
+    semantic_surface = _CurrentSemanticReviewSurface(
+        human_claims=selected_claims,
+        library_prerequisites=library_prerequisites,
+        library_summary=library_summary,
+        paper_prerequisites=paper_prerequisites,
+        paper_prerequisite_summary=paper_summary,
+    )
+    accepted_graph = prepared.recorded_graph_projection is not None
+    return _PreparedDashboardSurface(
+        all_claims=all_claims,
+        selected_claims=selected_claims,
+        semantic_surface=semantic_surface,
+        presentation_sections=presentation_sections,
+        slices=summarize_mapping_review_slices(all_claims),
+        surface_audit=_prepared_surface_audit_summary(
+            all_claims,
+            authority=prepared.presentation_authority,
+            accepted_graph=accepted_graph,
+        ),
+        statement_audit=_prepared_statement_audit_summary(
+            all_claims,
+            library_summary,
+            paper_summary,
+            authority=prepared.presentation_authority,
+        ),
+        paper_coverage_audit=_prepared_paper_coverage_summary(
+            all_claims,
+            paper_prerequisites,
+            library_prerequisites,
+            authority=prepared.presentation_authority,
+        ),
+        assumption_audit=_prepared_assumption_audit_summary(
+            all_claims,
+            authority=prepared.presentation_authority,
+            accepted_graph=accepted_graph,
+        ),
+    )
+
+
+def current_semantic_review_surface(
+    folder: Path,
+    claim_items: list[ReviewItem],
+    all_items: list[ReviewItem],
+    *,
+    semantic_reuse_authority: CurrentSemanticReuseAuthority | None = None,
+) -> _CurrentSemanticReviewSurface:
+    """Build the non-rendering semantic surface once from authenticated rows."""
+
+    human_claims = human_review_claim_items(
+        folder,
+        claim_items,
+        semantic_reuse_authority=semantic_reuse_authority,
+    )
+    bind_current_v11_source_spec_screening(folder, human_claims)
+    _project_v11_claim_rows_onto_review_items(all_items, human_claims)
+    from scripts.current_closeout import review_surface
+
+    all_specification_names = sorted(
+        {
+            str(item.full_name or "").strip()
+            for item in all_items
+            if str(item.full_name or "").strip().endswith("Spec")
+        }
+    )
+    try:
+        packet_cache = review_surface._current_packet_lean_cache(
+            folder,
+            all_specification_names,
+            semantic_reuse_authority=semantic_reuse_authority,
+        )
+    except Exception:  # noqa: BLE001 - cache reuse is only a speed path.
+        packet_cache = None
+    cached_paper_targets = (
+        review_surface.paper_semantic_review_targets_from_cache(
+            packet_cache
+        )
+        if isinstance(packet_cache, Mapping)
+        else None
+    )
+    cached_library_targets = (
+        packet_cache.get("library_semantic_targets")
+        if isinstance(packet_cache, Mapping)
+        and isinstance(packet_cache.get("library_semantic_targets"), Mapping)
+        else None
+    )
+    cached_library_target_errors = (
+        packet_cache.get("library_semantic_target_errors")
+        if isinstance(packet_cache, Mapping)
+        and isinstance(packet_cache.get("library_semantic_target_errors"), Mapping)
+        else None
+    )
+    # Assumptions have their own source-provenance review lane. They are
+    # visible cards but do not enlarge the claim-only prerequisite surface.
+    source_claim_rows = [
+        item for item in human_claims if not bool(item.get("is_assumption"))
+    ]
+    semantic_targets = {
+        str(item.get("full_name") or "").strip(): {
+            "prerequisite_declarations": item.get(
+                "paper_semantic_prerequisite_declarations", ()
+            )
+        }
+        for item in source_claim_rows
+        if str(item.get("full_name") or "").strip()
+    }
+    try:
+        source_map = review_surface._read_json(
+            folder / review_surface.SOURCE_MAP_NAME
+        )
+    except ValueError:
+        source_map = {}
+    recorded_library_prerequisites: list[dict[str, Any]] | None = None
+    if cached_paper_targets:
+        graph_selected, recorded_projection = (
+            review_surface._recorded_graph_packet_projection(folder)
+        )
+        if graph_selected:
+            if recorded_projection is None or not isinstance(packet_cache, Mapping):
+                raise ValueError(
+                    "recorded accepted graph is unavailable for prerequisite display"
+                )
+            paper_prerequisites, recorded_library_prerequisites = (
+                review_surface._recorded_graph_prerequisite_cards(
+                    folder,
+                    source_map,
+                    packet_cache,
+                    recorded_projection,
+                )
+            )
+        else:
+            current_projection = (
+                review_surface.load_current_v11_review_graph_projection(ROOT, folder)
+            )
+            if current_projection is None:
+                raise ValueError(
+                    "paper prerequisite cards require a saved current Lean graph"
+                )
+            _support, _names_by_root, support_digests = (
+                current_projection.paper_prerequisite_review_support(
+                    current_projection.paper_prerequisite_targets
+                )
+            )
+            paper_prerequisites = review_surface._prepared_paper_prerequisites(
+                folder,
+                semantic_targets,
+                source_map_payload=source_map,
+                semantic_targets_by_name_override=cached_paper_targets,
+                declaration_sources_override=(
+                    current_projection.paper_declaration_sources
+                ),
+                supporting_declarations_sha256_by_name=support_digests,
+            )
+    else:
+        paper_prerequisites = []
+    library_review_inputs: list[Mapping[str, Any]] = [*source_claim_rows]
+    library_review_inputs.extend(
+        {
+            "library_review_owner_declarations": prerequisite.get(
+                "direct_library_declarations", ()
+            )
+        }
+        for prerequisite in paper_prerequisites
+    )
+    explicit_library_declarations = (
+        review_surface.explicit_source_semantic_declarations(
+            source_map, library=True
+        )
+    )
+    if explicit_library_declarations:
+        library_review_inputs.append(
+            {
+                "library_review_owner_declarations": sorted(
+                    explicit_library_declarations
+                )
+            }
+        )
+    library_prerequisites = (
+        recorded_library_prerequisites
+        if recorded_library_prerequisites is not None
+        else human_review_library_prerequisites(
+            folder,
+            library_review_inputs,
+            semantic_targets_override=cached_library_targets or {},
+            semantic_target_errors_override=cached_library_target_errors or {},
+        )
+    )
+    library_summary = library_semantic_review_summary(
+        folder,
+        all_items,
+        entries_override=library_prerequisites,
+    )
+    return _CurrentSemanticReviewSurface(
+        human_claims=human_claims,
+        library_prerequisites=library_prerequisites,
+        library_summary=library_summary,
+        paper_prerequisites=paper_prerequisites,
+        paper_prerequisite_summary=semantic_prerequisite_review_summary(
+            paper_prerequisites
+        ),
+    )
+
+
 def gather_paper_data(
     paper_filter: str | None = None,
     slice_filter: str | None = None,
@@ -18075,12 +15323,50 @@ def gather_paper_data(
 ) -> list[dict[str, Any]]:
     papers = []
     for folder in iter_paper_folders(paper_filter):
-        all_items = review_items_for_paper(
-            folder,
-            use_cache=True,
-            render_images=render_images,
-        )
-        items = filter_items_by_slice(all_items, folder.name, slice_filter)
+        typed_surface = _typed_prepared_dashboard_surface(folder, slice_filter)
+        if typed_surface is None:
+            semantic_reuse_authority = current_dashboard_semantic_reuse_authority(
+                folder
+            )
+            all_items = review_items_for_paper(
+                folder,
+                use_cache=True,
+                render_images=render_images,
+                semantic_reuse_authority=semantic_reuse_authority,
+            )
+            items = filter_items_by_slice(all_items, folder.name, slice_filter)
+            semantic_surface = current_semantic_review_surface(
+                folder,
+                items,
+                all_items,
+                semantic_reuse_authority=semantic_reuse_authority,
+            )
+            human_claims = semantic_surface.human_claims
+            browser_items = [browser_review_item(item.__dict__) for item in items]
+            slices = summarize_review_slices(all_items)
+            surface_audit = review_surface_audit_summary(folder, all_items)
+            statement_summary = statement_translation_audit_summary(
+                folder,
+                all_items,
+                library_summary_override=semantic_surface.library_summary,
+            )
+            paper_coverage_summary = paper_coverage_audit_summary(folder, all_items)
+            assumption_summary = assumption_provenance_audit_summary(
+                folder, all_items
+            )
+            presentation_sections = human_review_presentation_sections(
+                folder, human_claims
+            )
+        else:
+            semantic_surface = typed_surface.semantic_surface
+            human_claims = typed_surface.selected_claims
+            browser_items = [browser_review_item(item) for item in human_claims]
+            slices = typed_surface.slices
+            surface_audit = typed_surface.surface_audit
+            statement_summary = typed_surface.statement_audit
+            paper_coverage_summary = typed_surface.paper_coverage_audit
+            assumption_summary = typed_surface.assumption_audit
+            presentation_sections = typed_surface.presentation_sections
         assets = {}
         paper_pdf = find_paper_pdf(folder)
         if paper_pdf:
@@ -18095,113 +15381,29 @@ def gather_paper_data(
                 "url": paper_asset_url(folder.name, paper_text),
                 "extension": paper_text.suffix.lower(),
             }
-        human_claims = human_review_claim_items(folder, items)
-        bind_current_v11_source_spec_screening(folder, human_claims)
-        presentation_sections = human_review_presentation_sections(
-            folder, human_claims
-        )
-        try:
-            from scripts import review_dashboard_packet
-        except ModuleNotFoundError:
-            import review_dashboard_packet  # type: ignore[no-redef]
-        all_specification_names = sorted(
-            {
-                str(item.full_name or "").strip()
-                for item in all_items
-                if str(item.full_name or "").strip().endswith("Spec")
-            }
-        )
-        try:
-            packet_cache = review_dashboard_packet._current_packet_lean_cache(
-                folder, all_specification_names
-            )
-        except Exception:  # noqa: BLE001 - cache reuse is only a speed path.
-            packet_cache = None
-        cached_paper_targets = (
-            packet_cache.get("paper_prerequisite_targets")
-            if isinstance(packet_cache, Mapping)
-            and isinstance(packet_cache.get("paper_prerequisite_targets"), Mapping)
-            else None
-        )
-        cached_library_targets = (
-            packet_cache.get("library_semantic_targets")
-            if isinstance(packet_cache, Mapping)
-            and isinstance(packet_cache.get("library_semantic_targets"), Mapping)
-            else None
-        )
-        cached_library_target_errors = (
-            packet_cache.get("library_semantic_target_errors")
-            if isinstance(packet_cache, Mapping)
-            and isinstance(packet_cache.get("library_semantic_target_errors"), Mapping)
-            else None
-        )
-        # Assumptions have their own source-provenance review lane.  They are
-        # visible browser cards but are not semantic prerequisites of a paper
-        # source claim and must not enlarge that claim-only input surface.
-        source_claim_rows = [
-            item for item in human_claims if not bool(item.get("is_assumption"))
-        ]
-        semantic_targets = {
-            str(item.get("full_name") or "").strip(): {
-                "prerequisite_declarations": item.get(
-                    "paper_semantic_prerequisite_declarations", ()
-                )
-            }
-            for item in source_claim_rows
-            if str(item.get("full_name") or "").strip()
-        }
-        paper_prerequisites = review_dashboard_packet.paper_semantic_prerequisites(
-            folder,
-            semantic_targets,
-            semantic_targets_by_name_override=cached_paper_targets,
-        )
-        library_review_inputs: list[Mapping[str, Any]] = [*source_claim_rows]
-        library_review_inputs.extend(
-            {
-                "library_review_owner_declarations": prerequisite.get(
-                    "direct_library_declarations", ()
-                )
-            }
-            for prerequisite in paper_prerequisites
-        )
-        library_prerequisites = human_review_library_prerequisites(
-            folder,
-            library_review_inputs,
-            semantic_targets_override=cached_library_targets,
-            semantic_target_errors_override=cached_library_target_errors,
-        )
-        library_summary = library_semantic_review_summary(
-            folder,
-            all_items,
-            entries_override=library_prerequisites,
-        )
-        statement_summary = statement_translation_audit_summary(
-            folder,
-            all_items,
-            library_summary_override=library_summary,
-        )
         papers.append(
             {
                 "name": folder.name,
                 "title": paper_title(folder),
-                "items": [browser_review_item(item.__dict__) for item in items],
+                "items": browser_items,
                 "human_claims": [browser_review_item(item) for item in human_claims],
                 "presentation_sections": presentation_sections,
-                "human_review_prerequisites": library_prerequisites,
-                "library_semantic_audit": library_summary,
-                "slices": summarize_review_slices(all_items),
+                "human_review_prerequisites": semantic_surface.library_prerequisites,
+                "human_review_paper_prerequisites": semantic_surface.paper_prerequisites,
+                "library_semantic_audit": semantic_surface.library_summary,
+                "slices": slices,
                 "active_slice": slice_filter or "",
                 "assets": assets,
-                "surface_audit": review_surface_audit_summary(folder, all_items),
+                "surface_audit": surface_audit,
                 "statement_audit": statement_summary,
-                "paper_coverage_audit": paper_coverage_audit_summary(folder, all_items),
+                "paper_coverage_audit": paper_coverage_summary,
                 # This optional public-release projection supplies a frozen
                 # browser denominator only.  It never changes the strict
                 # source inventory used by CLI checks or closeout evidence.
                 "public_source_display_surface": public_source_display_coverage_surface(
                     folder
                 ),
-                "assumption_audit": assumption_provenance_audit_summary(folder, all_items),
+                "assumption_audit": assumption_summary,
             }
         )
     return papers
@@ -18729,6 +15931,64 @@ def statement_audit_rows(papers: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return rows
 
 
+def _direct_audit_inputs(
+    paper_filter: str | None,
+    slice_filter: str | None,
+) -> Iterator[
+    tuple[
+        Path,
+        CurrentSemanticReuseAuthority | None,
+        list[ReviewItem],
+        list[ReviewItem],
+    ]
+]:
+    """Yield authenticated cached rows without constructing dashboard output."""
+
+    for folder in iter_paper_folders(paper_filter):
+        authority = current_dashboard_semantic_reuse_authority(folder)
+        all_items = review_items_for_paper(
+            folder,
+            use_cache=True,
+            render_images=False,
+            semantic_reuse_authority=authority,
+        )
+        yield (
+            folder,
+            authority,
+            all_items,
+            filter_items_by_slice(all_items, folder.name, slice_filter),
+        )
+
+
+def direct_statement_audit_rows(
+    paper_filter: str | None,
+    slice_filter: str | None = None,
+) -> list[dict[str, Any]]:
+    """Compute statement diagnostics from the shared non-rendering surface."""
+
+    rows: list[dict[str, Any]] = []
+    for folder, authority, all_items, selected_items in _direct_audit_inputs(
+        paper_filter, slice_filter
+    ):
+        semantic_surface = current_semantic_review_surface(
+            folder,
+            selected_items,
+            all_items,
+            semantic_reuse_authority=authority,
+        )
+        rows.append(
+            {
+                "paper": folder.name,
+                **statement_translation_audit_summary(
+                    folder,
+                    all_items,
+                    library_summary_override=semantic_surface.library_summary,
+                ),
+            }
+        )
+    return rows
+
+
 def paper_coverage_audit_rows(papers: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Return paper-level source-statement coverage audit rows."""
 
@@ -18739,6 +15999,38 @@ def paper_coverage_audit_rows(papers: list[dict[str, Any]]) -> list[dict[str, An
     return rows
 
 
+def direct_paper_coverage_audit_rows(
+    paper_filter: str | None,
+    slice_filter: str | None = None,
+) -> list[dict[str, Any]]:
+    """Compute the coverage CLI surface without constructing the website.
+
+    Coverage checks need current cached review rows and their source/Spec
+    judgments. They do not need rendered assets, prerequisite cards, library
+    summaries, website presentation sections, or assumption summaries. The
+    tracked semantic authority admits only an exact-current cache; a miss keeps
+    the ordinary review-row loader fail closed.
+    """
+
+    rows: list[dict[str, Any]] = []
+    for folder, authority, all_items, items in _direct_audit_inputs(
+        paper_filter, slice_filter
+    ):
+        current_semantic_review_surface(
+            folder,
+            items,
+            all_items,
+            semantic_reuse_authority=authority,
+        )
+        rows.append(
+            {
+                "paper": folder.name,
+                **paper_coverage_audit_summary(folder, items),
+            }
+        )
+    return rows
+
+
 def assumption_audit_rows(papers: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Return paper-level assumption-provenance audit rows."""
 
@@ -18746,6 +16038,30 @@ def assumption_audit_rows(papers: list[dict[str, Any]]) -> list[dict[str, Any]]:
     for paper in papers:
         audit = paper.get("assumption_audit") or {}
         rows.append({"paper": paper.get("name", ""), **audit})
+    return rows
+
+
+def direct_assumption_audit_rows(
+    paper_filter: str | None,
+    slice_filter: str | None = None,
+) -> list[dict[str, Any]]:
+    """Compute the strict assumption gate from authenticated audit rows.
+
+    Typed dashboard cards intentionally carry only presentation evidence.
+    This direct path preserves the complete assumption-provenance and premise
+    checks for CLI/closeout without forcing the browser to reconstruct them.
+    """
+
+    rows: list[dict[str, Any]] = []
+    for folder, _authority, all_items, _selected_items in _direct_audit_inputs(
+        paper_filter, slice_filter
+    ):
+        rows.append(
+            {
+                "paper": folder.name,
+                **assumption_provenance_audit_summary(folder, all_items),
+            }
+        )
     return rows
 
 
@@ -18944,9 +16260,6 @@ def fast_saved_source_record_assumption_precheck(
     try:
         from scripts import audit_evidence_integrity as evidence
         from scripts import audit_repository
-    except ModuleNotFoundError:  # Direct script execution.
-        import audit_evidence_integrity as evidence  # type: ignore
-        import audit_repository  # type: ignore
     except Exception as exc:  # noqa: BLE001 - an unavailable validator fails closed.
         result["needs_attention"] = True
         result["reasons"].append("could not load semantic premise validators: " + str(exc))
@@ -19173,13 +16486,20 @@ def print_fast_saved_source_record_assumption_precheck(result: Mapping[str, Any]
 
 
 def hidden_premise_repository_audit_rows(paper: str | None) -> list[dict[str, Any]]:
-    """Return hidden-premise findings from the repository audit for CLI prechecks."""
+    """Return the bounded syntax-only hidden-premise supplement for a precheck.
+
+    ``assumption_provenance_audit_summary`` already checks the current
+    elaborated review-row manifests and explicit assumption judgments.  The
+    only additional lightweight check needed here is the paper-local Lean
+    ``variable``-binder scan.  Calling the full machine-paper audit from this
+    precheck used to reload the complete recursive source-record receipt and
+    rerun unrelated closeout phases; IM05 made that one-assumption command
+    take minutes and hundreds of megabytes.  Strict closeout still runs the
+    complete repository audit separately.
+    """
 
     try:
-        try:
-            from scripts import audit_repository
-        except ModuleNotFoundError:  # Direct script execution.
-            import audit_repository  # type: ignore
+        from scripts import audit_repository
     except Exception as exc:  # pragma: no cover - defensive CLI fallback
         return [
             {
@@ -19192,12 +16512,7 @@ def hidden_premise_repository_audit_rows(paper: str | None) -> list[dict[str, An
             }
         ]
 
-    marker = "has premises not routed through explicit Assumptions.lean paper assumptions"
     variable_marker = "proof-boundary `variable` premise"
-    source_record_markers = (
-        "source-record audit",
-        "source-record judge",
-    )
     rows: dict[str, dict[str, Any]] = {}
     accepted_conditional_premises: dict[str, dict[str, list[str]]] = {}
 
@@ -19218,25 +16533,17 @@ def hidden_premise_repository_audit_rows(paper: str | None) -> list[dict[str, An
                 return True
         return False
 
-    findings = list(
-        audit_repository.check_machine_paper_status(
-            library_premise_audit=False,
-            paper_filter=paper,
-        )
-    )
     if paper:
         paper_dir = ROOT / "papers" / paper
         if paper_dir.exists():
             paper_files = sorted(path for path in paper_dir.rglob("*.lean") if path.is_file())
-            findings.extend(audit_repository.check_hidden_variable_premises_in_files(paper_files))
+            findings = audit_repository.check_hidden_variable_premises_in_files(paper_files)
+        else:
+            findings = []
     else:
-        findings.extend(audit_repository.check_hidden_variable_premises(include_active=False))
+        findings = audit_repository.check_hidden_variable_premises(include_active=False)
     for finding in findings:
-        if (
-            marker not in finding.message
-            and variable_marker not in finding.message
-            and not any(source_marker in finding.message for source_marker in source_record_markers)
-        ):
+        if variable_marker not in finding.message:
             continue
         rel_path = finding.path.relative_to(ROOT) if finding.path.is_absolute() else finding.path
         parts = rel_path.parts
@@ -19382,2510 +16689,6 @@ def append_review(log_file: Path, payload: dict[str, Any], default_user: str) ->
     return entry
 
 
-HTML_PAGE = """
-<!doctype html>
-<html lang='en'>
-<head>
-  <meta charset='utf-8' />
-  <meta name='viewport' content='width=device-width, initial-scale=1' />
-  <title>Paper Interface Review Dashboard</title>
-    <style>
-    :root {
-      --bg: #f5f7fb;
-      --panel: #ffffff;
-      --line: #e5e8ee;
-      --line-strong: #ccd4e0;
-      --muted: #5d6678;
-      --text: #172039;
-      --accent: #1f6feb;
-      --accent-soft: #e8f1ff;
-      --ok: #0b8043;
-      --ok-soft: #e7f4ed;
-      --bad: #aa2e2e;
-      --bad-soft: #fae8e8;
-      --warn: #a35f00;
-      --warn-soft: #fff3dd;
-      --neutral-soft: #f2f5f9;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.35;
-    }
-    .page {
-      width: min(1800px, calc(100% - 16px));
-      margin: 0 auto;
-      padding: 18px 0 30px;
-    }
-    h1 {
-      margin: 0 0 8px;
-      font-size: 28px;
-      letter-spacing: 0;
-    }
-    .subtitle { color: var(--muted); margin: 0 0 14px; }
-    .toolbar {
-      margin: 14px 0 16px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-      background: var(--panel);
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      box-shadow: 0 1px 2px rgba(25, 33, 58, 0.06);
-    }
-    .toolbar label { font-size: 13px; color: #334155; }
-    .toolbar input, .toolbar select {
-      margin-left: 8px;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      padding: 8px 10px;
-      min-width: 170px;
-      font: inherit;
-      background: #fff;
-    }
-    .toolbar select { min-width: 150px; }
-    .toolbar-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: #334155;
-      font-size: 13px;
-    }
-    .toolbar-toggle input {
-      min-width: 0;
-      margin-left: 0;
-    }
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(120px, 1fr));
-      gap: 10px;
-      margin: 0 0 12px;
-    }
-    .summary-card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 10px 12px;
-      box-shadow: 0 1px 2px rgba(25, 33, 58, 0.04);
-    }
-    .summary-card .label {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 2px;
-    }
-    .summary-card .value {
-      color: var(--text);
-      font-weight: 700;
-      font-size: 20px;
-    }
-    .muted { color: var(--muted); }
-    .small { font-size: 12px; }
-    .paper-block {
-      margin: 16px 0;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px;
-      background: var(--panel);
-      box-shadow: 0 1px 2px rgba(25, 33, 58, 0.04);
-    }
-    .paper-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: flex-start;
-      margin-bottom: 10px;
-    }
-    .paper-block h2 { margin: 0; font-size: 22px; }
-    .paper-progress {
-      color: var(--muted);
-      font-size: 12px;
-      text-align: right;
-      min-width: 180px;
-    }
-    .paper-source-panel {
-      border: 1px solid #e5ecff;
-      border-radius: 8px;
-      padding: 7px 10px;
-      background: #f7faff;
-      margin-bottom: 10px;
-    }
-    .paper-source-heading { margin: 0 0 8px; font-size: 14px; }
-    .review-contents ul { margin: 0; padding-left: 22px; columns: 2; column-gap: 28px; }
-    .review-contents li { break-inside: avoid; margin: 2px 0; font-size: 12px; }
-    .review-contents-nested { margin-left: 12px !important; list-style-type: circle; }
-    .paper-source-subtle {
-      color: #334155;
-      margin-bottom: 6px;
-      font-size: 12px;
-      line-height: 1.35;
-    }
-    .surface-audit-panel {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 9px 10px;
-      background: #fff;
-      margin-bottom: 10px;
-      display: grid;
-      gap: 5px;
-    }
-    .surface-audit-panel.ok {
-      border-color: #b8dec8;
-      background: var(--ok-soft);
-    }
-    .surface-audit-panel.warn {
-      border-color: #f0cf91;
-      background: var(--warn-soft);
-    }
-    .surface-audit-panel.bad {
-      border-color: #efb6b6;
-      background: var(--bad-soft);
-    }
-    .surface-audit-heading {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      align-items: center;
-      font-weight: 650;
-      font-size: 13px;
-    }
-    .surface-audit-body {
-      color: #334155;
-      font-size: 12px;
-      line-height: 1.35;
-    }
-    .source-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin: 8px 0 4px;
-    }
-    .source-link {
-      border: 1px solid #cad3e5;
-      border-radius: 7px;
-      padding: 6px 9px;
-      text-decoration: none;
-      color: #1e293b;
-      background: #fff;
-      font-size: 12px;
-      transition: border-color 0.15s ease;
-    }
-    .source-link:hover {
-      border-color: #9fb0d8;
-      background: #fbfdff;
-    }
-    .table-wrap { overflow-x: auto; }
-    .paper-details {
-      border: 0;
-    }
-    .paper-details > summary {
-      list-style: none;
-      cursor: pointer;
-    }
-    .paper-details > summary::-webkit-details-marker { display: none; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 0;
-      min-width: 0;
-      table-layout: auto;
-    }
-    th, td { border: 1px solid var(--line); padding: 10px; vertical-align: top; }
-    thead th {
-      background: #f8f9fc;
-      text-align: left;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-    tbody tr { background: #ffffff; }
-    tbody tr:hover { background: #fbfcff; }
-    tbody tr:nth-child(odd) { background: #fcfdff; }
-    tbody tr.is-hidden { display: none; }
-    body.hide-agent .agent-column { display: none; }
-    .review-item {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
-      gap: 12px;
-      align-items: start;
-    }
-    .review-main {
-      min-width: 0;
-      display: grid;
-      gap: 10px;
-    }
-    .review-controls {
-      min-width: 0;
-      border-left: 1px solid var(--line);
-      padding-left: 12px;
-    }
-    .review-section {
-      min-width: 0;
-    }
-    .review-section-label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 5px;
-      font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-    .col-paper, .col-lean, .col-agent { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; line-height: 1.35; }
-    .col-agent { white-space: normal; }
-    .col-paper, .col-lean, .col-agent { width: 100%; }
-    .statement-box {
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: #fff;
-    }
-    .statement-box[open] {
-      background: #fcfdff;
-    }
-    .statement-box summary {
-      cursor: pointer;
-      color: #334155;
-      background: #f8f9fc;
-      padding: 7px 9px;
-      border-radius: 7px;
-      font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      font-size: 12px;
-    }
-    .statement-box[open] summary {
-      border-bottom: 1px solid var(--line);
-      border-radius: 7px 7px 0 0;
-    }
-    .statement-body {
-      padding: 9px;
-      max-height: 520px;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .col-lean .statement-body {
-      white-space: pre-wrap;
-      overflow-x: hidden;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
-    .col-lean .statement-body code {
-      display: block;
-      max-width: 100%;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
-    .statement-body code {
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .paper-statement-image {
-      display: block;
-      width: 100%;
-      max-width: none;
-      height: auto;
-      background: #fff;
-      border: 1px solid #d8e0ec;
-      border-radius: 6px;
-      margin-bottom: 8px;
-    }
-    .agent-statement {
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .agent-statement code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .llm-judge-panel {
-      margin-top: 9px;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: #fff;
-      padding: 8px 9px;
-    }
-    .llm-judge-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .llm-judge-reason {
-      color: #334155;
-      font-size: 12px;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .col-review { width: 18%; min-width: 220px; }
-    .paper-title { font-weight: 600; margin-bottom: 8px; }
-    .slice-meta {
-      margin: -4px 0 8px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.3;
-    }
-    .source-provenance {
-      border: 1px solid #f0cf91;
-      border-radius: 7px;
-      background: var(--warn-soft);
-      color: #6f4e07;
-      padding: 7px 9px;
-      font-size: 12px;
-      line-height: 1.35;
-      font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-    .source-provenance.direct {
-      border-color: #b8dec8;
-      background: var(--ok-soft);
-      color: var(--ok);
-    }
-    .source-provenance-label {
-      font-weight: 650;
-      margin-right: 4px;
-    }
-    .row-note {
-      width: 100%;
-      min-height: 72px;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      padding: 8px;
-      font: inherit;
-      resize: vertical;
-    }
-    .review-decision {
-      border: 0;
-      padding: 0;
-      margin: 8px 0 8px;
-      display: grid;
-      gap: 6px;
-    }
-    .review-decision legend {
-      padding: 0;
-      margin-bottom: 2px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .review-decision-option {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 13px;
-      line-height: 1.25;
-    }
-    .history { margin-top: 10px; font-size: 12px; color: #334155; }
-    .history-entry { border-top: 1px dashed #d6dce6; padding-top: 8px; margin-top: 8px; }
-    .history-entry + .history-entry { border-top: 1px dashed #d6dce6; }
-    .ok { color: var(--ok); }
-    .bad { color: var(--bad); }
-    .warn { color: var(--warn); }
-    .btn {
-      margin-top: 8px;
-      border: 1px solid #2f3d5f;
-      border-radius: 7px;
-      background: var(--accent);
-      color: #fff;
-      padding: 8px 10px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: filter 0.12s ease;
-    }
-    .btn:hover { filter: brightness(0.96); }
-    .btn:active { transform: translateY(1px); }
-    .btn[disabled] {
-      cursor: wait;
-      opacity: 0.72;
-    }
-    .toolbar .btn {
-      margin-top: 0;
-      padding: 7px 10px;
-    }
-    .status-pill {
-      display: inline-block;
-      border: 1px solid var(--line-strong);
-      border-radius: 999px;
-      padding: 3px 8px;
-      font-size: 12px;
-      background: var(--neutral-soft);
-      color: #334155;
-      line-height: 1.2;
-    }
-    .status-pill.ok {
-      background: var(--ok-soft);
-      border-color: #b8dec8;
-      color: var(--ok);
-    }
-    .status-pill.warn {
-      background: var(--warn-soft);
-      border-color: #f0cf91;
-      color: var(--warn);
-    }
-    .status-pill.bad {
-      background: var(--bad-soft);
-      border-color: #efb6b6;
-      color: var(--bad);
-    }
-    .status-line {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
-      margin: 0 0 8px;
-    }
-    .save-status {
-      display: inline-block;
-      min-height: 16px;
-      margin-left: 8px;
-    }
-    .summary-pill { margin-left: 8px; }
-    .summary { margin-left: auto; display: inline-flex; gap: 10px; }
-    .empty-filter {
-      display: none;
-      background: var(--panel);
-      border: 1px dashed var(--line-strong);
-      border-radius: 8px;
-      padding: 16px;
-      color: var(--muted);
-      text-align: center;
-    }
-    @media (max-width: 860px) {
-      .summary-grid { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
-      .paper-header { display: block; }
-      .paper-progress { text-align: left; margin-top: 4px; }
-      .toolbar input, .toolbar select { min-width: 130px; }
-      .review-item { grid-template-columns: 1fr; }
-      .review-controls {
-        border-left: 0;
-        border-top: 1px solid var(--line);
-        padding-left: 0;
-        padding-top: 10px;
-      }
-    }
-
-  </style>
-  <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [["\\\\(", "\\\\)"], ["$", "$"]],
-        processEscapes: true,
-        tags: "none",
-      },
-      // Exact source excerpts are review evidence, not MathJax input.  In
-      // particular, a source may legitimately contain LaTex environments
-      // such as `\\begin{definition}` that are not standalone math. This is
-      // a global MathJax option rather than a TeX-input option.
-      options: {
-        ignoreHtmlClass: "verbatim-source-input",
-      },
-      startup: {
-        typeset: false,
-      },
-    };
-  </script>
-  <script async id="mathjax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-</head>
-<body>
-  <div class='page'>
-    <h1>Paper Interface Review Dashboard</h1>
-    <p class='subtitle'>Trace-backed validator for Lean paper-interface theorem statements.</p>
-    <div id='summaryCards' class='summary-grid' aria-live='polite'>
-      <div class='summary-card'><div class='label'>Reviewed</div><div class='value' id='cardReviewed'>0/0</div></div>
-      <div class='summary-card'><div class='label'>Need Action</div><div class='value' id='cardAttention'>0</div></div>
-      <div class='summary-card'><div class='label'>Stale</div><div class='value' id='cardStale'>0</div></div>
-      <div class='summary-card'><div class='label'>Mismatch</div><div class='value' id='cardMismatch'>0</div></div>
-    </div>
-    <div class='toolbar'>
-      <label>
-        GitHub/user handle:
-        <input id='userHandle' type='text' value='{user}' />
-      </label>
-      <label>
-        Search:
-        <input id='searchBox' type='search' placeholder='Paper or theorem' />
-      </label>
-      <label>
-        View:
-        <select id='statusFilter'>
-          <option value='all'>All rows</option>
-          <option value='attention'>Needs action</option>
-          <option value='unreviewed'>Unreviewed</option>
-          <option value='stale'>Stale</option>
-          <option value='mismatch'>Marked mismatch</option>
-          <option value='uncertain'>Marked uncertain</option>
-          <option value='reviewed'>Reviewed</option>
-        </select>
-      </label>
-      <label>
-        Slice:
-        <select id='sliceFilter'>
-          <option value='all'>All slices</option>
-        </select>
-      </label>
-      <label class='toolbar-toggle'>
-        <input id='hideAgentDraft' type='checkbox' />
-        Hide LLM checks
-      </label>
-      <button id='saveAllReviews' class='btn' type='button'>Save all review</button>
-      <span id='saveAllStatus' class='save-status small muted'></span>
-      <span id='summary' class='summary small muted'></span>
-      <span id='count' class='small muted'></span>
-      <span id='logPath' class='small muted'></span>
-    </div>
-    <div id='emptyFilter' class='empty-filter'>No rows match the current filters.</div>
-    <div id='containers'>Loading…</div>
-  </div>
-
-  <script>
-    window.addEventListener("error", (event) => {
-      const container = document.getElementById("containers");
-      if (container) {
-        container.textContent = `Dashboard render error: ${event.message || "unknown error"}`;
-      }
-    });
-    window.addEventListener("unhandledrejection", (event) => {
-      const container = document.getElementById("containers");
-      if (container) {
-        container.textContent = `Dashboard render error: ${event.reason || "unknown promise rejection"}`;
-      }
-    });
-    const state = {
-      papers: __PAPERS__,
-      logPath: __LOG_PATH__,
-      user: __USER__,
-      reviews: [],
-      libraryReviews: [],
-      statusRows: [],
-    };
-
-    function byLatest(entries) {
-      entries.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
-    }
-
-    function safeId(value) {
-      return String(value).replace(/[^a-zA-Z0-9_-]/g, "_");
-    }
-
-    function normalizeStatement(value) {
-      return String(value || "").replace(/\\s+/g, " ").trim();
-    }
-
-    function escapeHtml(value) {
-      const span = document.createElement("span");
-      span.textContent = String(value);
-      return span.innerHTML;
-    }
-
-    function isLongProse(value) {
-      const text = value.replace(/[^A-Za-z]/g, " ").trim();
-      if (!text) {
-        return false;
-      }
-      const words = text.split(/\\s+/);
-      const longWords = words.filter((word) => word.length >= 4);
-      return longWords.length > 12;
-    }
-
-    function looksLikeLatex(value) {
-      return /\\\\[a-zA-Z]+/.test(value)
-        || /[∀∃→↔≤≥≠∞∈∉∑∏ℝℕ]/.test(value)
-        || /\\\\/.test(value);
-    }
-
-    function isFormulaValue(value) {
-      if (!value) {
-        return false;
-      }
-      if (isLongProse(value)) {
-        return false;
-      }
-      if (/[`$]/.test(value)) {
-        return false;
-      }
-      return looksLikeLatex(value) && value.length < 1800;
-    }
-
-    function renderVerbatimSourceInput(value) {
-      // A v11 source input is an exact byte-pinned excerpt, not dashboard TeX.
-      // Keep raw `\\begin{lemma}` and `\\begin{definition}` visible instead
-      // of passing unsupported environments to MathJax.
-      const text = escapeHtml(value || "No source input recorded.");
-      return `<div class="verbatim-source-input">${text.replace(/\\n/g, "<br/>")}</div>`;
-    }
-
-    function renderTexDraft(value) {
-      const text = escapeHtml(value || "No auto-generated preview available.");
-      return text.replace(/\\n/g, "<br/>");
-    }
-
-    function llmJudgmentLabel(item) {
-      const value = String(item.llm_match_judgment || "").toLowerCase();
-      const resolution = String(item.llm_match_resolution || "").toLowerCase();
-      if (item.llm_match_stale) {
-        return "Stale LLM judgment";
-      }
-      if (value === "matches") {
-        return "LLM: matches";
-      }
-      if (value === "mismatch" && resolution === "conditional_boundary") {
-        return "LLM: visible-premise boundary";
-      }
-      if (value === "mismatch") {
-        return "LLM: mismatch";
-      }
-      if (value === "uncertain") {
-        return "LLM: uncertain";
-      }
-      return "No LLM judgment";
-    }
-
-    function llmJudgmentClass(item) {
-      const value = String(item.llm_match_judgment || "").toLowerCase();
-      const resolution = String(item.llm_match_resolution || "").toLowerCase();
-      if (item.llm_match_stale) {
-        return "warn";
-      }
-      if (value === "matches") {
-        return "ok";
-      }
-      if (value === "mismatch" && resolution === "conditional_boundary") {
-        return "warn";
-      }
-      if (value === "mismatch") {
-        return "bad";
-      }
-      if (value === "uncertain") {
-        return "warn";
-      }
-      return "";
-    }
-
-    function makeLlmJudgePanel(item) {
-      const panel = document.createElement("div");
-      panel.className = "llm-judge-panel";
-      const heading = document.createElement("div");
-      heading.className = "llm-judge-heading";
-      const title = document.createElement("span");
-      title.className = "small muted";
-      title.textContent = "LLM raw-source / expanded-Spec assessment";
-      const badge = document.createElement("span");
-      badge.className = `status-pill ${llmJudgmentClass(item)}`.trim();
-      badge.textContent = llmJudgmentLabel(item);
-      heading.appendChild(title);
-      heading.appendChild(badge);
-      panel.appendChild(heading);
-      const reason = document.createElement("div");
-      reason.className = "llm-judge-reason";
-      const bits = [];
-      if (item.llm_match_reason) {
-        bits.push(String(item.llm_match_reason));
-      }
-      if (item.llm_match_stale) {
-        bits.push("The saved judgment does not bind the current verbatim source input and expanded Spec.");
-      }
-      if (item.llm_match_resolution) {
-        bits.push(`Resolution: ${item.llm_match_resolution}`);
-      }
-      if (Array.isArray(item.llm_match_boundary_names) && item.llm_match_boundary_names.length) {
-        bits.push(`Boundary: ${item.llm_match_boundary_names.join(", ")}`);
-      }
-      if (
-        Array.isArray(item.llm_match_conditional_premises)
-        && item.llm_match_conditional_premises.length
-      ) {
-        bits.push(`Visible extra Lean premises: ${item.llm_match_conditional_premises.join(", ")}`);
-      }
-      if (item.llm_match_resolution_reason) {
-        bits.push(String(item.llm_match_resolution_reason));
-      }
-      if (!bits.length) {
-        bits.push(item.llm_match_judgment
-          ? "No reason recorded."
-          : "Run the independent semantic raw-source-to-expanded-Spec check and save statement_match_llm.json.");
-      }
-      if (item.llm_match_source) {
-        bits.push(`Source: ${item.llm_match_source}`);
-      }
-      reason.textContent = bits.join("\\n");
-      panel.appendChild(reason);
-      return panel;
-    }
-
-    function assumptionJudgmentLabel(item) {
-      const value = String(item.llm_assumption_judgment || "").toLowerCase();
-      if (item.llm_assumption_stale) {
-        return "Stale assumption judgment";
-      }
-      if (value === "paper_assumption") {
-        return "Assumption: in paper";
-      }
-      if (value === "paper_condition") {
-        return "Condition: in paper";
-      }
-      if (value === "documented_additional_assumption") {
-        return "Additional assumption";
-      }
-      if (value === "documented_caveat") {
-        return "Documented caveat";
-      }
-      if (value === "partial_boundary") {
-        return "Partial boundary";
-      }
-      if (value === "not_paper_assumption") {
-        return "Assumption: not in paper";
-      }
-      if (value === "uncertain") {
-        return "Assumption: uncertain";
-      }
-      return "No assumption judgment";
-    }
-
-    function assumptionJudgmentClass(item) {
-      const value = String(item.llm_assumption_judgment || "").toLowerCase();
-      if (item.llm_assumption_stale) {
-        return "warn";
-      }
-      if (
-        value === "paper_assumption" ||
-        value === "paper_condition" ||
-        value === "documented_additional_assumption" ||
-        value === "documented_caveat"
-      ) {
-        return "ok";
-      }
-      if (value === "partial_boundary") {
-        return "warn";
-      }
-      if (value === "not_paper_assumption") {
-        return "bad";
-      }
-      if (value === "uncertain") {
-        return "warn";
-      }
-      return "";
-    }
-
-    function makeAssumptionJudgePanel(item) {
-      const panel = document.createElement("div");
-      panel.className = "llm-judge-panel";
-      const heading = document.createElement("div");
-      heading.className = "llm-judge-heading";
-      const title = document.createElement("span");
-      title.className = "small muted";
-      title.textContent = "LLM assumption-provenance note";
-      const badge = document.createElement("span");
-      badge.className = `status-pill ${assumptionJudgmentClass(item)}`.trim();
-      badge.textContent = assumptionJudgmentLabel(item);
-      heading.appendChild(title);
-      heading.appendChild(badge);
-      panel.appendChild(heading);
-      const reason = document.createElement("div");
-      reason.className = "llm-judge-reason";
-      const bits = [];
-      if (item.llm_assumption_reason) {
-        bits.push(String(item.llm_assumption_reason));
-      }
-      if (item.llm_assumption_stale) {
-        bits.push("The saved assumption judgment predates the current Lean or paper statement.");
-      }
-      if (!bits.length) {
-        bits.push(item.llm_assumption_judgment
-          ? "No reason recorded."
-          : "Run the source-assumption judge and save assumption_match_llm.json.");
-      }
-      if (item.llm_assumption_source) {
-        bits.push(`Source: ${item.llm_assumption_source}`);
-      }
-      reason.textContent = bits.join("\\n");
-      panel.appendChild(reason);
-      return panel;
-    }
-
-    function softWrapLeanSegment(segment) {
-      if (segment.length < 24) {
-        return segment;
-      }
-      return segment.replace(/_/g, "_\\u200b");
-    }
-
-    function prettyLeanIdentifier(identifier, indent = "      ") {
-      const softDot = ".\\u200b";
-      const parts = identifier.split(".");
-      if (parts.length <= 1) {
-        return softWrapLeanSegment(identifier);
-      }
-
-      const wrappedParts = parts.map(softWrapLeanSegment);
-      const softWrapped = wrappedParts.join(softDot);
-      if (identifier.length <= 54) {
-        return softWrapped;
-      }
-
-      const namespace = wrappedParts.slice(0, -1).join(softDot);
-      const last = wrappedParts[wrappedParts.length - 1];
-      if (namespace.length <= 64) {
-        return `${namespace}.${softDot}\\n${indent}${last}`;
-      }
-
-      return wrappedParts
-        .map((part, index) => (index < wrappedParts.length - 1 ? `${part}.` : part))
-        .join(`\\n${indent}`);
-    }
-
-    function prettyLeanIdentifiers(text) {
-      return text.replace(
-        /[A-Za-z_][A-Za-z0-9_']*(?:\\.[A-Za-z_][A-Za-z0-9_']*)+/g,
-        (identifier) => prettyLeanIdentifier(identifier)
-      );
-    }
-
-    function wrapLeanLine(line, maxWidth = 98) {
-      if (line.length <= maxWidth) {
-        return line;
-      }
-      const indent = (line.match(/^\\s*/) || [""])[0];
-      const continuation = `${indent}  `;
-      const out = [];
-      let rest = line.trimEnd();
-
-      while (rest.length > maxWidth) {
-        const windowText = rest.slice(0, maxWidth);
-        const breakpoints = [" (", " {", " [", "), ", ", ", " "]
-          .map((marker) => windowText.lastIndexOf(marker))
-          .filter((index) => index > indent.length + 18);
-        const breakAt = breakpoints.length ? Math.max(...breakpoints) : -1;
-        if (breakAt <= 0) {
-          break;
-        }
-        out.push(rest.slice(0, breakAt).trimEnd());
-        rest = continuation + rest.slice(breakAt).trimStart();
-      }
-      out.push(rest);
-      return out.join("\\n");
-    }
-
-    function wrapLeanLines(text) {
-      return text
-        .split("\\n")
-        .map((line) => wrapLeanLine(line))
-        .join("\\n");
-    }
-
-    function prettyLeanStatement(value) {
-      let text = String(value || "No statement text.").replace(/\\r\\n/g, "\\n");
-      text = text.replace(/ :\\n\\s*/g, " :\\n  ");
-      text = text.replace(/\\} \\{/g, "}\\n  {");
-      text = text.replace(/\\} \\(/g, "}\\n  (");
-      text = text.replace(/\\] \\[/g, "]\\n  [");
-      text = text.replace(/\\] \\(/g, "]\\n  (");
-      text = text.replace(/\\) \\[/g, ")\\n  [");
-      text = text.replace(/\\), /g, "),\\n  ");
-      text = text.replace(/, ∀ /g, ",\\n  ∀ ");
-      text = text.replace(/, \\(/g, ",\\n  (");
-      text = text.replace(/, ([A-Za-z_][A-Za-z0-9_']* : Type u_[0-9]+)/g, ",\\n  $1");
-      text = text.replace(/, ([A-Za-z_][A-Za-z0-9_']* : Type\\*)/g, ",\\n  $1");
-      text = text.replace(/, (\\[[^\\]]+\\] : [^,]+)/g, ",\\n  $1");
-      text = text.replace(/ → /g, "\\n    → ");
-      text = text.replace(/ ↔ /g, "\\n    ↔ ");
-      text = text.replace(/ ∧ /g, "\\n    ∧ ");
-      text = text.replace(/\\) \\(/g, ")\\n  (");
-      return wrapLeanLines(prettyLeanIdentifiers(text));
-    }
-
-    function makeStatementBox(label, value, options = {}) {
-      const details = document.createElement("details");
-      details.className = "statement-box";
-      if (options.open) {
-        details.open = true;
-      }
-      const summary = document.createElement("summary");
-      summary.textContent = label;
-      const body = document.createElement("div");
-      body.className = "statement-body";
-      if (options.html) {
-        body.innerHTML = options.html;
-      } else {
-        body.textContent = value || "No statement text.";
-      }
-      details.appendChild(summary);
-      details.appendChild(body);
-      return details;
-    }
-
-    function makeReviewSectionLabel(text) {
-      const label = document.createElement("div");
-      label.className = "review-section-label";
-      label.textContent = text;
-      return label;
-    }
-
-    function typesetMath() {
-      if (typeof window.MathJax === "undefined") {
-        return;
-      }
-      if (window.MathJax.typesetPromise) {
-        window.MathJax.typesetPromise().catch(() => {});
-        return;
-      }
-      if (window.MathJax.Hub && window.MathJax.Hub.Queue) {
-        window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub]);
-      }
-    }
-
-    function findCurrentItem(paper, theorem) {
-      for (const p of state.papers) {
-        if (p.name !== paper) continue;
-        for (const item of displayItems(p)) {
-          if (item.name === theorem) return item;
-        }
-      }
-      return null;
-    }
-
-    function displayItems(paper) {
-      const claims = Array.isArray(paper.human_claims) ? paper.human_claims : [];
-      return claims.length ? claims : (paper.items || []);
-    }
-
-    function isSourceModelAssumption(item) {
-      return Boolean(item && item.is_assumption);
-    }
-
-    function reviewSurfaceCounts(paper) {
-      const sections = claimPresentationSections(paper);
-      const sourceClaims = sections
-        .filter((section) => presentationSectionKind(section) === "source_claims")
-        .reduce((count, section) => count + section.items.length, 0);
-      const sourceModelAssumptions = sections
-        .filter((section) => presentationSectionKind(section) === "source_model_assumptions")
-        .reduce((count, section) => count + section.items.length, 0);
-      return {
-        reviewCards: sourceClaims + sourceModelAssumptions,
-        sourceClaims,
-        sourceModelAssumptions,
-      };
-    }
-
-    function reviewSurfaceCountLabel(counts) {
-      const claims = `${counts.sourceClaims} paper source claim${counts.sourceClaims === 1 ? "" : "s"}`;
-      if (!counts.sourceModelAssumptions) {
-        return claims;
-      }
-      return `${claims} + ${counts.sourceModelAssumptions} source-model assumption${counts.sourceModelAssumptions === 1 ? "" : "s"}`;
-    }
-
-    function presentationSectionKind(section) {
-      return section && section.kind === "source_model_assumptions"
-        ? "source_model_assumptions"
-        : "source_claims";
-    }
-
-    function presentationSectionItemNoun(section) {
-      return presentationSectionKind(section) === "source_model_assumptions"
-        ? "source-model assumption"
-        : "source claim";
-    }
-
-    function reviewAnchorId(paper, kind, name) {
-      return `review-${safeId(paper)}-${safeId(kind)}-${safeId(name)}`;
-    }
-
-    function claimPresentationSections(paper) {
-      const claims = displayItems(paper);
-      const byName = new Map(claims.map((claim) => [claim.full_name || claim.name, claim]));
-      const configured = Array.isArray(paper.presentation_sections)
-        ? paper.presentation_sections
-        : [];
-      const sections = [];
-      const seen = new Set();
-      for (const section of configured) {
-        const selected = (section.names || [])
-          .map((name) => byName.get(name))
-          .filter(Boolean);
-        if (selected.length) {
-          selected.forEach((claim) => seen.add(claim.full_name || claim.name));
-          const kind = presentationSectionKind(section);
-          sections.push({
-            title: section.title || (kind === "source_model_assumptions" ? "Source-model assumptions" : "Source claims"),
-            kind,
-            items: selected,
-          });
-        }
-      }
-      const remaining = claims.filter((claim) => !seen.has(claim.full_name || claim.name));
-      const remainingSourceClaims = remaining.filter((claim) => !isSourceModelAssumption(claim));
-      const remainingAssumptions = remaining.filter(isSourceModelAssumption);
-      if (remainingSourceClaims.length) {
-        sections.push({
-          title: configured.length ? "Other source claims" : "Source claims",
-          kind: "source_claims",
-          items: remainingSourceClaims,
-        });
-      }
-      if (remainingAssumptions.length) {
-        sections.push({
-          title: "Source-model assumptions",
-          kind: "source_model_assumptions",
-          items: remainingAssumptions,
-        });
-      }
-      return sections;
-    }
-
-    function statusKey(paper, theorem) {
-      return `${paper}::${theorem}`;
-    }
-
-    function allItemsCount() {
-      return state.papers.reduce((acc, paper) => acc + displayItems(paper).length, 0);
-    }
-
-    function sliceKey(paper, sliceId) {
-      return `${paper}::${sliceId || "all"}`;
-    }
-
-    function populateSliceFilter() {
-      const select = document.getElementById("sliceFilter");
-      const current = select.value || "all";
-      select.textContent = "";
-      const allOption = document.createElement("option");
-      allOption.value = "all";
-      allOption.textContent = "All slices";
-      select.appendChild(allOption);
-      for (const paper of state.papers) {
-        const slices = paper.slices || [];
-        if (slices.length <= 1 && slices[0] && slices[0].id === "all") {
-          continue;
-        }
-        for (const slice of slices) {
-          const option = document.createElement("option");
-          option.value = sliceKey(paper.name, slice.id);
-          const count = typeof slice.count === "number" ? ` (${slice.count})` : "";
-          option.textContent = `${paper.name}: ${slice.title}${count}`;
-          select.appendChild(option);
-        }
-      }
-      select.value = Array.from(select.options).some((option) => option.value === current)
-        ? current
-        : "all";
-    }
-
-    function buildStatusMap(rows) {
-      const out = new Map();
-      for (const row of rows || []) {
-        out.set(statusKey(row.paper, row.theorem), row);
-      }
-      return out;
-    }
-
-    function statusFor(paper, theorem) {
-      return buildStatusMap(state.statusRows).get(statusKey(paper, theorem)) || null;
-    }
-
-    function reviewJudgment(entry) {
-      if (!entry) {
-        return "";
-      }
-      const explicit = String(entry.judgment || entry.latest_judgment || "").toLowerCase();
-      if (["matches", "mismatch", "uncertain"].includes(explicit)) {
-        return explicit;
-      }
-      if (entry.matches === true || entry.latest_matches === true) {
-        return "matches";
-      }
-      if (entry.matches === false || entry.latest_matches === false) {
-        return "mismatch";
-      }
-      return "";
-    }
-
-    function statusLabel(row) {
-      if (!row || !row.has_review) {
-        return "Unreviewed";
-      }
-      if (row.lean_stale || row.paper_stale || row.source_stale) {
-        return "Stale";
-      }
-      const judgment = reviewJudgment(row);
-      if (judgment === "mismatch") {
-        return "Mismatch";
-      }
-      if (judgment === "uncertain") {
-        return "Uncertain";
-      }
-      return "Reviewed";
-    }
-
-    function statusClass(row) {
-      const label = statusLabel(row);
-      if (label === "Reviewed") {
-        return "ok";
-      }
-      if (label === "Mismatch") {
-        return "bad";
-      }
-      if (label === "Stale" || label === "Uncertain") {
-        return "warn";
-      }
-      return "";
-    }
-
-    function staleReason(row) {
-      if (!row) {
-        return "";
-      }
-      const reasons = [];
-      if (row.lean_stale) reasons.push("Lean changed");
-      if (row.paper_stale) reasons.push("paper text changed");
-      if (row.source_stale) reasons.push("source provenance changed");
-      return reasons.join(", ");
-    }
-
-    function sourceMetadataDigestInput(itemOrEntry) {
-      if (!itemOrEntry) {
-        return "";
-      }
-      const status = normalizeStatement(itemOrEntry.source_status || "");
-      const note = normalizeStatement(itemOrEntry.source_note || "");
-      if (!status && !note) {
-        return "";
-      }
-      const directStatuses = new Set([
-        "direct paper definition",
-        "direct paper statement",
-        "direct paper formula",
-        "direct source text",
-        "direct source formula",
-      ]);
-      if (directStatuses.has(status.toLowerCase()) && !note) {
-        return "";
-      }
-      return `${status}\n${note}`;
-    }
-
-    function isOutdated(entry, paper, theorem) {
-      const current = findCurrentItem(paper, theorem);
-      if (!current) {
-        return false;
-      }
-      const reviewed = normalizeStatement(entry.lean_statement || "");
-      const currentLean = normalizeStatement(current.lean_statement || "");
-      const reviewedPaper = normalizeStatement(entry.paper_statement || "");
-      const currentPaper = normalizeStatement(current.paper_statement || "");
-      const leanOutdated = reviewed && currentLean && reviewed !== currentLean;
-      const paperOutdated = reviewedPaper && currentPaper && reviewedPaper !== currentPaper;
-      const sourceOutdated =
-        sourceMetadataDigestInput(current) &&
-        sourceMetadataDigestInput(current) !== sourceMetadataDigestInput(entry);
-      return leanOutdated || paperOutdated || sourceOutdated;
-    }
-
-    function latestEntryForItem(entries, paper, theorem) {
-      const related = entries.filter((entry) => entry.paper === paper && entry.theorem === theorem);
-      if (!related.length) {
-        return null;
-      }
-      byLatest(related);
-      return related[0];
-    }
-
-    function sourceFileButtons(assets) {
-      if (!assets || !Object.keys(assets).length) {
-        return null;
-      }
-      const list = document.createElement("div");
-      list.className = "source-actions";
-      for (const key of ["pdf", "text"]) {
-        const asset = assets[key];
-        if (!asset || !asset.url || !asset.name) {
-          continue;
-        }
-        const a = document.createElement("a");
-        a.className = "source-link";
-        a.href = asset.url;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.textContent = `${key === "pdf" ? "Open PDF" : "Open text"}: ${asset.name}`;
-        list.appendChild(a);
-      }
-      return list;
-    }
-
-    function makeSourcePanel(paper) {
-      const assets = paper.assets || {};
-      const links = sourceFileButtons(assets);
-      if (!links) {
-        const empty = document.createElement("div");
-        empty.style.display = "none";
-        return empty;
-      }
-      const panel = document.createElement("section");
-      panel.className = "paper-source-panel";
-
-      const heading = document.createElement("h3");
-      heading.className = "paper-source-heading";
-      heading.textContent = "Paper source";
-      panel.appendChild(heading);
-
-      const hint = document.createElement("div");
-      hint.className = "paper-source-subtle";
-      hint.textContent = "Open source:";
-      panel.appendChild(hint);
-      panel.appendChild(links);
-      return panel;
-    }
-
-    function makeHumanReviewSurfacePanel(paper) {
-      const counts = reviewSurfaceCounts(paper);
-      const publicSourceDisplay = paper.public_source_display_surface || {};
-      const prerequisites = Array.isArray(paper.human_review_prerequisites)
-        ? paper.human_review_prerequisites
-        : [];
-      const libraryAudit = paper.library_semantic_audit || {};
-      const panel = document.createElement("section");
-      panel.className = "paper-source-panel";
-      const heading = document.createElement("h3");
-      heading.className = "paper-source-heading";
-      const librarySuffix = libraryAudit.row_count
-        ? ` · ${libraryAudit.current_matches || 0}/${libraryAudit.row_count} prerequisite checks current`
-        : "";
-      heading.textContent = `Review surface: ${reviewSurfaceCountLabel(counts)}${librarySuffix}`;
-      panel.appendChild(heading);
-      const text = document.createElement("div");
-      text.className = "paper-source-subtle";
-      const frozenSourceSurface = publicSourceDisplay.available
-        ? ` Source-coverage denominator: ${publicSourceDisplay.source_item_count || 0} frozen source item${(publicSourceDisplay.source_item_count || 0) === 1 ? "" : "s"} (${publicSourceDisplay.state || "release_projected_excerpt"}; display only, raw source is not locally revalidated).`
-        : "";
-      text.textContent = "The paper-claim denominator is the source-claim count above. Review the semantic prerequisites first, then the counted source-claim cards below." + (counts.sourceModelAssumptions ? ` ${counts.sourceModelAssumptions} source-model assumption${counts.sourceModelAssumptions === 1 ? "" : "s"} appear in their own separately audited section and are not part of that denominator.` : "") + frozenSourceSurface;
-      panel.appendChild(text);
-      if (prerequisites.length) {
-        const sectionHeading = document.createElement("h4");
-        sectionHeading.className = "paper-source-heading";
-        sectionHeading.id = reviewAnchorId(paper.name, "library-prerequisites", "section");
-        sectionHeading.textContent = `Step 1 — semantic library prerequisites (${prerequisites.length}; excluded from the paper-claim count)`;
-        panel.appendChild(sectionHeading);
-        const explanation = document.createElement("div");
-        explanation.className = "paper-source-subtle";
-        explanation.textContent = "These definitions supply the model vocabulary used by the source-claim specifications below. They are review inputs, not additional claims from this paper.";
-        panel.appendChild(explanation);
-        for (const prerequisite of prerequisites) {
-          const card = document.createElement("details");
-          card.className = "review-statement-box";
-          card.id = reviewAnchorId(paper.name, "library-prerequisite", prerequisite.lean_name || prerequisite.label || "item");
-          const summary = document.createElement("summary");
-          const verdict = prerequisite.semantic_judgment || "not recorded";
-          const status = prerequisite.semantic_current ? "current" : prerequisite.semantic_status || "needs review";
-          summary.textContent = `${prerequisite.label || prerequisite.lean_name} — library screening: ${verdict} (${status})`;
-          card.appendChild(summary);
-          const body = document.createElement("div");
-          body.className = "statement-full";
-          const sourceInput = String(prerequisite.verbatim_source_input || "").trim();
-          if (sourceInput) {
-            const locator = document.createElement("div");
-            locator.className = "small muted";
-            locator.textContent = `Source locator: ${prerequisite.source_locator || "not recorded"}`;
-            body.appendChild(locator);
-            if (prerequisite.source_connection_display_only) {
-              const connection = document.createElement("div");
-              connection.className = "small muted";
-              connection.textContent = `Source connection: ${prerequisite.source_connection_state || "release_projected_excerpt"}`;
-              body.appendChild(connection);
-            }
-            body.appendChild(
-              makeStatementBox("Verbatim paper-source connection", sourceInput, {
-                html: renderVerbatimSourceInput(sourceInput),
-                previewLength: sourceInput.length > 650 ? 180 : 220,
-                open: true,
-              })
-            );
-          } else {
-            const missing = document.createElement("div");
-            missing.className = "small warn";
-            missing.textContent = `Source connection: ${prerequisite.source_connection_error || "not recorded"}.`;
-            body.appendChild(missing);
-          }
-          const semanticTarget = prerequisite.library_semantic_target || prerequisite.library_semantic_target_error || "[Lean semantic target unavailable.]";
-          const semanticKind = prerequisite.library_semantic_target_kind || "";
-          const semanticTitle = semanticKind === "definition"
-            ? "Lean-expanded library semantic target"
-            : "Lean declaration type (metadata)";
-          body.appendChild(
-            makeStatementBox(semanticTitle, semanticTarget, {
-              html: `<code>${escapeHtml(prettyLeanStatement(semanticTarget))}</code>`,
-              previewLength: 170,
-              open: true,
-            })
-          );
-          body.appendChild(
-            makeStatementBox("Exact Lean library declaration", prerequisite.library_definition || prerequisite.library_definition_error || "[Declaration unavailable.]", {
-              html: `<code>${escapeHtml(prettyLeanStatement(prerequisite.library_definition || prerequisite.library_definition_error || "[Declaration unavailable.]"))}</code>`,
-              previewLength: 170,
-              open: true,
-            })
-          );
-          const diagnostic = document.createElement("div");
-          diagnostic.className = prerequisite.semantic_current ? "small ok" : "small warn";
-          diagnostic.textContent = `Raw-source-to-library-definition screening: ${verdict}. ${prerequisite.semantic_status || "not recorded"}${prerequisite.semantic_reason ? ` Reason: ${prerequisite.semantic_reason}` : ""}`;
-          body.appendChild(diagnostic);
-          body.appendChild(makePrerequisiteReviewControls(paper, prerequisite, "library_prerequisite"));
-          card.appendChild(body);
-          panel.appendChild(card);
-        }
-      }
-      const claimsHeading = document.createElement("h4");
-      claimsHeading.className = "paper-source-heading";
-      claimsHeading.id = reviewAnchorId(paper.name, "source-claims", "section");
-      claimsHeading.textContent = `Step 2 — paper source claims (${counts.sourceClaims}; counted below)`;
-      panel.appendChild(claimsHeading);
-      return panel;
-    }
-
-    function makeReviewContents(paper) {
-      const panel = document.createElement("nav");
-      panel.className = "paper-source-panel review-contents";
-      panel.setAttribute("aria-label", "Review packet contents");
-      const heading = document.createElement("h3");
-      heading.className = "paper-source-heading";
-      heading.textContent = "Contents";
-      panel.appendChild(heading);
-
-      const list = document.createElement("ul");
-      const addLink = (label, id, nested) => {
-        const entry = document.createElement("li");
-        if (nested) entry.className = "review-contents-nested";
-        const link = document.createElement("a");
-        link.href = `#${id}`;
-        link.dataset.reviewAnchor = id;
-        link.textContent = label;
-        entry.appendChild(link);
-        list.appendChild(entry);
-      };
-      const library = Array.isArray(paper.human_review_prerequisites)
-        ? paper.human_review_prerequisites
-        : [];
-      if (library.length) {
-        addLink(
-          `Semantic library prerequisites (${library.length}; not paper claims)`,
-          reviewAnchorId(paper.name, "library-prerequisites", "section"),
-          false
-        );
-        for (const prerequisite of library) {
-          const label = prerequisite.label || prerequisite.lean_name || "Library prerequisite";
-          addLink(
-            label,
-            reviewAnchorId(paper.name, "library-prerequisite", prerequisite.lean_name || label),
-            true
-          );
-        }
-      }
-      for (const section of claimPresentationSections(paper)) {
-        const sectionId = reviewAnchorId(paper.name, "source-section", section.title);
-        addLink(`${section.title} (${section.items.length})`, sectionId, false);
-        for (const claim of section.items) {
-          const itemNoun = presentationSectionItemNoun(section);
-          const label = claim.human_claim_title || claim.name || itemNoun;
-          addLink(
-            label,
-            reviewAnchorId(paper.name, itemNoun, claim.name),
-            true
-          );
-        }
-      }
-      panel.appendChild(list);
-      return panel;
-    }
-
-    function surfaceAuditClass(audit) {
-      if (!audit || !audit.audit_required) {
-        return "";
-      }
-      if (audit.judgment === "needs_curation") {
-        return "bad";
-      }
-      if (audit.needs_attention || audit.oversize) {
-        return "warn";
-      }
-      return "ok";
-    }
-
-    function surfaceAuditLabel(audit) {
-      if (!audit || !audit.audit_required) {
-        return "";
-      }
-      if (audit.judgment === "needs_curation") {
-        return "Needs curation";
-      }
-      if (audit.missing_required) {
-        return "LLM audit required";
-      }
-      if (audit.stale) {
-        return "LLM audit stale";
-      }
-      if (audit.judgment === "uncertain") {
-        return "LLM audit uncertain";
-      }
-      if (audit.oversize) {
-        return "50+ row warning";
-      }
-      return "LLM audit current";
-    }
-
-    function makeSurfaceAuditPanel(paper) {
-      const audit = paper.surface_audit || {};
-      // A legacy declaration-level review-surface sidecar is not useful on a
-      // compact source-claim dashboard.  Only show this exceptional panel
-      // when the current claim surface is actually large enough to require
-      // separate curation.
-      if (!audit.audit_required && !audit.oversize) {
-        const empty = document.createElement("div");
-        empty.style.display = "none";
-        return empty;
-      }
-      const panel = document.createElement("section");
-      const cls = surfaceAuditClass(audit);
-      panel.className = `surface-audit-panel ${cls}`.trim();
-
-      const heading = document.createElement("div");
-      heading.className = "surface-audit-heading";
-      const title = document.createElement("span");
-      title.textContent = `Machine audit surface: ${audit.row_count || paper.items.length} Lean declarations`;
-      const badge = document.createElement("span");
-      badge.className = `status-pill ${cls}`.trim();
-      badge.textContent = surfaceAuditLabel(audit);
-      heading.appendChild(title);
-      heading.appendChild(badge);
-      panel.appendChild(heading);
-
-      const body = document.createElement("div");
-      body.className = "surface-audit-body";
-      const notes = [];
-      if (audit.oversize) {
-        notes.push(`At or above ${audit.warn_threshold} rows, so this surface should be curated before broad human review.`);
-      }
-      if (audit.missing_required) {
-        notes.push(`Above ${audit.llm_threshold} rows, so run an independent LLM pass checking that every dashboard row is paper-facing and save review_surface_llm.json.`);
-      } else if (audit.stale) {
-        notes.push("The saved review_surface_llm.json no longer matches the current dashboard rows.");
-      } else if (audit.judgment === "needs_curation") {
-        notes.push("The saved LLM audit says helper or non-paper-facing rows may be present.");
-      } else if (audit.judgment === "uncertain") {
-        notes.push("The saved LLM audit could not determine whether the surface is fully paper-facing.");
-      } else if (audit.audit_required && audit.source) {
-        notes.push(`Current surface audit loaded from ${audit.source}.`);
-      }
-      if (audit.reason) {
-        notes.push(audit.reason);
-      }
-      body.textContent = notes.join(" ");
-      panel.appendChild(body);
-      return panel;
-    }
-
-    function assumptionAuditClass(audit) {
-      if (!audit || !audit.row_count) {
-        return "";
-      }
-      if (audit.not_paper_assumption_count) {
-        return "bad";
-      }
-      if (audit.needs_attention) {
-        return "warn";
-      }
-      return "ok";
-    }
-
-    function assumptionAuditLabel(audit) {
-      if (!audit || !audit.row_count) {
-        return "";
-      }
-      if (audit.not_paper_assumption_count) {
-        return "Assumption mismatch";
-      }
-      if (audit.missing_judgment_count) {
-        return "Assumption judge required";
-      }
-      if (audit.stale_judgment_count) {
-        return "Assumption judge stale";
-      }
-      if (audit.uncertain_count || audit.unknown_count || audit.unlisted_rows_count || audit.missing_rows_count) {
-        return "Assumptions need review";
-      }
-      return "Assumptions current";
-    }
-
-    function makeAssumptionAuditPanel(paper) {
-      const audit = paper.assumption_audit || {};
-      if (!audit.row_count && !audit.configured_count && !audit.needs_attention) {
-        const empty = document.createElement("div");
-        empty.style.display = "none";
-        return empty;
-      }
-      const panel = document.createElement("section");
-      const cls = assumptionAuditClass(audit);
-      panel.className = `surface-audit-panel ${cls}`.trim();
-
-      const heading = document.createElement("div");
-      heading.className = "surface-audit-heading";
-      const title = document.createElement("span");
-      title.textContent = `Paper assumptions: ${audit.row_count || 0} row${audit.row_count === 1 ? "" : "s"}`;
-      const badge = document.createElement("span");
-      badge.className = `status-pill ${cls}`.trim();
-      badge.textContent = assumptionAuditLabel(audit);
-      heading.appendChild(title);
-      heading.appendChild(badge);
-      panel.appendChild(heading);
-
-      const body = document.createElement("div");
-      body.className = "surface-audit-body";
-      const notes = [];
-      if (audit.unlisted_rows_count) {
-        notes.push("Some assumption-like declarations are not listed in status.json review_surface.assumption_names.");
-      }
-      if (audit.missing_rows_count) {
-        notes.push("Some configured assumptions are missing from the dashboard rows.");
-      }
-      if (audit.missing_judgment_count) {
-        notes.push("Run the source-assumption judge and save assumption_match_llm.json.");
-      } else if (audit.stale_judgment_count) {
-        notes.push("The saved assumption_match_llm.json no longer matches the current assumptions.");
-      } else if (audit.not_paper_assumption_count) {
-        notes.push("The assumption judge says at least one row is a proof assumption rather than a paper/source model assumption.");
-      } else if (audit.uncertain_count || audit.unknown_count) {
-        notes.push("The assumption judge could not confirm every listed assumption.");
-      } else if (audit.row_count) {
-        notes.push("Every listed assumption has a current source-assumption judgment.");
-      }
-      body.textContent = notes.join(" ");
-      panel.appendChild(body);
-      return panel;
-    }
-
-    function refreshSummary(entries, statusRows) {
-      const summary = document.getElementById("summary");
-      if (!state.papers.length) {
-        summary.textContent = "No theorem rows.";
-        return;
-      }
-
-      const allItems = allItemsCount();
-      let reviewed = 0;
-      let stale = 0;
-      let mismatch = 0;
-      let needsAttention = 0;
-
-      if (statusRows && statusRows.length) {
-        const claimKeys = new Set(
-          state.papers.flatMap((paper) =>
-            displayItems(paper).map((item) => statusKey(paper.name, item.name))
-          )
-        );
-        const claimStatusRows = statusRows.filter((row) =>
-          claimKeys.has(statusKey(row.paper, row.theorem))
-        );
-        reviewed = claimStatusRows.filter((row) => row.has_review).length;
-        stale = claimStatusRows.filter((row) => row.lean_stale || row.paper_stale || row.source_stale).length;
-        mismatch = claimStatusRows.filter((row) => row.has_review && reviewJudgment(row) === "mismatch").length;
-        needsAttention = claimStatusRows.filter((row) => row.needs_attention || reviewJudgment(row) === "mismatch").length;
-      } else {
-        for (const paper of state.papers) {
-          for (const item of displayItems(paper)) {
-            const latest = latestEntryForItem(entries, paper.name, item.name);
-            if (!latest) {
-              continue;
-            }
-            reviewed++;
-            if (isOutdated(latest, paper.name, item.name)) {
-              stale++;
-            }
-            const judgment = reviewJudgment(latest);
-            if (judgment === "mismatch") {
-              mismatch++;
-            }
-            if (judgment === "mismatch" || judgment === "uncertain") {
-              needsAttention++;
-            }
-          }
-        }
-        const unreviewed = allItems - reviewed;
-        needsAttention = stale + unreviewed + needsAttention;
-      }
-
-      const unreviewed = allItems - reviewed;
-      summary.textContent = `${reviewed}/${allItems} items reviewed · ${stale} stale snapshot · ${needsAttention} need action`;
-      document.getElementById("cardReviewed").textContent = `${reviewed}/${allItems}`;
-      document.getElementById("cardAttention").textContent = String(needsAttention);
-      document.getElementById("cardStale").textContent = String(stale);
-      document.getElementById("cardMismatch").textContent = String(mismatch);
-    }
-
-    function reviewHistory(entries, paper, theorem) {
-      const related = entries.filter((entry) => entry.paper === paper && entry.theorem === theorem);
-      if (!related.length) return "<div class='small muted'>No reviews yet.</div>";
-      byLatest(related);
-      const lines = [];
-      for (const e of related.slice(0, 5)) {
-        const judgment = reviewJudgment(e);
-        const cls = judgment === "matches" ? "ok" : judgment === "mismatch" ? "bad" : "warn";
-        const status = judgment === "matches"
-          ? "matches"
-          : judgment === "mismatch"
-            ? "does not match"
-            : "uncertain";
-        const outdated = isOutdated(e, paper, theorem);
-        const outdatedMark = outdated
-          ? " <span class='warn'>(statement snapshot is out of date)</span>"
-          : "";
-        const note = e.notes ? ` — ${escapeHtml(e.notes)}` : "";
-        lines.push(
-          `<div class='history-entry'><span class='small'><span class='${cls}'>${status}</span> by ${escapeHtml(e.user || "")} (${escapeHtml(e.timestamp || "")})${outdatedMark}${note}</span></div>`
-        );
-      }
-      return `<div class='history'><div class='small'><strong>Latest checks</strong></div>${lines.join("")}</div>`;
-    }
-
-    function validatorLabel(entry) {
-      if (!entry || !entry.validator) return "";
-      const type = entry.validator_type ? ` (${entry.validator_type})` : "";
-      return `${entry.validator}${type}`;
-    }
-
-    function validatorSummary(rowStatus) {
-      const validators = rowStatus && Array.isArray(rowStatus.validators) ? rowStatus.validators : [];
-      if (!validators.length) return "Validators: none recorded";
-      const labels = [];
-      const seen = new Set();
-      for (const entry of validators) {
-        const label = validatorLabel(entry);
-        if (!label || seen.has(label)) continue;
-        seen.add(label);
-        labels.push(label);
-      }
-      return `Validators: ${labels.join(", ")}`;
-    }
-
-    function validatorDetails(rowStatus) {
-      const validators = rowStatus && Array.isArray(rowStatus.validators) ? rowStatus.validators : [];
-      if (!validators.length) return "";
-      return validators.map((entry) => {
-        const label = validatorLabel(entry);
-        const judgment = entry.judgment ? ` ${entry.judgment}` : "";
-        const timestamp = entry.validated_at ? ` @ ${entry.validated_at}` : "";
-        const stale = entry.stale ? " (stale)" : "";
-        const comment = entry.comment ? `: ${entry.comment}` : "";
-        return `${label}${judgment}${timestamp}${stale}${comment}`.trim();
-      }).join("\\n");
-    }
-
-    function rowElementId(paper, theorem) {
-      return `${safeId(paper)}_${safeId(theorem)}`;
-    }
-
-    function selectedReviewJudgment(rowId) {
-      const match = document.getElementById(`match-${rowId}`);
-      const mismatch = document.getElementById(`mismatch-${rowId}`);
-      const uncertain = document.getElementById(`uncertain-${rowId}`);
-      if (match && match.checked) {
-        return "matches";
-      }
-      if (mismatch && mismatch.checked) {
-        return "mismatch";
-      }
-      if (uncertain && uncertain.checked) {
-        return "uncertain";
-      }
-      return "";
-    }
-
-    function matchesValueForJudgment(judgment) {
-      if (judgment === "matches") {
-        return true;
-      }
-      if (judgment === "mismatch") {
-        return false;
-      }
-      return null;
-    }
-
-    function reviewPayload(paper, item, judgment) {
-      const rowId = rowElementId(paper, item.name);
-      const note = document.getElementById(`note-${rowId}`);
-      const user = document.getElementById("userHandle").value.trim() || state.user;
-      return {
-        paper: paper,
-        theorem: item.name,
-        user: user,
-        judgment: judgment,
-        matches: matchesValueForJudgment(judgment),
-        notes: note ? note.value.trim() : "",
-        lean_statement: item.lean_statement,
-        paper_statement: item.paper_statement,
-        // Human review compares the raw source input to the expanded Lean
-        // specification.  Lean-to-TeX drafts are intentionally not part of
-        // this v11 review record.
-        agent_statement: "",
-        source_status: item.source_status || "",
-        source_note: item.source_note || "",
-      };
-    }
-
-    async function postReviewPayload(payload) {
-      const response = await fetch("/api/reviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to save.");
-      }
-      return data;
-    }
-
-    function prerequisiteReviewKey(paper, scope, prerequisite) {
-      return `${paper}::${scope}::${prerequisite.lean_name || prerequisite.label || "unnamed"}`;
-    }
-
-    function latestPrerequisiteReview(key) {
-      const matching = (state.libraryReviews || []).filter((entry) => entry.prerequisite_key === key);
-      if (!matching.length) return null;
-      byLatest(matching);
-      return matching[0];
-    }
-
-    async function postPrerequisiteReviewPayload(payload) {
-      const response = await fetch("/api/library-reviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to save prerequisite review.");
-      }
-      return data;
-    }
-
-    function makePrerequisiteReviewControls(paper, prerequisite, scope) {
-      const key = prerequisiteReviewKey(paper.name, scope, prerequisite);
-      const id = safeId(key);
-      const shell = document.createElement("div");
-      shell.className = "review-controls prerequisite-review-controls";
-      shell.dataset.prerequisiteReviewKey = key;
-      const heading = document.createElement("div");
-      heading.className = "small muted";
-      heading.textContent = "Human review of this prerequisite (not counted as a paper claim)";
-      shell.appendChild(heading);
-      const status = document.createElement("div");
-      status.id = `prerequisite-status-${id}`;
-      status.className = "status-pill";
-      status.textContent = "Unreviewed";
-      shell.appendChild(status);
-      const fieldset = document.createElement("fieldset");
-      fieldset.className = "review-decision";
-      const legend = document.createElement("legend");
-      legend.textContent = "Review decision";
-      fieldset.appendChild(legend);
-      for (const [value, label] of [["matches", "Matches source input"], ["mismatch", "Does not match"], ["uncertain", "Uncertain"]]) {
-        const option = document.createElement("label");
-        option.className = "review-decision-option";
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = `prerequisite-decision-${id}`;
-        input.value = value;
-        input.id = `prerequisite-${value}-${id}`;
-        option.appendChild(input);
-        option.appendChild(document.createTextNode(label));
-        fieldset.appendChild(option);
-      }
-      shell.appendChild(fieldset);
-      const note = document.createElement("textarea");
-      note.id = `prerequisite-note-${id}`;
-      note.rows = 2;
-      note.placeholder = "Reviewer notes (optional)";
-      shell.appendChild(note);
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "btn";
-      button.textContent = "Save prerequisite review";
-      const saveStatus = document.createElement("span");
-      saveStatus.className = "save-status small muted";
-      button.addEventListener("click", async () => {
-        const selected = shell.querySelector(`input[name='prerequisite-decision-${id}']:checked`);
-        if (!selected) {
-          saveStatus.textContent = "Choose a review decision first.";
-          saveStatus.className = "save-status small warn";
-          return;
-        }
-        button.disabled = true;
-        saveStatus.textContent = "Saving…";
-        saveStatus.className = "save-status small muted";
-        const sourceInput = String(prerequisite.verbatim_source_input || "").trim();
-        const leanTarget = String(
-          prerequisite.library_semantic_target
-          || prerequisite.paper_semantic_target
-          || prerequisite.library_definition
-          || prerequisite.paper_declaration_source
-          || ""
-        ).trim();
-        try {
-          const response = await postPrerequisiteReviewPayload({
-            paper: paper.name,
-            theorem: prerequisite.lean_name || prerequisite.label,
-            prerequisite_key: key,
-            review_scope: scope,
-            user: document.getElementById("userHandle").value.trim() || state.user,
-            judgment: selected.value,
-            notes: note.value.trim(),
-            lean_statement: leanTarget,
-            paper_statement: sourceInput,
-            agent_statement: "",
-            source_status: "byte-pinned prerequisite source connection",
-            source_note: String(prerequisite.source_locator || "").trim(),
-          });
-          state.libraryReviews.push(response.entry);
-          refreshPrerequisiteReviewControls();
-          saveStatus.textContent = "Saved";
-          saveStatus.className = "save-status small ok";
-        } catch (err) {
-          saveStatus.textContent = err.message || "Save failed";
-          saveStatus.className = "save-status small bad";
-        } finally {
-          button.disabled = false;
-        }
-      });
-      shell.appendChild(button);
-      shell.appendChild(saveStatus);
-      return shell;
-    }
-
-    function refreshPrerequisiteReviewControls() {
-      for (const shell of document.querySelectorAll("[data-prerequisite-review-key]")) {
-        const key = shell.dataset.prerequisiteReviewKey;
-        const entry = latestPrerequisiteReview(key);
-        const id = safeId(key);
-        const status = document.getElementById(`prerequisite-status-${id}`);
-        if (!entry) {
-          if (status) {
-            status.textContent = "Unreviewed";
-            status.className = "status-pill";
-          }
-          continue;
-        }
-        const judgment = reviewJudgment(entry);
-        if (status) {
-          status.textContent = judgment === "matches" ? "Reviewed: matches" : judgment || "Reviewed";
-          status.className = `status-pill ${judgment === "matches" ? "ok" : judgment === "mismatch" ? "bad" : "warn"}`;
-          status.title = `${entry.user || "reviewer"} @ ${entry.timestamp || ""}`;
-        }
-        const selected = document.getElementById(`prerequisite-${judgment}-${id}`);
-        if (selected) selected.checked = true;
-        const note = document.getElementById(`prerequisite-note-${id}`);
-        if (note && document.activeElement !== note) note.value = entry.notes || "";
-      }
-    }
-
-    async function saveAllSelectedReviews() {
-      const btn = document.getElementById("saveAllReviews");
-      const status = document.getElementById("saveAllStatus");
-      const selected = [];
-      for (const row of document.querySelectorAll("tr[data-paper][data-theorem]")) {
-        const paper = row.dataset.paper;
-        const theorem = row.dataset.theorem;
-        const rowId = rowElementId(paper, theorem);
-        const judgment = selectedReviewJudgment(rowId);
-        if (!judgment) {
-          continue;
-        }
-        const item = findCurrentItem(paper, theorem);
-        if (!item) {
-          continue;
-        }
-        selected.push({ paper, theorem, item, judgment, rowId });
-      }
-      if (!selected.length) {
-        status.textContent = "No selected review decisions.";
-        status.className = "save-status small warn";
-        return;
-      }
-      btn.disabled = true;
-      btn.textContent = "Saving...";
-      status.textContent = `Saving ${selected.length} review${selected.length === 1 ? "" : "s"}...`;
-      status.className = "save-status small muted";
-      let saved = 0;
-      let failed = 0;
-      for (const entry of selected) {
-        const rowStatus = document.getElementById(`save-status-${entry.rowId}`);
-        if (rowStatus) {
-          rowStatus.textContent = "";
-          rowStatus.className = "save-status small muted";
-        }
-        try {
-          await postReviewPayload(reviewPayload(entry.paper, entry.item, entry.judgment));
-          saved++;
-          if (rowStatus) {
-            rowStatus.textContent = "Saved";
-            rowStatus.className = "save-status small ok";
-          }
-        } catch (err) {
-          failed++;
-          if (rowStatus) {
-            rowStatus.textContent = err.message || "Save failed";
-            rowStatus.className = "save-status small bad";
-          }
-        }
-      }
-      await refreshReviews();
-      status.textContent = failed
-        ? `Saved ${saved}; ${failed} failed.`
-        : `Saved ${saved} review${saved === 1 ? "" : "s"}.`;
-      status.className = failed ? "save-status small bad" : "save-status small ok";
-      btn.disabled = false;
-      btn.textContent = "Save all review";
-    }
-
-    function isDirectSourceStatus(status) {
-      const normalized = String(status || "").trim().toLowerCase();
-      return [
-        "direct paper definition",
-        "direct paper statement",
-        "direct paper formula",
-        "direct source text",
-        "direct source formula",
-      ].includes(normalized);
-    }
-
-    function makeSourceProvenancePanel(item) {
-      const status = String(item.source_status || "").trim();
-      const note = String(item.source_note || "").trim();
-      if (!status && !note) {
-        return null;
-      }
-      const panel = document.createElement("div");
-      panel.className = `source-provenance${isDirectSourceStatus(status) && !note ? " direct" : ""}`;
-      const label = document.createElement("span");
-      label.className = "source-provenance-label";
-      label.textContent = status || "Source note";
-      panel.appendChild(label);
-      if (note) {
-        panel.appendChild(document.createTextNode(note));
-      }
-      return panel;
-    }
-
-    function makeRow(paper, item) {
-      const row = document.createElement("tr");
-      row.dataset.paper = paper;
-      row.dataset.theorem = item.name;
-      row.dataset.kind = item.kind || "";
-      row.dataset.isAssumption = item.is_assumption ? "true" : "false";
-      row.dataset.sliceKey = sliceKey(paper, item.slice_id || "all");
-      row.dataset.sliceId = item.slice_id || "all";
-      row.dataset.sliceTitle = item.slice_title || "All statements";
-      row.dataset.searchText = `${paper} ${item.kind || ""} ${item.name} ${item.paper_statement || ""} ${item.lean_statement || ""} ${item.source_status || ""} ${item.source_note || ""}`.toLowerCase();
-      const itemCell = document.createElement("td");
-      const itemShell = document.createElement("div");
-      itemShell.className = "review-item";
-      const mainCell = document.createElement("div");
-      mainCell.className = "review-main";
-
-      const paperCell = document.createElement("section");
-      paperCell.className = "review-section col-paper";
-      const paperHtml = renderVerbatimSourceInput(item.paper_statement);
-      if (item.paper_statement_image_url) {
-        paperCell.appendChild(makeReviewSectionLabel("Paper source image"));
-        const image = document.createElement("img");
-        image.className = "paper-statement-image";
-        image.src = item.paper_statement_image_url;
-        image.alt = `Rendered source statement for ${paper}.${item.name}`;
-        image.loading = "lazy";
-        paperCell.appendChild(image);
-        paperCell.appendChild(
-          makeStatementBox("Extracted text fallback", item.paper_statement || "", {
-            html: paperHtml,
-            previewLength: 160,
-          })
-        );
-      } else {
-        paperCell.appendChild(
-          makeStatementBox("Verbatim source input", item.paper_statement, {
-            html: paperHtml,
-            previewLength: (item.paper_statement || "").length > 650 ? 180 : 220,
-            open: true,
-          })
-        );
-      }
-
-      const leanCell = document.createElement("section");
-      leanCell.className = "review-section col-lean";
-      const interfaceSource = String(item.interface_source || "").trim();
-      const leanStatement = String(item.lean_statement || "").trim();
-      const semanticExpanded = String(item.semantic_expanded_statement || "").trim();
-      const displayedLean = semanticExpanded || leanStatement || interfaceSource;
-      leanCell.appendChild(
-        makeStatementBox("Expanded PaperInterface specification", displayedLean, {
-          html: `<code>${escapeHtml(prettyLeanStatement(displayedLean))}</code>`,
-          previewLength: 170,
-          open: true,
-        })
-      );
-      if (item.semantic_expansion_error) {
-        const expansionWarning = document.createElement("div");
-        expansionWarning.className = "small warn";
-        expansionWarning.textContent = `Lean semantic expansion unavailable: ${item.semantic_expansion_error}`;
-        leanCell.appendChild(expansionWarning);
-      }
-
-      const agentCell = document.createElement("section");
-      agentCell.className = "review-section col-agent agent-column";
-      const agentHeader = document.createElement("div");
-      agentHeader.className = "small muted";
-      agentHeader.textContent =
-        "LLM assessment of these exact inputs";
-      agentCell.appendChild(agentHeader);
-      agentCell.appendChild(makeLlmJudgePanel(item));
-      if (item.is_assumption || item.llm_assumption_judgment) {
-        agentCell.appendChild(makeAssumptionJudgePanel(item));
-      }
-
-      const reviewCell = document.createElement("aside");
-      reviewCell.className = "review-controls col-review";
-      const rowId = rowElementId(paper, item.name);
-
-      const statusLine = document.createElement("div");
-      statusLine.className = "status-line";
-      const statusBadge = document.createElement("span");
-      statusBadge.className = "status-pill";
-      statusBadge.id = `status-${rowId}`;
-      statusBadge.textContent = "Unreviewed";
-      const staleBadge = document.createElement("span");
-      staleBadge.className = "status-pill warn";
-      staleBadge.id = `stale-${rowId}`;
-      staleBadge.style.display = "none";
-      statusLine.appendChild(statusBadge);
-      statusLine.appendChild(staleBadge);
-
-      const validatorsLine = document.createElement("div");
-      validatorsLine.className = "small muted";
-      validatorsLine.id = `validators-${rowId}`;
-      validatorsLine.textContent = "Validators: none recorded";
-
-      const decision = document.createElement("fieldset");
-      decision.className = "review-decision";
-      const decisionLegend = document.createElement("legend");
-      decisionLegend.textContent = "Review decision";
-      decision.appendChild(decisionLegend);
-
-      const decisionName = `decision-${rowId}`;
-      const matchLabel = document.createElement("label");
-      matchLabel.className = "review-decision-option";
-      const matchRadio = document.createElement("input");
-      matchRadio.type = "radio";
-      matchRadio.name = decisionName;
-      matchRadio.value = "match";
-      matchRadio.dataset.paper = paper;
-      matchRadio.dataset.theorem = item.name;
-      matchRadio.id = `match-${rowId}`;
-      matchLabel.appendChild(matchRadio);
-      matchLabel.appendChild(document.createTextNode("Matches source input"));
-      decision.appendChild(matchLabel);
-
-      const mismatchLabel = document.createElement("label");
-      mismatchLabel.className = "review-decision-option";
-      const mismatchRadio = document.createElement("input");
-      mismatchRadio.type = "radio";
-      mismatchRadio.name = decisionName;
-      mismatchRadio.value = "mismatch";
-      mismatchRadio.dataset.paper = paper;
-      mismatchRadio.dataset.theorem = item.name;
-      mismatchRadio.id = `mismatch-${rowId}`;
-      mismatchLabel.appendChild(mismatchRadio);
-      mismatchLabel.appendChild(document.createTextNode("Mismatch"));
-      decision.appendChild(mismatchLabel);
-
-      const uncertainLabel = document.createElement("label");
-      uncertainLabel.className = "review-decision-option";
-      const uncertainRadio = document.createElement("input");
-      uncertainRadio.type = "radio";
-      uncertainRadio.name = decisionName;
-      uncertainRadio.value = "uncertain";
-      uncertainRadio.dataset.paper = paper;
-      uncertainRadio.dataset.theorem = item.name;
-      uncertainRadio.id = `uncertain-${rowId}`;
-      uncertainLabel.appendChild(uncertainRadio);
-      uncertainLabel.appendChild(document.createTextNode("Uncertain"));
-      decision.appendChild(uncertainLabel);
-
-      const text = document.createElement("textarea");
-      text.className = "row-note";
-      text.placeholder = "Reviewer notes";
-      text.dataset.paper = paper;
-      text.dataset.theorem = item.name;
-      text.id = `note-${rowId}`;
-
-      const btn = document.createElement("button");
-      btn.className = "btn";
-      btn.type = "button";
-      btn.textContent = "Save review";
-      const saveStatus = document.createElement("span");
-      saveStatus.className = "save-status small muted";
-      saveStatus.id = `save-status-${rowId}`;
-      btn.addEventListener("click", async () => {
-        const judgment = selectedReviewJudgment(rowId);
-        if (!judgment) {
-          saveStatus.textContent = "Choose Matches, Mismatch, or Uncertain.";
-          saveStatus.className = "save-status small bad";
-          return;
-        }
-        btn.disabled = true;
-        btn.textContent = "Saving...";
-        saveStatus.textContent = "";
-        try {
-          await postReviewPayload(reviewPayload(paper, item, judgment));
-          saveStatus.textContent = "Saved";
-          saveStatus.className = "save-status small ok";
-          await refreshReviews();
-        } catch (err) {
-          saveStatus.textContent = err.message || "Save failed";
-          saveStatus.className = "save-status small bad";
-        } finally {
-          btn.disabled = false;
-          btn.textContent = "Save review";
-        }
-      });
-
-      const status = document.createElement("div");
-      status.className = "history";
-      status.dataset.paper = paper;
-      status.dataset.theorem = item.name;
-
-      const header = document.createElement("div");
-      header.className = "paper-title";
-      const propSpecLabel = item.is_proposition_spec
-        ? item.proposition_spec_role === "source_definition"
-          ? " · source proposition definition (not a proof)"
-          : item.proposition_spec_role === "source_assumption"
-            ? " · proposition assumption (not a proof)"
-            : item.proposition_spec_role === "proof_routed"
-              ? ` · proposition specification; proof row ${item.proposition_spec_proof || "missing"}`
-              : " · unproved proposition specification"
-        : "";
-      header.textContent = item.human_claim_title || `${item.kind} ${item.name}${propSpecLabel}`;
-      const sliceMeta = document.createElement("div");
-      sliceMeta.className = "slice-meta";
-      const lineText = item.line_number ? `line ${item.line_number}` : "line unavailable";
-      sliceMeta.textContent = `${item.slice_title || "All statements"} · ${lineText}`;
-
-      const sourceBadge = document.createElement("span");
-      sourceBadge.className = `status-pill ${isDirectSourceStatus(item.source_status) && !item.source_note ? "ok" : item.source_status || item.source_note ? "warn" : ""}`;
-      sourceBadge.textContent = item.is_proposition_spec && item.proposition_spec_role === "unproved_spec"
-        ? "Unproved specification"
-        : item.is_assumption
-        ? "Paper assumption"
-        : item.source_status || "Source status not labeled";
-
-      reviewCell.appendChild(header);
-      if (item.human_claim_proof_endpoint) {
-        const proofEndpoint = document.createElement("div");
-        proofEndpoint.className = "small muted";
-        proofEndpoint.textContent = `Verified proof endpoint: ${item.human_claim_proof_endpoint}`;
-        reviewCell.appendChild(proofEndpoint);
-      }
-      reviewCell.appendChild(sliceMeta);
-      reviewCell.appendChild(sourceBadge);
-      reviewCell.appendChild(statusLine);
-      reviewCell.appendChild(validatorsLine);
-      reviewCell.appendChild(decision);
-      reviewCell.appendChild(text);
-      reviewCell.appendChild(document.createElement("br"));
-      reviewCell.appendChild(btn);
-      reviewCell.appendChild(saveStatus);
-      reviewCell.appendChild(status);
-
-      // Populate with existing review history
-      const sourcePanel = makeSourceProvenancePanel(item);
-      if (sourcePanel) {
-        mainCell.appendChild(sourcePanel);
-      }
-      mainCell.appendChild(paperCell);
-      mainCell.appendChild(leanCell);
-      mainCell.appendChild(agentCell);
-      itemShell.appendChild(mainCell);
-      itemShell.appendChild(reviewCell);
-      itemCell.appendChild(itemShell);
-      row.appendChild(itemCell);
-      return { row, status };
-    }
-
-    function updateStatusBadges() {
-      for (const row of document.querySelectorAll("tr[data-paper][data-theorem]")) {
-        const paper = row.dataset.paper;
-        const theorem = row.dataset.theorem;
-        const rowStatus = statusFor(paper, theorem);
-        const rowId = `${safeId(paper)}_${safeId(theorem)}`;
-        const badge = document.getElementById(`status-${rowId}`);
-        const stale = document.getElementById(`stale-${rowId}`);
-        const label = statusLabel(rowStatus);
-        const judgment = reviewJudgment(rowStatus);
-        row.dataset.status = label.toLowerCase();
-        row.dataset.needsAttention = rowStatus && rowStatus.needs_attention ? "true" : "false";
-        row.dataset.latestJudgment = judgment;
-        row.dataset.latestMatches = judgment === "mismatch" ? "false" : "true";
-        row.dataset.hasReview = rowStatus && rowStatus.has_review ? "true" : "false";
-        row.dataset.isStale = rowStatus && (rowStatus.lean_stale || rowStatus.paper_stale || rowStatus.source_stale) ? "true" : "false";
-        if (badge) {
-          badge.textContent = label;
-          badge.className = `status-pill ${statusClass(rowStatus)}`.trim();
-        }
-        if (stale) {
-          const reason = staleReason(rowStatus);
-          stale.textContent = reason;
-          stale.style.display = reason ? "" : "none";
-        }
-        const validators = document.getElementById(`validators-${rowId}`);
-        if (validators) {
-          validators.textContent = validatorSummary(rowStatus);
-          validators.title = validatorDetails(rowStatus);
-        }
-      }
-    }
-
-    function updatePaperProgress() {
-      const statusRows = state.statusRows || [];
-      for (const paper of state.papers) {
-        const visibleNames = new Set(displayItems(paper).map((item) => item.name));
-        const paperRows = statusRows.filter(
-          (row) => row.paper === paper.name && visibleNames.has(row.theorem)
-        );
-        const counts = reviewSurfaceCounts(paper);
-        const total = counts.reviewCards;
-        const reviewed = paperRows.filter((row) => row.has_review).length;
-        const attention = paperRows.filter((row) => row.needs_attention || row.latest_matches === false).length;
-        const node = document.querySelector(`[data-paper-progress="${paper.name}"]`);
-        if (node) {
-          node.textContent = `${reviewed}/${total} review card${total === 1 ? "" : "s"} reviewed; ${reviewSurfaceCountLabel(counts)}; ${attention} need action`;
-        }
-      }
-    }
-
-    function applyFilters() {
-      const query = (document.getElementById("searchBox").value || "").trim().toLowerCase();
-      const statusFilter = document.getElementById("statusFilter").value;
-      const sliceFilter = document.getElementById("sliceFilter").value || "all";
-      let visibleRows = 0;
-      for (const block of document.querySelectorAll(".paper-block")) {
-        let visibleInBlock = 0;
-        for (const row of block.querySelectorAll("tr[data-paper][data-theorem]")) {
-          const matchesSearch = !query || (row.dataset.searchText || "").includes(query);
-          const matchesSlice = sliceFilter === "all" || row.dataset.sliceKey === sliceFilter;
-          let matchesStatus = true;
-          if (statusFilter === "attention") {
-            matchesStatus = row.dataset.needsAttention === "true" || row.dataset.latestMatches === "false";
-          } else if (statusFilter === "unreviewed") {
-            matchesStatus = row.dataset.hasReview !== "true";
-          } else if (statusFilter === "stale") {
-            matchesStatus = row.dataset.isStale === "true";
-          } else if (statusFilter === "mismatch") {
-            matchesStatus = row.dataset.latestJudgment === "mismatch";
-          } else if (statusFilter === "uncertain") {
-            matchesStatus = row.dataset.latestJudgment === "uncertain";
-          } else if (statusFilter === "reviewed") {
-            matchesStatus = row.dataset.hasReview === "true";
-          }
-          const visible = matchesSearch && matchesSlice && matchesStatus;
-          row.classList.toggle("is-hidden", !visible);
-          if (visible) {
-            visibleInBlock++;
-            visibleRows++;
-          }
-        }
-        block.style.display = visibleInBlock ? "" : "none";
-      }
-      document.getElementById("emptyFilter").style.display = visibleRows ? "none" : "block";
-    }
-
-    async function refreshReviews() {
-      let entries = [];
-      let statusRows = [];
-      let libraryEntries = [];
-      try {
-        const [reviewResponse, statusResponse, libraryResponse] = await Promise.all([
-          fetch("/api/reviews"),
-          fetch("/api/status"),
-          fetch("/api/library-reviews"),
-        ]);
-        if (reviewResponse.ok) {
-          const payload = await reviewResponse.json();
-          entries = payload.reviews || [];
-        }
-        if (statusResponse.ok) {
-          const statusPayload = await statusResponse.json();
-          statusRows = statusPayload.status || [];
-        }
-        if (libraryResponse.ok) {
-          const libraryPayload = await libraryResponse.json();
-          libraryEntries = libraryPayload.reviews || [];
-        }
-      } catch (_err) {
-        entries = state.reviews || [];
-        statusRows = state.statusRows || [];
-        libraryEntries = state.libraryReviews || [];
-      }
-      state.reviews = entries;
-      state.statusRows = statusRows;
-      state.libraryReviews = libraryEntries;
-      refreshSummary(entries, statusRows);
-      const total = entries.length;
-      document.getElementById("count").textContent = `Reviews logged: ${total}`;
-      updateStatusBadges();
-      updatePaperProgress();
-      refreshPrerequisiteReviewControls();
-
-      const statusNodes = document.querySelectorAll(".history[data-paper][data-theorem]");
-      for (const node of statusNodes) {
-        const theorem = node.dataset.theorem;
-        const paper = node.dataset.paper;
-        node.innerHTML = reviewHistory(entries, paper, theorem);
-        // Prefill for current user if there is a latest entry
-        const user = document.getElementById("userHandle").value.trim() || state.user;
-        const mine = entries.filter(
-          (entry) => entry.paper === paper && entry.theorem === theorem && entry.user === user
-        );
-        if (mine.length) {
-          mine.sort((a, b) => (a.timestamp < b.timestamp ? 1 : -1));
-          const latest = mine[0];
-          const rowId = `${safeId(paper)}_${safeId(theorem)}`;
-          const match = document.getElementById(`match-${rowId}`);
-          const mismatch = document.getElementById(`mismatch-${rowId}`);
-          const uncertain = document.getElementById(`uncertain-${rowId}`);
-          const ta = document.getElementById(`note-${rowId}`);
-          const judgment = reviewJudgment(latest);
-          if (match) {
-            match.checked = judgment === "matches";
-          }
-          if (mismatch) {
-            mismatch.checked = judgment === "mismatch";
-          }
-          if (uncertain) {
-            uncertain.checked = judgment === "uncertain";
-          }
-          if (ta) {
-            ta.value = latest.notes || "";
-          }
-        }
-      }
-      applyFilters();
-    }
-
-    function render() {
-      const container = document.getElementById("containers");
-      document.getElementById("logPath").textContent = `Log file: ${state.logPath}`;
-      container.textContent = "";
-      const data = state.papers;
-      if (!data.length) {
-        container.textContent = "No paper interfaces found.";
-        return;
-      }
-      populateSliceFilter();
-      for (const paper of data) {
-        const block = document.createElement("details");
-        block.className = "paper-block";
-        const visibleItems = displayItems(paper);
-        block.open = data.length === 1 || visibleItems.length <= 80;
-        block.classList.add("paper-details");
-        const summary = document.createElement("summary");
-        const header = document.createElement("div");
-        header.className = "paper-header";
-        const heading = document.createElement("h2");
-        heading.textContent = `${paper.name} — ${paper.title}`;
-        const progress = document.createElement("div");
-        progress.className = "paper-progress";
-        progress.dataset.paperProgress = paper.name;
-        const counts = reviewSurfaceCounts(paper);
-        progress.textContent = `0/${counts.reviewCards} review card${counts.reviewCards === 1 ? "" : "s"} reviewed; ${reviewSurfaceCountLabel(counts)}`;
-        header.appendChild(heading);
-        header.appendChild(progress);
-        summary.appendChild(header);
-        block.appendChild(summary);
-        block.appendChild(makeSurfaceAuditPanel(paper));
-        block.appendChild(makeAssumptionAuditPanel(paper));
-        block.appendChild(makeSourcePanel(paper));
-        block.appendChild(makeReviewContents(paper));
-        block.appendChild(makeHumanReviewSurfacePanel(paper));
-        const table = document.createElement("table");
-        const head = document.createElement("thead");
-        head.innerHTML =
-          "<tr><th>Paper statement, expanded Lean statement, LLM checks, and review</th></tr>";
-        table.appendChild(head);
-        const body = document.createElement("tbody");
-        for (const section of claimPresentationSections(paper)) {
-          const sectionRow = document.createElement("tr");
-          sectionRow.id = reviewAnchorId(paper.name, "source-section", section.title);
-          const sectionCell = document.createElement("th");
-          sectionCell.colSpan = 1;
-          sectionCell.className = "review-section-label";
-          const itemNoun = presentationSectionItemNoun(section);
-          sectionCell.textContent = `${section.title} (${section.items.length} ${itemNoun}${section.items.length === 1 ? "" : "s"})`;
-          sectionRow.appendChild(sectionCell);
-          body.appendChild(sectionRow);
-          for (const item of section.items) {
-            const rowInfo = makeRow(paper.name, item);
-            rowInfo.row.id = reviewAnchorId(paper.name, itemNoun, item.name);
-            body.appendChild(rowInfo.row);
-          }
-        }
-        table.appendChild(body);
-        const tableWrap = document.createElement("div");
-        tableWrap.className = "table-wrap";
-        tableWrap.appendChild(table);
-        block.appendChild(tableWrap);
-        container.appendChild(block);
-      }
-      refreshReviews();
-      typesetMath();
-    }
-
-    document.getElementById("userHandle").addEventListener("change", refreshReviews);
-    document.getElementById("searchBox").addEventListener("input", applyFilters);
-    document.getElementById("statusFilter").addEventListener("change", applyFilters);
-    document.getElementById("sliceFilter").addEventListener("change", applyFilters);
-    document.getElementById("hideAgentDraft").addEventListener("change", (event) => {
-      document.body.classList.toggle("hide-agent", event.target.checked);
-    });
-    document.addEventListener("click", (event) => {
-      const link = event.target.closest("a[data-review-anchor]");
-      if (!link) return;
-      const target = document.getElementById(link.dataset.reviewAnchor);
-      if (!target) return;
-      const paperBlock = target.closest("details.paper-block");
-      if (paperBlock) paperBlock.open = true;
-      event.preventDefault();
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-      history.replaceState(null, "", `#${link.dataset.reviewAnchor}`);
-    });
-    document.getElementById("saveAllReviews").addEventListener("click", saveAllSelectedReviews);
-    const mathjaxTag = document.getElementById("mathjax-script");
-    if (mathjaxTag) {
-      mathjaxTag.addEventListener("load", typesetMath);
-    }
-    document.addEventListener("DOMContentLoaded", render);
-  </script>
-</body>
-</html>
-""".strip()
-
-
-def render_static_html(papers: list[dict[str, Any]], user: str, log_path: str) -> str:
-    payload = json.dumps(papers)
-    return (
-        HTML_PAGE.replace("__USER__", json.dumps(user))
-        .replace("__LOG_PATH__", json.dumps(log_path))
-        .replace("__PAPERS__", payload)
-        .replace("{user}", html.escape(user, quote=True))
-    )
-
-
 def stale_review_summary(
     paper: str | None, log_file: Path | None, slice_filter: str | None = None
 ) -> dict[str, list[dict[str, Any]] | dict[str, Any]]:
@@ -21900,197 +16703,49 @@ def stale_review_summary(
         reviews = read_all_log_entries(None, None)
     rows = build_review_status(papers, reviews)
     buckets = stale_review_rows(rows)
+    assumption_rows = assumption_audit_rows(papers)
+    # Current typed pages expose the nonaccepting status already projected by
+    # ``PreparedReviewSurface``.  The launch-time browser summary must not run
+    # the separate repository heuristic and splice its parser-shaped findings
+    # into that display.  Explicit assumption CLI/closeout commands retain the
+    # complete strict path through ``direct_assumption_audit_rows``.
+    prepared_assumptions = {
+        str(row.get("paper") or ""): row
+        for row in assumption_rows
+        if row.get("presentation_only")
+    }
+    legacy_assumptions = [
+        row for row in assumption_rows if not row.get("presentation_only")
+    ]
+    displayed_assumptions = (
+        merge_hidden_premise_audit_rows(legacy_assumptions, paper)
+        if legacy_assumptions
+        else []
+    )
+    if prepared_assumptions:
+        displayed_assumptions = [
+            row
+            for row in displayed_assumptions
+            if str(row.get("paper") or "") not in prepared_assumptions
+        ]
+        displayed_assumptions.extend(prepared_assumptions.values())
     return {
         "rows": rows,
         "totals": status_totals(rows),
         "surface_audits": surface_audit_rows(papers),
         "statement_audits": statement_audit_rows(papers),
         "paper_coverage_audits": paper_coverage_audit_rows(papers),
-        "assumption_audits": merge_hidden_premise_audit_rows(assumption_audit_rows(papers), paper),
+        "assumption_audits": displayed_assumptions,
         "stale": buckets["stale"],
         "unreviewed": buckets["unreviewed"],
         "mismatch": buckets["mismatch"],
     }
 
 
-def print_surface_audit_warnings(rows: list[dict[str, Any]], label: str) -> bool:
-    """Print paper-level review-surface warnings and return whether any need attention."""
-
-    warnings = [row for row in rows if row.get("has_warning") or row.get("needs_attention")]
-    if not warnings:
-        return False
-    needs_attention = any(row.get("needs_attention") for row in warnings)
-    print(f"\nReview-surface audit warnings for {label}:")
-    for row in warnings:
-        paper = row.get("paper") or "unknown paper"
-        count = int(row.get("row_count") or 0)
-        reasons: list[str] = []
-        if row.get("oversize"):
-            reasons.append(
-                f"{count} rows is at or above the {row.get('warn_threshold')} row warning threshold"
-            )
-        if row.get("missing_required"):
-            reasons.append(
-                f"{count} rows is above {row.get('llm_threshold')} and needs review_surface_llm.json"
-            )
-        if row.get("stale"):
-            reasons.append("the saved review_surface_llm.json audit is stale")
-        if row.get("prompt_version_stale"):
-            reasons.append(
-                "the saved review_surface_llm.json prompt version is stale "
-                f"({row.get('prompt_version') or 'missing'})"
-            )
-        if row.get("metadata_missing"):
-            reasons.append("review_surface_llm.json is missing validator or validated_at success metadata")
-        if row.get("judgment") == "needs_curation":
-            reasons.append("the LLM audit says the surface needs curation")
-        if row.get("judgment") == "uncertain":
-            reasons.append("the LLM audit is uncertain")
-        if row.get("unknown_judgment"):
-            reasons.append(
-                f"the LLM audit judgment `{row.get('judgment') or 'missing'}` is not recognized"
-            )
-        if not reasons:
-            reasons.append("the review surface needs attention")
-        print(f" - {paper}: {'; '.join(reasons)}.")
-        if row.get("reason"):
-            print(f"   audit note: {row['reason']}")
-    print(
-        "For papers above 30 dashboard rows, run a no-paper-context LLM pass that "
-        "checks whether every row is genuinely paper-facing, then save "
-        "review_surface_llm.json."
-    )
-    return needs_attention
-
-
-def _format_name_sample(names: list[str], limit: int = 8) -> str:
-    """Format a compact sample of dashboard row names."""
-
-    if not names:
-        return ""
-    shown = ", ".join(f"`{name}`" for name in names[:limit])
-    if len(names) > limit:
-        shown += f", ... {len(names) - limit} more"
-    return shown
-
-
-def print_statement_audit_warnings(rows: list[dict[str, Any]], label: str) -> bool:
-    """Print paper-level statement-translation audit warnings."""
-
-    warnings = [row for row in rows if row.get("needs_attention")]
-    if not warnings:
-        return False
-    print(f"\nStatement-translation audit warnings for {label}:")
-    for row in warnings:
-        paper = row.get("paper") or "unknown paper"
-        reasons: list[str] = []
-        if row.get("missing_draft_count"):
-            reasons.append(f"{row['missing_draft_count']} missing Lean-to-TeX draft(s)")
-        if row.get("stale_draft_count"):
-            reasons.append(f"{row['stale_draft_count']} stale Lean-to-TeX draft(s)")
-        if row.get("missing_judgment_count"):
-            reasons.append(f"{row['missing_judgment_count']} missing statement-judge row(s)")
-        if row.get("stale_judgment_count"):
-            reasons.append(f"{row['stale_judgment_count']} stale statement-judge row(s)")
-        if row.get("missing_obligation_ledger_count"):
-            reasons.append(
-                f"{row['missing_obligation_ledger_count']} incomplete semantic obligation ledger(s)"
-            )
-        if row.get("unresolved_mismatch_count"):
-            reasons.append(f"{row['unresolved_mismatch_count']} unresolved mismatch judgment(s)")
-        if row.get("conditional_boundary_count"):
-            reasons.append(
-                f"{row['conditional_boundary_count']} visible-premise boundary judgment(s)"
-            )
-        if row.get("uncertain_count"):
-            reasons.append(f"{row['uncertain_count']} uncertain judgment(s)")
-        if row.get("unknown_count"):
-            reasons.append(f"{row['unknown_count']} unknown judgment value(s)")
-        library = row.get("library_prerequisites") or {}
-        if library.get("pending_count"):
-            reasons.append(
-                f"{library['pending_count']} material library definition(s) lack a source connection or semantic judgment"
-            )
-        if library.get("stale_count"):
-            reasons.append(
-                f"{library['stale_count']} stale material library semantic judgment(s)"
-            )
-        if library.get("mismatch_count"):
-            reasons.append(
-                f"{library['mismatch_count']} material library mismatch judgment(s)"
-            )
-        if library.get("uncertain_count"):
-            reasons.append(
-                f"{library['uncertain_count']} uncertain material library judgment(s)"
-            )
-        if row.get("all_uncertain"):
-            reasons.append("all rows are uncertain, suggesting a source-statement extraction or parser issue")
-        if not reasons:
-            reasons.append("statement audit needs attention")
-        print(f" - {paper}: {'; '.join(str(reason) for reason in reasons)}.")
-        if row.get("all_uncertain"):
-            print(
-                "   fix the extracted source statements or parser first; do not "
-                "leave a paper-wide parser failure as row-by-row uncertainty."
-            )
-        samples: list[str] = []
-        for key, label_text in [
-            ("unresolved_mismatch", "unresolved mismatch"),
-            ("conditional_boundary", "visible-premise boundary"),
-            ("uncertain", "uncertain"),
-            ("stale_judgment", "stale judgment"),
-            ("missing_obligation_ledger", "missing obligation ledger"),
-            ("stale_draft", "stale draft"),
-            ("missing_judgment", "missing judgment"),
-            ("missing_draft", "missing draft"),
-            ("unknown", "unknown"),
-            ("library_pending", "library pending"),
-            ("library_stale", "library stale"),
-            ("library_mismatch", "library mismatch"),
-            ("library_uncertain", "library uncertain"),
-        ]:
-            if key.startswith("library_"):
-                sample = _format_name_sample(
-                    list((row.get("library_prerequisites") or {}).get(key.removeprefix("library_") or "") or [])
-                )
-            else:
-                sample = _format_name_sample(list(row.get(key) or []))
-            if sample:
-                samples.append(f"{label_text}: {sample}")
-        for sample in samples[:3]:
-            print(f"   {sample}")
-    print(
-        "At statement-review boundaries, regenerate lean_to_tex_llm.json from the "
-        "Lean statements alone, preserving every visible binder, hypothesis, "
-        "domain condition, named predicate/wrapper application, "
-        "equivalence/implication direction, conclusion, and input premise. "
-        "Then regenerate statement_match_llm.json from the complete original "
-        "paper theorem/definition/formula text and that translation. The judge "
-        "should scrutinize every input semantically against the paper source "
-        "model, expanding named predicates/wrappers when needed. It must not "
-        "approve by theorem label, phrase overlap, or source-looking Lean name. "
-        "Mark mismatch or uncertain for omitted subparts, extra non-source "
-        "conditions, hidden strengthening inside named predicates, broad "
-        "aggregate rows, source-row/certificate/replay/process/bridge packages, or "
-        "weakened/strengthened statements. A matches judgment must enumerate "
-        "source and Lean parameter/assumption/conclusion atoms, reference every "
-        "machine-generated Lean signature atom exactly once, and align every "
-        "source conclusion and Lean input by semantic "
-        "equivalence or a stated implication; names are routing only. If all rows are uncertain, treat that "
-        "as a likely source extraction problem and fix the source map before "
-        "accepting row-level judgments. A clean statement audit is still row-local; "
-        "run `python3 scripts/review_dashboard.py --paper <paper> "
-        "--assumption-precheck` or the combined `--precheck` path before treating "
-        "theorem premises as certified."
-    )
-    return True
-
-
 def print_statement_audit_status(paper: str | None, slice_filter: str | None = None) -> bool:
     """Print only statement-translation audit diagnostics."""
 
-    papers = gather_paper_data(paper, slice_filter, render_images=False)
-    rows = statement_audit_rows(papers)
+    rows = direct_statement_audit_rows(paper, slice_filter)
     label = paper or "all papers"
     if slice_filter:
         label = f"{label} slice {slice_filter}"
@@ -22120,332 +16775,6 @@ def print_statement_audit_status(paper: str | None, slice_filter: str | None = N
         "or the combined `--precheck` path to verify theorem-premise provenance."
     )
     return False
-
-
-def print_paper_coverage_audit_warnings(
-    rows: list[dict[str, Any]], label: str, *, source_to_lean: bool = False
-) -> bool:
-    """Print paper-level source-statement coverage audit warnings."""
-
-    warnings = [
-        row
-        for row in rows
-        if row.get("needs_attention")
-        or (source_to_lean and row.get("source_to_lean_needs_attention"))
-    ]
-    if not warnings:
-        return False
-    if source_to_lean:
-        print(f"\nSource-to-Lean audit warnings for {label}:")
-    else:
-        print(f"\nPaper-coverage audit warnings for {label}:")
-    for row in warnings:
-        paper = row.get("paper") or "unknown paper"
-        reasons: list[str] = []
-        if row.get("missing_inventory"):
-            reasons.append("source-statement inventory is required but empty")
-        if row.get("unresolved_statement_map"):
-            reasons.append(
-                "audit/paper_statement_map.json exists but has no resolvable tracked source statements"
-            )
-        if row.get("inventory_is_scaffold"):
-            reasons.append(
-                "audit/paper_statement_map.json is still dashboard-seeded or not marked source-curated"
-            )
-        if row.get("missing_required"):
-            reasons.append("missing paper_coverage_llm.json coverage audit")
-        if row.get("missing_source_grounded_audit"):
-            reasons.append(
-                "paper_coverage_llm.json is not a source-grounded source-to-dashboard LLM audit"
-            )
-        if row.get("prompt_version_stale"):
-            reasons.append(
-                "the saved paper_coverage_llm.json prompt version is stale "
-                f"({row.get('prompt_version') or 'missing'})"
-            )
-        if row.get("audit_metadata_missing"):
-            reasons.append("paper_coverage_llm.json is missing validator or validated_at success metadata")
-        if row.get("coverage_metadata_missing_count"):
-            reasons.append(
-                f"{row['coverage_metadata_missing_count']} coverage item(s) lack validator/timestamp metadata"
-            )
-        if row.get("inventory_missing_source_url_count"):
-            reasons.append(
-                f"{row['inventory_missing_source_url_count']} source-inventory statement(s) lack source URL"
-            )
-        if row.get("inventory_missing_source_provenance_count"):
-            reasons.append(
-                f"{row['inventory_missing_source_provenance_count']} source-inventory statement(s) lack source location/status"
-            )
-        if row.get("inventory_unknown_source_kind_count"):
-            reasons.append(
-                f"{row['inventory_unknown_source_kind_count']} source-inventory statement(s) use unknown source_kind values"
-            )
-        if row.get("missing_coverage_count"):
-            reasons.append(f"{row['missing_coverage_count']} source statement(s) missing coverage row")
-        if row.get("missing_statement_digest_count"):
-            reasons.append(
-                f"{row['missing_statement_digest_count']} coverage item(s) lack source-statement digest"
-            )
-        if row.get("partial_count"):
-            reasons.append(f"{row['partial_count']} partially covered source statement(s)")
-        if row.get("missing_count"):
-            reasons.append(f"{row['missing_count']} source statement(s) judged missing")
-        if row.get("uncertain_count"):
-            reasons.append(f"{row['uncertain_count']} uncertain source-coverage judgment(s)")
-        if row.get("unknown_count"):
-            reasons.append(f"{row['unknown_count']} unknown coverage judgment value(s)")
-        if row.get("stale_inventory"):
-            reasons.append("the saved paper_coverage_llm.json source-inventory digest is stale")
-        if row.get("stale_surface"):
-            reasons.append("the saved paper_coverage_llm.json review-surface digest is stale")
-        if row.get("stale_statement_count"):
-            reasons.append(f"{row['stale_statement_count']} stale source-statement digest(s)")
-        if row.get("invalid_row_link_count"):
-            reasons.append(f"{row['invalid_row_link_count']} linked dashboard row(s) no longer exist")
-        if row.get("coverage_row_signature_error_count"):
-            reasons.append(
-                f"{row['coverage_row_signature_error_count']} coverage link(s) lack a current elaborated Lean signature pin"
-            )
-        if row.get("covered_without_rows_count"):
-            reasons.append(f"{row['covered_without_rows_count']} covered source statement(s) lack linked dashboard rows")
-        if row.get("covered_without_reason_count"):
-            reasons.append(f"{row['covered_without_reason_count']} covered source statement(s) lack match reasons")
-        if row.get("covered_with_seed_reason_count"):
-            reasons.append(f"{row['covered_with_seed_reason_count']} covered source statement(s) only have exact-key scaffold reasons")
-        if row.get("covered_without_source_evidence_count"):
-            reasons.append(f"{row['covered_without_source_evidence_count']} covered source statement(s) lack source evidence")
-        if row.get("coverage_route_mismatch_count"):
-            reasons.append(
-                f"{row['coverage_route_mismatch_count']} coverage link(s) are not pinned to the row's exact semantic source route"
-            )
-        if row.get("result_covered_without_proof_row_count"):
-            reasons.append(
-                f"{row['result_covered_without_proof_row_count']} paper-facing result(s) are directly covered without a theorem/lemma row"
-            )
-        if row.get("result_matched_only_by_definition_row_count"):
-            reasons.append(
-                f"{row['result_matched_only_by_definition_row_count']} paper-facing result(s) have positive match evidence only from def/abbrev rows"
-            )
-        if row.get("support_without_declarations_count"):
-            reasons.append(
-                f"{row['support_without_declarations_count']} support-covered source statement(s) lack support declarations"
-            )
-        if row.get("support_without_reason_count"):
-            reasons.append(
-                f"{row['support_without_reason_count']} support-covered source statement(s) lack reasons"
-            )
-        if row.get("support_without_source_evidence_count"):
-            reasons.append(
-                f"{row['support_without_source_evidence_count']} support-covered source statement(s) lack source evidence"
-            )
-        if row.get("invalid_quarantined_defect_support_count"):
-            reasons.append(
-                f"{row['invalid_quarantined_defect_support_count']} quarantined source defect(s) lack exact-hash semantic counterexample/refutation support"
-            )
-        if row.get("defect_support_judgment_error_count"):
-            reasons.append(
-                f"{row['defect_support_judgment_error_count']} defect-support semantic judgment(s) are missing, stale, malformed, or tautological"
-            )
-        if row.get("quarantined_defect_direct_coverage_count"):
-            reasons.append(
-                f"{row['quarantined_defect_direct_coverage_count']} quarantined source defect(s) are incorrectly counted as direct proof coverage"
-            )
-        if row.get("user_approved_scope_exclusion_error_count"):
-            reasons.append(
-                f"{row['user_approved_scope_exclusion_error_count']} user-approved scope exclusion(s) lack complete approval or pinned source evidence"
-            )
-        if row.get("required_out_of_scope_count"):
-            reasons.append(
-                f"{row['required_out_of_scope_count']} required source-visible review target(s) are marked out of scope/not paper targets"
-            )
-        if source_to_lean and row.get("support_only_named_claim_count"):
-            reasons.append(
-                f"{row['support_only_named_claim_count']} theorem-like source statement(s) are only support-covered, without review-row statement-match audit"
-            )
-        if source_to_lean and row.get("support_only_required_source_item_count"):
-            reasons.append(
-                f"{row['support_only_required_source_item_count']} required source-visible review target(s) are only support-covered, without review-row statement-match audit"
-            )
-        if source_to_lean and row.get("row_statement_match_missing_count"):
-            reasons.append(
-                f"{row['row_statement_match_missing_count']} source-to-row link(s) lack row-local LLM correctness judgments"
-            )
-        if source_to_lean and row.get("row_statement_match_stale_count"):
-            reasons.append(
-                f"{row['row_statement_match_stale_count']} source-to-row link(s) use stale row-local LLM correctness judgments"
-            )
-        if source_to_lean and row.get("row_statement_match_mismatch_count"):
-            reasons.append(
-                f"{row['row_statement_match_mismatch_count']} source-to-row link(s) point to row-local LLM correctness mismatches"
-            )
-        if source_to_lean and row.get("row_statement_match_uncertain_count"):
-            reasons.append(
-                f"{row['row_statement_match_uncertain_count']} source-to-row link(s) point to uncertain row-local LLM correctness judgments"
-            )
-        if source_to_lean and row.get("row_statement_match_unknown_count"):
-            reasons.append(
-                f"{row['row_statement_match_unknown_count']} source-to-row link(s) point to unknown row-local LLM correctness judgments"
-            )
-        if source_to_lean and row.get("row_statement_match_conditional_without_coverage_boundary_count"):
-            reasons.append(
-                f"{row['row_statement_match_conditional_without_coverage_boundary_count']} source-to-row link(s) rely on conditional row-local mismatches while source coverage is marked direct"
-            )
-        if source_to_lean and row.get("row_statement_match_missing_statement_digest_count"):
-            reasons.append(
-                f"{row['row_statement_match_missing_statement_digest_count']} source-to-row link(s) have row-local statement judgments without saved paper-statement digests"
-            )
-        if source_to_lean and row.get("row_statement_match_wrong_statement_digest_count"):
-            reasons.append(
-                f"{row['row_statement_match_wrong_statement_digest_count']} source-to-row link(s) have row-local statement judgments for a different current row statement"
-            )
-        if source_to_lean and row.get("row_assumption_provenance_missing_count"):
-            reasons.append(
-                f"{row['row_assumption_provenance_missing_count']} assumption-linked source-to-row link(s) lack assumption-provenance judgments"
-            )
-        if source_to_lean and row.get("row_assumption_provenance_stale_count"):
-            reasons.append(
-                f"{row['row_assumption_provenance_stale_count']} assumption-linked source-to-row link(s) use stale assumption-provenance judgments"
-            )
-        if source_to_lean and row.get("row_assumption_provenance_mismatch_count"):
-            reasons.append(
-                f"{row['row_assumption_provenance_mismatch_count']} assumption-linked source-to-row link(s) are judged not to be source assumptions"
-            )
-        if source_to_lean and row.get("row_assumption_provenance_uncertain_count"):
-            reasons.append(
-                f"{row['row_assumption_provenance_uncertain_count']} assumption-linked source-to-row link(s) have uncertain assumption-provenance judgments"
-            )
-        if source_to_lean and row.get("row_assumption_provenance_unknown_count"):
-            reasons.append(
-                f"{row['row_assumption_provenance_unknown_count']} assumption-linked source-to-row link(s) have unknown assumption-provenance judgments"
-            )
-        if source_to_lean and row.get("row_assumption_provenance_conditional_without_coverage_boundary_count"):
-            reasons.append(
-                f"{row['row_assumption_provenance_conditional_without_coverage_boundary_count']} assumption-linked source-to-row link(s) are partial boundaries while source coverage is marked direct"
-            )
-        if row.get("out_of_scope_without_reason_count"):
-            reasons.append(
-                f"{row['out_of_scope_without_reason_count']} out-of-scope source statement(s) lack reasons"
-            )
-        if row.get("out_of_scope_without_source_evidence_count"):
-            reasons.append(
-                f"{row['out_of_scope_without_source_evidence_count']} out-of-scope source statement(s) lack source evidence"
-            )
-        if row.get("extra_coverage_count"):
-            reasons.append(f"{row['extra_coverage_count']} stale extra coverage item(s)")
-        if not reasons:
-            reasons.append("paper-coverage audit needs attention")
-        print(f" - {paper}: {'; '.join(str(reason) for reason in reasons)}.")
-        samples: list[str] = []
-        sample_specs = [
-            ("missing_coverage", "missing coverage"),
-            ("inventory_missing_source_url", "missing source URL"),
-            ("inventory_missing_source_provenance", "missing source provenance"),
-            ("inventory_unknown_source_kind", "unknown source_kind"),
-            ("missing_statement_digest", "missing digest"),
-            ("missing", "judged missing"),
-            ("partial", "partial"),
-            ("uncertain", "uncertain"),
-            ("stale_statement", "stale statement"),
-            ("invalid_row_links", "invalid row link"),
-            ("coverage_row_signature_errors", "row-signature pin"),
-            ("covered_without_rows", "covered without row"),
-            ("covered_without_reason", "covered without reason"),
-            ("covered_with_seed_reason", "exact-key scaffold reason"),
-            ("covered_without_source_evidence", "missing source evidence"),
-            ("coverage_route_mismatch", "coverage route mismatch"),
-            ("result_covered_without_proof_rows", "result without proof row"),
-            (
-                "result_matched_only_by_definition_rows",
-                "result matched only by def/abbrev",
-            ),
-            ("coverage_metadata_missing", "missing audit metadata"),
-            ("support_without_declarations", "support missing declarations"),
-            ("support_without_reason", "support without reason"),
-            ("support_without_source_evidence", "support missing source evidence"),
-            (
-                "invalid_quarantined_defect_support",
-                "invalid quarantined-defect support",
-            ),
-            (
-                "defect_support_judgment_errors",
-                "invalid defect-support semantic judgment",
-            ),
-            (
-                "quarantined_defect_direct_coverage",
-                "quarantined defect counted as proved",
-            ),
-            (
-                "user_approved_scope_exclusion_errors",
-                "invalid user-approved scope exclusion",
-            ),
-            ("required_out_of_scope", "required source target scoped out"),
-            ("out_of_scope_without_reason", "out-of-scope without reason"),
-            ("out_of_scope_without_source_evidence", "out-of-scope missing source evidence"),
-            ("extra_coverage", "extra stale item"),
-            ("unknown", "unknown"),
-        ]
-        if source_to_lean:
-            sample_specs.extend(
-                [
-                    ("support_only_named_claims", "support-only named claim"),
-                    ("support_only_required_source_items", "support-only required source target"),
-                    ("row_statement_match_missing", "missing row correctness"),
-                    ("row_statement_match_stale", "stale row correctness"),
-                    ("row_statement_match_mismatch", "mismatched row correctness"),
-                    ("row_statement_match_uncertain", "uncertain row correctness"),
-                    ("row_statement_match_unknown", "unknown row correctness"),
-                    (
-                        "row_statement_match_conditional_without_coverage_boundary",
-                        "conditional row but direct coverage",
-                    ),
-                    ("row_statement_match_missing_statement_digest", "missing row-statement digest"),
-                    ("row_statement_match_wrong_statement_digest", "wrong row-statement digest"),
-                    ("row_assumption_provenance_missing", "missing assumption provenance"),
-                    ("row_assumption_provenance_stale", "stale assumption provenance"),
-                    ("row_assumption_provenance_mismatch", "assumption provenance mismatch"),
-                    ("row_assumption_provenance_uncertain", "uncertain assumption provenance"),
-                    ("row_assumption_provenance_unknown", "unknown assumption provenance"),
-                    (
-                        "row_assumption_provenance_conditional_without_coverage_boundary",
-                        "partial assumption but direct coverage",
-                    ),
-                ]
-            )
-        for key, label_text in sample_specs:
-            sample = _format_name_sample(list(row.get(key) or []))
-            if sample:
-                samples.append(f"{label_text}: {sample}")
-        for sample in samples[:4]:
-            print(f"   {sample}")
-    print(
-        "This is the paper-level coverage lane: build a source-statement inventory "
-        "from the source PDF/TeX/text, not from Lean row names, then have an "
-        "independent LLM judge whether each paper statement is covered by one or "
-        "more dashboard rows. Save that semantic source-to-dashboard judgment in "
-        "paper_coverage_llm.json with audit_kind=source_to_dashboard_llm, "
-        "source_grounded=true, source evidence, linked dashboard rows, an exact "
-        "review_row_signature_sha256 pin for every linked row, and a "
-        "nontrivial match reason. Exact-key seeding is only a scaffold. Do not "
-        "mark source-visible definitions, examples, remarks, propositions, "
-        "theorems, corollaries, or main-text lemmas as out of scope merely to keep "
-        "the review surface compact; expose dashboard rows so the LLM-as-judge "
-        "can inspect them. Appendix lemmas are a judgment call, but appendix "
-        "theorems and corollaries should be covered. The "
-        "source result lane requires an actual reviewed theorem/lemma declaration; "
-        "a matching def/abbrev is specification vocabulary and cannot supply proof "
-        "credit. A quarantined_source_defect item remains unproved and may use "
-        "support_only only with a current defect_support_match_llm.json judgment "
-        "that exact-hash pins the validated source defect, Lean statement, and "
-        "elaborated signature and semantically aligns every theorem atom. Trivial "
-        "or reflexive tautologies cannot provide defect support. The "
-        "stricter source-to-Lean lane requires linked non-assumption rows to have "
-        "current row-local LLM correctness judgments in statement_match_llm.json "
-        "for the same current dashboard paper statement. Explicit Assumptions.lean "
-        "rows instead require current assumption_match_llm.json provenance evidence; "
-        "they are source model conditions, not duplicate theorem conclusions."
-    )
-    return True
 
 
 def print_source_inventory_precheck_status(paper: str | None) -> bool:
@@ -22509,8 +16838,7 @@ def print_paper_coverage_audit_status(
 ) -> bool:
     """Print only paper-level source-coverage diagnostics."""
 
-    papers = gather_paper_data(paper, slice_filter, render_images=False)
-    rows = paper_coverage_audit_rows(papers)
+    rows = direct_paper_coverage_audit_rows(paper, slice_filter)
     label = paper or "all papers"
     if slice_filter:
         label = f"{label} slice {slice_filter}"
@@ -22549,96 +16877,6 @@ def print_paper_coverage_audit_status(
     return False
 
 
-def print_assumption_audit_warnings(rows: list[dict[str, Any]], label: str) -> bool:
-    """Print paper-level assumption-provenance warnings."""
-
-    warnings = [row for row in rows if row.get("has_warning") or row.get("needs_attention")]
-    if not warnings:
-        return False
-    print(f"\nAssumption-provenance audit warnings for {label}:")
-    for row in warnings:
-        paper = row.get("paper") or "unknown paper"
-        reasons: list[str] = []
-        if row.get("missing_rows_count"):
-            reasons.append(f"{row['missing_rows_count']} configured assumption declaration(s) missing")
-        if row.get("unlisted_rows_count"):
-            reasons.append(f"{row['unlisted_rows_count']} assumption-like declaration(s) not listed in status.json")
-        if row.get("missing_judgment_count"):
-            reasons.append(f"{row['missing_judgment_count']} missing assumption-judge declaration(s)")
-        if row.get("stale_judgment_count"):
-            reasons.append(f"{row['stale_judgment_count']} stale assumption-judge declaration(s)")
-        if row.get("not_paper_assumption_count"):
-            reasons.append(f"{row['not_paper_assumption_count']} declaration(s) judged not to be paper assumptions")
-        if row.get("uncertain_count"):
-            reasons.append(f"{row['uncertain_count']} uncertain assumption-judge declaration(s)")
-        if row.get("unknown_count"):
-            reasons.append(f"{row['unknown_count']} unknown assumption-judge value(s)")
-        if row.get("partial_boundary_count"):
-            reasons.append(f"{row['partial_boundary_count']} partial-boundary declaration(s)")
-        if row.get("partial_boundary_premise_count"):
-            reasons.append(
-                f"{row['partial_boundary_premise_count']} premise-level partial boundary finding(s)"
-            )
-        if row.get("unresolved_premise_count"):
-            reasons.append(
-                f"{row['unresolved_premise_count']} unresolved premise-level judgment(s)"
-            )
-        if row.get("missing_source_location_premise_count"):
-            reasons.append(
-                f"{row['missing_source_location_premise_count']} source-text premise judgment(s) missing source_location"
-            )
-        if row.get("hidden_premise_count"):
-            hidden_bits: list[str] = [f"{row['hidden_premise_count']} hidden premise finding(s)"]
-            if row.get("hidden_premise_error_count"):
-                hidden_bits.append(f"{row['hidden_premise_error_count']} error")
-            if row.get("hidden_premise_warning_count"):
-                hidden_bits.append(f"{row['hidden_premise_warning_count']} warning")
-            reasons.append(", ".join(hidden_bits))
-        if row.get("accepted_conditional_premise_count"):
-            reasons.append(
-                f"{row['accepted_conditional_premise_count']} accepted visible-premise finding(s)"
-            )
-        if row.get("hidden_premise_audit_error"):
-            reasons.append(f"could not run hidden-premise audit: {row['hidden_premise_audit_error']}")
-        if not reasons:
-            reasons.append("assumption provenance needs attention")
-        print(f" - {paper}: {'; '.join(str(reason) for reason in reasons)}.")
-        samples: list[str] = []
-        for key, label_text in [
-            ("missing_rows", "missing declaration"),
-            ("unlisted_rows", "unlisted declaration"),
-            ("not_paper_assumption", "not paper assumption"),
-            ("uncertain", "uncertain"),
-            ("stale_judgment", "stale judgment"),
-            ("missing_judgment", "missing judgment"),
-            ("unknown", "unknown"),
-            ("partial_boundary_premises", "partial premise"),
-            ("unresolved_premises", "unresolved premise"),
-            ("missing_source_location_premises", "missing premise source"),
-        ]:
-            sample = _format_name_sample(list(row.get(key) or []))
-            if sample:
-                samples.append(f"{label_text}: {sample}")
-        for sample in samples[:4]:
-            print(f"   {sample}")
-        for sample in list(row.get("hidden_premise_samples") or [])[:3]:
-            print(f"   hidden premise: {sample}")
-        for sample in list(row.get("accepted_conditional_premise_samples") or [])[:3]:
-            print(f"   accepted visible premise: {sample}")
-    print(
-        "Every paper-facing theorem premise that is not derived in Lean must be "
-        "declared in Assumptions.lean, listed in "
-        "status.json review_surface.assumption_names, and judged in "
-        "assumption_match_llm.json as a true paper/source model assumption, "
-        "unless it is an explicitly accepted statement-level visible-premise "
-        "boundary recorded in statement_match_llm.json. The judge must inspect "
-        "premise semantics rather than names: certificate, replay, process, "
-        "bridge, source-row, or broad package premises need a constructor from "
-        "paper primitives or they remain partial/conditional."
-    )
-    return True
-
-
 def print_assumption_audit_status(paper: str | None, slice_filter: str | None = None) -> bool:
     """Print only assumption-provenance audit diagnostics."""
 
@@ -22646,8 +16884,9 @@ def print_assumption_audit_status(paper: str | None, slice_filter: str | None = 
     if fast_precheck is not None:
         return print_fast_saved_source_record_assumption_precheck(fast_precheck)
 
-    papers = gather_paper_data(paper, slice_filter, render_images=False)
-    rows = merge_hidden_premise_audit_rows(assumption_audit_rows(papers), paper)
+    rows = merge_hidden_premise_audit_rows(
+        direct_assumption_audit_rows(paper, slice_filter), paper
+    )
     label = paper or "all papers"
     if slice_filter:
         label = f"{label} slice {slice_filter}"

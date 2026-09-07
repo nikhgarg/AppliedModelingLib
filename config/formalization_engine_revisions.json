@@ -212,6 +212,7 @@
       "previous_engine_tree_sha256": "cfa504fd80a4535e12b09f7ffdaba4fd8b7f4d9bf5c6f3189673c587cf80a2da",
       "previous_formalization_review_protocol_sha256": "e94b775a4b0bfdebe915ac7d0c13c414fad98036906876fb9239a7086c3cd805",
       "rationale": "Repair source-vocabulary direct-route provenance with separately authenticated broad-binding and one-route selectors, preserve historic non-feature raw reuse, report semantic rebind debt accurately, and remove duplicate closeout cache and failure-path work without changing review obligations.",
+      "relation_to_previous": "review_compatible",
       "raw_producer_compatibility": {
         "invariant": "same-nonproducer-source-record-fingerprint-v1",
         "predecessor_raw_producer_code_identity_sets": [
@@ -254,7 +255,6 @@
           }
         ]
       },
-      "relation_to_previous": "review_compatible",
       "sequence": 17,
       "verification": [
         "Focused source-record association, vocabulary-selection, target-disposition, semantic-rebind, planner-cache, and closeout-worker regressions pass.",
@@ -756,6 +756,204 @@
         "The schema-1 public history remains an exact prefix and the independent-registration boundary starts at sequence 56.",
         "Focused engine-revision regression tests and trusted-base negative checks pass.",
         "The legacy raw-producer ledger reader is retained with its exact prior body so existing public audit commands remain importable during the transition."
+      ]
+    },
+    {
+      "engine_tree_sha256": "9630b09ad677510a383f3eb3cf52e254bb1d3b5ced1abe7b3501206eb871eee4",
+      "formalization_review_protocol_sha256": "b47e29ccae81c8f9e5f9639d1ad956c260665c1ab5a9426c941039260d45a8ae",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 57,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "5f2e1d039b443c6630d8faf0c16ab5bdcee3c373b9f1b21e54157dce0e8dae7b",
+      "formalization_review_protocol_sha256": "b47e29ccae81c8f9e5f9639d1ad956c260665c1ab5a9426c941039260d45a8ae",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 58,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "6799a87d89abff402d6fe23ad21ad5880449b5f4c98bb19169a2bc210ec055c5",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 59,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "20030a33f34f052bcd19814def9966fd641aa1b524dc6ee392394210b4231b32",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 60,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "7e827f7e26ab9744289b9b412344103785e14c622977b82e2faf272705d5505c",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 61,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "2a1b9464ce3451cc907af182874fc4a11713153a33bc216aacd15e9e9fcdf57d",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 62,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "ad65688b58ee955d780fe0c0a6b4c18212bd234b11dd0bcdbd14393897eb5655",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 63,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "e558b7f4ecaaf718a170605c8c3aa148195e0a982ff8dfc343ded7298ea7cb12",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 64,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "9ff062d2ab38529311348993fb0e1020a7e8c4a356626c8b0a4068e1eb5094aa",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 65,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "fa3cf465fbd250bfbc32c26db3e24a416e20031793e3beb03f4e4a8701dda49c",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 66,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "7e7a52d1d6b59bf5339f2b0853765f2afc74125b01a7713e8b9850963f51c48b",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 67,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "e7b138943c05108b8aa8159e88894799b220b37bfec67d0acc44aa18d74ecc93",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 68,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "367ecbb7dfefeb8134df4dfcc0c6624757a4d739e8f1701f138afe75d29804b0",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 69,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "d6cfd3e59f3591cc4fe2fc371623de2ef660ca760e37504e377c9bfb268f24f8",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 70,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "1911da7050340f6e08f155e02fedeeeb556aae67d55c7e99adb8a4eea2bf6e8b",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 71,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "1ca24c6093c65e41f29c617437141f6bfe3738fce35f8246800946d4b1cc32bb",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 72,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "d75227a9b5a61fbbd23d0128e0fc8adb194a2e2d0a65024f6ed52a8d7bab4943",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Retain the registered validation authority named by a selected public accepted graph.",
+      "sequence": 73,
+      "verification": [
+        "The engine and protocol identities match the selected graph strict closeout authority, validated before export."
+      ]
+    },
+    {
+      "engine_tree_sha256": "fe22c1994f6ab702eb6a9b55fcae5c1bdbf267c48cdc7a92a7c687a3f6a49517",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Register the reviewed public audit implementation, including consistent validation of subsumed source presentations.",
+      "sequence": 74,
+      "verification": [
+        "103 focused source-correspondence, integrity-scope, publication-projection, and dependency-boundary regression tests passed."
+      ]
+    },
+    {
+      "engine_tree_sha256": "a9ced0288ffc640f0fe3a4c7fbc5c1e16fd8cede1e6ff02f6b166d633eae3ca7",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "sequence": 75,
+      "rationale": "Register the reviewed public source-free evidence readers and current audit tooling.",
+      "verification": [
+        "302 focused regression tests passed for credential reading, review packets, status synchronization, and release packaging."
+      ]
+    },
+    {
+      "sequence": 76,
+      "engine_tree_sha256": "c1b1c310e0876fd442ed2be661c49f67a658082686886e9aafcf8af727d341a5",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Register an audited engine authority referenced by the selected public paper closeouts.",
+      "verification": [
+        "Engine and review-protocol identities match the recorded authority for the selected accepted graphs."
+      ]
+    },
+    {
+      "sequence": 77,
+      "engine_tree_sha256": "76e19a5efb6c5fbd2e8042dcde5a4be43439617cb3d9d96e1723a587bf14f7a8",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Register an audited engine authority referenced by the selected public paper closeouts.",
+      "verification": [
+        "Engine and review-protocol identities match the recorded authority for the selected accepted graphs."
+      ]
+    },
+    {
+      "sequence": 78,
+      "engine_tree_sha256": "63d91eacceb07fdc2eb705ff3ae41cdfaf4e0758a15ef08e8773caac96c819d3",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Register an audited engine authority referenced by the selected public paper closeouts.",
+      "verification": [
+        "Engine and review-protocol identities match the recorded authority for the selected accepted graphs."
       ]
     }
   ],

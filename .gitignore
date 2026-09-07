@@ -19,6 +19,7 @@
 !.env.example
 *.log
 /.scratch/
+/raw/
 
 # Python cache and local tool output
 __pycache__/
@@ -51,6 +52,11 @@ papers/*/*.txt
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+
+# Human-review packet compiler intermediates. The packet TeX and deliberately
+# retained PDF are review artifacts; these two files are reproducible build noise.
+**/HUMAN_REVIEW_PACKET.out
+**/HUMAN_REVIEW_PACKET.xdv
 
 # Editor and OS noise
 .DS_Store

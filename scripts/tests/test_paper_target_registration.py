@@ -18,13 +18,13 @@ from scripts.tomllib_compat import tomllib
 
 BASE_LAKEFILE = """name = "FixturePackage"
 version = "1.2.3"
-defaultTargets = ["EconCSLib", "Existing24Paper"]
+defaultTargets = ["AppliedModelingLib", "Existing24Paper"]
 
 [leanOptions]
 relaxedAutoImplicit = false
 
 [[lean_lib]]
-name = "EconCSLib"
+name = "AppliedModelingLib"
 
 [[lean_lib]]
 name = "Existing24Paper"
@@ -110,7 +110,7 @@ class PaperTargetRegistrationTests(unittest.TestCase):
                 {"name": "ABC26EfficientPaper", "srcDir": "papers"},
             )
             self.assertEqual(
-                payload["defaultTargets"], ["EconCSLib", "Existing24Paper"]
+                payload["defaultTargets"], ["AppliedModelingLib", "Existing24Paper"]
             )
 
     def test_plan_rejects_invalid_paper_ids(self) -> None:
@@ -157,11 +157,11 @@ class PaperTargetRegistrationTests(unittest.TestCase):
     def test_plan_rejects_preexisting_duplicate_or_case_conflicting_targets(self) -> None:
         duplicate = (
             BASE_LAKEFILE
-            + '\n[[lean_lib]]\nname = "EconCSLib"\nsrcDir = "duplicate"\n'
+            + '\n[[lean_lib]]\nname = "AppliedModelingLib"\nsrcDir = "duplicate"\n'
         )
         case_conflict = (
             BASE_LAKEFILE
-            + '\n[[lean_lib]]\nname = "eCONCSlIB"\nsrcDir = "duplicate"\n'
+            + '\n[[lean_lib]]\nname = "aPPLIEDmODELINGlIB"\nsrcDir = "duplicate"\n'
         )
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -295,28 +295,55 @@ class PaperTargetRegistrationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             lakefile = self.fixture(Path(temp_dir))
             with mock.patch.object(
-                registration.subprocess, "run", return_value=mock.Mock(returncode=0)
+                registration.subprocess,
+                "run",
+                return_value=mock.Mock(returncode=0, stdout="", stderr=""),
             ) as runner:
                 result = registration.build_registered_targets(lakefile)
 
         self.assertEqual(result, 0)
         runner.assert_called_once_with(
-            ["lake", "build", "EconCSLib", "Existing24Paper"],
+            ["lake", "-q", "build", "AppliedModelingLib", "Existing24Paper"],
             cwd=lakefile.resolve().parent,
+            capture_output=True,
+            text=True,
             check=False,
         )
 
+    def test_integration_build_rejects_zero_exit_panic_without_replaying_log(self) -> None:
+        panic = (
+            "warning: ordinary linter\n"
+            "PANIC at Lean.Expr.appArg! Lean.Expr:926:15: application expected\n"
+            "backtrace:\nvery long frame\n"
+        )
+        with tempfile.TemporaryDirectory() as temp_dir:
+            lakefile = self.fixture(Path(temp_dir))
+            with mock.patch.object(
+                registration.subprocess,
+                "run",
+                return_value=mock.Mock(returncode=0, stdout=panic, stderr=""),
+            ), mock.patch("sys.stderr") as error_stream:
+                result = registration.build_registered_targets(lakefile)
+
+        self.assertEqual(result, 1)
+        rendered = " ".join(
+            str(call.args[0]) for call in error_stream.write.call_args_list if call.args
+        )
+        self.assertIn("Lean PANIC output", rendered)
+        self.assertIn("PANIC at Lean.Expr.appArg!", rendered)
+        self.assertNotIn("ordinary linter", rendered)
+
     def test_integration_build_does_not_trust_default_targets(self) -> None:
         content = BASE_LAKEFILE.replace(
-            'defaultTargets = ["EconCSLib", "Existing24Paper"]',
-            'defaultTargets = ["EconCSLib"]',
+            'defaultTargets = ["AppliedModelingLib", "Existing24Paper"]',
+            'defaultTargets = ["AppliedModelingLib"]',
         )
         with tempfile.TemporaryDirectory() as temp_dir:
             lakefile = self.fixture(Path(temp_dir), content)
 
             self.assertEqual(
                 registration.registered_target_names(lakefile),
-                ("EconCSLib", "Existing24Paper"),
+                ("AppliedModelingLib", "Existing24Paper"),
             )
 
 

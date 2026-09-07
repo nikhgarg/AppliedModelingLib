@@ -14,7 +14,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- Under the three literal observed-access requirement protocols, PBO is not
 observably fair outside null base fibres and is not demographically fair. -/

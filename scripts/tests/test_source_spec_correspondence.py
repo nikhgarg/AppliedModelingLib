@@ -21,6 +21,7 @@ for import_root in (ROOT, ROOT / "scripts"):
 
 import audit_evidence_integrity as integrity  # noqa: E402
 import audit_repository as repository  # noqa: E402
+import source_manifest_validation as source_manifest  # noqa: E402
 
 
 def digest(label: str) -> str:
@@ -112,6 +113,123 @@ def correspondence(
 
 
 class SourceSpecCorrespondenceTests(unittest.TestCase):
+    def test_valid_subsumed_result_support_is_not_a_second_proof_obligation(
+        self,
+    ) -> None:
+        target = source_item()
+        support: dict[str, object] = {
+            "claim_bearing": True,
+            "source_kind": "lemma",
+            "title": "Lemma 1. Displayed proof witnesses",
+            "statement": "Lemma 1 displays witnesses supporting Theorem 1.",
+            "coverage_status": "subsumed_by_selected_result",
+            "inventory_role": "subsumed_by_selected_result",
+            "protocol_role": "subsumed_by_selected_result",
+            "source_status": "subsumed_by_selected_result",
+            "source_scope_classification": (
+                "source_resolved_within_paper_observation"
+            ),
+            "scope_disposition": "supporting_context_for_selected_result",
+            "subsumed_by_source_item": "selected_result",
+        }
+        payload: dict[str, object] = {
+            "source_coverage_mode": "named_theoretical_statements",
+            "semantic_contract_schema": 1,
+            "items": {
+                "selected_result": target,
+                "support_presentation": support,
+            },
+        }
+
+        with tempfile.TemporaryDirectory() as temporary, mock.patch.object(
+            source_manifest,
+            "source_index_byte_pinned_anchor_item_ids",
+            return_value=set(),
+        ):
+            paper = Path(temporary) / "Fixture"
+            audit = paper / "audit"
+            audit.mkdir(parents=True)
+            map_path = audit / "paper_statement_map.json"
+
+            def contract_inventory_messages(
+                candidate: dict[str, object],
+            ) -> list[str]:
+                map_path.write_text(json.dumps(candidate), encoding="utf-8")
+                return [
+                    finding.message
+                    for finding in integrity.semantic_contract_inventory_findings(
+                        paper, "formalized", require_source_bytes=False
+                    )
+                ]
+
+            selected, mode_error = source_manifest._source_map_proof_obligation_items(
+                paper, payload
+            )
+            self.assertEqual(mode_error, "")
+            self.assertEqual(set(selected), {"selected_result"})
+            self.assertEqual(
+                source_manifest.validated_subsumed_result_contract_exemptions(
+                    paper, payload
+                ),
+                {"support_presentation": "selected_result"},
+            )
+            contract_messages = contract_inventory_messages(payload)
+            self.assertFalse(
+                any(
+                    "claim-bearing source item `support_presentation` lacks semantic_contract"
+                    in message
+                    for message in contract_messages
+                ),
+                contract_messages,
+            )
+
+            invalid_cases = {
+                "missing_target": lambda item, _target: item.update(
+                    subsumed_by_source_item="missing"
+                ),
+                "nested_subsumption": lambda _item, selected_target: selected_target.update(
+                    subsumed_by_source_item="support_presentation"
+                ),
+                "missing_target_contract": lambda _item, selected_target: selected_target.pop(
+                    "semantic_contract"
+                ),
+                "active_support_route": lambda item, _target: item.update(
+                    lean_declarations=["Fixture.DuplicateProof"]
+                ),
+            }
+            for case, mutate in invalid_cases.items():
+                with self.subTest(case):
+                    invalid = copy.deepcopy(payload)
+                    invalid_items = invalid["items"]
+                    assert isinstance(invalid_items, dict)
+                    invalid_support = invalid_items["support_presentation"]
+                    invalid_target = invalid_items["selected_result"]
+                    assert isinstance(invalid_support, dict)
+                    assert isinstance(invalid_target, dict)
+                    mutate(invalid_support, invalid_target)
+                    invalid_selected, _ = (
+                        source_manifest._source_map_proof_obligation_items(
+                            paper, invalid
+                        )
+                    )
+                    self.assertIn("support_presentation", invalid_selected)
+                    validated, errors = (
+                        source_manifest._subsumed_by_selected_result_classification(
+                            paper, invalid
+                        )
+                    )
+                    self.assertNotIn("support_presentation", validated)
+                    self.assertTrue(errors)
+                    contract_messages = contract_inventory_messages(invalid)
+                    self.assertTrue(
+                        any(
+                            "claim-bearing source item `support_presentation` lacks semantic_contract"
+                            in message
+                            for message in contract_messages
+                        ),
+                        contract_messages,
+                    )
+
     def test_strict_scope_keeps_out_of_scope_formula_from_blocking_root_receipt(
         self,
     ) -> None:
@@ -312,7 +430,10 @@ class SourceSpecCorrespondenceTests(unittest.TestCase):
                 return_value=[],
             ), mock.patch(
                 "scripts.lean_signature_manifest.paper_local_module_names",
-                return_value=set(),
+                return_value={"Fixture"},
+            ), mock.patch(
+                "scripts.lean_signature_manifest.foreign_model_definition_scope",
+                return_value=((), (), ""),
             ), mock.patch(
                 "scripts.lean_signature_manifest.run_lean_semantic_contract_transparency_checks",
                 return_value=transparent,
@@ -632,6 +753,25 @@ class SourceSpecCorrespondenceTests(unittest.TestCase):
         )
         self.assertIn("must state a proposition", legacy_error)
         self.assertEqual(strict_error, "")
+
+    def test_named_argument_in_binder_does_not_truncate_prop_signature(self) -> None:
+        declaration = repository.LeanDeclaration(
+            path=Path("PaperInterface.lean"),
+            line=1,
+            kind="def",
+            name="ProbabilitySpec",
+            source=(
+                "def ProbabilitySpec {m : Nat} "
+                "(h : 0 < ((Finset.univ (α := Fin m)).card : Nat)) : Prop := "
+                "h = h"
+            ),
+        )
+        self.assertEqual(
+            repository.declaration_result_type_text(declaration.source), "Prop"
+        )
+        self.assertEqual(
+            repository.semantic_contract_spec_structure_error({}, declaration), ""
+        )
 
     def test_missing_correspondence_is_a_strict_lane_failure(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

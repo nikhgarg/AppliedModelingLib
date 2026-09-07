@@ -18,38 +18,17 @@ for import_root in (ROOT, ROOT / "scripts"):
     if import_root_text not in sys.path:
         sys.path.insert(0, import_root_text)
 
+from scripts import audit_evidence_integrity as EVIDENCE  # noqa: E402
+from scripts import audit_repository as REPOSITORY  # noqa: E402
+from scripts import source_record_target_disposition as DISPOSITION  # noqa: E402
 from scripts import source_record_target_disposition as CANONICAL_DISPOSITION  # noqa: E402
+from scripts.source_record_integrity import (  # noqa: E402
+    stamp_source_record_audit_receipts,
+)
 
-DISPOSITION_PATH = ROOT / "scripts" / "source_record_target_disposition.py"
-REPOSITORY_PATH = ROOT / "scripts" / "audit_repository.py"
-EVIDENCE_PATH = ROOT / "scripts" / "audit_evidence_integrity.py"
 SOURCE_AUDIT_PATH = (
     ROOT / "skills" / "econcs-formalizer" / "scripts" / "source_record_audit.py"
 )
-
-DISPOSITION_SPEC = importlib.util.spec_from_file_location(
-    "source_record_target_disposition", DISPOSITION_PATH
-)
-assert DISPOSITION_SPEC is not None and DISPOSITION_SPEC.loader is not None
-DISPOSITION = importlib.util.module_from_spec(DISPOSITION_SPEC)
-sys.modules[DISPOSITION_SPEC.name] = DISPOSITION
-DISPOSITION_SPEC.loader.exec_module(DISPOSITION)
-
-REPOSITORY_SPEC = importlib.util.spec_from_file_location(
-    "audit_repository", REPOSITORY_PATH
-)
-assert REPOSITORY_SPEC is not None and REPOSITORY_SPEC.loader is not None
-REPOSITORY = importlib.util.module_from_spec(REPOSITORY_SPEC)
-sys.modules[REPOSITORY_SPEC.name] = REPOSITORY
-REPOSITORY_SPEC.loader.exec_module(REPOSITORY)
-
-EVIDENCE_SPEC = importlib.util.spec_from_file_location(
-    "audit_evidence_integrity", EVIDENCE_PATH
-)
-assert EVIDENCE_SPEC is not None and EVIDENCE_SPEC.loader is not None
-EVIDENCE = importlib.util.module_from_spec(EVIDENCE_SPEC)
-sys.modules[EVIDENCE_SPEC.name] = EVIDENCE
-EVIDENCE_SPEC.loader.exec_module(EVIDENCE)
 
 SOURCE_AUDIT_SPEC = importlib.util.spec_from_file_location(
     "source_record_audit_target_disposition_fixture", SOURCE_AUDIT_PATH
@@ -60,9 +39,6 @@ sys.modules[SOURCE_AUDIT_SPEC.name] = SOURCE_AUDIT
 SOURCE_AUDIT_SPEC.loader.exec_module(SOURCE_AUDIT)
 
 from scripts import audit_conclusion_provenance as CONCLUSION  # noqa: E402
-from source_record_integrity import stamp_source_record_audit_receipts  # noqa: E402
-
-
 PROMPT_VERSION = "source-record-v10-semantic-conclusion-boundary-contract"
 SOURCE_KEY = "opaque_source_identity"
 SEMANTIC_KEY = "semantic-model::opaque_surface"
@@ -276,7 +252,7 @@ def direct_status_projection_rebind_fixture(
     bytes,
     bytes,
 ]:
-    """Build one exact schema-4 -> schema-5 association transport fixture."""
+    """Build one exact legacy-to-current association transport fixture."""
 
     source_map = statement_map(corrected=True)
     source_item = source_map["items"][SOURCE_KEY]
@@ -2175,7 +2151,7 @@ class AdministrativeProjectionRebindTests(unittest.TestCase):
             statement_map_relative_path="audit/paper_statement_map.json",
         )
 
-    def test_rebind_transports_only_the_exact_schema4_to5_association(self) -> None:
+    def test_rebind_transports_only_the_exact_legacy_to_current_association(self) -> None:
         (
             source_map,
             current_item,
@@ -2193,7 +2169,10 @@ class AdministrativeProjectionRebindTests(unittest.TestCase):
         transition = receipt["projection_transition"]
         assert isinstance(transition, dict)
         self.assertEqual(transition["legacy_source_item_coverage_digest_schema"], 4)
-        self.assertEqual(transition["current_source_item_coverage_digest_schema"], 5)
+        self.assertEqual(
+            transition["current_source_item_coverage_digest_schema"],
+            DISPOSITION.SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
+        )
 
         legacy_association = legacy_item["semantic_contract_source_association"]
         assert isinstance(legacy_association, dict)

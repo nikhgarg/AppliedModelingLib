@@ -1,9 +1,9 @@
-import EconCSLib.Foundations.Math.PositiveDenominator
-import EconCSLib.SocialChoice.Ranking.MallowsPayoff
+import AppliedModelingLib.Foundations.Math.PositiveDenominator
+import AppliedModelingLib.SocialChoice.Ranking.MallowsPayoff
 import KR21Monoculture.MallowsCenterCertificate
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -29,8 +29,8 @@ theorem firstChoiceGapMass_eq_firstChoiceGapWeight_div_partition
     firstChoiceGapMass M.law value c =
       M.firstChoiceGapWeight value c / M.partition := by
   simpa [firstChoiceGapWeight,
-    firstChoiceGapMass, EconCSLib.SocialChoice.Ranking.firstChoiceGapMass,
-    valueGap, EconCSLib.SocialChoice.Ranking.valueGap] using
+    firstChoiceGapMass, AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass,
+    valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap] using
     (M.toShared).firstChoiceGapMass_eq_firstChoiceGapWeight_div_partition
       value c
 
@@ -40,7 +40,7 @@ theorem firstChoiceMissProb_eq_partition_sub_firstWeight_div_partition
     firstChoiceMissProb M.law c =
       (M.partition - M.firstWeight c) / M.partition := by
   simpa [firstChoiceMissProb,
-    EconCSLib.SocialChoice.Ranking.firstChoiceMissProb] using
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb] using
     (M.toShared).firstChoiceMissProb_eq_partition_sub_firstWeight_div_partition
       c
 
@@ -57,9 +57,9 @@ theorem firstChoice_miss_gap_sum_eq_weight_sum_div
           M.firstChoiceGapWeight value c) /
         (M.partition * M.partition) := by
   simpa [firstChoiceGapWeight,
-    firstChoiceMissProb, EconCSLib.SocialChoice.Ranking.firstChoiceMissProb,
-    firstChoiceGapMass, EconCSLib.SocialChoice.Ranking.firstChoiceGapMass,
-    valueGap, EconCSLib.SocialChoice.Ranking.valueGap] using
+    firstChoiceMissProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb,
+    firstChoiceGapMass, AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass,
+    valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap] using
     (M.toShared).firstChoice_miss_gap_sum_eq_weight_sum_div value
 
 /-- Positive cleared finite Mallows sum implies positive independent-reranking sum. -/
@@ -72,9 +72,9 @@ theorem firstChoice_miss_gap_sum_pos_of_weight_sum_pos
     0 < ∑ c : Candidate n,
       firstChoiceMissProb M.law c * firstChoiceGapMass M.law value c := by
   simpa [firstChoiceGapWeight,
-    firstChoiceMissProb, EconCSLib.SocialChoice.Ranking.firstChoiceMissProb,
-    firstChoiceGapMass, EconCSLib.SocialChoice.Ranking.firstChoiceGapMass,
-    valueGap, EconCSLib.SocialChoice.Ranking.valueGap] using
+    firstChoiceMissProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb,
+    firstChoiceGapMass, AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass,
+    valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap] using
     (M.toShared).firstChoice_miss_gap_sum_pos_of_weight_sum_pos
       (value := value) hsum
 
@@ -87,9 +87,9 @@ theorem firstChoice_miss_gap_sum_pos_iff_weight_sum_pos
         (M.partition - M.firstWeight c) *
           M.firstChoiceGapWeight value c := by
   simpa [firstChoiceGapWeight,
-    firstChoiceMissProb, EconCSLib.SocialChoice.Ranking.firstChoiceMissProb,
-    firstChoiceGapMass, EconCSLib.SocialChoice.Ranking.firstChoiceGapMass,
-    valueGap, EconCSLib.SocialChoice.Ranking.valueGap] using
+    firstChoiceMissProb, AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb,
+    firstChoiceGapMass, AppliedModelingLib.SocialChoice.Ranking.firstChoiceGapMass,
+    valueGap, AppliedModelingLib.SocialChoice.Ranking.valueGap] using
     (M.toShared).firstChoice_miss_gap_sum_pos_iff_weight_sum_pos value
 
 end MallowsSpec
@@ -111,7 +111,7 @@ theorem firstWeight_div_le_of_cross_mul_le
         C.algorithm.firstWeight c * C.human.partition) :
     C.human.firstWeight c / C.human.partition ≤
       C.algorithm.firstWeight c / C.algorithm.partition :=
-   EconCSLib.PositiveDenominator.div_le_div_of_cross_mul_le
+   AppliedModelingLib.PositiveDenominator.div_le_div_of_cross_mul_le
     C.human.partition_pos C.algorithm.partition_pos hcross
 
 /--
@@ -124,7 +124,7 @@ theorem centerFirstWeight_div_lt_of_cross_mul_lt
         C.algorithm.firstWeight C.algorithm.centerFirst * C.human.partition) :
     C.human.firstWeight C.human.centerFirst / C.human.partition <
       C.algorithm.firstWeight C.algorithm.centerFirst / C.algorithm.partition :=
-   EconCSLib.PositiveDenominator.div_lt_div_of_cross_mul_lt
+   AppliedModelingLib.PositiveDenominator.div_lt_div_of_cross_mul_lt
     C.human.partition_pos C.algorithm.partition_pos hcross
 
 /--
@@ -142,19 +142,19 @@ theorem collisionDiff_mul_gap_nonneg_of_cross_mul_gap_nonneg
     0 ≤ firstChoiceCollisionDiff C.algorithm.law C.human.law c *
       firstChoiceGapMass C.human.law value c := by
   have halg :
-      EconCSLib.SocialChoice.Ranking.firstChoiceProb C.algorithm.law c =
+      AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb C.algorithm.law c =
         C.algorithm.firstWeight c / C.algorithm.partition := by
     simpa [firstChoiceProb] using
       C.algorithm.firstChoiceProb_eq_firstWeight_div_partition c
   have hhuman :
-      EconCSLib.SocialChoice.Ranking.firstChoiceProb C.human.law c =
+      AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb C.human.law c =
         C.human.firstWeight c / C.human.partition := by
     simpa [firstChoiceProb] using
       C.human.firstChoiceProb_eq_firstWeight_div_partition c
   unfold firstChoiceCollisionDiff
-    EconCSLib.SocialChoice.Ranking.firstChoiceCollisionDiff
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceCollisionDiff
   rw [halg, hhuman]
-  exact EconCSLib.PositiveDenominator.sub_div_mul_nonneg_of_cross_sub_mul_nonneg
+  exact AppliedModelingLib.PositiveDenominator.sub_div_mul_nonneg_of_cross_sub_mul_nonneg
     C.algorithm.partition_pos C.human.partition_pos hcross
 
 /--
@@ -185,17 +185,17 @@ theorem firstChoice_collision_gap_sum_eq_cross_weight_sum_div
           refine Finset.sum_congr rfl ?_
           intro c _
           have halg :
-              EconCSLib.SocialChoice.Ranking.firstChoiceProb C.algorithm.law c =
+              AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb C.algorithm.law c =
                 C.algorithm.firstWeight c / C.algorithm.partition := by
             simpa [firstChoiceProb] using
               C.algorithm.firstChoiceProb_eq_firstWeight_div_partition c
           have hhuman :
-              EconCSLib.SocialChoice.Ranking.firstChoiceProb C.human.law c =
+              AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb C.human.law c =
                 C.human.firstWeight c / C.human.partition := by
             simpa [firstChoiceProb] using
               C.human.firstChoiceProb_eq_firstWeight_div_partition c
           unfold firstChoiceCollisionDiff
-            EconCSLib.SocialChoice.Ranking.firstChoiceCollisionDiff
+            AppliedModelingLib.SocialChoice.Ranking.firstChoiceCollisionDiff
           rw [halg, hhuman]
           rw [C.human.firstChoiceGapMass_eq_firstChoiceGapWeight_div_partition value c]
           field_simp [C.algorithm.partition_ne_zero, C.human.partition_ne_zero]

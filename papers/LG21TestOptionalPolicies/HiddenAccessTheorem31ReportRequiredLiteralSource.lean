@@ -14,13 +14,13 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
 
 /-- Literal source equilibrium in the regime where taking entails reporting.
-The embedded source carrier supplies direct a.e. Definition-1 best responses
-and actual conditional-mean PBOs; `report_required` is just the requirement
-policy's feasible-action constraint. -/
+The embedded source carrier supplies the pointwise Definition-1 pre-score best
+response and actual conditional-mean PBOs; `report_required` is just the
+requirement policy's feasible-action constraint. -/
 structure LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE
     {Feature : Type*} [Fintype Feature] [DecidableEq Feature]
     (M : LG21ContinuousGaussianPopulation Feature) (testFeature : Feature) where

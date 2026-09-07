@@ -9,7 +9,7 @@ two-tail policies.  In particular, it does not invoke the legacy arbitrary
 endpoint-union derivative interface.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped ENNReal Topology symmDiff
 

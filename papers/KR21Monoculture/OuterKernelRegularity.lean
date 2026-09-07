@@ -1,7 +1,7 @@
 import KR21Monoculture.Distributional
-import EconCSLib.Foundations.Math.IntegralConvergence
+import AppliedModelingLib.Foundations.Math.IntegralConvergence
 
-open EconCSLib MeasureTheory Filter
+open AppliedModelingLib MeasureTheory Filter
 open scoped Topology
 
 namespace KR21Monoculture
@@ -35,7 +35,7 @@ theorem continuousAt_outerExpected_pmfExp_valueSelection_of_atomwise
       EpsilonContinuousAt (fun theta => ((law theta value) a).toReal) theta0) :
     ContinuousAt
       (fun theta => outerExpected D
-        (fun value => EconCSLib.pmfExp (law theta value)
+        (fun value => AppliedModelingLib.pmfExp (law theta value)
           (fun a => value (select a)))) theta0 := by
   let term : alpha → ℝ → ValueProfile n → ℝ :=
     fun a theta value => ((law theta value) a).toReal * value (select a)
@@ -49,7 +49,7 @@ theorem continuousAt_outerExpected_pmfExp_valueSelection_of_atomwise
       rw [abs_mul, abs_of_nonneg ENNReal.toReal_nonneg]
       simpa [mul_comm] using
         (mul_le_of_le_one_right (abs_nonneg (value (select a)))
-          (EconCSLib.pmf_apply_toReal_le_one (law theta value) a))
+          (AppliedModelingLib.pmf_apply_toReal_le_one (law theta value) a))
   have hterm_continuous : ∀ a,
       ContinuousAt (fun theta => ∫ value, term a theta value ∂D) theta0 := by
     intro a
@@ -73,19 +73,19 @@ theorem continuousAt_outerExpected_pmfExp_valueSelection_of_atomwise
         rw [abs_mul, abs_of_nonneg ENNReal.toReal_nonneg]
         simpa [mul_comm] using
           (mul_le_of_le_one_right (abs_nonneg (value (select a)))
-            (EconCSLib.pmf_apply_toReal_le_one (law theta value) a)))
+            (AppliedModelingLib.pmf_apply_toReal_le_one (law theta value) a)))
       (hvalue (select a)).abs hlim
   have hsum : ContinuousAt
       (fun theta => ∑ a : alpha, ∫ value, term a theta value ∂D) theta0 := by
-    exact EconCSLib.continuousAt_finset_sum Finset.univ
+    exact AppliedModelingLib.continuousAt_finset_sum Finset.univ
       (fun a _ => hterm_continuous a)
   have hrewrite :
       (fun theta => outerExpected D
-        (fun value => EconCSLib.pmfExp (law theta value)
+        (fun value => AppliedModelingLib.pmfExp (law theta value)
           (fun a => value (select a)))) =
         fun theta => ∑ a : alpha, ∫ value, term a theta value ∂D := by
     funext theta
-    unfold outerExpected EconCSLib.pmfExp
+    unfold outerExpected AppliedModelingLib.pmfExp
     rw [MeasureTheory.integral_finset_sum]
     intro a _
     exact hterm_integrable a theta
@@ -108,7 +108,7 @@ theorem epsilonContinuousAt_outerExpected_pmfExp_valueSelection_of_atomwise
       EpsilonContinuousAt (fun theta => ((law theta value) a).toReal) theta0) :
     EpsilonContinuousAt
       (fun theta => outerExpected D
-        (fun value => EconCSLib.pmfExp (law theta value)
+        (fun value => AppliedModelingLib.pmfExp (law theta value)
           (fun a => value (select a)))) theta0 :=
   epsilonContinuousAt_of_continuousAt
     (continuousAt_outerExpected_pmfExp_valueSelection_of_atomwise
@@ -137,7 +137,7 @@ theorem continuousAt_outerExpected_pmfPairExp_right_valueSelection_of_atomwise
       EpsilonContinuousAt (fun theta => ((rightLaw theta value) b).toReal) theta0) :
     ContinuousAt
       (fun theta => outerExpected D
-        (fun value => EconCSLib.pmfPairExp (leftLaw value) (rightLaw theta value)
+        (fun value => AppliedModelingLib.pmfPairExp (leftLaw value) (rightLaw theta value)
           (fun a b => value (select a b)))) theta0 := by
   let term : alpha → beta → ℝ → ValueProfile n → ℝ :=
     fun a b theta value =>
@@ -160,11 +160,11 @@ theorem continuousAt_outerExpected_pmfPairExp_right_valueSelection_of_atomwise
         rw [mul_comm]
         exact mul_le_of_le_one_right
           (mul_nonneg ENNReal.toReal_nonneg (abs_nonneg _))
-          (EconCSLib.pmf_apply_toReal_le_one (leftLaw value) a)
+          (AppliedModelingLib.pmf_apply_toReal_le_one (leftLaw value) a)
       _ ≤ |value (select a b)| := by
         rw [mul_comm]
         exact mul_le_of_le_one_right (abs_nonneg (value (select a b)))
-          (EconCSLib.pmf_apply_toReal_le_one (rightLaw theta value) b)
+          (AppliedModelingLib.pmf_apply_toReal_le_one (rightLaw theta value) b)
   have hterm_integrable : ∀ a b theta, Integrable (term a b theta) D := by
     intro a b theta
     refine (hvalue (select a b)).abs.mono' ?_ ?_
@@ -196,17 +196,17 @@ theorem continuousAt_outerExpected_pmfPairExp_right_valueSelection_of_atomwise
   have hsum : ContinuousAt
       (fun theta => ∑ a : alpha, ∑ b : beta,
         ∫ value, term a b theta value ∂D) theta0 := by
-    exact EconCSLib.continuousAt_finset_sum Finset.univ
-      (fun a _ => EconCSLib.continuousAt_finset_sum Finset.univ
+    exact AppliedModelingLib.continuousAt_finset_sum Finset.univ
+      (fun a _ => AppliedModelingLib.continuousAt_finset_sum Finset.univ
         (fun b _ => hterm_continuous a b))
   have hrewrite :
       (fun theta => outerExpected D
-        (fun value => EconCSLib.pmfPairExp (leftLaw value) (rightLaw theta value)
+        (fun value => AppliedModelingLib.pmfPairExp (leftLaw value) (rightLaw theta value)
           (fun a b => value (select a b)))) =
         fun theta => ∑ a : alpha, ∑ b : beta,
           ∫ value, term a b theta value ∂D := by
     funext theta
-    unfold outerExpected EconCSLib.pmfPairExp EconCSLib.pmfExp
+    unfold outerExpected AppliedModelingLib.pmfPairExp AppliedModelingLib.pmfExp
     simp_rw [Finset.mul_sum]
     simp only [term, mul_assoc]
     rw [MeasureTheory.integral_finset_sum]
@@ -242,7 +242,7 @@ theorem epsilonContinuousAt_outerExpected_pmfPairExp_right_valueSelection_of_ato
       EpsilonContinuousAt (fun theta => ((rightLaw theta value) b).toReal) theta0) :
     EpsilonContinuousAt
       (fun theta => outerExpected D
-        (fun value => EconCSLib.pmfPairExp (leftLaw value) (rightLaw theta value)
+        (fun value => AppliedModelingLib.pmfPairExp (leftLaw value) (rightLaw theta value)
           (fun a b => value (select a b)))) theta0 :=
   epsilonContinuousAt_of_continuousAt
     (continuousAt_outerExpected_pmfPairExp_right_valueSelection_of_atomwise

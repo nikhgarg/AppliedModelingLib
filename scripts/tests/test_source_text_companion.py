@@ -36,6 +36,7 @@ class SourceTextCompanionTests(unittest.TestCase):
         self.text = self.paper / "source.txt"
         self.primary = self.paper / "visual-source.pdf"
         self.transcript_input = self.paper / "ocr-input.pdf"
+        self.semantic_transcription = self.paper / "visual-review.md"
         self.text.write_text(
             "Theorem 1. Every admissible input has a witness.\n"
             "Definition 2. A witness is designated.\n",
@@ -45,6 +46,11 @@ class SourceTextCompanionTests(unittest.TestCase):
         # pdftotext invocation and visual comparison are separately recorded.
         self.primary.write_bytes(b"%PDF-fixture-visual\n")
         self.transcript_input.write_bytes(b"%PDF-fixture-transcript-input\n")
+        self.semantic_transcription.write_text(
+            "Theorem 1. Every admissible input has a witness.\n"
+            "Definition 2. A witness is designated.\n",
+            encoding="utf-8",
+        )
 
     def payload(self) -> dict[str, object]:
         theorem_quote = self.text.read_text(encoding="utf-8").splitlines()[0]
@@ -192,6 +198,53 @@ class SourceTextCompanionTests(unittest.TestCase):
         ]
         self.assertTrue(
             any("must exactly equal" in message for message in messages), messages
+        )
+
+    def test_visual_semantic_transcription_is_pinned_and_bound_to_primary_scan(self) -> None:
+        payload = self.payload()
+        companion_payload = payload["source_text_companion"]
+        assert isinstance(companion_payload, dict)
+        companion_payload["semantic_review_transcription"] = {
+            "schema": 1,
+            "path": "visual-review.md",
+            "sha256": sha256(self.semantic_transcription),
+            "controlling_visual_source": {
+                "path": "visual-source.pdf",
+                "sha256": sha256(self.primary),
+            },
+            "complete_for_selected_semantic_surface": True,
+            "method": "Visually transcribed selected mathematical passages.",
+        }
+        self.assertEqual(
+            companion.source_text_companion_validation_issues(
+                self.paper, payload, repository_root=self.root
+            ),
+            [],
+        )
+        self.assertEqual(
+            companion.semantic_review_source_identity(payload),
+            ("visual-review.md", sha256(self.semantic_transcription)),
+        )
+
+        transcription = companion_payload["semantic_review_transcription"]
+        assert isinstance(transcription, dict)
+        transcription["controlling_visual_source"] = {
+            "path": "other.pdf",
+            "sha256": "0" * 64,
+        }
+        messages = [
+            issue.message
+            for issue in companion.source_text_companion_validation_issues(
+                self.paper, payload, repository_root=self.root
+            )
+        ]
+        self.assertTrue(
+            any("controlling_visual_source must exactly equal" in message for message in messages),
+            messages,
+        )
+        self.assertEqual(
+            companion.semantic_review_source_identity(payload),
+            ("source.txt", sha256(self.text)),
         )
 
     def test_scan_hashes_and_path_safety_are_checked_independently(self) -> None:

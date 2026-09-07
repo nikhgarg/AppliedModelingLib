@@ -42,6 +42,13 @@ except ModuleNotFoundError:  # Direct ``python scripts/...`` execution.
         signature_manifest_item_revalidation_matches,
     )
 
+try:
+    from scripts.portable_evidence_identity import (
+        portable_semantic_hash_tool_identity,
+    )
+except ModuleNotFoundError:  # Direct ``python scripts/...`` execution.
+    from portable_evidence_identity import portable_semantic_hash_tool_identity
+
 
 AUTHENTICATED_MANIFEST_AUTHORITY_SCHEMA = 1
 AUTHENTICATED_MANIFEST_CARRIER_SCHEMA = 1
@@ -476,8 +483,12 @@ def _manifest_entry(
         or not authority_binding_sha256
         or manifest.get("canonical_representation")
         != context.get("canonical_representation")
-        or manifest.get("semantic_hash_tool_identity")
-        != context.get("semantic_hash_tool_identity")
+        or portable_semantic_hash_tool_identity(
+            manifest.get("semantic_hash_tool_identity")
+        )
+        != portable_semantic_hash_tool_identity(
+            context.get("semantic_hash_tool_identity")
+        )
     ):
         return None
     authority_entry = {
@@ -784,6 +795,24 @@ def _validated_store_entries(
     return paper, contexts_by_id, entries
 
 
+def validated_authenticated_manifest_store_entries(
+    paper_dir: Path,
+) -> tuple[
+    str,
+    dict[str, dict[str, Any]],
+    dict[str, tuple[dict[str, Any], dict[str, Any]]],
+]:
+    """Return the structurally validated tracked-authority/carrier store.
+
+    This public read-only projection is for current semantic verifiers.  It
+    grants no cache credit by itself: callers must independently bind every
+    requested declaration to current Lean output and compare the stored
+    signature, proposition graph, and semantic dependency identities.
+    """
+
+    return _validated_store_entries(paper_dir)
+
+
 def merge_authenticated_manifest_store(
     *,
     paper_dir: Path,
@@ -923,6 +952,8 @@ def prime_authenticated_manifest_store(
     paper_dir: Path,
     current_declaration_bindings: Mapping[str, Mapping[str, Any] | str],
     current_contexts: Iterable[Mapping[str, Any]] = (),
+    requested_declarations: Iterable[str] | None = None,
+    semantic_revalidated_bindings: Mapping[str, Mapping[str, str]] | None = None,
     build_timeout_seconds: int = 600,
     context_provider: Callable[..., Mapping[str, Any] | None] = signature_manifest_cache_context,
     reattach: Callable[..., dict[str, dict[str, Any]]] = reattach_semantic_dependency_module_identities,
@@ -936,13 +967,35 @@ def prime_authenticated_manifest_store(
     envelope containing ``authority_binding`` and the three manifest identity
     fields accepted by that helper.  Missing, malformed, and changed bindings
     are cache misses before any reattachment or seed operation.
+
+    ``semantic_revalidated_bindings`` is a declaration-local handoff from one
+    completed current Lean pass. It may rebind a stored full manifest to a new
+    compiled cache context only when the signature, dependency, and
+    proposition-graph identities all match independently supplied current
+    bindings. It never accepts a declaration by name alone.
     """
 
     paper, contexts_by_id, entries = _validated_store_entries(paper_dir)
+    requested = (
+        {
+            str(qualified).strip()
+            for qualified in requested_declarations
+            if str(qualified).strip()
+        }
+        if requested_declarations is not None
+        else None
+    )
+    if requested is not None:
+        entries = {
+            qualified: pair
+            for qualified, pair in entries.items()
+            if qualified in requested
+        }
     diagnostics: dict[str, Any] = {
         "schema": 1,
         "paper": paper_dir.name,
         "candidate_count": len(entries),
+        "requested_count": len(requested) if requested is not None else len(entries),
         "context_count": len(contexts_by_id),
         "accepted_context_count": 0,
         "context_provider_call_count": 0,
@@ -970,6 +1023,11 @@ def prime_authenticated_manifest_store(
             supplied_contexts[import_module] = context
 
     rejected: dict[str, set[str]] = {}
+    semantic_revalidated = {
+        str(qualified).strip(): dict(raw)
+        for qualified, raw in (semantic_revalidated_bindings or {}).items()
+        if str(qualified).strip() and isinstance(raw, Mapping)
+    }
 
     def reject(reason: str, declarations: Iterable[str]) -> None:
         rejected.setdefault(reason, set()).update(
@@ -1006,8 +1064,23 @@ def prime_authenticated_manifest_store(
                 current_binding_sha256
                 != _stored_declaration_authority_binding_sha256(entry)
             ):
-                reject("current_declaration_binding_changed", [qualified])
-                continue
+                semantic_binding = semantic_revalidated.get(qualified)
+                current_binding = current_declaration_bindings.get(qualified)
+                if not isinstance(semantic_binding, Mapping) or not isinstance(
+                    current_binding, Mapping
+                ) or any(
+                    _sha256(semantic_binding.get(field))
+                    != _sha256(current_binding.get(field))
+                    or _sha256(semantic_binding.get(field))
+                    != _sha256(entry.get(field))
+                    for field in (
+                        "elaborated_signature_sha256",
+                        "semantic_dependency_sha256",
+                        "elaborated_proposition_graph_sha256",
+                    )
+                ):
+                    reject("current_declaration_binding_changed", [qualified])
+                    continue
             binding_accepted[qualified] = manifest
         group = binding_accepted
         if not group:
@@ -1030,12 +1103,33 @@ def prime_authenticated_manifest_store(
         if not isinstance(current_context, Mapping):
             reject("current_context_unavailable", group)
             continue
-        if (
-            signature_manifest_cache_context_sha256(current_context)
-            != authority_context["manifest_cache_context_sha256"]
-        ):
-            reject("current_context_identity_changed", group)
-            continue
+        current_context_sha256 = signature_manifest_cache_context_sha256(
+            current_context
+        )
+        if current_context_sha256 != authority_context["manifest_cache_context_sha256"]:
+            rebound_group: dict[str, dict[str, Any]] = {}
+            for qualified, manifest in group.items():
+                expected = semantic_revalidated.get(qualified)
+                binding = current_declaration_bindings.get(qualified)
+                if not isinstance(expected, Mapping) or not isinstance(
+                    binding, Mapping
+                ):
+                    reject("current_context_identity_changed", [qualified])
+                    continue
+                if any(
+                    _sha256(expected.get(field)) != _sha256(binding.get(field))
+                    for field in (
+                        "elaborated_signature_sha256",
+                        "semantic_dependency_sha256",
+                        "elaborated_proposition_graph_sha256",
+                    )
+                ):
+                    reject("semantic_revalidation_binding_changed", [qualified])
+                    continue
+                rebound_group[qualified] = manifest
+            group = rebound_group
+            if not group:
+                continue
         accepted_context_count += 1
         try:
             rebound = reattach(
@@ -1086,9 +1180,7 @@ def prime_authenticated_manifest_store(
             current_manifest["semantic_dependency_manifest"] = dict(dependency)
             candidates[qualified] = current_manifest
             pins[qualified] = {
-                "manifest_cache_context_sha256": authority_context[
-                    "manifest_cache_context_sha256"
-                ],
+                "manifest_cache_context_sha256": current_context_sha256,
                 "elaborated_signature_sha256": authority_entry[
                     "elaborated_signature_sha256"
                 ],
@@ -1485,8 +1577,12 @@ def prime_attested_resume_manifests_with_current_revalidation(
         if (
             carrier_manifest.get("canonical_representation")
             != current_context.get("canonical_representation")
-            or carrier_manifest.get("semantic_hash_tool_identity")
-            != current_context.get("semantic_hash_tool_identity")
+            or portable_semantic_hash_tool_identity(
+                carrier_manifest.get("semantic_hash_tool_identity")
+            )
+            != portable_semantic_hash_tool_identity(
+                current_context.get("semantic_hash_tool_identity")
+            )
         ):
             reject("authenticated_manifest_context_identity_changed", qualified)
             continue

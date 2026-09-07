@@ -12,7 +12,7 @@ complexity infrastructure.
 namespace LMMS04FairDivision
 
 open scoped BigOperators
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-! ## Section 2 -/
 
@@ -47,20 +47,6 @@ abbrev assumption_positive_atom_bound (alpha : ℝ) : Prop :=
 abbrev assumption_ptas_error_parameter_range (epsilon : ℝ) : Prop :=
   0 < epsilon ∧ epsilon ≤ 1
 
-/--
-Theorem 3.2 cites Graham's scheduling approximation theorem; this folder
-formalizes the fair-division consequence from that scheduling certificate.
--/
--- audit-premise: C : Theorem32.Graham14SchedulingApproximationCertificate load optimalRatio
-abbrev assumption_external_graham_scheduling_boundary : Prop := True
-
-/--
-The final PTAS/FPTAS runtime conclusion is conditional on reusable
-fixed-dimension integer-program complexity infrastructure.
--/
--- audit-premise: cert : Theorem33.RoundedInstanceSearchCertificate M L epsilon lambda optimal
-abbrev assumption_fixed_dimension_ip_runtime_boundary : Prop := True
-
 /-- Rounded-search statements expose the paper's positive load and rounding-scale domain. -/
 -- audit-premise: hlambda : 1 < lambda
 -- audit-premise: hlambda : 0 < lambda
@@ -90,13 +76,6 @@ abbrev assumption_claim34_positive_small_goods_domain
         g ∈ bundleOf A i → 0 ≤ commonValue g) ∧
         (∀ A : Alloc, ∀ i : SourceAgent, ∀ g : SourceItem,
           g ∈ bundleOf A i → commonValue g < L)
-
-/--
-Claim 3.4's finite rounded-type assignment endpoints use the source rounded
-type window for the selected min/max pair.
--/
--- audit-premise: ∀ i : SourceAgent, typeOf i ∈ Theorem33.roundedTypesInValueWindow L lambda p.1 p.2
-abbrev assumption_claim34_rounded_type_window_condition : Prop := True
 
 /--
 Lemma 3.5's algebraic transfer row exposes positivity and half-load window

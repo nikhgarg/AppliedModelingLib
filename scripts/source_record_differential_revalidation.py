@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Selective, semantic revalidation between two current v10 raw audits.
+"""Authenticate historical differential source-record overlays.
 
 An aggregate source-record receipt changes whenever any reviewed Lean/source
-surface changes.  That is correct for the raw audit, but it must not erase a
-human judgment about an unrelated generated obligation.  This module records a
-strict differential overlay:
+surface changes. Historical papers may retain a strict differential overlay
+issued by the retired writer:
 
 * a prior v10 raw receipt and its current judgment sidecar are archived;
 * every prior/current generated judgment group is compared through a complete
@@ -12,6 +11,9 @@ strict differential overlay:
 * only unique, descriptor-identical groups are made current through the
   loader-authenticated overlay.  Everything else remains absent and therefore
   requires a fresh manual response in the ordinary sidecar.
+
+This live module is a reader only. New graph-native closeouts reuse current
+content-addressed judgment leaves and never issue this historical transport.
 
 The matching relation deliberately does not use a source-map key, declaration
 name, binder name, or sidecar storage key.  Keys are retained only to locate a
@@ -24,11 +26,9 @@ full expanded result surface and consequently require review after that change.
 
 from __future__ import annotations
 
-import argparse
 import copy
 import hashlib
 import json
-import re
 import sys
 from pathlib import Path, PurePosixPath
 from typing import Any, Mapping
@@ -39,10 +39,17 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 try:  # Supports direct execution and package imports in focused tests.
+    from scripts import source_record_obligation_groups as OBLIGATIONS
     from scripts.source_record_integrity import (
+        LEGACY_SOURCE_RECORD_AUDIT_SURFACE_SCHEMA,
         SOURCE_RECORD_REUSABLE_ITEM_SECTIONS,
+        SOURCE_RECORD_AUDIT_SURFACE_GENERATOR_SHA256_FIELD,
+        SOURCE_RECORD_AUDIT_SURFACE_RAW_SHA256_FIELD,
+        SOURCE_RECORD_AUDIT_SURFACE_SCHEMA,
+        SOURCE_RECORD_AUDIT_SURFACE_SCHEMA_FIELD,
         canonical_digest_payload,
         source_record_audit_receipt_error,
+        source_record_audit_surface_view,
         source_record_item_is_nonreusable_theorem_facing_mirror,
         source_record_raw_reusable_item_metadata_error,
         source_record_target_route_error,
@@ -75,11 +82,54 @@ try:  # Supports direct execution and package imports in focused tests.
         statement_source_component_effective_semantic_pin,
         statement_source_review_effective_semantic_pin,
     )
+    from scripts.source_record_overlay_protocol import (
+        SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_FILENAME,
+        SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_ITEM_FIELD,
+    )
+    from scripts.source_record_obligation_groups import (
+        SOURCE_RECORD_V10_PROMPT_VERSION,
+        SOURCE_RECORD_ITEM_DIGEST_SCHEMA,
+        PRESENTATION_NORMALIZER_SCHEMA,
+        _NAVIGATION_FIELDS,
+        _RECEIPT_ONLY_FIELDS,
+        _ASSOCIATION_FIELDS,
+        _ASSOCIATION_NAME_FIELDS,
+        _DIRECT_SOURCE_DOMAIN_PARENT_CONTRACT_SCHEMA,
+        _DIRECT_SOURCE_DOMAIN_PARENT_CONTRACTS_FIELD,
+        _SHA256_RE,
+        _canonical_digest,
+        _sha256,
+        _raw_audit_error,
+        _canonical_projection_sort_key,
+        _complete_review_alias_presentation_projection,
+        _complete_proposition_alias_presentation_projection,
+        _complete_terminal_dependency_presentation_projection,
+        _semantic_projection,
+        _association_mappings,
+        _source_semantic_identities,
+        _association_semantic_digests,
+        _association_role_projection,
+        _association_roles,
+        _signature_digests,
+        _recursive_field_parent_route_semantic_scope,
+        _optional_source_domain_fingerprint,
+        _direct_source_domain_record_input_projection,
+        _recursive_field_direct_source_domain_parent_contract,
+        _recursive_field_direct_source_domain_parent_contracts,
+        _raw_formalization_scope_descriptor,
+    )
 except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
+    import source_record_obligation_groups as OBLIGATIONS
     from source_record_integrity import (
+        LEGACY_SOURCE_RECORD_AUDIT_SURFACE_SCHEMA,
         SOURCE_RECORD_REUSABLE_ITEM_SECTIONS,
+        SOURCE_RECORD_AUDIT_SURFACE_GENERATOR_SHA256_FIELD,
+        SOURCE_RECORD_AUDIT_SURFACE_RAW_SHA256_FIELD,
+        SOURCE_RECORD_AUDIT_SURFACE_SCHEMA,
+        SOURCE_RECORD_AUDIT_SURFACE_SCHEMA_FIELD,
         canonical_digest_payload,
         source_record_audit_receipt_error,
+        source_record_audit_surface_view,
         source_record_item_is_nonreusable_theorem_facing_mirror,
         source_record_raw_reusable_item_metadata_error,
         source_record_target_route_error,
@@ -112,11 +162,47 @@ except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
         statement_source_component_effective_semantic_pin,
         statement_source_review_effective_semantic_pin,
     )
+    from source_record_overlay_protocol import (
+        SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_FILENAME,
+        SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_ITEM_FIELD,
+    )
+    from source_record_obligation_groups import (
+        SOURCE_RECORD_V10_PROMPT_VERSION,
+        SOURCE_RECORD_ITEM_DIGEST_SCHEMA,
+        PRESENTATION_NORMALIZER_SCHEMA,
+        _NAVIGATION_FIELDS,
+        _RECEIPT_ONLY_FIELDS,
+        _ASSOCIATION_FIELDS,
+        _ASSOCIATION_NAME_FIELDS,
+        _DIRECT_SOURCE_DOMAIN_PARENT_CONTRACT_SCHEMA,
+        _DIRECT_SOURCE_DOMAIN_PARENT_CONTRACTS_FIELD,
+        _SHA256_RE,
+        _canonical_digest,
+        _sha256,
+        _raw_audit_error,
+        _canonical_projection_sort_key,
+        _complete_review_alias_presentation_projection,
+        _complete_proposition_alias_presentation_projection,
+        _complete_terminal_dependency_presentation_projection,
+        _semantic_projection,
+        _association_mappings,
+        _source_semantic_identities,
+        _association_semantic_digests,
+        _association_role_projection,
+        _association_roles,
+        _signature_digests,
+        _recursive_field_parent_route_semantic_scope,
+        _optional_source_domain_fingerprint,
+        _direct_source_domain_record_input_projection,
+        _recursive_field_direct_source_domain_parent_contract,
+        _recursive_field_direct_source_domain_parent_contracts,
+        _raw_formalization_scope_descriptor,
+    )
 
 
-SOURCE_RECORD_V10_PROMPT_VERSION = (
-    "source-record-v10-semantic-conclusion-boundary-contract"
-)
+
+
+SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_SCHEMA = 1
 
 
 def _current_revalidation_module() -> Any:
@@ -137,23 +223,14 @@ def _current_revalidation_module() -> Any:
     return current
 
 
-SOURCE_RECORD_ITEM_DIGEST_SCHEMA = 5
-SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_SCHEMA = 1
 SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_POLICY_VERSION = (
     "source-record-v10-differential-semantic-overlay-v2"
-)
-PRESENTATION_NORMALIZER_SCHEMA = 1
-SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_FILENAME = (
-    "source_record_differential_revalidation.json"
 )
 SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_ARTIFACT_KIND = (
     "source_record_v10_differential_revalidation"
 )
 SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_INTEGRITY_FIELD = (
     "source_record_differential_revalidation_sha256"
-)
-SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_ITEM_FIELD = (
-    "source_record_differential_revalidation"
 )
 SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_HISTORY_FIELD = (
     "prior_source_record_differential_revalidations"
@@ -186,24 +263,31 @@ _COMPLETE_REISSUE_GENERATED_RECEIPT_PATHS = (
     ("source_record_audit_sha256",),
     ("source_record_audit_integrity_sha256",),
 )
-_COMPLETE_REISSUE_SELECTED_PROJECTION_PATHS = (
+_COMPLETE_REISSUE_COMPACT_GENERATED_RECEIPT_PATHS = (
     (
-        "source_record_receipt_reprojection",
-        "paper_statement_map_exact_default_mode_delta",
-        "selected_semantic_projection_sha256",
+        "source_record_audit_surface",
+        SOURCE_RECORD_AUDIT_SURFACE_GENERATOR_SHA256_FIELD,
     ),
     (
         "source_record_audit_surface",
-        "source_record_receipt_reprojection",
-        "paper_statement_map_exact_default_mode_delta",
-        "selected_semantic_projection_sha256",
+        SOURCE_RECORD_AUDIT_SURFACE_RAW_SHA256_FIELD,
+    ),
+)
+_COMPLETE_REISSUE_SELECTED_PROJECTION_TAIL = (
+    "source_record_receipt_reprojection",
+    "paper_statement_map_exact_default_mode_delta",
+    "selected_semantic_projection_sha256",
+)
+_COMPLETE_REISSUE_SELECTED_PROJECTION_PATHS = (
+    _COMPLETE_REISSUE_SELECTED_PROJECTION_TAIL,
+    (
+        "source_record_audit_surface",
+        *_COMPLETE_REISSUE_SELECTED_PROJECTION_TAIL,
     ),
     (
         "source_record_audit_surface",
         "raw_evidence_projection",
-        "source_record_receipt_reprojection",
-        "paper_statement_map_exact_default_mode_delta",
-        "selected_semantic_projection_sha256",
+        *_COMPLETE_REISSUE_SELECTED_PROJECTION_TAIL,
     ),
 )
 SEMANTIC_ASSOCIATION_REBIND_FIELD = "semantic_association_rebind"
@@ -236,17 +320,6 @@ SOURCE_RECORD_DIFFERENTIAL_REUSE_EXCLUSIONS_REASONS_FIELD = (
     "excluded_current_group_semantic_descriptor_reasons"
 )
 
-# A differential overlay can itself be historical evidence for a selected
-# current review or a replayed selected-plus-overlay composition.  Replacing
-# a byte-pinned overlay silently makes that evidence unreplayable.  Keep this
-# guard at the write boundary rather than broadening raw-audit freshness: it
-# protects provenance without changing the audit surface or reuse semantics.
-_DIFFERENTIAL_OVERLAY_PIN_MARKERS = (
-    b'"differential_overlay_path"',
-    b'"differential_overlay"',
-)
-
-_SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 _LOADED_OVERLAY_ITEM_SENTINEL = object()
 
 # Recursive raw fields can be exact semantic matches even when they are only
@@ -333,60 +406,6 @@ class _LoadedSourceRecordDifferentialRevalidationItem(dict[str, Any]):
 # Navigation strings may help a person find the generated item, but must never
 # make two obligations appear equal.  Keep unknown future fields by default so
 # an audit-engine extension causes re-review until it is consciously classified.
-_NAVIGATION_FIELDS = frozenset(
-    {
-        "row",
-        "judgment_key",
-        "binder",
-        "reviewed_binder",
-        "lean_source_declaration",
-        "effective_lean_source_declaration",
-        "qualified_declaration",
-        "effective_qualified_declaration",
-        "reviewed_declaration_identity",
-        "reviewed_elaborated_signature_identities",
-        "reviewed_elaborated_signature_identity",
-        "paper_statement_map_sha256",
-        "source_contract_association",
-        "semantic_contract_source_association",
-        "source_statement_association",
-        "statement_source_component_association",
-        "semantic_contract_group",
-        "recursive_field_explicit_parent_route",
-        "source_file",
-        "source_location",
-        "source_key",
-        "source_kind",
-        "source_map_item_sha256",
-        "source_map_item_keys",
-        "source_map_item_keys_sha256",
-        "source_map_item_sha256_by_key",
-        "association_sha256",
-        "paired_qualified_declaration",
-        "declaration",
-        "local_type_head",
-        "record",
-        "record_aliases",
-        "structure",
-        "field",
-        "path",
-        "line",
-        "names",
-        "required_check",
-        "semantic_context_requirements_sha256",
-    }
-)
-_RECEIPT_ONLY_FIELDS = frozenset(
-    {
-        "source_record_item_reuse_eligibility",
-        "source_record_item_digest_schema",
-        "source_record_item_semantic_id",
-        "source_record_item_context_sha256",
-        "source_record_item_sha256",
-        "source_record_item_semantic_context_requirements_sha256",
-        "source_record_item_source_proof_fidelity_records_sha256",
-    }
-)
 # A source-free recursive fallback may pair only the complete non-presentation
 # content of a generated group. The sidecar key, record/field spelling, source
 # file location, and receipt bookkeeping are navigation rather than a semantic
@@ -397,41 +416,8 @@ _SOURCE_FREE_RECURSIVE_CONTENT_OMITTED_FIELDS = (
     | _RECEIPT_ONLY_FIELDS
     | frozenset({"risk_terms"})
 )
-_ASSOCIATION_FIELDS = (
-    "source_contract_association",
-    "semantic_contract_source_association",
-    "source_statement_association",
-    "statement_source_component_association",
-    "semantic_contract_group",
-)
-_ASSOCIATION_NAME_FIELDS = frozenset(
-    {
-        "qualified_declaration",
-        "paired_qualified_declaration",
-        "semantic_model_judgment_key",
-        "evidence_declaration",
-        "spec_declaration",
-        "row",
-        "source_key",
-        "source_location",
-        "source_kind",
-        "source_map_item_sha256",
-        "source_map_item_keys",
-        "source_map_item_keys_sha256",
-        "source_map_item_sha256_by_key",
-        "association_sha256",
-        "reviewed_declaration_identity",
-        "reviewed_elaborated_signature_identity",
-        "reviewed_elaborated_signature_identities",
-    }
-)
 
 
-def _canonical_digest(payload: object) -> str:
-    encoded = json.dumps(
-        canonical_digest_payload(payload), sort_keys=True, separators=(",", ":")
-    ).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
 
 
 def _file_sha256(path: Path) -> str:
@@ -477,9 +463,6 @@ def _repository_provenance_path(value: object) -> Path:
     return path
 
 
-def _sha256(value: object) -> str:
-    text = str(value or "").strip().lower()
-    return text if _SHA256_RE.fullmatch(text) else ""
 
 
 def _reuse_exclusion_reason_ledger(
@@ -675,225 +658,18 @@ def _read_json_object(path: Path) -> dict[str, Any]:
     return payload
 
 
-def _paper_relative_overlay_reference_path(
-    value: object, *, paper_dir: Path
-) -> Path | None:
-    """Resolve one normalized paper-local provenance path, if admissible."""
-
-    text = value.strip() if isinstance(value, str) else ""
-    pure = PurePosixPath(text)
-    if (
-        not text
-        or pure.is_absolute()
-        or any(part in {"", ".", ".."} for part in pure.parts)
-    ):
-        return None
-    try:
-        candidate = (paper_dir / Path(*pure.parts)).resolve()
-        candidate.relative_to(paper_dir.resolve())
-        return candidate
-    except (OSError, RuntimeError, ValueError):
-        return None
 
 
-def _paper_local_display_path(path: Path, *, paper_dir: Path) -> str:
-    """Return a stable diagnostic locator without assuming the CLI root."""
-
-    try:
-        return path.resolve().relative_to(paper_dir.resolve()).as_posix()
-    except (OSError, RuntimeError, ValueError):
-        return str(path)
 
 
-def _file_might_contain_differential_overlay_pin(path: Path) -> bool:
-    """Avoid parsing ordinary large raw receipts during the write guard."""
-
-    largest_marker = max(len(marker) for marker in _DIFFERENTIAL_OVERLAY_PIN_MARKERS)
-    trailing = b""
-    try:
-        with path.open("rb") as handle:
-            while chunk := handle.read(64 * 1024):
-                searchable = trailing + chunk
-                if any(marker in searchable for marker in _DIFFERENTIAL_OVERLAY_PIN_MARKERS):
-                    return True
-                trailing = searchable[-(largest_marker - 1) :]
-    except OSError:
-        return False
-    return False
 
 
-def _differential_overlay_pin_records(
-    value: object,
-    *,
-    paper_dir: Path,
-    json_path: str = "$",
-) -> list[dict[str, str]]:
-    """Find structural overlay byte pins without using artifact filenames.
-
-    A selected/current receipt carries a logical ``differential_overlay_path``
-    and its byte hash.  A historical composition carries a physical
-    ``differential_overlay`` snapshot record.  These are provenance shapes,
-    not theorem or declaration names.  Unknown JSON is otherwise ignored: a
-    record becomes a blocker only after its path resolves to the target and
-    its expected hash equals the target's live bytes.
-    """
-
-    records: list[dict[str, str]] = []
-    if isinstance(value, Mapping):
-        # Evidence can retain draft/template fragments inside an otherwise live
-        # wrapper. A marked fragment is not provenance merely because it has a
-        # structurally similar pin shape.
-        if _payload_is_non_evidence(value):
-            return records
-        logical_path = _paper_relative_overlay_reference_path(
-            value.get("differential_overlay_path"), paper_dir=paper_dir
-        )
-        logical_sha = _sha256(value.get("differential_overlay_sha256"))
-        if logical_path is not None and logical_sha:
-            records.append(
-                {
-                    "kind": "selected_or_composed_overlay",
-                    "json_path": json_path + ".differential_overlay_path",
-                    "path": str(logical_path),
-                    "expected_sha256": logical_sha,
-                }
-            )
-
-        physical = value.get("differential_overlay")
-        if isinstance(physical, Mapping):
-            physical_path = _paper_relative_overlay_reference_path(
-                physical.get("path"), paper_dir=paper_dir
-            )
-            physical_sha = _sha256(physical.get("file_sha256"))
-            if physical_path is not None and physical_sha:
-                records.append(
-                    {
-                        "kind": "historical_composition_overlay",
-                        "json_path": json_path + ".differential_overlay",
-                        "path": str(physical_path),
-                        "expected_sha256": physical_sha,
-                    }
-                )
-
-        for raw_key, child in value.items():
-            key = str(raw_key)
-            records.extend(
-                _differential_overlay_pin_records(
-                    child,
-                    paper_dir=paper_dir,
-                    json_path=json_path + "." + key,
-                )
-            )
-    elif isinstance(value, list):
-        for index, child in enumerate(value):
-            records.extend(
-                _differential_overlay_pin_records(
-                    child,
-                    paper_dir=paper_dir,
-                    json_path=f"{json_path}[{index}]",
-                )
-            )
-    return records
 
 
-def source_record_differential_write_pins(
-    *, paper_dir: Path, output_path: Path, proposed_bytes: bytes
-) -> list[dict[str, str]]:
-    """Return live evidence records that would be invalidated by this write.
-
-    The result is empty for a byte-identical rewrite, a new output file, stale
-    references, or an unreferenced exploratory path.  This deliberately scans
-    all paper-local JSON provenance rather than a hard-coded sidecar filename,
-    so archived selected and historical-composition evidence receive the same
-    protection as the current sidecar.
-    """
-
-    target = output_path.resolve()
-    if not target.is_file():
-        return []
-    existing_sha = _file_sha256(target)
-    proposed_sha = hashlib.sha256(proposed_bytes).hexdigest()
-    if existing_sha == proposed_sha:
-        return []
-
-    audit_dir = paper_dir / "audit"
-    if not audit_dir.is_dir():
-        return []
-    records: list[dict[str, str]] = []
-    for path in sorted(audit_dir.rglob("*.json")):
-        try:
-            resolved = path.resolve()
-        except OSError:
-            continue
-        if resolved == target or not _file_might_contain_differential_overlay_pin(path):
-            continue
-        try:
-            payload = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
-            continue
-        # A draft may intentionally retain a provenance-shaped fragment while
-        # being explicitly marked unusable as evidence.  Such a file must not
-        # become an ambient write blocker merely because it sits under audit/.
-        # `_payload_is_non_evidence` is content-based and is also rejected by
-        # every evidence consumer; do not infer this from a filename.
-        if isinstance(payload, Mapping) and _payload_is_non_evidence(payload):
-            continue
-        for record in _differential_overlay_pin_records(
-            payload, paper_dir=paper_dir.resolve()
-        ):
-            if (
-                Path(record["path"]).resolve() == target
-                and record["expected_sha256"] == existing_sha
-            ):
-                records.append(
-                    {
-                        **record,
-                        "evidence_path": _paper_local_display_path(
-                            path, paper_dir=paper_dir
-                        ),
-                    }
-                )
-    records.sort(
-        key=lambda record: (
-            record["evidence_path"],
-            record["json_path"],
-            record["kind"],
-        )
-    )
-    return records
 
 
-def _byte_pinned_overlay_write_error(records: list[Mapping[str, str]]) -> str:
-    """Explain a blocked overwrite without exposing unbounded provenance."""
-
-    locations = [
-        f"{record.get('evidence_path', '<unknown>')}:{record.get('json_path', '$')}"
-        for record in records[:3]
-    ]
-    suffix = "; ".join(locations)
-    if len(records) > len(locations):
-        suffix += f"; and {len(records) - len(locations)} more"
-    return (
-        "refusing to overwrite a differential overlay whose current bytes are "
-        f"pinned by {len(records)} selected/current or historical-composition "
-        f"evidence record(s) ({suffix}). Write an exploratory result to a "
-        "different --out path, or pass --replace-byte-pinned-overlay only after "
-        "deliberately relocating or reissuing the dependent evidence."
-    )
 
 
-def _exact_json_file_payload_error(
-    path: Path, payload: Mapping[str, Any], *, label: str
-) -> str:
-    """Reject an in-memory candidate that differs from named evidence bytes."""
-
-    try:
-        saved = _read_json_object(path)
-    except SourceRecordDifferentialRevalidationError as exc:
-        return f"{label} cannot be loaded from its evidence path: {exc}"
-    if canonical_digest_payload(saved) != canonical_digest_payload(payload):
-        return f"{label} differs from its named evidence file bytes"
-    return ""
 
 
 def _payload_is_non_evidence(payload: Mapping[str, Any]) -> bool:
@@ -921,1063 +697,48 @@ def _effective(value: Mapping[str, Any], payload: Mapping[str, Any], field: str)
     return value.get(field) or payload.get(field)
 
 
-def _raw_audit_error(payload: object, *, paper: str, label: str) -> str:
-    if not isinstance(payload, Mapping):
-        return f"{label} raw audit is not an object"
-    if payload.get("paper") != paper:
-        return f"{label} raw audit does not record the requested paper"
-    if str(payload.get("prompt_version") or "").strip() != SOURCE_RECORD_V10_PROMPT_VERSION:
-        return f"{label} raw audit does not use the v10 source-record prompt"
-    if (
-        str(payload.get("source_record_policy_version") or "").strip()
-        != SOURCE_RECORD_V10_PROMPT_VERSION
-    ):
-        return f"{label} raw audit does not use the v10 source-record policy"
-    if not _sha256(payload.get("source_record_audit_sha256")):
-        return f"{label} raw audit has no aggregate source-record receipt"
-    receipt_error = source_record_audit_receipt_error(payload)
-    if receipt_error:
-        return f"{label} raw audit receipt is invalid: {receipt_error}"
-    metadata_error = source_record_raw_reusable_item_metadata_error(
-        payload, expected_item_digest_schema=SOURCE_RECORD_ITEM_DIGEST_SCHEMA
-    )
-    if metadata_error:
-        return f"{label} raw audit item metadata is invalid: {metadata_error}"
-    lean_check = payload.get("lean_check")
-    if not isinstance(lean_check, Mapping) or lean_check.get("returncode") != 0:
-        return f"{label} raw audit lacks a successful Lean check"
-    if int(payload.get("recursion_failure_count") or 0) != 0:
-        return f"{label} raw audit has recursion failures"
-    target_route_error = source_record_target_route_error(payload)
-    if target_route_error:
-        return f"{label} raw audit has invalid semantic target routing: {target_route_error}"
-    return ""
-
-
-def _canonical_projection_sort_key(value: object) -> str:
-    """Return a deterministic order key for a projected unordered inventory."""
-
-    return json.dumps(
-        canonical_digest_payload(value), sort_keys=True, separators=(",", ":")
-    )
-
-
-def _complete_review_alias_presentation_projection(
-    value: Mapping[str, Any],
-    *,
-    full_result_surface: bool,
-    omit_recursive_structural_coordinates: bool,
-) -> object:
-    """Project a complete thin-alias trace without its route spellings.
-
-    The generated elaborated-signature and source-association receipts bind the
-    actual reviewed endpoint.  Once the alias resolver has completed, the
-    declaration/FQN strings, local reference spelling, and source locations
-    merely explain how that endpoint was found.  Retain the ordered alias-kind
-    trace, because a changed route shape still warrants a fresh review.
-
-    Incomplete or unfamiliar routes deliberately return their raw surface:
-    the current generator has no name-free identity for an unresolved target.
-    """
-
-    blocked_routes = value.get("blocked_routes")
-    steps = value.get("steps")
-    if (
-        value.get("schema") != 1
-        or value.get("complete") is not True
-        or not isinstance(blocked_routes, list)
-        or blocked_routes
-        or not isinstance(steps, list)
-        or not all(isinstance(step, Mapping) for step in steps)
-    ):
-        return dict(value)
-
-    known_route_fields = {
-        "schema",
-        "reviewed_declaration",
-        "effective_declaration",
-        "alias_present",
-        "complete",
-        "effective_kind",
-        "steps",
-        "blocked_routes",
-    }
-    known_step_fields = {"from", "reference", "to", "target_kind", "source_file", "line"}
-    projected_steps: list[dict[str, object]] = []
-    for step in steps:
-        assert isinstance(step, Mapping)
-        extras = {
-            str(key): _semantic_projection(
-                raw_value,
-                full_result_surface=full_result_surface,
-                omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-            )
-            for key, raw_value in step.items()
-            if str(key) not in known_step_fields
-        }
-        projected_step: dict[str, object] = {
-            "target_kind": step.get("target_kind"),
-        }
-        if extras:
-            # Unknown generator fields are semantic until deliberately
-            # classified, so an extension remains fail-closed by default.
-            projected_step["unknown_fields"] = extras
-        projected_steps.append(projected_step)
-
-    extras = {
-        str(key): _semantic_projection(
-            raw_value,
-            full_result_surface=full_result_surface,
-            omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-        )
-        for key, raw_value in value.items()
-        if str(key) not in known_route_fields
-    }
-    projected: dict[str, object] = {
-        "presentation_normalizer_schema": PRESENTATION_NORMALIZER_SCHEMA,
-        "schema": value.get("schema"),
-        "alias_present": value.get("alias_present"),
-        "complete": value.get("complete"),
-        "effective_kind": value.get("effective_kind"),
-        "steps": projected_steps,
-        "blocked_routes": [],
-    }
-    if extras:
-        projected["unknown_fields"] = extras
-    return projected
-
-
-def _complete_proposition_alias_presentation_projection(
-    value: Mapping[str, Any],
-    *,
-    full_result_surface: bool,
-    omit_recursive_structural_coordinates: bool,
-) -> object:
-    """Project complete transparent proposition-alias steps without FQNs.
-
-    ``expanded_type`` remains the reviewed proposition.  A transparent step's
-    declaration/location is explanatory once that expansion is available, but
-    its kind and ordered count remain part of the review surface.  Any blocked
-    or malformed expansion has no equivalent canonical endpoint artifact, so
-    it retains its raw presentation and cannot gain reuse from this helper.
-    """
-
-    blocked_routes = value.get("blocked_routes")
-    steps = value.get("transparent_steps")
-    if (
-        not isinstance(blocked_routes, list)
-        or blocked_routes
-        or not isinstance(steps, list)
-        or not all(isinstance(step, Mapping) for step in steps)
-        or "expanded_type" not in value
-    ):
-        return dict(value)
-
-    known_route_fields = {"expanded_type", "transparent_steps", "blocked_routes"}
-    known_step_fields = {"declaration", "kind", "source_file", "line"}
-    projected_steps: list[dict[str, object]] = []
-    for step in steps:
-        assert isinstance(step, Mapping)
-        extras = {
-            str(key): _semantic_projection(
-                raw_value,
-                full_result_surface=full_result_surface,
-                omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-            )
-            for key, raw_value in step.items()
-            if str(key) not in known_step_fields
-        }
-        projected_step: dict[str, object] = {"kind": step.get("kind")}
-        if extras:
-            projected_step["unknown_fields"] = extras
-        projected_steps.append(projected_step)
-
-    extras = {
-        str(key): _semantic_projection(
-            raw_value,
-            full_result_surface=full_result_surface,
-            omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-        )
-        for key, raw_value in value.items()
-        if str(key) not in known_route_fields
-    }
-    projected: dict[str, object] = {
-        "presentation_normalizer_schema": PRESENTATION_NORMALIZER_SCHEMA,
-        "expanded_type": value.get("expanded_type"),
-        "transparent_steps": projected_steps,
-        "blocked_routes": [],
-    }
-    if extras:
-        projected["unknown_fields"] = extras
-    return projected
-
-
-def _complete_terminal_dependency_presentation_projection(
-    value: Mapping[str, Any],
-    *,
-    full_result_surface: bool,
-    omit_recursive_structural_coordinates: bool,
-) -> object:
-    """Project a complete transparent term closure without declaration paths.
-
-    A transparent dependency has existing content-bearing artifacts: its body
-    digest, typed surfaces, semantic flags/fragments, and relevance status.
-    Its declaration name, source location, declaration-text digest, and
-    dependency-chain names are presentation/navigation data.  Do not normalize
-    incomplete closures or opaque local heads: those lack a canonical local
-    identity and must remain fail-closed.
-    """
-
-    definitions = value.get("transparent_definitions")
-    incomplete_reasons = value.get("incomplete_reasons")
-    unexpanded_heads = value.get("unexpanded_local_term_heads")
-    if (
-        value.get("schema") != 1
-        or value.get("scan_complete") is not True
-        or not isinstance(definitions, list)
-        or not all(isinstance(node, Mapping) for node in definitions)
-        or not isinstance(incomplete_reasons, list)
-        or incomplete_reasons
-        or not isinstance(unexpanded_heads, list)
-        or unexpanded_heads
-    ):
-        return dict(value)
-
-    known_surface_fields = {
-        "schema",
-        "scan_complete",
-        "scan_limits",
-        "incomplete_reasons",
-        "terminal_result_semantic_construct_flags",
-        "terminal_result_semantic_fragments",
-        "transparent_definitions",
-        "unexpanded_local_term_heads",
-        "semantic_construct_flags",
-    }
-    known_node_fields = {
-        "declaration",
-        "kind",
-        "source_file",
-        "line",
-        "declaration_sha256",
-        "body_sha256",
-        "parameter_types",
-        "result_type",
-        "semantic_construct_flags",
-        "semantic_fragments",
-        "body_surface_inspectable",
-        "direct_local_dependencies",
-        "dependency_chain",
-        "semantic_relevant",
-    }
-    projected_definitions: list[dict[str, object]] = []
-    for node in definitions:
-        assert isinstance(node, Mapping)
-        extras = {
-            str(key): _semantic_projection(
-                raw_value,
-                full_result_surface=full_result_surface,
-                omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-            )
-            for key, raw_value in node.items()
-            if str(key) not in known_node_fields
-        }
-        projected_node: dict[str, object] = {
-            "kind": node.get("kind"),
-            "body_sha256": node.get("body_sha256"),
-            "parameter_types": _semantic_projection(
-                node.get("parameter_types"),
-                full_result_surface=full_result_surface,
-                omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-            ),
-            "result_type": _semantic_projection(
-                node.get("result_type"),
-                full_result_surface=full_result_surface,
-                omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-            ),
-            "semantic_construct_flags": _semantic_projection(
-                node.get("semantic_construct_flags"),
-                full_result_surface=full_result_surface,
-                omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-            ),
-            "semantic_fragments": _semantic_projection(
-                node.get("semantic_fragments"),
-                full_result_surface=full_result_surface,
-                omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-            ),
-            "body_surface_inspectable": node.get("body_surface_inspectable"),
-            "semantic_relevant": node.get("semantic_relevant"),
-        }
-        if extras:
-            projected_node["unknown_fields"] = extras
-        projected_definitions.append(projected_node)
-    projected_definitions.sort(key=_canonical_projection_sort_key)
-
-    extras = {
-        str(key): _semantic_projection(
-            raw_value,
-            full_result_surface=full_result_surface,
-            omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-        )
-        for key, raw_value in value.items()
-        if str(key) not in known_surface_fields
-    }
-    projected: dict[str, object] = {
-        "presentation_normalizer_schema": PRESENTATION_NORMALIZER_SCHEMA,
-        "schema": value.get("schema"),
-        "scan_complete": value.get("scan_complete"),
-        "scan_limits": _semantic_projection(
-            value.get("scan_limits"),
-            full_result_surface=full_result_surface,
-            omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-        ),
-        "incomplete_reasons": [],
-        "terminal_result_semantic_construct_flags": _semantic_projection(
-            value.get("terminal_result_semantic_construct_flags"),
-            full_result_surface=full_result_surface,
-            omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-        ),
-        "terminal_result_semantic_fragments": _semantic_projection(
-            value.get("terminal_result_semantic_fragments"),
-            full_result_surface=full_result_surface,
-            omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-        ),
-        "transparent_definitions": projected_definitions,
-        "unexpanded_local_term_heads": [],
-        "semantic_construct_flags": _semantic_projection(
-            value.get("semantic_construct_flags"),
-            full_result_surface=full_result_surface,
-            omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-        ),
-    }
-    if extras:
-        projected["unknown_fields"] = extras
-    return projected
-
-
-def _semantic_projection(
-    value: object,
-    *,
-    full_result_surface: bool,
-    omit_recursive_structural_coordinates: bool = False,
-    normalize_presentation_routes: bool = False,
-) -> object:
-    """Project one generated obligation without receipt transport.
-
-    Input/field dispositions need the local type/record/source surface, not an
-    enclosing theorem's conclusion.  A semantic-model item is the opposite: it
-    is the result-level review lane, so retain its full expanded surface.
-
-    Alias/dependency route strings are normalized only after the caller has an
-    independent semantic source or full-result endpoint identity.  Without
-    that identity, their display route remains a fail-closed discriminator;
-    the current generator has no canonical local binder/field atom to replace
-    it.
-    """
-
-    if isinstance(value, Mapping):
-        projected: dict[str, object] = {}
-        for raw_key, raw_value in value.items():
-            key = str(raw_key)
-            normalized = key.strip().lower()
-            if normalized in _NAVIGATION_FIELDS or normalized in _RECEIPT_ONLY_FIELDS:
-                continue
-            if (
-                normalize_presentation_routes
-                and normalized == "review_alias_expansion"
-                and isinstance(raw_value, Mapping)
-            ):
-                projected[key] = _complete_review_alias_presentation_projection(
-                    raw_value,
-                    full_result_surface=full_result_surface,
-                    omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-                )
-                continue
-            if (
-                normalize_presentation_routes
-                and normalized
-                in {
-                    "proposition_alias_expansion",
-                    "subtype_predicate_proposition_alias_expansion",
-                }
-                and isinstance(raw_value, Mapping)
-            ):
-                projected[key] = _complete_proposition_alias_presentation_projection(
-                    raw_value,
-                    full_result_surface=full_result_surface,
-                    omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-                )
-                continue
-            if (
-                normalize_presentation_routes
-                and normalized == "terminal_term_dependency_surface"
-                and isinstance(raw_value, Mapping)
-            ):
-                projected[key] = _complete_terminal_dependency_presentation_projection(
-                    raw_value,
-                    full_result_surface=full_result_surface,
-                    omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-                )
-                continue
-            if omit_recursive_structural_coordinates and normalized == "nested_structures":
-                # Recursive field and nested-record spellings are navigation.
-                # A generated direct semantic parent receipt is projected
-                # separately for the only reusable recursive-field path.
-                continue
-            if not full_result_surface and normalized in {
-                "row_result_type",
-                "result_type",
-                "result_type_compatibility",
-                "reviewed_result_type",
-            }:
-                continue
-            projected[key] = _semantic_projection(
-                raw_value,
-                full_result_surface=full_result_surface,
-                omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-                normalize_presentation_routes=normalize_presentation_routes,
-            )
-        return projected
-    if isinstance(value, list):
-        return [
-            _semantic_projection(
-                item,
-                full_result_surface=full_result_surface,
-                omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-                normalize_presentation_routes=normalize_presentation_routes,
-            )
-            for item in value
-        ]
-    if isinstance(value, tuple):
-        return [
-            _semantic_projection(
-                item,
-                full_result_surface=full_result_surface,
-                omit_recursive_structural_coordinates=omit_recursive_structural_coordinates,
-            )
-            for item in value
-        ]
-    return value
-
-
-def _association_mappings(item: Mapping[str, Any]) -> list[tuple[str, Mapping[str, Any]]]:
-    return [
-        (field, association)
-        for field in _ASSOCIATION_FIELDS
-        if isinstance((association := item.get(field)), Mapping)
-    ]
-
-
-def _source_semantic_identities(item: Mapping[str, Any]) -> list[str]:
-    identities: set[str] = set()
-    for _field, association in _association_mappings(item):
-        raw_identities = association.get("source_item_identities")
-        if not isinstance(raw_identities, list):
-            continue
-        for raw_identity in raw_identities:
-            if not isinstance(raw_identity, Mapping):
-                continue
-            digest = _sha256(raw_identity.get("source_semantic_sha256"))
-            if digest:
-                identities.add(digest)
-    return sorted(identities)
-
-
-def _association_semantic_digests(item: Mapping[str, Any]) -> list[str]:
-    return sorted(
-        {
-            digest
-            for _field, association in _association_mappings(item)
-            if (digest := _sha256(association.get("semantic_association_sha256")))
-        }
-    )
-
-
-def _association_role_projection(value: object) -> object:
-    """Keep source-route roles while dropping route/declaration spelling."""
-
-    if isinstance(value, Mapping):
-        projected: dict[str, object] = {}
-        for raw_key, raw_value in value.items():
-            key = str(raw_key)
-            normalized = key.strip().lower()
-            if normalized in _ASSOCIATION_NAME_FIELDS:
-                continue
-            if normalized == "source_item_identities":
-                identities: set[str] = set()
-                if isinstance(raw_value, list):
-                    for identity in raw_value:
-                        if isinstance(identity, Mapping):
-                            digest = _sha256(identity.get("source_semantic_sha256"))
-                            if digest:
-                                identities.add(digest)
-                projected["source_item_semantic_identities"] = sorted(identities)
-                continue
-            if normalized == "semantic_association_sha256":
-                # The full row descriptor retains this source+endpoint pin.
-                # Input-local reuse instead retains source content and the
-                # route role independently, so a changed theorem result does
-                # not erase an unchanged antecedent review.
-                continue
-            projected[key] = _association_role_projection(raw_value)
-        return projected
-    if isinstance(value, list):
-        return sorted(
-            [_association_role_projection(item) for item in value],
-            key=lambda item: json.dumps(item, sort_keys=True, separators=(",", ":")),
-        )
-    if isinstance(value, tuple):
-        return _association_role_projection(list(value))
-    return value
-
-
-def _association_roles(item: Mapping[str, Any]) -> list[dict[str, object]]:
-    return sorted(
-        [
-            {
-                "association_field": field,
-                "role": _association_role_projection(association),
-            }
-            for field, association in _association_mappings(item)
-        ],
-        key=lambda entry: json.dumps(entry, sort_keys=True, separators=(",", ":")),
-    )
-
-
-def _signature_digests(item: Mapping[str, Any]) -> list[str]:
-    signatures: list[Mapping[str, Any]] = []
-    direct = item.get("reviewed_elaborated_signature_identities")
-    if isinstance(direct, list):
-        signatures.extend(entry for entry in direct if isinstance(entry, Mapping))
-    for _field, association in _association_mappings(item):
-        identity = association.get("reviewed_elaborated_signature_identity")
-        if isinstance(identity, Mapping):
-            signatures.append(identity)
-    return sorted(
-        {
-            digest
-            for signature in signatures
-            if (digest := _sha256(signature.get("elaborated_signature_sha256")))
-        }
-    )
-
-
-def _recursive_field_parent_route_semantic_scope(
-    item: Mapping[str, Any],
-) -> dict[str, object] | None:
-    """Return a name-free direct semantic parent receipt for one field.
-
-    A recursive field cannot receive automatic differential reuse merely
-    because its Lean structure, field, or nested-record spelling is stable.
-    It needs a generated, locally authenticated direct parent route. This
-    projection retains only source semantic identity, source-convention scope,
-    semantic classification, and the checked parent association receipt. It
-    never uses a record/field chain or declaration/binder spelling to identify
-    a match, and performs no global parent lookup.
-    """
-
-    route = item.get("recursive_field_explicit_parent_route")
-    if not isinstance(route, Mapping):
-        return None
-    if (
-        route.get("schema") != 1
-        or str(route.get("inheritance_mode") or "").strip()
-        != "explicit_parent_route_and_field_scope"
-    ):
-        return None
-    route_digest = _sha256(route.get("association_sha256"))
-    if not route_digest or route_digest != recursive_field_parent_route_record_digest(route):
-        return None
-    # Require an actual generated route edge, but deliberately do not project
-    # the edge's Lean strings into the reusable semantic identity.
-    field_chain = route.get("field_chain")
-    if not isinstance(field_chain, list) or not field_chain or not all(
-        isinstance(link, Mapping) for link in field_chain
-    ):
-        return None
-    field_scope = _sha256(route.get("field_scope_sha256"))
-    convention = _sha256(route.get("convention_sha256"))
-    if not field_scope or not convention:
-        return None
-    classifications = route.get("permitted_classifications")
-    if not isinstance(classifications, list) or not classifications:
-        return None
-    classification_values = [
-        str(value).strip() for value in classifications if str(value).strip()
-    ]
-    if (
-        len(classification_values) != len(classifications)
-        or len(set(classification_values)) != len(classification_values)
-    ):
-        return None
-    identities = route.get("source_item_identities")
-    if not isinstance(identities, list) or len(identities) != 1:
-        return None
-    identity = identities[0]
-    if not isinstance(identity, Mapping):
-        return None
-    source_semantic = _sha256(identity.get("source_semantic_sha256"))
-    if not source_semantic:
-        return None
-    parent_signature = route.get("parent_elaborated_signature_identity")
-    parent_association = _sha256(route.get("parent_source_association_sha256"))
-    if (
-        not isinstance(parent_signature, Mapping)
-        or not parent_association
-        or parent_association
-        != semantic_association_record_digest([source_semantic], parent_signature)
-    ):
-        return None
-    parent_field = str(route.get("parent_association_field") or "").strip()
-    parent_role = str(route.get("parent_source_association_role") or "").strip()
-    parent_origin = str(route.get("parent_source_association_origin") or "").strip()
-    if parent_field == "source_statement_association":
-        if (
-            parent_role != "direct_source_route"
-            or parent_origin != "explicit_source_map_direct_route"
-        ):
-            return None
-    elif parent_field == SOURCE_CLAIM_ATOM_ASSOCIATION_FIELD:
-        if (
-            parent_role != SOURCE_CLAIM_ATOM_ROUTE_ROLE
-            or parent_origin != SOURCE_CLAIM_ATOM_ROUTE_ORIGIN
-        ):
-            return None
-    elif parent_field == "semantic_contract_source_association":
-        if parent_role not in {"direct_evidence", "transparent_spec"} or parent_origin:
-            return None
-    else:
-        return None
-    if not str(route.get("root_input_type_canonical") or "").strip():
-        return None
-    return {
-        "schema": 1,
-        "field_scope_sha256": field_scope,
-        "source_item_semantic_sha256": source_semantic,
-        "convention_sha256": convention,
-        "permitted_classifications": sorted(classification_values),
-        "parent_association_kind": parent_field,
-        "parent_source_association_role": parent_role,
-        "parent_source_association_origin": parent_origin,
-        "parent_source_association_sha256": parent_association,
-    }
-
-
-_DIRECT_SOURCE_DOMAIN_PARENT_CONTRACT_SCHEMA = 1
-_DIRECT_SOURCE_DOMAIN_PARENT_CONTRACTS_FIELD = (
-    "recursive_field_direct_source_domain_parent_contracts"
-)
-
-
-def _optional_source_domain_fingerprint(value: object) -> dict[str, str] | None:
-    """Return one explicit optional semantic-context/ledger fingerprint.
-
-    A missing scoped context is materially different from a malformed one.  A
-    direct source-domain contract may say that no scoped context applies, but
-    it must not silently treat an unfamiliar value as absence.
-    """
-
-    text = str(value or "").strip().lower()
-    if not text:
-        return {"state": "absent"}
-    if not _SHA256_RE.fullmatch(text):
-        return None
-    return {"state": "present", "sha256": text}
-
-
-def _direct_source_domain_record_input_projection(value: object) -> object:
-    """Project a parent record input without its human-facing binder spelling.
-
-    The fully-qualified instantiated input type, elaborated binder atom, and
-    every unknown generated field remain.  Display binders, source-text
-    spellings, and record-root navigation names are deliberately excluded:
-    the generated route's canonical instantiated type selects this binding.
-    Retaining an unfamiliar future field keeps this route fail-closed by
-    default.
-    """
-
-    if isinstance(value, Mapping):
-        return {
-            str(key): _direct_source_domain_record_input_projection(child)
-            for key, child in value.items()
-            if str(key).strip().lower()
-            not in {"binder_names", "source_type_canonical", "record_roots"}
-        }
-    if isinstance(value, list):
-        return [_direct_source_domain_record_input_projection(child) for child in value]
-    if isinstance(value, tuple):
-        return [_direct_source_domain_record_input_projection(child) for child in value]
-    return value
-
-
-def _recursive_field_direct_source_domain_parent_contract(
-    item: Mapping[str, Any],
-    *,
-    semantic_model_items: object,
-) -> dict[str, object] | None:
-    """Return a name-independent direct source-domain contract for one field.
-
-    An explicit recursive-field route proves that the field belongs to a
-    source-selected model input.  The parent association's elaborated
-    signature necessarily changes when a theorem conclusion changes, even
-    when the model input and its source domain do not.  For a *child* review,
-    compare the complete parent input-domain surface instead: source-map and
-    source-content pins, all parent input domains, the exact instantiated
-    record input, scoped context/ledger fingerprints, and the declared field
-    scope/convention.  The parent semantic-model row still compares its full
-    result surface elsewhere, so this never transports a changed direct result
-    review.
-
-    This function deliberately requires a unique current semantic-model
-    parent selected by the generated association pin.  It does not look up a
-    declaration, source-map key, binder, record, or field by spelling.
-    """
-
-    scope = _recursive_field_parent_route_semantic_scope(item)
-    route = item.get("recursive_field_explicit_parent_route")
-    if scope is None or not isinstance(route, Mapping):
-        return None
-    if not isinstance(semantic_model_items, list):
-        return None
-
-    raw_identities = route.get("source_item_identities")
-    if not isinstance(raw_identities, list) or len(raw_identities) != 1:
-        return None
-    raw_identity = raw_identities[0]
-    if not isinstance(raw_identity, Mapping):
-        return None
-    source_map_item_sha = _sha256(raw_identity.get("source_map_item_sha256"))
-    source_semantic_sha = _sha256(raw_identity.get("source_semantic_sha256"))
-    if not source_map_item_sha or not source_semantic_sha:
-        return None
-
-    parent_association_field = str(
-        route.get("parent_association_field") or ""
-    ).strip()
-    parent_association_pin = _sha256(
-        route.get("parent_source_association_sha256")
-    )
-    parent_role = str(route.get("parent_source_association_role") or "").strip()
-    parent_origin = str(
-        route.get("parent_source_association_origin") or ""
-    ).strip()
-    root_input_type = " ".join(
-        str(route.get("root_input_type_canonical") or "").split()
-    )
-    if (
-        parent_association_field not in _ASSOCIATION_FIELDS
-        or not parent_association_pin
-        or not parent_role
-        or not root_input_type
-    ):
-        return None
-
-    candidates: list[dict[str, object]] = []
-    for parent in semantic_model_items:
-        if not isinstance(parent, Mapping):
-            continue
-        if str(parent.get("kind") or "").strip() != "semantic_model_comparison":
-            continue
-        association = parent.get(parent_association_field)
-        if not isinstance(association, Mapping):
-            continue
-        if _sha256(association.get("semantic_association_sha256")) != parent_association_pin:
-            continue
-        if association.get("schema") != 2:
-            continue
-        if str(association.get("role") or "").strip() != parent_role:
-            continue
-        if str(association.get("association_origin") or "").strip() != parent_origin:
-            continue
-        association_identities = association.get("source_item_identities")
-        if not isinstance(association_identities, list) or len(association_identities) != 1:
-            continue
-        association_identity = association_identities[0]
-        if not isinstance(association_identity, Mapping):
-            continue
-        if (
-            _sha256(association_identity.get("source_map_item_sha256"))
-            != source_map_item_sha
-            or _sha256(association_identity.get("source_semantic_sha256"))
-            != source_semantic_sha
-        ):
-            continue
-        signature = association.get("reviewed_elaborated_signature_identity")
-        if not isinstance(signature, Mapping):
-            continue
-        if parent_association_pin != semantic_association_record_digest(
-            [source_semantic_sha], signature
-        ):
-            continue
-
-        expanded_surface = parent.get("expanded_lean_surface")
-        if not isinstance(expanded_surface, Mapping):
-            continue
-        binder_domains = expanded_surface.get("binder_domains")
-        if (
-            not isinstance(binder_domains, list)
-            or not binder_domains
-            or not all(isinstance(domain, Mapping) for domain in binder_domains)
-        ):
-            continue
-        raw_bindings = parent.get("record_input_bindings")
-        if not isinstance(raw_bindings, list):
-            continue
-        matching_bindings: list[Mapping[str, Any]] = []
-        for binding in raw_bindings:
-            if not isinstance(binding, Mapping):
-                continue
-            binding_type = " ".join(
-                str(binding.get("fully_qualified_expanded_type_canonical") or "").split()
-            )
-            if binding_type == root_input_type:
-                matching_bindings.append(binding)
-        if len(matching_bindings) != 1:
-            continue
-
-        context_fingerprint = _optional_source_domain_fingerprint(
-            parent.get("source_record_item_semantic_context_requirements_sha256")
-        )
-        ledger_fingerprint = _optional_source_domain_fingerprint(
-            parent.get("source_record_item_source_proof_fidelity_records_sha256")
-        )
-        if context_fingerprint is None or ledger_fingerprint is None:
-            continue
-        candidates.append(
-            {
-                "schema": _DIRECT_SOURCE_DOMAIN_PARENT_CONTRACT_SCHEMA,
-                "source_item_anchor_pins": [
-                    {
-                        "source_map_item_sha256": source_map_item_sha,
-                        "source_semantic_sha256": source_semantic_sha,
-                    }
-                ],
-                "parent_source_association": {
-                    "field": parent_association_field,
-                    "role": parent_role,
-                    "origin": parent_origin,
-                },
-                # This is the entire proposition-input domain, deliberately
-                # excluding the result surface.  It changes for a changed
-                # hypothesis but not for a conclusion-only repair.
-                "parent_input_domains": _semantic_projection(
-                    binder_domains, full_result_surface=False
-                ),
-                "parent_record_input": _direct_source_domain_record_input_projection(
-                    matching_bindings[0]
-                ),
-                "parent_semantic_context_requirements": context_fingerprint,
-                "parent_source_proof_fidelity_records": ledger_fingerprint,
-                "field_scope_sha256": scope["field_scope_sha256"],
-                "convention_sha256": scope["convention_sha256"],
-                "permitted_classifications": scope["permitted_classifications"],
-            }
-        )
-
-    # Two candidates may be textually identical, but their coexistence still
-    # means the raw semantic parent is not uniquely established.
-    return candidates[0] if len(candidates) == 1 else None
-
-
-def _recursive_field_direct_source_domain_parent_contracts(
-    payload: Mapping[str, Any],
-) -> dict[int, dict[str, object]]:
-    """Index only uniquely authenticated direct parent contracts by raw item.
-
-    The object identity is local in-memory bookkeeping, never a serialized or
-    semantic selector.  The resulting contract itself is fully name-free and
-    becomes part of the generated group descriptor below.
-    """
-
-    raw_fields = payload.get("recursive_field_items")
-    semantic_model_items = payload.get("semantic_model_items")
-    if not isinstance(raw_fields, list) or not isinstance(semantic_model_items, list):
-        return {}
-    contracts: dict[int, dict[str, object]] = {}
-    for item in raw_fields:
-        if not isinstance(item, Mapping):
-            continue
-        contract = _recursive_field_direct_source_domain_parent_contract(
-            item, semantic_model_items=semantic_model_items
-        )
-        if contract is not None:
-            contracts[id(item)] = contract
-    return contracts
-
-
-def source_record_differential_item_descriptor(
-    item: Mapping[str, Any],
-    *,
-    section: str,
-    recursive_field_direct_source_domain_parent_contract: Mapping[str, object]
-    | None = None,
-) -> dict[str, object]:
-    """Return the semantic comparison descriptor for one generated item.
-
-    This is intentionally public for focused regression tests and audit tools.
-    The descriptor is an equality witness, not a key for finding a match.
-    """
-
-    full_result_surface = section == "semantic_model_items"
-    source_semantic_identities = _source_semantic_identities(item)
-    signature_digests = _signature_digests(item)
-    # A local input with no source semantic identity has no emitted canonical
-    # atom that distinguishes two equal-looking binders. Keep its route data
-    # fail-closed rather than merging it merely because a presentation rename
-    # erased the only available discriminator. Full result rows can also use
-    # their elaborated endpoint signature as that independent identity.
-    normalize_presentation_routes = bool(source_semantic_identities) or (
-        full_result_surface and bool(signature_digests)
-    )
-    descriptor: dict[str, object] = {
-        "schema": SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_SCHEMA,
-        "presentation_normalizer_schema": PRESENTATION_NORMALIZER_SCHEMA,
-        "comparison_scope": (
-            "full_result_surface" if full_result_surface else "input_or_field_local"
-        ),
-        "generated_item_kind": str(item.get("kind") or "").strip(),
-        "generated_obligation": _semantic_projection(
-            item,
-            full_result_surface=full_result_surface,
-            omit_recursive_structural_coordinates=(section == "recursive_field_items"),
-            normalize_presentation_routes=normalize_presentation_routes,
-        ),
-        "source_item_semantic_identities": source_semantic_identities,
-        "source_association_roles": _association_roles(item),
-        "scoped_semantic_context_requirements_sha256": _sha256(
-            item.get("source_record_item_semantic_context_requirements_sha256")
-        ),
-        "source_proof_fidelity_records_sha256": _sha256(
-            item.get("source_record_item_source_proof_fidelity_records_sha256")
-        ),
-    }
-    if full_result_surface:
-        descriptor["source_association_semantic_sha256"] = (
-            _association_semantic_digests(item)
-        )
-        descriptor["reviewed_elaborated_signature_sha256"] = signature_digests
-    if section == "recursive_field_items":
-        if recursive_field_direct_source_domain_parent_contract is not None:
-            descriptor["recursive_field_direct_source_domain_parent_contract"] = (
-                dict(recursive_field_direct_source_domain_parent_contract)
-            )
-        else:
-            # Preserve the older exact-parent-signature lane when a raw audit
-            # lacks the stronger input-domain witness.  It remains safe, just
-            # more conservative; no old field approval gains the new route by
-            # resemblance.
-            descriptor["recursive_field_direct_semantic_parent"] = (
-                _recursive_field_parent_route_semantic_scope(item)
-            )
-    return descriptor
-
-
-def source_record_differential_item_descriptor_sha256(
-    item: Mapping[str, Any], *, section: str
-) -> str:
-    return _canonical_digest(source_record_differential_item_descriptor(item, section=section))
-
-
-def _raw_formalization_scope_descriptor(
-    payload: Mapping[str, Any],
-) -> dict[str, str]:
-    """Bind every differential group to the raw formalization-scope surface.
-
-    Scope is a paper-level semantic boundary rather than an item receipt. A
-    local input may look unchanged while its governing scope has changed, so a
-    scope refresh must trigger narrow manual review. Preserve the distinction
-    between an explicit null scope and a legacy raw audit that omits it.
-    """
-
-    if "formalization_scope" not in payload:
-        return {"state": "absent"}
-    scope = payload.get("formalization_scope")
-    if scope is None:
-        return {"state": "explicit_null"}
-    return {"state": "present", "sha256": _canonical_digest(scope)}
-
-
-def _raw_item_groups(
-    payload: Mapping[str, Any],
-) -> tuple[dict[str, dict[str, object]], dict[str, str]]:
-    """Collect every response group, including aggregate-only raw members."""
-
-    recursive_parent_contracts = (
-        _recursive_field_direct_source_domain_parent_contracts(payload)
-    )
-    grouped: dict[str, list[tuple[str, Mapping[str, Any]]]] = {}
-    errors: dict[str, str] = {}
-    for section in SOURCE_RECORD_REUSABLE_ITEM_SECTIONS:
-        raw_items = payload.get(section)
-        if raw_items is None:
-            continue
-        if not isinstance(raw_items, list):
-            errors[f"<section:{section}>"] = "raw audit section is not a list"
-            continue
-        for raw_item in raw_items:
-            if not isinstance(raw_item, Mapping):
-                errors[f"<section:{section}>"] = "raw audit contains a non-object item"
-                continue
-            if source_record_item_is_nonreusable_theorem_facing_mirror(
-                section, raw_item
-            ):
-                continue
-            key = str(raw_item.get("judgment_key") or "").strip()
-            if not key:
-                # Keyless generated artifacts remain tied to the raw aggregate
-                # receipt.  They cannot consume a response and therefore do
-                # not belong to a sidecar differential group.
-                continue
-            grouped.setdefault(key, []).append((section, raw_item))
-
-    groups: dict[str, dict[str, object]] = {}
-    for key, members in grouped.items():
-        member_descriptors = [
-            {
-                "section": section,
-                "descriptor": source_record_differential_item_descriptor(
-                    item,
-                    section=section,
-                    recursive_field_direct_source_domain_parent_contract=(
-                        recursive_parent_contracts.get(id(item))
-                        if section == "recursive_field_items"
-                        else None
-                    ),
-                ),
-            }
-            for section, item in members
-        ]
-        member_descriptors.sort(
-            key=lambda entry: json.dumps(entry, sort_keys=True, separators=(",", ":"))
-        )
-        descriptor: dict[str, object] = {
-            "schema": SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_SCHEMA,
-            "raw_formalization_scope": _raw_formalization_scope_descriptor(payload),
-            "members": member_descriptors,
-        }
-        groups[key] = {
-            "descriptor": descriptor,
-            "descriptor_sha256": _canonical_digest(descriptor),
-            # Retained in memory only.  The serialized overlay carries the
-            # descriptor, while a loader must inspect these generated current
-            # associations before it can rebind a response provenance pin.
-            "raw_members": list(members),
-            "semantic_model_items": [
-                dict(item)
-                for section, item in members
-                if section == "semantic_model_items"
-            ],
-            # Kept only in memory.  The descriptor contains the full
-            # name-independent contract, while association-pin transport
-            # needs the same derived contract to be recomputed by the loader.
-            _DIRECT_SOURCE_DOMAIN_PARENT_CONTRACTS_FIELD: {
-                id(item): recursive_parent_contracts[id(item)]
-                for section, item in members
-                if section == "recursive_field_items"
-                and id(item) in recursive_parent_contracts
-            },
-        }
-    return groups, errors
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def _archived_source_status_projection_normalized_group(
@@ -2027,7 +788,7 @@ def _archived_source_status_projection_normalized_group(
         member_descriptors.append(
             {
                 "section": section,
-                "descriptor": source_record_differential_item_descriptor(
+                "descriptor": OBLIGATIONS.source_record_obligation_descriptor(
                     item, section=section
                 ),
             }
@@ -2053,39 +814,6 @@ def _archived_source_status_projection_normalized_group(
     return normalized_group, changed, ""
 
 
-def _archived_source_status_projection_normalized_index(
-    groups: Mapping[str, Mapping[str, object]],
-    bridge: ValidatedArchivedSourceStatusProjectionBridge,
-) -> tuple[
-    dict[str, list[tuple[str, Mapping[str, object], bool]]],
-    dict[str, Mapping[str, object]],
-    dict[str, str],
-]:
-    """Index all prior groups by their bridge-normalized descriptor class.
-
-    Unchanged groups remain in this index too.  That prevents a changed
-    archived group from consuming a current descriptor that an independently
-    unchanged archived group also occupies; unique pairing is checked over the
-    entire normalized population rather than only a hand-picked migration set.
-    """
-
-    indexed: dict[str, list[tuple[str, Mapping[str, object], bool]]] = {}
-    normalized_groups: dict[str, Mapping[str, object]] = {}
-    errors: dict[str, str] = {}
-    for key, group in groups.items():
-        normalized, changed, error = _archived_source_status_projection_normalized_group(
-            group, bridge
-        )
-        if error or normalized is None:
-            errors[key] = error or "could not normalize archived source-status group"
-            continue
-        digest = _sha256(normalized.get("descriptor_sha256"))
-        if not digest:
-            errors[key] = "normalized archived source-status group has no descriptor digest"
-            continue
-        normalized_groups[key] = normalized
-        indexed.setdefault(digest, []).append((key, normalized, changed))
-    return indexed, normalized_groups, errors
 
 
 def _complete_reissue_raw_group_identity(
@@ -2349,7 +1077,18 @@ def _complete_reissue_aggregate_metadata_identity(
     """
 
     normalized = copy.deepcopy(dict(payload))
-    for path in _COMPLETE_REISSUE_GENERATED_RECEIPT_PATHS:
+    surface_schema = payload.get(SOURCE_RECORD_AUDIT_SURFACE_SCHEMA_FIELD)
+    if surface_schema not in {
+        LEGACY_SOURCE_RECORD_AUDIT_SURFACE_SCHEMA,
+        SOURCE_RECORD_AUDIT_SURFACE_SCHEMA,
+    }:
+        return None, "raw audit has an unsupported aggregate-surface schema"
+    generated_receipt_paths = list(_COMPLETE_REISSUE_GENERATED_RECEIPT_PATHS)
+    if surface_schema == SOURCE_RECORD_AUDIT_SURFACE_SCHEMA:
+        generated_receipt_paths.extend(
+            _COMPLETE_REISSUE_COMPACT_GENERATED_RECEIPT_PATHS
+        )
+    for path in generated_receipt_paths:
         present, value = _complete_reissue_path_value(payload, path)
         if not present or not _sha256(value):
             return (
@@ -2362,10 +1101,23 @@ def _complete_reissue_aggregate_metadata_identity(
             normalized, path, "<complete-reissue-generated-receipt>"
         )
 
+    logical_surface = source_record_audit_surface_view(payload)
+    if not isinstance(logical_surface, Mapping):
+        return None, "raw audit has no authenticated logical aggregate surface"
+    raw_projection = logical_surface.get("raw_evidence_projection")
+    logical_selected_locations = (
+        (payload, _COMPLETE_REISSUE_SELECTED_PROJECTION_TAIL),
+        (logical_surface, _COMPLETE_REISSUE_SELECTED_PROJECTION_TAIL),
+        (raw_projection, _COMPLETE_REISSUE_SELECTED_PROJECTION_TAIL),
+    )
     selected_values: list[str] = []
     selected_presence: list[bool] = []
-    for path in _COMPLETE_REISSUE_SELECTED_PROJECTION_PATHS:
-        present, value = _complete_reissue_path_value(payload, path)
+    for container, path in logical_selected_locations:
+        present, value = (
+            _complete_reissue_path_value(container, path)
+            if isinstance(container, Mapping)
+            else (False, None)
+        )
         selected_presence.append(present)
         if present:
             digest = _sha256(value)
@@ -2387,8 +1139,16 @@ def _complete_reissue_aggregate_metadata_identity(
             None,
             "raw audit's replicated selected semantic-projection receipts disagree",
         )
-    for path in _COMPLETE_REISSUE_SELECTED_PROJECTION_PATHS:
-        if selected_values:
+    if selected_values:
+        # Schema 1 serialized all three logical copies. Schema 2 serializes
+        # only the canonical top-level value; its two surface digests above
+        # authenticate the reconstructed logical copies.
+        serialized_selected_paths = [
+            path
+            for path in _COMPLETE_REISSUE_SELECTED_PROJECTION_PATHS
+            if _complete_reissue_path_value(payload, path)[0]
+        ]
+        for path in serialized_selected_paths:
             _complete_reissue_replace_path(
                 normalized, path, "<complete-reissue-selected-semantic-projection>"
             )
@@ -2398,7 +1158,7 @@ def _complete_reissue_aggregate_metadata_identity(
         "policy": SOURCE_RECORD_COMPLETE_REISSUE_AGGREGATE_DELTA_POLICY,
         "generated_receipt_paths": [
             _complete_reissue_path_label(path)
-            for path in _COMPLETE_REISSUE_GENERATED_RECEIPT_PATHS
+            for path in generated_receipt_paths
         ],
         "selected_semantic_projection_path_state": (
             "replicated" if selected_values else "absent"
@@ -3630,41 +2390,6 @@ def _descriptor_index(
     return indexed
 
 
-def _current_reuse_exclusion_record(
-    path: Path | None,
-    *,
-    paper: str,
-    current_raw_audit: Mapping[str, Any],
-    current_descriptor_index: Mapping[
-        str, list[tuple[str, Mapping[str, object]]]
-    ],
-) -> tuple[dict[str, str], dict[str, Any] | None]:
-    """Load a reviewed descriptor-only exclusion artifact for one raw receipt."""
-
-    if path is None:
-        return {}, None
-    try:
-        artifact = _read_json_object(path)
-    except SourceRecordDifferentialRevalidationError:
-        raise
-    if error := _reuse_exclusions_artifact_error(
-        artifact, paper=paper, current_raw_audit=current_raw_audit
-    ):
-        raise SourceRecordDifferentialRevalidationError(error)
-    record = _reuse_exclusions_record(artifact, path)
-    if error := _reuse_exclusions_record_error(
-        record, paper=paper, current_raw_audit=current_raw_audit
-    ):
-        raise SourceRecordDifferentialRevalidationError(error)
-    reasons = _reuse_exclusion_reason_ledger(
-        artifact.get(SOURCE_RECORD_DIFFERENTIAL_REUSE_EXCLUSIONS_REASONS_FIELD),
-        label="reuse-exclusions artifact",
-    )
-    if error := _reuse_exclusions_current_group_error(
-        reasons, current_descriptor_index
-    ):
-        raise SourceRecordDifferentialRevalidationError(error)
-    return reasons, record
 
 
 def _overlay_without_integrity(payload: Mapping[str, Any]) -> dict[str, Any]:
@@ -3679,740 +2404,8 @@ def source_record_differential_revalidation_sha256(payload: Mapping[str, Any]) -
     return _canonical_digest(_overlay_without_integrity(payload))
 
 
-def stamp_source_record_differential_revalidation(payload: dict[str, Any]) -> None:
-    payload[SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_INTEGRITY_FIELD] = (
-        source_record_differential_revalidation_sha256(payload)
-    )
 
 
-def build_source_record_differential_revalidation(
-    *,
-    paper: str,
-    prior_raw_audit: Mapping[str, Any],
-    prior_judgments: Mapping[str, Any],
-    current_raw_audit: Mapping[str, Any],
-    prior_raw_audit_path: Path,
-    prior_judgments_path: Path,
-    current_raw_audit_path: Path,
-    reuse_exclusions_path: Path | None = None,
-    require_complete_reusable_section_identity: bool = False,
-    prior_current_revalidation_attestation_path: Path | None = None,
-    archived_source_status_projection_bridge_path: Path | None = None,
-) -> dict[str, Any]:
-    """Build a v10 overlay for all uniquely unchanged semantic groups.
-
-    A changed or ambiguous group is reported in ``manual_review_required`` and
-    deliberately omitted from ``items``.  This lets a reviewer write fresh
-    ordinary-sidecar responses only for changed material without asserting a
-    new aggregate receipt for unrelated historical judgments.  The opt-in
-    ``require_complete_reusable_section_identity`` mode is stricter: every
-    reusable raw section, generated descriptor, and non-receipt aggregate
-    field must remain canonically identical.
-    """
-
-    for label, raw in (("prior", prior_raw_audit), ("current", current_raw_audit)):
-        error = _raw_audit_error(raw, paper=paper, label=label)
-        if error:
-            raise SourceRecordDifferentialRevalidationError(error)
-    if (
-        prior_judgments.get("schema") != 1
-        or prior_judgments.get("paper") != paper
-        or _payload_is_non_evidence(prior_judgments)
-    ):
-        raise SourceRecordDifferentialRevalidationError(
-            "prior source-record sidecar is not saved evidence for this paper"
-        )
-    if (
-        str(prior_judgments.get("prompt_version") or "").strip()
-        != SOURCE_RECORD_V10_PROMPT_VERSION
-    ):
-        raise SourceRecordDifferentialRevalidationError(
-            "prior source-record sidecar does not use the v10 source-record prompt"
-        )
-    raw_judgments = prior_judgments.get("items") or prior_judgments.get(
-        "field_judgments"
-    )
-    if not isinstance(raw_judgments, Mapping):
-        raise SourceRecordDifferentialRevalidationError(
-            "prior source-record sidecar has no item ledger"
-        )
-    if prior_current_revalidation_attestation_path is not None and not (
-        require_complete_reusable_section_identity
-    ):
-        raise SourceRecordDifferentialRevalidationError(
-            "a prior current-revalidation attestation is valid only for complete receipt reissue"
-        )
-    if archived_source_status_projection_bridge_path is not None and (
-        require_complete_reusable_section_identity
-    ):
-        raise SourceRecordDifferentialRevalidationError(
-            "an archived source-status bridge is valid only for differential descriptor reuse, not complete receipt reissue"
-        )
-    archived_source_status_bridge: ValidatedArchivedSourceStatusProjectionBridge | None = None
-    archived_source_status_bridge_record: dict[str, str] | None = None
-    if archived_source_status_projection_bridge_path is not None:
-        archived_source_status_bridge, archived_source_status_bridge_record, bridge_error = (
-            _archived_source_status_projection_bridge_context(
-                bridge_path=archived_source_status_projection_bridge_path,
-                paper=paper,
-                paper_dir=ROOT / "papers" / paper,
-                prior_raw_audit=prior_raw_audit,
-                prior_raw_audit_path=prior_raw_audit_path,
-                prior_judgments=prior_judgments,
-                prior_judgments_path=prior_judgments_path,
-                current_raw_audit=current_raw_audit,
-                current_raw_audit_path=current_raw_audit_path,
-            )
-        )
-        if bridge_error or archived_source_status_bridge is None or archived_source_status_bridge_record is None:
-            raise SourceRecordDifferentialRevalidationError(
-                "archived source-status projection bridge is invalid: " + bridge_error
-            )
-    attested_current_revalidation: dict[str, object] | None = None
-    if require_complete_reusable_section_identity:
-        for path, payload, label in (
-            (prior_raw_audit_path, prior_raw_audit, "prior raw audit"),
-            (current_raw_audit_path, current_raw_audit, "current raw audit"),
-            (prior_judgments_path, prior_judgments, "prior judgment sidecar"),
-        ):
-            if file_error := _exact_json_file_payload_error(path, payload, label=label):
-                raise SourceRecordDifferentialRevalidationError(file_error)
-        current_revalidation_metadata = prior_judgments.get(
-            "current_semantic_revalidation"
-        )
-        if isinstance(current_revalidation_metadata, Mapping):
-            if prior_current_revalidation_attestation_path is None:
-                raise SourceRecordDifferentialRevalidationError(
-                    "complete receipt reissue of an attested candidate requires its exact attestation path"
-                )
-            attested_current_revalidation, attestation_error = (
-                _complete_reissue_attested_current_revalidation_record(
-                    paper=paper,
-                    paper_dir=ROOT / "papers" / paper,
-                    raw_audit=prior_raw_audit,
-                    candidate_sidecar=prior_judgments,
-                    candidate_sidecar_path=prior_judgments_path,
-                    attestation_path=prior_current_revalidation_attestation_path,
-                )
-            )
-            if attestation_error or attested_current_revalidation is None:
-                raise SourceRecordDifferentialRevalidationError(
-                    "complete receipt reissue candidate current revalidation is invalid: "
-                    + attestation_error
-                )
-        elif prior_current_revalidation_attestation_path is not None:
-            raise SourceRecordDifferentialRevalidationError(
-                "complete receipt reissue was given a current-revalidation attestation but the candidate sidecar has no matching metadata"
-            )
-
-    prior_groups, prior_group_errors = _raw_item_groups(prior_raw_audit)
-    current_groups, current_group_errors = _raw_item_groups(current_raw_audit)
-    complete_reissue_identity: dict[str, object] | None = None
-    if require_complete_reusable_section_identity:
-        if set(raw_judgments) != set(prior_groups):
-            missing = sorted(set(prior_groups) - set(raw_judgments))
-            extra = sorted(set(raw_judgments) - set(prior_groups))
-            raise SourceRecordDifferentialRevalidationError(
-                "complete receipt reissue requires an exact candidate response ledger"
-                + (f"; missing={missing[:3]}" if missing else "")
-                + (f"; extra={extra[:3]}" if extra else "")
-            )
-        if prior_group_errors or current_group_errors:
-            raise SourceRecordDifferentialRevalidationError(
-                "complete receipt reissue requires generated groups without raw grouping errors"
-            )
-        prior_identity, prior_identity_error = _complete_reusable_section_identity(
-            prior_raw_audit, prior_groups
-        )
-        current_identity, current_identity_error = _complete_reusable_section_identity(
-            current_raw_audit, current_groups
-        )
-        prior_aggregate, prior_aggregate_error = (
-            _complete_reissue_aggregate_metadata_identity(prior_raw_audit)
-        )
-        current_aggregate, current_aggregate_error = (
-            _complete_reissue_aggregate_metadata_identity(current_raw_audit)
-        )
-        if prior_identity_error or prior_identity is None:
-            raise SourceRecordDifferentialRevalidationError(
-                "complete receipt reissue prior identity is invalid: "
-                + prior_identity_error
-            )
-        if current_identity_error or current_identity is None:
-            raise SourceRecordDifferentialRevalidationError(
-                "complete receipt reissue current identity is invalid: "
-                + current_identity_error
-            )
-        if prior_aggregate_error or prior_aggregate is None:
-            raise SourceRecordDifferentialRevalidationError(
-                "complete receipt reissue prior aggregate metadata is invalid: "
-                + prior_aggregate_error
-            )
-        if current_aggregate_error or current_aggregate is None:
-            raise SourceRecordDifferentialRevalidationError(
-                "complete receipt reissue current aggregate metadata is invalid: "
-                + current_aggregate_error
-            )
-        complete_reissue_identity = {
-            "schema": SOURCE_RECORD_COMPLETE_REISSUE_IDENTITY_SCHEMA,
-            "mode": SOURCE_RECORD_COMPLETE_REISSUE_IDENTITY_MODE,
-            "prior": prior_identity,
-            "current": current_identity,
-            "allowed_aggregate_metadata_delta": {
-                "prior": prior_aggregate,
-                "current": current_aggregate,
-            },
-        }
-        complete_reissue_error = _complete_reusable_section_identity_error(
-            complete_reissue_identity,
-            prior_raw_audit=prior_raw_audit,
-            prior_groups=prior_groups,
-            current_raw_audit=current_raw_audit,
-            current_groups=current_groups,
-        )
-        if complete_reissue_error:
-            raise SourceRecordDifferentialRevalidationError(complete_reissue_error)
-    prior_index = _descriptor_index(prior_groups)
-    current_index = _descriptor_index(current_groups)
-    archived_source_status_normalized_index: dict[
-        str, list[tuple[str, Mapping[str, object], bool]]
-    ] = {}
-    archived_source_status_normalized_groups: dict[str, Mapping[str, object]] = {}
-    archived_source_status_normalized_errors: dict[str, str] = {}
-    if archived_source_status_bridge is not None:
-        (
-            archived_source_status_normalized_index,
-            archived_source_status_normalized_groups,
-            archived_source_status_normalized_errors,
-        ) = _archived_source_status_projection_normalized_index(
-            prior_groups, archived_source_status_bridge
-        )
-    reuse_exclusion_reasons, reuse_exclusions_record = (
-        _current_reuse_exclusion_record(
-            reuse_exclusions_path,
-            paper=paper,
-            current_raw_audit=current_raw_audit,
-            current_descriptor_index=current_index,
-        )
-    )
-    prior_provenance = _raw_audit_provenance(prior_raw_audit, prior_raw_audit_path)
-    current_provenance = _raw_audit_provenance(current_raw_audit, current_raw_audit_path)
-    prior_digest = prior_provenance["source_record_audit_sha256"]
-
-    items: dict[str, dict[str, Any]] = {}
-    decisions: list[dict[str, str]] = []
-    preserved_current_keys: set[str] = set()
-
-    # Ordinary reuse matches only through a unique descriptor class.  The
-    # opt-in complete-receipt path is different: it retains the same sidecar
-    # storage address only after the complete prior/current raw group at that
-    # address is proven identical.  It never remaps a renamed key.
-    for prior_key, prior_group in sorted(prior_groups.items()):
-        raw_value = raw_judgments.get(prior_key)
-        if not isinstance(raw_value, Mapping):
-            decisions.append(
-                {
-                    "prior_judgment_key": prior_key,
-                    "status": "not_reused",
-                    "reason": "no prior saved response for this generated group",
-                }
-            )
-            continue
-        if prior_key in prior_group_errors:
-            decisions.append(
-                {
-                    "prior_judgment_key": prior_key,
-                    "status": "not_reused",
-                    "reason": "prior raw group is malformed",
-                }
-            )
-            continue
-        descriptor_sha = _sha256(prior_group.get("descriptor_sha256"))
-        comparison_prior_group: Mapping[str, object] = prior_group
-        comparison_descriptor_sha = descriptor_sha
-        archived_source_status_bridge_used = False
-        complete_group_identity: dict[str, object] | None = None
-        source_free_recursive_identity: dict[str, object] | None = None
-        source_free_content_fallback_used = False
-        if require_complete_reusable_section_identity:
-            # A key is not used as a semantic matcher here. It is a direct
-            # ledger address that must still name an exact full raw group on
-            # both authenticated receipts. A rename therefore fails closed.
-            current_key = prior_key
-            current_group = current_groups.get(current_key)
-            if not isinstance(current_group, Mapping):
-                decisions.append(
-                    {
-                        "prior_judgment_key": prior_key,
-                        "status": "not_reused",
-                        "reason": "complete receipt reissue current raw group is absent at the archived storage address",
-                    }
-                )
-                continue
-            prior_raw_group, prior_raw_group_error = (
-                _complete_reissue_raw_group_identity(prior_group)
-            )
-            current_raw_group, current_raw_group_error = (
-                _complete_reissue_raw_group_identity(current_group)
-            )
-            if prior_raw_group_error or prior_raw_group is None:
-                decisions.append(
-                    {
-                        "prior_judgment_key": prior_key,
-                        "status": "not_reused",
-                        "reason": "complete receipt reissue prior raw group is invalid: "
-                        + prior_raw_group_error,
-                    }
-                )
-                continue
-            if current_raw_group_error or current_raw_group is None:
-                decisions.append(
-                    {
-                        "prior_judgment_key": prior_key,
-                        "current_judgment_key": current_key,
-                        "status": "not_reused",
-                        "reason": "complete receipt reissue current raw group is invalid: "
-                        + current_raw_group_error,
-                    }
-                )
-                continue
-            complete_group_identity = {
-                "schema": SOURCE_RECORD_COMPLETE_REISSUE_GROUP_IDENTITY_SCHEMA,
-                "prior": prior_raw_group,
-                "current": current_raw_group,
-            }
-            if group_identity_error := _complete_reissue_raw_group_identity_error(
-                complete_group_identity,
-                prior_group=prior_group,
-                current_group=current_group,
-            ):
-                decisions.append(
-                    {
-                        "prior_judgment_key": prior_key,
-                        "current_judgment_key": current_key,
-                        "status": "not_reused",
-                        "reason": group_identity_error,
-                    }
-                )
-                continue
-        else:
-            if reuse_error := _group_differential_reuse_error(
-                prior_group, response=raw_value
-            ):
-                decisions.append(
-                    {
-                        "prior_judgment_key": prior_key,
-                        "status": "not_reused",
-                        "reason": reuse_error,
-                    }
-                )
-                continue
-            prior_matches = prior_index.get(descriptor_sha, [])
-            current_matches = current_index.get(descriptor_sha, [])
-            if len(prior_matches) == 1 and len(current_matches) == 1:
-                current_key, current_group = current_matches[0]
-            else:
-                # A source-free recursively audited group can have duplicate
-                # semantic descriptors because a field/record spelling is
-                # deliberately not semantic identity.  It may select a
-                # current candidate through its complete name-free raw content
-                # only when that candidate is one-to-one in the *current*
-                # descriptor class.  The strict full raw-group witness below
-                # still rejects any navigation or generated-content change.
-                prior_source_free_candidate, prior_source_free_candidate_error = (
-                    _source_free_recursive_structural_identity(
-                        prior_group, response=raw_value
-                    )
-                )
-                content_matches: list[tuple[str, Mapping[str, object]]] = []
-                if (
-                    not prior_source_free_candidate_error
-                    and prior_source_free_candidate is not None
-                ):
-                    content_identity = prior_source_free_candidate.get(
-                        "semantic_content_identity"
-                    )
-                    if isinstance(content_identity, Mapping):
-                        content_matches = _source_free_recursive_content_identity_matches(
-                            current_matches, target=content_identity
-                        )
-                if len(content_matches) == 1:
-                    current_key, current_group = content_matches[0]
-                    source_free_content_fallback_used = True
-                else:
-                    normalized_group = archived_source_status_normalized_groups.get(
-                        prior_key
-                    )
-                    normalized_descriptor_sha = (
-                        _sha256(normalized_group.get("descriptor_sha256"))
-                        if isinstance(normalized_group, Mapping)
-                        else ""
-                    )
-                    normalized_matches = (
-                        archived_source_status_normalized_index.get(
-                            normalized_descriptor_sha, []
-                        )
-                        if normalized_descriptor_sha
-                        else []
-                    )
-                    changed_by_bridge = bool(
-                        len(normalized_matches) == 1
-                        and normalized_matches[0][0] == prior_key
-                        and normalized_matches[0][2]
-                    )
-                    current_matches = current_index.get(
-                        normalized_descriptor_sha, []
-                    )
-                    if (
-                        prior_key in archived_source_status_normalized_errors
-                        or not isinstance(normalized_group, Mapping)
-                        or not changed_by_bridge
-                        or len(normalized_matches) != 1
-                        or len(current_matches) != 1
-                    ):
-                        decisions.append(
-                            {
-                                "prior_judgment_key": prior_key,
-                                "status": "not_reused",
-                                "reason": (
-                                    "prior/current semantic descriptor is absent or ambiguous"
-                                    if prior_key
-                                    not in archived_source_status_normalized_errors
-                                    else "archived source-status bridge could not normalize the prior semantic group"
-                                ),
-                            }
-                        )
-                        continue
-                    _normalized_key, comparison_prior_group, _normalized_changed = (
-                        normalized_matches[0]
-                    )
-                    comparison_descriptor_sha = normalized_descriptor_sha
-                    current_key, current_group = current_matches[0]
-                    archived_source_status_bridge_used = True
-            if reuse_error := _group_differential_reuse_error(
-                current_group, response=raw_value
-            ):
-                decisions.append(
-                    {
-                        "prior_judgment_key": prior_key,
-                        "current_judgment_key": current_key,
-                        "status": "not_reused",
-                        "reason": reuse_error,
-                    }
-                )
-                continue
-            if source_free_content_fallback_used and (
-                _group_has_semantic_model_obligation(prior_group)
-                or _group_has_semantic_model_obligation(current_group)
-            ):
-                decisions.append(
-                    {
-                        "prior_judgment_key": prior_key,
-                        "current_judgment_key": current_key,
-                        "status": "not_reused",
-                        "reason": "source-free recursive content fallback cannot select a semantic-model group",
-                    }
-                )
-                continue
-            prior_source_free_identity, prior_source_free_error = (
-                _source_free_recursive_structural_identity(
-                    comparison_prior_group, response=raw_value
-                )
-            )
-            current_source_free_identity, current_source_free_error = (
-                _source_free_recursive_structural_identity(
-                    current_group, response=raw_value
-                )
-            )
-            if prior_source_free_error or current_source_free_error:
-                decisions.append(
-                    {
-                        "prior_judgment_key": prior_key,
-                        "current_judgment_key": current_key,
-                        "status": "not_reused",
-                        "reason": (
-                            prior_source_free_error
-                            or current_source_free_error
-                        ),
-                    }
-                )
-                continue
-            if (prior_source_free_identity is None) != (
-                current_source_free_identity is None
-            ):
-                decisions.append(
-                    {
-                        "prior_judgment_key": prior_key,
-                        "current_judgment_key": current_key,
-                        "status": "not_reused",
-                        "reason": "source-free recursive structural lane differs between prior and current groups",
-                    }
-                )
-                continue
-            if prior_source_free_identity is not None:
-                if canonical_digest_payload(prior_source_free_identity) != canonical_digest_payload(
-                    current_source_free_identity
-                ):
-                    decisions.append(
-                        {
-                            "prior_judgment_key": prior_key,
-                            "current_judgment_key": current_key,
-                            "status": "not_reused",
-                            "reason": "source-free recursive full raw-member identity differs",
-                        }
-                    )
-                    continue
-                source_free_recursive_identity = (
-                    prior_source_free_identity
-                    if source_free_content_fallback_used
-                    else {
-                        "schema": prior_source_free_identity["schema"],
-                        "raw_group_identity": prior_source_free_identity[
-                            "raw_group_identity"
-                        ],
-                    }
-                )
-        if canonical_digest_payload(comparison_prior_group["descriptor"]) != canonical_digest_payload(
-            current_group["descriptor"]
-        ):
-            decisions.append(
-                {
-                    "prior_judgment_key": prior_key,
-                    "status": "not_reused",
-                    "reason": "prior/current exact semantic descriptor differs",
-                }
-            )
-            continue
-        exclusion_reason = reuse_exclusion_reasons.get(comparison_descriptor_sha)
-        if exclusion_reason is not None:
-            decisions.append(
-                {
-                    "prior_judgment_key": prior_key,
-                    "current_judgment_key": current_key,
-                    "current_group_semantic_descriptor_sha256": comparison_descriptor_sha,
-                    "status": "not_reused",
-                    "reason": (
-                        "reviewer required fresh current semantic revalidation: "
-                        + exclusion_reason
-                    ),
-                }
-            )
-            continue
-        judgment_error = _judgment_metadata_error(
-            raw_value,
-            prior_judgments,
-            prior_group,
-            prior_audit_digest=prior_digest,
-        )
-        if judgment_error:
-            decisions.append(
-                {
-                    "prior_judgment_key": prior_key,
-                    "status": "not_reused",
-                    "reason": judgment_error,
-                }
-            )
-            continue
-        if current_key in items:
-            # A descriptor class was unique above. This guards future changes
-            # to grouping/indexing before a second response can race for one
-            # current obligation.
-            decisions.append(
-                {
-                    "prior_judgment_key": prior_key,
-                    "status": "not_reused",
-                    "reason": "two prior responses resolve to one current semantic group",
-                }
-            )
-            continue
-        inherited = _materialize_prior_response(raw_value, prior_judgments)
-        if require_complete_reusable_section_identity:
-            semantic_association_rebind = None
-            rebind_error = _complete_reissue_response_semantic_association_error(
-                inherited, prior_group
-            ) or _complete_reissue_response_semantic_association_error(
-                inherited, current_group
-            )
-        else:
-            effective_inherited = (
-                rebound_archived_source_status_response(
-                    inherited, archived_source_status_bridge
-                )
-                if archived_source_status_bridge_used
-                else inherited
-            )
-            if effective_inherited is None:
-                semantic_association_rebind, rebind_error = (
-                    None,
-                    "archived source-status bridge would bind the response to multiple current semantic associations",
-                )
-            else:
-                semantic_association_rebind, rebind_error = (
-                    _semantic_association_rebind_receipt(
-                        effective_inherited,
-                        prior_group=comparison_prior_group,
-                        current_group=current_group,
-                    )
-                )
-        if rebind_error:
-            decisions.append(
-                {
-                    "prior_judgment_key": prior_key,
-                    "current_judgment_key": current_key,
-                    "status": "not_reused",
-                    "reason": rebind_error,
-                }
-            )
-            continue
-        overlay_metadata: dict[str, Any] = {
-            "schema": SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_SCHEMA,
-            "policy_version": SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_POLICY_VERSION,
-            "prior_judgment_key": prior_key,
-            "current_judgment_key": current_key,
-            "prior_raw_audit": prior_provenance,
-            "current_raw_audit": current_provenance,
-            "prior_group_semantic_descriptor": prior_group["descriptor"],
-            "prior_group_semantic_descriptor_sha256": prior_group[
-                "descriptor_sha256"
-            ],
-            "current_group_semantic_descriptor": current_group["descriptor"],
-            "current_group_semantic_descriptor_sha256": current_group[
-                "descriptor_sha256"
-            ],
-        }
-        if archived_source_status_bridge_used:
-            if archived_source_status_bridge_record is None:
-                raise SourceRecordDifferentialRevalidationError(
-                    "archived source-status bridge reuse lacks bridge provenance"
-                )
-            overlay_metadata[ARCHIVED_SOURCE_STATUS_PROJECTION_BRIDGE_FIELD] = (
-                copy.deepcopy(archived_source_status_bridge_record)
-            )
-            overlay_metadata[
-                ARCHIVED_SOURCE_STATUS_PROJECTION_NORMALIZED_DESCRIPTOR_FIELD
-            ] = copy.deepcopy(comparison_prior_group["descriptor"])
-            overlay_metadata[
-                ARCHIVED_SOURCE_STATUS_PROJECTION_NORMALIZED_DESCRIPTOR_SHA256_FIELD
-            ] = comparison_descriptor_sha
-        if semantic_association_rebind is not None:
-            overlay_metadata[SEMANTIC_ASSOCIATION_REBIND_FIELD] = (
-                semantic_association_rebind
-            )
-        if complete_group_identity is not None:
-            overlay_metadata[SOURCE_RECORD_COMPLETE_REISSUE_GROUP_IDENTITY_FIELD] = (
-                complete_group_identity
-            )
-        if source_free_recursive_identity is not None:
-            overlay_metadata[SOURCE_FREE_RECURSIVE_STRUCTURAL_IDENTITY_FIELD] = (
-                source_free_recursive_identity
-            )
-        # A prior current sidecar can itself have been materialized from an
-        # authenticated differential overlay.  Preserve that receipt before
-        # issuing the next overlay instead of overwriting the chain.
-        prior_history = inherited.get(
-            SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_HISTORY_FIELD
-        )
-        existing_differential = inherited.get(
-            SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_ITEM_FIELD
-        )
-        if existing_differential is not None:
-            if isinstance(prior_history, list):
-                history = copy.deepcopy(prior_history)
-            elif prior_history is None:
-                history = []
-            else:
-                raise SourceRecordDifferentialRevalidationError(
-                    "prior source-record judgment has malformed differential-revalidation history"
-                )
-            if not isinstance(existing_differential, Mapping):
-                raise SourceRecordDifferentialRevalidationError(
-                    "prior source-record judgment has malformed differential-revalidation provenance"
-                )
-            history.append(copy.deepcopy(dict(existing_differential)))
-            inherited[SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_HISTORY_FIELD] = history
-        inherited[SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_ITEM_FIELD] = overlay_metadata
-        items[current_key] = inherited
-        preserved_current_keys.add(current_key)
-        decisions.append(
-            {
-                "prior_judgment_key": prior_key,
-                "current_judgment_key": current_key,
-                "status": "reused",
-                "reason": (
-                    "exact complete raw-group identity"
-                    if complete_group_identity is not None
-                    else "unique exact semantic descriptor match"
-                ),
-            }
-        )
-
-    for key in sorted(set(current_group_errors)):
-        decisions.append(
-            {
-                "current_judgment_key": key,
-                "status": "manual_review_required",
-                "reason": "current raw group is malformed",
-            }
-        )
-    manual_review_required = [
-        {
-            "current_judgment_key": key,
-            "current_group_semantic_descriptor_sha256": group["descriptor_sha256"],
-            "reason": reuse_exclusion_reasons.get(
-                _sha256(group.get("descriptor_sha256")),
-                _group_differential_reuse_error(group)
-                or "no unique archived descriptor-identical prior response",
-            ),
-        }
-        for key, group in sorted(current_groups.items())
-        if key not in preserved_current_keys
-    ]
-    if require_complete_reusable_section_identity and (
-        manual_review_required
-        or len(items) != len(current_groups)
-        or set(items) != set(current_groups)
-    ):
-        raise SourceRecordDifferentialRevalidationError(
-            "complete receipt reissue requires one authenticated reused response for every current generated group"
-        )
-
-    payload: dict[str, Any] = {
-        "schema": 1,
-        "artifact_kind": SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_ARTIFACT_KIND,
-        "revalidation_schema": SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_SCHEMA,
-        "revalidation_policy_version": SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_POLICY_VERSION,
-        "paper": paper,
-        "prompt_version": SOURCE_RECORD_V10_PROMPT_VERSION,
-        "source_record_policy_version": SOURCE_RECORD_V10_PROMPT_VERSION,
-        "prior_raw_audit": prior_provenance,
-        "prior_judgments": {
-            "path": _stable_provenance_path(prior_judgments_path),
-            "file_sha256": _file_sha256(prior_judgments_path),
-            "source_record_audit_sha256": prior_digest,
-        },
-        "current_raw_audit": current_provenance,
-        "items": items,
-        "decisions": decisions,
-        "manual_review_required": manual_review_required,
-    }
-    if reuse_exclusions_record is not None:
-        payload[SOURCE_RECORD_DIFFERENTIAL_REUSE_EXCLUSIONS_FIELD] = (
-            reuse_exclusions_record
-        )
-    if archived_source_status_bridge_record is not None:
-        payload[ARCHIVED_SOURCE_STATUS_PROJECTION_BRIDGE_FIELD] = (
-            copy.deepcopy(archived_source_status_bridge_record)
-        )
-    if complete_reissue_identity is not None:
-        payload[SOURCE_RECORD_COMPLETE_REISSUE_IDENTITY_FIELD] = (
-            complete_reissue_identity
-        )
-    if attested_current_revalidation is not None:
-        payload[SOURCE_RECORD_COMPLETE_REISSUE_CURRENT_REVALIDATION_FIELD] = (
-            attested_current_revalidation
-        )
-    stamp_source_record_differential_revalidation(payload)
-    return payload
 
 
 def _provenance_error(value: object, expected: Mapping[str, str]) -> str:
@@ -4797,7 +2790,9 @@ def _archived_overlay_items_error(
     )
     if not isinstance(prior_responses, Mapping):
         return "archived sidecar has no item ledger"
-    prior_groups, prior_group_errors = _raw_item_groups(prior_raw_audit)
+    prior_groups, prior_group_errors = OBLIGATIONS.raw_source_record_obligation_groups(
+        prior_raw_audit
+    )
     if not prior_groups:
         return "archived raw audit has no generated judgment groups"
     complete_reissue = SOURCE_RECORD_COMPLETE_REISSUE_IDENTITY_FIELD in payload
@@ -4971,44 +2966,8 @@ def _load_authenticated_source_record_differential_prior_raw(
     return prior_raw, ""
 
 
-def _source_record_differential_revalidation_archive_error(
-    payload: Mapping[str, Any], *, paper: str
-) -> str:
-    """Verify the archived evidence bytes once before any response is reused."""
-
-    _prior_raw, error = _load_authenticated_source_record_differential_prior_raw(
-        payload, paper=paper
-    )
-    return error
 
 
-def source_record_differential_revalidation_item_current(
-    value: Mapping[str, Any],
-    *,
-    paper: str,
-    paper_dir: Path,
-    current_raw_audit: Mapping[str, Any],
-) -> tuple[str, bool]:
-    """Return the uniquely matched current key and whether this item is current."""
-
-    if _raw_audit_error(current_raw_audit, paper=paper, label="current"):
-        return "", False
-    canonical_path = paper_dir / "audit" / "source_record_audit.json"
-    if not canonical_path.is_file():
-        return "", False
-    try:
-        current_provenance = _raw_audit_provenance(current_raw_audit, canonical_path)
-    except (OSError, SourceRecordDifferentialRevalidationError):
-        return "", False
-    groups, group_errors = _raw_item_groups(current_raw_audit)
-    if group_errors:
-        return "", False
-    return _source_record_differential_revalidation_item_current_from_groups(
-        value,
-        current_provenance=current_provenance,
-        groups=groups,
-        descriptor_index=_descriptor_index(groups),
-    )
 
 
 def _source_record_differential_revalidation_item_current_from_groups(
@@ -5195,13 +3154,6 @@ def is_loaded_source_record_differential_revalidation_item(value: object) -> boo
     )
 
 
-def source_record_differential_revalidation_item_has_provenance(value: object) -> bool:
-    return bool(
-        isinstance(value, Mapping)
-        and isinstance(
-            value.get(SOURCE_RECORD_DIFFERENTIAL_REVALIDATION_ITEM_FIELD), Mapping
-        )
-    )
 
 
 def copy_loaded_source_record_differential_revalidation_item(
@@ -5411,7 +3363,9 @@ def load_current_source_record_differential_revalidation_items(
     )
     if rebind_error:
         return {}
-    groups, group_errors = _raw_item_groups(current_raw_audit)
+    groups, group_errors = OBLIGATIONS.raw_source_record_obligation_groups(
+        current_raw_audit
+    )
     if group_errors:
         return {}
     prior_groups: dict[str, dict[str, object]] | None = None
@@ -5432,7 +3386,9 @@ def load_current_source_record_differential_revalidation_items(
         or archived_source_status_bridge is not None
         or has_source_free_recursive_identity
     ):
-        prior_groups, prior_group_errors = _raw_item_groups(prior_raw_audit)
+        prior_groups, prior_group_errors = OBLIGATIONS.raw_source_record_obligation_groups(
+            prior_raw_audit
+        )
         if prior_group_errors:
             return {}
     if complete_reissue:
@@ -5491,7 +3447,9 @@ def load_current_source_record_differential_revalidation_items(
             and not complete_reissue
         ):
             if prior_groups is None:
-                prior_groups, prior_group_errors = _raw_item_groups(prior_raw_audit)
+                prior_groups, prior_group_errors = OBLIGATIONS.raw_source_record_obligation_groups(
+                    prior_raw_audit
+                )
             prior_key = (
                 str(metadata.get("prior_judgment_key") or "").strip()
                 if isinstance(metadata, Mapping)
@@ -5557,140 +3515,3 @@ def load_current_source_record_differential_revalidation_items(
     if complete_reissue and set(out) != set(groups):
         return {}
     return out
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Build a semantic differential source-record v10 revalidation overlay."
-    )
-    parser.add_argument("--root", type=Path, default=ROOT)
-    parser.add_argument("--paper", required=True)
-    parser.add_argument("--prior-raw-audit", type=Path, required=True)
-    parser.add_argument("--prior-judgments", type=Path, required=True)
-    parser.add_argument("--current-raw-audit", type=Path)
-    parser.add_argument(
-        "--reuse-exclusions",
-        type=Path,
-        help=(
-            "reviewed descriptor-only exclusion artifact; each excluded current "
-            "semantic descriptor must have a nonempty reason"
-        ),
-    )
-    parser.add_argument(
-        "--require-complete-reusable-section-identity",
-        action="store_true",
-        help=(
-            "issue a strict receipt-reuse transport only when every reusable "
-            "raw section, generated descriptor, and non-receipt aggregate field "
-            "is canonically unchanged"
-        ),
-    )
-    parser.add_argument(
-        "--prior-current-revalidation-attestation",
-        type=Path,
-        help=(
-            "exact attestation for an archived candidate sidecar that declares "
-            "current semantic revalidation; required by complete receipt reissue "
-            "when that candidate metadata is present"
-        ),
-    )
-    parser.add_argument(
-        "--archived-source-status-projection-bridge",
-        type=Path,
-        help=(
-            "exact paper-local archived schema-4 direct-source-status bridge; "
-            "only unique normalized descriptor pairs may consume it"
-        ),
-    )
-    parser.add_argument(
-        "--out",
-        type=Path,
-        help=(
-            "output path; use a distinct noncanonical path for exploratory "
-            "revalidation so existing byte-pinned evidence remains replayable"
-        ),
-    )
-    parser.add_argument(
-        "--replace-byte-pinned-overlay",
-        action="store_true",
-        help=(
-            "explicitly replace an overlay whose current bytes are pinned by "
-            "selected/current or historical-composition evidence; this can make "
-            "that evidence unreplayable"
-        ),
-    )
-    parser.add_argument("--write", action="store_true")
-    return parser.parse_args()
-
-
-def main() -> int:
-    args = parse_args()
-    root = args.root.resolve()
-    paper_dir = root / "papers" / args.paper
-    current_path = args.current_raw_audit or paper_dir / "audit" / "source_record_audit.json"
-    output_path = args.out or source_record_differential_revalidation_overlay_path(
-        paper_dir
-    )
-    try:
-        overlay = build_source_record_differential_revalidation(
-            paper=args.paper,
-            prior_raw_audit=_read_json_object(args.prior_raw_audit),
-            prior_judgments=_read_json_object(args.prior_judgments),
-            current_raw_audit=_read_json_object(current_path),
-            prior_raw_audit_path=args.prior_raw_audit,
-            prior_judgments_path=args.prior_judgments,
-            current_raw_audit_path=current_path,
-            reuse_exclusions_path=args.reuse_exclusions,
-            require_complete_reusable_section_identity=(
-                args.require_complete_reusable_section_identity
-            ),
-            prior_current_revalidation_attestation_path=(
-                args.prior_current_revalidation_attestation
-            ),
-            archived_source_status_projection_bridge_path=(
-                args.archived_source_status_projection_bridge
-            ),
-        )
-    except SourceRecordDifferentialRevalidationError as exc:
-        print(f"{args.paper}: differential revalidation refused: {exc}", file=sys.stderr)
-        return 1
-    reused = len(overlay["items"])
-    manual = len(overlay["manual_review_required"])
-    if args.write:
-        contents = (json.dumps(overlay, indent=2, sort_keys=True) + "\n").encode(
-            "utf-8"
-        )
-        pinned_records = source_record_differential_write_pins(
-            paper_dir=paper_dir,
-            output_path=output_path,
-            proposed_bytes=contents,
-        )
-        if pinned_records and not args.replace_byte_pinned_overlay:
-            print(
-                f"{args.paper}: differential revalidation refused: "
-                + _byte_pinned_overlay_write_error(pinned_records),
-                file=sys.stderr,
-            )
-            return 1
-        if pinned_records:
-            print(
-                f"{args.paper}: explicitly replacing a byte-pinned differential "
-                "overlay; dependent evidence will require relocation or reissue.",
-                file=sys.stderr,
-            )
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_bytes(contents)
-        print(
-            f"{args.paper}: wrote differential v10 overlay to {output_path} "
-            f"({reused} reused; {manual} manual-review groups)"
-        )
-    else:
-        print(
-            f"{args.paper}: differential v10 overlay validates "
-            f"({reused} reused; {manual} manual-review groups); rerun with --write"
-        )
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

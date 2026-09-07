@@ -198,7 +198,7 @@
     {
       "approval": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-25: assume whatever convention makes the result true, provided it is explicit and the archival claim is not represented as proved.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-25",
         "conditions": [
           "rejected bids pay zero",
@@ -232,7 +232,7 @@
     {
       "approval": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-26: assume the convention that makes the result true, record it as an additional assumption, and do not represent an archival real-alpha statement as proved.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-26",
         "conditions": [
           "alpha is a natural-number count parameter",
@@ -266,7 +266,7 @@
     {
       "approval": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-25: assume whatever convention makes the result true, keep the convention explicit, and record it in the post-formalization report.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-25",
         "conditions": [
           "sample and market cardinalities are derived from the actual partition",
@@ -292,7 +292,7 @@
     {
       "approval": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-25: assume whatever convention makes the result true, keep the convention explicit, and record it in the post-formalization report.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-25",
         "conditions": [
           "the bidder partition is exactly half and nonempty",

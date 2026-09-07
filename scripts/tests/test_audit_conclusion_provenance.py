@@ -14,6 +14,8 @@ from pathlib import Path
 from typing import Mapping
 from unittest.mock import patch
 
+from scripts import evidence_run_context as EVIDENCE_CONTEXT
+
 from scripts import audit_evidence_integrity as EVIDENCE
 
 
@@ -331,6 +333,59 @@ class CorrectedModelConclusionBridgeTests(unittest.TestCase):
     approval_digest = fixture_sha256("bridge approval")
     archive_digest = fixture_sha256("bridge archive")
     correction_id = "FIXTURE-CORR-1"
+
+    def test_graph_native_realization_receipt_needs_no_persisted_correspondence(
+        self,
+    ) -> None:
+        atoms = [
+            {
+                "id": "source_clause",
+                "source_locator": "source.tex:10",
+                "semantic_claim": "Every feasible input has the stated outcome.",
+                "reviewed_lean_route": "Fixture.claim_proof",
+                "source_quote_sha256": fixture_sha256("verbatim source clause"),
+            }
+        ]
+        contract = {
+            "spec_declaration": "Fixture.claimSpec",
+            "evidence_declaration": "Fixture.claim_proof",
+            "evidence_mode": "proves",
+            "semantic_shape": "plain",
+        }
+        receipt_fields = {
+            "source_atoms_sha256": GATE.source_claim_atoms_semantic_sha256(atoms),
+            "spec_closure_sha256": fixture_sha256("semantic closure"),
+            "spec_surface_sha256": fixture_sha256("expanded Spec surface"),
+            "closure_environment_sha256": fixture_sha256("Lean graph environment"),
+        }
+        receipt = GATE.StrictSourceSpecCorrespondenceReceipt(
+            source_item_key="source_claim",
+            spec_declaration="Fixture.claimSpec",
+            evidence_declaration="Fixture.claim_proof",
+            evidence_mode="proves",
+            semantic_shape="plain",
+            item_identity_sha256=(
+                GATE.graph_native_source_spec_realization_identity_sha256(
+                    contract,
+                    **receipt_fields,
+                )
+            ),
+            authority="v11_graph_native_v1",
+            **receipt_fields,
+        )
+        item = {
+            "claim_bearing": True,
+            "semantic_contract": contract,
+            "source_claim_atoms": atoms,
+        }
+
+        self.assertTrue(GATE._strict_source_spec_runtime_matches_item(item, receipt))
+        self.assertNotIn("source_spec_correspondence", item)
+        changed = json.loads(json.dumps(item))
+        changed["source_claim_atoms"][0]["semantic_claim"] = "A changed claim."
+        self.assertFalse(
+            GATE._strict_source_spec_runtime_matches_item(changed, receipt)
+        )
 
     def _payload(self) -> dict[str, object]:
         semantic_item = corrected_bridge_item(
@@ -1426,7 +1481,7 @@ class SourceRecordSnapshotReuseTests(unittest.TestCase):
             core = self._core_patches()
 
             raw_snapshot_loads = 0
-            load_snapshot = EVIDENCE._load_json_snapshot
+            load_snapshot = EVIDENCE_CONTEXT.load_json_snapshot
 
             def counted_snapshot_load(path: Path) -> object:
                 nonlocal raw_snapshot_loads
@@ -1436,8 +1491,8 @@ class SourceRecordSnapshotReuseTests(unittest.TestCase):
 
             with (
                 patch.object(
-                    EVIDENCE,
-                    "_load_json_snapshot",
+                    EVIDENCE_CONTEXT,
+                    "load_json_snapshot",
                     side_effect=counted_snapshot_load,
                 ),
                 patch.object(
@@ -1554,7 +1609,8 @@ class SourceRecordSnapshotReuseTests(unittest.TestCase):
         self.assertEqual(error, "")
         self.assertIsNotNone(snapshot)
         assert snapshot is not None
-        self.assertIs(snapshot.payload, context.audit_payload)
+        state = context.require_legacy_source_record_state()
+        self.assertIs(snapshot.payload, state.inputs.audit_snapshot.payload)
         self.assertIs(snapshot.status_payload_override, context.status_payload)
         self.assertIs(
             snapshot.paper_statement_map_override,
@@ -1599,6 +1655,77 @@ class SourceRecordSnapshotReuseTests(unittest.TestCase):
             snapshot.input_raw_bytes_override[
                 context.status_snapshot.path.resolve()
             ] = b"replacement"
+
+    def test_current_v11_transfers_stale_raw_only_as_structural_inventory(
+        self,
+    ) -> None:
+        old_papers = GATE.PAPERS
+        self.addCleanup(setattr, GATE, "PAPERS", old_papers)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            self._write_fixture(root)
+            folder = root / "Fixture"
+            (folder / "status.json").write_text(
+                json.dumps({"status": "formalized"}), encoding="utf-8"
+            )
+            GATE.PAPERS = root
+            with (
+                patch.object(
+                    EVIDENCE,
+                    "_source_record_current_input_fingerprint_error",
+                    return_value="",
+                ),
+                patch.object(
+                    EVIDENCE,
+                    "_source_record_audit_identity_error",
+                    return_value="stale historical paper-map identity",
+                ),
+                patch.object(
+                    EVIDENCE,
+                    "_source_record_identity_process_watch_digest",
+                    return_value="stable-watch",
+                ),
+            ):
+                context = EVIDENCE.build_evidence_run_context(folder)
+
+            rejected, rejected_error = (
+                GATE.source_record_audit_snapshot_from_evidence_context(
+                    "Fixture", context
+                )
+            )
+            with patch.object(
+                EVIDENCE,
+                "v11_direct_semantic_review_state",
+                return_value=(True, ""),
+            ):
+                snapshot, error = (
+                    GATE.source_record_audit_snapshot_from_evidence_context(
+                        "Fixture",
+                        context,
+                        structural_v11_prevalidated=True,
+                    )
+                )
+
+            self.assertIsNone(rejected)
+            self.assertIn("stale historical paper-map identity", rejected_error)
+            self.assertEqual(error, "")
+            self.assertIsNotNone(snapshot)
+            assert snapshot is not None
+            self.assertTrue(snapshot.content_bound)
+            self.assertTrue(snapshot.structural_v11_validated)
+            self.assertFalse(snapshot.identity_validated)
+            self.assertEqual(snapshot.current_judgments_override, {})
+
+            core = self._core_patches()
+            with (
+                core[0], core[1], core[2], core[3], core[4], core[5], core[6]
+            ):
+                findings = GATE.audit_paper(
+                    "Fixture",
+                    theorem_realization_component_prevalidated=True,
+                    source_record_snapshot=snapshot,
+                )
+            self.assertEqual(findings, [])
 
     def test_evidence_context_rejects_invalid_configured_input_paths(self) -> None:
         old_papers = GATE.PAPERS
@@ -1791,7 +1918,7 @@ class SourceRecordSnapshotReuseTests(unittest.TestCase):
         )
         self.assertIs(
             snapshot.current_judgments_override,
-            context.current_source_record_judgments,
+            context.require_legacy_source_record_state().current_source_record_judgments,
         )
 
     def test_theorem_realization_uses_checked_auxiliary_absence_without_reload(

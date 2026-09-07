@@ -12,11 +12,50 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from scripts import audit_conclusion_provenance
-from scripts import audit_evidence_integrity
-from scripts import audit_repository
-from scripts import closeout_reuse_plan
-from scripts import source_record_differential_revalidation
+from scripts import (
+    audit_conclusion_provenance,
+    audit_evidence_integrity,
+    audit_repository,
+    paper_closeout_executor,
+    source_record_differential_revalidation,
+)
+from scripts.current_closeout.strict_transaction import (
+    STRICT_CLOSEOUT_EXECUTION_STAGES,
+)
+
+
+def legacy_source_record_state(
+    audit_payload: dict[str, object],
+    *,
+    audit_path: Path | None = None,
+    match_path: Path | None = None,
+    source_record_identity_error: str = "",
+) -> types.SimpleNamespace:
+    """Build an explicit typed legacy lane for consolidation fixtures."""
+
+    return types.SimpleNamespace(
+        inputs=types.SimpleNamespace(
+            audit_snapshot=types.SimpleNamespace(
+                path=(
+                    audit_path
+                    or Path("papers/Fixture/audit/source_record_audit.json")
+                ),
+                payload=audit_payload,
+            ),
+            match_snapshot=types.SimpleNamespace(
+                path=(
+                    match_path
+                    or Path("papers/Fixture/audit/source_record_match_llm.json")
+                ),
+                payload={},
+            ),
+            audit_path_error="",
+            match_path_error="",
+        ),
+        source_record_identity_error=source_record_identity_error,
+        semantic_reuse_authority=None,
+        current_source_record_judgments={},
+    )
 
 
 class PaperCloseoutConsolidationTests(unittest.TestCase):
@@ -33,9 +72,14 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
                 return_value=[],
             ),
             mock.patch.object(
-                closeout_reuse_plan,
-                "intake_freeze_readiness",
+                paper_closeout_executor,
+                "source_intake_readiness",
                 return_value={"ready": True, "errors": []},
+            ),
+            mock.patch.object(
+                audit_repository,
+                "paper_closeout_fast_route_schema_findings",
+                return_value=[],
             ),
             mock.patch.object(
                 audit_repository,
@@ -103,9 +147,8 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
             sys,
             "argv",
             ["audit_repository.py", "--paper", "Fixture", "--paper-closeout"],
-        ):
-            with self.assertRaises(SystemExit) as raised:
-                audit_repository.main()
+        ), self.assertRaises(SystemExit) as raised:
+            audit_repository.main()
         self.assertEqual(raised.exception.code, 2)
 
     def test_stateful_cli_closeout_rejects_an_unbound_plan_identity(self) -> None:
@@ -139,11 +182,109 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
 
         acquire.assert_not_called()
 
+    def test_stateful_current_cli_delegates_before_mixed_executor(self) -> None:
+        identity = "b" * 64
+        with tempfile.TemporaryDirectory() as temporary:
+            papers = Path(temporary) / "papers"
+            folder = papers / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "require_v11_raw_source_spec_screening": True
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (folder / "audit" / "paper_statement_map.json").write_text(
+                json.dumps({"items": {}}),
+                encoding="utf-8",
+            )
+            with (
+                mock.patch.object(audit_repository, "PAPERS", papers),
+                mock.patch.object(
+                    sys,
+                    "argv",
+                    [
+                        "audit_repository.py",
+                        "--paper",
+                        "Fixture",
+                        "--paper-closeout",
+                        "--operational-plan-identity",
+                        identity,
+                    ],
+                ),
+                mock.patch(
+                    "scripts.current_closeout.strict_runner.main",
+                    return_value=17,
+                ) as current,
+                mock.patch.object(
+                    audit_repository, "load_validated_closeout_plan_receipt"
+                ) as legacy_plan,
+            ):
+                self.assertEqual(audit_repository.main(), 17)
+        current.assert_called_once_with(
+            [
+                "--paper",
+                "Fixture",
+                "--operational-plan-identity",
+                identity,
+            ]
+        )
+        legacy_plan.assert_not_called()
+
+    def test_no_state_current_cli_delegates_before_mixed_executor(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            papers = Path(temporary) / "papers"
+            folder = papers / "Fixture"
+            (folder / "audit").mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "review_surface": {
+                            "require_v11_raw_source_spec_screening": True
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (folder / "audit" / "paper_statement_map.json").write_text(
+                json.dumps({"items": {}}), encoding="utf-8"
+            )
+            with (
+                mock.patch.object(audit_repository, "PAPERS", papers),
+                mock.patch.object(
+                    sys,
+                    "argv",
+                    [
+                        "audit_repository.py",
+                        "--paper",
+                        "Fixture",
+                        "--paper-closeout",
+                        "--no-closeout-state",
+                    ],
+                ),
+                mock.patch(
+                    "scripts.current_closeout.strict_runner.main", return_value=19
+                ) as current,
+                mock.patch.object(
+                    audit_repository, "load_validated_closeout_plan_receipt"
+                ) as legacy_plan,
+            ):
+                self.assertEqual(audit_repository.main(), 19)
+
+        current.assert_called_once_with(
+            ["--paper", "Fixture", "--no-closeout-state"]
+        )
+        legacy_plan.assert_not_called()
+
     def test_strict_root_build_targets_only_the_paper_root(self) -> None:
         """The strict gate must compile the delivered paper target, not a wrapper."""
 
         completed = subprocess.CompletedProcess(
-            args=["lake", "build", "Fixture"], returncode=0, stdout="", stderr=""
+            args=["lake", "build", "+Fixture"], returncode=0, stdout="", stderr=""
         )
         with mock.patch.object(
             audit_repository.subprocess, "run", return_value=completed
@@ -152,13 +293,29 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
 
         self.assertEqual(findings, [])
         run.assert_called_once_with(
-            ["env", "LEAN_NUM_THREADS=1", "lake", "build", "Fixture"],
+            ["env", "LEAN_NUM_THREADS=1", "lake", "build", "+Fixture"],
             cwd=audit_repository.ROOT,
             check=False,
             capture_output=True,
             text=True,
             timeout=900,
         )
+
+    def test_strict_root_build_rejects_zero_exit_lean_panic(self) -> None:
+        completed = subprocess.CompletedProcess(
+            args=["lake", "build", "+Fixture"],
+            returncode=0,
+            stdout="Build completed successfully.\n",
+            stderr="PANIC at Lean.Expr.appArg! Lean.Expr:926:15: application expected\nbacktrace:\n...",
+        )
+        with mock.patch.object(
+            audit_repository.subprocess, "run", return_value=completed
+        ):
+            findings = audit_repository.check_paper_root_build_closeout("Fixture")
+
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0].severity, "ERROR")
+        self.assertIn("Lean PANIC output", findings[0].message)
 
     def test_closeout_trace_uses_the_authoritative_run(self) -> None:
         trace: dict[str, object] = {}
@@ -185,23 +342,27 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
         stages = trace["stages_seconds"]
         self.assertIsInstance(stages, dict)
         assert isinstance(stages, dict)
-        self.assertEqual(
-            set(stages),
-            {
-                "closeout_artifact_preflight",
-                "acquire_exact_context",
-                "source_record_transaction_preflight",
-                "paper_root_build",
-                "primary_paper_gate",
-                "evidence_integrity",
-                "conclusion_provenance",
-                "final_input_check",
-            },
-        )
+        self.assertEqual(tuple(stages), STRICT_CLOSEOUT_EXECUTION_STAGES)
+        stage_timings = trace["strict_stage_timings"]
+        self.assertIsInstance(stage_timings, dict)
+        assert isinstance(stage_timings, dict)
+        self.assertEqual(tuple(stage_timings), STRICT_CLOSEOUT_EXECUTION_STAGES)
+        for timing in stage_timings.values():
+            self.assertIsInstance(timing, dict)
+            assert isinstance(timing, dict)
+            self.assertIsInstance(timing.get("started_at"), str)
+            self.assertIsInstance(timing.get("finished_at"), str)
+            self.assertIsInstance(timing.get("elapsed_seconds"), float)
+        self.assertIsInstance(trace.get("started_at"), str)
+        self.assertIsInstance(trace.get("finished_at"), str)
+        self.assertEqual(trace["primary_paper_gate_phases_seconds"], {})
         counters = trace["evidence_counters"]
         self.assertIsInstance(counters, dict)
         assert isinstance(counters, dict)
         self.assertEqual(counters.get("evidence_contexts_built"), 1)
+        self.assertEqual(counters.get("validation_cache_hits"), 0)
+        self.assertEqual(counters.get("validation_cache_misses"), 1)
+        self.assertEqual(counters.get("validation_cache_entries"), 1)
 
     def test_closeout_artifact_error_stops_before_exact_context(self) -> None:
         blocker = audit_repository.Finding(
@@ -216,8 +377,8 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
                 return_value=[blocker],
             ),
             mock.patch.object(
-                closeout_reuse_plan,
-                "intake_freeze_readiness",
+                paper_closeout_executor,
+                "source_intake_readiness",
                 return_value={"ready": True, "errors": []},
             ),
             mock.patch.object(
@@ -232,6 +393,167 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
             )
         self.assertEqual(findings, [blocker])
         build_context.assert_not_called()
+
+    def test_document_gate_receives_policy_from_frozen_plan_surface(self) -> None:
+        blocker = audit_repository.Finding(
+            "ERROR",
+            Path("papers/Fixture/docs/FINAL_ADVERSARIAL_REVIEW_PANEL.json"),
+            "one additional independent reviewer is required",
+        )
+        assurance = {
+            "schema": 1,
+            "source_scope": "all_named_theory",
+            "repeat_final_scope": "main_primary",
+            "required_final_adversary_count": 2,
+        }
+        with (
+            mock.patch.object(
+                paper_closeout_executor,
+                "resolved_plan_final_holistic_audit_surface",
+                return_value={"review_policy_assurance": assurance},
+            ),
+            mock.patch.object(
+                paper_closeout_executor,
+                "source_intake_readiness",
+                return_value={"ready": True, "errors": []},
+            ),
+            mock.patch.object(
+                audit_repository,
+                "check_dag_and_validation_report_closeout",
+                return_value=[blocker],
+            ) as document_gate,
+            mock.patch.object(
+                audit_repository, "build_paper_closeout_evidence_context"
+            ) as build_context,
+        ):
+            findings = paper_closeout_executor.execute_paper_closeout(
+                audit_repository,
+                paper_filter="Fixture",
+                library_premise_audit=False,
+                require_source_bytes=True,
+                deep_paper_prose=False,
+                closeout_trace=None,
+                closeout_progress_callback=None,
+                operational_plan_identity="a" * 64,
+                operational_plan_receipt={
+                    "schema": 7,
+                    "final_holistic_audit_surface_sha256": "b" * 64,
+                    "all_selected_semantic_review_sha256": "c" * 64,
+                },
+            )
+
+        self.assertEqual(findings, [blocker])
+        self.assertEqual(
+            document_gate.call_args.kwargs[
+                "final_holistic_review_policy_assurance"
+            ],
+            assurance,
+        )
+        self.assertEqual(
+            document_gate.call_args.kwargs[
+                "all_selected_semantic_review_sha256"
+            ],
+            "c" * 64,
+        )
+        build_context.assert_not_called()
+
+    def test_route_schema_error_uses_frozen_inputs_and_stops_before_lean(self) -> None:
+        blocker = audit_repository.Finding(
+            "ERROR",
+            Path("papers/Fixture/audit/paper_statement_map.json"),
+            "repaired source defect has no typed route",
+        )
+        with (
+            mock.patch.object(
+                audit_repository,
+                "check_dag_and_validation_report_closeout",
+                return_value=[],
+            ),
+            mock.patch.object(
+                paper_closeout_executor,
+                "source_intake_readiness",
+                return_value={"ready": True, "errors": []},
+            ),
+            mock.patch.object(
+                audit_repository,
+                "paper_closeout_fast_route_schema_findings",
+                return_value=[blocker],
+            ),
+            mock.patch.object(
+                audit_repository,
+                "build_paper_closeout_evidence_context",
+                return_value=mock.Mock(),
+            ) as build_context,
+            mock.patch.object(
+                audit_repository.PaperCloseoutRunContext,
+                "from_exact_evidence_context",
+            ) as build_lean_context,
+            mock.patch.object(
+                audit_repository,
+                "paper_closeout_context_mutation_findings",
+                return_value=[],
+            ) as final_input_check,
+        ):
+            findings = audit_repository.run(
+                include_active=True,
+                strict_style=False,
+                paper_filter="Fixture",
+                paper_closeout=True,
+            )
+        self.assertEqual(findings, [blocker])
+        build_context.assert_called_once()
+        build_lean_context.assert_not_called()
+        final_input_check.assert_called_once()
+
+    def test_lean_context_error_still_finalizes_frozen_evidence_inputs(self) -> None:
+        evidence_context = mock.Mock()
+        with (
+            mock.patch.object(
+                audit_repository,
+                "check_dag_and_validation_report_closeout",
+                return_value=[],
+            ),
+            mock.patch.object(
+                paper_closeout_executor,
+                "source_intake_readiness",
+                return_value={"ready": True, "errors": []},
+            ),
+            mock.patch.object(
+                audit_repository,
+                "build_paper_closeout_evidence_context",
+                return_value=evidence_context,
+            ),
+            mock.patch.object(
+                audit_repository,
+                "paper_closeout_fast_route_schema_findings",
+                return_value=[],
+            ),
+            mock.patch.object(
+                audit_repository.PaperCloseoutRunContext,
+                "from_exact_evidence_context",
+                side_effect=RuntimeError("Lean graph unavailable"),
+            ),
+            mock.patch.object(
+                audit_repository,
+                "paper_closeout_context_mutation_findings",
+                return_value=[],
+            ) as final_input_check,
+        ):
+            findings = audit_repository.run(
+                include_active=True,
+                strict_style=False,
+                paper_filter="Fixture",
+                paper_closeout=True,
+            )
+
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0].severity, "ERROR")
+        self.assertIn("Lean-backed closeout context", findings[0].message)
+        final_input_check.assert_called_once_with(
+            evidence_context,
+            diagnostics=mock.ANY,
+            build_input_provider=None,
+        )
 
     def test_primary_error_skips_later_expensive_lanes(self) -> None:
         primary = audit_repository.Finding(
@@ -288,15 +610,14 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
         """A stale raw/map pair produces one root finding, not child cascades."""
 
         evidence_context = types.SimpleNamespace(
-            audit_payload={"paper_statement_map_sha256": "a" * 64},
+            legacy_source_record_state=legacy_source_record_state(
+                {"paper_statement_map_sha256": "a" * 64},
+                source_record_identity_error=(
+                    "paper_statement_map_sha256 is stale for the current "
+                    "paper_statement_map.json"
+                ),
+            ),
             paper_statement_map_sha256="b" * 64,
-            source_record_identity_error=(
-                "paper_statement_map_sha256 is stale for the current "
-                "paper_statement_map.json"
-            ),
-            audit_snapshot=types.SimpleNamespace(
-                path=Path("papers/Fixture/audit/source_record_audit.json")
-            ),
         )
         run_context = mock.Mock()
         with (
@@ -304,6 +625,11 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
                 audit_repository,
                 "build_paper_closeout_evidence_context",
                 return_value=evidence_context,
+            ),
+            mock.patch.object(
+                audit_repository,
+                "paper_closeout_fast_route_schema_findings",
+                return_value=[],
             ),
             mock.patch.object(
                 audit_repository.PaperCloseoutRunContext,
@@ -352,12 +678,10 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
         """A byte-only map change remains reusable when freshness accepts it."""
 
         evidence_context = types.SimpleNamespace(
-            audit_payload={"paper_statement_map_sha256": "a" * 64},
-            paper_statement_map_sha256="b" * 64,
-            source_record_identity_error="",
-            audit_snapshot=types.SimpleNamespace(
-                path=Path("papers/Fixture/audit/source_record_audit.json")
+            legacy_source_record_state=legacy_source_record_state(
+                {"paper_statement_map_sha256": "a" * 64}
             ),
+            paper_statement_map_sha256="b" * 64,
         )
 
         self.assertEqual(
@@ -373,20 +697,133 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
             [],
         )
 
+    def test_exact_current_v11_context_supersedes_historical_raw_map_skew(
+        self,
+    ) -> None:
+        evidence_context = types.SimpleNamespace(
+            legacy_source_record_state=legacy_source_record_state(
+                {"paper_statement_map_sha256": "a" * 64},
+                source_record_identity_error=(
+                    "semantic-contract revalidation artifact has stale "
+                    "paper-statement-map bytes"
+                ),
+            ),
+            paper_statement_map_sha256="b" * 64,
+        )
+        run_context = types.SimpleNamespace(
+            issued_by_builder=True,
+            evidence_context=evidence_context,
+            selected_v11_closeout=True,
+            current_v11_closeout=True,
+            v11_direct_semantic_review_current=True,
+        )
+
+        self.assertEqual(
+            audit_repository.paper_closeout_evidence_context_prebuild_findings(
+                "Fixture",
+                evidence_context,
+                run_context=run_context,
+            ),
+            [],
+        )
+
+        run_context.selected_v11_closeout = False
+        run_context.current_v11_closeout = False
+        run_context.v11_direct_semantic_review_current = False
+        findings = (
+            audit_repository.paper_closeout_evidence_context_prebuild_findings(
+                "Fixture",
+                evidence_context,
+                run_context=run_context,
+            )
+        )
+        self.assertEqual(len(findings), 1)
+        self.assertIn("closeout stopped before derived validation", findings[0].message)
+
+    def test_selected_invalid_v11_stops_with_its_own_error_without_legacy_fallback(
+        self,
+    ) -> None:
+        evidence_context = types.SimpleNamespace(
+            audit_payload=None,
+            paper_statement_map_sha256="b" * 64,
+            source_record_identity_error="legacy source record is absent",
+            audit_snapshot=types.SimpleNamespace(
+                path=Path("papers/Fixture/audit/source_record_audit.json")
+            ),
+        )
+        run_context = types.SimpleNamespace(
+            issued_by_builder=True,
+            evidence_context=evidence_context,
+            selected_v11_closeout=True,
+            current_v11_closeout=False,
+            v11_lean_claim_graph_selected=True,
+            v11_direct_semantic_review_current=False,
+            v11_direct_semantic_review_error=(
+                "material library review is stale for one declaration"
+            ),
+        )
+
+        findings = audit_repository.paper_closeout_evidence_context_prebuild_findings(
+            "Fixture",
+            evidence_context,
+            run_context=run_context,
+        )
+
+        self.assertEqual(len(findings), 1)
+        self.assertIn("selected v11 semantic lane is not current", findings[0].message)
+        self.assertIn("material library review is stale", findings[0].message)
+        self.assertNotIn("legacy source record is absent", findings[0].message)
+        self.assertIn("not fallback acceptance evidence", findings[0].message)
+
+    def test_legacy_structural_inventory_never_bypasses_currentness(
+        self,
+    ) -> None:
+        historical = {
+            "paper": "Fixture",
+            "paper_statement_map_sha256": "a" * 64,
+        }
+        context = types.SimpleNamespace(
+            evidence_context=types.SimpleNamespace(audit_payload=historical),
+            current_source_record_audit=lambda: (
+                None,
+                "semantic-contract revalidation artifact has stale paper map bytes",
+            ),
+        )
+
+        payload, error = audit_repository.source_record_structural_payload_for_closeout(
+            context,
+        )
+        self.assertIsNone(payload)
+        self.assertIn("stale paper map bytes", error)
+
+    def test_current_v11_raw_source_record_has_no_competing_semantic_lane(
+        self,
+    ) -> None:
+        current = audit_repository.source_record_evidence_role_policy(
+            exact_v11_direct_current=True
+        )
+        self.assertFalse(current.raw_semantic_authority)
+        self.assertFalse(current.raw_auxiliary_routing_authority)
+
+        legacy = audit_repository.source_record_evidence_role_policy(
+            exact_v11_direct_current=False
+        )
+        self.assertTrue(legacy.raw_semantic_authority)
+        self.assertTrue(legacy.raw_auxiliary_routing_authority)
+
     def test_source_record_identity_error_stops_before_focused_build(
         self,
     ) -> None:
         """A non-map raw identity failure must not pay for a Lean build."""
 
         evidence_context = types.SimpleNamespace(
-            audit_payload={"paper_statement_map_sha256": "a" * 64},
+            legacy_source_record_state=legacy_source_record_state(
+                {"paper_statement_map_sha256": "a" * 64},
+                source_record_identity_error=(
+                    "source_record_input_fingerprint is stale for current source inputs"
+                ),
+            ),
             paper_statement_map_sha256="a" * 64,
-            source_record_identity_error=(
-                "source_record_input_fingerprint is stale for current source inputs"
-            ),
-            audit_snapshot=types.SimpleNamespace(
-                path=Path("papers/Fixture/audit/source_record_audit.json")
-            ),
         )
         run_context = mock.Mock()
         with (
@@ -396,14 +833,19 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
                 return_value=[],
             ),
             mock.patch.object(
-                closeout_reuse_plan,
-                "intake_freeze_readiness",
+                paper_closeout_executor,
+                "source_intake_readiness",
                 return_value={"ready": True, "errors": []},
             ),
             mock.patch.object(
                 audit_repository,
                 "build_paper_closeout_evidence_context",
                 return_value=evidence_context,
+            ),
+            mock.patch.object(
+                audit_repository,
+                "paper_closeout_fast_route_schema_findings",
+                return_value=[],
             ),
             mock.patch.object(
                 audit_repository.PaperCloseoutRunContext,
@@ -621,19 +1063,88 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
                 return_value=[],
             ),
             mock.patch.object(
-                audit_conclusion_provenance,
-                "audit_paper_for_consolidated_closeout_transaction",
-                return_value=[],
-            ) as conclusion_run,
+                audit_evidence_integrity,
+                "has_current_v11_evidence_integrity_receipt",
+                return_value=True,
+            ) as receipt,
+            mock.patch.object(
+                audit_repository,
+                "_load_conclusion_provenance_auditors",
+                side_effect=AssertionError(
+                    "accepted current v11 must not load historical conclusion code"
+                ),
+            ) as conclusion_loader,
         ):
             findings = self.run_closeout()
 
         self.assertEqual(findings, [])
-        conclusion_run.assert_called_once_with(
+        receipt.assert_called_once_with(
+            mock.ANY,
+        )
+        conclusion_loader.assert_not_called()
+
+    def test_unaccepted_prevalidation_still_runs_complete_conclusion_audit(
+        self,
+    ) -> None:
+        context = object()
+        audit = mock.Mock(return_value=[])
+        with (
+            mock.patch.object(
+                audit_evidence_integrity,
+                "has_current_v11_evidence_integrity_receipt",
+                return_value=False,
+            ) as receipt,
+            mock.patch.object(
+                audit_repository,
+                "_load_conclusion_provenance_auditors",
+                return_value=(mock.Mock(), audit),
+            ) as conclusion_loader,
+        ):
+            findings = audit_repository.paper_closeout_conclusion_provenance_findings(
+                "Fixture",
+                theorem_realization_component_prevalidated=True,
+                context=context,
+            )
+
+        self.assertEqual(findings, [])
+        receipt.assert_called_once_with(context)
+        conclusion_loader.assert_called_once_with()
+        audit.assert_called_once_with(
             "Fixture",
-            evidence_context=mock.ANY,
+            evidence_context=context,
             theorem_realization_component_prevalidated=True,
         )
+
+    def test_v11_primary_graph_receipt_needs_no_legacy_raw_snapshot(self) -> None:
+        context = object()
+        with (
+            mock.patch.object(
+                audit_evidence_integrity,
+                "has_current_v11_evidence_integrity_receipt",
+                return_value=True,
+            ) as receipt,
+            mock.patch.object(
+                audit_conclusion_provenance,
+                "source_record_audit_snapshot_from_evidence_context",
+                side_effect=AssertionError("v11 must not acquire legacy raw evidence"),
+            ),
+            mock.patch.object(
+                audit_conclusion_provenance,
+                "_audit_paper",
+                side_effect=AssertionError("v11 must not replay legacy provenance"),
+            ),
+        ):
+            findings = (
+                audit_conclusion_provenance
+                .audit_paper_for_consolidated_closeout_transaction(
+                    "Fixture",
+                    evidence_context=context,
+                    theorem_realization_component_prevalidated=True,
+                )
+            )
+
+        self.assertEqual(findings, [])
+        receipt.assert_called_once_with(context)
 
     def test_absent_prevalidation_never_skips_component_pass(self) -> None:
         with (
@@ -1011,10 +1522,11 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
             }
             evidence = types.SimpleNamespace(
                 folder=folder.resolve(),
-                audit_payload=audit_payload,
-                source_record_identity_error="",
-                audit_snapshot=types.SimpleNamespace(payload=audit_payload),
-                match_snapshot=types.SimpleNamespace(path=judgment_path),
+                legacy_source_record_state=legacy_source_record_state(
+                    audit_payload,
+                    audit_path=audit_dir / "source_record_audit.json",
+                    match_path=judgment_path,
+                ),
             )
             field_key = "Fixture.Model.rate"
             route = {
@@ -1077,6 +1589,11 @@ class PaperCloseoutConsolidationTests(unittest.TestCase):
                     audit_repository,
                     "source_record_target_route_error",
                     return_value="",
+                ),
+                mock.patch.object(
+                    audit_repository,
+                    "source_record_audit_surface_view",
+                    return_value=audit_payload,
                 ),
                 mock.patch.object(
                     audit_repository,

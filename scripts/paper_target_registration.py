@@ -22,13 +22,26 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 try:
     from scripts.tomllib_compat import tomllib
 except ModuleNotFoundError:  # Direct ``python scripts/...`` execution.
     from tomllib_compat import tomllib
 
+try:
+    from scripts.lean_process_diagnostics import (
+        bounded_lean_diagnostic_excerpt,
+        lean_diagnostic_failure_reason,
+    )
+except ModuleNotFoundError:  # Direct ``python scripts/...`` execution.
+    from lean_process_diagnostics import (
+        bounded_lean_diagnostic_excerpt,
+        lean_diagnostic_failure_reason,
+    )
 
-ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LAKEFILE = ROOT / "lakefile.toml"
 PAPER_ID_RE = re.compile(r"^[A-Z][A-Za-z0-9]*\d{2}[A-Z][A-Za-z0-9]*$")
 CANONICAL_SRC_DIR = "papers"
@@ -146,17 +159,45 @@ def registered_target_names(lakefile: Path | str) -> tuple[str, ...]:
 
 
 def build_registered_targets(lakefile: Path | str) -> int:
-    """Build every registered Lean library through one argument-safe command."""
+    """Build every registered Lean library with bounded, fail-closed output.
+
+    This is the occasional integration backstop for shared-library or routing
+    changes.  It is deliberately broader than ``defaultTargets`` but is not a
+    paper-closeout or routine engine-revision gate.  Capture the complete Lean
+    stream so a zero-exit panic, internal error, crash backtrace, or pathological
+    diagnostic volume cannot be hidden by Lake's return code, while operators
+    see only a bounded failure excerpt.
+    """
 
     targets = registered_target_names(lakefile)
     if not targets:
         raise PaperTargetRegistrationError("lakefile.toml registers no Lean libraries")
-    print("+ lake build " + " ".join(targets), flush=True)
-    return subprocess.run(
-        ["lake", "build", *targets],
+    command = ["lake", "-q", "build", *targets]
+    print("+ " + " ".join(command), flush=True)
+    result = subprocess.run(
+        command,
         cwd=Path(lakefile).resolve().parent,
+        capture_output=True,
+        text=True,
         check=False,
-    ).returncode
+    )
+    stdout = str(result.stdout or "")
+    stderr = str(result.stderr or "")
+    diagnostic = lean_diagnostic_failure_reason(stdout, stderr)
+    if result.returncode != 0 or diagnostic:
+        reason = diagnostic or f"Lake exited with code {result.returncode}"
+        print(f"registered-target integration build failed: {reason}", file=sys.stderr)
+        excerpt = bounded_lean_diagnostic_excerpt(
+            stdout,
+            stderr,
+            max_lines=12,
+            max_chars=2000,
+        )
+        if excerpt:
+            print(excerpt, file=sys.stderr)
+        return result.returncode or 1
+    print(f"OK built {len(targets)} registered Lean libraries")
+    return 0
 
 
 def _registration_block(paper_id: str) -> bytes:

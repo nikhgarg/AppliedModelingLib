@@ -13,7 +13,7 @@ Source: `EFXadditivechores.tex`, lines 294--296.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- Every homogeneous four-agent additive chore pool has a balanced-cardinality
 EFX allocation. -/

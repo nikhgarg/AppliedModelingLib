@@ -125,7 +125,7 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 9,
+    "total_rows": 15,
     "uncertain_rows": 0
   },
   "human_summary": "",
@@ -139,21 +139,18 @@
   "open_source_boundaries": [],
   "paper_interface": {
     "declaration_rows": 55,
-    "line_count": 2208,
+    "line_count": 1196,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/LG21TestOptionalPolicies/PaperInterface.lean",
     "proof_interface_line_count": 24107,
     "proof_interface_path": "papers/LG21TestOptionalPolicies/ProofInterface.lean",
-    "review_rows": 37
+    "review_rows": 15
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/LG21TestOptionalPolicies/FINAL_VALIDATION_REPORT.md",
   "review_surface": {
-    "assumption_names": [
-      "source_convention_theorem3_1_optional_local_candidate_excluded",
-      "source_convention_theorem3_1_report_required_local_tail_candidate_excluded"
-    ],
+    "assumption_names": [],
     "assumption_policy": "strict",
     "assumption_source_file": "papers/LG21TestOptionalPolicies/Assumptions.lean",
     "auxiliary_names": [
@@ -226,15 +223,21 @@
       "theorem4_4_simultaneous_protocols_auxiliary"
     ],
     "include_names": [
+      "fairness_implication_chainSpec",
       "lemma4_1_observed_access_strategy_proofness_source_coreSpec",
       "proposition4_2_all_observed_access_requirement_protocols_source_coreSpec",
-      "proposition4_3_all_observed_access_requirement_protocols_source_coreSpec",
+      "proposition4_3_each_requirement_protocol_has_unfair_pbo_equilibriumSpec",
+      "reporting_conditioned_generalizationSpec",
       "theorem3_1_hidden_access_pbo_fails_all_fairness_definitionsSpec",
       "theorem3_1_optional_reporting_source_timedSpec",
       "theorem3_1_report_required_source_timedSpec",
       "theorem3_2_optional_reporting_clarified_modelSpec",
       "theorem3_2_report_required_clarified_modelSpec",
-      "theorem4_4_all_observed_access_requirement_protocols_source_coreSpec"
+      "theorem4_4_all_observed_access_requirement_protocolsSpec",
+      "thompson_acceptance_interpretationSpec",
+      "report_decision_skill_independenceSpec",
+      "ignoring_test_scores_achieves_fairnessSpec",
+      "theorem3_2_observable_summary_clarifiedSpec"
     ],
     "llm_assumption_review": {
       "assumption_judgment_file": "papers/LG21TestOptionalPolicies/audit/assumption_match_llm.json",
@@ -262,22 +265,28 @@
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
       "require_explicit_source_routes": true,
       "require_source_claim_atoms": true,
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
       "review_surface_audit_file": "papers/LG21TestOptionalPolicies/audit/review_surface_llm.json",
       "surface_audit_threshold": 30,
       "surface_warning_threshold": 120
     },
     "paper_coverage_required": true,
     "proposition_spec_proofs": {
-      "lemma4_1_observed_access_strategy_proofness_source_coreSpec": "lemma4_1_observed_access_strategy_proofness_source_core",
-      "proposition4_2_all_observed_access_requirement_protocols_source_coreSpec": "proposition4_2_all_observed_access_requirement_protocols_source_core",
-      "proposition4_3_all_observed_access_requirement_protocols_source_coreSpec": "proposition4_3_all_observed_access_requirement_protocols_source_core",
-      "theorem3_1_hidden_access_pbo_fails_all_fairness_definitionsSpec": "theorem3_1_hidden_access_pbo_fails_all_fairness_definitions",
-      "theorem3_1_optional_reporting_source_timedSpec": "theorem3_1_optional_reporting_source_timed",
-      "theorem3_1_report_required_source_timedSpec": "theorem3_1_report_required_source_timed",
-      "theorem3_2_optional_reporting_clarified_modelSpec": "theorem3_2_optional_reporting_clarified_model",
-      "theorem3_2_report_required_clarified_modelSpec": "theorem3_2_report_required_clarified_model",
-      "theorem4_4_all_observed_access_requirement_protocols_source_coreSpec": "theorem4_4_all_observed_access_requirement_protocols_source_core"
+      "fairness_implication_chainSpec": "fairness_implication_chain_proof",
+      "ignoring_test_scores_achieves_fairnessSpec": "ignoring_test_scores_achieves_fairness_proof",
+      "lemma4_1_observed_access_strategy_proofness_source_coreSpec": "lemma4_1_observed_access_strategy_proofness_source_core_proof",
+      "proposition4_2_all_observed_access_requirement_protocols_source_coreSpec": "proposition4_2_all_observed_access_requirement_protocols_source_core_proof",
+      "proposition4_3_each_requirement_protocol_has_unfair_pbo_equilibriumSpec": "proposition4_3_each_requirement_protocol_has_unfair_pbo_equilibrium_proof",
+      "report_decision_skill_independenceSpec": "report_decision_skill_independence_proof",
+      "reporting_conditioned_generalizationSpec": "reporting_conditioned_generalization_proof",
+      "theorem3_1_hidden_access_pbo_fails_all_fairness_definitionsSpec": "theorem3_1_hidden_access_pbo_fails_all_fairness_definitions_proof",
+      "theorem3_1_optional_reporting_source_timedSpec": "theorem3_1_optional_reporting_source_timed_proof",
+      "theorem3_1_report_required_source_timedSpec": "theorem3_1_report_required_source_timed_proof",
+      "theorem3_2_observable_summary_clarifiedSpec": "theorem3_2_observable_summary_clarified_proof",
+      "theorem3_2_optional_reporting_clarified_modelSpec": "theorem3_2_optional_reporting_clarified_model_proof",
+      "theorem3_2_report_required_clarified_modelSpec": "theorem3_2_report_required_clarified_model_proof",
+      "theorem4_4_all_observed_access_requirement_protocolsSpec": "theorem4_4_all_observed_access_requirement_protocols",
+      "thompson_acceptance_interpretationSpec": "thompson_acceptance_interpretation_proof"
     },
     "quarantined_auxiliary_names": [
       "proposition4_3_simultaneous_protocols_auxiliary",
@@ -305,22 +314,25 @@
     },
     "slices": [
       {
-        "id": "model-and-definitions",
-        "line_end": 264,
-        "line_start": 39,
-        "title": "Source model, Definitions 1-5, and fairness implication chain"
-      },
-      {
-        "id": "hidden-access",
-        "line_end": 499,
-        "line_start": 272,
-        "title": "Hidden-access Theorems 3.1-3.2"
-      },
-      {
-        "id": "observed-access-and-resampling",
-        "line_end": 1864,
-        "line_start": 513,
-        "title": "Lemma 4.1, Propositions 4.2-4.3, Definition 6, and Theorem 4.4"
+        "id": "additional_source_results",
+        "names": [
+          "fairness_implication_chainSpec",
+          "lemma4_1_observed_access_strategy_proofness_source_coreSpec",
+          "proposition4_2_all_observed_access_requirement_protocols_source_coreSpec",
+          "proposition4_3_each_requirement_protocol_has_unfair_pbo_equilibriumSpec",
+          "reporting_conditioned_generalizationSpec",
+          "theorem3_1_hidden_access_pbo_fails_all_fairness_definitionsSpec",
+          "theorem3_1_optional_reporting_source_timedSpec",
+          "theorem3_1_report_required_source_timedSpec",
+          "theorem3_2_optional_reporting_clarified_modelSpec",
+          "theorem3_2_report_required_clarified_modelSpec",
+          "theorem4_4_all_observed_access_requirement_protocolsSpec",
+          "thompson_acceptance_interpretationSpec",
+          "report_decision_skill_independenceSpec",
+          "ignoring_test_scores_achieves_fairnessSpec",
+          "theorem3_2_observable_summary_clarifiedSpec"
+        ],
+        "title": "Additional source results"
       }
     ],
     "source_definition_names": [

@@ -1,0 +1,29 @@
+{
+  "comment": "Each verdict compares the byte-pinned paper-source bundle with Lean's current semantic target and exact bounded declaration code. These prerequisites are not additional paper-claim rows.",
+  "items": {
+    "AppliedModelingLib.Learning.Prediction.BoundedLoss": {
+      "elaborated_signature_sha256": "4350f814108d4ebd62bb757e3bb86648a040374fa5e5438f4972f56b2a59c514",
+      "judgment": "matches",
+      "label": "AppliedModelingLib.Learning.Prediction.BoundedLoss",
+      "library_declaration": "AppliedModelingLib.Learning.Prediction.BoundedLoss",
+      "library_definition_sha256": "4bd11eafae13e8731f32b4b6d7defaba54f2f691f1dd2df62d9153e4da8b4526",
+      "library_line_end": 32,
+      "library_line_start": 28,
+      "library_semantic_target_protocol": "lean-library-display-plus-exact-code-v1",
+      "library_semantic_target_sha256": "35ab92630eb12e55f93cb1805c3532d5074061f37a052bfd05b48c56893b3e09",
+      "library_source_path": "AppliedModelingLib/Learning/Prediction/Basic.lean",
+      "reason": "The reusable structure is exactly the paper's primitive loss ell from two labels to a real value in [0,1]: the value field gives the loss, and the two proof fields enforce pointwise nonnegativity and the unit upper bound.",
+      "source_anchor_bundle_sha256": "7cdf355992e1c5c1de9ad9e5923d4db3e233564b8da781d0341406ce9033e168",
+      "source_input_bundle_sha256": "7cdf355992e1c5c1de9ad9e5923d4db3e233564b8da781d0341406ce9033e168",
+      "source_item": "source_model_supervised_learning",
+      "source_location": "cited publication:310-311",
+      "validated_at": "2026-08-31T19:31:03+00:00",
+      "validator": "Codex GHKR22 exact library semantic review",
+      "validator_type": "llm_as_judge"
+    }
+  },
+  "paper": "GHKR22BiasBounties",
+  "prompt_version": "library-statement-match-v2-verbatim-source-anchor-lean-display-exact-code",
+  "schema": 1,
+  "target_protocol": "lean-library-display-plus-exact-code-v1"
+}

@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """Lightweight controlled-status checks for human-facing final reports.
 
-This module deliberately depends only on Markdown text. The closeout planner
-uses it before expensive evidence or Lean work, while the repository audit
-uses the same parsing contract for its final human-facing validation.
+The closeout planner uses these lightweight checks before expensive evidence
+or Lean work. Public reports and the website share the same display policy;
+the underlying mathematical status and evidence are unchanged.
 """
 
 from __future__ import annotations
 
+import json
+import os
 import re
+from collections.abc import Mapping
+from pathlib import Path
 
 
 CONTROLLED_PAPER_STATUSES = frozenset(
@@ -46,6 +50,46 @@ def normalized_paper_status(value: object) -> str:
     """Return one status spelling suitable for exact controlled comparisons."""
 
     return value.strip().lower() if isinstance(value, str) else ""
+
+
+def public_display_status(
+    status: str, *, paper_id: str | None = None, preserve_partial_status: object = ()
+) -> str:
+    """Return the public reader label without changing technical disposition."""
+
+    if not isinstance(preserve_partial_status, (list, tuple)) or any(
+        not isinstance(value, str) or not value.strip()
+        for value in preserve_partial_status
+    ):
+        raise ValueError("preserve_partial_status must list paper IDs")
+    if paper_id in preserve_partial_status and status in {
+        "partially formalized", "conditional"
+    }:
+        return "partially formalized"
+    if status in {
+        "formalized", "formalized with caveat", "partially formalized", "conditional"
+    }:
+        return "formalized"
+    return status
+
+
+def _report_expected_status(status: object) -> str:
+    if not isinstance(status, Mapping):
+        return normalized_paper_status(status)
+    technical_status = normalized_paper_status(status.get("status"))
+    if status.get("repository_visibility") != "public":
+        return technical_status
+    root = Path(os.environ.get(
+        "APPLIEDMODELINGLIB_REPO_ROOT", Path(__file__).resolve().parents[1]
+    ))
+    catalog = json.loads((root / "papers" / "catalog.json").read_text(encoding="utf-8"))
+    if not isinstance(catalog, dict) or catalog.get("schema") != 1:
+        raise ValueError("papers/catalog.json must be a schema-1 object")
+    return public_display_status(
+        technical_status,
+        paper_id=status.get("id"),
+        preserve_partial_status=catalog.get("preserve_partial_status", []),
+    )
 
 
 def final_report_declared_statuses(report_text: str) -> set[str]:
@@ -91,9 +135,16 @@ def final_report_declared_statuses(report_text: str) -> set[str]:
 
 
 def report_status_alignment_errors(status: object, report_text: str) -> tuple[str, ...]:
-    """Return deterministic report/status contract errors for a controlled status."""
+    """Check the reader label from a status payload, or a legacy status string.
 
-    normalized_status = normalized_paper_status(status)
+    Public payloads use the canonical catalog's display exceptions. Private
+    payloads and string-only callers retain exact technical-status comparison.
+    """
+
+    try:
+        normalized_status = _report_expected_status(status)
+    except (OSError, ValueError) as exc:
+        return (f"final validation report display policy is unreadable: {exc}",)
     declared = final_report_declared_statuses(report_text)
     errors: list[str] = []
     if len(declared) > 1:
@@ -107,14 +158,14 @@ def report_status_alignment_errors(status: object, report_text: str) -> tuple[st
     if not declared:
         errors.append(
             "final validation report has no parseable controlled whole-paper status "
-            "in its Closeout Status section; it must match paper-local status.json "
+            "in its Closeout Status section; its expected reader label is "
             f"(`{normalized_status}`)"
         )
     elif declared != {normalized_status}:
         errors.append(
             "final validation report declares `"
             + ", ".join(sorted(declared))
-            + "` in its Closeout Status section, but paper-local status.json "
-            + f"declares `{normalized_status}`"
+            + "` in its Closeout Status section, but the reader label derived "
+            + f"from paper-local status.json is `{normalized_status}`"
         )
     return tuple(errors)

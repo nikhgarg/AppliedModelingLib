@@ -15,7 +15,7 @@ namespace LG21TestOptionalPolicies
 noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /-- Turn on testing only on a designated public-base region. -/
 noncomputable def lg21OptionalLocalRegionTake
@@ -627,6 +627,25 @@ def LG21OptionalSourceStableAgainstPositiveMassLocalRecalibratedEntry
     (hpublic : Measurable (fun omega => (base omega, (score omega, skill omega))))
     (currentTake : ℝ -> Base -> Bool) (currentReport : Base -> ℝ -> Bool) : Prop :=
   ∀ region candidateTake candidateReport candidate,
+    ¬ LG21OptionalSourcePositiveMassLocalRecalibratedEntry
+      sourceLaw base score skill hpublic currentTake currentReport region
+        candidateTake candidateReport candidate
+
+/-- Source stability for deviations that preserve a fixed exogenous test law.
+The additional equality is the paper-model restriction: a strategic candidate
+may change actions and hence its selected branch PBOs, but not the Gaussian
+score technology. -/
+def LG21OptionalSourceStableAgainstPositiveMassLocalRecalibratedEntryForTestLaw
+    {Omega Base : Type*} [MeasurableSpace Omega] [MeasurableSpace Base]
+    (sourceLaw : Measure Omega) [IsProbabilityMeasure sourceLaw]
+    (base : Omega -> Base) (score skill : Omega -> ℝ)
+    (hpublic : Measurable (fun omega => (base omega, (score omega, skill omega))))
+    (fixedTestLaw : ℝ -> Base -> Measure ℝ)
+    (currentTake : ℝ -> Base -> Bool) (currentReport : Base -> ℝ -> Bool) : Prop :=
+  ∀ region candidateTake candidateReport candidate,
+    (∀ latentSkill publicBase,
+      candidate.testLaw latentSkill publicBase =
+        fixedTestLaw latentSkill publicBase) ->
     ¬ LG21OptionalSourcePositiveMassLocalRecalibratedEntry
       sourceLaw base score skill hpublic currentTake currentReport region
         candidateTake candidateReport candidate

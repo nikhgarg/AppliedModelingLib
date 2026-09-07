@@ -16,7 +16,7 @@ outer candidate distribution nor treats the paper's separate outer-law
 regularity boundary as discharged.
 -/
 
-open EconCSLib Filter Topology
+open AppliedModelingLib Filter Topology
 
 namespace KR21Monoculture
 

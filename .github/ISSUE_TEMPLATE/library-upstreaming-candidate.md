@@ -1,6 +1,6 @@
 ---
 name: Library upstreaming candidate
-about: Propose moving paper-local infrastructure into reusable EconCSLib modules.
+about: Propose moving paper-local infrastructure into reusable AppliedModelingLib modules.
 title: "[Upstreaming] "
 labels: library-upstreaming
 assignees: ""

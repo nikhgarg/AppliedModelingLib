@@ -1,7 +1,7 @@
 import KR21Monoculture.AppendixB
 
-open EconCSLib
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 

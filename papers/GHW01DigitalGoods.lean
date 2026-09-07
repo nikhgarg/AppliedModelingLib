@@ -1,2 +1,3 @@
 import GHW01DigitalGoods.PaperInterface
+import GHW01DigitalGoods.ProofInterface
 import GHW01DigitalGoods.MainTheorems

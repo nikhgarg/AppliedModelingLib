@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Math.ConvexCombination
+import AppliedModelingLib.Foundations.Math.ConvexCombination
 import GN21DriverSurgePricing.MainTheorems
 import Mathlib.MeasureTheory.Measure.Regular
 
@@ -13,7 +13,7 @@ optimizer lifts only after regular open approximation and reward continuity;
 the proof never silently identifies the two policy domains.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology ENNReal symmDiff
 

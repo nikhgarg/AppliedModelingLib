@@ -1,18 +1,21 @@
 # Final Validation Report: Gale--Shapley 1962
 
-Updated: 2026-08-18
+Updated: 2026-09-04
 
 ## 1. Human Verdict
 
 The paper's selected named theoretical surface is formalized: the two printed
 college-admissions definitions, the Section 3 marriage-instability definition,
-and Theorems 1--2. Independent reviewer annotations may be added through the
+and Theorems 1--2. The Section 4 conclusion that the waiting-list procedure
+terminates in a stable assignment is also checked as the source result needed
+to read Theorem 2. Independent reviewer annotations may be added through the
 packet or dashboard, but are not a prerequisite for this formalization status.
 
 ## 2. Closeout Status
 
 - Completion status: formalized.
-- The reviewed surface consists of three definitions and two named theorems.
+- The reviewed surface consists of three definitions, two named theorems, and
+  the Section 4 terminal-stability conclusion used by Theorem 2.
 - Every selected claim has a direct paper-facing semantic statement and a
   checked proof route. No theorem-level boundary remains within this scope.
 
@@ -24,26 +27,19 @@ packet or dashboard, but are not a prerequisite for this formalization status.
   9--15 ([public record](https://www.jstor.org/stable/2312726)).
 - Formalized paper surface: the two displayed college-admissions definitions
   on printed page 10, the Section 3 prose definition of unstable marriages,
-  Theorem 1, and Theorem 2.
+  Theorem 1, Theorem 2, and the Section 4 conclusion that the waiting lists
+  form a stable assignment at termination.
 - Scope boundary: numerical examples, ranking tables, and unnumbered
   extensions are not named theoretical claims in this review surface.
 
 ## 4. Researcher Summary of Checked Results
 
-- **Theorem 1 (stable marriage existence).** The paper's finite marriage model
-  has a stable set of marriages for every pattern of strict complete
-  preferences. The checked proof follows the iterative deferred-acceptance
-  procedure given immediately after the theorem.
-- **Theorem 2 (applicant optimality).** Every applicant is at least as well off
-  under the college deferred-acceptance outcome as under any other stable
-  assignment. The checked route formalizes the Section 4 waiting-list procedure
-  and the Section 5 comparison against every stable assignment in the same
-  operational reading.
-- **College-admissions definitions.** The page-10 definition of instability
-  records the printed replacement-pair condition, and the following definition
-  calls a stable assignment optimal when every applicant is at least as well
-  off as under any other stable assignment. The Section 3 definition separately
-  gives the corresponding marriage-instability condition.
+| Result | Comparison with source |
+| --- | --- |
+| Theorem 1 | **Exact:** finite stable-marriage existence for strict complete preferences by deferred acceptance. |
+| Theorem 2 | **Stability notion clarified:** applicant optimality uses the full operational stability of Sections 4–5. [Reading](docs/SOURCE_CLARIFICATIONS.md#reading-used-for-theorem-2). |
+| Section 4 | **Exact:** the simultaneous waiting-list procedure terminates with a stable assignment. |
+| Printed definitions | **Exact:** the page-10 replacement-pair and optimality definitions, within their fixed-quota domain, and the separate marriage-instability definition. |
 
 ## 5. Remaining Boundaries and Gaps
 
@@ -51,15 +47,11 @@ None within the selected named theoretical surface.
 
 ## 6. Additional Assumptions Beyond Paper
 
-None. The representation of strict preference lists by order-preserving
-numerical scores is a formal-model convention, not a cardinal-utility
-assumption; its exact role is recorded in the source clarification below.
+None.
 
 ## 7. Proof-Strategy Deviations
 
-None. Theorem 1 follows the source's iterative proposal-and-rejection route.
-Theorem 2 follows the source's induction that no applicant is rejected by a
-college that is possible for that applicant.
+None.
 
 ## 8. Proof Structure Worth Reusing
 
@@ -79,15 +71,18 @@ unnumbered extensions or numerical examples as separately formalized theorems.
 
 ## 10. Source Clarifications and Exact Readings
 
-For Sections 4--5 and Theorem 2, “stable assignment” is read operationally:
-the assignment respects quotas, assigns only acceptable pairs, and has no
-applicant-college block through either a vacant seat or replacement of a
-lower-ranked current assignee. The earlier printed page-10 replacement-pair
-definition remains a separate literal source claim; it is not asserted to be
-equivalent to the Section 4--5 reading in isolation. The formal representation
-of preference lists preserves their ordinal order and uses the unmatched option
-only as the source's outside alternative. Full details appear in the
-[source clarification note](docs/SOURCE_CLARIFICATIONS.md).
+Theorem 2 uses the full operational stability of Sections 4–5, including
+vacancy blocks and mutual acceptability. Page 10's replacement-pair definition
+remains a separate literal claim. The [memo](docs/SOURCE_CLARIFICATIONS.md#reading-used-for-theorem-2)
+explains the distinction.
+
+<!-- BEGIN GENERATED SETTLED REVIEW CONTEXT -->
+<!-- settled-review-context-sha256: aa8087a4dfdf0d5e9c6df25e751cee64b2500ecc917f94b494bb0bc7faa6c79a -->
+<!-- settled-review-context-presentation-sha256: 1d96adc5888518e89d45d4268b1d84b158cfc02d6a2a0e67980b4d80b6cff309 -->
+### Source readings and additional assumptions
+
+- The result-specific conditions and corrections are stated in the [clarification memo](docs/SOURCE_CLARIFICATIONS.md).
+<!-- END GENERATED SETTLED REVIEW CONTEXT -->
 
 ## 11. Paper Issues or Caveats
 
@@ -95,57 +90,79 @@ None within the reviewed named theoretical surface. The distinct scope of the
 page-10 definition and the completed Sections 4--5 reading is a clarification,
 not a caveat on either theorem.
 
-## 12. Checked Claim Inventory
+## 12. Detailed Formalization Evidence
 
-The five checked source claims are:
+The checked surface comprises the page-10 definitions of unstable and optimal
+college assignments, the Section 3 definition of an unstable marriage,
+Theorem 1, the Section 4 terminal-stability conclusion used by Theorem 2, and
+Theorem 2. [PaperInterface.lean](PaperInterface.lean) presents the six selected
+claims, and [ProofInterface.lean](ProofInterface.lean) supplies the checked
+proof endpoints.
 
-1. the printed page-10 definition of an unstable college assignment;
-2. the printed page-10 definition of an optimal stable college assignment;
-3. the Section 3 prose definition of an unstable marriage;
-4. **Theorem 1**, existence of a stable set of marriages; and
-5. **Theorem 2**, applicant optimality of the college waiting-list procedure.
+## 13. Paper Assumption Provenance
 
-The [human review packet](docs/HUMAN_REVIEW_PACKET.pdf) presents the five
-claims in dependency order, followed by the material procedure and matching
-definitions used to read them. The interactive dashboard, launched with
-`papers/GS62CollegeAdmissions/review-dashboard.sh`, is an optional alternative
-to using the PDF.
+The [statement map](audit/paper_statement_map.json) anchors the college
+definitions to the fixed-quota model and the marriage and waiting-list results
+to their source sections. The two retained paper-local prerequisites match
+their source connections in the
+[prerequisite ledger](FINAL_CLOSURE_RECEIPT.md). No standalone
+paper-facing assumption declaration is selected.
 
-## 13. Source and Assumption Provenance
+## 14. Displayed Formula Provenance
 
-The two college definitions are anchored to `cited publication:93--98` and
-`cited publication:115--117` (printed page 10). The marriage definition and Theorem 1
-are anchored to `cited publication:133--139` and `cited publication:185` (printed pages
-11--12). Theorem 2 is anchored to the Sections 4--5 procedure and comparison
-at `cited publication:232--249` and `cited publication:253--255` (printed pages 13--14).
-The [statement map](audit/paper_statement_map.json) records these locations
-and the selected source bundle.
+No displayed algebraic formula is selected as a separate result. The two
+page-10 definitions and the Section 3 instability definition are preserved as
+their own source-facing targets, with exact locations and Lean routes in the
+[statement map](audit/paper_statement_map.json).
 
-## 14. Semantic Review and Proof Evidence
+## 15. Library Lift Pass
 
-For each selected source claim, the [raw source-to-specification ledger](audit/v11_raw_source_spec_screening.json)
-records the direct comparison between the byte-pinned source input and its one
-semantic review target. The paired Lean theorem is separately checked as the
-proof endpoint for that target. The [current focused-build receipt](audit/FOCUSED_BUILD_RECEIPT.json)
-and [final closure receipt](FINAL_CLOSURE_RECEIPT.md) identify the current
-validation run.
+The [library semantic ledger](FINAL_CLOSURE_RECEIPT.md) selects no
+material reusable-library prerequisite. The deferred-acceptance and
+waiting-list models used for these results remain paper-local.
 
-## 15. Reused Definitions and Dependency DAG
+## 16. DAG Audit
 
-The [library review ledger](audit/library_semantic_review.json) records the
-source connection for matching definitions reused by the five paper claims.
-The [paper-prerequisite ledger](audit/paper_semantic_prerequisites.json)
-records the college-procedure declarations needed for the Theorem 2 reading.
-The [dependency DAG](docs/DependencyDAG.pdf) places those definitions before
-the two theorem routes and is a companion to, rather than a substitute for,
-the source comparisons.
+[DependencyDAG.tex](docs/DependencyDAG.tex) was compiled to
+[DependencyDAG.pdf](docs/DependencyDAG.pdf). The rendered PDF was visually
+inspected for readable labels, logical reading order, arrowheads, and node or
+edge overlap.
 
-## 16. Validation Materials
+## 17. Validation Checks
 
-- [Human review packet (PDF)](docs/HUMAN_REVIEW_PACKET.pdf)
-- [Dependency DAG (PDF)](docs/DependencyDAG.pdf)
-- [Source clarification note](docs/SOURCE_CLARIFICATIONS.md)
-- [Statement map](audit/paper_statement_map.json)
-- [Source-to-specification ledger](audit/v11_raw_source_spec_screening.json)
-- [Library review ledger](audit/library_semantic_review.json)
-- [Final closure receipt](FINAL_CLOSURE_RECEIPT.md)
+The [focused-build receipt](FINAL_CLOSURE_RECEIPT.md) records a passing
+paper build. The [source-to-Spec ledger](FINAL_CLOSURE_RECEIPT.md)
+records six matching judgments, while the
+[import-closure receipt](FINAL_CLOSURE_RECEIPT.md) and
+[final closure receipt](FINAL_CLOSURE_RECEIPT.md) record the checked Lean
+closure and terminal graph.
+
+## 18. Paper Definitions Checked
+
+The checked definitions are unstable college assignment, optimal stable
+college assignment in the fixed-quota domain, and unstable marriage. The
+waiting-list procedure model is retained as the source context for the
+terminal-stability result and Theorem 2.
+
+## 19. Named Theorem Statements Checked
+
+- Theorem 1: existence of a stable marriage.
+- Section 4 terminal-stability conclusion: the waiting-list procedure ends in
+  a stable college assignment.
+- Theorem 2: applicant optimality under the operational stability reading
+  explained in the [source clarification memo](docs/SOURCE_CLARIFICATIONS.md).
+
+## 20. Paper-Facing Statement Validator Ledger
+
+The [source-to-Spec ledger](FINAL_CLOSURE_RECEIPT.md) contains
+six direct matches. The [human review packet](docs/HUMAN_REVIEW_PACKET.pdf)
+presents the same definitions and claims in dependency order.
+
+## 21. Source-Coverage Audit Ledger
+
+The [coverage ledger](FINAL_CLOSURE_RECEIPT.md) contains five covered
+named-theory items: the three definitions and Theorems 1--2. The Section 4
+terminal-stability conclusion is retained as a separate direct proof route for
+Theorem 2 in the [source-to-Spec ledger](FINAL_CLOSURE_RECEIPT.md).
+The full model and route inventory is in the
+[statement map](audit/paper_statement_map.json).

@@ -3,8 +3,8 @@ import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 
 open scoped BigOperators
-open EconCSLib
-open EconCSLib.FairDivision
+open AppliedModelingLib
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 namespace Theorem42

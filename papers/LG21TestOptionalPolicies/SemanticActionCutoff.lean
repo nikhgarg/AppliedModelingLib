@@ -13,7 +13,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
 
 /-- A nontrivial upward-closed Boolean action on real types is an upper-tail
 rule almost everywhere under any atomless law.  The only possible ambiguity is

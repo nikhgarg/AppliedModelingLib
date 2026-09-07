@@ -1,8 +1,8 @@
 import KR21Monoculture.MainTheorems
 import KR21Monoculture.W11ArbitraryFiniteCells
 
-open EconCSLib MeasureTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal Topology
 
 namespace KR21Monoculture
@@ -85,7 +85,7 @@ theorem w11CorrectedScaledNoiseFamily_atom_eq_rankingPMFOfMeasure
     (hrank : Measurable (fun noise : Candidate n → ℝ =>
       rankByScore (fun i => value i + noise i / theta))) :
     ((w11CorrectedScaledNoiseFamily f hnormalized value).dist theta pi).toReal =
-      ((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+      ((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
         (w11CandidateNoiseLaw (n := n) f)
         (fun noise => rankByScore (fun i => value i + noise i / theta)) hrank) pi).toReal := by
   rw [w11CorrectedScaledNoiseFamily_dist_eq_scaledNoiseRankingPMF]
@@ -109,9 +109,9 @@ theorem w11CorrectedScaledNoiseFamily_atom_eq_sourceScaledNoiseRankingAtom
     ((paper_appendixA_scaledNoiseRankingPMF
       (w11CandidateNoiseLaw (n := n) f) value theta) pi).toReal =
       w11CandidateScaledNoiseRankingAtom f value pi theta
-  rw [← EconCSLib.pmfProb_singleton]
-  change EconCSLib.pmfProb
-      (EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+  rw [← AppliedModelingLib.pmfProb_singleton]
+  change AppliedModelingLib.pmfProb
+      (AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
         (w11CandidateNoiseLaw (n := n) f)
         (fun noise => rankByScore (fun i => value i + noise i / theta))
         (paper_appendixA_scaledNoise_rankByScore_measurable
@@ -120,7 +120,7 @@ theorem w11CorrectedScaledNoiseFamily_atom_eq_sourceScaledNoiseRankingAtom
           (fun i => measurable_pi_apply i) value theta))
       (fun ranking => ranking = pi) =
         w11CandidateScaledNoiseRankingAtom f value pi theta
-  rw [EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eventProb]
+  rw [AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eventProb]
   rfl
 
 /--

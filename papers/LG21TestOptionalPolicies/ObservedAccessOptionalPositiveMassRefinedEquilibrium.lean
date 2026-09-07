@@ -18,8 +18,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
-open EconCSLib.Probability
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib.Probability
 open scoped ENNReal ProbabilityTheory
 
 /--
@@ -51,7 +51,7 @@ structure LG21ObservedAccessOptionalPositiveMassRefinedEquilibrium
   local_recalibrated_entry_stable :
     letI : IsProbabilityMeasure (lg21ContinuousGaussianAccessPopulationLaw M) :=
       lg21ContinuousGaussianAccessPopulationLaw_isProbability M haccess
-    LG21OptionalSourceStableAgainstPositiveMassLocalRecalibratedEntry
+    LG21OptionalSourceStableAgainstPositiveMassLocalRecalibratedEntryForTestLaw
       (lg21ContinuousGaussianAccessPopulationLaw M)
       (lg21ContinuousPopulationBase testFeature)
       (lg21ContinuousPopulationFeature testFeature)
@@ -59,13 +59,13 @@ structure LG21ObservedAccessOptionalPositiveMassRefinedEquilibrium
       ((lg21ContinuousPopulationBase_measurable testFeature).prodMk
         ((lg21ContinuousPopulationFeature_measurable testFeature).prodMk
           lg21ContinuousPopulationSkill_measurable))
-      actions.takeDecision actions.reportDecision
+      actions.testLaw actions.takeDecision actions.reportDecision
   /-- No positive-mass entry that promotes current nonreporters, evaluated
   under the candidate's own positive report and no-report action laws. -/
   recalibrated_report_entry_stable :
     letI : IsProbabilityMeasure (lg21ContinuousGaussianAccessPopulationLaw M) :=
       lg21ContinuousGaussianAccessPopulationLaw_isProbability M haccess
-    LG21OptionalSourceStableAgainstPositiveMassRecalibratedReportEntry
+    LG21OptionalSourceStableAgainstPositiveMassRecalibratedReportEntryForTestLaw
       (lg21ContinuousGaussianAccessPopulationLaw M)
       (lg21ContinuousPopulationBase testFeature)
       (lg21ContinuousPopulationFeature testFeature)
@@ -73,7 +73,7 @@ structure LG21ObservedAccessOptionalPositiveMassRefinedEquilibrium
       ((lg21ContinuousPopulationBase_measurable testFeature).prodMk
         ((lg21ContinuousPopulationFeature_measurable testFeature).prodMk
           lg21ContinuousPopulationSkill_measurable))
-      actions.takeDecision actions.reportDecision
+      actions.testLaw actions.takeDecision actions.reportDecision
   test_law_gaussian : ∀ publicBase latentSkill,
     actions.testLaw latentSkill publicBase =
       gaussianReal latentSkill (M.noiseVariance testFeature)
@@ -179,8 +179,13 @@ def ofSourceTimedEquilibrium
   actions := E.actions
   takeDecision_measurable := E.takeDecision_measurable
   reportDecision_measurable := E.reportDecision_measurable
-  local_recalibrated_entry_stable := E.local_entry_stable
-  recalibrated_report_entry_stable := E.recalibrated_report_entry_stable
+  local_recalibrated_entry_stable := by
+    intro region candidateTake candidateReport candidate _hfixedLaw hentry
+    exact E.local_entry_stable region candidateTake candidateReport candidate hentry
+  recalibrated_report_entry_stable := by
+    intro candidateTake candidateReport candidate _hfixedLaw hentry
+    exact E.recalibrated_report_entry_stable
+      candidateTake candidateReport candidate hentry
   test_law_gaussian := E.test_law_gaussian
   actual_report_integrable := E.actual_report_integrable
   actual_report_pbo := E.actual_report_pbo

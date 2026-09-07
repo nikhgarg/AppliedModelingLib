@@ -1,0 +1,80 @@
+{
+  "checked_proof_steps": [
+    {
+      "checked_conclusion": "The Lean score-swap proof derives each ordered-product comparison from the positive count gaps and strict link order, then sums the direct, third-alternative, and unchanged terms to obtain a strictly larger likelihood.",
+      "id": "NOOTHIGATTU-C1-LOG-REARRANGEMENT-01",
+      "scope": "Theorem 3.2 and Claim C.1.",
+      "source_locator": "cited publication:1055-1081",
+      "source_step": "Claim C.1 is applied to the direct and third-alternative likelihood terms in the score-swap argument. For a lower log-link value u and higher value v, the positive factors are -u and -v; the claim therefore gives the displayed strict inequality even though the raw logarithms themselves are negative."
+    },
+    {
+      "checked_conclusion": "Lean proves the same diminishing-increment inequality for the exact paired log term, completes the winner half, and obtains the loser half by the source-symmetric count-transpose and score-negation route.",
+      "id": "NOOTHIGATTU-D-DIMINISHING-INCREMENTS-01",
+      "scope": "Theorem 4.2.",
+      "source_locator": "cited publication:1124-1359",
+      "source_step": "The U/V partition compares cross-pair likelihood increments before and after nonnegative score shifts; concavity of each two-direction log-likelihood term makes the shifted increment no larger, contradicting optimality if V is nonempty."
+    },
+    {
+      "checked_conclusion": "Lean selects an explicit unit fraction 1/n inside the strict base-likelihood neighborhood and constructs the exact common-denominator integer datasets, preserving the source rankings for both counterexamples.",
+      "id": "NOOTHIGATTU-EF-RATIONAL-PERTURBATION-01",
+      "scope": "Theorems 5.3 and 6.3.",
+      "source_locator": "cited publication:1361-1364 and :1526-1543 and :1758-1776",
+      "source_step": "The source obtains an open positive perturbation neighborhood from continuity and notes that rational frequencies can be scaled by a common denominator to obtain integral comparison counts."
+    }
+  ],
+  "defects": [],
+  "model_conventions": [
+    {
+      "checked_scope": "Lemma 2.1 and every later MLE statement that uses a fixed reference; Definitions 4.1 through 6.1 and their theorems depend only on score differences and are invariant under the same shift.",
+      "classification": "source_proved_equivalent_representation",
+      "formal_meaning": "Lean fixes one reference score to zero. The source proves that adding a common constant on a comparison component leaves every score difference and therefore the likelihood unchanged, so normalized existence and score-difference conclusions are equivalent to the source's shift-invariant formulation.",
+      "id": "NOOTHIGATTU-FIXED-REFERENCE-NORMALIZATION-01",
+      "source_locator": "cited publication:593-643",
+      "why_needed": "An unconstrained score vector has translation nonuniqueness, while the finite Lean optimization and uniqueness statements use an explicit affine slice. The source's component-shift proof supplies the semantic bridge rather than an added model assumption."
+    },
+    {
+      "checked_scope": "Lemma 2.3 and the uniform compact bounds used in the proofs of Theorems 5.3 and 6.3.",
+      "classification": "source_model_clarification",
+      "formal_meaning": "The positive-count premise in Lemma 2.3 ranges over distinct alternatives. Diagonal counts are definitionally zero in the source pairwise-comparison model, and the proof groups unordered distinct pairs, so a literal diagonal-inclusive reading would make the premise inconsistent.",
+      "id": "NOOTHIGATTU-LEMMA23-DISTINCT-PAIRS-01",
+      "source_locator": "cited publication:224-238",
+      "why_needed": "Lean must state the domain of the positivity quantifier explicitly; the distinct-pair restriction recovers the source model and proof rather than weakening a meaningful diagonal obligation."
+    }
+  ],
+  "paper": "NoothigattuEtAl2020PairwiseComparisons",
+  "review_status": "reviewed_no_defects",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Appendices A.1 through A.3: component-shift invariance, compact attainment and the strongly-connected-component necessity argument for Lemma 2.1; the one-neighbor likelihood decomposition and Claim A.1 strict-concavity calculation for Lemma 2.2; and the ordered-score cut argument and reflected negative-coordinate case for the Lemma 2.3 sup-norm bound.",
+      "source_locator": "cited publication:593-924"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Appendix B: concavity of the finite pairwise log likelihood, strictness along a nonconstant connected-graph edge, failure of strictness under translation of a disconnected component, and the resulting uniqueness equivalence for Lemma 2.4.",
+      "source_locator": "cited publication:925-1012"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Appendix C: the complete score-swap comparison for Theorem 3.2, including Claim C.1 and each direct or third-alternative likelihood term under the Definition 3.1 count inequalities.",
+      "source_locator": "cited publication:1015-1121"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Appendix D: the winner-loser comparison after a directed count increase, the U/V score partition, strict baseline-maximizer comparison, and the diminishing-increment consequence of log-concavity used to prove both halves of Theorem 4.2.",
+      "source_locator": "cited publication:1124-1359"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Appendix E: the three-alternative Theorem 5.3 dataset, uniform compact MLE bound, base-point reflection and midpoint identity, derivative proof of the strict base ranking, continuity of the unique maximizer, and selection of a positive rational perturbation followed by common-denominator scaling to integer counts.",
+      "source_locator": "cited publication:1361-1543"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Appendix F: the two component datasets and their one-neighbor perfect-fit rankings, the pooled three-alternative likelihood, uniform compact MLE bound, base reflection and derivative order, and the positive rational perturbation that yields the finite separability counterexample in Theorem 6.3.",
+      "source_locator": "cited publication:1545-1776"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "4fb2747b73e16ea3f73e3739b6b6e0e231820384225d3094ed0fb5f057a68e82"
+}

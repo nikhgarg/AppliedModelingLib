@@ -23,12 +23,12 @@ namespace GJ18InformativeRatingSystems
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /-- The explicit uniform prior on a nonempty finite ordered seller carrier. -/
 noncomputable def clarifiedUniformTypePrior (n : Nat) (hn : 0 < n) : PMF (Fin n) := by
   letI : Nonempty (Fin n) := ⟨⟨0, hn⟩⟩
-  exact EconCSLib.uniformPMF (Fin n)
+  exact AppliedModelingLib.uniformPMF (Fin n)
 
 /-- The author-confirmed positive, at-most-one-per-period rate condition. -/
 abbrev clarifiedMatchRateBounds {n : Nat} (sampleRate : Fin n -> Real) : Prop :=

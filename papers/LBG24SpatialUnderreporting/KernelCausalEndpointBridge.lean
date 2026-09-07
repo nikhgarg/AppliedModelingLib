@@ -17,7 +17,7 @@ coherence bridge from those stage clocks to that single source variable.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section

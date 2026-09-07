@@ -1,7 +1,7 @@
 import GCG24UserItemFairness.Symmetry
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace GCG24UserItemFairness
 
@@ -268,7 +268,7 @@ theorem feasible_iff_source_problem5 {m n K : ℕ}
   · intro h
     refine ⟨?_, ?_, ?_, h.2⟩
     · intro u
-      exact EconCSLib.pmfToRealSum (ρ u)
+      exact AppliedModelingLib.pmfToRealSum (ρ u)
     · intro u j
       exact ENNReal.toReal_nonneg
     · have hmem := (D.satisfies_iff_mem ρ).mp h.1
@@ -300,15 +300,20 @@ def typeCard {m K : ℕ}
     (τ : RecommendationModel.UserTypeAssignment m K) (k : UserType K) : ℕ :=
   (Finset.univ.filter fun u => τ.toType u = k).card
 
-/-- The same multiplicity, but as a real weight for the reduced LP. -/
+/-- The population share of a type, as a real weight for the reduced LP.
+
+The source model's type masses are population proportions.  The unnormalized
+fiber cardinality is retained by `typeCard` for the source-to-reduction sum
+identities, while this weight is its normalization by the total population.
+-/
 noncomputable def typeWeight {m K : ℕ}
     (τ : RecommendationModel.UserTypeAssignment m K) (k : UserType K) : ℝ :=
-  (typeCard τ k : ℝ)
+  (typeCard τ k : ℝ) / (m : ℝ)
 
 @[simp] theorem typeWeight_nonneg {m K : ℕ}
     (τ : RecommendationModel.UserTypeAssignment m K) (k : UserType K) :
     0 ≤ typeWeight τ k := by
-  exact Nat.cast_nonneg _
+  exact div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)
 
 end RecommendationModel.UserTypeAssignment
 
@@ -357,12 +362,12 @@ theorem nonnegativeUtilities_of_positiveUtilities {K n : ℕ}
 /-- Raw expected utility received by a type `k`. -/
 noncomputable def rawTypeUtility {K n : ℕ}
     (T : TypeWeightedRecommendationModel K n) (ρ : TypePolicy K n) (k : UserType K) : ℝ :=
-  EconCSLib.Policy.agentScore ρ T.utility k
+  AppliedModelingLib.Policy.agentScore ρ T.utility k
 
 /-- Best item utility available to type `k`. -/
 noncomputable def bestItemUtility {K n : ℕ} [NeZero n]
     (T : TypeWeightedRecommendationModel K n) (k : UserType K) : ℝ :=
-  EconCSLib.finiteMax (T.utility k)
+  AppliedModelingLib.finiteMax (T.utility k)
 
 /-- Normalized utility received by type `k`. -/
 noncomputable def normalizedTypeUtility {K n : ℕ} [NeZero n]
@@ -372,7 +377,7 @@ noncomputable def normalizedTypeUtility {K n : ℕ} [NeZero n]
 /-- Minimum normalized utility over user types. -/
 noncomputable def typeFairness {K n : ℕ} [NeZero K] [NeZero n]
     (T : TypeWeightedRecommendationModel K n) (ρ : TypePolicy K n) : ℝ :=
-  EconCSLib.finiteMin (normalizedTypeUtility T ρ)
+  AppliedModelingLib.finiteMin (normalizedTypeUtility T ρ)
 
 /-- Weighted raw utility accumulated by an item. -/
 noncomputable def rawItemUtility {K n : ℕ}
@@ -456,23 +461,23 @@ theorem equalityLPItemNormal_dot_candidate_eq {K n : ℕ}
 /-- Minimum normalized item utility in the reduced problem. -/
 noncomputable def itemFairness {K n : ℕ} [NeZero n]
     (T : TypeWeightedRecommendationModel K n) (ρ : TypePolicy K n) : ℝ :=
-  EconCSLib.finiteMin (normalizedItemUtility T ρ)
+  AppliedModelingLib.finiteMin (normalizedItemUtility T ρ)
 
 /-- The policy that recommends every item uniformly to every type. -/
 noncomputable def uniformTypePolicy {K n : ℕ} [NeZero n] : TypePolicy K n :=
-  fun _ => EconCSLib.uniformPMF (Item n)
+  fun _ => AppliedModelingLib.uniformPMF (Item n)
 
 @[simp] theorem uniformTypePolicy_apply_toReal {K n : ℕ} [NeZero n]
     (k : UserType K) (j : Item n) :
     ((uniformTypePolicy (K := K) (n := n) k) j).toReal = (n : ℝ)⁻¹ := by
   simpa [uniformTypePolicy, Item] using
-    (EconCSLib.uniformPMF_apply_toReal (α := Item n) j)
+    (AppliedModelingLib.uniformPMF_apply_toReal (α := Item n) j)
 
 theorem uniformTypePolicy_apply_toReal_pos {K n : ℕ} [NeZero n]
     (k : UserType K) (j : Item n) :
     0 < ((uniformTypePolicy (K := K) (n := n) k) j).toReal := by
   simpa [uniformTypePolicy] using
-    (EconCSLib.uniformPMF_apply_toReal_pos (α := Item n) j)
+    (AppliedModelingLib.uniformPMF_apply_toReal_pos (α := Item n) j)
 
 /--
 A real-vector presentation of reduced policies as one standard simplex row per
@@ -502,7 +507,7 @@ noncomputable def simplexVectorOfTypePolicy {K n : ℕ}
   fun k =>
     ⟨fun j => (ρ k j).toReal,
       ⟨fun j => ENNReal.toReal_nonneg,
-        EconCSLib.pmfToRealSum (ρ k)⟩⟩
+        AppliedModelingLib.pmfToRealSum (ρ k)⟩⟩
 
 /-- Weighted raw item utility evaluated on the reduced simplex-vector presentation. -/
 noncomputable def rawItemUtilityVector {K n : ℕ}
@@ -523,7 +528,7 @@ noncomputable def normalizedItemUtilityVector {K n : ℕ}
 noncomputable def itemFairnessVector {K n : ℕ} [NeZero n]
     (T : TypeWeightedRecommendationModel K n)
     (x : TypePolicySimplexVector K n) : ℝ :=
-  EconCSLib.finiteMin (normalizedItemUtilityVector T x)
+  AppliedModelingLib.finiteMin (normalizedItemUtilityVector T x)
 
 theorem rawItemUtility_typePolicyOfSimplexVector_eq {K n : ℕ}
     (T : TypeWeightedRecommendationModel K n)
@@ -609,7 +614,7 @@ theorem itemFairnessVector_continuous {K n : ℕ} [NeZero n]
       Continuous (fun x : TypePolicySimplexVector K n =>
         normalizedItemUtilityVector T x j) :=
     fun j => normalizedItemUtilityVector_continuous T j
-  unfold itemFairnessVector EconCSLib.finiteMin
+  unfold itemFairnessVector AppliedModelingLib.finiteMin
   fun_prop
 
 /-- Raw type utility evaluated on the reduced simplex-vector presentation. -/
@@ -629,15 +634,15 @@ noncomputable def normalizedTypeUtilityVector {K n : ℕ} [NeZero n]
 noncomputable def typeFairnessVector {K n : ℕ} [NeZero K] [NeZero n]
     (T : TypeWeightedRecommendationModel K n)
     (x : TypePolicySimplexVector K n) : ℝ :=
-  EconCSLib.finiteMin (normalizedTypeUtilityVector T x)
+  AppliedModelingLib.finiteMin (normalizedTypeUtilityVector T x)
 
 theorem rawTypeUtility_typePolicyOfSimplexVector_eq {K n : ℕ}
     (T : TypeWeightedRecommendationModel K n)
     (x : TypePolicySimplexVector K n) (k : UserType K) :
     rawTypeUtility T (typePolicyOfSimplexVector x) k =
       rawTypeUtilityVector T x k := by
-  unfold rawTypeUtility rawTypeUtilityVector EconCSLib.Policy.agentScore
-    EconCSLib.pmfExp
+  unfold rawTypeUtility rawTypeUtilityVector AppliedModelingLib.Policy.agentScore
+    AppliedModelingLib.pmfExp
   simp [mul_comm]
 
 theorem normalizedTypeUtility_typePolicyOfSimplexVector_eq {K n : ℕ} [NeZero n]
@@ -664,7 +669,7 @@ theorem rawTypeUtilityVector_simplexVectorOfTypePolicy_eq {K n : ℕ}
     rawTypeUtilityVector T (simplexVectorOfTypePolicy ρ) k =
       rawTypeUtility T ρ k := by
   unfold rawTypeUtilityVector rawTypeUtility simplexVectorOfTypePolicy
-    EconCSLib.Policy.agentScore EconCSLib.pmfExp
+    AppliedModelingLib.Policy.agentScore AppliedModelingLib.pmfExp
   change (∑ x : Item n, ((ρ k) x).toReal * T.utility k x) =
     ∑ x : Item n, ((ρ k) x).toReal * T.utility k x
   rfl
@@ -717,7 +722,7 @@ theorem typeFairnessVector_continuous {K n : ℕ} [NeZero K] [NeZero n]
       Continuous (fun x : TypePolicySimplexVector K n =>
         normalizedTypeUtilityVector T x k) :=
     fun k => normalizedTypeUtilityVector_continuous T k
-  unfold typeFairnessVector EconCSLib.finiteMin
+  unfold typeFairnessVector AppliedModelingLib.finiteMin
   fun_prop
 
 /-- Positive reduced item fairness implies every item is used by some type. -/
@@ -742,7 +747,7 @@ theorem item_coverage_of_itemFairness_pos {K n : ℕ} [NeZero n]
     by_cases hden : itemNormalizer T j = 0
     · simp [hden]
     · simp [hden]
-  have hle := EconCSLib.finiteMin_le (normalizedItemUtility T ρ) j
+  have hle := AppliedModelingLib.finiteMin_le (normalizedItemUtility T ρ) j
   have hnorm_pos : 0 < normalizedItemUtility T ρ j := lt_of_lt_of_le hpos hle
   rw [hnorm_zero] at hnorm_pos
   exact (lt_irrefl (0 : ℝ)) hnorm_pos
@@ -795,7 +800,7 @@ theorem rawItemUtility_le_itemNormalizer_of_nonnegative
     have hcoeff : 0 ≤ T.weight k * T.utility k j :=
       mul_nonneg (hWeight k) (hUtil k j)
     have hprob : ((ρ k) j).toReal ≤ 1 :=
-      EconCSLib.pmf_apply_toReal_le_one (ρ k) j
+      AppliedModelingLib.pmf_apply_toReal_le_one (ρ k) j
     calc
       T.weight k * T.utility k j * ((ρ k) j).toReal
           ≤ (T.weight k * T.utility k j) * 1 := by
@@ -824,7 +829,7 @@ theorem itemFairness_nonneg_of_nonnegative {K n : ℕ} [NeZero n]
     (hWeight : T.NonnegativeWeights) (hUtil : T.NonnegativeUtilities)
     (ρ : TypePolicy K n) :
     0 ≤ itemFairness T ρ := by
-  exact EconCSLib.finiteMin_nonneg (normalizedItemUtility T ρ)
+  exact AppliedModelingLib.finiteMin_nonneg (normalizedItemUtility T ρ)
     (normalizedItemUtility_nonneg_of_nonnegative T hWeight hUtil ρ)
 
 /-- Strictly positive weights and utilities make each item normalizer positive. -/
@@ -864,7 +869,7 @@ theorem itemFairness_eq_ell_of_equalityLPBasicFeasible
     (hbfs : T.IsEqualityLPBasicFeasible ρ ell) :
     itemFairness T ρ = ell := by
   unfold itemFairness
-  exact EconCSLib.finiteMin_eq_of_forall
+  exact AppliedModelingLib.finiteMin_eq_of_forall
     (normalizedItemUtility T ρ) ell
     (normalizedItemUtility_eq_ell_of_equalityLPBasicFeasible
       T hWeight hUtil ρ ell hbfs)
@@ -901,7 +906,7 @@ theorem itemFairness_uniform_pos_of_positive
     (T : TypeWeightedRecommendationModel K n)
     (hWeight : T.PositiveWeights) (hUtil : T.PositiveUtilities) :
     0 < itemFairness T (uniformTypePolicy (K := K) (n := n)) := by
-  exact EconCSLib.finiteMin_pos (normalizedItemUtility T
+  exact AppliedModelingLib.finiteMin_pos (normalizedItemUtility T
     (uniformTypePolicy (K := K) (n := n)))
     (normalizedItemUtility_uniform_pos_of_positive T hWeight hUtil)
 
@@ -925,7 +930,7 @@ theorem attainableItemFairnessSet_bddAbove_of_nonnegative {K n : ℕ} [NeZero n]
   obtain ⟨ρ, hr⟩ := hr
   rw [hr]
   let j0 : Item n := Classical.choice inferInstance
-  exact (EconCSLib.finiteMin_le (normalizedItemUtility T ρ) j0).trans
+  exact (AppliedModelingLib.finiteMin_le (normalizedItemUtility T ρ) j0).trans
     (normalizedItemUtility_le_one_of_nonnegative T hWeight hUtil ρ j0)
 
 /-- Compactness of the reduced finite policy simplex gives an item-fairness maximizer. -/
@@ -1006,17 +1011,17 @@ theorem bestItemUtility_pos_of_rowHasPositiveItem {K n : ℕ} [NeZero n]
     (k : UserType K) :
     0 < bestItemUtility T k := by
   obtain ⟨j, hj⟩ := hRow k
-  exact lt_of_lt_of_le hj (EconCSLib.le_finiteMax (T.utility k) j)
+  exact lt_of_lt_of_le hj (AppliedModelingLib.le_finiteMax (T.utility k) j)
 
 /-- A type's raw expected utility is at most that type's best item utility. -/
 theorem rawTypeUtility_le_bestItemUtility {K n : ℕ} [NeZero n]
     (T : TypeWeightedRecommendationModel K n) (ρ : TypePolicy K n)
     (k : UserType K) :
     rawTypeUtility T ρ k ≤ bestItemUtility T k := by
-  unfold rawTypeUtility bestItemUtility EconCSLib.Policy.agentScore
-  exact EconCSLib.pmfExp_le_of_forall_le (ρ k) (T.utility k)
-    (EconCSLib.finiteMax (T.utility k))
-    (fun j => EconCSLib.le_finiteMax (T.utility k) j)
+  unfold rawTypeUtility bestItemUtility AppliedModelingLib.Policy.agentScore
+  exact AppliedModelingLib.pmfExp_le_of_forall_le (ρ k) (T.utility k)
+    (AppliedModelingLib.finiteMax (T.utility k))
+    (fun j => AppliedModelingLib.le_finiteMax (T.utility k) j)
 
 /-- Positive row normalizers make every normalized type utility at most one. -/
 theorem normalizedTypeUtility_le_one_of_rowHasPositiveItem
@@ -1038,7 +1043,7 @@ theorem typeFairness_le_one_of_rowHasPositiveItem
     typeFairness T ρ ≤ 1 := by
   classical
   let k0 : UserType K := Classical.choice inferInstance
-  exact (EconCSLib.finiteMin_le (normalizedTypeUtility T ρ) k0).trans
+  exact (AppliedModelingLib.finiteMin_le (normalizedTypeUtility T ρ) k0).trans
     (normalizedTypeUtility_le_one_of_rowHasPositiveItem T hRow ρ k0)
 
 /-- Feasible type-fairness values are bounded above by one under positive row normalizers. -/
@@ -1055,41 +1060,41 @@ theorem attainableTypeFairnessAtLevel_bddAbove_of_rowHasPositiveItem
 
 /-- A canonical reduced policy used only to witness nonempty finite feasible sets. -/
 noncomputable def defaultTypePolicy {K n : ℕ} [NeZero n] : TypePolicy K n :=
-  EconCSLib.Policy.pure
+  AppliedModelingLib.Policy.pure
     (fun _ : UserType K => Classical.choice (inferInstance : Nonempty (Item n)))
 
 /-- The deterministic reduced policy that recommends each type a row-maximizing item. -/
 noncomputable def bestItemTypePolicy {K n : ℕ} [NeZero n]
     (T : TypeWeightedRecommendationModel K n) : TypePolicy K n :=
-  EconCSLib.Policy.pure
+  AppliedModelingLib.Policy.pure
     (fun k : UserType K =>
-      Classical.choose (EconCSLib.exists_finiteMax_eq (T.utility k)))
+      Classical.choose (AppliedModelingLib.exists_finiteMax_eq (T.utility k)))
 
 theorem bestItemTypePolicy_utility_eq_bestItemUtility
     {K n : ℕ} [NeZero n]
     (T : TypeWeightedRecommendationModel K n) (k : UserType K) :
     T.utility k
-        (Classical.choose (EconCSLib.exists_finiteMax_eq (T.utility k))) =
+        (Classical.choose (AppliedModelingLib.exists_finiteMax_eq (T.utility k))) =
       bestItemUtility T k := by
   exact (Classical.choose_spec
-    (EconCSLib.exists_finiteMax_eq (T.utility k))).symm
+    (AppliedModelingLib.exists_finiteMax_eq (T.utility k))).symm
 
 theorem rawTypeUtility_bestItemTypePolicy_eq_bestItemUtility
     {K n : ℕ} [NeZero n]
     (T : TypeWeightedRecommendationModel K n) (k : UserType K) :
     rawTypeUtility T (bestItemTypePolicy T) k = bestItemUtility T k := by
   unfold rawTypeUtility bestItemTypePolicy
-  rw [EconCSLib.Policy.agentScore_pure]
+  rw [AppliedModelingLib.Policy.agentScore_pure]
   exact bestItemTypePolicy_utility_eq_bestItemUtility T k
 
 theorem rawTypeUtility_pure
     {K n : ℕ} [NeZero n]
     (T : TypeWeightedRecommendationModel K n) (choose : UserType K → Item n)
     (k : UserType K) :
-    rawTypeUtility T (EconCSLib.Policy.pure choose) k =
+    rawTypeUtility T (AppliedModelingLib.Policy.pure choose) k =
       T.utility k (choose k) := by
   unfold rawTypeUtility
-  rw [EconCSLib.Policy.agentScore_pure]
+  rw [AppliedModelingLib.Policy.agentScore_pure]
 
 theorem normalizedTypeUtility_bestItemTypePolicy_eq_one
     {K n : ℕ} [NeZero n]
@@ -1105,7 +1110,7 @@ theorem typeFairness_bestItemTypePolicy_eq_one
     (T : TypeWeightedRecommendationModel K n) (hRow : T.RowHasPositiveItem) :
     typeFairness T (bestItemTypePolicy T) = 1 := by
   unfold typeFairness
-  exact EconCSLib.finiteMin_eq_of_forall
+  exact AppliedModelingLib.finiteMin_eq_of_forall
     (normalizedTypeUtility T (bestItemTypePolicy T)) 1
     (normalizedTypeUtility_bestItemTypePolicy_eq_one T hRow)
 
@@ -1343,7 +1348,7 @@ structure ReductionWitness (m n K : ℕ) where
     reduced.weight k = RecommendationModel.UserTypeAssignment.typeWeight data.types k
 
 /-- The canonical type-level reduction constructed from the source symmetric
-data, rather than supplied as an additional theorem premise. -/
+data, with type weights equal to population shares rather than raw counts. -/
 noncomputable def RecommendationModel.SymmetricData.canonicalReduction
     {m n K : ℕ}
     (S : RecommendationModel.SymmetricData m n K)
@@ -1377,7 +1382,7 @@ noncomputable def RecommendationModel.SymmetricData.canonicalReductionOfSurjecti
     (hTypes : Function.Surjective S.types.toType) :
     ReductionWitness m n K :=
   S.canonicalReduction
-    (EconCSLib.Policy.FiberRepresentatives.ofSurjective hTypes)
+    (AppliedModelingLib.Policy.FiberRepresentatives.ofSurjective hTypes)
 
 namespace ReductionWitness
 

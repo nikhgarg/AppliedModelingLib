@@ -1,4 +1,7 @@
 import GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVProposition1
+import GGRS26CombattingGerrymanderingRCV.BallotRoutedSTVDFavoringExecution
+import GGRS26CombattingGerrymanderingRCV.FractionalBallotRoutedBridge
+import AppliedModelingLib.Foundations.Probability.Weighted
 
 /-!
 # Human-Facing Paper Interface: Combatting Gerrymandering with Ranked Choice Voting: an Experimental Analysis of Multi-member Districts in the United States
@@ -31,12 +34,15 @@ Rules for completing this file:
 - `paper_pav_seat_interval`: Lemma C.1 interval characterization for the PAV
   party seat count.
 - `paper_seat_share_rounded`: floor/ceiling target used in Proposition 1.
+- `paper_pav_one_seat_vote_share_threshold`: the PAV vote-share threshold
+  `1 / (M + 1)` for a first seat.
 - `paper_source_stv_terminal_iff`: either all seats are elected or the remaining
   active candidates exactly fill the remaining seats.
 - `paper_source_stv_batched_transition_iff`: the source's quota-election-batch or
   minimum-tally-elimination transition relation.
-- `paper_source_d_favoring_elimination_tie_iff`: the stated cross-party tie rule,
-  with within-party ties intentionally left nondeterministic.
+- `paper_source_d_favoring_elimination_tie_iff`: the stated cross-party tie rule
+  and the outcome support of the source's random within-party rule; probability
+  weights are intentionally outside the theorem surface.
 - `paper_stv_solid_coalition_party_trace_isolation`: the STV-dynamics bridge
   justifying separate party-level analysis before party exhaustion.
 - `paper_stv_quota_floors_fit`: the appendix quota-capacity step that the two
@@ -72,9 +78,17 @@ Rules for completing this file:
   generated filled-seat runner reaches one of the source stopping cases.
 - `paper_ballot_routed_stv_has_terminal_execution`: the source STV procedure
   has a finite terminal execution from its unit-weight initial count.
-- `paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pav`:
-  Proposition 1 uniformly over every terminal outcome of a reachable,
-  ballot-routed surplus-transfer policy.
+- `paper_proposition1_source_selected_stv_and_pav`:
+  Proposition 1 for every admitted surplus-preserving STV transfer policy,
+  with cross-party ties resolved for D, together with the selected PAV count.
+- `paper_surplus_preserving_transfer_rules_induce_source_selected_rounded_seat_share`:
+  typed deep-audit support for the unlabelled transfer-rule paragraph; it is
+  not an independent normal named-theory endpoint.
+- `paper_proposition1_source_selected_fractional_stv_and_pav`:
+  derived fractional-policy specialization retained as implementation support.
+- `paper_map_level_party_share_pigeonhole_and_pav_one_seat_guarantee`:
+  typed deep-audit support for the unlabelled map-level discussion; it is not
+  an independent normal named-theory endpoint.
 - `paper_vote_share_only_selector_refinement_and_cost`: executable direct
   vote-share computation, its rounded-output refinement, and connected
   primitive-operation certificate.
@@ -85,7 +99,77 @@ Rules for completing this file:
 
 namespace GGRS26CombattingGerrymanderingRCV
 
-open EconCSLib.SocialChoice.Voting
+open AppliedModelingLib.SocialChoice.Voting
+open scoped BigOperators
+
+/--
+The source data of a Thiele rule.  `marginalWeight i` is the value of the
+`i`th approved committee member (for positive `i`), and `voterScore n` is the
+sum of the first `n` marginal weights.  The first field records the source's
+diminishing-returns convention rather than treating the total score for `n`
+approved winners as the single marginal value `lambda n`.
+-/
+structure PaperThieleWeights where
+  marginalWeight : ℕ → ℝ
+  marginal_nonincreasing :
+    ∀ i j, 1 ≤ i → i ≤ j → marginalWeight j ≤ marginalWeight i
+  voterScore : ℕ → ℝ
+  voterScore_zero : voterScore 0 = 0
+  voterScore_succ :
+    ∀ n, voterScore (n + 1) = voterScore n + marginalWeight (n + 1)
+
+/-- The paper's generic Thiele committee score, summed across voter ballots. -/
+noncomputable def paper_thiele_committee_score {Candidate : Type*}
+    (weights : PaperThieleWeights)
+    (committee : Finset Candidate)
+    (profile : List (PartyApprovalBallot Candidate)) : ℝ := by
+  classical
+  exact thieleScore weights.voterScore committee profile
+
+/--
+A fixed-size Thiele winner after an explicitly supplied tie-breaking relation.
+The chosen committee is feasible, maximizes the source score over every
+fixed-size feasible committee, and is tie-preferred to every co-maximizer.
+-/
+noncomputable def paper_thiele_fixed_size_selected_committee {Candidate : Type*}
+    (weights : PaperThieleWeights)
+    (tiePreferred : Finset Candidate → Finset Candidate → Prop)
+    (candidates committee : Finset Candidate)
+    (profile : List (PartyApprovalBallot Candidate)) (seats : ℕ) : Prop := by
+  classical
+  exact
+    committee ⊆ candidates ∧
+      committee.card = seats ∧
+        (∀ other, other ⊆ candidates → other.card = seats →
+          paper_thiele_committee_score weights other profile ≤
+            paper_thiele_committee_score weights committee profile) ∧
+          ∀ other, other ⊆ candidates → other.card = seats →
+            paper_thiele_committee_score weights other profile =
+                paper_thiele_committee_score weights committee profile →
+              tiePreferred committee other
+
+/-- PAV specializes the source's marginal weights to `lambda(i) = 1 / i`. -/
+noncomputable def paper_pav_thiele_weights : PaperThieleWeights where
+  marginalWeight := pavWeight
+  marginal_nonincreasing := by
+    intro i j hi hij
+    rw [pavWeight_of_pos (Nat.zero_lt_of_lt hi),
+      pavWeight_of_pos (lt_of_lt_of_le (Nat.zero_lt_of_lt hi) hij)]
+    exact (inv_le_inv₀
+      (by exact_mod_cast lt_of_lt_of_le (Nat.zero_lt_of_lt hi) hij)
+      (by exact_mod_cast Nat.zero_lt_of_lt hi)).2 (by exact_mod_cast hij)
+  voterScore := pavHarmonicSum
+  voterScore_zero := rfl
+  voterScore_succ := fun _ ↦ rfl
+
+/-- The complete fixed-size PAV specialization of the generic Thiele rule. -/
+noncomputable def paper_pav_fixed_size_selected_committee {Candidate : Type*}
+    (tiePreferred : Finset Candidate → Finset Candidate → Prop)
+    (candidates committee : Finset Candidate)
+    (profile : List (PartyApprovalBallot Candidate)) (seats : ℕ) : Prop := by
+  classical
+  exact paper_thiele_fixed_size_selected_committee paper_pav_thiele_weights
+    tiePreferred candidates committee profile seats
 
 /--
 Paper object for the `lambda_PAV` committee-score comparison in Proposition 1.
@@ -93,9 +177,60 @@ Paper object for the `lambda_PAV` committee-score comparison in Proposition 1.
 Source status: direct PAV/Thiele score wrapper used by the Proposition 1
 comparison.
 -/
-noncomputable def paper_pav_score {Candidate : Type*} [DecidableEq Candidate]
+noncomputable def paper_pav_score {Candidate : Type*}
     (committee : Finset Candidate) (profile : List (PartyApprovalBallot Candidate)) : ℝ :=
-  partyPAVScore committee profile
+  paper_thiele_committee_score paper_pav_thiele_weights committee profile
+
+/-- Generic two-party Thiele objective for a Republican seat count. -/
+noncomputable def paper_thiele_party_seat_score (weights : PaperThieleWeights)
+    (partyShare : ℝ) (seats seatCount : ℕ) : ℝ :=
+  partyShare * weights.voterScore seatCount +
+    (1 - partyShare) * weights.voterScore (seats - seatCount)
+
+/-- A seat count is the leftmost maximizer of the generic two-party score. -/
+def paper_thiele_party_min_argmax (weights : PaperThieleWeights)
+    (seatCount : ℕ) (partyShare : ℝ) (seats : ℕ) : Prop :=
+  IsMinArgmaxOn (paper_thiele_party_seat_score weights partyShare seats)
+    seatCount seats
+
+/--
+The source's generic Republican selector as a value carrying its exact finite
+feasibility, maximization, and least-co-maximizer property.
+-/
+noncomputable def paper_thiele_party_republican_selection
+    (weights : PaperThieleWeights) (partyShare : ℝ) (seats : ℕ) :
+    { seatCount //
+      paper_thiele_party_min_argmax weights seatCount partyShare seats } :=
+  ⟨Classical.choose
+      (exists_isMinArgmaxOn
+        (paper_thiele_party_seat_score weights partyShare seats) seats),
+    Classical.choose_spec
+      (exists_isMinArgmaxOn
+        (paper_thiele_party_seat_score weights partyShare seats) seats)⟩
+
+/--
+The source's generic `n_R(y_R, lambda)`: the leftmost maximizing Republican
+seat count over the finite domain `0, ..., seats`.
+-/
+noncomputable def paper_thiele_party_republican_seat_count
+    (weights : PaperThieleWeights) (partyShare : ℝ) (seats : ℕ) : ℕ :=
+  (paper_thiele_party_republican_selection weights partyShare seats).1
+
+/-- The source's Democratic count `n_D = M - n_R`. -/
+noncomputable def paper_thiele_party_democratic_seat_count
+    (weights : PaperThieleWeights) (partyShare : ℝ) (seats : ℕ) : ℕ :=
+  seats - paper_thiele_party_republican_seat_count weights partyShare seats
+
+/--
+The source-facing relation between the two selected party seat counts.  It
+states the finite feasible domain, score maximization, the least co-maximizer
+tie rule favoring party D, and the complementary party-D count in one
+transparent proposition.
+-/
+def paper_thiele_party_selected_seat_counts
+    (weights : PaperThieleWeights) (partyShare : ℝ) (seats nR nD : ℕ) : Prop :=
+  paper_thiele_party_min_argmax weights nR partyShare seats ∧
+    nD = seats - nR
 
 /--
 Paper PAV objective over possible Republican seat counts:
@@ -105,8 +240,8 @@ Paper PAV objective over possible Republican seat counts:
 Source status: direct paper formula from Lemma C.1.
 -/
 noncomputable def paper_pav_seat_score (partyShare : ℝ) (seats seatCount : ℕ) : ℝ :=
-  partyShare * pavHarmonicSum seatCount +
-    (1 - partyShare) * pavHarmonicSum (seats - seatCount)
+  paper_thiele_party_seat_score paper_pav_thiele_weights
+    partyShare seats seatCount
 
 /--
 Paper selector for `n_R(y_R, lambda_PAV)`: the smallest seat count maximizing
@@ -115,19 +250,14 @@ the PAV objective among seat counts from `0` to `M`.
 Source status: direct paper definition from Lemma C.1's `min arg max`.
 -/
 def paper_pav_min_argmax (seatCount : ℕ) (partyShare : ℝ) (seats : ℕ) : Prop :=
-  seatCount ≤ seats ∧
-    (∀ candidate, candidate ≤ seats →
-      paper_pav_seat_score partyShare seats candidate ≤
-        paper_pav_seat_score partyShare seats seatCount) ∧
-    (∀ candidate, candidate ≤ seats →
-      paper_pav_seat_score partyShare seats candidate =
-        paper_pav_seat_score partyShare seats seatCount →
-      seatCount ≤ candidate)
+  paper_thiele_party_min_argmax paper_pav_thiele_weights
+    seatCount partyShare seats
 
 /-- The source's leftmost PAV seat selector, constructed over its finite domain. -/
 noncomputable def paper_pav_selected_seat_count
     (partyShare : ℝ) (seats : ℕ) : ℕ :=
-  pavSeatMinArgmaxChoice partyShare seats
+  paper_thiele_party_republican_seat_count paper_pav_thiele_weights
+    partyShare seats
 
 /-- The Lemma C.1 interval over the source's integer variable. -/
 def paper_pav_integer_interval
@@ -165,6 +295,15 @@ Source status: direct paper formula.
 -/
 def paper_seat_share_rounded (seatCount : ℕ) (partyShare : ℝ) (seats : ℕ) : Prop :=
   seatShareRounded seatCount partyShare seats
+
+/--
+The vote-share threshold for a party's first PAV seat in an `M`-seat district.
+
+Source status: direct threshold formula used in the map-level pigeonhole
+discussion after Figure 2.
+-/
+noncomputable def paper_pav_one_seat_vote_share_threshold (seats : ℕ) : ℝ :=
+  1 / (((seats + 1 : ℕ) : ℝ))
 
 /--
 The Republican winner count produced by the paper's concrete fractional-STV
@@ -229,7 +368,7 @@ def paper_source_d_favoring_elimination_tie
 The paper's stopping predicate is exactly its two stated terminal cases.
 
 Source status: exact stopping definition at
-`cited publication:45-58` and `:79-92`.
+`source_tex/section_methods.tex:45-58` and `:79-92`.
 -/
 theorem paper_source_stv_terminal_iff
     {Candidate TransferState : Type*}
@@ -244,7 +383,7 @@ no-quota minimum-tally elimination branch, including the corresponding
 transfer relation and state update.
 
 Source status: exact STV procedure at
-`cited publication:45-58` and `:79-92`.
+`source_tex/section_methods.tex:45-58` and `:79-92`.
 -/
 theorem paper_source_stv_batched_transition_iff
     {Candidate TransferState : Type*} [DecidableEq Candidate]
@@ -303,11 +442,13 @@ theorem paper_source_stv_batched_transition_iff
         hactive hnoQuota hminimum hafterActive hafterElected htransfer
 
 /--
-The paper's D-favoring tie predicate is exactly the stated cross-party
-restriction, while leaving within-party tied choices unrestricted.
+The paper's D-favoring tie predicate gives the support-level restriction used
+by the theorem: it enforces the stated cross-party priority and retains every
+within-party tied choice that may be selected by the source's random rule.  It
+does not assign probabilities to those supported choices.
 
 Source status: exact elimination tie convention at
-`cited publication:45-58` and `:79-92`.
+`source_tex/section_methods.tex:45-58` and `:79-92`.
 -/
 theorem paper_source_d_favoring_elimination_tie_iff
     {Candidate TransferState : Type*} [DecidableEq Candidate]
@@ -431,7 +572,7 @@ Source status: named Lemma C.1 statement.
 -/
 def paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec
     {seats : ℕ} {partyShare : ℝ}
-    (hpos : 0 < partyShare) (hle : partyShare ≤ 1) : Prop :=
+    (hseats : 1 ≤ seats) (hpos : 0 < partyShare) (hle : partyShare ≤ 1) : Prop :=
   ∃ seatCount : ℕ, paper_pav_min_argmax seatCount partyShare seats ∧
     ∃ ell : ℤ,
         (seatCount : ℤ) = ell ∧
@@ -528,10 +669,49 @@ theorem paper_stv_solid_coalition_lower_bounds_seat_share_bounds
       (seatCount := seatCount) (seats := seats) (partyShare := partyShare)
       hstv)
 
+/-- A complete ballot is a valid ranking of exactly the declared candidates. -/
+def paper_complete_ranked_ballots
+    {Voter Candidate : Type*} [DecidableEq Candidate]
+    (voters : Finset Voter) (ballots : Voter → Ballot Candidate)
+    (allCandidates : Finset Candidate) : Prop :=
+  ∀ voter, voter ∈ voters →
+    Ballot.Valid (ballots voter) ∧
+      ∀ candidate, candidate ∈ ballots voter ↔ candidate ∈ allCandidates
+
+/--
+One candidate is ranked strictly before another on a ballot.  This source-level
+order relation is stated by list decomposition, rather than through the
+implementation operation that searches for the next active candidate.
+-/
+def paper_candidate_ranked_before {Candidate : Type*}
+    (higher lower : Candidate) (ballot : Ballot Candidate) : Prop :=
+  ∃ earlier middle suffix,
+    ballot = earlier ++ higher :: middle ++ lower :: suffix
+
+/--
+A party block submits complete solid-coalition rankings: every declared
+candidate appears exactly once, and every same-party candidate is ranked
+strictly above every other-party candidate.  Within-party order is free.
+-/
+noncomputable def paper_complete_solid_coalition_rankings
+    {Voter Candidate : Type*}
+    (voters : Finset Voter) (ballots : Voter → Ballot Candidate)
+    (partyCandidates otherPartyCandidates allCandidates : Finset Candidate) : Prop := by
+  classical
+  exact
+    Disjoint partyCandidates otherPartyCandidates ∧
+      allCandidates = partyCandidates ∪ otherPartyCandidates ∧
+        ∀ voter, voter ∈ voters →
+          Ballot.Valid (ballots voter) ∧
+            (∀ candidate, candidate ∈ ballots voter ↔ candidate ∈ allCandidates) ∧
+              ∀ same, same ∈ partyCandidates →
+                ∀ other, other ∈ otherPartyCandidates →
+                  paper_candidate_ranked_before same other (ballots voter)
+
 /--
 Source-shaped complete ranking condition for a party block in Proposition 1.
-Each voter has a valid ballot listing every initially active candidate, and
-whenever any same-party candidate remains active, the voter's first active
+Each voter has a valid ballot listing exactly every initially active candidate,
+and whenever any same-party candidate remains active, the voter's first active
 candidate is still same-party.
 
 Source status: explicit complete-ranking and solid-coalition ballot convention
@@ -541,13 +721,46 @@ def paper_complete_party_ranking_ballots
     {Voter Candidate : Type*} [DecidableEq Candidate]
     (voters : Finset Voter) (ballots : Voter → Ballot Candidate)
     (partyCandidates allCandidates : Finset Candidate) : Prop :=
-  ∀ voter, voter ∈ voters →
-    Ballot.Valid (ballots voter) ∧
-      (∀ candidate, candidate ∈ allCandidates → candidate ∈ ballots voter) ∧
-        ∀ active,
-          (∃ same, same ∈ partyCandidates ∧ same ∈ active) →
-            ∃ same, same ∈ partyCandidates ∧
-              Ballot.nextActive (ballots voter) active = some same
+  paper_complete_ranked_ballots voters ballots allCandidates ∧
+    ∀ voter, voter ∈ voters → ∀ active,
+      (∃ same, same ∈ partyCandidates ∧ same ∈ active) →
+        ∃ same, same ∈ partyCandidates ∧
+          Ballot.nextActive (ballots voter) active = some same
+
+/--
+The paper's two-party voter and candidate model for the two rule families.
+For Thiele rules, each party supplies exactly `seats` candidates and every
+voter approves exactly the candidates of their party.  For STV, each party
+supplies at least `seats` candidates, the two party rosters form the complete
+candidate set, and each party block submits complete solid-coalition rankings;
+the definition imposes no common within-party ordering across voters.
+-/
+noncomputable def paper_two_party_voter_model
+    {Voter Candidate : Type*}
+    (allVoters partyVoters otherPartyVoters : Finset Voter)
+    (thielePartyCandidates thieleOtherPartyCandidates : Finset Candidate)
+    (approvalBallots : Voter → PartyApprovalBallot Candidate)
+    (stvPartyCandidates stvOtherPartyCandidates allSTVCandidates : Finset Candidate)
+    (rankingBallots : Voter → Ballot Candidate) (seats : ℕ) : Prop := by
+  classical
+  exact
+    allVoters = partyVoters ∪ otherPartyVoters ∧
+      Disjoint partyVoters otherPartyVoters ∧
+        Disjoint thielePartyCandidates thieleOtherPartyCandidates ∧
+          thielePartyCandidates.card = seats ∧
+            thieleOtherPartyCandidates.card = seats ∧
+              (∀ voter, voter ∈ partyVoters →
+                approvalBallots voter = thielePartyCandidates) ∧
+                (∀ voter, voter ∈ otherPartyVoters →
+                  approvalBallots voter = thieleOtherPartyCandidates) ∧
+                  seats ≤ stvPartyCandidates.card ∧
+                    seats ≤ stvOtherPartyCandidates.card ∧
+                      paper_complete_solid_coalition_rankings
+                        partyVoters rankingBallots stvPartyCandidates
+                          stvOtherPartyCandidates allSTVCandidates ∧
+                        paper_complete_solid_coalition_rankings
+                          otherPartyVoters rankingBallots stvOtherPartyCandidates
+                            stvPartyCandidates allSTVCandidates
 
 /--
 Complete party rankings supply the operational solid-coalition predicate used
@@ -565,7 +778,7 @@ theorem paper_complete_party_ranking_ballots_solid_coalition
         voters ballots partyCandidates allCandidates) :
     SolidCoalitionBallots voters ballots partyCandidates := by
   intro voter hvoter active hpartyActive
-  exact (hcomplete voter hvoter).2.2 active hpartyActive
+  exact hcomplete.2 voter hvoter active hpartyActive
 
 /--
 Algorithm refinement for one generated fractional round. The concrete
@@ -962,6 +1175,182 @@ def paper_proposition1_ballot_routed_stv_initial_state
       intro voter hvoter
       positivity)
 
+/-- Source-facing STV state: active candidates, elected candidates, and ballot weight. -/
+structure PaperSourceSTVState (Voter Candidate : Type*) where
+  active : Finset Candidate
+  elected : Finset Candidate
+  weight : Voter → ℝ
+
+/--
+`candidate` is a ballot's first currently active candidate.  The decomposition
+makes the ranking semantics explicit: every earlier-ranked candidate is
+inactive and `candidate` itself is active.
+-/
+noncomputable def paper_first_active_candidate {Candidate : Type*}
+    (ballot : Ballot Candidate) (active : Finset Candidate)
+    (candidate : Candidate) : Prop := by
+  classical
+  exact
+    candidate ∈ active ∧
+      ∃ preceding suffix, ballot = preceding ++ candidate :: suffix ∧
+        ∀ earlier, earlier ∈ preceding → earlier ∉ active
+
+/-- The source first-place tally among the currently active candidates. -/
+noncomputable def paper_source_stv_tally {Voter Candidate : Type*}
+    (allVoters : Finset Voter) (ballots : Voter → Ballot Candidate)
+    (active : Finset Candidate) (weight : Voter → ℝ)
+    (candidate : Candidate) : ℝ := by
+  classical
+  exact ∑ voter ∈ allVoters.filter
+    (fun voter ↦ paper_first_active_candidate (ballots voter) active candidate),
+      weight voter
+
+/-- The source's two stopping cases, on the explicit paper-facing state. -/
+def paper_source_stv_execution_terminal {Voter Candidate : Type*}
+    (seats : ℕ) (state : PaperSourceSTVState Voter Candidate) : Prop :=
+  state.elected.card = seats ∨
+    state.active.card = seats - state.elected.card
+
+/--
+The transfer-policy conditions used by the source result.  A quota-reaching
+winner leaves exactly its surplus ballot mass available for transfer, all
+non-supporting ballots are unchanged, remaining mass stays nonnegative, and
+elimination reroutes unchanged ballot weights.  The policy may distribute the
+surplus arbitrarily among the winner's supporting ballots, covering the
+paper's admitted fractional and random-voter policies without an additional
+per-ballot upper bound.
+-/
+noncomputable def paper_source_surplus_transfer_policy
+    {Voter Candidate : Type*}
+    (allVoters : Finset Voter) (ballots : Voter → Ballot Candidate)
+    (quota : ℝ)
+    (electUpdate eliminateUpdate :
+      Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop) : Prop := by
+  classical
+  exact
+    (∀ active winner beforeWeight,
+      (∀ voter, voter ∈ allVoters → 0 ≤ beforeWeight voter) →
+        winner ∈ active →
+          quota ≤ paper_source_stv_tally allVoters ballots active beforeWeight winner →
+            ∃ afterWeight, electUpdate active winner beforeWeight afterWeight) ∧
+    (∀ active loser beforeWeight,
+      (∀ voter, voter ∈ allVoters → 0 ≤ beforeWeight voter) →
+        loser ∈ active →
+          ∃ afterWeight, eliminateUpdate active loser beforeWeight afterWeight) ∧
+    (∀ active winner beforeWeight afterWeight,
+      (∀ voter, voter ∈ allVoters → 0 ≤ beforeWeight voter) →
+        electUpdate active winner beforeWeight afterWeight →
+          ∀ voter, voter ∈ allVoters → 0 ≤ afterWeight voter) ∧
+    (∀ active winner beforeWeight afterWeight,
+      (∀ voter, voter ∈ allVoters → 0 ≤ beforeWeight voter) →
+        electUpdate active winner beforeWeight afterWeight →
+          ∀ voter, voter ∈ allVoters →
+            ¬ paper_first_active_candidate (ballots voter) active winner →
+              afterWeight voter = beforeWeight voter) ∧
+    (∀ active winner beforeWeight afterWeight,
+      (∀ voter, voter ∈ allVoters → 0 ≤ beforeWeight voter) →
+        electUpdate active winner beforeWeight afterWeight →
+          (∑ voter ∈ allVoters.filter
+              (fun voter ↦ paper_first_active_candidate
+                (ballots voter) active winner), afterWeight voter) =
+            (∑ voter ∈ allVoters.filter
+              (fun voter ↦ paper_first_active_candidate
+                (ballots voter) active winner), beforeWeight voter) - quota) ∧
+    ∀ active loser beforeWeight afterWeight,
+      (∀ voter, voter ∈ allVoters → 0 ≤ beforeWeight voter) →
+        eliminateUpdate active loser beforeWeight afterWeight →
+          ∀ voter, voter ∈ allVoters →
+            afterWeight voter = beforeWeight voter
+
+/--
+Support of one source STV step.  A quota-reaching candidate is elected before
+any elimination; otherwise a minimum-tally candidate is eliminated.
+Cross-party ties favor `favoredParty`, while every within-party tied candidate
+allowed by the source's random rule remains in the relation.  The random
+probability weights are outside this support-only proposition.
+-/
+noncomputable def paper_source_stv_d_favoring_transition
+    {Voter Candidate : Type*}
+    (allVoters : Finset Voter) (ballots : Voter → Ballot Candidate)
+    (favoredParty : Finset Candidate) (quota : ℝ) (seats : ℕ)
+    (electUpdate eliminateUpdate :
+      Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop)
+    (before after : PaperSourceSTVState Voter Candidate) : Prop := by
+  classical
+  exact
+    (∃ winner,
+      ¬ paper_source_stv_execution_terminal seats before ∧
+        winner ∈ before.active ∧
+          before.elected.card < seats ∧
+            quota ≤ paper_source_stv_tally
+              allVoters ballots before.active before.weight winner ∧
+              (winner ∉ favoredParty →
+                ∀ candidate, candidate ∈ before.active →
+                  paper_source_stv_tally
+                      allVoters ballots before.active before.weight candidate =
+                    paper_source_stv_tally
+                      allVoters ballots before.active before.weight winner →
+                    candidate ∉ favoredParty) ∧
+              after.active = before.active.erase winner ∧
+                after.elected = insert winner before.elected ∧
+                  electUpdate before.active winner before.weight after.weight) ∨
+    (∃ loser,
+      ¬ paper_source_stv_execution_terminal seats before ∧
+        loser ∈ before.active ∧
+          (∀ candidate, candidate ∈ before.active →
+            paper_source_stv_tally
+              allVoters ballots before.active before.weight candidate < quota) ∧
+          (∀ candidate, candidate ∈ before.active →
+            paper_source_stv_tally
+                allVoters ballots before.active before.weight loser ≤
+              paper_source_stv_tally
+                allVoters ballots before.active before.weight candidate) ∧
+          (loser ∈ favoredParty →
+            ∀ candidate, candidate ∈ before.active →
+              paper_source_stv_tally
+                  allVoters ballots before.active before.weight candidate =
+                paper_source_stv_tally
+                  allVoters ballots before.active before.weight loser →
+                candidate ∈ favoredParty) ∧
+          after.active = before.active.erase loser ∧
+            after.elected = before.elected ∧
+              eliminateUpdate before.active loser before.weight after.weight)
+
+/--
+Support of one complete execution of the source STV rule.  Ballots rank exactly
+the declared candidates; the quota is the exact Droop quota computed from the
+seat count and electorate cardinality; the explicit update relations satisfy
+the admitted surplus-transfer conditions; and the run starts with unit voter
+weights, uses the D-favoring/random-within-party support transition, and
+reaches one of the source's two stopping cases.  No distributional conclusion
+is asserted.
+-/
+noncomputable def paper_source_stv_rule_execution
+    {Voter Candidate : Type*}
+    (allVoters : Finset Voter) (ballots : Voter → Ballot Candidate)
+    (initialCandidates favoredParty : Finset Candidate) (seats : ℕ)
+    (electUpdate eliminateUpdate :
+      Finset Candidate → Candidate → (Voter → ℝ) → (Voter → ℝ) → Prop)
+    (terminal : PaperSourceSTVState Voter Candidate) : Prop := by
+  classical
+  let initial : PaperSourceSTVState Voter Candidate :=
+    { active := initialCandidates
+      elected := ∅
+      weight := fun _ ↦ 1 }
+  exact
+    (∀ voter, voter ∈ allVoters →
+      Ballot.Valid (ballots voter) ∧
+        ∀ candidate, candidate ∈ ballots voter ↔
+          candidate ∈ initialCandidates) ∧
+      favoredParty ⊆ initialCandidates ∧
+        paper_source_surplus_transfer_policy allVoters ballots
+          (STVQuota seats allVoters.card : ℝ) electUpdate eliminateUpdate ∧
+          Relation.ReflTransGen
+            (paper_source_stv_d_favoring_transition allVoters ballots favoredParty
+              (STVQuota seats allVoters.card : ℝ) seats electUpdate eliminateUpdate)
+            initial terminal ∧
+            paper_source_stv_execution_terminal seats terminal
+
 /-- The internally constructed Proposition 1 initial count has unit voter weight. -/
 theorem paper_proposition1_ballot_routed_stv_initial_state_unit_weight
     {Voter Candidate : Type*} [DecidableEq Voter] [DecidableEq Candidate]
@@ -1067,31 +1456,87 @@ theorem paper_proposition1_ballot_routed_stv_outcome_domain_nonempty
   exact hseats
 
 /--
-Source-wide Proposition 1 endpoint for every terminal outcome of the paper's
-STV procedure.  A policy updates actual ballot weights, routes each remaining
-ballot to its next active candidate, removes exactly one quota on an election,
-and eliminates a minimum tally only when no quota is present.  This includes
-fractional transfer and random whole-vote transfer without accepting a raw
-global run, party projection, or final seat count from the caller.
+Exact source-facing Proposition 1.  The STV side quantifies over every
+ballot-routed transfer policy that preserves the elected candidate's surplus,
+resolves cross-party election and elimination ties in party D's favor, and
+requires both an actual terminal execution and the rounded conclusion for
+every reachable terminal.  The PAV side uses the paper's selected leftmost
+maximizer.  The source boundary `y_R = 0` is included explicitly.
 
-The run is universally quantified in the conclusion because the source rule
-permits transfer and within-party tie choices.  The preceding theorem proves
-that at least one such terminal run exists.
-
-Source status: direct Proposition 1 endpoint for the source's stated class of
-surplus-preserving ballot-routed STV implementations and the selected PAV
-comparison.
+Source status: Proposition 1 at `source.txt:485-490`, with the transfer-rule
+scope stated at `source.txt:394-408` and `source.txt:492-498`.
 -/
-def paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_pavSpec
-    {Voter Candidate : Type*} [DecidableEq Voter] [DecidableEq Candidate]
+def paper_proposition1_source_selected_stv_and_pavSpec
+    {Voter Candidate : Type*}
     {partyVoters otherPartyVoters allVoters : Finset Voter}
     {ballots : Voter -> Ballot Candidate}
     {partyCandidates otherPartyCandidates : Finset Candidate}
     {initialActive : Finset Candidate}
     {seats voters : ℕ} {partyShare : ℝ}
+    (hseats : 1 ≤ seats)
+    (hnonneg : 0 ≤ partyShare) (hle : partyShare ≤ 1)
+    (hvoters : seats * (seats + 1) ≤ voters)
+    (hpartyCandidates : seats ≤ partyCandidates.card)
+    (hotherPartyCandidates : seats ≤ otherPartyCandidates.card) : Prop := by
+  classical
+  exact
+    paper_complete_party_ranking_ballots
+        partyVoters ballots partyCandidates initialActive →
+      paper_complete_party_ranking_ballots
+          otherPartyVoters ballots otherPartyCandidates initialActive →
+        voters = allVoters.card →
+          allVoters = partyVoters ∪ otherPartyVoters →
+            Disjoint partyVoters otherPartyVoters →
+              Disjoint partyCandidates otherPartyCandidates →
+                partyCandidates ⊆ initialActive →
+                  otherPartyCandidates ⊆ initialActive →
+                    initialActive ⊆ partyCandidates ∪ otherPartyCandidates →
+                      partyShare * (voters : ℝ) = (partyVoters.card : ℝ) →
+                        (1 - partyShare) * (voters : ℝ) =
+                            (otherPartyVoters.card : ℝ) →
+                          (∀ policy : BallotRoutedSTVTransferPolicy allVoters ballots
+                                (STVQuota seats voters : ℝ),
+                              (∃ terminal,
+                                  BallotRoutedDFavoringSTVRun
+                                      (favoredParty := otherPartyCandidates)
+                                      ballots (STVQuota seats voters : ℝ) policy seats
+                                      (paper_proposition1_ballot_routed_stv_initial_state
+                                        allVoters initialActive) terminal ∧
+                                    BallotRoutedSTVTerminal seats terminal) ∧
+                                ∀ terminal,
+                                  BallotRoutedDFavoringSTVRun
+                                      (favoredParty := otherPartyCandidates)
+                                      ballots (STVQuota seats voters : ℝ) policy seats
+                                      (paper_proposition1_ballot_routed_stv_initial_state
+                                        allVoters initialActive) terminal →
+                                    BallotRoutedSTVTerminal seats terminal →
+                                      paper_seat_share_rounded
+                                        (ballotRoutedPartyFinalSeats
+                                          partyCandidates seats terminal)
+                                        partyShare seats) ∧
+                            paper_seat_share_rounded
+                              (paper_pav_selected_seat_count partyShare seats)
+                              partyShare seats
+
+/--
+Typed support for the unlabelled paragraph saying that Proposition 1's STV
+seat-share formula is not specific to fractional transfer. Every admitted policy acts on actual
+routed ballot weights and removes exactly one quota from the elected
+candidate's support.  The conclusion supplies an actual terminal execution
+with the source's D-favoring tie convention, including the `y_R = 0` boundary.
+
+Source status: deep-audit support, not an independent normal named result.
+-/
+def paper_surplus_preserving_transfer_rules_induce_source_selected_rounded_seat_shareSpec
+    {Voter Candidate : Type*} [DecidableEq Voter] [DecidableEq Candidate]
+    {partyVoters otherPartyVoters allVoters : Finset Voter}
+    {ballots : Voter → Ballot Candidate}
+    {partyCandidates otherPartyCandidates : Finset Candidate}
+    {initialActive : Finset Candidate}
+    {seats voters : ℕ} {partyShare : ℝ}
     (policy : BallotRoutedSTVTransferPolicy allVoters ballots
       (STVQuota seats voters : ℝ))
-    (hpos : 0 < partyShare) (hle : partyShare ≤ 1)
+    (hnonneg : 0 ≤ partyShare) (hle : partyShare ≤ 1)
     (hvoters : seats * (seats + 1) ≤ voters)
     (hpartyCandidates : seats ≤ partyCandidates.card)
     (hotherPartyCandidates : seats ≤ otherPartyCandidates.card)
@@ -1112,19 +1557,123 @@ def paper_proposition1_all_ballot_routed_surplus_transfer_outcomes_and_selected_
       partyShare * (voters : ℝ) = (partyVoters.card : ℝ))
     (hotherShareCard :
       (1 - partyShare) * (voters : ℝ) = (otherPartyVoters.card : ℝ)) : Prop :=
-  ∀ terminal,
-    Relation.ReflTransGen
-        (BallotRoutedSTVTransition ballots (STVQuota seats voters : ℝ)
-          policy seats)
-        (paper_proposition1_ballot_routed_stv_initial_state
-          allVoters initialActive) terminal ->
-      BallotRoutedSTVTerminal seats terminal ->
-        ∀ pavSeatCount : ℕ,
-          paper_pav_min_argmax pavSeatCount partyShare seats ->
-            paper_seat_share_rounded
-                (ballotRoutedPartyFinalSeats partyCandidates seats terminal)
-                partyShare seats ∧
-              paper_seat_share_rounded pavSeatCount partyShare seats
+  (∃ terminal,
+      BallotRoutedDFavoringSTVRun
+          (favoredParty := otherPartyCandidates)
+          ballots (STVQuota seats voters : ℝ) policy seats
+          (paper_proposition1_ballot_routed_stv_initial_state
+            allVoters initialActive) terminal ∧
+        BallotRoutedSTVTerminal seats terminal) ∧
+    ∀ terminal,
+      BallotRoutedDFavoringSTVRun
+          (favoredParty := otherPartyCandidates)
+          ballots (STVQuota seats voters : ℝ) policy seats
+          (paper_proposition1_ballot_routed_stv_initial_state
+            allVoters initialActive) terminal ->
+        BallotRoutedSTVTerminal seats terminal ->
+          paper_seat_share_rounded
+            (ballotRoutedPartyFinalSeats partyCandidates seats terminal)
+            partyShare seats
+
+/--
+Derived fractional-policy specialization of Proposition 1. This support
+declaration is not the normal source-result route; the source-facing Spec above
+quantifies over every admitted surplus-preserving transfer policy.
+-/
+def paper_proposition1_source_selected_fractional_stv_and_pavSpec
+    {Voter Candidate : Type*} [DecidableEq Voter] [DecidableEq Candidate]
+    {partyVoters otherPartyVoters allVoters : Finset Voter}
+    {ballots : Voter -> Ballot Candidate}
+    {partyCandidates otherPartyCandidates : Finset Candidate}
+    {initialActive : Finset Candidate}
+    {seats voters : ℕ} {partyShare : ℝ}
+    (hnonneg : 0 ≤ partyShare) (hle : partyShare ≤ 1)
+    (hvoters : seats * (seats + 1) ≤ voters)
+    (hpartyCandidates : seats ≤ partyCandidates.card)
+    (hotherPartyCandidates : seats ≤ otherPartyCandidates.card)
+    (hpartyComplete :
+      paper_complete_party_ranking_ballots
+        partyVoters ballots partyCandidates initialActive)
+    (hotherComplete :
+      paper_complete_party_ranking_ballots
+        otherPartyVoters ballots otherPartyCandidates initialActive)
+    (hvoters_card : voters = allVoters.card)
+    (hvoterPartition : allVoters = partyVoters ∪ otherPartyVoters)
+    (hvoterDisjoint : Disjoint partyVoters otherPartyVoters)
+    (hcandidateDisjoint : Disjoint partyCandidates otherPartyCandidates)
+    (hpartyInitialActive : partyCandidates ⊆ initialActive)
+    (hotherPartyInitialActive : otherPartyCandidates ⊆ initialActive)
+    (hinitialActiveSubset : initialActive ⊆ partyCandidates ∪ otherPartyCandidates)
+    (hpartyShareCard :
+      partyShare * (voters : ℝ) = (partyVoters.card : ℝ))
+    (hotherShareCard :
+      (1 - partyShare) * (voters : ℝ) = (otherPartyVoters.card : ℝ)) : Prop :=
+  (∃ terminal,
+      BallotRoutedDFavoringSTVRun
+          (favoredParty := otherPartyCandidates)
+          ballots (STVQuota seats voters : ℝ)
+          (fractionalBallotRoutedSTVTransferPolicy
+            (voters := allVoters) (ballots := ballots) (stvQuota_pos seats voters))
+          seats
+          (paper_proposition1_ballot_routed_stv_initial_state
+            allVoters initialActive) terminal ∧
+        BallotRoutedSTVTerminal seats terminal) ∧
+    (∀ terminal,
+      BallotRoutedDFavoringSTVRun
+          (favoredParty := otherPartyCandidates)
+          ballots (STVQuota seats voters : ℝ)
+          (fractionalBallotRoutedSTVTransferPolicy
+            (voters := allVoters) (ballots := ballots) (stvQuota_pos seats voters))
+          seats
+          (paper_proposition1_ballot_routed_stv_initial_state
+            allVoters initialActive) terminal ->
+        BallotRoutedSTVTerminal seats terminal ->
+          paper_seat_share_rounded
+            (ballotRoutedPartyFinalSeats partyCandidates seats terminal)
+            partyShare seats) ∧
+      paper_seat_share_rounded
+        (paper_pav_selected_seat_count partyShare seats) partyShare seats
+
+/--
+Typed support for the unlabelled map-level party-share pigeonhole and
+minority-seat discussion. District weights
+are population shares, so their nonnegative unit sum makes the statewide vote
+share their weighted district average. The result exposes all three source
+claims: some district reaches at least the statewide share, the first-seat PAV
+threshold strictly decreases with district magnitude, and a party whose
+statewide share is above that threshold receives at least one PAV seat in a
+witness district.
+
+Source status: deep-audit support, not an independent normal named result.
+-/
+def paper_map_level_party_share_pigeonhole_and_pav_one_seat_guaranteeSpec
+    {District : Type*} [Fintype District]
+    (districtWeight districtPartyShare : District → ℝ)
+    (statewidePartyShare : ℝ) (districtMagnitude : ℕ)
+    (pavSeatCount : District → ℕ)
+    (hweight_nonneg : ∀ district, 0 ≤ districtWeight district)
+    (hweight_sum : (∑ district, districtWeight district) = 1)
+    (hstatewide :
+      statewidePartyShare =
+        ∑ district, districtWeight district * districtPartyShare district)
+    (hshare_bounds :
+      ∀ district, 0 ≤ districtPartyShare district ∧
+        districtPartyShare district ≤ 1)
+    (hpav :
+      ∀ district,
+        paper_pav_min_argmax
+          (pavSeatCount district) (districtPartyShare district)
+          districtMagnitude) : Prop :=
+  (∃ district, statewidePartyShare ≤ districtPartyShare district) ∧
+    (∀ {smallerMagnitude largerMagnitude : ℕ},
+      smallerMagnitude < largerMagnitude →
+        paper_pav_one_seat_vote_share_threshold largerMagnitude <
+          paper_pav_one_seat_vote_share_threshold smallerMagnitude) ∧
+    (paper_pav_one_seat_vote_share_threshold districtMagnitude <
+        statewidePartyShare →
+      ∃ district,
+        statewidePartyShare ≤ districtPartyShare district ∧
+          1 ≤ pavSeatCount district)
 
 /--
 Direct-computation refinement and efficiency certificate. The evaluator's

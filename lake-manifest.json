@@ -1,7 +1,18 @@
 {"version": "1.2.0",
  "packagesDir": ".lake/packages",
  "packages":
- [{"url": "https://github.com/leanprover/cslib",
+ [{"url":
+   "https://github.com/Hydrodynamical/Vlasov_Meanfield_Formalization.git",
+   "type": "git",
+   "subDir": "Vlasov",
+   "scope": "",
+   "rev": "b2eda09e58ceebad6cf23b8a7a6839001d4e7c15",
+   "name": "Vlasov",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": "b2eda09e58ceebad6cf23b8a7a6839001d4e7c15",
+   "inherited": false,
+   "configFile": "lakefile.toml"},
+  {"url": "https://github.com/leanprover/cslib",
    "type": "git",
    "subDir": null,
    "scope": "leanprover",
@@ -101,6 +112,6 @@
    "inputRev": "v4.30.0-rc2",
    "inherited": true,
    "configFile": "lakefile.toml"}],
- "name": "EconCSLib",
+ "name": "AppliedModelingLib",
  "lakeDir": ".lake",
  "fixedToolchain": false}

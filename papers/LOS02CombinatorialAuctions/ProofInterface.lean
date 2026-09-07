@@ -11,7 +11,7 @@ combinatorial-auction formalization. The compact human-review surface is
 namespace LOS02CombinatorialAuctions
 namespace ProofInterface
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 
 /-! ## Paper Definitions -/
 
@@ -192,14 +192,14 @@ abbrev singleMindedWelfareDecisionInstance (Bidder Item : Type*) :=
 /-- Weighted set-packing threshold decision problem. -/
 noncomputable abbrev weightedSetPackingDecisionProblem
     {Bidder Item : Type*} [DecidableEq Bidder] [DecidableEq Item] :
-    EconCSLib.Complexity.DecisionProblem
+    AppliedModelingLib.Complexity.DecisionProblem
       (weightedSetPackingDecisionInstance Bidder Item) :=
   LOS02CombinatorialAuctions.paper_weighted_set_packing_decision_problem
 
 /-- Single-minded welfare threshold decision problem. -/
 noncomputable abbrev singleMindedWelfareDecisionProblem
     {Bidder Item : Type*} [DecidableEq Bidder] [DecidableEq Item] :
-    EconCSLib.Complexity.DecisionProblem
+    AppliedModelingLib.Complexity.DecisionProblem
       (singleMindedWelfareDecisionInstance Bidder Item) :=
   LOS02CombinatorialAuctions.paper_single_minded_welfare_decision_problem
 
@@ -246,13 +246,13 @@ abbrev graphCliqueDecisionInstance (Vertex : Type*) :=
 
 /-- Graph independent-set threshold decision problem. -/
 abbrev graphIndependentSetDecisionProblem {Vertex : Type*} :
-    EconCSLib.Complexity.DecisionProblem
+    AppliedModelingLib.Complexity.DecisionProblem
       (graphIndependentSetDecisionInstance Vertex) :=
   LOS02CombinatorialAuctions.paper_graph_independent_set_decision_problem
 
 /-- Graph clique threshold decision problem. -/
 abbrev graphCliqueDecisionProblem {Vertex : Type*} :
-    EconCSLib.Complexity.DecisionProblem
+    AppliedModelingLib.Complexity.DecisionProblem
       (graphCliqueDecisionInstance Vertex) :=
   LOS02CombinatorialAuctions.paper_graph_clique_decision_problem
 
@@ -382,7 +382,7 @@ problems.
 -/
 noncomputable def theorem6_1_decision_problem_reduction
     {Bidder Item : Type*} [DecidableEq Bidder] [DecidableEq Item] :
-    EconCSLib.Complexity.ManyOneReduction
+    AppliedModelingLib.Complexity.ManyOneReduction
       (weightedSetPackingDecisionProblem (Bidder := Bidder) (Item := Item))
       (singleMindedWelfareDecisionProblem (Bidder := Bidder) (Item := Item)) :=
   LOS02CombinatorialAuctions.paper_theorem6_1_decision_problem_reduction
@@ -398,7 +398,7 @@ noncomputable def theorem6_1_polynomial_time_decision_problem_reduction
         singleMindedWelfareDecisionInstance Bidder Item) → Prop)
     (hpoly :
       PolynomialTime setPackingDecisionToSingleMindedWelfareDecision) :
-    EconCSLib.Complexity.PolynomialTimeReduction
+    AppliedModelingLib.Complexity.PolynomialTimeReduction
       (weightedSetPackingDecisionProblem (Bidder := Bidder) (Item := Item))
       (singleMindedWelfareDecisionProblem (Bidder := Bidder) (Item := Item)) :=
   LOS02CombinatorialAuctions.paper_theorem6_1_polynomial_time_decision_problem_reduction
@@ -412,7 +412,7 @@ weighted set packing follows for the encoded single-minded welfare target.
 theorem theorem6_1_external_decision_reduction_consequence
     {Bidder Item : Type*} [DecidableEq Bidder] [DecidableEq Item]
     (C :
-      EconCSLib.Complexity.ExternalReductionConsequence
+      AppliedModelingLib.Complexity.ExternalReductionConsequence
         (weightedSetPackingDecisionProblem
           (Bidder := Bidder) (Item := Item))
         (singleMindedWelfareDecisionProblem
@@ -435,7 +435,7 @@ theorem theorem6_1_external_polynomial_time_decision_reduction_consequence
     (hpoly :
       PolynomialTime setPackingDecisionToSingleMindedWelfareDecision)
     (C :
-      EconCSLib.Complexity.ExternalPolynomialReductionConsequence
+      AppliedModelingLib.Complexity.ExternalPolynomialReductionConsequence
         (weightedSetPackingDecisionProblem
           (Bidder := Bidder) (Item := Item))
         (singleMindedWelfareDecisionProblem
@@ -452,7 +452,7 @@ welfare through the compiled set-to-bid reduction.
 -/
 theorem theorem6_1_set_packing_hardness_transfers_to_single_minded
     {Bidder Item : Type*} [DecidableEq Bidder] [DecidableEq Item]
-    (H : EconCSLib.Complexity.ReductionClosedHardness)
+    (H : AppliedModelingLib.Complexity.ReductionClosedHardness)
     (hsource :
       H.Hard
         (weightedSetPackingDecisionProblem
@@ -474,7 +474,7 @@ theorem theorem6_1_set_packing_polynomial_hardness_transfers_to_single_minded
         singleMindedWelfareDecisionInstance Bidder Item) → Prop)
     (hpoly :
       PolynomialTime setPackingDecisionToSingleMindedWelfareDecision)
-    (H : EconCSLib.Complexity.PolynomialReductionClosedHardness)
+    (H : AppliedModelingLib.Complexity.PolynomialReductionClosedHardness)
     (hsource :
       H.Hard
         (weightedSetPackingDecisionProblem
@@ -550,7 +550,7 @@ through the compiled LOS02 encoding.
 theorem theorem6_1_external_optimal_solver_np_eq_zpp
     {Bidder Item Language : Type*} [DecidableEq Bidder] [DecidableEq Item]
     (complexityModel :
-      EconCSLib.Complexity.ComplexityClassModel Language)
+      AppliedModelingLib.Complexity.ComplexityClassModel Language)
     (FeasibleSM :
       ((Bidder → SingleMindedBid Item) → Finset Bidder) → Prop)
     (FeasibleWSP :
@@ -580,7 +580,7 @@ theorem theorem6_1_external_approximation_solver_np_eq_zpp
     {Bidder Item Language : Type*} [DecidableEq Bidder] [DecidableEq Item]
     (factor : ℝ)
     (complexityModel :
-      EconCSLib.Complexity.ComplexityClassModel Language)
+      AppliedModelingLib.Complexity.ComplexityClassModel Language)
     (FeasibleSM :
       ((Bidder → SingleMindedBid Item) → Finset Bidder) → Prop)
     (FeasibleWSP :
@@ -813,7 +813,7 @@ theorem theorem6_1_clique_decision_single_minded_welfare_reduction
 /-- Theorem 6.1 clique-to-independent-set complement as an abstract many-one reduction. -/
 noncomputable def theorem6_1_clique_decision_complement_many_one_reduction
     {Vertex : Type*} :
-    EconCSLib.Complexity.ManyOneReduction
+    AppliedModelingLib.Complexity.ManyOneReduction
       (graphCliqueDecisionProblem (Vertex := Vertex))
       (graphIndependentSetDecisionProblem (Vertex := Vertex)) :=
   LOS02CombinatorialAuctions.paper_theorem6_1_clique_decision_complement_many_one_reduction
@@ -821,7 +821,7 @@ noncomputable def theorem6_1_clique_decision_complement_many_one_reduction
 /-- Theorem 6.1 independent-set-to-set-packing as an abstract many-one reduction. -/
 noncomputable def theorem6_1_independent_set_decision_many_one_reduction
     {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex] :
-    EconCSLib.Complexity.ManyOneReduction
+    AppliedModelingLib.Complexity.ManyOneReduction
       (graphIndependentSetDecisionProblem (Vertex := Vertex))
       (weightedSetPackingDecisionProblem
         (Bidder := Vertex) (Item := Sym2 Vertex)) :=
@@ -830,7 +830,7 @@ noncomputable def theorem6_1_independent_set_decision_many_one_reduction
 /-- Theorem 6.1 clique-to-set-packing as an abstract many-one reduction. -/
 noncomputable def theorem6_1_clique_decision_set_packing_many_one_reduction
     {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex] :
-    EconCSLib.Complexity.ManyOneReduction
+    AppliedModelingLib.Complexity.ManyOneReduction
       (graphCliqueDecisionProblem (Vertex := Vertex))
       (weightedSetPackingDecisionProblem
         (Bidder := Vertex) (Item := Sym2 Vertex)) :=
@@ -839,7 +839,7 @@ noncomputable def theorem6_1_clique_decision_set_packing_many_one_reduction
 /-- Theorem 6.1 clique-to-single-minded welfare as an abstract many-one reduction. -/
 noncomputable def theorem6_1_clique_decision_single_minded_many_one_reduction
     {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex] :
-    EconCSLib.Complexity.ManyOneReduction
+    AppliedModelingLib.Complexity.ManyOneReduction
       (graphCliqueDecisionProblem (Vertex := Vertex))
       (singleMindedWelfareDecisionProblem
         (Bidder := Vertex) (Item := Sym2 Vertex)) :=
@@ -857,7 +857,7 @@ noncomputable def theorem6_1_clique_decision_single_minded_polynomial_time_reduc
         singleMindedWelfareDecisionInstance Vertex (Sym2 Vertex)) → Prop)
     (hpoly :
       PolynomialTime graphCliqueDecisionToSingleMindedWelfareDecision) :
-    EconCSLib.Complexity.PolynomialTimeReduction
+    AppliedModelingLib.Complexity.PolynomialTimeReduction
       (graphCliqueDecisionProblem (Vertex := Vertex))
       (singleMindedWelfareDecisionProblem
         (Bidder := Vertex) (Item := Sym2 Vertex)) :=
@@ -872,7 +872,7 @@ out of clique follows for the encoded single-minded welfare target.
 theorem theorem6_1_external_clique_decision_single_minded_reduction_consequence
     {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
     (C :
-      EconCSLib.Complexity.ExternalReductionConsequence
+      AppliedModelingLib.Complexity.ExternalReductionConsequence
         (graphCliqueDecisionProblem (Vertex := Vertex))
         (singleMindedWelfareDecisionProblem
           (Bidder := Vertex) (Item := Sym2 Vertex)))
@@ -894,7 +894,7 @@ theorem theorem6_1_external_clique_polynomial_time_single_minded_reduction_conse
     (hpoly :
       PolynomialTime graphCliqueDecisionToSingleMindedWelfareDecision)
     (C :
-      EconCSLib.Complexity.ExternalPolynomialReductionConsequence
+      AppliedModelingLib.Complexity.ExternalPolynomialReductionConsequence
         (graphCliqueDecisionProblem (Vertex := Vertex))
         (singleMindedWelfareDecisionProblem
           (Bidder := Vertex) (Item := Sym2 Vertex)))
@@ -910,7 +910,7 @@ to single-minded welfare through the compiled complement-edge encoding.
 -/
 theorem theorem6_1_clique_hardness_transfers_to_single_minded
     {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
-    (H : EconCSLib.Complexity.ReductionClosedHardness)
+    (H : AppliedModelingLib.Complexity.ReductionClosedHardness)
     (hsource :
       H.Hard (graphCliqueDecisionProblem (Vertex := Vertex))) :
     H.Hard
@@ -931,7 +931,7 @@ theorem theorem6_1_clique_polynomial_hardness_transfers_to_single_minded
         singleMindedWelfareDecisionInstance Vertex (Sym2 Vertex)) → Prop)
     (hpoly :
       PolynomialTime graphCliqueDecisionToSingleMindedWelfareDecision)
-    (H : EconCSLib.Complexity.PolynomialReductionClosedHardness)
+    (H : AppliedModelingLib.Complexity.PolynomialReductionClosedHardness)
     (hsource :
       H.Hard (graphCliqueDecisionProblem (Vertex := Vertex))) :
     H.Hard
@@ -1133,7 +1133,7 @@ theorem averageOrderOf_valueUpdate_eq_orderedInsertErase_of_split
         (LOS02CombinatorialAuctions.paper_single_minded_value_update
           bids j value) =
       (before ++ base).orderedInsert
-        (EconCSLib.Auction.singleMindedAverageTieRel
+        (AppliedModelingLib.Auction.singleMindedAverageTieRel
           (LOS02CombinatorialAuctions.paper_single_minded_value_update
             bids j value))
         j := by
@@ -2681,7 +2681,7 @@ noncomputable def averageGreedyCriticalThreshold_someBranch
     (i : Bidder) (s : Bundle Item) (p : ℝ)
     (hs : s.Nonempty)
     (hthreshold : averageGreedyCriticalThreshold reports i s = some p) :
-    EconCSLib.Auction.SingleMindedSomeThresholdBranch
+    AppliedModelingLib.Auction.SingleMindedSomeThresholdBranch
       averageOrderOf reports i s p :=
   LOS02CombinatorialAuctions.paper_average_greedy_critical_threshold_some_branch
     reports hreports i s p hs hthreshold

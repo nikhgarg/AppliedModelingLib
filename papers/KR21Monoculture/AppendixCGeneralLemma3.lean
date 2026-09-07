@@ -12,8 +12,8 @@ variables argument; it does not take a transition-mass inequality as an
 assumption.
 -/
 
-open EconCSLib Filter MeasureTheory ProbabilityTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib Filter MeasureTheory ProbabilityTheory
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal Topology
 
 namespace KR21Monoculture
@@ -143,7 +143,7 @@ def appendixCGeneralLemma3StrictTop {n : ℕ}
 /-- The score vector obtained by contracting each coordinate toward its value. -/
 def appendixCGeneralLemma3ContractedScore {n : ℕ}
     (t : ℝ) (value score : Candidate n → ℝ) : Candidate n → ℝ :=
-  fun c => EconCSLib.Probability.rumContractScore t (value c) (score c)
+  fun c => AppliedModelingLib.Probability.rumContractScore t (value c) (score c)
 
 /-- Strict-top cells are measurable from coordinatewise score measurability. -/
 theorem measurableSet_appendixCGeneralLemma3StrictTop
@@ -176,7 +176,7 @@ theorem measurable_appendixCGeneralLemma3ContractedScore_coordinate
     {n : ℕ} (t : ℝ) (value : Candidate n → ℝ) (c : Candidate n) :
     Measurable (fun score : Candidate n → ℝ =>
       appendixCGeneralLemma3ContractedScore t value score c) := by
-  unfold appendixCGeneralLemma3ContractedScore EconCSLib.Probability.rumContractScore
+  unfold appendixCGeneralLemma3ContractedScore AppliedModelingLib.Probability.rumContractScore
   exact measurable_const.add
     (measurable_const.mul ((measurable_pi_apply c).sub measurable_const))
 
@@ -222,11 +222,11 @@ theorem appendixCGeneralLemma3_raw_i_gt_raw_zero_of_strict_contracted_top
   by_contra hnot
   have hraw : score i ≤ score 0 := le_of_not_gt hnot
   have hcontract_le :
-      EconCSLib.Probability.rumContractScore t (value 0) (score 0) ≤
-        EconCSLib.Probability.rumContractScore t (value i) (score i) :=
+      AppliedModelingLib.Probability.rumContractScore t (value 0) (score 0) ≤
+        AppliedModelingLib.Probability.rumContractScore t (value i) (score i) :=
     le_of_lt (hcontract 0 (Ne.symm hi))
   have hvalue_le : value 0 ≤ value i :=
-    EconCSLib.Probability.rumContractScore_value_le_of_raw_le_and_contract_ge
+    AppliedModelingLib.Probability.rumContractScore_value_le_of_raw_le_and_contract_ge
       (xi := value i) (xj := value 0) (ri := score i) (rj := score 0)
       ht0 htlt1 hraw hcontract_le
   linarith
@@ -234,14 +234,14 @@ theorem appendixCGeneralLemma3_raw_i_gt_raw_zero_of_strict_contracted_top
 /-- Contraction is strictly increasing in the true value at a fixed raw score. -/
 theorem appendixCGeneralLemma3_contract_strict_in_value_same_raw
     {t xi xj r : ℝ} (htlt1 : t < 1) (hx : xj < xi) :
-    EconCSLib.Probability.rumContractScore t xj r <
-      EconCSLib.Probability.rumContractScore t xi r := by
+    AppliedModelingLib.Probability.rumContractScore t xj r <
+      AppliedModelingLib.Probability.rumContractScore t xi r := by
   have hcoef : 0 < 1 - t := by linarith
   have hgap : 0 < xi - xj := sub_pos.mpr hx
   have hdiff :
-      0 < EconCSLib.Probability.rumContractScore t xi r -
-        EconCSLib.Probability.rumContractScore t xj r := by
-    rw [EconCSLib.Probability.rumContractScore_sub]
+      0 < AppliedModelingLib.Probability.rumContractScore t xi r -
+        AppliedModelingLib.Probability.rumContractScore t xj r := by
+    rw [AppliedModelingLib.Probability.rumContractScore_sub]
     nlinarith [mul_pos hcoef hgap]
   linarith
 
@@ -284,35 +284,35 @@ theorem appendixCGeneralLemma3_swap_maps_strict_transition
   · intro d hd0
     by_cases hdi : d = i
     · subst d
-      change EconCSLib.Probability.rumContractScore t (value i)
+      change AppliedModelingLib.Probability.rumContractScore t (value i)
           (appendixCGeneralLemma3Swap i score i) <
-        EconCSLib.Probability.rumContractScore t (value 0)
+        AppliedModelingLib.Probability.rumContractScore t (value 0)
           (appendixCGeneralLemma3Swap i score 0)
       rw [appendixCGeneralLemma3Swap_apply_i,
         appendixCGeneralLemma3Swap_apply_zero]
-      exact EconCSLib.Probability.rumContractScore_preserves_strict_order
+      exact AppliedModelingLib.Probability.rumContractScore_preserves_strict_order
         ht0 (le_of_lt htlt1) hvalue hraw_i0
     · have hcontract_di :
-          EconCSLib.Probability.rumContractScore t (value d) (score d) <
-            EconCSLib.Probability.rumContractScore t (value i) (score i) :=
+          AppliedModelingLib.Probability.rumContractScore t (value d) (score d) <
+            AppliedModelingLib.Probability.rumContractScore t (value i) (score i) :=
         hcontract d hdi
       have hincrease :
-          EconCSLib.Probability.rumContractScore t (value i) (score i) <
-            EconCSLib.Probability.rumContractScore t (value 0) (score i) :=
+          AppliedModelingLib.Probability.rumContractScore t (value i) (score i) <
+            AppliedModelingLib.Probability.rumContractScore t (value 0) (score i) :=
         appendixCGeneralLemma3_contract_strict_in_value_same_raw htlt1 hvalue
-      change EconCSLib.Probability.rumContractScore t (value d)
+      change AppliedModelingLib.Probability.rumContractScore t (value d)
           (appendixCGeneralLemma3Swap i score d) <
-        EconCSLib.Probability.rumContractScore t (value 0)
+        AppliedModelingLib.Probability.rumContractScore t (value 0)
           (appendixCGeneralLemma3Swap i score 0)
       rw [appendixCGeneralLemma3Swap_apply_zero]
       calc
-        EconCSLib.Probability.rumContractScore t (value d)
+        AppliedModelingLib.Probability.rumContractScore t (value d)
             (appendixCGeneralLemma3Swap i score d) =
-            EconCSLib.Probability.rumContractScore t (value d) (score d) := by
+            AppliedModelingLib.Probability.rumContractScore t (value d) (score d) := by
               rw [appendixCGeneralLemma3Swap_apply_of_ne hd0 hdi]
-        _ < EconCSLib.Probability.rumContractScore t (value i) (score i) :=
+        _ < AppliedModelingLib.Probability.rumContractScore t (value i) (score i) :=
           hcontract_di
-        _ < EconCSLib.Probability.rumContractScore t (value 0) (score i) :=
+        _ < AppliedModelingLib.Probability.rumContractScore t (value 0) (score i) :=
           hincrease
 
 /-- The swap maps the source strict transition cell into its zero-top target cell. -/
@@ -552,13 +552,13 @@ theorem appendixCGeneralLemma3_contractedScore_noTies_ae
             (w11CandidateScoreDensityENN f value 1) hab offset)
         intro score hscore
         change score a - score b = offset
-        change EconCSLib.Probability.rumContractScore t (value a) (score a) =
-          EconCSLib.Probability.rumContractScore t (value b) (score b) at hscore
+        change AppliedModelingLib.Probability.rumContractScore t (value a) (score a) =
+          AppliedModelingLib.Probability.rumContractScore t (value b) (score b) at hscore
         have hdiff :
-            EconCSLib.Probability.rumContractScore t (value a) (score a) -
-              EconCSLib.Probability.rumContractScore t (value b) (score b) = 0 :=
+            AppliedModelingLib.Probability.rumContractScore t (value a) (score a) -
+              AppliedModelingLib.Probability.rumContractScore t (value b) (score b) = 0 :=
           sub_eq_zero.mpr hscore
-        rw [EconCSLib.Probability.rumContractScore_sub] at hdiff
+        rw [AppliedModelingLib.Probability.rumContractScore_sub] at hdiff
         dsimp [offset]
         apply (eq_div_iff (ne_of_gt ht)).2
         nlinarith
@@ -573,15 +573,15 @@ theorem appendixCGeneralLemma3_contractedScore_noTies_ae
 theorem appendixCGeneralLemma3_contract_strict_of_value_lt_raw_le
     {t xi xj ri rj : ℝ} (ht0 : 0 ≤ t) (htlt1 : t < 1)
     (hx : xj < xi) (hr : rj ≤ ri) :
-    EconCSLib.Probability.rumContractScore t xj rj <
-      EconCSLib.Probability.rumContractScore t xi ri := by
+    AppliedModelingLib.Probability.rumContractScore t xj rj <
+      AppliedModelingLib.Probability.rumContractScore t xi ri := by
   have h1t : 0 < 1 - t := by linarith
   have hxgap : 0 < xi - xj := sub_pos.mpr hx
   have hrgap : 0 ≤ ri - rj := sub_nonneg.mpr hr
   have hdiff :
-      0 < EconCSLib.Probability.rumContractScore t xi ri -
-        EconCSLib.Probability.rumContractScore t xj rj := by
-    rw [EconCSLib.Probability.rumContractScore_sub]
+      0 < AppliedModelingLib.Probability.rumContractScore t xi ri -
+        AppliedModelingLib.Probability.rumContractScore t xj rj := by
+    rw [AppliedModelingLib.Probability.rumContractScore_sub]
     have hvalueTerm : 0 < (1 - t) * (xi - xj) := mul_pos h1t hxgap
     have hrawTerm : 0 ≤ t * (ri - rj) := mul_nonneg ht0 hrgap
     linarith
@@ -620,7 +620,7 @@ theorem appendixCGeneralLemma3_rawWinner_value_le_contractedWinner
     value (firstChoice (rankByScore score)) ≤
       value (firstChoice
         (rankByScore (appendixCGeneralLemma3ContractedScore t value score))) := by
-  apply EconCSLib.Probability.rumContractScore_value_le_of_raw_max_and_contract_max
+  apply AppliedModelingLib.Probability.rumContractScore_value_le_of_raw_max_and_contract_max
     ht0 htlt1
   · exact appendixCGeneralLemma3_rawWinner_maximizes score
   · intro d

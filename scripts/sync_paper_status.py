@@ -28,13 +28,19 @@ ROOT = (
     _ROOT_ARGS.repo.resolve()
     if _ROOT_ARGS.repo is not None
     else Path(
-        os.environ.get("ECONCSLIB_REPO_ROOT", Path(__file__).resolve().parents[1])
+        os.environ.get("APPLIEDMODELINGLIB_REPO_ROOT", Path(__file__).resolve().parents[1])
     ).resolve()
 )
 # Cross-checkout release validation executes this trusted private script while
 # reading a clean public candidate. Propagate that explicit repository context
 # to every trusted helper imported below or lazily during status rendering.
-os.environ["ECONCSLIB_REPO_ROOT"] = str(ROOT)
+os.environ["APPLIEDMODELINGLIB_REPO_ROOT"] = str(ROOT)
+
+if __package__ in {None, ""}:  # Import the trusted current-closeout package.
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from scripts.current_closeout.protocol_selection import current_v11_protocol_selected
+from scripts.final_validation_report_status import public_display_status
 
 try:
     from root_readme_policy import (
@@ -99,10 +105,10 @@ SITE_STATS_END = "<!-- END GENERATED PROJECT STATS -->"
 SITE_STATUS_BEGIN = "<!-- BEGIN GENERATED PAPER STATUS ROWS -->"
 SITE_STATUS_END = "<!-- END GENERATED PAPER STATUS ROWS -->"
 SITE_REQUIRED_STATIC_COPY = {
-    "maintainer footer": "EconCSLib is maintained by",
+    "maintainer footer": "Applied Modeling Lib is maintained by",
+    "project former name": "This project was previously called EconCSLib.",
     "companion paper link": "https://arxiv.org/abs/2606.16144",
     "companion Lean project link": "https://github.com/gametheoryinlean/EconCSLib",
-    "Slack workspace link": "https://join.slack.com/t/appliedmodelinglib/shared_invite/zt-42slirzxx-rEO8eEns7~4~i3Lbu7N~lA",
     "hero vision line": "Our vision is to enable researchers who don't know Lean",
 }
 PAPER_README_BEGIN = "<!-- BEGIN GENERATED PAPER FOLDER README -->"
@@ -110,6 +116,7 @@ PAPER_README_END = "<!-- END GENERATED PAPER FOLDER README -->"
 LEGACY_README_NOTES = "docs/FORMALIZATION_NOTES.md"
 TEMPLATE_README_PLAN = "docs/FORMALIZATION_PLAN.md"
 GITHUB_MAIN = "https://github.com/nikhgarg/EconCSLib/blob/main/"
+GITHUB_MAIN_TREE = "https://github.com/nikhgarg/EconCSLib/tree/main/"
 # The public site links its generated artifacts to the published repository.
 # The localhost preview server exposes the same repo-relative files under this
 # neutral route, and the small static rewrite below selects it only when the
@@ -376,15 +383,29 @@ def status_label(status: str) -> str:
     return STATUS_LABELS.get(status, status.capitalize())
 
 
+def human_status_label(status: str, *, paper_id: str | None = None) -> str:
+    """Display checked coverage without changing the paper's audit disposition."""
+    return status_label(public_display_status(
+        status,
+        paper_id=paper_id,
+        preserve_partial_status=CATALOG_PAYLOAD.get("preserve_partial_status", []),
+    ))
+
+
 def publication_for(payload: dict[str, Any]) -> tuple[str, int]:
     publication = PUBLICATION_OVERRIDES.get(payload["id"])
     if publication is not None:
         return publication
-    return str(payload.get("source_version", "")), 9999
+    # Source-version strings are audit provenance, not public citations: they
+    # may contain private filenames, revision IDs, or hashes. Missing display
+    # metadata must not expose those fields or invent a venue/date.
+    return "Publication details not listed", 9999
 
 
 def source_url_for(payload: dict[str, Any]) -> str:
-    return SOURCE_URL_OVERRIDES.get(payload["id"], str(payload.get("source_url", "")))
+    # Only the curated public citation catalog owns website paper links.
+    # An intake/source URL can instead identify a private draft or workspace.
+    return SOURCE_URL_OVERRIDES.get(payload["id"], "")
 
 
 def validated_human_review_counts(
@@ -715,7 +736,13 @@ def paper_facing_human_review_total(
             )
 
         ordinary_claims = [
-            item for item in raw_items.values() if isinstance(item, dict) and not is_deep_only(item)
+            item
+            for item in raw_items.values()
+            if isinstance(item, dict)
+            and item.get("claim_bearing") is True
+            and str(item.get("inventory_role") or "").strip()
+            != "source_presentation_alias"
+            and not is_deep_only(item)
         ]
         if not ordinary_claims:
             raise ValueError(
@@ -795,12 +822,6 @@ def load_json_object(path: Path) -> dict[str, Any]:
     except (OSError, json.JSONDecodeError):
         return {}
     return payload if isinstance(payload, dict) else {}
-
-
-def file_sha256(path: Path) -> str:
-    """Return a content digest for a small tracked status artifact."""
-
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def audit_sidecar_path(folder: Path, basename: str) -> Path | None:
@@ -1761,6 +1782,18 @@ def saved_paper_coverage_label(
     )
 
 
+def _current_v11_status_protocol_selected(
+    folder: Path, payload: Mapping[str, Any]
+) -> bool:
+    """Use the closeout owner's complete status/map protocol selection."""
+
+    if current_v11_protocol_selected(payload):
+        return True
+    return current_v11_protocol_selected(
+        payload, load_json_object(folder / "audit" / "paper_statement_map.json")
+    )
+
+
 def current_v11_source_spec_counts(
     folder: Path,
     payload: dict[str, Any],
@@ -1770,18 +1803,20 @@ def current_v11_source_spec_counts(
     """Return current direct source-to-Spec counts for an opted-in closeout.
 
     v11 intentionally replaces the legacy Lean-to-paraphrase sidecar with one
-    raw-source/expanded-Spec judgment per human source claim.  A normal status
-    sync must not silently fall back to the retired lane.  It checks the
-    recorded closeout receipt and the current, byte-pinned review ledger, but
-    deliberately does not re-elaborate Lean: live closure validation belongs to
-    the explicit closeout and release gates, not website rendering.
+    raw-source/expanded-Spec judgment per human source claim. A normal status
+    sync must not silently fall back to the retired lane. For schema 6 it
+    projects the explicit human selection and normalized verdicts from the one
+    authenticated accepted graph; earlier receipt schemas retain their own
+    hash-pinned review ledger. It deliberately does not re-elaborate Lean:
+    current closure validation belongs to explicit closeout and release gates,
+    not website rendering.
     """
 
     review_surface = payload.get("review_surface")
-    if not isinstance(review_surface, dict) or review_surface.get(
-        "require_v11_raw_source_spec_screening"
-    ) is not True:
+    if not _current_v11_status_protocol_selected(folder, payload):
         return None, ""
+    if not isinstance(review_surface, dict):
+        return None, "current source-to-Spec review_surface is unavailable"
     status_digest = ReviewSurfaceProvider._status_digest(payload)
     if review_surface_provider is not None:
         if (
@@ -1796,6 +1831,85 @@ def current_v11_source_spec_counts(
             review_surface_provider._v11_source_spec_status_digest = status_digest
         return result
 
+    def graph_review_source_items(projection: Any) -> tuple[str, ...]:
+        """Resolve the explicit human surface to exact source-map item IDs."""
+
+        raw_names = review_surface.get("include_names")
+        if not isinstance(raw_names, list) or not raw_names:
+            raise ValueError("graph-native human review has no include_names")
+        names = [str(name).strip() for name in raw_names]
+        if any(not name for name in names) or len(names) != len(set(names)):
+            raise ValueError("graph-native human review include_names are malformed")
+
+        source_items_by_review_name: dict[str, set[str]] = {}
+        for source_item_id, declarations in (
+            projection.review_declarations_by_source_item.items()
+        ):
+            for declaration in declarations:
+                name = str(declaration).strip().rsplit(".", 1)[-1]
+                if name:
+                    source_items_by_review_name.setdefault(name, set()).add(
+                        str(source_item_id)
+                    )
+
+        selected: list[str] = []
+        for name in names:
+            candidates = source_items_by_review_name.get(name, set())
+            if len(candidates) != 1:
+                raise ValueError(
+                    f"human-review row {name!r} does not resolve to one source item"
+                )
+            selected.append(next(iter(candidates)))
+
+        raw_conditions = review_surface.get("source_condition_items", [])
+        if not isinstance(raw_conditions, list):
+            raise ValueError("graph-native source_condition_items are malformed")
+        condition_items = [str(item).strip() for item in raw_conditions]
+        if (
+            any(not item for item in condition_items)
+            or len(condition_items) != len(set(condition_items))
+            or any(
+                item not in projection.review_declarations_by_source_item
+                for item in condition_items
+            )
+        ):
+            raise ValueError("graph-native source_condition_items are malformed")
+        selected.extend(condition_items)
+        if len(selected) != len(set(selected)):
+            raise ValueError("graph-native human-review source items overlap")
+
+        expected_total = int(payload.get("human_review", {}).get("total_rows", 0))
+        if expected_total <= 0 or len(selected) != expected_total:
+            raise ValueError(
+                "graph-native human-review selection does not equal total_rows"
+            )
+        return tuple(selected)
+
+    def graph_counts(projection: Any) -> dict[str, int]:
+        selected = graph_review_source_items(projection)
+        verdicts = projection.source_lean_verdicts_by_source_item
+        counts = {
+            "total": len(selected),
+            "matches": 0,
+            "mismatch": 0,
+            "uncertain": 0,
+            "unknown": 0,
+            # Presentation-only provenance. The explicit release/closeout gate,
+            # not this projection, establishes current Lean realization.
+            "recorded_closeout": 1,
+        }
+        for source_item_id in selected:
+            verdict = str(verdicts.get(source_item_id) or "")
+            if verdict == "matches":
+                counts["matches"] += 1
+            elif verdict == "does_not_match":
+                counts["mismatch"] += 1
+            elif verdict == "uncertain":
+                counts["uncertain"] += 1
+            else:
+                counts["unknown"] += 1
+        return counts
+
     screening_path = folder / "audit" / "v11_raw_source_spec_screening.json"
     try:
         try:
@@ -1803,19 +1917,59 @@ def current_v11_source_spec_counts(
         except ModuleNotFoundError:  # pragma: no cover - module-style import
             from scripts.final_closure_receipt import load_final_closure_receipt
         receipt = load_final_closure_receipt(ROOT, folder.name).payload
-        ledger_pin = receipt.get("review_ledger")
-        expected_ledger_path = (
-            f"papers/{folder.name}/audit/v11_raw_source_spec_screening.json"
-        )
-        if (
-            receipt.get("paper") != folder.name
-            or receipt.get("closure_status") != "current"
-            or receipt.get("evidence_lane") != "direct-source-row-review"
-            or not isinstance(ledger_pin, Mapping)
-            or ledger_pin.get("path") != expected_ledger_path
-            or ledger_pin.get("sha256") != file_sha256(screening_path)
-        ):
-            return record((None, "recorded direct source-to-Spec receipt is not current"))
+        if receipt.get("schema") == 6:
+            try:
+                try:
+                    from obligation_closure_credential import (
+                        validate_nonaccepting_recorded_graph_projection,
+                    )
+                except ModuleNotFoundError:  # pragma: no cover - module-style import
+                    from scripts.obligation_closure_credential import (
+                        validate_nonaccepting_recorded_graph_projection,
+                    )
+                projection = validate_nonaccepting_recorded_graph_projection(
+                    ROOT, folder.name, receipt
+                )
+                return record((graph_counts(projection), ""))
+            except Exception as exc:  # noqa: BLE001 - projection remains fail closed.
+                return record(
+                    (None, f"recorded accepted graph projection is unavailable: {exc}")
+                )
+        elif receipt.get("schema") == 5:
+            try:
+                try:
+                    from obligation_evidence_store import load_paper_obligation_bundle
+                except ModuleNotFoundError:  # pragma: no cover - module-style import
+                    from scripts.obligation_evidence_store import (
+                        load_paper_obligation_bundle,
+                    )
+                loaded_bundle = load_paper_obligation_bundle(ROOT, folder.name)
+                bundle_pointer = receipt.get("obligation_bundle")
+                if (
+                    receipt.get("paper") != folder.name
+                    or receipt.get("closure_status") != "current"
+                    or not isinstance(bundle_pointer, Mapping)
+                    or bundle_pointer.get("bundle_sha256")
+                    != loaded_bundle.bundle.bundle_sha256
+                    or not loaded_bundle.bundle.acceptance_credential
+                ):
+                    return record((None, "recorded obligation-graph receipt is not current"))
+            except Exception as exc:  # noqa: BLE001 - projection remains fail closed.
+                return record((None, f"recorded obligation graph is unavailable: {exc}"))
+        else:
+            ledger_pin = receipt.get("review_ledger")
+            expected_ledger_path = (
+                f"papers/{folder.name}/audit/v11_raw_source_spec_screening.json"
+            )
+            if (
+                receipt.get("paper") != folder.name
+                or receipt.get("closure_status") != "current"
+                or receipt.get("evidence_lane") != "direct-source-row-review"
+                or not isinstance(ledger_pin, Mapping)
+                or ledger_pin.get("path") != expected_ledger_path
+                or ledger_pin.get("sha256") != file_sha256(screening_path)
+            ):
+                return record((None, "recorded direct source-to-Spec receipt is not current"))
     except Exception as exc:  # noqa: BLE001 - a status projection must fail closed.
         return record((None, f"direct source-to-Spec receipt is unavailable: {exc}"))
 
@@ -1872,18 +2026,16 @@ def current_v11_source_spec_label(
         review_surface_provider=review_surface_provider,
     )
     if counts is None:
-        review_surface = payload.get("review_surface")
-        if isinstance(review_surface, dict) and review_surface.get(
-            "require_v11_raw_source_spec_screening"
-        ) is True:
+        if _current_v11_status_protocol_selected(folder, payload):
             return stale_unavailable_label(problem or "direct source-to-Spec evidence is unavailable")
         return None
     total = counts["total"]
     matches = counts["matches"]
+    prefix = "accepted closeout: " if counts.get("recorded_closeout") else ""
     if coverage:
-        parts = [f"{matches}/{total} source claims covered"]
+        parts = [f"{prefix}{matches}/{total} source claims covered"]
     else:
-        parts = [f"{matches}/{total} raw-source-to-Spec match"]
+        parts = [f"{prefix}{matches}/{total} raw-source-to-Spec match"]
     for key, label in (
         ("mismatch", "mismatch"),
         ("uncertain", "uncertain"),
@@ -1914,7 +2066,7 @@ def llm_translation_label(
     if v11_label is not None:
         return v11_label
     if selected_provider.corrected_scope_is_current(payload):
-        return "author-approved corrected target; semantic contract current"
+        return "formalized target differs from the pinned archive; semantic contract current"
     authorization = selected_provider.authorize_saved_sidecar_reuse(payload)
     if authorization.available:
         saved_label = saved_statement_translation_label(
@@ -2039,7 +2191,7 @@ def llm_paper_coverage_label(
     if v11_label is not None:
         return v11_label
     if selected_provider.corrected_scope_is_current(payload):
-        return "author-approved corrected target; semantic contract current"
+        return "formalized target differs from the pinned archive; semantic contract current"
     authorization = selected_provider.authorize_saved_sidecar_reuse(payload)
     if authorization.available:
         saved_label = saved_paper_coverage_label(folder, authorization.coverage_counts)
@@ -2157,6 +2309,15 @@ def component_loc(paths: list[str]) -> int:
 
 
 def human_note(payload: dict[str, Any]) -> str:
+    # Public copy has a separate maintainer-owned source. A paper closeout or
+    # merge may refresh status metadata without replacing that approved prose.
+    overrides = CATALOG_PAYLOAD.get("public_summary_overrides", {})
+    if not isinstance(overrides, dict) or any(
+        not isinstance(value, str) for value in overrides.values()
+    ):
+        raise ValueError("public_summary_overrides must map paper IDs to exact text")
+    if payload.get("id") in overrides:
+        return overrides[payload["id"]]
     note = payload.get("human_summary")
     review = human_summary_review(payload)
     # A status record can retain an agent-authored draft for internal editing,
@@ -2245,7 +2406,7 @@ def human_status_rows(
             "publication_year": year,
             "source_url": source_url_for(payload),
             "paper_info": f"{payload['title']} by {payload['authors']}; {publication}.",
-            "status": status_label(str(payload["status"])),
+            "status": human_status_label(str(payload["status"]), paper_id=payload["id"]),
             "human_review": human_review_label(payload, counts=human_counts),
             "human_translation": human_translation_label(payload, counts=human_counts),
             "llm_as_judge_translation": llm_translation_label(
@@ -2318,12 +2479,14 @@ def human_payload(
         ),
         "generated_by": "python3 scripts/sync_paper_status.py",
         "sort_policy": (
-            "Formalized papers first, including formalized-with-caveat rows, ordered by "
-            "publication year; partially formalized papers follow in publication-year order."
+            "Checked papers normally display as Formalized; designated unfinished papers "
+            "retain Partially formalized. Status groups are ordered by publication year. "
+            "Internal audit dispositions remain in papers/status.json."
         ),
         "note_policy": (
-            "main_note is intentionally sparse. Fully formalized papers have a blank note unless "
-            "a source-version or proof-route note is important for a public reader."
+            "main_note is intentionally sparse. Formalization gap notes identify substantial "
+            "extra assumptions, simplifications, or missing conclusions by source result; "
+            "ordinary clarifications and minor technical restrictions stay in reports."
         ),
         "review_count_policy": (
             "human_review counts saved human source-claim dashboard rows as reviewed/total. "
@@ -2338,7 +2501,7 @@ def human_payload(
             "conditions are shown as source-condition rows so totals reconcile with "
             "the human-review surface. llm_as_judge_paper_coverage reports the "
             "paper-level source-inventory-to-dashboard-row coverage audit. For an "
-            "author-approved corrected target with a current pinned semantic contract, "
+            "formalized target that differs from the archive and has a current pinned semantic contract, "
             "both generated labels identify that contract rather than stale archive-only "
             "LLM sidecars."
         ),
@@ -2424,9 +2587,16 @@ def review_entrypoint_path(folder: Path, payload: dict[str, Any]) -> str | None:
 
 
 def dependency_dag_path(folder: Path, payload: dict[str, Any]) -> str | None:
-    return first_present_artifact(
+    configured = first_present_artifact(
         folder, payload, "dependency_dag_pdf", "dependency_dag_tex"
     )
+    if configured:
+        return configured
+    for name in ("DependencyDAG.pdf", "DependencyDAG.tex"):
+        default = folder / "docs" / name
+        if default.is_file():
+            return str(default.relative_to(ROOT))
+    return None
 
 
 def human_review_packet_path(folder: Path, payload: dict[str, Any]) -> str | None:
@@ -2539,17 +2709,10 @@ def validate_review_surface_routes(
 
 
 def json_surface_paths(folder: Path) -> list[tuple[str, str]]:
+    """Link stable reader entrypoints without presenting historical sidecars as current."""
     candidates = [
         ("status.json", folder / "status.json"),
         ("paper statement map", folder / "audit" / "paper_statement_map.json"),
-        ("paper coverage audit", folder / "audit" / "paper_coverage_llm.json"),
-        ("paper coverage audit", folder / "paper_coverage_llm.json"),
-        ("defect support audit", folder / "audit" / "defect_support_match_llm.json"),
-        ("defect support audit", folder / "defect_support_match_llm.json"),
-        ("source-record audit", folder / "audit" / "source_record_audit.json"),
-        ("source-record audit", folder / "source_record_audit.json"),
-        ("statement match audit", folder / "audit" / "statement_match_llm.json"),
-        ("statement match audit", folder / "statement_match_llm.json"),
     ]
     seen_labels: set[str] = set()
     out: list[tuple[str, str]] = []
@@ -2593,6 +2756,9 @@ def generated_paper_readme_block(
             folder
         ) is not None
     corrected_scope = author_approved_corrected_scope(payload)
+    explicit_source_clarifications = first_present_artifact(
+        folder, payload, "source_clarifications"
+    )
     json_links = [
         markdown_file_link(folder, path, label)
         for label, path in json_surface_paths(folder)
@@ -2615,6 +2781,34 @@ def generated_paper_readme_block(
             else "Final validation report"
         )
         link_lines.append(f"- {review_label}: not tracked in this folder.")
+    source_clarifications = (
+        [explicit_source_clarifications]
+        if explicit_source_clarifications is not None
+        else []
+    )
+    if not source_clarifications:
+        for memo_name in (
+            "SOURCE_CLARIFICATIONS.md",
+            "SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+        ):
+            memo_path = folder / "docs" / memo_name
+            if memo_path.is_file():
+                source_clarifications.append(str(memo_path.relative_to(ROOT)))
+    for source_clarification in source_clarifications:
+        source_clarifications_label = (
+            "Source clarifications and assumptions"
+            if explicit_source_clarifications is not None
+            and corrected_scope is not None
+            else "Source clarifications and formalized scope"
+        )
+        link_lines.append(
+            f"- {source_clarifications_label}: "
+            + markdown_file_link(
+                folder,
+                source_clarification,
+                Path(source_clarification).name,
+            )
+        )
     if dag_path:
         link_lines.append(
             f"- Dependency DAG: {markdown_file_link(folder, dag_path, Path(dag_path).name)}"
@@ -2640,7 +2834,11 @@ def generated_paper_readme_block(
         artifacts = payload.get("artifacts")
         if isinstance(artifacts, dict):
             governing_model = artifacts.get("governing_corrected_model")
-            if isinstance(governing_model, str) and (ROOT / governing_model).is_file():
+            if (
+                explicit_source_clarifications is None
+                and isinstance(governing_model, str)
+                and (ROOT / governing_model).is_file()
+            ):
                 link_lines.append(
                     "- Governing corrected model: "
                     + markdown_file_link(
@@ -2673,7 +2871,7 @@ def generated_paper_readme_block(
         f"| Final status | {md_escape(status_label(str(payload['status'])))} |",
         *(
             [
-                "| Scope note | Author-approved corrected model; the pinned archive is not asserted equivalent |"
+                "| Scope note | The formalized model differs from the pinned archive; the report details the changes |"
             ]
             if corrected_scope is not None
             else []
@@ -2850,22 +3048,30 @@ def html_note_with_citation(note: str, citation: dict[str, str] | None) -> str:
     return f"{rendered} {rendered_citation}"
 
 
-def site_status_artifacts_cell(row: dict[str, Any]) -> str:
-    status = html_escape(row["status"])
-    links = [
-        artifact_anchor(status, row["review_entrypoint"]),
-    ]
+def site_paper_artifact_links(row: dict[str, Any]) -> str:
+    repository_url = GITHUB_MAIN_TREE + "papers/" + quote(row["id"], safe="")
+    folder = ROOT / "papers" / row["id"]
+    links = [artifact_anchor("Report", row["review_entrypoint"])]
     artifacts = row.get("artifacts")
     if isinstance(artifacts, dict):
-        dag = artifacts.get("dependency_dag_pdf") or artifacts.get("dependency_dag_tex")
+        interface = artifacts.get("paper_interface")
+        if isinstance(interface, str) and interface.strip():
+            links.append(artifact_anchor("Lean statements", interface.strip()))
+        dag = artifacts.get("dependency_dag_pdf")
+        default_dag = folder / "docs" / "DependencyDAG.pdf"
+        if not dag and default_dag.is_file():
+            dag = str(default_dag.relative_to(ROOT))
+        dag = dag or artifacts.get("dependency_dag_tex")
         if isinstance(dag, str) and dag.strip():
-            links.append(artifact_anchor("DAG", dag.strip()))
+            links.append(artifact_anchor("Dependency map", dag.strip()))
         packet = (
             artifacts.get("human_review_packet_pdf")
             or artifacts.get("human_review_packet_tex")
+            or human_review_packet_path(folder, row)
         )
         if isinstance(packet, str) and packet.strip():
             links.append(artifact_anchor("Review packet", packet.strip()))
+    links.append(f'<a href="{html_escape(repository_url)}">Repo</a>')
     return '<div class="artifact-links">' + " ".join(links) + "</div>"
 
 
@@ -2895,13 +3101,21 @@ def render_site_stats_block(payload: dict[str, Any]) -> str:
     papers = payload["papers"]
     formalized = sum(1 for row in papers if str(row["status"]).startswith("Formalized"))
     partial = sum(1 for row in papers if row["status"] == "Partially formalized")
+    partial_noun = "paper" if partial == 1 else "papers"
+    partial_text = f" and {partial} partially formalized {partial_noun}" if partial else ""
     lean_loc = sum(int(row["lean_loc"]) for row in papers)
+    # Count shared code once at its owner, not once per importing paper.
+    # Per-paper row counts omit their sibling root module; include those here.
+    lean_loc += component_loc(
+        ["AppliedModelingLib", "AppliedModelingLib.lean"]
+        + [f"papers/{row['id']}.lean" for row in papers if row.get("id")]
+    )
     lines = [
         f"{indent}{SITE_STATS_BEGIN}",
         f'{indent}<p class="project-stats">',
         (
-            f"{indent}  Currently, the project contains {formalized} formalized papers "
-            f"and {partial} partially formalized papers, with {lean_loc:,} total "
+            f"{indent}  Currently, the project contains {formalized} formalized papers{partial_text}, "
+            f"with {lean_loc:,} total "
             "lines of Lean code."
         ),
         f"{indent}</p>",
@@ -2916,6 +3130,9 @@ def render_site_status_block(payload: dict[str, Any]) -> str:
     for row in payload["papers"]:
         paper_href = row["source_url"] or github_link(row["paper_folder"])
         note = html_note_with_citation(row["main_note"], row.get("main_note_citation"))
+        notes_cell = site_paper_artifact_links(row)
+        if note:
+            notes_cell += f'<p class="paper-note">{note}</p>'
         lines.extend(
             [
                 f"{indent}<tr>",
@@ -2929,10 +3146,10 @@ def render_site_status_block(payload: dict[str, Any]) -> str:
                     f"{html_escape(row['publication'])}."
                 ),
                 f"{indent}  </td>",
-                f"{indent}  <td>{site_status_artifacts_cell(row)}</td>",
+                f"{indent}  <td>{html_escape(row['status'])}</td>",
                 f"{indent}  <td>{html_escape(str(row['human_review']))}</td>",
                 f"{indent}  <td>{int(row['lean_loc']):,}</td>",
-                f"{indent}  <td>{note}</td>",
+                f"{indent}  <td>{notes_cell}</td>",
                 f"{indent}</tr>",
             ]
         )

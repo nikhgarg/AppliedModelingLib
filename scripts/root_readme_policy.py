@@ -22,7 +22,7 @@ ROOT = (
     _ROOT_ARGS.repo.resolve()
     if _ROOT_ARGS.repo is not None
     else Path(
-        os.environ.get("ECONCSLIB_REPO_ROOT", Path(__file__).resolve().parents[1])
+        os.environ.get("APPLIEDMODELINGLIB_REPO_ROOT", Path(__file__).resolve().parents[1])
     ).resolve()
 )
 ROOT_README = ROOT / "README.md"

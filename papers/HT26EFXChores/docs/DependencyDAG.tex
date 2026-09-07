@@ -10,7 +10,7 @@
   every path/.append style={font=\sffamily\scriptsize}
 ]
 
-\node[align=left,text width=30cm,font=\sffamily\small,anchor=north west]
+\node[align=left,text width=38cm,font=\sffamily\small,anchor=north west]
   at (0,0) {\textbf{Paper:} EFX for Additive Chores\\
   \textbf{Authors:} Wentao He and Biaoshuai Tao\\
   \textbf{Source:} arXiv v2 (2026-07-09)\\
@@ -18,56 +18,57 @@
   node below has a compiled paper-facing Lean route.};
 
 \node[dag_model] (EF) at (0,-4) {\textbf{Definition}\\Envy-free for chores};
-\node[dag_model] (EFX) at (6,-4) {\textbf{Definition}\\EFX for chores};
-\node[dag_model] (PO) at (12,-4) {\textbf{Definition}\\Pareto optimality};
-\node[dag_model] (CanonicalDef) at (18,-4) {\textbf{Definition}\\Canonical M01 allocation};
-\node[dag_model] (Model) at (24,-4) {\textbf{Additive chore model}\\Finite allocation, additive cost, M01/M2/M34 partition};
+\node[dag_model] (EFX) at (7,-4) {\textbf{Definition}\\EFX for chores};
+\node[dag_model] (PO) at (14,-4) {\textbf{Definition}\\Pareto optimality};
+\node[dag_model] (CanonicalDef) at (21,-4) {\textbf{Definition}\\Canonical allocation};
+\node[dag_model] (LabelsDef) at (28,-4) {\textbf{Definition}\\Canonical short/long labels};
+\node[dag_model] (SuperDef) at (35,-4) {\textbf{Definition}\\Super-canonical allocation};
 
-\node[dag_lemma] (TriNoTwo) at (0,-8) {\textbf{Tri proposition}\\No bundle has two A items};
-\node[dag_lemma] (TriNoA) at (6,-8) {\textbf{Tri proposition}\\The no-A bundle costs at least 20};
-\node[dag_lemma] (AppendixNoTwo) at (12,-8) {\textbf{Appendix A}\\No bundle has two A items};
-\node[dag_lemma] (AppendixBounds) at (18,-8) {\textbf{Appendix A}\\$p_1,p_2\ge r$};
+\node[dag_lemma] (TriNoTwo) at (0,-8) {\textbf{Proposition}\\No bundle has two A items};
+\node[dag_lemma] (TriNoA) at (6,-8) {\textbf{Proposition}\\The no-A bundle costs at least 20};
+\node[dag_lemma] (AppendixNoTwo) at (12,-8) {\textbf{Appendix A proposition}\\No bundle has two A items};
+\node[dag_lemma] (AppendixBounds) at (18,-8) {\textbf{Appendix A proposition}\\$p_1,p_2\ge r$};
 \node[dag_result] (TriTheorem) at (24,-8) {\textbf{Theorem 1}\\Tri-valued EFX nonexistence for every $n\ge4$};
 
-\node[dag_lemma] (POLarge) at (0,-12) {\textbf{Theorem 2 proposition}\\Every EFX agent has a large chore};
-\node[dag_lemma] (POBounds) at (6,-12) {\textbf{Theorem 2 proposition}\\All own costs $\ge r+1$; one $\ge r+2$};
-\node[dag_result] (POTheorem) at (12,-12) {\textbf{Theorem 2}\\EFX and Pareto optimality are incompatible};
-\node[dag_lemma] (M34) at (18,-12) {\textbf{Lemma}\\M34 insertion preserves EFX};
-\node[dag_lemma] (Composition) at (24,-12) {\textbf{Lemma}\\Cost-gap composition gives EFX};
+\node[dag_lemma] (POWitness) at (2,-12) {\textbf{Theorem 2 claim}\\The displayed construction is EFX};
+\node[dag_lemma] (POLarge) at (8,-12) {\textbf{Proposition}\\Every EFX agent has a large chore};
+\node[dag_lemma] (POBounds) at (14,-12) {\textbf{Proposition}\\All own costs $\ge r+1$; one $\ge r+2$};
+\node[dag_result] (POTheorem) at (21,-12) {\textbf{Theorem 2}\\EFX and Pareto optimality are incompatible};
 
-\node[dag_lemma] (CanonicalProps) at (0,-16) {\textbf{Lemma}\\Canonical and super-canonical M01 properties};
-\node[dag_lemma] (Balanced) at (6,-16) {\textbf{Lemma}\\Balanced multigraph orientation};
-\node[dag_lemma] (M2) at (12,-16) {\textbf{Lemma}\\Every M2 pool has an EFX allocation};
-\node[dag_lemma] (M2Props) at (18,-16) {\textbf{Lemma}\\M2 residue properties and preferred endpoints};
-\node[dag_lemma] (Exceptional) at (24,-16) {\textbf{Lemma}\\Exceptional-residue combination};
+\node[dag_lemma] (M34) at (0,-16) {\textbf{Lemma}\\M34 insertion preserves EFX};
+\node[dag_lemma] (M34All) at (6,-16) {\textbf{Remark}\\Insert every remaining chore};
+\node[dag_lemma] (Composition) at (12,-16) {\textbf{Lemma}\\Cost-gap composition gives EFX};
+\node[dag_lemma] (CanonicalProps) at (18,-16) {\textbf{Lemma}\\Canonical-allocation properties};
+\node[dag_lemma] (Balanced) at (24,-16) {\textbf{Lemma}\\Balanced multigraph orientation};
+\node[dag_lemma] (M2) at (30,-16) {\textbf{Lemma}\\Every M2 pool has an EFX allocation};
 
-\node[dag_result] (Four) at (12,-20) {\textbf{Theorem 3}\\Every four-agent bi-valued chore instance has a feasible EFX allocation};
-\node[dag_lemma] (Low) at (0,-20) {\textbf{Source bridge}\\Low-ratio reverse-first round robin};
-\node[dag_lemma] (High) at (6,-20) {\textbf{Source bridge}\\High-ratio M01/M2 modulo dispatch};
-\node[dag_lemma] (Normalize) at (18,-20) {\textbf{Source bridge}\\Positive normalization; constant and binary cases};
-\node[dag_model] (Library) at (24,-20) {\textbf{Definitions provenance}\\GameTheoryInLean EconCSLib allocation and owner-map design};
+\node[dag_result] (Four) at (9,-20) {\textbf{Theorem 3}\\Every four-agent bi-valued chore instance has a feasible EFX allocation};
+\node[dag_lemma] (Exceptional) at (18,-20) {\textbf{Lemma}\\Exceptional-residue combination};
+\node[dag_lemma] (M2Props) at (27,-20) {\textbf{Lemma}\\M2 residue properties and preferred endpoints};
 
-\draw[dag_arrow] (EFX) -- (TriNoTwo);
+\draw[dag_arrow] (TriNoTwo) -- (TriNoA);
+\draw[dag_arrow] (AppendixNoTwo) -- (AppendixBounds);
+\draw[dag_arrow] (AppendixBounds) -- (TriTheorem);
 
-\draw[dag_arrow] (EFX) -- (POLarge);
+\draw[dag_arrow] (POWitness) -- (POLarge);
 \draw[dag_arrow] (POLarge) -- (POBounds);
 \draw[dag_arrow] (POBounds) -- (POTheorem);
-\draw[dag_arrow] (PO) -- (POTheorem);
 
+\draw[dag_arrow] (M34) -- (M34All);
+\draw[dag_arrow] (M34All) -- (Composition);
+\draw[dag_arrow] (CanonicalProps) -- (Balanced);
 \draw[dag_arrow] (Balanced) -- (M2);
 \draw[dag_arrow] (M2) -- (M2Props);
 \draw[dag_arrow] (M2Props) -- (Exceptional);
 \draw[dag_arrow] (Composition) -- (Exceptional);
-
-\draw[dag_arrow] (High) -- (Four);
 \draw[dag_arrow] (Exceptional) -- (Four);
-\draw[dag_arrow] (Normalize) -- (Four);
 
-\node[align=left,text width=30cm,font=\sffamily\scriptsize,anchor=north west]
-  at (0,-22.1) {\textit{Reading guide:} nodes are grouped by the three source
-  theorem routes; the displayed solid arrows are selected direct Lean-discharged
-  dependencies. The ``source bridge'' nodes summarize proved internal dispatches
-  rather than external assumptions.};
+\node[align=left,text width=38cm,font=\sffamily\scriptsize,anchor=north west]
+  at (0,-22.2) {\textit{Reading guide:} the 24 nodes are the reviewed source
+  claims: six definitions, the complete Theorem 1--3 routes, the general-agent
+  insertion remark, and the two Appendix A propositions. Solid arrows show
+  selected direct mathematical dependencies; every node has a compiled
+  paper-facing Lean route.};
 
 \end{tikzpicture}
 \end{document}

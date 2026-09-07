@@ -1,13 +1,10 @@
 {
   "command": "lake build HT26EFXChores",
-  "commit": "e8d9ba3d44bdae98bfa9739fe2b83569b792a131",
-  "formalization_review_protocol_sha256": "345e2b1c89c9ca81d8d51463fa57ad502450652e438ef4561cf76f9c5ca1fe09",
+  "commit": "365fbae6ed735ed0030950f67db81165da339c1f",
+  "lean_entrypoint": "papers/HT26EFXChores.lean",
+  "lean_import_closure_sha256": "a98324d89dedaca4dc8e53b2e656d6455c0fcaf86a627a01ab1ed00dd73a833d",
   "paper": "HT26EFXChores",
-  "paper_interface_sha256": "1b9e3d25d6a101d375abe96261a6479cc3ada61a22bbd77ae0aa34251f9baed1",
   "result": "passed",
-  "schema": 1,
-  "source_artifact_sha256": "d6bb00d52184df636e5b690f5baa9da36aac2795b114cae10a113b5f32da9ba1",
-  "statement_map_sha256": "03f563c4efb5c02bce3cfb8bd7b2415c718ca178bec4a9698162951d1f7ad526",
-  "status_sha256": "6538e6756c6fb4e8eb7ca5056fa8574ed0e6e55704c4131c74f3c795cb4420e1",
+  "schema": 3,
   "target": "HT26EFXChores"
 }

@@ -1,7 +1,7 @@
 import KR21Monoculture.OuterRUMTheorem1Lift
 import KR21Monoculture.LaplaceSourceNormalization
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
 open scoped Topology
 
 namespace KR21Monoculture
@@ -36,9 +36,9 @@ theorem integrable_outer_pmfExp_valueSelection_of_atomwise
     (hatom_measurable : ∀ a,
       AEStronglyMeasurable (fun value : ValueProfile n =>
         ((law theta value) a).toReal) D) :
-    Integrable (fun value => EconCSLib.pmfExp (law theta value)
+    Integrable (fun value => AppliedModelingLib.pmfExp (law theta value)
       (fun a => value (select a))) D := by
-  unfold EconCSLib.pmfExp
+  unfold AppliedModelingLib.pmfExp
   refine MeasureTheory.integrable_finset_sum Finset.univ ?_
   intro a _
   refine (hvalue (select a)).abs.mono' ?_ ?_
@@ -50,7 +50,7 @@ theorem integrable_outer_pmfExp_valueSelection_of_atomwise
     rw [abs_mul, abs_of_nonneg ENNReal.toReal_nonneg]
     simpa [mul_comm] using
       (mul_le_of_le_one_right (abs_nonneg (value (select a)))
-        (EconCSLib.pmf_apply_toReal_le_one (law theta value) a))
+        (AppliedModelingLib.pmf_apply_toReal_le_one (law theta value) a))
 
 /-- A value-dependent finite independent-pair payoff selecting one candidate
 coordinate is integrable under the same first moments and atom
@@ -70,7 +70,7 @@ theorem integrable_outer_pmfPairExp_valueSelection_of_atomwise
     (hright_measurable : ∀ b,
       AEStronglyMeasurable (fun value : ValueProfile n =>
         ((rightLaw value) b).toReal) D) :
-    Integrable (fun value => EconCSLib.pmfPairExp (leftLaw value)
+    Integrable (fun value => AppliedModelingLib.pmfPairExp (leftLaw value)
       (rightLaw value) (fun a b => value (select a b))) D := by
   let term : alpha → beta → ValueProfile n → ℝ :=
     fun a b value =>
@@ -98,17 +98,17 @@ theorem integrable_outer_pmfPairExp_valueSelection_of_atomwise
           rw [mul_comm]
           exact mul_le_of_le_one_right
             (mul_nonneg ENNReal.toReal_nonneg (abs_nonneg _))
-            (EconCSLib.pmf_apply_toReal_le_one (leftLaw value) a)
+            (AppliedModelingLib.pmf_apply_toReal_le_one (leftLaw value) a)
         _ ≤ |value (select a b)| := by
           rw [mul_comm]
           exact mul_le_of_le_one_right (abs_nonneg (value (select a b)))
-            (EconCSLib.pmf_apply_toReal_le_one (rightLaw value) b)
+            (AppliedModelingLib.pmf_apply_toReal_le_one (rightLaw value) b)
   have hrewrite :
-      (fun value => EconCSLib.pmfPairExp (leftLaw value) (rightLaw value)
+      (fun value => AppliedModelingLib.pmfPairExp (leftLaw value) (rightLaw value)
         (fun a b => value (select a b))) =
       fun value => ∑ a, ∑ b, term a b value := by
     funext value
-    unfold EconCSLib.pmfPairExp EconCSLib.pmfExp
+    unfold AppliedModelingLib.pmfPairExp AppliedModelingLib.pmfExp
     simp_rw [Finset.mul_sum]
     simp only [term, mul_assoc]
   rw [hrewrite]
@@ -153,7 +153,7 @@ continuous in the literal `1 / theta` source parameterization. -/
 theorem gaussianThreeCandidateDistributionalFamily_atom_epsilonContinuousAt
     {theta : ℝ} (htheta : 0 < theta)
     (value : ValueProfile 1) (pi : Ranking 1) :
-    EconCSLib.EpsilonContinuousAt
+    AppliedModelingLib.EpsilonContinuousAt
       (fun theta' : ℝ =>
         ((gaussianThreeCandidateDistributionalFamily.dist theta' value) pi).toReal)
       theta := by
@@ -170,7 +170,7 @@ ranking atom is continuous after the explicit rate change `sqrt 2 * theta`. -/
 theorem sourceUnitVarianceLaplaceThreeCandidateDistributionalFamily_atom_epsilonContinuousAt
     {theta : ℝ} (htheta : 0 < theta)
     (value : ValueProfile 1) (pi : Ranking 1) :
-    EconCSLib.EpsilonContinuousAt
+    AppliedModelingLib.EpsilonContinuousAt
       (fun theta' : ℝ =>
         ((sourceUnitVarianceLaplaceThreeCandidateDistributionalFamily.dist theta' value) pi).toReal)
       theta := by
@@ -186,7 +186,7 @@ theorem sourceUnitVarianceLaplaceThreeCandidateDistributionalFamily_atom_epsilon
       ((theorem7LaplacianDefinition2RankingPMF (rate theta)
         (value (0 : Candidate 1)) (value (1 : Candidate 1))
         (value (2 : Candidate 1)) hrate_theta) pi).toReal
-  have hsource : EconCSLib.EpsilonContinuousAt source (rate theta) := by
+  have hsource : AppliedModelingLib.EpsilonContinuousAt source (rate theta) := by
     simpa [source] using
       (theorem7LaplacianDefinition2RankingPMF_canonical_atom_epsilonContinuousAt
         (θ := rate theta)
@@ -196,10 +196,10 @@ theorem sourceUnitVarianceLaplaceThreeCandidateDistributionalFamily_atom_epsilon
   have hrate_continuous : ContinuousAt rate theta := by
     change ContinuousAt (fun theta' : ℝ => Real.sqrt 2 * theta') theta
     fun_prop
-  have hcomp : EconCSLib.EpsilonContinuousAt
+  have hcomp : AppliedModelingLib.EpsilonContinuousAt
       (fun theta' : ℝ => source (rate theta')) theta :=
-    EconCSLib.epsilonContinuousAt_comp_of_continuousAt hsource hrate_continuous
-  refine EconCSLib.epsilonContinuousAt_congr_eventually hcomp ?_ ?_
+    AppliedModelingLib.epsilonContinuousAt_comp_of_continuousAt hsource hrate_continuous
+  refine AppliedModelingLib.epsilonContinuousAt_congr_eventually hcomp ?_ ?_
   · filter_upwards [Ioi_mem_nhds htheta] with theta' htheta'
     have htheta'_pos : 0 < theta' := htheta'
     have hrate_theta' : 0 < rate theta' := by

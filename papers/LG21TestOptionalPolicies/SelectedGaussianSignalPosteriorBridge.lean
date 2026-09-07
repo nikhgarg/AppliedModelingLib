@@ -1,6 +1,6 @@
-import EconCSLib.Foundations.Probability.GaussianSignalRCD
-import EconCSLib.Foundations.Probability.GaussianTilt
-import EconCSLib.Foundations.Probability.GaussianTranslationAC
+import AppliedModelingLib.Foundations.Probability.GaussianSignalRCD
+import AppliedModelingLib.Foundations.Probability.GaussianTilt
+import AppliedModelingLib.Foundations.Probability.GaussianTranslationAC
 import LG21TestOptionalPolicies.SelectedConditionalRCD
 import LG21TestOptionalPolicies.SelectedGaussianExAntePayoff
 import LG21TestOptionalPolicies.SequentialEquilibrium
@@ -26,7 +26,7 @@ noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
-open EconCSLib Probability
+open AppliedModelingLib Probability
 
 /-- The residual variance in a nondegenerate one-score Gaussian update is
 positive. -/
@@ -85,7 +85,7 @@ theorem lg21_gaussianSignalPosterior_selected_pos
         (gaussianSignalWeight priorVariance noiseVariance * score +
           gaussianSignalPriorWeight priorVariance noiseVariance * priorMean)
         (gaussianSignalPosteriorVariance priorVariance noiseVariance)) := by
-    exact EconCSLib.Probability.gaussianReal_absolutelyContinuous_of_positive_variances
+    exact AppliedModelingLib.Probability.gaussianReal_absolutelyContinuous_of_positive_variances
       priorMean
       (gaussianSignalWeight priorVariance noiseVariance * score +
         gaussianSignalPriorWeight priorVariance noiseVariance * priorMean)
@@ -439,7 +439,7 @@ theorem lg21_selectedGaussianSignal_posterior_eq_linear_tilt
           gaussianSignalWeight priorVariance noiseVariance * score := by
     ring
   rw [hmean,
-    EconCSLib.Probability.gaussianReal_shift_eq_tilted_linear
+    AppliedModelingLib.Probability.gaussianReal_shift_eq_tilted_linear
       (gaussianSignalPriorWeight priorVariance noiseVariance * priorMean)
       (gaussianSignalWeight priorVariance noiseVariance * score)
       (gaussianSignalPosteriorVariance priorVariance noiseVariance) hvariance]
@@ -492,7 +492,7 @@ theorem lg21_selectedGaussianSignal_zeroPosterior_eq_likelihoodBase
           (gaussianSignalPosteriorVariance priorVariance noiseVariance) =
         (gaussianReal priorMean priorVariance.toNNReal).tilted
           (fun latentSkill : ℝ => -latentSkill ^ 2 / (2 * noiseVariance)) := by
-    rw [EconCSLib.Probability.gaussianReal_tilted_quadratic_eq_posterior
+    rw [AppliedModelingLib.Probability.gaussianReal_tilted_quadratic_eq_posterior
       priorMean priorVariance noiseVariance hpriorVariance hnoiseVariance]
     congr 1
     simp only [gaussianSignalPriorWeight]
@@ -804,7 +804,7 @@ theorem lg21_gaussianTestLaw_absolutelyContinuous_selectedScoreLaw
   have hscoreNN : 0 < (priorVariance + noiseVariance).toNNReal :=
     Real.toNNReal_pos.mpr (add_pos hpriorVariance hnoiseVariance)
   exact
-    (EconCSLib.Probability.gaussianReal_absolutelyContinuous_of_positive_variances
+    (AppliedModelingLib.Probability.gaussianReal_absolutelyContinuous_of_positive_variances
       skill priorMean hnoiseNN hscoreNN).trans
       (lg21_gaussianSignal_scoreLaw_absolutelyContinuous_selectedScoreLaw
         priorMean priorVariance noiseVariance selected hpriorVariance hnoiseVariance

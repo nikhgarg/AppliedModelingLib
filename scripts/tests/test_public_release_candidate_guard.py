@@ -20,9 +20,261 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts import public_release_candidate_guard as guard  # noqa: E402
+from scripts.corrected_target_identity import (  # noqa: E402
+    CORRECTED_TARGET_RECORD_SHA256_FIELD,
+    CORRECTED_TARGET_REVIEW_SHA256_FIELD,
+    corrected_target_record_digest,
+    corrected_target_review_digest,
+)
+
+
+def _private_corrected_target() -> dict[str, object]:
+    statement = "Every feasible assignment has welfare at most the stated benchmark."
+    excerpt = (
+        "This private approval passage contains repository instructions and a user "
+        "quotation that must remain outside every public source map."
+    )
+    target: dict[str, object] = {
+        "schema": 1,
+        "statement": statement,
+        "archival_equivalence_claimed": False,
+        "archival_source_locator": "Theorem 1",
+        "archival_source_quote_sha256": "a" * 64,
+        "governing_defect_ids": ["D1"],
+        "approval": {
+            "artifact_path": "docs/PRIVATE_APPROVAL.md",
+            "artifact_protocol": "unique_normalized_artifact_excerpt_v1",
+            "artifact_excerpt": excerpt,
+            "artifact_excerpt_sha256": hashlib.sha256(excerpt.encode()).hexdigest(),
+            "kind": "recorded_user_direction",
+            "recorded_at": "2026-09-07",
+            "reference": "private repository instruction",
+            "target_statement_sha256": hashlib.sha256(statement.encode()).hexdigest(),
+        },
+    }
+    target[CORRECTED_TARGET_RECORD_SHA256_FIELD] = corrected_target_record_digest(target)
+    target[CORRECTED_TARGET_REVIEW_SHA256_FIELD] = corrected_target_review_digest(target)
+    return target
+
+
+def _public_corrected_target() -> dict[str, object]:
+    private = _private_corrected_target()
+    private.pop("approval")
+    return private
+
+
+def _projected_corrected_target_map() -> dict[str, object]:
+    return {
+        guard.PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD: {
+            "schema": guard.PUBLIC_CORRECTED_TARGET_PROJECTION_SCHEMA,
+            "approval_material_included": False,
+        },
+        "items": {
+            "theorem_1": {
+                "coverage_status": "corrected_source_statement",
+                "corrected_target": _public_corrected_target(),
+            },
+            "support": {
+                "coverage_status": "subsumed_by_selected_result",
+                "corrected_target": _public_corrected_target(),
+            },
+        },
+    }
 
 
 class PublicReleaseCandidateGuardTests(unittest.TestCase):
+    def test_dependency_closure_resolves_explicit_lake_script_root(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir)
+            self.init_repo(repo)
+            (repo / "lakefile.toml").write_text(
+                'name = "Fixture"\n\n'
+                '[[lean_lib]]\nname = "Fixture"\n\n'
+                '[[lean_lib]]\nname = "FixtureAuditScripts"\n'
+                'srcDir = "scripts"\nroots = ["fixture_audit_helper"]\n',
+                encoding="utf-8",
+            )
+            entrypoint = repo / "AppliedModelingLib" / "AllForSemanticInventory.lean"
+            bridge = repo / "AppliedModelingLib" / "Audit" / "SignatureManifest.lean"
+            helper = repo / "scripts" / "fixture_audit_helper.lean"
+            entrypoint.parent.mkdir(parents=True)
+            bridge.parent.mkdir(parents=True)
+            helper.parent.mkdir(parents=True)
+            entrypoint.write_text(
+                "import AppliedModelingLib.Audit.SignatureManifest\n",
+                encoding="utf-8",
+            )
+            bridge.write_text("import fixture_audit_helper\n", encoding="utf-8")
+            helper.write_text("import Lean\n", encoding="utf-8")
+            candidate = self.commit(repo, "registered script helper")
+
+            issues = guard._public_candidate_dependency_closure_issues(
+                repo,
+                candidate,
+                extra_entrypoints={
+                    "AppliedModelingLib/AllForSemanticInventory.lean"
+                },
+            )
+            self.assertEqual(issues, [])
+
+            bridge.write_text(
+                "import fixture_audit_helper\nimport missing_audit_helper\n",
+                encoding="utf-8",
+            )
+            candidate = self.commit(repo, "unregistered adjacent helper")
+            issues = guard._public_candidate_dependency_closure_issues(
+                repo,
+                candidate,
+                extra_entrypoints={
+                    "AppliedModelingLib/AllForSemanticInventory.lean"
+                },
+            )
+            self.assertTrue(
+                any(
+                    issue.imported_module == "missing_audit_helper"
+                    and "explicit external-module registry" in issue.reason
+                    for issue in issues
+                ),
+                issues,
+            )
+
+            bridge.write_text("import fixture_audit_helper\n", encoding="utf-8")
+            helper.unlink()
+            candidate = self.commit(repo, "missing registered script helper")
+            issues = guard._public_candidate_dependency_closure_issues(
+                repo,
+                candidate,
+                extra_entrypoints={
+                    "AppliedModelingLib/AllForSemanticInventory.lean"
+                },
+            )
+            self.assertTrue(
+                any(
+                    issue.imported_module == "fixture_audit_helper"
+                    and "explicit external-module registry" in issue.reason
+                    for issue in issues
+                ),
+                issues,
+            )
+
+    def test_selected_graph_authority_requires_public_engine_protocol_row(
+        self,
+    ) -> None:
+        from scripts.portable_evidence_identity import portable_evidence_sha256
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir)
+            self.init_repo(repo)
+            engine = "a" * 64
+            protocol = "b" * 64
+            closeout_contract = "c" * 64
+            authority_material = {
+                "schema": 2,
+                "acceptance_credential": False,
+                "authority_kind": "current_runtime_pass",
+                "paper": "Fixture",
+                "engine_tree_sha256": engine,
+                "closeout_contract_sha256": closeout_contract,
+            }
+            authority = {
+                **authority_material,
+                "authority_sha256": portable_evidence_sha256(
+                    authority_material
+                ),
+            }
+            graph_sha256 = "d" * 64
+            pointer_path = (
+                repo
+                / "papers/Fixture/audit/obligation_evidence/"
+                "current_accepted_graph.json"
+            )
+            pack_path = (
+                repo
+                / "papers/Fixture/audit/obligation_evidence/accepted_graphs/"
+                f"sha256/{graph_sha256[:2]}/{graph_sha256}.json"
+            )
+            registry_path = repo / "config/formalization_engine_revisions.json"
+            pointer_path.parent.mkdir(parents=True)
+            pack_path.parent.mkdir(parents=True)
+            registry_path.parent.mkdir(parents=True)
+            pointer_path.write_text(
+                json.dumps({"schema": 2, "graph_sha256": graph_sha256}),
+                encoding="utf-8",
+            )
+            pack_path.write_text(
+                json.dumps(
+                    {
+                        "leaves": {
+                            "e" * 64: {
+                                "kind": "paper_closure",
+                                "semantic_payload": {
+                                    "strict_closeout_authority": authority
+                                },
+                            }
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            def registry(registered_engine: str) -> dict[str, object]:
+                return {
+                    "schema": 2,
+                    "boundary": (
+                        "tracked-formalization-engine-production-sources-v1"
+                    ),
+                    "independent_registration_start_sequence": 1,
+                    "revisions": [
+                        {
+                            "sequence": 1,
+                            "engine_tree_sha256": registered_engine,
+                            "formalization_review_protocol_sha256": protocol,
+                            "rationale": (
+                                "Register the exact public fixture authority."
+                            ),
+                            "verification": [
+                                "Focused selected-authority registration test."
+                            ],
+                        }
+                    ],
+                }
+
+            registry_path.write_text(json.dumps(registry(engine)), encoding="utf-8")
+            candidate = self.commit(repo, "registered selected authority")
+            self.assertEqual(
+                guard.selected_graph_authority_registration_issues(
+                    repo, candidate
+                ),
+                [],
+            )
+
+            registry_path.write_text(
+                json.dumps(registry("f" * 64)), encoding="utf-8"
+            )
+            candidate = self.commit(repo, "missing selected authority")
+            issues = guard.selected_graph_authority_registration_issues(
+                repo, candidate
+            )
+            self.assertTrue(
+                any(
+                    engine in issue
+                    and "no public engine/protocol registration" in issue
+                    for issue in issues
+                ),
+                issues,
+            )
+
+    def test_public_artifact_scan_rejects_scope_approval_history(self) -> None:
+        path = "papers/Fixture/audit/paper_statement_map.json"
+        raw = {"items": {"claim": {"user_approved_scope_exclusion": {
+            "approval_reference": "Private user exchange with an unpublished direction."
+        }}}}
+        self.assertTrue(guard._public_artifact_string_issues(raw, relative_path=path))
+        raw["items"]["claim"]["user_approved_scope_exclusion"]["approval_reference"] = (
+            guard.PUBLIC_WITHHELD_APPROVAL_REFERENCE
+        )
+        self.assertEqual(guard._public_artifact_string_issues(raw, relative_path=path), [])
+
     @staticmethod
     def init_repo(repo: Path) -> None:
         repo.mkdir(parents=True, exist_ok=True)
@@ -315,6 +567,37 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
         )
         self.assertFalse(any("papers/Public/status.json" in issue for issue in issues), issues)
 
+    def test_public_paper_requires_committed_terminal_artifacts(self) -> None:
+        for status in ("formalized", "partially formalized"):
+            with self.subTest(status=status), tempfile.TemporaryDirectory() as temp_dir:
+                repo = Path(temp_dir)
+                self.init_repo(repo)
+                folder = repo / "papers" / "Fixture"
+                folder.mkdir(parents=True)
+                (folder / "status.json").write_text(json.dumps({
+                    "id": "Fixture", "status": status,
+                    "repository_visibility": "public",
+                }))
+                missing_ref = self.commit(repo, "public paper without closeout")
+                self.assertEqual(len(guard.status_visibility_issues(repo)), 2)
+
+                pointer = folder / "audit/obligation_evidence/current_accepted_graph.json"
+                pointer.parent.mkdir(parents=True)
+                pointer.write_text('{}\n')
+                (folder / "FINAL_CLOSURE_RECEIPT.md").write_text('receipt fixture\n')
+                # Worktree artifacts cannot satisfy the exact candidate tree.
+                self.assertEqual(len(guard.status_visibility_issues(repo)), 2)
+                self.commit(repo, "retain terminal artifact paths")
+                # This gate checks presence only; graph transport authenticates contents.
+                self.assertEqual(guard.status_visibility_issues(repo), [])
+                self.assertEqual(len(guard.status_visibility_issues(repo, missing_ref)), 2)
+
+                pointer.unlink()
+                self.commit(repo, "omit accepted graph pointer")
+                issues = guard.status_visibility_issues(repo)
+                self.assertEqual(len(issues), 1)
+                self.assertIn("current_accepted_graph.json", issues[0])
+
     def test_changed_public_finalized_paper_requires_packet_and_readme_link(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo = Path(temp_dir)
@@ -369,6 +652,32 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
 
         self.assertTrue(any("human_review_packet_pdf" in issue for issue in issues), issues)
         self.assertTrue(any("HUMAN_REVIEW_PACKET.pdf" in issue for issue in issues), issues)
+
+    def test_deleted_status_does_not_require_a_candidate_packet(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir) / "candidate"
+            self.init_repo(repo)
+            folder = repo / "papers" / "Paper"
+            folder.mkdir(parents=True)
+            (folder / "status.json").write_text(
+                json.dumps(
+                    {
+                        "id": "Paper",
+                        "repository_visibility": "public",
+                        "status": "formalized",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            base = self.commit(repo, "base")
+            subprocess.run(["git", "rm", "-qr", "papers/Paper"], cwd=repo, check=True)
+            self.commit(repo, "delete paper")
+
+            issues = guard.changed_formalized_packet_issues(
+                repo, "HEAD", public_base_ref=base
+            )
+
+        self.assertEqual(issues, [])
 
     def test_private_blob_provenance_compares_exact_committed_bytes(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -869,6 +1178,83 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
             tamper_issues,
         )
 
+    def test_changed_corrected_target_projection_requires_private_projection_provenance(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            private = root / "private"
+            candidate = root / "candidate"
+            self.init_repo(private)
+            self.init_repo(candidate)
+            path = "papers/Fixture/audit/paper_statement_map.json"
+            private_path = private / path
+            private_path.parent.mkdir(parents=True)
+            private_blob = json.dumps(
+                {
+                    "items": {
+                        "claim": {
+                            "coverage_status": "corrected_source_statement",
+                            "corrected_target": _private_corrected_target(),
+                        }
+                    }
+                }
+            ).encode("utf-8")
+            private_path.write_bytes(private_blob)
+            source_commit = self.commit(private, "private corrected target")
+            public_blob = guard.project_bytes(path, private_blob)
+            candidate_path = candidate / path
+            candidate_path.parent.mkdir(parents=True)
+            candidate_path.write_bytes(public_blob)
+            candidate_commit = self.commit(candidate, "public corrected target projection")
+            change = guard.CandidateChange("A", path)
+            projection_entry = guard.AllowlistEntry(
+                path=path,
+                kind="file",
+                provenance="private_projection",
+                source_commit=source_commit,
+                reason="withhold private approval material",
+                generator=guard.PUBLIC_PROJECTION_GENERATOR,
+                private_source_blob_sha256=guard._sha256_bytes(private_blob),
+                candidate_blob_sha256=guard._sha256_bytes(public_blob),
+            )
+            private_blob_entry = guard.AllowlistEntry(
+                path=path,
+                kind="file",
+                provenance="private_blob",
+                source_commit=source_commit,
+                reason="incorrect raw transport",
+                generator=None,
+            )
+
+            valid = guard.source_provenance_issues(
+                candidate,
+                private,
+                candidate_commit,
+                [change],
+                [projection_entry],
+            )
+            missing = guard.source_provenance_issues(
+                candidate, private, candidate_commit, [change], []
+            )
+            wrong_mode = guard.source_provenance_issues(
+                candidate,
+                private,
+                candidate_commit,
+                [change],
+                [private_blob_entry],
+            )
+
+        self.assertEqual(valid, [])
+        self.assertTrue(
+            any("requires private_projection provenance" in issue for issue in missing),
+            missing,
+        )
+        self.assertTrue(
+            any("requires private_projection provenance" in issue for issue in wrong_mode),
+            wrong_mode,
+        )
+
     def test_private_projection_allowlist_requires_exact_projection_receipts(self) -> None:
         entry = {
             "path": "papers/Fixture/audit/paper_statement_map.json",
@@ -1144,32 +1530,37 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
 
         self.assertTrue(any("private repository or artifact URL" in issue for issue in issues), issues)
 
-    def test_session_insights_path_allowlist_keeps_only_approved_skill_and_ledger(self) -> None:
+    def test_session_insights_path_allowlist_keeps_general_skill_and_rejects_private_evidence(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo = Path(temp_dir) / "candidate"
             self.init_repo(repo)
-            approved = (
-                repo
-                / "skills/econcs-session-insights/references/user-feedback-course-corrections.md"
-            )
-            approved.parent.mkdir(parents=True)
-            approved.write_text("approved\n", encoding="utf-8")
             skill = repo / "skills/econcs-session-insights/SKILL.md"
+            skill.parent.mkdir(parents=True)
             skill.write_text("Read ~/.codex/history.jsonl without committing it.\n", encoding="utf-8")
-            commit = self.commit(repo, "approved session-insights files")
+            commit = self.commit(repo, "general session-insights skill")
             self.assertFalse(guard.session_insights_path_issues(repo, commit))
 
-            extra = repo / "skills/econcs-session-insights/references/raw-session.jsonl"
-            extra.parent.mkdir(parents=True, exist_ok=True)
-            extra.write_text("raw session export\n", encoding="utf-8")
-            commit = self.commit(repo, "unapproved session-insights file")
+            private_paths = [
+                "skills/econcs-session-insights/references/raw-session.jsonl",
+                "skills/econcs-session-insights/references/user-feedback-course-corrections.md",
+                "wiki/examples/sanitized-example.md",
+                "wiki/patterns/private-provenance.md",
+                "wiki/evolution-log.md",
+            ]
+            for path in private_paths:
+                extra = repo / path
+                extra.parent.mkdir(parents=True, exist_ok=True)
+                extra.write_text("benign-looking maintenance evidence\n", encoding="utf-8")
+            self.commit(repo, "private maintenance records")
+            (repo / "README.md").write_text("A later public edit.\n", encoding="utf-8")
+            commit = self.commit(repo, "inherited records are still rejected")
             issues = guard.session_insights_path_issues(repo, commit)
 
         self.assertEqual(
             issues,
             [
-                "unapproved session-insights artifact in public candidate: "
-                "skills/econcs-session-insights/references/raw-session.jsonl"
+                "unapproved session-insights artifact in public candidate: " + path
+                for path in sorted(private_paths)
             ],
         )
 
@@ -1199,9 +1590,13 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
             )
             commit = self.commit(repo, "skills")
             issues = guard.public_artifact_content_issues(repo, commit)
+            private_record_issues = guard.session_insights_path_issues(repo, commit)
 
         self.assertTrue(any("skills/example/SKILL.md" in issue for issue in issues), issues)
-        self.assertFalse(any("user-feedback-course-corrections" in issue for issue in issues), issues)
+        self.assertTrue(
+            any("user-feedback-course-corrections" in issue for issue in private_record_issues),
+            private_record_issues,
+        )
         self.assertFalse(any("econcs-session-insights/SKILL.md" in issue for issue in issues), issues)
         self.assertFalse(any("formalization-handbook.md" in issue for issue in issues), issues)
 
@@ -1945,7 +2340,7 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
             ), contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
                 guard.main()
 
-    def test_run_guard_accepts_only_reviewer_pinned_canonical_fixture(self) -> None:
+    def test_run_guard_allows_pr_without_approval_and_checks_authoritative_pins(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             private = root / "private"
@@ -2011,7 +2406,15 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
                     guard, "generated_status_freshness_issues", return_value=[]
                 ),
             ):
-                issues = guard.run_guard(candidate, allowlist_path=allowlist)
+                with mock.patch.object(
+                    guard,
+                    "load_release_approval",
+                    side_effect=AssertionError("PR validation read reviewer approval"),
+                ):
+                    issues = guard.run_guard(candidate, allowlist_path=allowlist)
+                authoritative_issues = guard.run_guard(
+                    candidate, allowlist_path=allowlist, authoritative=True
+                )
                 with mock.patch.object(
                     guard,
                     "candidate_public_artifact_policy_issues",
@@ -2019,16 +2422,6 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
                 ):
                     complete_tree_policy_issues = guard.run_guard(
                         candidate, allowlist_path=allowlist
-                    )
-                with mock.patch.object(
-                    guard,
-                    "load_release_approval",
-                    side_effect=AssertionError("preflight read reviewer approval"),
-                ):
-                    preflight_issues = guard.run_guard(
-                        candidate,
-                        allowlist_path=allowlist,
-                        preflight=True,
                     )
                 self.write_approval(
                     approval,
@@ -2038,7 +2431,7 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
                     private_source_commits=[source_commit],
                 )
                 candidate_pin_issues = guard.run_guard(
-                    candidate, allowlist_path=allowlist
+                    candidate, allowlist_path=allowlist, authoritative=True
                 )
                 self.write_approval(
                     approval,
@@ -2047,7 +2440,9 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
                     allowlist=allowlist,
                     private_source_commits=[source_commit],
                 )
-                base_pin_issues = guard.run_guard(candidate, allowlist_path=allowlist)
+                base_pin_issues = guard.run_guard(
+                    candidate, allowlist_path=allowlist, authoritative=True
+                )
                 self.write_approval(
                     approval,
                     candidate_commit=candidate_commit,
@@ -2055,7 +2450,9 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
                     allowlist=allowlist,
                     private_source_commits=[],
                 )
-                source_pin_issues = guard.run_guard(candidate, allowlist_path=allowlist)
+                source_pin_issues = guard.run_guard(
+                    candidate, allowlist_path=allowlist, authoritative=True
+                )
                 self.write_approval(
                     approval,
                     candidate_commit=candidate_commit,
@@ -2064,7 +2461,9 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
                     private_source_commits=[source_commit],
                     guard_sha256="d" * 64,
                 )
-                guard_pin_issues = guard.run_guard(candidate, allowlist_path=allowlist)
+                guard_pin_issues = guard.run_guard(
+                    candidate, allowlist_path=allowlist, authoritative=True
+                )
                 self.write_approval(
                     approval,
                     candidate_commit=candidate_commit,
@@ -2074,7 +2473,7 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
                     trusted_tooling_sha256="c" * 64,
                 )
                 tooling_pin_issues = guard.run_guard(
-                    candidate, allowlist_path=allowlist
+                    candidate, allowlist_path=allowlist, authoritative=True
                 )
                 self.write_approval(
                     approval,
@@ -2085,12 +2484,12 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
                 )
                 allowlist.write_bytes(allowlist.read_bytes() + b"\n")
                 changed_allowlist_issues = guard.run_guard(
-                    candidate, allowlist_path=allowlist
+                    candidate, allowlist_path=allowlist, authoritative=True
                 )
 
         self.assertEqual(issues, [])
+        self.assertEqual(authoritative_issues, [])
         self.assertIn("complete-tree policy sentinel", complete_tree_policy_issues)
-        self.assertEqual(preflight_issues, [])
         self.assertTrue(
             any("candidate HEAD" in issue for issue in candidate_pin_issues),
             candidate_pin_issues,
@@ -2266,6 +2665,189 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
             ),
             issues,
         )
+
+    def test_corrected_target_projection_structure_is_exact_and_withholds_approval(
+        self,
+    ) -> None:
+        cases: tuple[tuple[str, object, str], ...] = (
+            ("valid", _projected_corrected_target_map(), ""),
+            (
+                "missing_marker",
+                {"items": _projected_corrected_target_map()["items"]},
+                "exact public projection marker",
+            ),
+            (
+                "wrong_marker",
+                {
+                    **_projected_corrected_target_map(),
+                    guard.PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD: {
+                        "schema": 2,
+                        "approval_material_included": False,
+                    },
+                },
+                "exact public projection marker",
+            ),
+            (
+                "marker_without_target",
+                {
+                    guard.PUBLIC_CORRECTED_TARGET_PROJECTION_FIELD: {
+                        "schema": guard.PUBLIC_CORRECTED_TARGET_PROJECTION_SCHEMA,
+                        "approval_material_included": False,
+                    },
+                    "items": {},
+                },
+                "has no corrected targets",
+            ),
+        )
+        for name, payload, expected in cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
+                repo = Path(temp_dir)
+                self.init_repo(repo)
+                audit = repo / "papers" / "Fixture" / "audit"
+                audit.mkdir(parents=True)
+                map_path = audit / "paper_statement_map.json"
+                map_path.write_text(json.dumps(payload))
+                candidate = self.commit(repo, "corrected target projection fixture")
+                paths = set(
+                    subprocess.run(
+                        ["git", "ls-tree", "-r", "--name-only", candidate],
+                        cwd=repo,
+                        check=True,
+                        text=True,
+                        capture_output=True,
+                    ).stdout.splitlines()
+                )
+                selected, issues = guard._candidate_corrected_target_artifacts(
+                    repo, candidate, paths
+                )
+                self.assertEqual(selected, set())
+                if expected:
+                    self.assertTrue(any(expected in issue for issue in issues), issues)
+                else:
+                    self.assertEqual(issues, [])
+
+        malformed_cases = (
+            ("approval", lambda target: target.__setitem__("approval", {"secret": "text"}), "private approval"),
+            (
+                "record",
+                lambda target: target.__setitem__(CORRECTED_TARGET_RECORD_SHA256_FIELD, "0"),
+                CORRECTED_TARGET_RECORD_SHA256_FIELD,
+            ),
+            (
+                "review",
+                lambda target: target.__setitem__(CORRECTED_TARGET_REVIEW_SHA256_FIELD, "0" * 64),
+                CORRECTED_TARGET_REVIEW_SHA256_FIELD,
+            ),
+        )
+        for name, mutate, expected in malformed_cases:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
+                repo = Path(temp_dir)
+                self.init_repo(repo)
+                payload = _projected_corrected_target_map()
+                target = payload["items"]["theorem_1"]["corrected_target"]
+                mutate(target)
+                audit = repo / "papers" / "Fixture" / "audit"
+                audit.mkdir(parents=True)
+                (audit / "paper_statement_map.json").write_text(json.dumps(payload))
+                candidate = self.commit(repo, "malformed corrected target projection")
+                paths = {"papers/Fixture/audit/paper_statement_map.json"}
+                _selected, issues = guard._candidate_corrected_target_artifacts(
+                    repo, candidate, paths
+                )
+                self.assertTrue(any(expected in issue for issue in issues), issues)
+
+    def test_unselected_corrected_target_does_not_authorize_an_artifact(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir)
+            self.init_repo(repo)
+            audit = repo / "papers" / "Fixture" / "audit"
+            audit.mkdir(parents=True)
+            (audit / "SOURCE_TARGET_STATEMENTS.md").write_text("Unbound content.")
+            (audit / "paper_statement_map.json").write_text(
+                json.dumps(_projected_corrected_target_map())
+            )
+            candidate = self.commit(repo, "unselected correction fixture")
+            issues = guard.candidate_public_artifact_policy_issues(repo, candidate)
+        self.assertTrue(any("SOURCE_TARGET_STATEMENTS.md" in issue and "unreferenced" in issue
+                            for issue in issues), issues)
+
+    def test_public_graph_artifacts_require_the_selected_closure_preimage(self) -> None:
+        from scripts.lean_import_closure import (
+            WORKTREE_IDENTITY_SCHEMA, LAKE_ROUTING_SCHEMA,
+            lean_import_closure_payload_sha256,
+        )
+        from scripts.obligation_evidence_graph import (
+            build_evidence_leaf, build_obligation_graph, lean_reviewed_semantic_target_leaf,
+        )
+        from scripts.portable_evidence_identity import canonical_json_bytes
+
+        closure = {
+            "schema": WORKTREE_IDENTITY_SCHEMA,
+            "entrypoint": "papers/Fixture/ProofInterface.lean",
+            "entry_module": "Fixture.ProofInterface",
+            "lean_loaded_modules": ["Fixture.ProofInterface"],
+            "sources": [{"module": "Fixture.ProofInterface",
+                         "path": "papers/Fixture/ProofInterface.lean",
+                         "byte_length": 0, "sha256": "1" * 64}],
+            "external_import_modules": [],
+            "external_module_artifacts_sha256": "2" * 64,
+            "build_controls": [
+                {"path": path, "tracked_in_index": True, "untracked": False,
+                 "path_kind": "file", "byte_length": 0, "sha256": "3" * 64}
+                for path in ("lean-toolchain", "lake-manifest.json")
+            ],
+            "lake_routing": {"schema": LAKE_ROUTING_SCHEMA, "kind": "lean",
+                             "sha256": "4" * 64, "byte_length": 0},
+        }
+        closure_digest = lean_import_closure_payload_sha256(closure)
+        target = lean_reviewed_semantic_target_leaf(
+            contract_sha256="5" * 64, semantic_target_kind="spec_proposition",
+            reviewed_semantic_target_sha256="6" * 64,
+        )
+        build = build_evidence_leaf(
+            contract_sha256="7" * 64, target_declaration_sha256s=[target.leaf_sha256],
+            build_command_sha256="8" * 64, toolchain_sha256="9" * 64,
+            lean_import_closure_sha256=closure_digest,
+        )
+        graph = build_obligation_graph([target, build], root_leaf_sha256s=[build.leaf_sha256])
+        pack = {"schema": 1, "paper": "Fixture", "accepted_graph": graph.projection(),
+                "leaves": {d: graph.leaves[d].projection() for d in graph.topological_leaf_sha256s},
+                "paper_index": {}}
+        base = "papers/Fixture/audit/obligation_evidence"
+        pointer = base + "/current_accepted_graph.json"
+        pack_path = f"{base}/accepted_graphs/sha256/{graph.graph_sha256[:2]}/{graph.graph_sha256}.json"
+        preimage = f"{base}/lean_import_closures/sha256/{closure_digest[:2]}/{closure_digest}.json"
+        for case in ("valid", "missing", "tampered", "unselected", "wrong_receipt"):
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temp_dir:
+                repo = Path(temp_dir)
+                self.init_repo(repo)
+                def put(path, value):
+                    destination = repo / path
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    destination.write_bytes(canonical_json_bytes(value) + b"\n")
+                put(pointer, {"schema": 2, "graph_sha256": graph.graph_sha256})
+                put(pack_path, pack)
+                if case != "missing":
+                    value = dict(closure)
+                    if case == "tampered":
+                        value["external_module_artifacts_sha256"] = "a" * 64
+                    put(preimage, value)
+                if case == "unselected":
+                    put(f"{base}/lean_import_closures/sha256/aa/{'a' * 64}.json", closure)
+                receipt_digest = "b" * 64 if case == "wrong_receipt" else graph.graph_sha256
+                (repo / "papers/Fixture/FINAL_CLOSURE_RECEIPT.md").write_text(
+                    '+++\nschema = 6\npaper = "Fixture"\nclosure_status = "current"\n'
+                    'acceptance_credential = false\nclosed_at = "2026-09-06"\n'
+                    f'[accepted_graph]\npointer = "{pointer}"\ngraph_sha256 = "{receipt_digest}"\n+++\n'
+                )
+                candidate = self.commit(repo, "selected graph transport fixture")
+                issues = guard.candidate_public_artifact_policy_issues(repo, candidate)
+                if case == "valid":
+                    self.assertEqual(issues, [])
+                elif case == "unselected":
+                    self.assertTrue(any("unreferenced-audit-artifact" in issue for issue in issues), issues)
+                else:
+                    self.assertTrue(any("cannot select current graph artifacts" in issue for issue in issues), issues)
 
     def test_artifact_policy_allows_absent_optional_review_destination(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -2694,6 +3276,101 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
             )
         )
 
+    def test_private_named_public_workflow_paths_have_only_exact_exceptions(self) -> None:
+        expected_contributor_docs = {
+            "docs/ARCHITECTURE.md",
+            "docs/PUBLIC_RELEASE_CHECKLIST.md",
+            "docs/REVIEW_DASHBOARD.md",
+            "docs/contributing/README.md",
+        }
+        self.assertLessEqual(
+            expected_contributor_docs,
+            guard.PUBLIC_CONTRIBUTOR_WORKFLOW_PATHS,
+        )
+        self.assertNotIn(
+            "docs/contributing/PRIVATE_NOTES.md",
+            guard.PUBLIC_CONTRIBUTOR_WORKFLOW_PATHS,
+        )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir) / "candidate"
+            self.init_repo(repo)
+            paths = {
+                "docs/PRIVATE_DEVELOPMENT_WORKFLOW.md": "public workflow\n",
+                "scripts/private_paper_checkpoint.py": "# public workflow helper\n",
+                "site/private_preview_server.py": "# localhost preview helper\n",
+                "docs/PRIVATE_RELEASE_SECRETS.md": "must remain private\n",
+            }
+            for relative, content in paths.items():
+                target = repo / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(content, encoding="utf-8")
+            candidate = self.commit(repo, "candidate")
+
+            issues = guard.forbidden_candidate_path_issues(repo, candidate)
+
+        self.assertEqual(
+            issues,
+            [
+                "forbidden private/source artifact path in public candidate: "
+                "docs/PRIVATE_RELEASE_SECRETS.md"
+            ],
+        )
+        for relative in guard.PUBLIC_PRIVATE_NAMED_WORKFLOW_PATHS:
+            with self.subTest(relative=relative):
+                self.assertIsNotNone(guard.FORBIDDEN_PUBLIC_PATH_RE.search(relative))
+        self.assertNotIn(
+            "docs/PRIVATE_RELEASE_SECRETS.md",
+            guard.PUBLIC_PRIVATE_NAMED_WORKFLOW_PATHS,
+        )
+
+    def test_reviewed_stage_guides_and_readme_boundary_pass_content_check(self) -> None:
+        stage_paths = {
+            "skills/econcs-formalizer/references/human-facing-artifacts.md",
+            "skills/econcs-formalizer/references/intake-and-source-surface.md",
+            "skills/econcs-formalizer/references/release-and-sync.md",
+            "skills/econcs-shared-worktree/SKILL.md",
+        }
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir) / "candidate"
+            self.init_repo(repo)
+            for relative in stage_paths:
+                target = repo / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes((guard.ROOT / relative).read_bytes())
+            (repo / "README.md").write_text(
+                guard.PUBLIC_README_PRIVATE_WORKFLOW_GUIDANCE + "\n",
+                encoding="utf-8",
+            )
+            candidate = self.commit(repo, "reviewed contributor guidance")
+            self.assertEqual(guard.public_artifact_content_issues(repo, candidate), [])
+            (repo / "README.md").write_text(
+                guard.PUBLIC_README_PRIVATE_WORKFLOW_GUIDANCE
+                + "\nPrivate source cache: /tmp/unreviewed.txt\n",
+                encoding="utf-8",
+            )
+            candidate = self.commit(repo, "unreviewed nearby private content")
+            self.assertTrue(guard.public_artifact_content_issues(repo, candidate))
+
+    def test_lean_source_citations_preserve_proofs_without_allowing_private_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir) / "candidate"
+            self.init_repo(repo)
+            target = repo / "papers/Fixture/Proof.lean"
+            target.parent.mkdir(parents=True)
+            target.write_text("/- Source: source.txt:20-30, source_tex/proof.tex, and source.pdf. -/\ntheorem checked : True := True.intro\n")
+            candidate = self.commit(repo, "source citation in exact Lean blob")
+            self.assertEqual(guard.public_artifact_content_issues(repo, candidate), [])
+            target.write_text("/- Source: /home/reviewer/private/source.txt -/\ntheorem checked : True := True.intro\n")
+            candidate = self.commit(repo, "private machine path remains forbidden")
+            self.assertTrue(guard.public_artifact_content_issues(repo, candidate))
+            for filename in ("source.txt", "source.pdf"):
+                with self.subTest(filename=filename):
+                    source = repo / "papers/Fixture" / filename
+                    source.write_text("Source bytes remain excluded.\n")
+                    candidate = self.commit(repo, "unapproved source artifact")
+                    self.assertTrue(guard.forbidden_candidate_path_issues(repo, candidate))
+
     def test_generated_status_check_invokes_trusted_script_with_candidate_repo(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -2708,7 +3385,7 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
             trusted.write_text(
                 "import os, pathlib, sys\n"
                 "expected = pathlib.Path(sys.argv[sys.argv.index('--repo') + 1])\n"
-                "propagated = pathlib.Path(os.environ['ECONCSLIB_REPO_ROOT'])\n"
+                "propagated = pathlib.Path(os.environ['APPLIEDMODELINGLIB_REPO_ROOT'])\n"
                 f"original = pathlib.Path({str(candidate.resolve())!r})\n"
                 "ok = (expected == pathlib.Path.cwd() == propagated\n"
                 "      and expected != original\n"
@@ -2767,7 +3444,7 @@ class PublicReleaseCandidateGuardTests(unittest.TestCase):
                 f"root = pathlib.Path({str(ROOT)!r})\n"
                 f"candidate = pathlib.Path({str(candidate)!r})\n"
                 "sys.path[:0] = [str(root), str(root / 'scripts')]\n"
-                "os.environ['ECONCSLIB_REPO_ROOT'] = str(candidate)\n"
+                "os.environ['APPLIEDMODELINGLIB_REPO_ROOT'] = str(candidate)\n"
                 f"paths = {[str(path) for path in module_paths]!r}\n"
                 "for index, raw in enumerate(paths):\n"
                 "    name = f'root_probe_{index}'\n"

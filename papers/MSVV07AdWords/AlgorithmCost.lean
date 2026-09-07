@@ -20,7 +20,7 @@ without changing the mathematical AdWords model.
   family.
 -/
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Online
 namespace MSVV07PaperFacing
 
@@ -138,4 +138,4 @@ theorem appendix_three_fifths_lt_msvv_ratio :
 
 end MSVV07PaperFacing
 end Online
-end EconCSLib
+end AppliedModelingLib

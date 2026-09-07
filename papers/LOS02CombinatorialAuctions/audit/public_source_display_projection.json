@@ -1,0 +1,1510 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "LOS02CombinatorialAuctions",
+  "private_source_map_sha256": "49ffc21ddf2c5a7414457e62762ed6d99b35ccd874a77342601c275b962e0005",
+  "public_manifest_path": "papers/LOS02CombinatorialAuctions/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "be216febfab63db1571a6eeedf6bdd5bffe2b1c1b2885da6439ff29ef5e03782",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "definition10_1",
+    "definition3_1",
+    "definition3_2",
+    "definition5_1",
+    "definition7_1",
+    "lemma9_1",
+    "lemma9_2",
+    "lemma9_3",
+    "lemma9_4",
+    "lemma9_5",
+    "proposition4_2",
+    "section12",
+    "section8",
+    "source_critical",
+    "source_monotonicity",
+    "source_participation",
+    "source_sqrt_objective",
+    "theorem10_2",
+    "theorem4_1",
+    "theorem6_1",
+    "theorem7_2",
+    "theorem9_6"
+  ],
+  "selected_source_items": {
+    "definition10_1": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 604,
+              "line_start": 586,
+              "publication_locator": "cited publication",
+              "quoted_text": "A single-minded bidder declaring hs, ai, with s ⊆ G and a ∈ R+ will be said to\nput out a bid b = hs, ai. We shall use s(b) and a(b) to denote the components of b\nand call a(b) the amount of the bid b. As explained in Section 5, we identify bids\nand bidders. Two bids b = hs, ai and b0 = hs 0 , a 0 i conflict if s ∩ s 0 6= ∅.\nThe algorithms we consider execute in two phases.\n—In the first phase, the bids are sorted by some criterion. The algorithms of the\nfamily are distinguished by the different criteria they use. Since there are n bids,\nthis phase takes time of the order of n log n. We assume a criterion, that is, a norm\nis defined and the bids are sorted in decreasing order following this norm. Since\nwe shall have, in Theorem 10.2, to compare the sorted lists of bids of slightly\ndifferent auctions, we also assume a consistent treatment of ties, that is, bids\nwith equal norms. Formally, we shall assume that no two different bids have the\nsame norm, that is, there are no ties.\n—In the second phase, a greedy algorithm generates an allocation. Let L be the\nlist of sorted bids obtained in the first phase. The first bid of L, say b = hs, ai is\ngranted, that is, the set s will be allocated to b and then the algorithm examines\neach bid of L, in order, and grants it if it does not conflict with any of the bids\npreviously granted. If it does, it denies (i.e., does not grant) the bid. This phase\nrequires time linear in n.",
+              "quoted_text_sha256": "0a4afe7bcc0fd75d9a32fb715dfe30f23af43954d61b51371aa275212810c7fc"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 632,
+              "line_start": 630,
+              "publication_locator": "cited publication",
+              "quoted_text": "a\n.\nDefinition 7.1. The average amount per good of a bid b = hs, ai is |s|",
+              "quoted_text_sha256": "fc3e2755252ae21cf3c3614cf0fd36bf26417dc68a93accbda7564cc19fa4899"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 984,
+              "line_start": 976,
+              "publication_locator": "cited publication",
+              "quoted_text": "We assume that the criterion used is average amount per good, the adaptation\nto most other suitable greedy allocations is obvious. Informally, a bidder pays, per\ngood, the average price proposed by the first bid in the list L that is denied because\nof this bid. Consider a bid j in L. Let c( j) be the average amount per good of j. We\nshall denote by n( j) the first bid following j (bids are sorted in decreasing order,\nthat is, c( j) ≥ c(n( j))) that has been denied but would have been granted were it\nnot for the presence of j. Assume that such a bid exists. Notice that such a bid\nnecessarily conflicts with j, and therefore:\nn( j) = min{i | j < i, s( j) ∩ s(i) 6= ∅, ∀l, l < i, l 6= j, l granted ⇒ s(l) ∩ s(i) = ∅}.",
+              "quoted_text_sha256": "33ad04f01151be9510a34303efab3ae2df52e96bb78eacd104d7ea624220a85b"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 991,
+          "line_start": 985,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 10.1 Greedy Payment Scheme.\nthe first phase.\n\nLet L be the sorted list obtained in\n\n— j pays zero if his bid is denied or if there is no bid n( j),\n—if there is an n( j) and j’s bid hs, vi is granted, he pays |s| × c(n( j)).",
+          "quoted_text_sha256": "9f965f04467da6275a85b64cdc251c1d35ed132d8b9c6b8069a26d71a7d87928"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition3_1": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 241,
+              "line_start": 238,
+              "publication_locator": "cited publication",
+              "quoted_text": "Let us denote the bundle obtained by i as:\ngi (D) = f (D)−1 (i).\n\n(2)",
+              "quoted_text_sha256": "de3e2793eca357ccef0c4534731e41d724ce2e529ff3db5d434ac59180bdaec2"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 237,
+          "line_start": 233,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 3.1. A (direct) mechanism for combinatorial auctions consists of\n—an allocation algorithm f that picks, for each vector D (D is a vector of declared\ntypes), an allocation f (D),\n—a payment scheme p that determines, for each vector D a payment vector p(D):\npi (D) is paid by bidder i to the auctioneer.",
+          "quoted_text_sha256": "884615af8014c2896820d13a962d11998d2f4323a8c5af9a42739ab92b928964"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition3_2": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 455,
+              "line_start": 453,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.",
+              "quoted_text_sha256": "24cd4db8ef1994a248d598c642af77004a936058589214a6f22654e08d0e7de2"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 832,
+              "line_start": 824,
+              "publication_locator": "cited publication",
+              "quoted_text": "The general structure of the properties of interest is that they consider a given\nset of single-minded types and vary one of those types. They restrict the changes\nthat can appear in the allocation or the payments as a result of such a change.\nLet declarations be fixed, but arbitrary, for all bidders except j. Consider two\npossible declarations for j: hs, vi and hs 0 , v 0 i. Given an allocation scheme f and a\npayment scheme p, we shall consider the allocations and payments generated by\nboth declarations of j. Let gi be the set of goods obtained by bidder i if j declares\nhs, vi, and gi0 the set he obtains if j declares hs 0 , v 0 i. Similarly denote by pi and pi0\nthe payments of i.",
+              "quoted_text_sha256": "756cf64b4440ec1b928ff06e493594e8e2388e0aeafbdd9c34155ac02abb1bbb"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 266,
+              "line_start": 258,
+              "publication_locator": "cited publication",
+              "quoted_text": "The game-theoretic solution concept used throughout this article is that of a weakly\ndominant strategy, that is, a strategy that is as good as any other for a given player,\nno matter what other players do. This is in contrast with the weaker and more\ncommon notion of Nash equilibrium. The particular property we would like to\nensure for our mechanism is that the dominant strategy for each player is to bid\nhis true valuation; in other words, no bidder can be better off by lying, no matter\nhow other bidders behave. A mechanism is truthful if no bidder can be better off by\nlying, even if other bidders lie. This is a very strong requirement, making for a very\nsturdy mechanism.",
+              "quoted_text_sha256": "31b78a17915b904795c9488c05a60a91609c49536b0cdf1295a94f95f17119f4"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 269,
+          "line_start": 258,
+          "publication_locator": "cited publication",
+          "quoted_text": "The game-theoretic solution concept used throughout this article is that of a weakly\ndominant strategy, that is, a strategy that is as good as any other for a given player,\nno matter what other players do. This is in contrast with the weaker and more\ncommon notion of Nash equilibrium. The particular property we would like to\nensure for our mechanism is that the dominant strategy for each player is to bid\nhis true valuation; in other words, no bidder can be better off by lying, no matter\nhow other bidders behave. A mechanism is truthful if no bidder can be better off by\nlying, even if other bidders lie. This is a very strong requirement, making for a very\nsturdy mechanism.\nDefinition 3.2. A mechanism h f, pi is truthful if and only if for every i ∈ P,\nt ∈ 2 and any vector D of declarations, if D 0 is the vector obtained from D by\nreplacing the ith coordinate di by t, then: t(gi (D 0 )) − pi (D 0 ) ≥ t(gi (D)) − pi (D).",
+          "quoted_text_sha256": "1f7dae423ba155154267bfa2763a6e11c67278e82f190bc158c2f5d35b8997de"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition5_1": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 465,
+              "line_start": 460,
+              "publication_locator": "cited publication",
+              "quoted_text": "better approximations if agents are assumed to be single-minded and one parameter. We shall denote by hs, vi the type just described. Note that a single-minded\nbidder enjoys free disposal. We shall assume, in most of this article, that all bidders\nare single-minded, that is, there are sets of goods si and nonnegative real numbers\nv i such that bidder i is of type hsi , v i i. We shall denote by 6 the set of all singleminded types. The size of the set 6, contrary to the size of 2, is singly exponential\nin k. A string of polynomial size will be enough to code the declarations of the\nbidders: it will describe a set of goods and a value. In this setting, we identify bids",
+              "quoted_text_sha256": "5c4574c76e4ba1cae51f341237ecb679f5e0274e75b539164e7b6c5c1ad58997"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 632,
+              "line_start": 630,
+              "publication_locator": "cited publication",
+              "quoted_text": "a\n.\nDefinition 7.1. The average amount per good of a bid b = hs, ai is |s|",
+              "quoted_text_sha256": "fc3e2755252ae21cf3c3614cf0fd36bf26417dc68a93accbda7564cc19fa4899"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 925,
+              "line_start": 924,
+              "publication_locator": "cited publication",
+              "quoted_text": "LEMMA 9.2. In a mechanism that satisfies Exactness and Participation, a\nbidder whose bid is denied has utility zero.",
+              "quoted_text_sha256": "c0f8e278272d5b8c92efcda0113576f4798ddc2cc4ca8aad95558f1f22d6a4a8"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 455,
+          "line_start": 453,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.",
+          "quoted_text_sha256": "24cd4db8ef1994a248d598c642af77004a936058589214a6f22654e08d0e7de2"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition7_1": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 652,
+          "line_start": 630,
+          "publication_locator": "cited publication",
+          "quoted_text": "a\n.\nDefinition 7.1. The average amount per good of a bid b = hs, ai is |s|\n\nSorting the list L by descending average amount per good is a very reasonable idea. But many other possibilities may be considered. Sorting L by descending amounts for example, or, more generally sorting L by a criterion of the form\na/|s|l for some number l, l ≥ 0, possibly depending on k. All such criteria satisfy\nbid-monotonicity.\nHow good is the greedy allocation in comparison with the optimal one? For\nl = 1, the worst case may be analyzed without much difficulty. The ratio between\nthe total value of the optimal allocation and that of the allocation found by the greedy\nalgorithm cannot be larger than k, and this bound is tight. As usual in this sort of\nsituations, on the average, on realistic distributions of bids, the performance of the\ngreedy allocation scheme is much better than the lower bound above. We have been\nable to perform a full analysis of the worst case performance of those norms for\ndifferent l’s\n√ and found out that l = 1/2 is best: it guarantees an approximation ratio\nof at least k and, by Theorem 6.1, this is, up to a multiplicative constant, essentially,\nthe\n√ best approximation ratio one can hope for a polynomial-time algorithm. The\nk upper-bound improves on the previously best known result of Halldórsson\n[1999] by a factor of 2. Better results may now be found in Halldórsson [2000]. The\nfollowing has since been generalized to multi-unit combinatorial auctions in Gonen\nand Lehmann [2000].",
+          "quoted_text_sha256": "26acb127fb88cf9b9ca75fb22cb13f50811746774b10cb6c23a6d0cb5260f8bd"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "lemma9_1": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 465,
+              "line_start": 449,
+              "publication_locator": "cited publication",
+              "quoted_text": "We shall assume that bidders are single-minded and care only about one specific\n(bidder-dependent) set of goods. If they do not get this set they value the outcome\nat the lowest possible value 0. In other words, our bidders are restricted to one\nsingle bid.\nDefinition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.\nNote that single-minded bidders are not one parameter agents in the sense\nof Archer and Tardos [2001], since they have the freedom of deciding which bundle\nthey bid for on top on the amount they are willing to pay. In Mu’alem and Nisan\n[2002], truthfulness is shown to be attainable for allocation algorithms providing\nbetter approximations if agents are assumed to be single-minded and one parameter. We shall denote by hs, vi the type just described. Note that a single-minded\nbidder enjoys free disposal. We shall assume, in most of this article, that all bidders\nare single-minded, that is, there are sets of goods si and nonnegative real numbers\nv i such that bidder i is of type hsi , v i i. We shall denote by 6 the set of all singleminded types. The size of the set 6, contrary to the size of 2, is singly exponential\nin k. A string of polynomial size will be enough to code the declarations of the\nbidders: it will describe a set of goods and a value. In this setting, we identify bids",
+              "quoted_text_sha256": "97deba338e863cd7d7316a9ef60d3651514dbb5ad0325fa418a8c3c50d11ebc6"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 843,
+              "line_start": 824,
+              "publication_locator": "cited publication",
+              "quoted_text": "The general structure of the properties of interest is that they consider a given\nset of single-minded types and vary one of those types. They restrict the changes\nthat can appear in the allocation or the payments as a result of such a change.\nLet declarations be fixed, but arbitrary, for all bidders except j. Consider two\npossible declarations for j: hs, vi and hs 0 , v 0 i. Given an allocation scheme f and a\npayment scheme p, we shall consider the allocations and payments generated by\nboth declarations of j. Let gi be the set of goods obtained by bidder i if j declares\nhs, vi, and gi0 the set he obtains if j declares hs 0 , v 0 i. Similarly denote by pi and pi0\nthe payments of i.\nOur first property requires that the allocation, among single-minded bidders, be\nexact, that is, a single-minded bidder either gets exactly the set of goods he desires,\nnothing added, or he gets nothing. He never gets only part of what he requested. This\nis a very natural property, when dealing with single-minded bidders: the valuation\nof the bidder does not increase by giving him part of what he requested instead of\nnothing or by giving him more than what he requested instead of just the bundle\nhe requested.\nExactness Either g j = s or g j = ∅.\nIn an exact allocation, we shall say that j’s bid is granted in the first case, and denied\nin the second case. In such a scheme, the allocation may be viewed as a set of bids\n(or bidders) that is conflict-free, that is, the s coordinates have pairwise empty",
+              "quoted_text_sha256": "68278be5f12cb0aa51f2b62bb25c32b9c7855e07ead411372f0bfcfb3779d21b"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 857,
+              "line_start": 848,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our next property, Monotonicity, also concerns only the allocation scheme. It\nrequires that, if j’s bid is granted if he declares hs, vi, it is also granted if he\ndeclares hs 0 , v 0 i for any s 0 ⊆ s, v 0 ≥ v. In other words, proposing more money for\nfewer goods cannot cause a bidder to lose his bid. It follows that, similarly, offering\nless money for more goods cannot cause a lost bid to win. Formally:\nMonotonicity s ⊆ g j ,\n\ns 0 ⊆ s,\n\nv 0 ≥ v ⇒ s 0 ⊆ g 0j .",
+              "quoted_text_sha256": "97e4c07c9b45a36d0675bdb51748f70a9cae1a5abeae622539da1ac2f8ef3143"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 884,
+          "line_start": 878,
+          "publication_locator": "cited publication",
+          "quoted_text": "LEMMA 9.1. In a mechanism that satisfies Exactness and Monotonicity, given\na bidder j, a set s of goods and declarations for all other bidders, there exists a\ncritical value v c such that\n∀v, v < v c ⇒ g j = ∅,\n∀v, v > v c ⇒ g j = s,\nWe allow v c to be infinite if f (As,v )−1 ( j) = ∅ for every v. Note that we do not\nknow whether j’s bid is granted or not in case v = v c .",
+          "quoted_text_sha256": "4cf7dfb9e6e6ceeb927d4c33c45539c9ccbeaea3243145995e732e58577c5125"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma9_2": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 465,
+              "line_start": 449,
+              "publication_locator": "cited publication",
+              "quoted_text": "We shall assume that bidders are single-minded and care only about one specific\n(bidder-dependent) set of goods. If they do not get this set they value the outcome\nat the lowest possible value 0. In other words, our bidders are restricted to one\nsingle bid.\nDefinition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.\nNote that single-minded bidders are not one parameter agents in the sense\nof Archer and Tardos [2001], since they have the freedom of deciding which bundle\nthey bid for on top on the amount they are willing to pay. In Mu’alem and Nisan\n[2002], truthfulness is shown to be attainable for allocation algorithms providing\nbetter approximations if agents are assumed to be single-minded and one parameter. We shall denote by hs, vi the type just described. Note that a single-minded\nbidder enjoys free disposal. We shall assume, in most of this article, that all bidders\nare single-minded, that is, there are sets of goods si and nonnegative real numbers\nv i such that bidder i is of type hsi , v i i. We shall denote by 6 the set of all singleminded types. The size of the set 6, contrary to the size of 2, is singly exponential\nin k. A string of polynomial size will be enough to code the declarations of the\nbidders: it will describe a set of goods and a value. In this setting, we identify bids",
+              "quoted_text_sha256": "97deba338e863cd7d7316a9ef60d3651514dbb5ad0325fa418a8c3c50d11ebc6"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 843,
+              "line_start": 824,
+              "publication_locator": "cited publication",
+              "quoted_text": "The general structure of the properties of interest is that they consider a given\nset of single-minded types and vary one of those types. They restrict the changes\nthat can appear in the allocation or the payments as a result of such a change.\nLet declarations be fixed, but arbitrary, for all bidders except j. Consider two\npossible declarations for j: hs, vi and hs 0 , v 0 i. Given an allocation scheme f and a\npayment scheme p, we shall consider the allocations and payments generated by\nboth declarations of j. Let gi be the set of goods obtained by bidder i if j declares\nhs, vi, and gi0 the set he obtains if j declares hs 0 , v 0 i. Similarly denote by pi and pi0\nthe payments of i.\nOur first property requires that the allocation, among single-minded bidders, be\nexact, that is, a single-minded bidder either gets exactly the set of goods he desires,\nnothing added, or he gets nothing. He never gets only part of what he requested. This\nis a very natural property, when dealing with single-minded bidders: the valuation\nof the bidder does not increase by giving him part of what he requested instead of\nnothing or by giving him more than what he requested instead of just the bundle\nhe requested.\nExactness Either g j = s or g j = ∅.\nIn an exact allocation, we shall say that j’s bid is granted in the first case, and denied\nin the second case. In such a scheme, the allocation may be viewed as a set of bids\n(or bidders) that is conflict-free, that is, the s coordinates have pairwise empty",
+              "quoted_text_sha256": "68278be5f12cb0aa51f2b62bb25c32b9c7855e07ead411372f0bfcfb3779d21b"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 857,
+              "line_start": 848,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our next property, Monotonicity, also concerns only the allocation scheme. It\nrequires that, if j’s bid is granted if he declares hs, vi, it is also granted if he\ndeclares hs 0 , v 0 i for any s 0 ⊆ s, v 0 ≥ v. In other words, proposing more money for\nfewer goods cannot cause a bidder to lose his bid. It follows that, similarly, offering\nless money for more goods cannot cause a lost bid to win. Formally:\nMonotonicity s ⊆ g j ,\n\ns 0 ⊆ s,\n\nv 0 ≥ v ⇒ s 0 ⊆ g 0j .",
+              "quoted_text_sha256": "97e4c07c9b45a36d0675bdb51748f70a9cae1a5abeae622539da1ac2f8ef3143"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 913,
+              "line_start": 906,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our last property concerns the payment scheme. Together with Critical, it implies\nthat the utility of no truthful bidder is negative. It concerns unsatisfied bidders, bids\nthat are denied. We require that an unsatisfied bidder pay zero. The utility of an\nunsatisfied bidder is then zero. This is simply tuning the utility scales of the different\nbidders, or, ensuring that bidders may not lose by participating in the auction.\nParticipation\n\ns 6⊆ g j ⇒ p j = 0",
+              "quoted_text_sha256": "66f8a86aa8715bc44f53377af32626e0047200dd92d6a1e7f8944e5a25fe6e90"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 925,
+          "line_start": 924,
+          "publication_locator": "cited publication",
+          "quoted_text": "LEMMA 9.2. In a mechanism that satisfies Exactness and Participation, a\nbidder whose bid is denied has utility zero.",
+          "quoted_text_sha256": "c0f8e278272d5b8c92efcda0113576f4798ddc2cc4ca8aad95558f1f22d6a4a8"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma9_3": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 465,
+              "line_start": 449,
+              "publication_locator": "cited publication",
+              "quoted_text": "We shall assume that bidders are single-minded and care only about one specific\n(bidder-dependent) set of goods. If they do not get this set they value the outcome\nat the lowest possible value 0. In other words, our bidders are restricted to one\nsingle bid.\nDefinition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.\nNote that single-minded bidders are not one parameter agents in the sense\nof Archer and Tardos [2001], since they have the freedom of deciding which bundle\nthey bid for on top on the amount they are willing to pay. In Mu’alem and Nisan\n[2002], truthfulness is shown to be attainable for allocation algorithms providing\nbetter approximations if agents are assumed to be single-minded and one parameter. We shall denote by hs, vi the type just described. Note that a single-minded\nbidder enjoys free disposal. We shall assume, in most of this article, that all bidders\nare single-minded, that is, there are sets of goods si and nonnegative real numbers\nv i such that bidder i is of type hsi , v i i. We shall denote by 6 the set of all singleminded types. The size of the set 6, contrary to the size of 2, is singly exponential\nin k. A string of polynomial size will be enough to code the declarations of the\nbidders: it will describe a set of goods and a value. In this setting, we identify bids",
+              "quoted_text_sha256": "97deba338e863cd7d7316a9ef60d3651514dbb5ad0325fa418a8c3c50d11ebc6"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 843,
+              "line_start": 824,
+              "publication_locator": "cited publication",
+              "quoted_text": "The general structure of the properties of interest is that they consider a given\nset of single-minded types and vary one of those types. They restrict the changes\nthat can appear in the allocation or the payments as a result of such a change.\nLet declarations be fixed, but arbitrary, for all bidders except j. Consider two\npossible declarations for j: hs, vi and hs 0 , v 0 i. Given an allocation scheme f and a\npayment scheme p, we shall consider the allocations and payments generated by\nboth declarations of j. Let gi be the set of goods obtained by bidder i if j declares\nhs, vi, and gi0 the set he obtains if j declares hs 0 , v 0 i. Similarly denote by pi and pi0\nthe payments of i.\nOur first property requires that the allocation, among single-minded bidders, be\nexact, that is, a single-minded bidder either gets exactly the set of goods he desires,\nnothing added, or he gets nothing. He never gets only part of what he requested. This\nis a very natural property, when dealing with single-minded bidders: the valuation\nof the bidder does not increase by giving him part of what he requested instead of\nnothing or by giving him more than what he requested instead of just the bundle\nhe requested.\nExactness Either g j = s or g j = ∅.\nIn an exact allocation, we shall say that j’s bid is granted in the first case, and denied\nin the second case. In such a scheme, the allocation may be viewed as a set of bids\n(or bidders) that is conflict-free, that is, the s coordinates have pairwise empty",
+              "quoted_text_sha256": "68278be5f12cb0aa51f2b62bb25c32b9c7855e07ead411372f0bfcfb3779d21b"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 857,
+              "line_start": 848,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our next property, Monotonicity, also concerns only the allocation scheme. It\nrequires that, if j’s bid is granted if he declares hs, vi, it is also granted if he\ndeclares hs 0 , v 0 i for any s 0 ⊆ s, v 0 ≥ v. In other words, proposing more money for\nfewer goods cannot cause a bidder to lose his bid. It follows that, similarly, offering\nless money for more goods cannot cause a lost bid to win. Formally:\nMonotonicity s ⊆ g j ,\n\ns 0 ⊆ s,\n\nv 0 ≥ v ⇒ s 0 ⊆ g 0j .",
+              "quoted_text_sha256": "97e4c07c9b45a36d0675bdb51748f70a9cae1a5abeae622539da1ac2f8ef3143"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 884,
+              "line_start": 878,
+              "publication_locator": "cited publication",
+              "quoted_text": "LEMMA 9.1. In a mechanism that satisfies Exactness and Monotonicity, given\na bidder j, a set s of goods and declarations for all other bidders, there exists a\ncritical value v c such that\n∀v, v < v c ⇒ g j = ∅,\n∀v, v > v c ⇒ g j = s,\nWe allow v c to be infinite if f (As,v )−1 ( j) = ∅ for every v. Note that we do not\nknow whether j’s bid is granted or not in case v = v c .",
+              "quoted_text_sha256": "4cf7dfb9e6e6ceeb927d4c33c45539c9ccbeaea3243145995e732e58577c5125"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 897,
+              "line_start": 888,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our third property deals with a satisfied bidder: a satisfied bidder pays exactly\nthe critical value of Lemma 9.1, that is, the lowest value he could have declared\nand still be allocated the goods he desires.\nCritical\n\ns ⊆ g j ⇒ p j = vc\n\nNotice that Critical says, first, that the payment for a bid that is granted does not\ndepend on the amount of the bid, it depends only on the other bids. Then it says\nthat it is exactly equal to the critical value below which the bid would have lost.",
+              "quoted_text_sha256": "79fb145dbeb5d966aa3585ba35caa6a16296fe40c90e8a7fb5d950fd71e7e818"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 913,
+              "line_start": 906,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our last property concerns the payment scheme. Together with Critical, it implies\nthat the utility of no truthful bidder is negative. It concerns unsatisfied bidders, bids\nthat are denied. We require that an unsatisfied bidder pay zero. The utility of an\nunsatisfied bidder is then zero. This is simply tuning the utility scales of the different\nbidders, or, ensuring that bidders may not lose by participating in the auction.\nParticipation\n\ns 6⊆ g j ⇒ p j = 0",
+              "quoted_text_sha256": "66f8a86aa8715bc44f53377af32626e0047200dd92d6a1e7f8944e5a25fe6e90"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 928,
+          "line_start": 928,
+          "publication_locator": "cited publication",
+          "quoted_text": "LEMMA 9.3. In a mechanism that satisfies Exactness, Monotonicity, Participation and Critical a truthful bidder’s utility is nonnegative.",
+          "quoted_text_sha256": "507091ba4adcc24a9c708b0e2572cb819e16496d1e5fe4d74b53bace69171a49"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma9_4": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 465,
+              "line_start": 449,
+              "publication_locator": "cited publication",
+              "quoted_text": "We shall assume that bidders are single-minded and care only about one specific\n(bidder-dependent) set of goods. If they do not get this set they value the outcome\nat the lowest possible value 0. In other words, our bidders are restricted to one\nsingle bid.\nDefinition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.\nNote that single-minded bidders are not one parameter agents in the sense\nof Archer and Tardos [2001], since they have the freedom of deciding which bundle\nthey bid for on top on the amount they are willing to pay. In Mu’alem and Nisan\n[2002], truthfulness is shown to be attainable for allocation algorithms providing\nbetter approximations if agents are assumed to be single-minded and one parameter. We shall denote by hs, vi the type just described. Note that a single-minded\nbidder enjoys free disposal. We shall assume, in most of this article, that all bidders\nare single-minded, that is, there are sets of goods si and nonnegative real numbers\nv i such that bidder i is of type hsi , v i i. We shall denote by 6 the set of all singleminded types. The size of the set 6, contrary to the size of 2, is singly exponential\nin k. A string of polynomial size will be enough to code the declarations of the\nbidders: it will describe a set of goods and a value. In this setting, we identify bids",
+              "quoted_text_sha256": "97deba338e863cd7d7316a9ef60d3651514dbb5ad0325fa418a8c3c50d11ebc6"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 843,
+              "line_start": 824,
+              "publication_locator": "cited publication",
+              "quoted_text": "The general structure of the properties of interest is that they consider a given\nset of single-minded types and vary one of those types. They restrict the changes\nthat can appear in the allocation or the payments as a result of such a change.\nLet declarations be fixed, but arbitrary, for all bidders except j. Consider two\npossible declarations for j: hs, vi and hs 0 , v 0 i. Given an allocation scheme f and a\npayment scheme p, we shall consider the allocations and payments generated by\nboth declarations of j. Let gi be the set of goods obtained by bidder i if j declares\nhs, vi, and gi0 the set he obtains if j declares hs 0 , v 0 i. Similarly denote by pi and pi0\nthe payments of i.\nOur first property requires that the allocation, among single-minded bidders, be\nexact, that is, a single-minded bidder either gets exactly the set of goods he desires,\nnothing added, or he gets nothing. He never gets only part of what he requested. This\nis a very natural property, when dealing with single-minded bidders: the valuation\nof the bidder does not increase by giving him part of what he requested instead of\nnothing or by giving him more than what he requested instead of just the bundle\nhe requested.\nExactness Either g j = s or g j = ∅.\nIn an exact allocation, we shall say that j’s bid is granted in the first case, and denied\nin the second case. In such a scheme, the allocation may be viewed as a set of bids\n(or bidders) that is conflict-free, that is, the s coordinates have pairwise empty",
+              "quoted_text_sha256": "68278be5f12cb0aa51f2b62bb25c32b9c7855e07ead411372f0bfcfb3779d21b"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 857,
+              "line_start": 848,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our next property, Monotonicity, also concerns only the allocation scheme. It\nrequires that, if j’s bid is granted if he declares hs, vi, it is also granted if he\ndeclares hs 0 , v 0 i for any s 0 ⊆ s, v 0 ≥ v. In other words, proposing more money for\nfewer goods cannot cause a bidder to lose his bid. It follows that, similarly, offering\nless money for more goods cannot cause a lost bid to win. Formally:\nMonotonicity s ⊆ g j ,\n\ns 0 ⊆ s,\n\nv 0 ≥ v ⇒ s 0 ⊆ g 0j .",
+              "quoted_text_sha256": "97e4c07c9b45a36d0675bdb51748f70a9cae1a5abeae622539da1ac2f8ef3143"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 884,
+              "line_start": 878,
+              "publication_locator": "cited publication",
+              "quoted_text": "LEMMA 9.1. In a mechanism that satisfies Exactness and Monotonicity, given\na bidder j, a set s of goods and declarations for all other bidders, there exists a\ncritical value v c such that\n∀v, v < v c ⇒ g j = ∅,\n∀v, v > v c ⇒ g j = s,\nWe allow v c to be infinite if f (As,v )−1 ( j) = ∅ for every v. Note that we do not\nknow whether j’s bid is granted or not in case v = v c .",
+              "quoted_text_sha256": "4cf7dfb9e6e6ceeb927d4c33c45539c9ccbeaea3243145995e732e58577c5125"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 897,
+              "line_start": 888,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our third property deals with a satisfied bidder: a satisfied bidder pays exactly\nthe critical value of Lemma 9.1, that is, the lowest value he could have declared\nand still be allocated the goods he desires.\nCritical\n\ns ⊆ g j ⇒ p j = vc\n\nNotice that Critical says, first, that the payment for a bid that is granted does not\ndepend on the amount of the bid, it depends only on the other bids. Then it says\nthat it is exactly equal to the critical value below which the bid would have lost.",
+              "quoted_text_sha256": "79fb145dbeb5d966aa3585ba35caa6a16296fe40c90e8a7fb5d950fd71e7e818"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 913,
+              "line_start": 906,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our last property concerns the payment scheme. Together with Critical, it implies\nthat the utility of no truthful bidder is negative. It concerns unsatisfied bidders, bids\nthat are denied. We require that an unsatisfied bidder pay zero. The utility of an\nunsatisfied bidder is then zero. This is simply tuning the utility scales of the different\nbidders, or, ensuring that bidders may not lose by participating in the auction.\nParticipation\n\ns 6⊆ g j ⇒ p j = 0",
+              "quoted_text_sha256": "66f8a86aa8715bc44f53377af32626e0047200dd92d6a1e7f8944e5a25fe6e90"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 936,
+          "line_start": 935,
+          "publication_locator": "cited publication",
+          "quoted_text": "LEMMA 9.4. In a mechanism that satisfies Exactness, Monotonicity, Participation and Critical, a bidder j of type hs, vi is never better off declaring hs, v 0 i for\nsome v 0 6= v than by being truthful.",
+          "quoted_text_sha256": "99ac61e98260cdba6f6e6707bbb4de1639904d6b7184ee76ca1a4851fcd2b1ce"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma9_5": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 465,
+              "line_start": 449,
+              "publication_locator": "cited publication",
+              "quoted_text": "We shall assume that bidders are single-minded and care only about one specific\n(bidder-dependent) set of goods. If they do not get this set they value the outcome\nat the lowest possible value 0. In other words, our bidders are restricted to one\nsingle bid.\nDefinition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.\nNote that single-minded bidders are not one parameter agents in the sense\nof Archer and Tardos [2001], since they have the freedom of deciding which bundle\nthey bid for on top on the amount they are willing to pay. In Mu’alem and Nisan\n[2002], truthfulness is shown to be attainable for allocation algorithms providing\nbetter approximations if agents are assumed to be single-minded and one parameter. We shall denote by hs, vi the type just described. Note that a single-minded\nbidder enjoys free disposal. We shall assume, in most of this article, that all bidders\nare single-minded, that is, there are sets of goods si and nonnegative real numbers\nv i such that bidder i is of type hsi , v i i. We shall denote by 6 the set of all singleminded types. The size of the set 6, contrary to the size of 2, is singly exponential\nin k. A string of polynomial size will be enough to code the declarations of the\nbidders: it will describe a set of goods and a value. In this setting, we identify bids",
+              "quoted_text_sha256": "97deba338e863cd7d7316a9ef60d3651514dbb5ad0325fa418a8c3c50d11ebc6"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 843,
+              "line_start": 824,
+              "publication_locator": "cited publication",
+              "quoted_text": "The general structure of the properties of interest is that they consider a given\nset of single-minded types and vary one of those types. They restrict the changes\nthat can appear in the allocation or the payments as a result of such a change.\nLet declarations be fixed, but arbitrary, for all bidders except j. Consider two\npossible declarations for j: hs, vi and hs 0 , v 0 i. Given an allocation scheme f and a\npayment scheme p, we shall consider the allocations and payments generated by\nboth declarations of j. Let gi be the set of goods obtained by bidder i if j declares\nhs, vi, and gi0 the set he obtains if j declares hs 0 , v 0 i. Similarly denote by pi and pi0\nthe payments of i.\nOur first property requires that the allocation, among single-minded bidders, be\nexact, that is, a single-minded bidder either gets exactly the set of goods he desires,\nnothing added, or he gets nothing. He never gets only part of what he requested. This\nis a very natural property, when dealing with single-minded bidders: the valuation\nof the bidder does not increase by giving him part of what he requested instead of\nnothing or by giving him more than what he requested instead of just the bundle\nhe requested.\nExactness Either g j = s or g j = ∅.\nIn an exact allocation, we shall say that j’s bid is granted in the first case, and denied\nin the second case. In such a scheme, the allocation may be viewed as a set of bids\n(or bidders) that is conflict-free, that is, the s coordinates have pairwise empty",
+              "quoted_text_sha256": "68278be5f12cb0aa51f2b62bb25c32b9c7855e07ead411372f0bfcfb3779d21b"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 857,
+              "line_start": 848,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our next property, Monotonicity, also concerns only the allocation scheme. It\nrequires that, if j’s bid is granted if he declares hs, vi, it is also granted if he\ndeclares hs 0 , v 0 i for any s 0 ⊆ s, v 0 ≥ v. In other words, proposing more money for\nfewer goods cannot cause a bidder to lose his bid. It follows that, similarly, offering\nless money for more goods cannot cause a lost bid to win. Formally:\nMonotonicity s ⊆ g j ,\n\ns 0 ⊆ s,\n\nv 0 ≥ v ⇒ s 0 ⊆ g 0j .",
+              "quoted_text_sha256": "97e4c07c9b45a36d0675bdb51748f70a9cae1a5abeae622539da1ac2f8ef3143"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 884,
+              "line_start": 878,
+              "publication_locator": "cited publication",
+              "quoted_text": "LEMMA 9.1. In a mechanism that satisfies Exactness and Monotonicity, given\na bidder j, a set s of goods and declarations for all other bidders, there exists a\ncritical value v c such that\n∀v, v < v c ⇒ g j = ∅,\n∀v, v > v c ⇒ g j = s,\nWe allow v c to be infinite if f (As,v )−1 ( j) = ∅ for every v. Note that we do not\nknow whether j’s bid is granted or not in case v = v c .",
+              "quoted_text_sha256": "4cf7dfb9e6e6ceeb927d4c33c45539c9ccbeaea3243145995e732e58577c5125"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 897,
+              "line_start": 888,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our third property deals with a satisfied bidder: a satisfied bidder pays exactly\nthe critical value of Lemma 9.1, that is, the lowest value he could have declared\nand still be allocated the goods he desires.\nCritical\n\ns ⊆ g j ⇒ p j = vc\n\nNotice that Critical says, first, that the payment for a bid that is granted does not\ndepend on the amount of the bid, it depends only on the other bids. Then it says\nthat it is exactly equal to the critical value below which the bid would have lost.",
+              "quoted_text_sha256": "79fb145dbeb5d966aa3585ba35caa6a16296fe40c90e8a7fb5d950fd71e7e818"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 948,
+          "line_start": 946,
+          "publication_locator": "cited publication",
+          "quoted_text": "LEMMA 9.5. In a mechanism that satisfies Exactness, Monotonicity and Critical, a bidder j declaring type hs, vi whose bid is granted, that is, g j = s, pays a\nprice p j that is at least the price p 0j that he would have paid had he declared his\ntype as hs 0 , vi for any s 0 ⊆ s.",
+          "quoted_text_sha256": "9ff889e03a702a7efcd3c0f0231ef167eb35ba17c69b65ccd3a3d55e60f0f223"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "proposition4_2": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 269,
+              "line_start": 267,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 3.2. A mechanism h f, pi is truthful if and only if for every i ∈ P,\nt ∈ 2 and any vector D of declarations, if D 0 is the vector obtained from D by\nreplacing the ith coordinate di by t, then: t(gi (D 0 )) − pi (D 0 ) ≥ t(gi (D)) − pi (D).",
+              "quoted_text_sha256": "e476106ea69cf2b7499e909d40510eab51bf45060ae1f6877835d4662c9c06b4"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 341,
+              "line_start": 282,
+              "publication_locator": "cited publication",
+              "quoted_text": "In a GVA, the allocation chosen maximizes the sum of the declared valuations\nof the bidders, each bidder receives a monetary amount that equals the sum of the\ndeclared valuations of all other bidders, and pays the auctioneer the sum of such\nvaluations that would have been obtained if he had not participated in the auction.\nA way to describe such an auction, in which i does not participate, is to consider\nthe auction in which bidder i declares a zero valuation for all possible bundles. A\nbidder with zero valuation for all bundles has no influence on the outcome.\nFormally, given a vector D of declarations, the generalized Vickrey auction\ndefines the allocation and payment policies as follows (notice that a −1 (i) is the\nbundle allocated to i by allocation a, and that gi is defined in Eq. (2)):\nf (D) = argmaxa∈O\n\nn\nX\ni=1\n\ndi (a −1 (i)),\n\n(4)\n\n\fApproximately Efficient Combinatorial Auctions\nn\nX\n\np j (D) = −\n\nn\nX\n\ndi (gi (D)) +\n\ni=1,i6= j\n\n583\n\ndi (gi (Z )),\n\n(5)\n\ni=1,i6= j\n\nwhere Z i = Di for any i 6= j and Z j (s) = 0 for any bundle s ⊆ G. Since\nd j (g j (Z )) = 0, we may as well have written:\np j (D) = −\n\nn\nX\n\ndi (gi (D)) +\n\ni=1,i6= j\n\nn\nX\n\ndi (gi (Z )).\n\n(6)\n\ni=1",
+              "quoted_text_sha256": "83bc06d6973c63cf19ddd777017877e072f737f136a3bb745d6a81407c47c935"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 389,
+          "line_start": 389,
+          "publication_locator": "cited publication",
+          "quoted_text": "PROPOSITION 4.2. If j is truthful, his utility u j in the GVA is nonnegative.",
+          "quoted_text_sha256": "b1c6e23356d9955b282d02c022891961b0f7fbb557289f085b2ff8d1e3eb59b0"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "section12": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 604,
+              "line_start": 586,
+              "publication_locator": "cited publication",
+              "quoted_text": "A single-minded bidder declaring hs, ai, with s ⊆ G and a ∈ R+ will be said to\nput out a bid b = hs, ai. We shall use s(b) and a(b) to denote the components of b\nand call a(b) the amount of the bid b. As explained in Section 5, we identify bids\nand bidders. Two bids b = hs, ai and b0 = hs 0 , a 0 i conflict if s ∩ s 0 6= ∅.\nThe algorithms we consider execute in two phases.\n—In the first phase, the bids are sorted by some criterion. The algorithms of the\nfamily are distinguished by the different criteria they use. Since there are n bids,\nthis phase takes time of the order of n log n. We assume a criterion, that is, a norm\nis defined and the bids are sorted in decreasing order following this norm. Since\nwe shall have, in Theorem 10.2, to compare the sorted lists of bids of slightly\ndifferent auctions, we also assume a consistent treatment of ties, that is, bids\nwith equal norms. Formally, we shall assume that no two different bids have the\nsame norm, that is, there are no ties.\n—In the second phase, a greedy algorithm generates an allocation. Let L be the\nlist of sorted bids obtained in the first phase. The first bid of L, say b = hs, ai is\ngranted, that is, the set s will be allocated to b and then the algorithm examines\neach bid of L, in order, and grants it if it does not conflict with any of the bids\npreviously granted. If it does, it denies (i.e., does not grant) the bid. This phase\nrequires time linear in n.",
+              "quoted_text_sha256": "0a4afe7bcc0fd75d9a32fb715dfe30f23af43954d61b51371aa275212810c7fc"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 632,
+              "line_start": 630,
+              "publication_locator": "cited publication",
+              "quoted_text": "a\n.\nDefinition 7.1. The average amount per good of a bid b = hs, ai is |s|",
+              "quoted_text_sha256": "fc3e2755252ae21cf3c3614cf0fd36bf26417dc68a93accbda7564cc19fa4899"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 1052,
+              "line_start": 1047,
+              "publication_locator": "cited publication",
+              "quoted_text": "could consider any super-set of the single-minded types that grows only exponentially with k. A very natural idea is to consider players that send off single-minded\nagent bidders to do their work. The agents play rationally, but individually, and\nbring the goods and the payments due to the player. In the final analysis, a player\ngets all the goods obtained by each of his agents and pays all the payments imposed\non each of his agents. A player’s strategy is then a small (i.e., polynomial in k) set\nof single-minded agents (i.e., bids).",
+              "quoted_text_sha256": "0689768cf6b2cd366313b67b1acf8cc0d14ca3fa30c5a127af8b047047bc3fa2"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 1166,
+              "line_start": 1152,
+              "publication_locator": "cited publication",
+              "quoted_text": "Assume there are two goods a and b and two bidders Green and Red. Red is\nsingle-minded and his type is h{a}, 10i. Red truthfully declares his type. Green is\ninterested in both b and the set {a, b}. His valuation is 0 for any allocation in which\n\n\f598\n\nD. LEHMANN ET AL.\n\nhe does not get b. It is v b for any allocation in which he gets b but not a, and it\nis v ab if he gets both a and b, v ab > v b . Green’s declaration is 0 for all allocations\nthat do not give him b, gb for all allocations that give him b but not a and gab for\nthe allocation in which he gets both a and b. Notice that four parameters describe\nthe auction: gab , gb , v ab and v b . Assume, furthermore, that 0 ≤ gb < 10. We reason\nby contradiction and assume there is a payment scheme that makes truth-telling a\ndominant strategy for Green. Let us consider two cases.",
+              "quoted_text_sha256": "6530338330e154fdd7861b7a2e274cef9dacac9f250aee534fb7eb53ef516fe1"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 269,
+              "line_start": 267,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 3.2. A mechanism h f, pi is truthful if and only if for every i ∈ P,\nt ∈ 2 and any vector D of declarations, if D 0 is the vector obtained from D by\nreplacing the ith coordinate di by t, then: t(gi (D 0 )) − pi (D 0 ) ≥ t(gi (D)) − pi (D).",
+              "quoted_text_sha256": "e476106ea69cf2b7499e909d40510eab51bf45060ae1f6877835d4662c9c06b4"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1141,
+          "line_start": 1140,
+          "publication_locator": "cited publication",
+          "quoted_text": "12. No Payment Scheme Makes the Greedy Allocation a Truthful\nMechanism for Complex Bidders",
+          "quoted_text_sha256": "fb6045a085f6f10bd9cfdf1f5d62b3d871eca4fd5a15dadedf22d4551c6076a7"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "section8": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 465,
+              "line_start": 449,
+              "publication_locator": "cited publication",
+              "quoted_text": "We shall assume that bidders are single-minded and care only about one specific\n(bidder-dependent) set of goods. If they do not get this set they value the outcome\nat the lowest possible value 0. In other words, our bidders are restricted to one\nsingle bid.\nDefinition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.\nNote that single-minded bidders are not one parameter agents in the sense\nof Archer and Tardos [2001], since they have the freedom of deciding which bundle\nthey bid for on top on the amount they are willing to pay. In Mu’alem and Nisan\n[2002], truthfulness is shown to be attainable for allocation algorithms providing\nbetter approximations if agents are assumed to be single-minded and one parameter. We shall denote by hs, vi the type just described. Note that a single-minded\nbidder enjoys free disposal. We shall assume, in most of this article, that all bidders\nare single-minded, that is, there are sets of goods si and nonnegative real numbers\nv i such that bidder i is of type hsi , v i i. We shall denote by 6 the set of all singleminded types. The size of the set 6, contrary to the size of 2, is singly exponential\nin k. A string of polynomial size will be enough to code the declarations of the\nbidders: it will describe a set of goods and a value. In this setting, we identify bids",
+              "quoted_text_sha256": "97deba338e863cd7d7316a9ef60d3651514dbb5ad0325fa418a8c3c50d11ebc6"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 604,
+              "line_start": 586,
+              "publication_locator": "cited publication",
+              "quoted_text": "A single-minded bidder declaring hs, ai, with s ⊆ G and a ∈ R+ will be said to\nput out a bid b = hs, ai. We shall use s(b) and a(b) to denote the components of b\nand call a(b) the amount of the bid b. As explained in Section 5, we identify bids\nand bidders. Two bids b = hs, ai and b0 = hs 0 , a 0 i conflict if s ∩ s 0 6= ∅.\nThe algorithms we consider execute in two phases.\n—In the first phase, the bids are sorted by some criterion. The algorithms of the\nfamily are distinguished by the different criteria they use. Since there are n bids,\nthis phase takes time of the order of n log n. We assume a criterion, that is, a norm\nis defined and the bids are sorted in decreasing order following this norm. Since\nwe shall have, in Theorem 10.2, to compare the sorted lists of bids of slightly\ndifferent auctions, we also assume a consistent treatment of ties, that is, bids\nwith equal norms. Formally, we shall assume that no two different bids have the\nsame norm, that is, there are no ties.\n—In the second phase, a greedy algorithm generates an allocation. Let L be the\nlist of sorted bids obtained in the first phase. The first bid of L, say b = hs, ai is\ngranted, that is, the set s will be allocated to b and then the algorithm examines\neach bid of L, in order, and grants it if it does not conflict with any of the bids\npreviously granted. If it does, it denies (i.e., does not grant) the bid. This phase\nrequires time linear in n.",
+              "quoted_text_sha256": "0a4afe7bcc0fd75d9a32fb715dfe30f23af43954d61b51371aa275212810c7fc"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 632,
+              "line_start": 630,
+              "publication_locator": "cited publication",
+              "quoted_text": "a\n.\nDefinition 7.1. The average amount per good of a bid b = hs, ai is |s|",
+              "quoted_text_sha256": "fc3e2755252ae21cf3c3614cf0fd36bf26417dc68a93accbda7564cc19fa4899"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 341,
+              "line_start": 282,
+              "publication_locator": "cited publication",
+              "quoted_text": "In a GVA, the allocation chosen maximizes the sum of the declared valuations\nof the bidders, each bidder receives a monetary amount that equals the sum of the\ndeclared valuations of all other bidders, and pays the auctioneer the sum of such\nvaluations that would have been obtained if he had not participated in the auction.\nA way to describe such an auction, in which i does not participate, is to consider\nthe auction in which bidder i declares a zero valuation for all possible bundles. A\nbidder with zero valuation for all bundles has no influence on the outcome.\nFormally, given a vector D of declarations, the generalized Vickrey auction\ndefines the allocation and payment policies as follows (notice that a −1 (i) is the\nbundle allocated to i by allocation a, and that gi is defined in Eq. (2)):\nf (D) = argmaxa∈O\n\nn\nX\ni=1\n\ndi (a −1 (i)),\n\n(4)\n\n\fApproximately Efficient Combinatorial Auctions\nn\nX\n\np j (D) = −\n\nn\nX\n\ndi (gi (D)) +\n\ni=1,i6= j\n\n583\n\ndi (gi (Z )),\n\n(5)\n\ni=1,i6= j\n\nwhere Z i = Di for any i 6= j and Z j (s) = 0 for any bundle s ⊆ G. Since\nd j (g j (Z )) = 0, we may as well have written:\np j (D) = −\n\nn\nX\n\ndi (gi (D)) +\n\ni=1,i6= j\n\nn\nX\n\ndi (gi (Z )).\n\n(6)\n\ni=1",
+              "quoted_text_sha256": "83bc06d6973c63cf19ddd777017877e072f737f136a3bb745d6a81407c47c935"
+            }
+          ]
+        },
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 746,
+              "line_start": 745,
+              "publication_locator": "cited publication",
+              "quoted_text": "norms. In the sequel, all examples will use the average amount per good criterion\nbut it is not difficult to find similar examples for any criterion of the form a/|s|l .",
+              "quoted_text_sha256": "ba24711a047cfa4926cebff9d4706f56150da9e14ac1c734ec96460c9d0a793e"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 786,
+              "line_start": 778,
+              "publication_locator": "cited publication",
+              "quoted_text": "Example 8.1. As in Example 7.3, there are two goods a and b and three bidders\nRed, Green, and Blue. Red bids 10 for a, Green bids 19 for the set {a, b} and Blue\nbids 8 for b. The greedy algorithm grants Red’s and Blue’s bids and denies Green’s\nbid, that is, f (D)(a) = Red and f (D)(b) = Blue. We shall now compute Red’s\npayment. For this allocation, we have the following declared valuations: v Blue = 8\nand v Green = 0. If Red had bid zero, the greedy algorithm would have granted\nGreen’s bid and denied Blue’s bid. Therefore, the allocation f (Z ) is defined by:\nf (Z )(a) = f (Z )(b) = Green, where v Blue = 0 and v Green = 19. Clarke’s payment\nscheme gives to Red: 8 − 0 for Blue and 0 − 19 for Green, that is, Red pays 11.",
+              "quoted_text_sha256": "63b6fc75671b1acd37c590e7df5e30df495de85ecc20e18b9394c064c00d1831"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 758,
+          "line_start": 757,
+          "publication_locator": "cited publication",
+          "quoted_text": "8. Greedy Allocation and Clarke’s Payment Scheme Do Not Make a Truthful\nMechanism, Even for Single-Minded Bidders",
+          "quoted_text_sha256": "996de31fb3c579336cc9a78dc590e075724f75d00a54b757b6959a5a06ecc827"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "source_critical": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 455,
+              "line_start": 453,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.",
+              "quoted_text_sha256": "24cd4db8ef1994a248d598c642af77004a936058589214a6f22654e08d0e7de2"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 832,
+              "line_start": 824,
+              "publication_locator": "cited publication",
+              "quoted_text": "The general structure of the properties of interest is that they consider a given\nset of single-minded types and vary one of those types. They restrict the changes\nthat can appear in the allocation or the payments as a result of such a change.\nLet declarations be fixed, but arbitrary, for all bidders except j. Consider two\npossible declarations for j: hs, vi and hs 0 , v 0 i. Given an allocation scheme f and a\npayment scheme p, we shall consider the allocations and payments generated by\nboth declarations of j. Let gi be the set of goods obtained by bidder i if j declares\nhs, vi, and gi0 the set he obtains if j declares hs 0 , v 0 i. Similarly denote by pi and pi0\nthe payments of i.",
+              "quoted_text_sha256": "756cf64b4440ec1b928ff06e493594e8e2388e0aeafbdd9c34155ac02abb1bbb"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 884,
+              "line_start": 878,
+              "publication_locator": "cited publication",
+              "quoted_text": "LEMMA 9.1. In a mechanism that satisfies Exactness and Monotonicity, given\na bidder j, a set s of goods and declarations for all other bidders, there exists a\ncritical value v c such that\n∀v, v < v c ⇒ g j = ∅,\n∀v, v > v c ⇒ g j = s,\nWe allow v c to be infinite if f (As,v )−1 ( j) = ∅ for every v. Note that we do not\nknow whether j’s bid is granted or not in case v = v c .",
+              "quoted_text_sha256": "4cf7dfb9e6e6ceeb927d4c33c45539c9ccbeaea3243145995e732e58577c5125"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 857,
+              "line_start": 848,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our next property, Monotonicity, also concerns only the allocation scheme. It\nrequires that, if j’s bid is granted if he declares hs, vi, it is also granted if he\ndeclares hs 0 , v 0 i for any s 0 ⊆ s, v 0 ≥ v. In other words, proposing more money for\nfewer goods cannot cause a bidder to lose his bid. It follows that, similarly, offering\nless money for more goods cannot cause a lost bid to win. Formally:\nMonotonicity s ⊆ g j ,\n\ns 0 ⊆ s,\n\nv 0 ≥ v ⇒ s 0 ⊆ g 0j .",
+              "quoted_text_sha256": "97e4c07c9b45a36d0675bdb51748f70a9cae1a5abeae622539da1ac2f8ef3143"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 897,
+          "line_start": 888,
+          "publication_locator": "cited publication",
+          "quoted_text": "Our third property deals with a satisfied bidder: a satisfied bidder pays exactly\nthe critical value of Lemma 9.1, that is, the lowest value he could have declared\nand still be allocated the goods he desires.\nCritical\n\ns ⊆ g j ⇒ p j = vc\n\nNotice that Critical says, first, that the payment for a bid that is granted does not\ndepend on the amount of the bid, it depends only on the other bids. Then it says\nthat it is exactly equal to the critical value below which the bid would have lost.",
+          "quoted_text_sha256": "79fb145dbeb5d966aa3585ba35caa6a16296fe40c90e8a7fb5d950fd71e7e818"
+        }
+      ],
+      "source_kind": "condition"
+    },
+    "source_monotonicity": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 455,
+              "line_start": 453,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.",
+              "quoted_text_sha256": "24cd4db8ef1994a248d598c642af77004a936058589214a6f22654e08d0e7de2"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 832,
+              "line_start": 824,
+              "publication_locator": "cited publication",
+              "quoted_text": "The general structure of the properties of interest is that they consider a given\nset of single-minded types and vary one of those types. They restrict the changes\nthat can appear in the allocation or the payments as a result of such a change.\nLet declarations be fixed, but arbitrary, for all bidders except j. Consider two\npossible declarations for j: hs, vi and hs 0 , v 0 i. Given an allocation scheme f and a\npayment scheme p, we shall consider the allocations and payments generated by\nboth declarations of j. Let gi be the set of goods obtained by bidder i if j declares\nhs, vi, and gi0 the set he obtains if j declares hs 0 , v 0 i. Similarly denote by pi and pi0\nthe payments of i.",
+              "quoted_text_sha256": "756cf64b4440ec1b928ff06e493594e8e2388e0aeafbdd9c34155ac02abb1bbb"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 936,
+              "line_start": 935,
+              "publication_locator": "cited publication",
+              "quoted_text": "LEMMA 9.4. In a mechanism that satisfies Exactness, Monotonicity, Participation and Critical, a bidder j of type hs, vi is never better off declaring hs, v 0 i for\nsome v 0 6= v than by being truthful.",
+              "quoted_text_sha256": "99ac61e98260cdba6f6e6707bbb4de1639904d6b7184ee76ca1a4851fcd2b1ce"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 857,
+          "line_start": 848,
+          "publication_locator": "cited publication",
+          "quoted_text": "Our next property, Monotonicity, also concerns only the allocation scheme. It\nrequires that, if j’s bid is granted if he declares hs, vi, it is also granted if he\ndeclares hs 0 , v 0 i for any s 0 ⊆ s, v 0 ≥ v. In other words, proposing more money for\nfewer goods cannot cause a bidder to lose his bid. It follows that, similarly, offering\nless money for more goods cannot cause a lost bid to win. Formally:\nMonotonicity s ⊆ g j ,\n\ns 0 ⊆ s,\n\nv 0 ≥ v ⇒ s 0 ⊆ g 0j .",
+          "quoted_text_sha256": "97e4c07c9b45a36d0675bdb51748f70a9cae1a5abeae622539da1ac2f8ef3143"
+        }
+      ],
+      "source_kind": "condition"
+    },
+    "source_participation": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 455,
+              "line_start": 453,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.",
+              "quoted_text_sha256": "24cd4db8ef1994a248d598c642af77004a936058589214a6f22654e08d0e7de2"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 832,
+              "line_start": 824,
+              "publication_locator": "cited publication",
+              "quoted_text": "The general structure of the properties of interest is that they consider a given\nset of single-minded types and vary one of those types. They restrict the changes\nthat can appear in the allocation or the payments as a result of such a change.\nLet declarations be fixed, but arbitrary, for all bidders except j. Consider two\npossible declarations for j: hs, vi and hs 0 , v 0 i. Given an allocation scheme f and a\npayment scheme p, we shall consider the allocations and payments generated by\nboth declarations of j. Let gi be the set of goods obtained by bidder i if j declares\nhs, vi, and gi0 the set he obtains if j declares hs 0 , v 0 i. Similarly denote by pi and pi0\nthe payments of i.",
+              "quoted_text_sha256": "756cf64b4440ec1b928ff06e493594e8e2388e0aeafbdd9c34155ac02abb1bbb"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 913,
+          "line_start": 906,
+          "publication_locator": "cited publication",
+          "quoted_text": "Our last property concerns the payment scheme. Together with Critical, it implies\nthat the utility of no truthful bidder is negative. It concerns unsatisfied bidders, bids\nthat are denied. We require that an unsatisfied bidder pay zero. The utility of an\nunsatisfied bidder is then zero. This is simply tuning the utility scales of the different\nbidders, or, ensuring that bidders may not lose by participating in the auction.\nParticipation\n\ns 6⊆ g j ⇒ p j = 0",
+          "quoted_text_sha256": "66f8a86aa8715bc44f53377af32626e0047200dd92d6a1e7f8944e5a25fe6e90"
+        }
+      ],
+      "source_kind": "condition"
+    },
+    "source_sqrt_objective": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 844,
+              "line_start": 833,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our first property requires that the allocation, among single-minded bidders, be\nexact, that is, a single-minded bidder either gets exactly the set of goods he desires,\nnothing added, or he gets nothing. He never gets only part of what he requested. This\nis a very natural property, when dealing with single-minded bidders: the valuation\nof the bidder does not increase by giving him part of what he requested instead of\nnothing or by giving him more than what he requested instead of just the bundle\nhe requested.\nExactness Either g j = s or g j = ∅.\nIn an exact allocation, we shall say that j’s bid is granted in the first case, and denied\nin the second case. In such a scheme, the allocation may be viewed as a set of bids\n(or bidders) that is conflict-free, that is, the s coordinates have pairwise empty\nintersections. A GVA, as we defined it, does not in fact always satisfy Exactness.",
+              "quoted_text_sha256": "b66a2bc2cf4d51ada36371a11b6b4e29d27dc78c84f4ec5bbf3d2b7ba3488cb9"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 664,
+          "line_start": 653,
+          "publication_locator": "cited publication",
+          "quoted_text": "THEOREM 7.2. The greedy allocation√scheme with norm a/|s|1/2 approximates\nthe optimal allocation within a factor of k.\nPROOF. Assume the bids (i.e.,\n√ bidders) are hsi , ai i for i = 1, . . . , n. Let\nw i = |si |. Our norm is: ri = ai / w i . Let OP be the optimal solution, that is, the\nset ofPbids contained in the optimal solution. The value of the optimal solution is\nai . Let GR be the solution obtained by the greedy allocation and β its\nα = i∈OP P\nvalue: β = i∈GR ai . We want to show that:\n√\nα ≤ β k.\n(7)",
+          "quoted_text_sha256": "2f6688d650205d2e64f517313ff2aaf076df09245828f1c8fb7c5b30b305de35"
+        }
+      ],
+      "source_kind": "model"
+    },
+    "theorem10_2": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 465,
+              "line_start": 449,
+              "publication_locator": "cited publication",
+              "quoted_text": "We shall assume that bidders are single-minded and care only about one specific\n(bidder-dependent) set of goods. If they do not get this set they value the outcome\nat the lowest possible value 0. In other words, our bidders are restricted to one\nsingle bid.\nDefinition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.\nNote that single-minded bidders are not one parameter agents in the sense\nof Archer and Tardos [2001], since they have the freedom of deciding which bundle\nthey bid for on top on the amount they are willing to pay. In Mu’alem and Nisan\n[2002], truthfulness is shown to be attainable for allocation algorithms providing\nbetter approximations if agents are assumed to be single-minded and one parameter. We shall denote by hs, vi the type just described. Note that a single-minded\nbidder enjoys free disposal. We shall assume, in most of this article, that all bidders\nare single-minded, that is, there are sets of goods si and nonnegative real numbers\nv i such that bidder i is of type hsi , v i i. We shall denote by 6 the set of all singleminded types. The size of the set 6, contrary to the size of 2, is singly exponential\nin k. A string of polynomial size will be enough to code the declarations of the\nbidders: it will describe a set of goods and a value. In this setting, we identify bids",
+              "quoted_text_sha256": "97deba338e863cd7d7316a9ef60d3651514dbb5ad0325fa418a8c3c50d11ebc6"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 604,
+              "line_start": 586,
+              "publication_locator": "cited publication",
+              "quoted_text": "A single-minded bidder declaring hs, ai, with s ⊆ G and a ∈ R+ will be said to\nput out a bid b = hs, ai. We shall use s(b) and a(b) to denote the components of b\nand call a(b) the amount of the bid b. As explained in Section 5, we identify bids\nand bidders. Two bids b = hs, ai and b0 = hs 0 , a 0 i conflict if s ∩ s 0 6= ∅.\nThe algorithms we consider execute in two phases.\n—In the first phase, the bids are sorted by some criterion. The algorithms of the\nfamily are distinguished by the different criteria they use. Since there are n bids,\nthis phase takes time of the order of n log n. We assume a criterion, that is, a norm\nis defined and the bids are sorted in decreasing order following this norm. Since\nwe shall have, in Theorem 10.2, to compare the sorted lists of bids of slightly\ndifferent auctions, we also assume a consistent treatment of ties, that is, bids\nwith equal norms. Formally, we shall assume that no two different bids have the\nsame norm, that is, there are no ties.\n—In the second phase, a greedy algorithm generates an allocation. Let L be the\nlist of sorted bids obtained in the first phase. The first bid of L, say b = hs, ai is\ngranted, that is, the set s will be allocated to b and then the algorithm examines\neach bid of L, in order, and grants it if it does not conflict with any of the bids\npreviously granted. If it does, it denies (i.e., does not grant) the bid. This phase\nrequires time linear in n.",
+              "quoted_text_sha256": "0a4afe7bcc0fd75d9a32fb715dfe30f23af43954d61b51371aa275212810c7fc"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 632,
+              "line_start": 630,
+              "publication_locator": "cited publication",
+              "quoted_text": "a\n.\nDefinition 7.1. The average amount per good of a bid b = hs, ai is |s|",
+              "quoted_text_sha256": "fc3e2755252ae21cf3c3614cf0fd36bf26417dc68a93accbda7564cc19fa4899"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 991,
+              "line_start": 976,
+              "publication_locator": "cited publication",
+              "quoted_text": "We assume that the criterion used is average amount per good, the adaptation\nto most other suitable greedy allocations is obvious. Informally, a bidder pays, per\ngood, the average price proposed by the first bid in the list L that is denied because\nof this bid. Consider a bid j in L. Let c( j) be the average amount per good of j. We\nshall denote by n( j) the first bid following j (bids are sorted in decreasing order,\nthat is, c( j) ≥ c(n( j))) that has been denied but would have been granted were it\nnot for the presence of j. Assume that such a bid exists. Notice that such a bid\nnecessarily conflicts with j, and therefore:\nn( j) = min{i | j < i, s( j) ∩ s(i) 6= ∅, ∀l, l < i, l 6= j, l granted ⇒ s(l) ∩ s(i) = ∅}.\nDefinition 10.1 Greedy Payment Scheme.\nthe first phase.\n\nLet L be the sorted list obtained in\n\n— j pays zero if his bid is denied or if there is no bid n( j),\n—if there is an n( j) and j’s bid hs, vi is granted, he pays |s| × c(n( j)).",
+              "quoted_text_sha256": "eec6d2bc4336999fcb8a9136e0b1f9ccc7737f5ed0bc5a4646e66a79e81bb906"
+            }
+          ]
+        },
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 617,
+              "line_start": 614,
+              "publication_locator": "cited publication",
+              "quoted_text": "should also increase the norm. We shall require that changing s to s 0 with s 0 ⊂ s\nor changing v to v 0 with v 0 > v increase the norm of a bid. Let us call this property\nbid-monotonicity. This is the only requirement we shall make. Many criteria\nsatisfy it.",
+              "quoted_text_sha256": "b0ffdaab6013b242d41207f303b4b1c8807b966b54b676a94366e70a2fff91a5"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 993,
+          "line_start": 993,
+          "publication_locator": "cited publication",
+          "quoted_text": "THEOREM 10.2. The mechanism composed of the greedy allocation and payment schemes is truthful for single-minded bidders.",
+          "quoted_text_sha256": "c2a85c226d59bb21f5ae148964afa4603097021c339441cb6952fbebbc016227"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem4_1": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 269,
+              "line_start": 267,
+              "publication_locator": "cited publication",
+              "quoted_text": "Definition 3.2. A mechanism h f, pi is truthful if and only if for every i ∈ P,\nt ∈ 2 and any vector D of declarations, if D 0 is the vector obtained from D by\nreplacing the ith coordinate di by t, then: t(gi (D 0 )) − pi (D 0 ) ≥ t(gi (D)) − pi (D).",
+              "quoted_text_sha256": "e476106ea69cf2b7499e909d40510eab51bf45060ae1f6877835d4662c9c06b4"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 341,
+              "line_start": 282,
+              "publication_locator": "cited publication",
+              "quoted_text": "In a GVA, the allocation chosen maximizes the sum of the declared valuations\nof the bidders, each bidder receives a monetary amount that equals the sum of the\ndeclared valuations of all other bidders, and pays the auctioneer the sum of such\nvaluations that would have been obtained if he had not participated in the auction.\nA way to describe such an auction, in which i does not participate, is to consider\nthe auction in which bidder i declares a zero valuation for all possible bundles. A\nbidder with zero valuation for all bundles has no influence on the outcome.\nFormally, given a vector D of declarations, the generalized Vickrey auction\ndefines the allocation and payment policies as follows (notice that a −1 (i) is the\nbundle allocated to i by allocation a, and that gi is defined in Eq. (2)):\nf (D) = argmaxa∈O\n\nn\nX\ni=1\n\ndi (a −1 (i)),\n\n(4)\n\n\fApproximately Efficient Combinatorial Auctions\nn\nX\n\np j (D) = −\n\nn\nX\n\ndi (gi (D)) +\n\ni=1,i6= j\n\n583\n\ndi (gi (Z )),\n\n(5)\n\ni=1,i6= j\n\nwhere Z i = Di for any i 6= j and Z j (s) = 0 for any bundle s ⊆ G. Since\nd j (g j (Z )) = 0, we may as well have written:\np j (D) = −\n\nn\nX\n\ndi (gi (D)) +\n\ni=1,i6= j\n\nn\nX\n\ndi (gi (Z )).\n\n(6)\n\ni=1",
+              "quoted_text_sha256": "83bc06d6973c63cf19ddd777017877e072f737f136a3bb745d6a81407c47c935"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 346,
+          "line_start": 346,
+          "publication_locator": "cited publication",
+          "quoted_text": "THEOREM 4.1. The generalized Vickrey auction is a truthful mechanism.",
+          "quoted_text_sha256": "99420636099ce117027c4eceed3d35861ebfa93bfcd3beb9a92407e353b1d585"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem6_1": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 465,
+              "line_start": 449,
+              "publication_locator": "cited publication",
+              "quoted_text": "We shall assume that bidders are single-minded and care only about one specific\n(bidder-dependent) set of goods. If they do not get this set they value the outcome\nat the lowest possible value 0. In other words, our bidders are restricted to one\nsingle bid.\nDefinition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.\nNote that single-minded bidders are not one parameter agents in the sense\nof Archer and Tardos [2001], since they have the freedom of deciding which bundle\nthey bid for on top on the amount they are willing to pay. In Mu’alem and Nisan\n[2002], truthfulness is shown to be attainable for allocation algorithms providing\nbetter approximations if agents are assumed to be single-minded and one parameter. We shall denote by hs, vi the type just described. Note that a single-minded\nbidder enjoys free disposal. We shall assume, in most of this article, that all bidders\nare single-minded, that is, there are sets of goods si and nonnegative real numbers\nv i such that bidder i is of type hsi , v i i. We shall denote by 6 the set of all singleminded types. The size of the set 6, contrary to the size of 2, is singly exponential\nin k. A string of polynomial size will be enough to code the declarations of the\nbidders: it will describe a set of goods and a value. In this setting, we identify bids",
+              "quoted_text_sha256": "97deba338e863cd7d7316a9ef60d3651514dbb5ad0325fa418a8c3c50d11ebc6"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 522,
+          "line_start": 517,
+          "publication_locator": "cited publication",
+          "quoted_text": "THEOREM 6.1. Let a single-minded type di = hsi , v i i, si ⊆ G, v i ∈ R+ be given\nfor each bidder i ∈ P. Let\nPn|G| = k and |P| = n. The problem of finding an allodi (a) is NP-hard in k + n. Moreover, the existence\ncation a that maximizes i=1\nof a polynomial time algorithm guaranteed to find an allocation whose value is at\nleast k −1/2+² times the value of the optimal solution would imply that NP = ZPP.",
+          "quoted_text_sha256": "d7d66baec20803a2f251d75474f029d47b4d17aec92584b49a35ae4a27adbf68"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem7_2": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 465,
+              "line_start": 449,
+              "publication_locator": "cited publication",
+              "quoted_text": "We shall assume that bidders are single-minded and care only about one specific\n(bidder-dependent) set of goods. If they do not get this set they value the outcome\nat the lowest possible value 0. In other words, our bidders are restricted to one\nsingle bid.\nDefinition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.\nNote that single-minded bidders are not one parameter agents in the sense\nof Archer and Tardos [2001], since they have the freedom of deciding which bundle\nthey bid for on top on the amount they are willing to pay. In Mu’alem and Nisan\n[2002], truthfulness is shown to be attainable for allocation algorithms providing\nbetter approximations if agents are assumed to be single-minded and one parameter. We shall denote by hs, vi the type just described. Note that a single-minded\nbidder enjoys free disposal. We shall assume, in most of this article, that all bidders\nare single-minded, that is, there are sets of goods si and nonnegative real numbers\nv i such that bidder i is of type hsi , v i i. We shall denote by 6 the set of all singleminded types. The size of the set 6, contrary to the size of 2, is singly exponential\nin k. A string of polynomial size will be enough to code the declarations of the\nbidders: it will describe a set of goods and a value. In this setting, we identify bids",
+              "quoted_text_sha256": "97deba338e863cd7d7316a9ef60d3651514dbb5ad0325fa418a8c3c50d11ebc6"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 604,
+              "line_start": 586,
+              "publication_locator": "cited publication",
+              "quoted_text": "A single-minded bidder declaring hs, ai, with s ⊆ G and a ∈ R+ will be said to\nput out a bid b = hs, ai. We shall use s(b) and a(b) to denote the components of b\nand call a(b) the amount of the bid b. As explained in Section 5, we identify bids\nand bidders. Two bids b = hs, ai and b0 = hs 0 , a 0 i conflict if s ∩ s 0 6= ∅.\nThe algorithms we consider execute in two phases.\n—In the first phase, the bids are sorted by some criterion. The algorithms of the\nfamily are distinguished by the different criteria they use. Since there are n bids,\nthis phase takes time of the order of n log n. We assume a criterion, that is, a norm\nis defined and the bids are sorted in decreasing order following this norm. Since\nwe shall have, in Theorem 10.2, to compare the sorted lists of bids of slightly\ndifferent auctions, we also assume a consistent treatment of ties, that is, bids\nwith equal norms. Formally, we shall assume that no two different bids have the\nsame norm, that is, there are no ties.\n—In the second phase, a greedy algorithm generates an allocation. Let L be the\nlist of sorted bids obtained in the first phase. The first bid of L, say b = hs, ai is\ngranted, that is, the set s will be allocated to b and then the algorithm examines\neach bid of L, in order, and grants it if it does not conflict with any of the bids\npreviously granted. If it does, it denies (i.e., does not grant) the bid. This phase\nrequires time linear in n.",
+              "quoted_text_sha256": "0a4afe7bcc0fd75d9a32fb715dfe30f23af43954d61b51371aa275212810c7fc"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 632,
+              "line_start": 630,
+              "publication_locator": "cited publication",
+              "quoted_text": "a\n.\nDefinition 7.1. The average amount per good of a bid b = hs, ai is |s|",
+              "quoted_text_sha256": "fc3e2755252ae21cf3c3614cf0fd36bf26417dc68a93accbda7564cc19fa4899"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 664,
+              "line_start": 655,
+              "publication_locator": "cited publication",
+              "quoted_text": "PROOF. Assume the bids (i.e.,\n√ bidders) are hsi , ai i for i = 1, . . . , n. Let\nw i = |si |. Our norm is: ri = ai / w i . Let OP be the optimal solution, that is, the\nset ofPbids contained in the optimal solution. The value of the optimal solution is\nai . Let GR be the solution obtained by the greedy allocation and β its\nα = i∈OP P\nvalue: β = i∈GR ai . We want to show that:\n√\nα ≤ β k.\n(7)",
+              "quoted_text_sha256": "9219414ab4bd4c19d5f857d6fe181926e958a85ab64560605da0f26e2845d2bb"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 654,
+          "line_start": 653,
+          "publication_locator": "cited publication",
+          "quoted_text": "THEOREM 7.2. The greedy allocation√scheme with norm a/|s|1/2 approximates\nthe optimal allocation within a factor of k.",
+          "quoted_text_sha256": "779cf7ca105429debca4a10fe0c00dce4a3ab43637e9aed986d2dad614d590ae"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem9_6": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 229,
+              "line_start": 205,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, we consider a set P of n bidders. The indices i, j, 1 ≤ i, j ≤ n, will\nrange over the bidders. Bidders are selfish, but rational, and trying to maximize their\nutility in the final outcome. A bidder knows his own utility function (i.e., his type),\nbut this information is private and neither the auctioneer nor the other players have\naccess to it. The final result of an auction consists of two elements: an allocation\nof the goods and a vector of payments from the bidders to the auctioneer, both of\nwhich are functions of the bidders’ declarations (i.e., bids). Formally, we have a\nfinite set G of k goods and an allocation is a partial function from G to P, that is, a\nfunction a : G → P 0 , with P 0 = P ∪ {unallocated}, since we do not insist that all\ngoods be allocated. Notice that the allocations produced by the Generalized Vickrey\nAuctions of Section 4 and by our Greedy algorithm of Section 7 are not always\ntotal. The set of outcomes (i.e., allocations) is O = P 0G , the set of partial functions\nfrom G to P. Since Gwe do not allow for externalities, the set 2i of the possible types\nfor bidder i is R+ 2 , where R+ is the set of all nonnegative real numbers. Notice\nthat such a type allows for both complementarity and substitutability, but not for\nexternalities. Since the set 2i does not depend on i, we shall write 2. An element\nof 2 assigns a real nonnegative valuation to every possible bundle. The set 2 is\nalso the set of messages that bidder i may send. A bidder may send any element of\n2, irrespective of his (true) type, that is, a bidder may lie. We shall typically use t\nto denote a (true) type, d to denote a message, T or D to denote vectors of n types\nand P for a payment vector, that is, a vector of n nonnegative numbers.\nSince we assume the Independent Value Model and Quasi-Linear utilities, fairly\nstandard assumptions in the field, the utility, for a bidder of type t, of bundle s ⊆ G\nand payment x is:\nu = t(s) − x.",
+              "quoted_text_sha256": "1f1830215b3ca263f740ad5e7f0aa6cb93a335c64585fefcde4c3dc4d0d81050"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 465,
+              "line_start": 449,
+              "publication_locator": "cited publication",
+              "quoted_text": "We shall assume that bidders are single-minded and care only about one specific\n(bidder-dependent) set of goods. If they do not get this set they value the outcome\nat the lowest possible value 0. In other words, our bidders are restricted to one\nsingle bid.\nDefinition 5.1. Bidder i is single-minded if and only if there is a set s ⊂ G of\ngoods and a value v ∈ R+ such that its type t can be described as: t(s 0 ) = v if s ⊆ s 0\nand t(s 0 ) = 0 otherwise.\nNote that single-minded bidders are not one parameter agents in the sense\nof Archer and Tardos [2001], since they have the freedom of deciding which bundle\nthey bid for on top on the amount they are willing to pay. In Mu’alem and Nisan\n[2002], truthfulness is shown to be attainable for allocation algorithms providing\nbetter approximations if agents are assumed to be single-minded and one parameter. We shall denote by hs, vi the type just described. Note that a single-minded\nbidder enjoys free disposal. We shall assume, in most of this article, that all bidders\nare single-minded, that is, there are sets of goods si and nonnegative real numbers\nv i such that bidder i is of type hsi , v i i. We shall denote by 6 the set of all singleminded types. The size of the set 6, contrary to the size of 2, is singly exponential\nin k. A string of polynomial size will be enough to code the declarations of the\nbidders: it will describe a set of goods and a value. In this setting, we identify bids",
+              "quoted_text_sha256": "97deba338e863cd7d7316a9ef60d3651514dbb5ad0325fa418a8c3c50d11ebc6"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 843,
+              "line_start": 824,
+              "publication_locator": "cited publication",
+              "quoted_text": "The general structure of the properties of interest is that they consider a given\nset of single-minded types and vary one of those types. They restrict the changes\nthat can appear in the allocation or the payments as a result of such a change.\nLet declarations be fixed, but arbitrary, for all bidders except j. Consider two\npossible declarations for j: hs, vi and hs 0 , v 0 i. Given an allocation scheme f and a\npayment scheme p, we shall consider the allocations and payments generated by\nboth declarations of j. Let gi be the set of goods obtained by bidder i if j declares\nhs, vi, and gi0 the set he obtains if j declares hs 0 , v 0 i. Similarly denote by pi and pi0\nthe payments of i.\nOur first property requires that the allocation, among single-minded bidders, be\nexact, that is, a single-minded bidder either gets exactly the set of goods he desires,\nnothing added, or he gets nothing. He never gets only part of what he requested. This\nis a very natural property, when dealing with single-minded bidders: the valuation\nof the bidder does not increase by giving him part of what he requested instead of\nnothing or by giving him more than what he requested instead of just the bundle\nhe requested.\nExactness Either g j = s or g j = ∅.\nIn an exact allocation, we shall say that j’s bid is granted in the first case, and denied\nin the second case. In such a scheme, the allocation may be viewed as a set of bids\n(or bidders) that is conflict-free, that is, the s coordinates have pairwise empty",
+              "quoted_text_sha256": "68278be5f12cb0aa51f2b62bb25c32b9c7855e07ead411372f0bfcfb3779d21b"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 857,
+              "line_start": 848,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our next property, Monotonicity, also concerns only the allocation scheme. It\nrequires that, if j’s bid is granted if he declares hs, vi, it is also granted if he\ndeclares hs 0 , v 0 i for any s 0 ⊆ s, v 0 ≥ v. In other words, proposing more money for\nfewer goods cannot cause a bidder to lose his bid. It follows that, similarly, offering\nless money for more goods cannot cause a lost bid to win. Formally:\nMonotonicity s ⊆ g j ,\n\ns 0 ⊆ s,\n\nv 0 ≥ v ⇒ s 0 ⊆ g 0j .",
+              "quoted_text_sha256": "97e4c07c9b45a36d0675bdb51748f70a9cae1a5abeae622539da1ac2f8ef3143"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchors": [
+            {
+              "line_end": 884,
+              "line_start": 878,
+              "publication_locator": "cited publication",
+              "quoted_text": "LEMMA 9.1. In a mechanism that satisfies Exactness and Monotonicity, given\na bidder j, a set s of goods and declarations for all other bidders, there exists a\ncritical value v c such that\n∀v, v < v c ⇒ g j = ∅,\n∀v, v > v c ⇒ g j = s,\nWe allow v c to be infinite if f (As,v )−1 ( j) = ∅ for every v. Note that we do not\nknow whether j’s bid is granted or not in case v = v c .",
+              "quoted_text_sha256": "4cf7dfb9e6e6ceeb927d4c33c45539c9ccbeaea3243145995e732e58577c5125"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 897,
+              "line_start": 888,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our third property deals with a satisfied bidder: a satisfied bidder pays exactly\nthe critical value of Lemma 9.1, that is, the lowest value he could have declared\nand still be allocated the goods he desires.\nCritical\n\ns ⊆ g j ⇒ p j = vc\n\nNotice that Critical says, first, that the payment for a bid that is granted does not\ndepend on the amount of the bid, it depends only on the other bids. Then it says\nthat it is exactly equal to the critical value below which the bid would have lost.",
+              "quoted_text_sha256": "79fb145dbeb5d966aa3585ba35caa6a16296fe40c90e8a7fb5d950fd71e7e818"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 913,
+              "line_start": 906,
+              "publication_locator": "cited publication",
+              "quoted_text": "Our last property concerns the payment scheme. Together with Critical, it implies\nthat the utility of no truthful bidder is negative. It concerns unsatisfied bidders, bids\nthat are denied. We require that an unsatisfied bidder pay zero. The utility of an\nunsatisfied bidder is then zero. This is simply tuning the utility scales of the different\nbidders, or, ensuring that bidders may not lose by participating in the auction.\nParticipation\n\ns 6⊆ g j ⇒ p j = 0",
+              "quoted_text_sha256": "66f8a86aa8715bc44f53377af32626e0047200dd92d6a1e7f8944e5a25fe6e90"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 955,
+          "line_start": 954,
+          "publication_locator": "cited publication",
+          "quoted_text": "THEOREM 9.6. If a mechanism satisfies Exactness, Monotonicity, Participation\nand Critical, then it is a truthful mechanism.",
+          "quoted_text_sha256": "680fd16216587a3342f654ff0d2a19a0ac3b024a3b84594489c3714a0c922a15"
+        }
+      ],
+      "source_kind": "theorem"
+    }
+  },
+  "source_artifact_sha256": "ac47ef3801288291f7f7e8d0114c31d1a3c79c4649ebeefe660098f63b2625c6",
+  "source_coverage_mode": "named_theoretical_statements"
+}

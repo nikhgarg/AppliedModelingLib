@@ -1,198 +1,68 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "MBJG25ProducerFairness",
-  "private_source_map_sha256": "21fc94a17ade36105da9d3fe1a3b57ec9e74a62eb43244cc4fefdf83e888ee8d",
+  "private_source_map_sha256": "59bdf1ddf140ad3b7c6a9708ff6e1caca0f3a696b05240b1af195d77d1a71b83",
   "public_manifest_path": "papers/MBJG25ProducerFairness/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "d2e8912752d55b31734aa7f576f39771be537a756047d993ce1d05f3a7a2749a",
+  "public_source_map_sha256": "42aff698fceb40d5163bcd6d5bb39733a3418dfb95d4f120b8296ddbf658bc8f",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
   "selected_source_item_ids": [
-    "mbjg25_eq1_posterior_rating",
-    "mbjg25_eq21_corrected_ordinal_posterior_rating",
-    "mbjg25_eq2_fixed_market_mse",
-    "mbjg25_eq4_expected_regret",
-    "mbjg25_individual_producer_unfairness",
-    "mbjg25_marketplace_producer_unfairness",
-    "mbjg25_selection_rate",
-    "mbjg25_theorem3_1_squared_bias_monotonicity",
-    "mbjg25_theorem3_1_variance_closed_interval_correction",
-    "mbjg25_theorem3_1_variance_strict_interior_correction",
-    "mbjg25_theorem3_2_squared_bias_convexity",
-    "mbjg25_theorem3_2_squared_bias_minimizer",
-    "mbjg25_theorem3_2_variance_concavity",
-    "mbjg25_theorem3_2_variance_maximizer"
+    "mbjg25_appendix_d_beta_shape",
+    "mbjg25_appendix_e_ordinal_prior",
+    "mbjg25_theorem3_1",
+    "mbjg25_theorem3_2"
   ],
   "selected_source_items": {
-    "mbjg25_eq1_posterior_rating": {
+    "mbjg25_appendix_d_beta_shape": {
       "source_anchors": [
         {
-          "line_end": 276,
-          "line_start": 203,
+          "line_end": 1287,
+          "line_start": 1271,
           "publication_locator": "cited publication",
-          "quoted_text": "Beta-Bernoulli setting, this posterior distribution for product\nv at timestep t is a Beta distribution with parameters\nα = α̂ + R(v, t),\nβ = β̂ + (|S(v, t)| − R(v, t)),\nwhere R(v, t) ∼ Binomial(t, qv ) is the number of positive\nratings received by the item so far (and so |S(v, t)| − R(v, t)\nis the number of negative ratings). We can compute the posterior mean estimated quality for product v at timestep t as:\n\nModel Primitives\n\nOur modeling framework is as follows.\nProducts. There is a universe of products V . Product v ∈\nV has unobserved true quality qv , where 0 ≤ qv ≤ 1.\nBinary ratings that accumulate over time. Products accumulate ratings over time, as users interact with and rate\nproducts. To capture this phenomenon, we assume the market operates over discrete time periods t, and products can\nreceive ratings at each time period. We assume these ratings\nare binary, i.e., 0 or 1.\nCrucially, the true quality of a product should impact the\nrating received; we suppose that a rating for product v is\nBernoulli(qv ), independent of all other randomness in the\nsystem. Since ratings accumulate, we use S(v, T ) to denote\nthe set of binary ratings that product v ∈ V has received\nafter T timesteps have elapsed.\nWe assume binary ratings as a simplification for ease of\nexposition; our results qualitatively extend to other settings,\nas we demonstrate in Appendix E. We note that this choice\ncaptures how many platforms elicit ratings (e.g., in any platform that uses a thumbs-up/thumbs-down system); in other\nplatforms with more than two options, ratings often follow a\n“J-curve” where users mostly only use the extreme options\n(Hu, Zhang, and Pavlou 2009). In Appendix G, we demonstrate that our results hold even when we assume users’ distribution over ratings is centered or even right-skewed.\nPrior-Weighted Rating System. In a prior-weighted rating system, the prior distribution is a design choice of the\nplatform. The system operates by estimating a posterior distribution of the estimated true quality for each product, given\nthe prior and the received ratings on that product.\nWe primarily consider rating systems where the prior represents a Beta distribution.1 Then, in this setting, the platform chooses the prior Beta distribution parameters (α̂, β̂).2\nWe will refer to α̂ + β̂ as the prior strength, as it indicates\nhow strongly the prior is concentrated around its mean (and\nhow many ratings will be needed to “overwhelm”) the prior.\nAfter a product receives a rating, the platform updates its\nestimation posterior distribution for its true quality. In our\n1\nThis choice is natural, given that ratings are assumed to be\nBernoulli. The Beta distribution is the conjugate prior for Bernoulli\ndata, i.e., with this choice of prior, the posterior distribution remains a Beta distribution but with different parameters.\n2\nα\nIn a Beta(α, β) distribution, the mean is α+β\n; the higher that\nα + β are, the more concentrated the distribution around the mean.\nA common interpretation of the parameters is that α+β is the number of trials (coin flips), and α represents the number of successes.\n\nq̂α̂,β̂ (v, t) =\n\nα̂ + R(v, t)\nα̂ + β̂ + |S(v, t)|\n\n.\n\n(1)\n\nThe platform impacts the operation of a prior-weighted\nrating system only through the prior choice, determined here\nby α̂ and β̂. There are two aspects of this choice: the shape\nof the prior, and its strength relative to observed ratings in\ndetermining the posterior. In our analysis, we fix the prior\nshape by relying on market-level data, in a manner inspired\nby empirical Bayesian statistical methods (Robbins 1964).\nOur analysis shows that the strength of the prior then mediates the tradeoff between efficiency and producer fairness.\nFormally, to reason about a prior’s strength, we fix a prior\nshape (α̃, β̃), then set (α̂, β̂) = (η α̃, η β̃) for some prior\nstrength η ≥ 0, providing us with a single-parameter lever\nto adjust the strength of the prior. We elaborate on how we\ncalibrate the prior shape in Section 3.2. Note in particular\nthat if η = 0, then the platform simply implements sample\naveraging to compute the estimated quality of an item.",
-          "quoted_text_sha256": "802b26f9478302dfa57e192497802cf0fa6ec0518ea6399cca0a6abec61a8d38"
+          "quoted_text": "bias-variance breakdown:                                                       ings, k of which are positive, a population average rating of\n                                                                               C, and an integer-valued threshold m, the Bayesian rating q\n                                                                               of a product is calculated to be\n  E[(q̂ηα̃,ηβ̃ (v, N (qv , η)) − qv )2 |qv ]\n                                                 !2 \n                        η α̃ −  η α̃q   − η β̃q                                                     n    k  m\n             = E\n                                      v         v\n                                                     qv                                      q=        · +   ·C\n                       η α̃ + η β̃ + N (qv , η)                                                   n+m n n+m\n                                                                                                  k + mC\n                           \"                                 #                                  =        ,\n                               N (qv , η)qv (1 − qv )                                              n+m\n                     +E                                   qv     (22)\n                             (η α̃ + η β̃ + N (qv , η))2                         which is equivalent to a prior-weighted rating system\n                                                                               with prior strength m and baseline prior distribution of\n                                                                               Beta(C, 1).",
+          "quoted_text_sha256": "ae48d15869cf403bce1864f949c2e10dc611add627a44f38614f904af1b45958"
         }
       ],
-      "source_kind": "definition"
+      "source_kind": "formula"
     },
-    "mbjg25_eq21_corrected_ordinal_posterior_rating": {
+    "mbjg25_appendix_e_ordinal_prior": {
       "source_anchors": [
         {
-          "line_end": 2029,
-          "line_start": 1903,
+          "line_end": 1322,
+          "line_start": 1305,
           "publication_locator": "cited publication",
-          "quoted_text": "Because of the ordinal nature of the ratings data in this\nwhere the exact rating aggregation method is hidden to comsetting, we need to adjust our model primitives as defined in\nbat fake reviews and brigading, sample mean rating systems\nSection 2.1. Rather than a Beta-Bernoulli setting, we model\nwhere the overall rating of a product is the average ratour ratings as being drawn from a categorical distribution\ning it has received over a certain period of time by trustwith a Dirichlet prior. Let K be the set of possible ratings\nworthy reviewers, and Bayesian ratings, which calculates\nfor a product v (i.e. K = {1, 2, 3, 4, 5} for Amazon proda weighted average between the sample mean rating and a\nucts and K = {0, 1, 2, 3, 4, 5} for Goodreads products). If\npopulation-level mean rating. Assuming the reviews are bi7\nnary, both sample mean and Bayesian ratings are captured\nLicensed under the MIT License\n8\nby our prior-weighted ratings system. Sample mean ratings\nLicensed under the Apache 2.0 license\n\n\fProduct Category\nChildren\nComics & Graphic\nFantasy & Paranormal\nHistory & Biography\nMystery, Crime, Thriller\nPoetry\nRomance\nYoung Adult\nAll Beauty\nBeauty & Personal Care\nClothing, Shoes, Jewelry\nHealth & Personal Care\nIndustrial & Scientific\nMagazine Subscriptions\nPatio, Lawn, Garden\nSports & Outdoor\nTools, Home Improvement\nVideo Games\n\nPlatform\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\n\n# Items\n124.1k\n89.4k\n258.6k\n302.9k\n219.2k\n36.5k\n335.4k\n93.4k\n112.6k\n94.3k\n7.2mil\n60.3k\n427.5k\n3.4k\n851.7k\n1.6mil\n1.5mil\n137.2k\n\n# Ratings\n734.6k\n542.4k\n3.4mil\n2.1mil\n1.8mil\n154.6k\n3.6mil\n2.4mil\n701.5k\n2.1mil\n66.0mil\n494.1k\n5.2mil\n71.5k\n16.5mil\n19.6mil\n27.0mil\n4.6mil\n\nTable 2: Table showing details about each dataset used in\nAppendix E.\n\nratings for a product v are drawn from a categorical distribution with weights {pv,k }P\nk∈K , then we define the true quality\nqv of this product to be j∈K pv,j · j.\nTo estimate the quality of a product at time T , we define\nS(v, k, T ) to be the set of k-star reviews for product v at\ntime T , and N (v, k, t) := |S(v, k, T )|. The prior parameters, instead of being for a Beta distribution, are now for a\nDirichlet distribution; they are given by α̂ = {α̂j }j∈K . Due\nto the conjugacy of the Dirichlet distribution and the categorical distribution, we can define the estimated quality for\nv at time t as\n\nP\n\nj∈K\nq̂α̂ (v, t) = P\n\nN (v, j, t) · j\n\nj∈K N (v, j, t)\n\n(21)\n\nOur notions of prior strength and shape remain the same\nas before; that is, if we fix a prior shape α̃ = {α̃j }j∈K ,\nour choice of strength η ≥ 0 changes the Dirichlet prior\nby setting α̂ = {η α̃j }j∈K . The rest of our also model definitions remain unchanged. We kept the same experimental\nhyperparameters of the original experiment in Section 4.2,\nwith the exception of our η values now being chosen from\n{0.001, 1, 10, 100, 1000, 10000}, and our Thompson sampling model for consumer choice now using Dirichlet priors rather than Beta priors. To fit the Dirichlet distribution to",
-          "quoted_text_sha256": "0b2dcb4d08063e7833bc3710e05bd1a143d1d7db6049a2771051c61982d8d6d9"
+          "quoted_text": "Fantasy & Paranormal              Goodreads    258.6k    3.4mil              To estimate the quality of a product at time T , we define\nHistory & Biography               Goodreads    302.9k    2.1mil           S(v, k, T ) to be the set of k-star reviews for product v at\nMystery, Crime, Thriller          Goodreads    219.2k    1.8mil           time T , and N (v, k, t) := |S(v, k, T )|. The prior parame-\nPoetry                            Goodreads    36.5k     154.6k           ters, instead of being for a Beta distribution, are now for a\nRomance                           Goodreads    335.4k    3.6mil           Dirichlet distribution; they are given by α̂ = {α̂j }j∈K . Due\nYoung Adult                       Goodreads    93.4k     2.4mil           to the conjugacy of the Dirichlet distribution and the cate-\nAll Beauty                        Amazon       112.6k    701.5k           gorical distribution, we can define the estimated quality for\nBeauty & Personal Care            Amazon       94.3k     2.1mil           v at time t as\nClothing, Shoes, Jewelry          Amazon       7.2mil    66.0mil\nHealth & Personal Care            Amazon       60.3k     494.1k                                                                       P\nIndustrial & Scientific           Amazon       427.5k    5.2mil                                                                     j∈K         N (v, j, t) · j\nMagazine Subscriptions            Amazon       3.4k      71.5k                                                        q̂α̂ (v, t) = P                                              (23)\n                                                                                                                                            j∈K N (v, j, t)\nPatio, Lawn, Garden               Amazon       851.7k    16.5mil\nSports & Outdoor                  Amazon       1.6mil    19.6mil             Our notions of prior strength and shape remain the same\nTools, Home Improvement           Amazon       1.5mil    27.0mil          as before; that is, if we fix a prior shape α̃ = {α̃j }j∈K ,\nVideo Games                       Amazon       137.2k    4.6mil           our choice of strength η ≥ 0 changes the Dirichlet prior\n                                                                          by setting α̂ = {η α̃j }j∈K . The rest of our also model def-",
+          "quoted_text_sha256": "f36ab60be100006369ef93e63bc97f482122e1dd175712cba739a20f589169e8"
         }
       ],
-      "source_kind": "definition"
+      "source_kind": "formula"
     },
-    "mbjg25_eq2_fixed_market_mse": {
+    "mbjg25_theorem3_1": {
       "source_anchors": [
         {
-          "line_end": 333,
-          "line_start": 315,
+          "line_end": 334,
+          "line_start": 313,
           "publication_locator": "cited publication",
-          "quoted_text": "Informally, efficiency is measured by whether or not the rating system is successfully identifying high-quality products.\nIndividual producer fairness is measured by whether products of similar true quality are treated similarly.\nMetrics in fixed setting. In the fixed model, we focus\nprimarily on an accuracy measure: the mean-squared error\n(MSE) of the estimated quality in predicting true quality,\ndefined at timestep t as\nP\nM SE(q̂ηα̃,ηβ̃ ) =\n\n2\nv∈V (q̂η α̃,η β̃ (v, t) − qv )\n\n|V |\n\n.\n\n(2)\n\nWhy MSE? Via the bias-variance decomposition, meansquared error encodes a metric for efficiency and a metric",
-          "quoted_text_sha256": "989003560ec5c047add58ab52fae9923af4397dfee4d41dab72107f096dac893"
-        }
-      ],
-      "source_kind": "definition"
-    },
-    "mbjg25_eq4_expected_regret": {
-      "source_anchors": [
-        {
-          "line_end": 369,
-          "line_start": 354,
-          "publication_locator": "cited publication",
-          "quoted_text": "Efficiency. Formally, to measure efficiency, we use total\nexpected regret compared to the best item in the marketplace\nat each time step:\n\nE\n\n\" T\nX\nt=1\n\n#\nmax {qv } − qv(t) .\n\nv∈M (t)\n\n(4)",
-          "quoted_text_sha256": "5285c4a770ebaab411bfeb35887e37a3b6d6e144a76a37e55275ac10d1581785"
-        }
-      ],
-      "source_kind": "definition"
-    },
-    "mbjg25_individual_producer_unfairness": {
-      "source_anchors": [
-        {
-          "line_end": 386,
-          "line_start": 376,
-          "publication_locator": "cited publication",
-          "quoted_text": "Fairness. To capture variance conditional on quality, our\nchosen fairness metric is the standard deviation in selection rate given true quality. This individual fairness notion\nis conditional on quality: items of similar quality ought to\nbe picked at similar rates. Let σ̂(U ) be the sample standard\ndeviation computed on a set of real-valued numbers U . For a\nfixed true quality q, the individual (un)fairness metric is the\nstandard deviation in selection rate conditioned on an item\nbeing of that true quality:\nσ̂ ({SR(v)|qv = q}) .\n\n(5)",
-          "quoted_text_sha256": "a78f537565935b1419957b614adafb7badf8758ae81579d360a5c54d18b353d2"
-        }
-      ],
-      "source_kind": "definition"
-    },
-    "mbjg25_marketplace_producer_unfairness": {
-      "source_anchors": [
-        {
-          "line_end": 390,
-          "line_start": 386,
-          "publication_locator": "cited publication",
-          "quoted_text": "(5)\n\nTo get a marketplace-level metric of producer unfairness,\nwe take the expectation of eq. (5) over true qualities q.\nWe do not use a statistical measure as in the fixed setting for two reasons: (1) The responsive model allows for",
-          "quoted_text_sha256": "ec81b72c8e44bdcdb8c280a9cf8829895f58c356b3f3ab6c3eff575581f06faa"
-        }
-      ],
-      "source_kind": "definition"
-    },
-    "mbjg25_selection_rate": {
-      "source_anchors": [
-        {
-          "line_end": 353,
-          "line_start": 346,
-          "publication_locator": "cited publication",
-          "quoted_text": "Metrics in responsive setting. In the responsive setting,\nbecause consumers choose (and rate) higher rated items at\nhigher probabilities, we base our metrics directly off of how\noften products are selected. We define lv to be the lifespan\nof a product v in the responsive model. The selection rate\nof a product v as the fraction of times that it was rated (and\nthus the fraction of times the product was purchased) during\nits lifespan, SR(v) := |S(v, t)|/lv .",
-          "quoted_text_sha256": "3736e2b0e786bc8bdaba21e98d5915e85fed4889f11b2738a5e4321aa52c060b"
-        }
-      ],
-      "source_kind": "definition"
-    },
-    "mbjg25_theorem3_1_squared_bias_monotonicity": {
-      "source_anchors": [
-        {
-          "line_end": 450,
-          "line_start": 443,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
+          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating sys-                      iments, is attached in the submission.\ntem in the fixed setting with prior parameters (η α̃, η β̃). Fix                  Model calibration. To pick a prior shape (α̃, β̃), we make\nproduct v with true quality qv and consider quality estima-                    use of the empirical Bayes (EB) method (Robbins 1964),\ntion after t timesteps.                                                        which provides an approach for computing an estimate of\n   Then, as η             ≥ 0 increases, (1) squared bias                      prior parameters across a population. We perform a 60-40\n\u0010                              \u00112                                              train-test split on the products in the our dataset. We use all\n  E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv     is nondecreasing; (2) vari-                 available ratings data for products in the training set to cali-\nance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.                    brate (α̃, β̃) using EB. The remaining 1,331 products (in the\n                                                                               test set) are the universe of products V on which the simu-\n   Theorem 3.1 establishes the trade-off between fairness                      lation is run. We are interested in investigating how ratings\nand efficiency. As the prior strength of a prior-weighted rat-                 in the marketplace change over time, so our marketplace is\ning system increases, it is less likely for two identical prod-                simulated over time; we fix a finite time horizon T , and at\nucts to be rated differently, reducing variance while increas-                 each timestep t, either draw one review for all v ∈ V in the\ning estimation bias.                                                           fixed model, or draw one review for the specific v ∈ V cho-\n   The above theorem characterizes error for a given quality                   sen by the consumer at timestep t in the responsive model.\nlevel qv as prior strength changes. We are also interested in                     Fixed model parameters. We set a time horizon of T =\nhow the true quality of the product influences the efficiency                  50, and run our simulations for four different values of\nand fairness metric, i.e., how the platform estimates quality                  η ∈ {0, 1, 10, 1000}. The first two η values correspond to\nfor different true quality levels. An ideal statistical estimator              prior-weighted rating systems under the sample mean esti-\nfor quality should have low MSE across all quality levels.                     mator and the baseline empirical Bayes (EB) estimator re-\nOur next theorem characterizes how efficiency and unfair-                      spectively. η = 10 corresponds to a setting where the prior\nness vary with true product quality:                                           is difficult to overcome in early timesteps, but eventually is",
+          "quoted_text_sha256": "9a0bab537f3bc36c6e6065d4a92eefcd7643ee3235f92def0bd499f9db274eb6"
         }
       ],
       "source_kind": "theorem"
     },
-    "mbjg25_theorem3_1_variance_closed_interval_correction": {
+    "mbjg25_theorem3_2": {
       "source_anchors": [
         {
-          "line_end": 450,
-          "line_start": 443,
+          "line_end": 344,
+          "line_start": 335,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
-        }
-      ],
-      "source_kind": "theorem"
-    },
-    "mbjg25_theorem3_1_variance_strict_interior_correction": {
-      "source_anchors": [
-        {
-          "line_end": 450,
-          "line_start": 443,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
-        }
-      ],
-      "source_kind": "theorem"
-    },
-    "mbjg25_theorem3_2_squared_bias_convexity": {
-      "source_anchors": [
-        {
-          "line_end": 469,
-          "line_start": 460,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.\nThen, as a function of true product quality, squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis convex with a global miniα̃\nmum at α̃+\n, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave\nβ̃\nwith a global maximum at 1/2.",
-          "quoted_text_sha256": "6958d7791fcd10638cef757fc074e5437fc61cf0111b88874ee07d09cc1daf28"
-        }
-      ],
-      "source_kind": "theorem"
-    },
-    "mbjg25_theorem3_2_squared_bias_minimizer": {
-      "source_anchors": [
-        {
-          "line_end": 469,
-          "line_start": 460,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.\nThen, as a function of true product quality, squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis convex with a global miniα̃\nmum at α̃+\n, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave\nβ̃\nwith a global maximum at 1/2.",
-          "quoted_text_sha256": "6958d7791fcd10638cef757fc074e5437fc61cf0111b88874ee07d09cc1daf28"
-        }
-      ],
-      "source_kind": "theorem"
-    },
-    "mbjg25_theorem3_2_variance_concavity": {
-      "source_anchors": [
-        {
-          "line_end": 469,
-          "line_start": 460,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.\nThen, as a function of true product quality, squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis convex with a global miniα̃\nmum at α̃+\n, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave\nβ̃\nwith a global maximum at 1/2.",
-          "quoted_text_sha256": "6958d7791fcd10638cef757fc074e5437fc61cf0111b88874ee07d09cc1daf28"
-        }
-      ],
-      "source_kind": "theorem"
-    },
-    "mbjg25_theorem3_2_variance_maximizer": {
-      "source_anchors": [
-        {
-          "line_end": 469,
-          "line_start": 460,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.\nThen, as a function of true product quality, squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis convex with a global miniα̃\nmum at α̃+\n, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave\nβ̃\nwith a global maximum at 1/2.",
-          "quoted_text_sha256": "6958d7791fcd10638cef757fc074e5437fc61cf0111b88874ee07d09cc1daf28"
+          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating sys-                      shifted significantly by ratings data. η = 1000 corresponds\ntem in the fixed setting with prior parameters (η α̃, η β̃). Con-              to a setting where the posterior is essentially equal to the\nsider quality estimation after t timesteps.                                    prior throughout the entire simulation, i.e., ratings data is\n   Then, as a function of true product quality, squared bias                   ignored. We ran all of our experiments (for both the fixed\n\u0010                              \u00112                                              and responsive models) on an internally-provided comput-\n  E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv    is convex with a global mini-                ing cluster, where the compute power required for our simu-\nmum at α̃+α̃\n                , while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave          lations was negligible.\n             β̃\nwith a global maximum at 1/2.",
+          "quoted_text_sha256": "2e7eab0056f59c299df35b6aa477f51fe4b44bc0eb3019dab5ccfcf3ef0d7a9a"
         }
       ],
       "source_kind": "theorem"
     }
   },
-  "source_artifact_sha256": "150d8df530dc92bc165a55309abed044004a0877f4cce41309ef4030b5bab0fe",
+  "source_artifact_sha256": "c5ae8e229ea8033e636af335e5d63f5dd27e098492c9fb013f333e71edd5c1f9",
   "source_coverage_mode": "named_theoretical_statements"
 }

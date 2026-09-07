@@ -15,7 +15,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
 open scoped ENNReal NNReal ProbabilityTheory Topology
 open Probability
 
@@ -710,17 +710,18 @@ theorem lg21ReportRequired_not_stable_of_zeroCurrentTakeRegion_of_source
     [IsProbabilityMeasure baseLaw]
     (baseMean : (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
     (hbaseMean : Measurable baseMean)
-    (baseVariance noiseVariance : ℝ)
+    (baseVariance : ℝ)
     (hbaseVariance : 0 < baseVariance)
-    (hnoiseVariance : 0 < noiseVariance)
+    (hnoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
     (hsourceFactor :
       (lg21ContinuousGaussianPopulationLaw M).map
         (lg21HiddenAccessBaseScoreSkillObservation testFeature) =
           baseLaw ⊗ₘ gaussianSignalJointKernel
-            baseMean hbaseMean baseVariance noiseVariance) :
+            baseMean hbaseMean baseVariance (M.noiseVariance testFeature : ℝ)) :
     ¬ LG21ReportRequiredStableAgainstLocalTailEntry
       (M := M) (testFeature := testFeature) currentTake := by
   classical
+  let noiseVariance : ℝ := (M.noiseVariance testFeature : ℝ)
   let rawLaw := lg21ContinuousGaussianPopulationLaw M
   let regionEvent := lg21HiddenAccessBaseRegionEvent testFeature region
   letI : IsProbabilityMeasure rawLaw := by
@@ -867,7 +868,11 @@ theorem lg21ReportRequired_not_stable_of_zeroCurrentTakeRegion_of_source
   exact lg21ReportRequired_not_stable_of_zeroCurrentTakeRegion
     currentTake hcurrentTake region hregion hregionPositive hcurrentTakeZero
     candidate
-    { candidate_take_measurable := hcandidateTakeMeasurable
+    { candidate_test_law := by
+        intro latentSkill publicBase
+        simp [candidate, lg21ReportRequiredHiddenAccessTailCandidate,
+          noiseVariance]
+      candidate_take_measurable := hcandidateTakeMeasurable
       report_positive := hreportPositive
       noReport_positive := hnoReportPositive
       report_pbo := hreportPBO
@@ -889,14 +894,14 @@ theorem LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE.ae_positive_tak
     [IsProbabilityMeasure baseLaw]
     (baseMean : (LG21NonTestFeature Feature testFeature -> ℝ) -> ℝ)
     (hbaseMean : Measurable baseMean)
-    (baseVariance noiseVariance : ℝ)
+    (baseVariance : ℝ)
     (hbaseVariance : 0 < baseVariance)
-    (hnoiseVariance : 0 < noiseVariance)
+    (hnoiseVariance : 0 < (M.noiseVariance testFeature : ℝ))
     (hsourceFactor :
       (lg21ContinuousGaussianPopulationLaw M).map
         (lg21HiddenAccessBaseScoreSkillObservation testFeature) =
           baseLaw ⊗ₘ gaussianSignalJointKernel
-            baseMean hbaseMean baseVariance noiseVariance) :
+            baseMean hbaseMean baseVariance (M.noiseVariance testFeature : ℝ)) :
     let skillKernel := gaussianLocationKernel
       baseMean hbaseMean baseVariance.toNNReal
     letI : IsMarkovKernel skillKernel := gaussianLocationKernel_isMarkov
@@ -908,6 +913,7 @@ theorem LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE.ae_positive_tak
     ∀ᵐ publicBase ∂baseLaw,
       selectionMass skillKernel actionEvent publicBase ≠ 0 := by
   intro skillKernel action actionEvent
+  let noiseVariance : ℝ := (M.noiseVariance testFeature : ℝ)
   letI : IsMarkovKernel skillKernel :=
     gaussianLocationKernel_isMarkov baseMean hbaseMean baseVariance.toNNReal
   let rawLaw := lg21ContinuousGaussianPopulationLaw M
@@ -1016,7 +1022,7 @@ theorem LG21HiddenAccessReportRequiredLiteralSourceEquilibriumAE.ae_positive_tak
         M E.source.access_positive hnoAccess testFeature E.source.takeDecision
         E.source.takeDecision_measurable zeroRegion hzeroRegion hregionPositive
         (by simpa [currentEvent, rawSkill, rawBase] using hlocalCurrentZero)
-        baseLaw baseMean hbaseMean baseVariance noiseVariance
+        baseLaw baseMean hbaseMean baseVariance
         hbaseVariance hnoiseVariance hsourceFactor) hstable
   have hzeroAE : ∀ᵐ publicBase ∂baseLaw, publicBase ∉ zeroRegion := by
     simpa only [ae_iff, not_not] using hzeroRegionNull

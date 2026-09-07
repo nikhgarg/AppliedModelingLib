@@ -5,7 +5,7 @@ namespace DGD26AdmissionsPredictability
 
 namespace PaperInterface
 
-open EconCSLib.FiniteChoice
+open AppliedModelingLib.FiniteChoice
 variable {α : Type*} [DecidableEq α]
 
 def paper_choice_function_model_definition_statementSpec
@@ -13,8 +13,13 @@ def paper_choice_function_model_definition_statementSpec
   paper_feasible C ↔ ∀ X, C X ⊆ X
 
 def paper_definition_choice_labelSpec
-    (C : PaperChoiceRule α) (X : Finset α) (x : α) : Prop :=
+    (C : PaperChoiceRule α) (X : Finset α) (x : α) (hx : x ∈ X) : Prop :=
   paperChoiceLabel C X x = if x ∈ C X then 1 else 0
+
+/-- Source-facing semantic target for the introductory binary-classifier model. -/
+def paper_binary_classifier_model_statementSpec
+    (f : α → ℕ) : Prop :=
+  ∀ x, f x = 0 ∨ f x = 1
 
 /-- Source-facing semantic target for `paper_ml_representation_definition_statement`. -/
 def paper_ml_representation_definition_statementSpec
@@ -39,14 +44,17 @@ def paper_total_order_definition_statementSpec
 /-- Source-facing semantic target for `paper_q_representativeness_definition_statement`. -/
 def paper_q_representativeness_definition_statementSpec
     (q : ℕ) (C : PaperChoiceRule α)  : Prop :=
-  paper_definition_q_representativeness q C ↔
-        ∃ r : α → α → Prop,
-          paper_definition_total_order r ∧
+  paper_choice_function_feasible C ∧
+      paper_definition_q_representativeness q C ↔
+    paper_choice_function_feasible C ∧
+      ∃ r : α → α → Prop,
+        paper_definition_total_order r ∧
+          paper_choice_function_feasible C ∧
             paper_definition_q_acceptance q C ∧
               ∀ {X x y}, x ∈ C X → y ∈ X → y ∉ C X → r x y
 
 def paper_definition_choice_distanceSpec
-    (C : PaperChoiceRule α) (X₁ X₂ : Finset α) : Prop :=
+    (C : PaperChoiceRule α) (X₁ X₂ : Finset α) (hsubset : X₁ ⊆ X₂) : Prop :=
   choiceDistance C X₁ X₂ =
     ((X₁ ∩ C X₂) \ C X₁).card + (C X₁ \ C X₂).card
 
@@ -59,9 +67,10 @@ def paper_d_instability_definition_statementSpec
 /-- Source-facing semantic target for `paper_tight_d_instability_definition_statement`. -/
 def paper_tight_d_instability_definition_statementSpec
     (d : ℕ) (C : PaperChoiceRule α)  : Prop :=
-  paper_definition_tight_d_instability d C ↔
-        paper_definition_d_instability d C ∧
-          ∀ k, k < d → ¬ paper_definition_d_instability k C
+  0 < d →
+    (paper_definition_tight_d_instability d C ↔
+      paper_definition_d_instability d C ∧
+        ∀ k, k < d → ¬ paper_definition_d_instability k C)
 
 def paper_definition_borderline_setSpec [Fintype α]
     (C : PaperChoiceRule α) (X : Finset α) : Prop :=
@@ -70,14 +79,19 @@ def paper_definition_borderline_setSpec [Fintype α]
 
 /-- Source-facing semantic target for `paper_variability_exactly_definition_statement`. -/
 def paper_variability_exactly_definition_statementSpec [Fintype α]
-    (m : ℕ) (C : PaperChoiceRule α)  : Prop :=
+    {q : ℕ} (m : ℕ) (C : PaperChoiceRule α)
+    (hfeasible : paper_choice_function_feasible C)
+    (haccept : paper_definition_q_acceptance q C)
+    (hunstable : paper_definition_d_instability 1 C) : Prop :=
   paper_definition_variability_exactly m C ↔
         (∀ X, (paper_definition_borderline_set C X).card ≤ m) ∧
           ∃ X, (paper_definition_borderline_set C X).card = m
 
 /-- Source-facing semantic target for `paper_fixed_threshold_formula_statement`. -/
 def paper_fixed_threshold_formula_statementSpec
-    (score : α → ℝ) (threshold : ℝ) (X : Finset α) (x : α)  : Prop :=
+    (score : α → ℝ) (threshold : ℝ)
+    (hscore : ∀ x, 0 ≤ score x ∧ score x ≤ 1)
+    (X : Finset α) (x : α)  : Prop :=
   x ∈ paperFixedThresholdChoice score threshold X ↔
         x ∈ X ∧ paper_definition_fixed_threshold_predictor
           score threshold X x
@@ -85,35 +99,47 @@ def paper_fixed_threshold_formula_statementSpec
 /-- Source-facing semantic target for `paper_ml_fixed_threshold_representation_zero_unstable_statement`. -/
 def paper_ml_fixed_threshold_representation_zero_unstable_statementSpec
     {C : PaperChoiceRule α} (score : α → ℝ) (threshold : ℝ)
+    (hscore : ∀ x, 0 ≤ score x ∧ score x ≤ 1)
     (hfeasible : paper_choice_function_feasible C)
     (hrep : paper_definition_ml_representation
       (paper_definition_fixed_threshold_predictor score threshold) C)  : Prop :=
   paper_definition_zero_instability C
 
-/-- Source-facing semantic target for `paper_rank_threshold_formula_statement`. -/
+/-- Source-facing semantic target for `paper_rank_threshold_formula_statement`.
+`operationalScore` is the source score after the fixed generic, ex-ante
+tie-break for equal raw scores; its injectivity is a property of that
+operational refinement, not a claim that raw scores are distinct. -/
 def paper_rank_threshold_formula_statementSpec
-    (q : ℕ) (score : α → ℝ) (hinjective : Function.Injective score)
-    (hqpos : 0 < q) (X : Finset α)  : Prop :=
-  ∃ threshold : ℝ, ∀ x ∈ X,
-        (paper_definition_rank_threshold_predictor
-            q score hinjective X x ↔ threshold ≤ score x)
+    (q : ℕ) (operationalScore : α → ℝ)
+    (hinjective : Function.Injective operationalScore)
+    (hqpos : 0 < q) (X : Finset α) (hqcard : q ≤ X.card)  : Prop :=
+  ∃ threshold : ℝ,
+    threshold ∈ X.image operationalScore ∧
+      (X.filter (fun x => threshold ≤ operationalScore x)).card = q ∧
+        ∀ x ∈ X,
+          (paper_definition_rank_threshold_predictor
+              q operationalScore hinjective X x ↔ threshold ≤ operationalScore x)
 
 /-- Source-facing semantic target for `paper_ml_rank_threshold_representation_instability_bound_statement`. -/
 def paper_ml_rank_threshold_representation_instability_bound_statementSpec
     [Fintype α] {C : PaperChoiceRule α}
-    (q : ℕ) (score : α → ℝ) (hinjective : Function.Injective score)
+    (q : ℕ) (operationalScore : α → ℝ)
+    (hinjective : Function.Injective operationalScore)
+    (hqpos : 0 < q)
     (hfeasible : paper_choice_function_feasible C)
     (hrep : paper_definition_ml_representation
-      (paper_definition_rank_threshold_predictor q score hinjective) C)  : Prop :=
+      (paper_definition_rank_threshold_predictor q operationalScore hinjective) C)  : Prop :=
   paper_definition_d_instability 1 C
 
 /-- Source-facing semantic target for `paper_ml_rank_threshold_representation_variability_bound_statement`. -/
 def paper_ml_rank_threshold_representation_variability_bound_statementSpec
     [Fintype α] {C : PaperChoiceRule α}
-    (q : ℕ) (score : α → ℝ) (hinjective : Function.Injective score)
+    (q : ℕ) (operationalScore : α → ℝ)
+    (hinjective : Function.Injective operationalScore)
+    (hqpos : 0 < q)
     (hfeasible : paper_choice_function_feasible C)
     (hrep : paper_definition_ml_representation
-      (paper_definition_rank_threshold_predictor q score hinjective) C)  : Prop :=
+      (paper_definition_rank_threshold_predictor q operationalScore hinjective) C)  : Prop :=
   paper_definition_variability_at_most 1 C
 
 /-- Source-facing semantic target for `paper_ml_rank_threshold_can_represent_exact_one_statement`. -/
@@ -186,8 +212,22 @@ def paper_independent_zero_unstable_corollary_statementSpec
 def paper_substitutability_one_instability_equivalence_statementSpec
     {q : ℕ} {C : PaperChoiceRule α}
     (hfeasible : paper_choice_function_feasible C)
-    (haccept : paper_definition_q_acceptance q C)  : Prop :=
-  paper_definition_substitutability C ↔ paper_definition_d_instability 1 C
+    (haccept : paper_definition_q_acceptance q C)
+    (hqpos : 0 < q)
+    {U : Finset α} (hUcard : q < U.card)  : Prop :=
+  paper_definition_substitutability C ↔
+    paper_definition_d_instability 1 C ∧ ¬ paper_definition_zero_instability C
+
+/-- Source-facing semantic target for the separately labelled capacity-constrained
+substitutability/one-instability theorem. -/
+def paper_qacceptant_substitutable_iff_one_statementSpec
+    {q : ℕ} {C : PaperChoiceRule α}
+    (hfeasible : paper_choice_function_feasible C)
+    (haccept : paper_definition_q_acceptance q C)
+    (hqpos : 0 < q)
+    {U : Finset α} (hUcard : q < U.card) : Prop :=
+  paper_definition_d_instability 1 C ∧ ¬ paper_definition_zero_instability C ↔
+    paper_definition_substitutability C
 
 def paper_theorem1_tight_all_d_statementSpec
     (q d : ℕ) : Prop :=
@@ -213,27 +253,27 @@ def paper_sequential_q_representative_variability_range_statementSpec
         paper_definition_variability_exactly m
           (paper_definition_sequential_composition Cs)
 
-/-- Source-facing semantic target for `paper_screened_open_variability_one_statement`. -/
+/-- Source-facing Proposition 2 target for the abstract Screened/Open procedure. -/
 def paper_screened_open_variability_one_statementSpec  : Prop :=
   paper_definition_variability_exactly 1
         paper_definition_screened_open_program_choice
 
-/-- Source-facing semantic target for `paper_screened_open_dia_variability_two_statement`. -/
+/-- Source-facing Proposition 2 target for the abstract Screened/Open-with-DIA procedure. -/
 def paper_screened_open_dia_variability_two_statementSpec  : Prop :=
   paper_definition_variability_exactly 2
         paper_definition_screened_open_dia_program_choice
 
-/-- Source-facing semantic target for `paper_educational_option_variability_three_statement`. -/
+/-- Source-facing Proposition 2 target for the abstract Educational Option procedure. -/
 def paper_educational_option_variability_three_statementSpec  : Prop :=
   paper_definition_variability_exactly 3
         paper_definition_educational_option_program_choice
 
-/-- Source-facing semantic target for `paper_educational_option_dia_variability_six_statement`. -/
+/-- Source-facing Proposition 2 target for the abstract Educational Option-with-DIA procedure. -/
 def paper_educational_option_dia_variability_six_statementSpec  : Prop :=
   paper_definition_variability_exactly 6
         paper_definition_educational_option_dia_program_choice
 
-/-- Source-facing semantic target for `paper_program_classes_one_instability_statement`. -/
+/-- Source-facing Proposition 2 aggregate for the four abstract queue procedures. -/
 def paper_program_classes_one_instability_statementSpec  : Prop :=
   paper_definition_d_instability 1 paper_definition_screened_open_program_choice ∧
         paper_definition_d_instability 1 paper_definition_screened_open_dia_program_choice ∧
@@ -326,6 +366,7 @@ def paper_independent_zero_unstable_statementSpec
 /-- Source-facing semantic target for `paper_q_acceptant_substitutable_consistent_statement`. -/
 def paper_q_acceptant_substitutable_consistent_statementSpec
     {q : ℕ} {C : PaperChoiceRule α}
+    (hfeasible : paper_choice_function_feasible C)
     (haccept : paper_definition_q_acceptance q C)
     (hsub : paper_definition_substitutability C)  : Prop :=
   paper_definition_consistency C
@@ -370,7 +411,9 @@ def paper_definition_waitlisted_setSpec [Fintype α]
 def paper_general_variability_exactly_definition_statementSpec [Fintype α]
     (m : ℕ) (C : PaperChoiceRule α)  : Prop :=
   paper_definition_general_variability_exactly m C ↔
-        paper_definition_general_variability_at_most m C ∧
+        (∀ X,
+          (paper_definition_borderline_set C X).card ≤ m ∧
+            (paper_definition_waitlisted_set C X).card ≤ m) ∧
           ((∃ X, (paper_definition_borderline_set C X).card = m) ∨
             ∃ X, (paper_definition_waitlisted_set C X).card = m)
 
@@ -379,7 +422,8 @@ def paper_append_remove_variability_exact_equivalence_statementSpec
     [Fintype α] {m q : ℕ} {C : PaperChoiceRule α}
     (hfeasible : paper_choice_function_feasible C)
     (haccept : paper_definition_q_acceptance q C)
-    (hunstable : paper_definition_d_instability 1 C)  : Prop :=
+    (hunstable : paper_definition_d_instability 1 C)
+    (hcard : 2 * q ≤ Fintype.card α) : Prop :=
   paper_definition_general_variability_exactly m C ↔
         paper_definition_variability_exactly m C
 
@@ -400,7 +444,7 @@ def paper_acceptant_one_instability_variability_borderline_eq_waitlisted_after_c
     (hfeasible : paper_choice_function_feasible C)
     (haccept : paper_definition_q_acceptance q C)
     (hunstable : paper_definition_d_instability 1 C)
-    (hvar : paper_definition_variability_at_most 1 C)
+    (hvar : paper_definition_variability_exactly 1 C)
     {X : Finset α} {x : α}
     (hx : x ∉ X)
     (hchange : C (insert x X) ≠ C X)  : Prop :=
@@ -424,7 +468,7 @@ def paper_sequential_additive_variability_bound_statementSpec
             paper_definition_d_instability 1 C)
       qs Cs)
     (hvariability : List.Forall₂
-      (fun m C => paper_definition_variability_at_most m C)
+      (fun m C => paper_definition_variability_exactly m C)
       ms Cs)  : Prop :=
   paper_definition_variability_at_most
         ms.sum (paper_definition_sequential_composition Cs)
@@ -446,15 +490,16 @@ def paper_lap_model_definition_statementSpec
     (X : Finset α) (w : α → σ → ℝ) (A : LAP.Assignment α σ) : Prop :=
   lapModel X w A ↔
     paper_definition_lap_assignment_feasible X A ∧
-      paper_definition_lap_capacity_filling X A ∧
-        paper_definition_lap_objective_optimal X w A
+      ∀ B : LAP.Assignment α σ,
+        paper_definition_lap_assignment_feasible X B →
+          LAP.Assignment.objective w B ≤ LAP.Assignment.objective w A
 
 /-- Source-facing semantic target for `paper_lap_assignment_choice_formula_statement`. -/
 def paper_lap_assignment_choice_formula_statementSpec
     {σ : Type*} [DecidableEq σ] [Fintype σ]
     (select : Finset α → LAP.Assignment α σ) (X : Finset α) (x : α)  : Prop :=
   x ∈ paper_definition_lap_choice_rule select X ↔
-        paper_definition_lap_assigned (select X) x
+        ∃ s : σ, (select X).matchSlot s = some x
 
 /-- Source-facing semantic target for `paper_lap_assigned_strictly_outranks_rejected_statement`. -/
 def paper_lap_assigned_strictly_outranks_rejected_statementSpec
@@ -482,23 +527,48 @@ def paper_lap_strictly_higher_slot_applicant_assigned_statementSpec
     (hbelow : paper_definition_lap_slot_below w s y x)  : Prop :=
   paper_definition_lap_assigned A x
 
-/-- Source-facing semantic target for `paper_lap_assignment_one_instability_statement`. -/
+/-- Source-facing semantic target for `paper_lap_assignment_one_instability_statement`.
+`operationalWeight` is the fixed generic refinement of the raw source score.
+`hwell` asserts uniqueness only for this refined objective; it does not assert
+that all raw-primary optima have one chosen set. -/
 def paper_lap_assignment_one_instability_statementSpec
     {σ : Type*} [DecidableEq σ] [Fintype σ]
-    {w : α → σ → ℝ}
-    (hwell : LAP.Assignment.WellPosedObjective w)  : Prop :=
+    {operationalWeight : α → σ → ℝ}
+    (hwell : ∀ X : Finset α, ∃ A : LAP.Assignment α σ,
+      LAP.Assignment.Feasible X A ∧
+        LAP.Assignment.CapacityFilling X A ∧
+          LAP.Assignment.ObjectiveOptimal X operationalWeight A ∧
+            ∀ B : LAP.Assignment α σ,
+              LAP.Assignment.Feasible X B →
+                LAP.Assignment.CapacityFilling X B →
+                  LAP.Assignment.ObjectiveOptimal X operationalWeight B →
+                    B.chosenSet = A.chosenSet)
+    (hnoTies : ∀ s : σ, LAP.Assignment.SlotNoTies operationalWeight s)  : Prop :=
   paper_definition_d_instability 1
-        (paperLAPChoiceRule w hwell)
+        (paperLAPChoiceRule operationalWeight hwell)
 
-/-- Source-facing semantic target for `paper_lap_assignment_slot_order_class_variability_of_unique_global_optima_statement`. -/
+/-- Source-facing semantic target for
+`paper_lap_assignment_slot_order_class_variability_of_unique_global_optima_statement`.
+As above, `operationalWeight` is the fixed generic refinement used to select
+one optimum from a raw-primary tie; `hwell` is not a uniqueness claim about
+the raw-primary objective. -/
 def paper_lap_assignment_slot_order_class_variability_of_unique_global_optima_statementSpec
     [Fintype α] {σ : Type*} [DecidableEq σ] [Fintype σ]
-    {w : α → σ → ℝ}
-    (hwell : LAP.Assignment.WellPosedObjective w)
-    (hnoTies : ∀ s : σ, LAP.Assignment.SlotNoTies w s)  : Prop :=
-  paper_definition_variability_at_most
-        (LAP.Assignment.distinctSlotOrderCount w)
-        (paperLAPChoiceRule w hwell)
+    {operationalWeight : α → σ → ℝ}
+    (hwell : ∀ X : Finset α, ∃ A : LAP.Assignment α σ,
+      LAP.Assignment.Feasible X A ∧
+        LAP.Assignment.CapacityFilling X A ∧
+          LAP.Assignment.ObjectiveOptimal X operationalWeight A ∧
+            ∀ B : LAP.Assignment α σ,
+              LAP.Assignment.Feasible X B →
+                LAP.Assignment.CapacityFilling X B →
+                  LAP.Assignment.ObjectiveOptimal X operationalWeight B →
+                    B.chosenSet = A.chosenSet)
+    (hnoTies : ∀ s : σ, LAP.Assignment.SlotNoTies operationalWeight s)  : Prop := by
+  classical
+  exact ∀ X,
+    (paper_definition_borderline_set (paperLAPChoiceRule operationalWeight hwell) X).card ≤
+      ((Finset.univ : Finset σ).image (LAP.Assignment.slotOrderClass operationalWeight)).card
 
 end PaperInterface
 end DGD26AdmissionsPredictability

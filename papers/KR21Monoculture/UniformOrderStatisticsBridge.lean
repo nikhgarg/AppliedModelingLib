@@ -19,7 +19,7 @@ that needs the separate ranking, independence, and label-symmetry bridges.
 theorem sourceExpectedOrderStatisticValue_eq_uniform01_expectedUpperOrderStatistic
     (candidate : SourceFourCandidate) :
     (sourceExpectedOrderStatisticValue candidate : ℝ) =
-      EconCSLib.Probability.expectedUpperOrderStatistic
+      AppliedModelingLib.Probability.expectedUpperOrderStatistic
         (Measure.pi (fun _ : Fin 4 => PRPKG24AccuracyDiversity.uniform01Measure))
         candidate := by
   rw [PRPKG24AccuracyDiversity.uniform01ProductMeasure_expectedUpperOrderStatistic_eq]

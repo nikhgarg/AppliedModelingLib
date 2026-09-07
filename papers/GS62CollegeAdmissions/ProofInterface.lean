@@ -12,19 +12,38 @@ expanded `Spec`; these theorems supply proof evidence for those specifications.
 namespace GS62CollegeAdmissions
 namespace PaperInterface
 
+open AppliedModelingLib.Matching
+
 theorem unstableMarriage_iff_source_definition :
-    unstableMarriage_iff_source_definitionSpec := by
+    ∀ {M W : Type*}
+      (val_m : M → W → ℝ) (val_w : W → M → ℝ)
+      (mu : Assignment M W),
+      unstableMarriage val_m val_w mu ↔
+        unstableMarriage_iff_source_definitionSpec val_m val_w mu := by
   intro M W val_m val_w mu
   rfl
 
 theorem unstableCollegeAssignment_iff_source_definition :
-    unstableCollegeAssignment_iff_source_definitionSpec := by
+    ∀ {Applicants Colleges : Type*}
+      (val_applicant : Applicants → Colleges → ℝ)
+      (val_college : Colleges → Applicants → ℝ)
+      (mu : ManyToOneAssignment Applicants Colleges),
+      unstableCollegeAssignment val_applicant val_college mu ↔
+        unstableCollegeAssignment_iff_source_definitionSpec
+          val_applicant val_college mu := by
   intro Applicants Colleges val_applicant val_college mu
   rfl
 
 theorem literalApplicantOptimalCollegeAssignment_iff_source_definition :
-    literalApplicantOptimalCollegeAssignment_iff_source_definitionSpec := by
-  intro Applicants Colleges val_applicant val_college mu
+    ∀ {Applicants Colleges : Type*}
+      (quota : Colleges → ℕ)
+      (val_applicant : Applicants → Colleges → ℝ)
+      (val_college : Colleges → Applicants → ℝ)
+      (mu : ManyToOneAssignment Applicants Colleges),
+      literalApplicantOptimalCollegeAssignment quota val_applicant val_college mu ↔
+        literalApplicantOptimalCollegeAssignment_iff_source_definitionSpec
+          quota val_applicant val_college mu := by
+  intro Applicants Colleges quota val_applicant val_college mu
   rfl
 
 theorem theorem1_stable_marriage_exists :
@@ -40,30 +59,39 @@ theorem theorem1_stable_marriage_exists :
   rcases hblocking with ⟨m0, w0, hcomparisons⟩
   exact hstable.2.2 m0 w0 hcomparisons.1 hcomparisons.2
 
-theorem theorem2_applicant_optimality :
-    theorem2_applicant_optimalitySpec := by
+theorem section4_waiting_list_terminal_stability :
+    section4_waiting_list_terminal_stabilitySpec := by
   intro Applicants Colleges _ _ _ _ quota val_applicant val_college
     happlicant_strict hcollege_strict
   let hdomain : gs_strict_college_admissions_domain val_applicant val_college :=
     ⟨happlicant_strict, hcollege_strict⟩
   constructor
-  · exact
-      ⟨ExactCollegeBatchedProcedure.sourceWaitingListFinalState quota
-          val_applicant val_college hcollege_strict.1,
-        ExactCollegeBatchedProcedure.sourceWaitingListFinalState_reachable
-          quota val_applicant val_college hcollege_strict.1,
-        ExactCollegeBatchedProcedure.sourceWaitingListFinalState_terminated
-          quota val_applicant val_college hcollege_strict.1⟩
-  · intro s hreachable hterminal
-    have hoptimal :=
-      ExactCollegeBatchedProcedure.paper_gs62_source_reachable_terminal_assignment_applicant_optimal
-        quota val_applicant val_college hdomain s hreachable hterminal
+  · exact ExactCollegeBatchedProcedure.sourceWaitingListFinalState_terminated
+      quota val_applicant val_college hcollege_strict.1 happlicant_strict.1
+  · have hstable :=
+      ExactCollegeBatchedProcedure.paper_gs62_source_waiting_list_assignment_stable
+        quota val_applicant val_college hdomain
     simpa [applicantOptimalCollegeAssignment,
-      gs_applicant_optimal_college_assignment,
       gs_stable_college_assignment,
-      EconCSLib.Matching.ManyToOne.IsStable,
-      EconCSLib.Matching.ManyToOneAssignment.RespectsQuota,
-      EconCSLib.Matching.ManyToOne.CollegeWouldAccept] using hoptimal
+      AppliedModelingLib.Matching.ManyToOne.IsStable,
+      AppliedModelingLib.Matching.ManyToOneAssignment.RespectsQuota,
+      AppliedModelingLib.Matching.ManyToOne.CollegeWouldAccept] using hstable
+
+theorem theorem2_applicant_optimality :
+    theorem2_applicant_optimalitySpec := by
+  intro Applicants Colleges _ _ _ _ quota val_applicant val_college
+    happlicant_strict hcollege_strict nu hnu
+  let hdomain : gs_strict_college_admissions_domain val_applicant val_college :=
+    ⟨happlicant_strict, hcollege_strict⟩
+  have hoptimal :=
+    ExactCollegeBatchedProcedure.paper_gs62_source_waiting_list_assignment_applicant_optimal
+      quota val_applicant val_college hdomain
+  simpa [applicantOptimalCollegeAssignment,
+    gs_applicant_optimal_college_assignment,
+    gs_stable_college_assignment,
+    AppliedModelingLib.Matching.ManyToOne.IsStable,
+    AppliedModelingLib.Matching.ManyToOneAssignment.RespectsQuota,
+    AppliedModelingLib.Matching.ManyToOne.CollegeWouldAccept] using hoptimal.2 nu hnu
 
 end PaperInterface
 end GS62CollegeAdmissions

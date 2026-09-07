@@ -1,0 +1,367 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "GHKR22BiasBounties",
+  "private_source_map_sha256": "9ead3ad3288764958fac2f02b66e49f8a3e1fa6234f3452b29df5702bb97b9f8",
+  "public_manifest_path": "papers/GHKR22BiasBounties/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "c6eaecd32e495c5e3b485d56d8766cbabfb17fad6cb6f2bb1e4cd0fede5ffc7f",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "algorithm_4_monotone_falsify_and_update",
+    "algorithm_5_train_by_opt",
+    "algorithm_6_alternating_maximization",
+    "certificate_optimization_objective",
+    "definition_17_derived_certificate",
+    "definition_18_cost_sensitive_minimizer",
+    "definition_19_induced_cost",
+    "definition_1_subgroups",
+    "definition_2_model_loss",
+    "definition_3_bayes_optimal",
+    "definition_5_approximate_bayes_optimal",
+    "definition_7_certificate",
+    "lemma_15_vc_uniform_convergence",
+    "lemma_21_fixed_group_erm",
+    "lemma_22_fixed_model_erm",
+    "observation_4_bayes_groupwise",
+    "remark_13_complexity_independence",
+    "source_model_supervised_learning",
+    "theorem_10_update_bound",
+    "theorem_11_adaptive_checker",
+    "theorem_12_falsify_and_update",
+    "theorem_14_monotone_bounty",
+    "theorem_16_train_by_opt",
+    "theorem_20_ternary_reduction",
+    "theorem_23_coordinate_ascent",
+    "theorem_8_certificate_characterization",
+    "theorem_9_list_update_progress"
+  ],
+  "selected_source_items": {
+    "algorithm_4_monotone_falsify_and_update": {
+      "source_anchors": [
+        {
+          "line_end": 713,
+          "line_start": 671,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{algorithm}\n\\ifdraft\\else \n\\small\n\\fi\n\\KwInput{A model $f_0$, a holdout dataset $D$, Target $\\epsilon$, and a stream of submissions  $(g_1,h_1),(g_2,h_2),\\ldots$ of length at most $U$}\nLet $t \\leftarrow 0$ and Initialize an instance of CertificateChecker($\\epsilon, D, U + \\frac{8}{\\epsilon^3}, \\ldots$)\n\n\\While{CertificateChecker has not halted}{\n  Consider the next submission $(g_i,h_i)$ \\\\\n\n  Feed the triple $(f_t,g_i,h_i)$ to CertificateChecker and receive $\\pi_i\\in \\{\\bot,\\top\\}$ \\\\\n\n  \\If{$\\pi_i = \\bot$}{\n    \\KwOut{Submission $(g_i,h_i)$ is rejected.}\n  }\n  \\Else{\n    MonotoneProgress $\\leftarrow$ FALSE \\\\\n    $(g_U,h_U) \\leftarrow (g_i,h_i)$ \\\\\n    $t' \\leftarrow t$ and $f'_{t'} \\leftarrow f_t$ \\\\\n  \\While{MonotoneProgress $=$ FALSE and CertificateChecker has not halted}{\n    Let $t' \\leftarrow t'+1$ and let $f'_{t'} = \\textrm{ListUpdate}(f_{t'-1}',(g_U,h_U))$ \\\\\n    MonotoneProgress $\\leftarrow$ TRUE\n\n    \\For{each pair $\\ell < t$, $g_j \\in\n    \\cG(f_t)$}{\n      Feed the triple $(f_t,g_j,f_{\\ell})$ to CertificateChecker and receive $\\pi_U \\in \\{\\bot,\\top\\}$ \\\\\n      \\If{$\\pi_U = \\top$ (Submission accepted)} {\n        MonotoneProgress $\\leftarrow$ FALSE \\\\\n        $(g_U,h_U) \\leftarrow (g_j, f_\\ell)$\n      }\n\n    }\n\n   }\n   Let $t \\leftarrow t+1$ and let $f_t = f'_{t'}$ \\\\\n\n   \\KwOut{Submission $(g_i,h_i)$ is accepted. The new model is $f_{t}$.}\n  }\n\n}\n\\caption{MonotoneFalsifyAndUpdate($\\epsilon,D,(f_1,g_1,h_1),\\ldots )$: A version of FalsifyAndUpdate that guarantees approximate group-wise error monotonicity.}\n\\label{alg:MonFalsifyAndUpdate}\n\\end{algorithm}",
+          "quoted_text_sha256": "a260e322601d6ad7484b9628bf764a114e626529b2100645ebe3ec2f4f568050"
+        }
+      ],
+      "source_kind": "algorithm"
+    },
+    "algorithm_5_train_by_opt": {
+      "source_anchors": [
+        {
+          "line_end": 811,
+          "line_start": 786,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{algorithm}\n\\ifdraft\n\\else\n\\small\n\\fi\n\\KwInput{A dataset $D$, a set of group/model pairs $\\cC$, and accuracy parameter $\\epsilon$.}\nLet $f_0:\\cX\\rightarrow \\{0,1\\}$ be an arbitrary initial model and $T = 2/\\epsilon$ \\\\\n\nRandomly divide $D$ into $T$ equally sized datasets: $D_1,\\ldots,D_T$.\n\n\\For{$t = 1$ to $T$}{\nLet\n$$(g_t,h_t) =\\arg\\max_{(g,h) \\in \\cC }\\mu_{D}(g)\\cdot (L(D,f_{t-1},g) - L(D,h,g))$$\n\n\\If{$\\mu_{D}(g_t)\\cdot (L(D,f_{t-1},g_t) - L(D,h_t,g_t)) \\leq \\frac{3\\epsilon}{4}$}{\n\\KwOut{Model $f_{t-1}$}\n}\n\\Else{\nLet $f_t = \\textrm{ListUpdate}(f_{t-1},(g_t,h_t))$\n}\n}\n\\KwOut{Model $f_T$}\n\n\\caption{TrainByOpt($D,\\cC,\\epsilon)$: An algorithm for training an $(\\epsilon,\\cC)$-Bayes optimal model given the ability to optimize over certificates $(g,h) \\in \\cC$.}\n\\label{alg:TrainByOpt}\n\\end{algorithm}",
+          "quoted_text_sha256": "d80e12782a5208ef048f4a88bb899ce795b101a3694441d52544afc9a97b594a"
+        }
+      ],
+      "source_kind": "algorithm"
+    },
+    "algorithm_6_alternating_maximization": {
+      "source_anchors": [
+        {
+          "line_end": 1005,
+          "line_start": 991,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{algorithm}\n\\KwInput{A dataset $D$, a model $f_{t-1}$, group and model classes $\\cG$ and $\\cH$, and an error parameter $\\epsilon$.}\nLet $(g^*,h^*) \\in \\cG \\times \\cH$ be an arbitrary initial certificate.  \\\\\nCurrentValue $\\leftarrow \\mu_{D}(g^*)\\cdot (L(D,f_{t-1},g^*) - L(D,h^*,g^*))$ \\\\\nLet:\n$$h^* = \\arg\\min_{h \\in \\cH} L(D_{g^*},h) \\ \\ \\ g^* = \\arg\\min_{g \\in \\cG} L(D_{h^*},g)$$\n\\While{$\\mu_{D}(g^*)\\cdot (L(D,f_{t-1},g^*) - L(D,h^*,g^*) \\geq \\textrm{CurrentValue}+\\epsilon$}{\nCurrentValue $\\leftarrow \\mu_{D}(g^*)\\cdot (L(D,f_{t-1},g^*) - L(D,h^*,g^*))$ \\\\\nLet:\n$$h^* = \\arg\\min_{h \\in \\cH} L(D_{g^*},h) \\ \\ \\ g^* = \\arg\\min_{g \\in \\cG} L(D_{h^*},g)$$\n}\n\\KwOut{Certificate $(g_t,h_t) = (g^*,h^*)$}\n\\caption{AltMinCertificateFinder($D,f_{t-1},\\cG,\\cH,\\epsilon)$: An algorithm for finding $\\epsilon$-locally optimal certificates of sub-optimality $(g_t,h_t) \\in \\cG\\times \\cH$ for model $f_{t-1}$.}\n\\label{alg:altmin}\n\\end{algorithm}",
+          "quoted_text_sha256": "1b3dc99fdafa51b6f194ca46c523a85cfdde73a71f8ba890a3834f296aa52118"
+        }
+      ],
+      "source_kind": "algorithm"
+    },
+    "certificate_optimization_objective": {
+      "source_anchors": [
+        {
+          "line_end": 770,
+          "line_start": 766,
+          "publication_locator": "cited publication",
+          "quoted_text": "The algorithmic problem we need to solve at each round $t$ is, given an existing model $f_{t-1}$, find a $(\\mu,\\Delta)$-certificate of optimality $(g,h) \\in \\cC$ for $f_{t-1}$ that maximizes $\\mu\\cdot \\Delta$ as computed on the empirical data $D$ --- i.e. to solve:\n\\begin{equation}\n\\label{eq:optproblem}\n(g_t,h_t) =\\arg\\max_{(g,h) \\in \\cC }\\mu_{D}(g)\\cdot (L(D,f_{t-1},g) - L(D,h,g))\n\\end{equation}",
+          "quoted_text_sha256": "510793f210ca22db1a435d3d73377a0a312e3585a521233609c60483418704e3"
+        }
+      ],
+      "source_kind": "equation"
+    },
+    "definition_17_derived_certificate": {
+      "source_anchors": [
+        {
+          "line_end": 865,
+          "line_start": 847,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}\nGiven a ternary valued function $p:\\cX\\rightarrow \\{0,1,?\\}$, the $p$-derived group $g_p$ and model $h_p$ are defined as:\n\\ifdraft\n$$g_p(x) = \\begin{cases}\n      1 & \\text{if } p(x) \\in \\{0,1\\} \\\\\n      0 & \\text{if } p(x) = ?\n   \\end{cases} \\ \\ \\ \\ \\ \\ \\  \\ h_p(x) = \\begin{cases}\n      p(x) & \\text{if } p(x) \\in \\{0,1\\} \\\\\n      0 & \\text{if } p(x) = ?\n   \\end{cases}$$\n\\else $g_p(x) = \\begin{cases}\n      1 & \\text{if } p(x) \\in \\{0,1\\} \\\\\n      0 & \\text{if } p(x) = ?\n   \\end{cases} \\ \\ \\ \\ \\ \\ \\  \\ h_p(x) = \\begin{cases}\n      p(x) & \\text{if } p(x) \\in \\{0,1\\} \\\\\n      0 & \\text{if } p(x) = ?\n   \\end{cases}$ \\fi\nIn other words, interpreting $p(x) = ?$ as the decision for $p$ to ``defer'' on $x$, $g_p$ defines exactly the group of examples that $p$ does \\emph{not} defer on, and $h_p$ is the model that makes the same prediction as $p$ on every example that $p$ does not defer on. Given a class of ternary functions $K$, let the $K$-derived certificates $\\cC_K$ denote the set of pairs $(g_p,h_p)$ that can be so derived from some $p \\in K$: $\\cC_K = \\{(g_p,h_p) : p \\in K\\}$. Similarly let $\\cG_K = \\{g_p : p \\in K\\}$ and $\\cH_K = \\{h_p : p \\in K\\}$ denote the class of group indicator functions and models derived from $K$ respectively.\n\\end{definition}",
+          "quoted_text_sha256": "040766495480f7680dad177378345eb1c933f60d7f86cd0eba49f50c183b0b71"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_18_cost_sensitive_minimizer": {
+      "source_anchors": [
+        {
+          "line_end": 874,
+          "line_start": 868,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}\nA cost-sensitive classification problem is defined by a model class $K$ consisting of functions $p:\\cX\\rightarrow \\cY$, where $\\cY$ is some finite label set,  a distribution $\\cD$ over $\\cX\\times \\cY$, and a set of real valued costs $c_{(x,y)}(\\hat y)$ for each pair $(x, y)$ in the support of $\\cD$ and each label $\\hat y \\in \\cY$. A solution $p^* \\in K$ to the cost-sensitive classification problem $(\\cD, K, \\{c_{(x,y)}\\})$ is given by:\n\\ifdraft\n$$p^* \\in \\arg\\min_{p \\in K} \\E_{(x,y) \\sim \\cD}\\left[ c_{(x,y)}(p(x))\\right]$$\n\\else $p^* \\in \\arg\\min_{p \\in K} \\E_{(x,y) \\sim \\cD}\\left[ c_{(x,y)}(p(x))\\right]$ \\fi\ni.e. the model that minimizes the expected costs for the labels it assigns to points drawn from $\\cD$.\n\\end{definition}",
+          "quoted_text_sha256": "d616aa88020067046d65928adafc9cb02d154922310ed139b364f478dbff4e16"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_19_induced_cost": {
+      "source_anchors": [
+        {
+          "line_end": 889,
+          "line_start": 878,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}\nGiven a binary model $f:\\cX\\rightarrow \\cY$, the induced costs of $f$  are defined as follows:\n\\ifdraft\n$$c^f_{(x,y)}(\\hat y) = \\begin{cases}\n      0 & \\text{if } \\hat y = ? \\\\\n      1 & \\text{if } f(x) = y \\neq \\hat y \\\\\n      -1 & \\text{if } \\hat y = y \\neq f(x) \\\\\n      0 & \\text{otherwise.}\n   \\end{cases}$$\n\\else $c^f_{(x,y)}(\\hat y) = 0$ if $\\hat y = ?$ or if $\\hat y = f(x)$, $c^f_{(x,y)}(\\hat y) = 1$ if $f(x) = y \\neq \\hat y$, and $c^f_{(x,y)}(\\hat y) = -1$ if $\\hat y = y \\neq f(x)$. \\fi\nIntuitively, it costs nothing to defer a decision to the existing model $f$ --- or equivalently, to make the same decision as $f$. On the other hand, making the \\emph{wrong} decision on an example $x$ costs $1$ when $f$ would have made the right decision, and making the right decision ``earns'' $1$ when $f$ would not have.\n\\end{definition}",
+          "quoted_text_sha256": "7c10d7039b19abd9161121d115f134d11d2d3fdcea7730d5974d6b24bbe150fe"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_1_subgroups": {
+      "source_anchors": [
+        {
+          "line_end": 318,
+          "line_start": 312,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}[Subgroups]\nA \\emph{subgroup} of the feature space $\\cX$ will be represented as an indicator function $g:\\cX\\rightarrow \\{0,1\\}$. We say that $x \\in \\cX$ is in group $g$ if $g(x) = 1$ and $x$ is \\emph{not} in group $g$ otherwise. Given a group $g$, we write $\\mu_g(\\cD)$ to denote its measure under the probability distribution $\\cD$:\n\\ifdraft\n$$\\mu_g(\\cD) = \\Pr_\\cD[g(x) = 1].$$\n\\else $\\mu_g(\\cD) = \\Pr_\\cD[g(x) = 1].$ \\fi\nWe write $\\mu_g(D)$ to denote the corresponding empirical measure under $D$, which results from viewing $D$ as the uniform distribution over its elements.\n\\end{definition}",
+          "quoted_text_sha256": "bc5f5e467eb5f77b4113ece5d3392f1aba18c3416da2317b10aff1b64b165986"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_2_model_loss": {
+      "source_anchors": [
+        {
+          "line_end": 330,
+          "line_start": 321,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}[Model Loss]\nGiven a model $f:\\cX\\rightarrow \\cY$\nWe write $L(\\cD,f)$ to denote the average loss of $f$ on distribution $\\cD$:\n\\ifdraft\n$$L(\\cD,f) = \\E_{(x,y) \\sim \\cD}[\\ell(f(x),y)]$$\n\\else $L(\\cD,f) = \\E_{(x,y) \\sim \\cD}[\\ell(f(x),y)]$. \\fi\nWe  write $L(\\cD,f,g)$ to denote the loss on $f$ conditional on membership in $g$:\n$$L(\\cD,f,g) = \\E_{(x,y) \\sim \\cD}[\\ell(f(x),y) | g(x) = 1].$$\nGiven a dataset $D$, we write $L(D,f)$ and $L(D,f,g)$ to denote the corresponding empirical losses on $D$, which result from viewing $D$ as the uniform distribution over its elements.\n\\end{definition}",
+          "quoted_text_sha256": "c90e41f8812b5f6f8967a6b03fe81293153a3d70090b2107632acb51c4869e14"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_3_bayes_optimal": {
+      "source_anchors": [
+        {
+          "line_end": 339,
+          "line_start": 333,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}\nA \\emph{Bayes Optimal} model $f^*:\\cX \\rightarrow \\cY$ with respect to a loss function $\\ell$ and a distribution $\\cD$ satisfies:\n\\ifdraft\n$$f^*(x) \\in \\arg\\min_{y \\in \\cY} \\E_{(x', y') \\sim \\cD}\\left[\\ell(y, y') | x' = x\\right]$$\n\\else $f^*(x) \\in \\arg\\min_{y \\in \\cY} \\E_{(x', y') \\sim \\cD}\\left[\\ell(y, y') | x' = x\\right]$, \\fi\nwhere $f^*(x)$ can be defined arbitrarily for any $x$ that is not in the support of $\\cD$.\n\\end{definition}",
+          "quoted_text_sha256": "bf2bfe24e3809654ae8d4998e9cc3b0696e1606f0d6f8e2a5f656b71170abd06"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_5_approximate_bayes_optimal": {
+      "source_anchors": [
+        {
+          "line_end": 361,
+          "line_start": 354,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}\nA model $f:\\cX\\rightarrow \\cY$ is $(\\epsilon,\\cC)$-Bayes optimal with respect to a collection of (group, model) pairs $\\cC$ if for each $(g,h) \\in \\cC$, the performance of $f$ on $g$ is within $\\epsilon$ of the performance of $h$ on $g$. In other words, for every $(g,h) \\in \\cC$:\n\\ifdraft\n$$L(\\cD,f,g) \\leq L(\\cD,h,g) + \\frac{\\epsilon}{\\mu_g(\\cD)}.$$\n\\else $L(\\cD,f,g) \\leq L(\\cD,h,g) + \\frac{\\epsilon}{\\mu_g(\\cD)}.$ \\fi\nWhen $\\cC$ is a product set $\\cC = \\cG\\times \\cH$, then we call $f$\n``$(\\epsilon,\\cG,\\cH)$-Bayes Optimal\" and the condition is equivalent to requiring that for every $g \\in G$, $f$ has performance on $g$ that is within $\\epsilon$ of the \\emph{best} model $h \\in \\cH$ on $g$. When $\\cG$ and $\\cH$ represent the set of all groups and models respectively, we call $f$ $\\epsilon$-Bayes optimal.\n\\end{definition}",
+          "quoted_text_sha256": "9f89c83313e86dfd04aa253277995964969c4bbdf73feee3924b6ed30dc2fda4"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition_7_certificate": {
+      "source_anchors": [
+        {
+          "line_end": 384,
+          "line_start": 377,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}\nA group indicator function $g:\\cX\\rightarrow \\{0,1\\}$ together with a model $h:\\cX \\rightarrow \\cY$ form a $(\\mu, \\Delta)$-certificate of sub-optimality for a model $f$  under distribution $\\cD$ if:\n\\begin{enumerate}\n    \\item Group $g$ has probability mass at least $\\mu$ under $\\cD$: $\\mu_g(\\cD) \\geq \\mu$, and\n    \\item $h$ improves on the performance of $f$ on group $g$ by at least $\\Delta$: $L(\\cD,f,g) \\geq L(\\cD,h,g) + \\Delta$\n\\end{enumerate}\n\\ifdraft We say that $(g,h)$ form a certificate of sub-optimality for $f$ if they form a $(\\mu,\\Delta)$-certificate of optimality for $f$ for any constants $\\mu,\\Delta > 0$. \\fi\n\\end{definition}",
+          "quoted_text_sha256": "9d7e241c99778caad7ed8bf0b3d00ddda7fd48efd3beb1fe8eb496d7ac696c63"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "lemma_15_vc_uniform_convergence": {
+      "source_anchors": [
+        {
+          "line_end": 779,
+          "line_start": 773,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}[Adapted from \\citep{gerrymandering}]\n\\label{lem:samplecomplexity}\nLet $\\cG$ denote a class of group indicator functions with VC-dimension $d_G$ and $\\cH$ denote a class of binary models with VC-dimension $d_H$.  Let $f$ be an arbitrary binary model. Then if:\n $$n \\geq \\tilde O\\left(\\frac{(d_H + d_G) + \\log(1/\\delta)}{\\eta^2} \\right)$$\n we have that with probability $1-\\delta$ over the draw of a dataset $D \\sim \\cD^n$, for every $g \\in \\cG$ and $h \\in \\cH$:\n $$\\left|\\mu_{\\cD}(g)\\cdot (L(\\cD,f,g) - L(\\cD,h,g)) - \\mu_{D}(g_p)\\cdot (L(D,f,g) - L(D,h,g)) \\right| \\leq \\eta$$\n\\end{lemma}",
+          "quoted_text_sha256": "2df93ad70145886937cc76fe6c411cd87f0c6c05d750cbd6e3b22b4624ceff96"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_21_fixed_group_erm": {
+      "source_anchors": [
+        {
+          "line_end": 942,
+          "line_start": 939,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{lemma}{lemhopt}\n\\label{lem:hopt}\n Fix any $g_t \\in \\cG$ and dataset $D \\in \\cX^n$. Let $D_{g_t} = \\{(x,y) \\in \\cD : g_t(x) = 1\\}$ be the subset of $D$ consisting of members of group $g$. Let $h^* = \\arg\\min_{h \\in \\cH} L(D_{g_t},h)$. Then $h^*$ is a solution to optimization problem \\ref{eq:hmin}.\n\\end{restatable}",
+          "quoted_text_sha256": "29929f1e2a091fc87f2731103feabe2dcb24f5f88e7b067c2c988e3c74e076e4"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma_22_fixed_model_erm": {
+      "source_anchors": [
+        {
+          "line_end": 966,
+          "line_start": 957,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{lemma}{lemgopt}\n\\label{lem:gopt}\n Fix any $h_t \\in \\cH$ and dataset $D \\in \\cX^n$. Let:\n \\ifdraft\n $$D_{h_t}^1 = \\{(x,y) \\in D : h_t(x) = y \\neq f_{t-1}(x)\\} \\ \\ \\ \\ D_{h_t}^0 = \\{(x,y) \\in D : h_t(x) \\neq y = f_{t-1}(x)\\}$$\n\n$$D_{h_t} = \\left(\\bigcup_{(x,y) \\in D_{h_t}^1} (x, 1)\\right) \\cup \\left(\\bigcup_{(x,y) \\in D_{h_t}^0} (x, 0)\\right)$$\n\\else $D_{h_t}^1 = \\{(x,y) \\in D : h_t(x) = y \\neq f_{t-1}(x)\\}$, $D_{h_t}^0 = \\{(x,y) \\in D : h_t(x) \\neq y = f_{t-1}(x)\\}$, and $D_{h_t} = \\left(\\bigcup_{(x,y) \\in D_{h_t}^1} (x, 1)\\right) \\cup \\left(\\bigcup_{(x,y) \\in D_{h_t}^0} (x, 0)\\right)$. \\fi\nLet $g^* = \\arg\\min_{g \\in \\cG} L(D_{h_t},g)$. Then $g^*$ is a solution to optimization problem \\eqref{eq:gmin}.\n\\end{restatable}",
+          "quoted_text_sha256": "6660759ec52b46615a68727c9248b70189c2bda3e25991cc1e60e116c01951a9"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "observation_4_bayes_groupwise": {
+      "source_anchors": [
+        {
+          "line_end": 348,
+          "line_start": 342,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{observation}\n\\label{obs:BO}\nFixing a loss function $\\ell$ and a distribution $\\cD$, $f^*$ is a Bayes optimal model if and only if for every group $g$ and every alternative model $h$:\n\\ifdraft\n$$L(\\cD, f^*, g) \\leq L(\\cD, h, g)$$\n\\else $L(\\cD, f^*, g) \\leq L(\\cD, h, g)$.\\fi\n\\end{observation}",
+          "quoted_text_sha256": "99505dc98b73cac9f22bc06cee0c3db7295f535594c4a166bb9a7e77cbfee9eb"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "remark_13_complexity_independence": {
+      "source_anchors": [
+        {
+          "line_end": 661,
+          "line_start": 659,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{remark}\nNote that FalsifyAndUpdate has sample complexity scaling only logarithmically with the total number of submissions $U$ that we can accept, and no dependence on the complexity of the submissions. This means that a relatively small holdout dataset $D$ is sufficient to run an extremely long-running bias bounty program (i.e. handling a number of submissions that is exponentially large in the size of the holdout set) that automatically updates the current model whenever submissions are accepted and bounties are awarded.\n\\end{remark}",
+          "quoted_text_sha256": "238a13e6986f311d25dad74617a3990b6ef1a7a8a725a94038b7fc17a6155af4"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "source_model_supervised_learning": {
+      "source_anchors": [
+        {
+          "line_end": 311,
+          "line_start": 310,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\section{Preliminaries}\nWe consider a supervised learning problem defined over \\emph{labelled examples} $(x,y) \\in \\cX \\times \\cY$. This can represent (for example) a binary classification problem if $\\cY = \\{0,1\\}$, a discrete multiclass classification problem if $\\cY = \\{1,\\ldots,k\\}$, or a regression problem if $\\cY = \\mathbb{R}$. We write $\\cD$ to denote a joint probability distribution over labelled examples: $\\cD \\in \\Delta (\\cX \\times \\cY)$. We will write $D \\sim \\cD^n$ to denote a dataset consisting of $n$ labelled examples sampled i.i.d. from $\\cD$. Our goal is to learn some \\emph{model} represented as a function $f:\\cX\\rightarrow \\cY$ which aims to predict the label of an example from its features, and we will evaluate the performance of our model with a loss function $\\ell:\\cY\\times \\cY \\rightarrow [0,1]$, where $\\ell(\\hat y, y)$ represents the ``cost'' of mistakenly labelling an example that has true label $y$ with the prediction $f(x) = \\hat y$. We will be interested in the performance of models $f$ not just \\emph{overall} on the underlying distribution, but also on particular subgroups of interest. A subgroup corresponds to an arbitrary subset of the feature space $\\cX$, which we will model using an indicator function:",
+          "quoted_text_sha256": "1a7fcc5cd8080abe228f083435e933ec4f24cbb126ffd511c4f0c4702e3a64ca"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "theorem_10_update_bound": {
+      "source_anchors": [
+        {
+          "line_end": 464,
+          "line_start": 461,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{updatebound}\n\\label{thm:updatebound}\nFix any $\\epsilon > 0$. For any initial model $f_0$ with loss $L(\\cD,f_0) = \\ell_0$ and any sequence of models $f_1,\\ldots,f_T$, such that $f_i = \\textrm{ListUpdate}(f_{i-1},(g_{i},h_{i}))$ and each pair $(g_i,h_{i})$ forms a $(\\mu,\\Delta)$-certificate of suboptimality for $f_{i-1}$ for some $\\mu, \\Delta$ such that  $\\mu\\cdot \\Delta \\geq \\epsilon$, the length of the update sequence must be at most $T \\leq \\frac{\\ell_0}{\\epsilon} \\leq \\frac{1}{\\epsilon}$.\n\\end{restatable}",
+          "quoted_text_sha256": "97d8fbc8cee9776f6ec7e9c332da013b4229167736216ebd8f84b79443a2892a"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_11_adaptive_checker": {
+      "source_anchors": [
+        {
+          "line_end": 561,
+          "line_start": 549,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{certchecker}\n\\label{thm:adaptive}\nLet $\\cD \\in \\Delta(\\cX \\times \\cY)$ be any distribution over labelled examples, and let $D \\sim \\cD^n$ be a holdout dataset consisting of $n$ i.i.d. samples from $\\cD$. Suppose:\n\\ifdraft\n$$n \\geq \\frac{65 \\ln(2U/\\delta')}{\\epsilon^3}$$\n\\else $n \\geq \\frac{65 \\ln(2U/\\delta')}{\\epsilon^3}$. \\fi\nLet $\\pi$ be the output stream generated by CertificateChecker$(\\epsilon,D,(f_1,g_1,h_1),\\ldots)$ (Algorithm \\ref{alg:checker}).\nThen for any possibly adaptive process generating a stream of up to $U$ submissions $(f_i,g_i,h_i)$ as a function of the output stream $\\pi \\in \\{\\bot,\\top\\}^*$, with probability $1-\\delta$ over the randomness of $D$:\n\\begin{enumerate}\n    \\item For every round $i$ such that $\\pi_i = \\bot$ (the submission is rejected), we have that $(g_i,h_i)$ is not a $(\\mu,\\Delta)$ certificate of sub-optimality for $f_i$ for any $(\\mu,\\Delta)$ with $\\mu\\cdot \\Delta \\geq \\epsilon$. And:\n    \\item For every round $i$ such that $\\pi_i = \\top$ (the submission is accepted), we have that $(g_i,h_i)$ is a $(\\mu,\\Delta)$-certificate of sub-optimality for $f_i$ for $\\mu\\cdot\\Delta \\geq \\epsilon/2$.\n\\end{enumerate}\n\\end{restatable}",
+          "quoted_text_sha256": "0d7ac360acd8ef14240a2c44b5580a4312d97d7278f4fa3b076c448cc5ec6102"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_12_falsify_and_update": {
+      "source_anchors": [
+        {
+          "line_end": 645,
+          "line_start": 633,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{bountySC}\n\\label{thm:bounty-SC}\nFix any $\\epsilon,\\delta > 0$. Let $\\cD \\in \\Delta(\\cX \\times \\cY)$ be any distribution over labelled examples, and let $D \\sim \\cD^n$ be a holdout dataset consisting of $n$ i.i.d. samples from $\\cD$. Suppose:\n\\ifdraft\n$$n \\geq \\frac{65 \\ln(2U/\\delta')}{\\epsilon^3}.$$\n\\else $n \\geq \\frac{65 \\ln(2U/\\delta')}{\\epsilon^3}.$ \\fi\nThen for any (possibly adaptive) process generating a sequence of at most $U$ submissions $\\{(g_i,h_i)\\}_{i=1}^U$, with probability at least $1-\\delta$, we have that FalsifyAndUpdate$(\\epsilon,D,\\cdots)$ satisfies:\n\\begin{enumerate}\n    \\item If $(g_i,h_i)$ is rejected, then $(g_i,h_i)$ is not a $(\\mu,\\Delta)$-certificate of sub-optimality for $f_t$, where $f_t$ is the current model at the time of submission $i$, for any $\\mu, \\Delta$ such that $\\mu\\cdot \\Delta \\geq \\epsilon$.\n    \\item If $(g_i,h_i)$ is accepted, then $(g_i,h_i)$ is a $(\\mu,\\Delta)$-certificate of sub-optimality for $f_t$, where $f_t$ is the current model at the time of submission $i$, for some $\\mu, \\Delta$ such that $\\mu\\cdot \\Delta \\geq \\frac{\\epsilon}{2}$. Moreover, the new model $f_{t+1}$ output satisfies $L(\\cD,f_{t+1}, g_i) = L(\\cD, h_i, g_i)$ and $L(\\cD,f_{t+1}) \\leq L(\\cD,f_t) - \\frac{\\epsilon}{2}$.\n    \\item FalsifyAndUpdate does not halt before receiving all $U$ submissions.\n\\end{enumerate}\n\\end{restatable}",
+          "quoted_text_sha256": "e6c6750ec6fc782f80283c20f962c9e3b8a3530cd9dc91e4fdf1af0600867ef3"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_14_monotone_bounty": {
+      "source_anchors": [
+        {
+          "line_end": 726,
+          "line_start": 717,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{bountymonotone}\n\\label{thm:bounty-monotone-SC}\nFix any $\\epsilon,\\delta > 0$. Let $\\cD \\in \\Delta(\\cX \\times \\cY)$ be any distribution over labelled examples, and let $D \\sim \\cD^n$ be a holdout dataset consisting of $n$ i.i.d. samples from $\\cD$. Suppose: \\ifdraft\n$$n \\geq \\frac{65 \\ln\\left(\\frac{2(U+\\frac{8}{\\epsilon^3})}{\\delta'}\\right)}{\\epsilon^3}.$$\n\\else $n \\geq \\frac{65 \\ln\\left(\\frac{2(U+\\frac{8}{\\epsilon^3})}{\\delta'}\\right)}{\\epsilon^3}.$\\fi\nThen for any (possibly adaptive) process generating a sequence of at most $U$ submissions $\\{(g_i,h_i)\\}_{i=1}^U$, with probability at least $1-\\delta$, we have that MonotoneFalsifyAndUpdate$(\\epsilon,D,\\cdots)$ satisfies all of the properties proven in Theorem \\ref{thm:bounty-SC} for FalsifyAndUpdate, and additionally satisfies the following error monotonicity property. Consider any model $f_t$ that is output, and any group $g_j \\in \\cG(f_t)$. Then:\n\\ifdraft\n$$L(\\cD,f_t,g_j) \\leq \\min_{\\ell < t} L(\\cD, f_{\\ell}, g_j) + \\frac{\\epsilon}{\\mu_\\cD(g_j)} $$\n\\else $L(\\cD,f_t,g_j) \\leq \\min_{\\ell < t} L(\\cD, f_{\\ell}, g_j) + \\frac{\\epsilon}{\\mu_\\cD(g_j)}$. \\fi\n\\end{restatable}",
+          "quoted_text_sha256": "341b7bb503ccffb9af963edba57b99c70f1971260156796ac376fdcd8111099d"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_16_train_by_opt": {
+      "source_anchors": [
+        {
+          "line_end": 822,
+          "line_start": 816,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{samplecomplexity}\nFix an arbitrary distribution $\\cD$ over $\\cX\\times \\cY$, a class of group indicator functions $\\cG$ of VC-dimension $d_G$ and a class of binary models $\\cH$ of VC-dimension $d_H$. Let $\\cC \\subseteq \\cG \\times \\cH$ and $\\epsilon > 0$ be arbitrary.  If: \\ifdraft\n$$n \\geq \\tilde O\\left(\\frac{(d_H + d_G) + \\log(1/\\delta)}{\\epsilon^3} \\right)$$\n\\else $n \\geq \\tilde O\\left(\\frac{(d_H + d_G) + \\log(1/\\delta)}{\\epsilon^3} \\right)$ \\fi\nand $D \\sim \\cD^n$,\nthen with probability $1-\\delta$,  TrainByOpt$(D,\\cC,\\epsilon)$ (Algorithm \\ref{alg:TrainByOpt}) returns a model $f$ that is $(\\epsilon,\\cC)$-Bayes optimal, using at most $2/\\epsilon$ calls to a sub-routine for solving the optimization problem over $(g,h) \\in \\cC$ given in \\eqref{eq:optproblem}.\n\\end{restatable}",
+          "quoted_text_sha256": "2599b5077efa8f36def625637c5f6b83e9bcf94c1f1ff68c305beed4bdee08c8"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_20_ternary_reduction": {
+      "source_anchors": [
+        {
+          "line_end": 900,
+          "line_start": 893,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{lemCSC}\n\\label{lem:CSC}\nFix an arbitrary distribution $\\cD$ over $\\cX\\times \\cY$, let $K$ be a class of ternary valued functions, and let $f:\\cX\\rightarrow \\{0,1\\}$ be any binary valued model. Let $p^*$ be a solution to the cost-sensitive classification problem $(\\cD, K, \\{c_{(x,y)}^f\\})$, where $c_{(x,y)}^f$ are the induced costs of $f$. We have that:\n\\ifdraft\n$$(g_{p^*},h_{p^*}) \\in \\arg\\max_{(g,h) \\in \\cC_K }\\mu_{\\cD}(g)\\cdot (L(\\cD,f,g) - L(\\cD,h,g))$$\n\\else $(g_{p^*},h_{p^*}) \\in \\arg\\max_{(g,h) \\in \\cC_K }\\mu_{\\cD}(g)\\cdot (L(\\cD,f,g) - L(\\cD,h,g))$. \\fi\nIn other words, when $\\cD$ is the empirical distribution over $D$, $(g_{p^*},h_{p^*})$ form a solution to optimization problem \\eqref{eq:optproblem}.\n\\end{restatable}",
+          "quoted_text_sha256": "ad2c223bfdb79bf2abbd33748b1ee0d782f76b2786ba68dcc67249b08b71c4d9"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_23_coordinate_ascent": {
+      "source_anchors": [
+        {
+          "line_end": 1014,
+          "line_start": 1008,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{localopt}\nLet $D \\in (\\cX\\times\\cY)^n$ be an arbitrary dataset, $f_{t-1}:\\cX\\rightarrow \\cY$ be an arbitrary model, $\\cG$ and $\\cH$ be arbitrary group and model classes, and $\\epsilon > 0$. Then after solving at most $2/\\epsilon$ empirical risk minimization problems over each of $\\cG$ and $\\cH$, AltMinCertificateFinder (Algorithm \\ref{alg:altmin}) returns a $(\\mu,\\Delta)$-certificate of sub-optimality $(g_t,h_t)$ for $f_{t-1}$  that is an $\\epsilon$-approximate local optimum (or saddle point) in the sense that:\n\\begin{enumerate}\n    \\item For every $h \\in \\cH$, $(g_t,h)$ is not a $(\\mu', \\Delta')$ certificate of sub-optimality for $f_{t-1}$ for any $\\mu'\\cdot \\Delta' \\geq \\mu\\cdot \\Delta + \\epsilon$, and\n    \\item For every $g \\in \\cG$, $(g,h_t)$ is not a $(\\mu', \\Delta')$ certificate of sub-optimality for $f_{t-1}$ for any $\\mu'\\cdot \\Delta' \\geq \\mu\\cdot \\Delta + \\epsilon$\n\\end{enumerate}\n\\end{restatable}",
+          "quoted_text_sha256": "19b6115163fb95e1677934a24e545b1c62bbdf747e2c692c27ea911999fcd845"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_8_certificate_characterization": {
+      "source_anchors": [
+        {
+          "line_end": 392,
+          "line_start": 389,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{BOQ}\n\\label{thm:BOQ}\nFix any $\\epsilon > 0$, and any collection of (group,model) pairs $\\cC$. There exists a $(\\mu,\\Delta)$-certificate of sub-optimality $(g,h) \\in \\cC$ for $f$ if and only if $f$ is not $(\\epsilon,\\cC)$-Bayes optimal for $\\epsilon < \\mu\\Delta$.\n\\end{restatable}",
+          "quoted_text_sha256": "132526e975f276fc7ff68ea1a7e4e95f875bab15255cd1d0a9c2fb522b3308ac"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_9_list_update_progress": {
+      "source_anchors": [
+        {
+          "line_end": 433,
+          "line_start": 426,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{progress}\n\\label{thm:progress}\nAlgorithm \\ref{alg:basic} (ListUpdate) has the following properties. If $(g_{t+1},h_{t+1})$ form a $(\\mu,\\Delta)$-certificate of sub-optimality for $f_{t}$, and $f_{t+1} = \\textrm{ListUpdate}(f_t,(g_{t+1},h_{t+1}))$ then:\n\\begin{enumerate}\n    \\item The new model matches the performance of $h_{t+1}$ on group $g_{t+1}$: $L(\\cD,f_{t+1},g_{t+1}) = L(\\cD, h_{t+1},g_{t+1})$, and\n    \\item The overall performance of the model is improved by at least $\\mu\\cdot \\Delta$: $L(\\cD, f_{t+1}) \\leq L(\\cD, f_t) - \\mu\\cdot \\Delta$.\n\\end{enumerate}\n\\end{restatable}",
+          "quoted_text_sha256": "12634da9a1c97adef17ed82aa0a0c00cb74f92beff204fc421702eabc507870c"
+        }
+      ],
+      "source_kind": "theorem"
+    }
+  },
+  "source_artifact_sha256": "138f9031c66f3688e484aec30eee2152ed3e3f6ea002d1b31f3ea786b15cd155",
+  "source_coverage_mode": "named_theoretical_statements"
+}

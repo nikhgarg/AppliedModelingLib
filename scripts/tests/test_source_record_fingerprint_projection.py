@@ -101,7 +101,7 @@ class SourceRecordFingerprintProjectionTests(unittest.TestCase):
         assert isinstance(fingerprint, dict)
         return fingerprint
 
-    def _cache_patches(self, *, selected: Mock, transition: Mock):
+    def _cache_patches(self):
         return (
             patch.object(
                 AUDIT,
@@ -116,9 +116,6 @@ class SourceRecordFingerprintProjectionTests(unittest.TestCase):
                 AUDIT, "source_record_raw_scan_completeness_error", return_value=""
             ),
             patch.object(
-                AUDIT, "direct_route_diagnostic_rebind_error", return_value=""
-            ),
-            patch.object(
                 AUDIT,
                 "source_record_saved_statement_ledger_coverages",
                 return_value=(set(), set()),
@@ -128,12 +125,6 @@ class SourceRecordFingerprintProjectionTests(unittest.TestCase):
                 "refresh_existing_judgment_summary",
                 return_value={"reused": True},
             ),
-            patch.object(
-                AUDIT,
-                "validate_source_record_partial_to_formalized_transition",
-                transition,
-            ),
-            patch.object(AUDIT, "selected_surface_rebind_context", selected),
         )
 
     def _write_reusable_raw(self, fingerprint: dict[str, object]) -> tuple[str, str]:
@@ -174,10 +165,8 @@ class SourceRecordFingerprintProjectionTests(unittest.TestCase):
         self._write_inputs()
         self.assertEqual(self._fingerprint(), baseline)
 
-        selected = Mock(side_effect=AssertionError("exact reuse must not rebind"))
-        transition = Mock(side_effect=AssertionError("exact reuse must not transition"))
         with ExitStack() as stack:
-            for item in self._cache_patches(selected=selected, transition=transition):
+            for item in self._cache_patches():
                 stack.enter_context(item)
             self.assertEqual(
                 AUDIT.reusable_source_record_audit(
@@ -189,19 +178,15 @@ class SourceRecordFingerprintProjectionTests(unittest.TestCase):
                 ),
                 {"reused": True},
             )
-        selected.assert_not_called()
-        transition.assert_not_called()
 
         # Changing an effective source-record row selector is a raw-generator
-        # input.  It must neither match the narrow fingerprint nor be waved
-        # through a selected-surface receipt.
+        # input. It must not match the narrow fingerprint and therefore
+        # requires a fresh raw receipt.
         surface["include_names"] = ["endpoint", "new_endpoint"]
         self._write_inputs()
         self.assertNotEqual(self._fingerprint(), baseline)
-        selected = Mock(return_value=(None, Path("receipt"), "generator input changed"))
-        transition = Mock(return_value="not a partial-to-formalized transition")
         with ExitStack() as stack:
-            for item in self._cache_patches(selected=selected, transition=transition):
+            for item in self._cache_patches():
                 stack.enter_context(item)
             self.assertIsNone(
                 AUDIT.reusable_source_record_audit(
@@ -212,7 +197,6 @@ class SourceRecordFingerprintProjectionTests(unittest.TestCase):
                     paper_statement_map_semantic_sha256=semantic,
                 )
             )
-        selected.assert_called_once()
 
     def test_semantic_model_and_fidelity_context_changes_remain_pinned(self) -> None:
         baseline = self._fingerprint()
@@ -351,10 +335,8 @@ class SourceRecordFingerprintProjectionTests(unittest.TestCase):
         )
         self.assertNotEqual(self._fingerprint(), baseline)
 
-        selected = Mock(return_value=(None, Path("receipt"), "assumption role changed"))
-        transition = Mock(return_value="not a partial-to-formalized transition")
         with ExitStack() as stack:
-            for item in self._cache_patches(selected=selected, transition=transition):
+            for item in self._cache_patches():
                 stack.enter_context(item)
             self.assertIsNone(
                 AUDIT.reusable_source_record_audit(
@@ -365,7 +347,6 @@ class SourceRecordFingerprintProjectionTests(unittest.TestCase):
                     paper_statement_map_semantic_sha256=semantic,
                 )
             )
-        selected.assert_called_once()
 
     def test_legacy_v7_receipt_reissues_without_producer_code_identity(self) -> None:
         full, semantic = AUDIT.paper_statement_map_cache_receipts(self.paper_dir)
@@ -382,10 +363,8 @@ class SourceRecordFingerprintProjectionTests(unittest.TestCase):
         self.assertNotEqual(self._fingerprint(), legacy)
         self._write_reusable_raw(legacy)
 
-        selected = Mock(side_effect=AssertionError("code drift must not rebind"))
-        transition = Mock(side_effect=AssertionError("code drift must not transition"))
         with ExitStack() as stack:
-            for item in self._cache_patches(selected=selected, transition=transition):
+            for item in self._cache_patches():
                 stack.enter_context(item)
             self.assertIsNone(
                 AUDIT.reusable_source_record_audit(
@@ -396,8 +375,6 @@ class SourceRecordFingerprintProjectionTests(unittest.TestCase):
                     paper_statement_map_semantic_sha256=semantic,
                 )
             )
-        selected.assert_not_called()
-        transition.assert_not_called()
 
     def test_evidence_gate_rejects_legacy_v7_without_producer_code_identity(self) -> None:
         """A v7 receipt cannot bypass the automatic raw-producer binding."""

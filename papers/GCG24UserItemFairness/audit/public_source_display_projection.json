@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "GCG24UserItemFairness",
-  "private_source_map_sha256": "10b974d48ded5d970340eeb163be1bf389549456d33f4d69bfe9683ffb3e6ac1",
+  "private_source_map_sha256": "6f5b351d593758acb4d115093cf5d139af970ea267831657d1d9b4a5ad6527d8",
   "public_manifest_path": "papers/GCG24UserItemFairness/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "cf9f61e83e362abb3beb028eef19eb5409ad3a2239f1ac77177cf74f06834c20",
+  "public_source_map_sha256": "6908b7c647ef70c92171f4ef66608c2483acdb96109150a4cd399629e04e6aa6",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
@@ -42,8 +42,7 @@
     "source_example1_homogeneous_tradeoff",
     "theorem3_price_decreases_first_half",
     "theorem3_price_increases_second_half",
-    "theorem4_misestimation_tradeoff_typeOne",
-    "theorem4_misestimation_tradeoff_typeZero",
+    "theorem4_misestimation_tradeoff",
     "theorem4_misestimation_without_fairness_universal",
     "userFairness"
   ],
@@ -531,19 +530,57 @@
       ],
       "source_kind": "theorem"
     },
-    "theorem4_misestimation_tradeoff_typeOne": {
-      "source_anchors": [
+    "theorem4_misestimation_tradeoff": {
+      "semantic_context": [
         {
-          "line_end": 476,
-          "line_start": 456,
-          "publication_locator": "cited publication",
-          "quoted_text": "\fTheorem 4. If β > n1 and w and ŵ are as described above, then fairness constraints can arbitrarily\nworsen the price of misestimation.\n• The price of misestimation without fairness constraints is low: for all {vj }, there is a\n∗\nrecommendation policy ρ̂ that solves the misestimated problem Umin\n(0, ŵ) so that\nM\nπU\n(0, w, ŵ) ≤\n\n1\n.\n2\n\n• The price of misestimation with fairness constraints can be arbitrarily large: ∀ϵ, there exists\n∗\n{vj } and a recommendation policy ρ̂ that solves the problem Umin\n(1, ŵ) such that\nM\nπU\n(1, w, ŵ) > 1 − ϵ.",
-          "quoted_text_sha256": "2d8a3d2c085053ff20cbf7d1fa71e9a53bfdd4ac09c84c19b19d7ec7c3a5a072"
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 174,
+              "line_start": 152,
+              "publication_locator": "cited publication",
+              "quoted_text": "fairness desiderata as follows. At the extremes, the platform could choose a maximally fair solution\n∗\nfor one side, ignoring the other. Denote the optimal user fair utility as Umin\n(w) := maxρ Umin (ρ, w)\n(achieved by giving each user their favorite item deterministically), and the optimal item fair utility\n∗\nas Imin\n(w) := maxρ Imin (ρ, w).\nFinally, we cast the two-sided fair optimization – for the optimal γ-constrained user fair solution – as\n∗\nUmin\n(γ, w) = max Umin (ρ, w)\nρ\n\n(1)\n\n∗\nsubject to Imin (ρ, w) ≥ γImin\n(w),\n\ni.e., we maximize the minimum normalized user utility, subject to the minimum normalized item\nutility being at least a fraction γ of the optimal item fair solution.\nResearch questions: price of fairness and misestimation. We can now define the price of item",
+              "quoted_text_sha256": "617e1da22a2efaee5a4a2a40a707811082c885e1471d3b2a3ffda4ff31ee1639"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 225,
+              "line_start": 199,
+              "publication_locator": "cited publication",
+              "quoted_text": "Similarly, we investigate the price of misestimation. Let ŵij denote the platform’s estimate of the\nutility of recommending i to j; let ρ̂(γ) be a policy that solves the optimization problem above with\n3\n\n\f∗\nmisestimated utilities, that is, ρ̂(γ) attains Umin\n(γ, ŵ).1 Then we define the price of misestimation\nM\non user utility (“price of misestimation”) πU as\nM\n(γ, w, ŵ) :=\nπU\n\n∗\nUmin\n(γ, w) − Umin (ρ̂(γ), w)\n,\n∗ (γ, w)\nUmin\n\nthat is, the decrease in true user fairness due to optimizing with estimated utilities. In particular, in\nSection 5 we will examine whether item fairness exacerbates the price of misestimation by comparing\nM\nM\nπU\n(0, w, ŵ) and πU\n(1, w, ŵ), particularly in the case of cold start users.",
+              "quoted_text_sha256": "562e5c5a7d814695db5332066800a28222f3407e0f0e70e4113194097e18f093"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 374,
+              "line_start": 367,
+              "publication_locator": "cited publication",
+              "quoted_text": "\fWe now formalize and generalize this example, when the level of heterogeneity in the population\ncan be captured by a single parameter. Consider the following utility matrix structure. Let v1 >\nv2 > ... > vn > 0. Suppose that there are two user types: a user i either has utility wij = vj or\nwij = vn−j+1 , and say that user i is of type 1 or 2 respectively. In words, the two types have opposite\npreferences, but the preferences can otherwise be generic and be for any number of items. Now, the\ndirect solution by symmetry for the example no longer directly holds – the items in the middle, not\nnecessarily preferred by either user type, may be binding in terms of item fairness constraints.\nLet α be the proportion of type 1 users in the population, out of a fixed population of m users.",
+              "quoted_text_sha256": "a323caf1cbfe2df7ff10cde7abcf9179074d567870998a120522260f8c2a0d5a"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 452,
+              "line_start": 443,
+              "publication_locator": "cited publication",
+              "quoted_text": "We now formalize the above argument, building on the analysis in the previous section. As in\nSection 4, suppose that there are 2 types of users, with opposing preferences (i.e., with values\nv1 , v2 ..., vn and vn , vn−1 , ..., v1 , respectively) – and the platform has correctly estimated these\npreferences. However, now, these two types only make up a proportion β of the population each.\nNow, we suppose that there is a fraction 1 − β of the user population who are “new” users. We assume\nthat these users are drawn from the same distribution as the remaining users, but the platform does\nnot know their preferences. It thus constructs a prior by averaging over the known users’ preferences\nv +v\n– (mis)estimating the users’ utility for each item j as j n−j+1\n.",
+              "quoted_text_sha256": "373d10076e9ebcdbd57133e65a9b801112c2383e9e9c314eadef3a40f31ea865"
+            }
+          ]
         }
       ],
-      "source_kind": "theorem"
-    },
-    "theorem4_misestimation_tradeoff_typeZero": {
       "source_anchors": [
         {
           "line_end": 476,
@@ -556,6 +593,56 @@
       "source_kind": "theorem"
     },
     "theorem4_misestimation_without_fairness_universal": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 174,
+              "line_start": 152,
+              "publication_locator": "cited publication",
+              "quoted_text": "fairness desiderata as follows. At the extremes, the platform could choose a maximally fair solution\n∗\nfor one side, ignoring the other. Denote the optimal user fair utility as Umin\n(w) := maxρ Umin (ρ, w)\n(achieved by giving each user their favorite item deterministically), and the optimal item fair utility\n∗\nas Imin\n(w) := maxρ Imin (ρ, w).\nFinally, we cast the two-sided fair optimization – for the optimal γ-constrained user fair solution – as\n∗\nUmin\n(γ, w) = max Umin (ρ, w)\nρ\n\n(1)\n\n∗\nsubject to Imin (ρ, w) ≥ γImin\n(w),\n\ni.e., we maximize the minimum normalized user utility, subject to the minimum normalized item\nutility being at least a fraction γ of the optimal item fair solution.\nResearch questions: price of fairness and misestimation. We can now define the price of item",
+              "quoted_text_sha256": "617e1da22a2efaee5a4a2a40a707811082c885e1471d3b2a3ffda4ff31ee1639"
+            }
+          ]
+        },
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 225,
+              "line_start": 199,
+              "publication_locator": "cited publication",
+              "quoted_text": "Similarly, we investigate the price of misestimation. Let ŵij denote the platform’s estimate of the\nutility of recommending i to j; let ρ̂(γ) be a policy that solves the optimization problem above with\n3\n\n\f∗\nmisestimated utilities, that is, ρ̂(γ) attains Umin\n(γ, ŵ).1 Then we define the price of misestimation\nM\non user utility (“price of misestimation”) πU as\nM\n(γ, w, ŵ) :=\nπU\n\n∗\nUmin\n(γ, w) − Umin (ρ̂(γ), w)\n,\n∗ (γ, w)\nUmin\n\nthat is, the decrease in true user fairness due to optimizing with estimated utilities. In particular, in\nSection 5 we will examine whether item fairness exacerbates the price of misestimation by comparing\nM\nM\nπU\n(0, w, ŵ) and πU\n(1, w, ŵ), particularly in the case of cold start users.",
+              "quoted_text_sha256": "562e5c5a7d814695db5332066800a28222f3407e0f0e70e4113194097e18f093"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 374,
+              "line_start": 367,
+              "publication_locator": "cited publication",
+              "quoted_text": "\fWe now formalize and generalize this example, when the level of heterogeneity in the population\ncan be captured by a single parameter. Consider the following utility matrix structure. Let v1 >\nv2 > ... > vn > 0. Suppose that there are two user types: a user i either has utility wij = vj or\nwij = vn−j+1 , and say that user i is of type 1 or 2 respectively. In words, the two types have opposite\npreferences, but the preferences can otherwise be generic and be for any number of items. Now, the\ndirect solution by symmetry for the example no longer directly holds – the items in the middle, not\nnecessarily preferred by either user type, may be binding in terms of item fairness constraints.\nLet α be the proportion of type 1 users in the population, out of a fixed population of m users.",
+              "quoted_text_sha256": "a323caf1cbfe2df7ff10cde7abcf9179074d567870998a120522260f8c2a0d5a"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 452,
+              "line_start": 443,
+              "publication_locator": "cited publication",
+              "quoted_text": "We now formalize the above argument, building on the analysis in the previous section. As in\nSection 4, suppose that there are 2 types of users, with opposing preferences (i.e., with values\nv1 , v2 ..., vn and vn , vn−1 , ..., v1 , respectively) – and the platform has correctly estimated these\npreferences. However, now, these two types only make up a proportion β of the population each.\nNow, we suppose that there is a fraction 1 − β of the user population who are “new” users. We assume\nthat these users are drawn from the same distribution as the remaining users, but the platform does\nnot know their preferences. It thus constructs a prior by averaging over the known users’ preferences\nv +v\n– (mis)estimating the users’ utility for each item j as j n−j+1\n.",
+              "quoted_text_sha256": "373d10076e9ebcdbd57133e65a9b801112c2383e9e9c314eadef3a40f31ea865"
+            }
+          ]
+        }
+      ],
       "source_anchors": [
         {
           "line_end": 476,

@@ -1,0 +1,1245 @@
+{
+  "approved_review_context_schema": 1,
+  "generated_at": "2026-08-08T00:00:00Z",
+  "items": {
+    "centralization_gain_relative_identity": {
+      "aliases": [
+        "eq:aligned-pooling-gain"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_relative_centralization_gain_identity"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "LG24ServiceLevelAgreements.paper_relative_centralization_gain_identity",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "LG24ServiceLevelAgreements.paper_relative_centralization_gain_identitySpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 1127,
+          "line_start": 1115,
+          "publication_locator": "cited publication",
+          "quoted_text": "analogously to above. Then, the relative centralization gain is\n\n\n\n\n\\begin{equation}\n\\begin{aligned}\n  &1-\\frac{G^{\\mathrm{city}}(s,z^{\\mathrm{city}})}{G(s,z^{\\mathrm{eff}})}\\\\[-2pt]\n  &\\qquad=\\frac{A_{\\mathrm{eff}}(s)^2-A^{\\mathrm{city}}(s)^2}\n  {E(s)G(s,z^{\\mathrm{eff}})}.\n\\end{aligned}\n  \\label{eq:aligned-pooling-gain}\n\\end{equation}",
+          "quoted_text_sha256": "1e4d7c64197ba9b0fc3a98da2b05cdd79fecd56809d6d40b48a9d83042061a23"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "centralization_gain.relative_baseline_identity",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_relative_centralization_gain_identity",
+          "semantic_claim": "Relative centralization gain is 1 - G_city(s,z_city)/G(s,z_eff) and equals (A_eff(s)^2 - A_city(s)^2)/(E(s) G(s,z_eff)).",
+          "source_locator": "cited publication:1115-1127",
+          "source_quote_sha256": "1e4d7c64197ba9b0fc3a98da2b05cdd79fecd56809d6d40b48a9d83042061a23"
+        }
+      ],
+      "source_kind": "equation",
+      "source_location": "cited publication:1115-1127",
+      "source_note": "This labelled displayed equation precedes the later two-Borough proposition, so it has its own unrestricted source-facing Spec/proof pair rather than inheriting the proposition's cardinality premise.",
+      "source_status": "exact",
+      "spec_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_relative_centralization_gain_identitySpec"
+      ],
+      "statement": "The source-labelled relative centralization gain 1 - G_city(s,z_city)/G(s,z_eff) equals (A_eff(s)^2 - A_city(s)^2)/(E(s) G(s,z_eff)).",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_relative_centralization_gain_identitySpec"
+      ],
+      "title": "Relative centralization gain identity"
+    },
+    "city_extreme_efficiency_context": {
+      "aliases": [
+        "opt-centralized",
+        "z_city"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_city_extreme_efficiency"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "LG24ServiceLevelAgreements.paper_city_extreme_efficiency",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "LG24ServiceLevelAgreements.paper_city_extreme_efficiencySpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 1114,
+          "line_start": 1102,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{subequations}\n\\begin{align}\n    {\\min_{z>0}}\\quad\n    &{G^{\\mathrm{city}}(s,z)}\\notag\\\\[-2pt]\n    &{=\\sum_{k,b}s_{k,b}r_{k,b}z_k}\\notag\\\\[-2pt]\n    &{\\quad+\\sum_{k,b}(\\lambda_{k,b}-s_{k,b})r_{k,b}D_{k,b}}\\\\\n    {\\textnormal{s.t.}}\\quad\n    &{\\sum_k\\frac{a}{z_k}\\leq E(s).}\n\\end{align}\n\\label{opt-centralized}\n\\end{subequations}\nLet $G^{\\mathrm{city}}(s,z^{\\mathrm{city}})$ denote the optimal value of Problem~\\eqref{opt-centralized}, define\n${A^{\\mathrm{city}}(s)}=\\sum_k\\sqrt{a\\sum_b s_{k,b}r_{k,b}},$",
+          "quoted_text_sha256": "556461befb1b7248bab8a8d01483bd0b0177eb3c48236f36d11b552a937aa9c3"
+        },
+        {
+          "line_end": 1132,
+          "line_start": 1132,
+          "publication_locator": "cited publication",
+          "quoted_text": "(With an analogous extreme equity prioritization formulation under city budget, an optimal solution of the form in \\Cref{prop:extremefair} may not always be attained, because one category-level threshold $z_k$ need not equalize $\\operatorname{Cost}_{k,b}$. Thus, we mainly focus on the extreme efficiency prioritization formulation here.) Denoting the optimal solution to Problem~\\eqref{opt-centralized} as $\\textbf{z}^{city}=\\{z^{city}_k: k\\in \\mathcal{S}\\}$, representing the SLAs for each category of incidents across the city, the next result shows that in this extreme efficiency prioritization case, this centralized response indeed provides improvements across \\textit{all} Boroughs and categories of incidents, compared to the Borough-efficient benchmark.",
+          "quoted_text_sha256": "bd454afb9f840d3cb9268695f59d05aed2c4458c155c545907a2dbf98cdec80c"
+        },
+        {
+          "line_end": 2966,
+          "line_start": 2962,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{equation*}\n z^{\\mathrm{city}}_k\n =\\frac{A^{\\mathrm{city}}(s)}{E(s)}\n   \\sqrt{\\frac{a}{\\sum_b s_{k,b}r_{k,b}}}.\n\\end{equation*}",
+          "quoted_text_sha256": "d4892ca086c5a476baca42c535a6e6959e81d0e701b42c89855d028cd0e32611"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "city_extreme_efficiency.city_program_minimizer",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_city_extreme_efficiency",
+          "semantic_claim": "The source denotes the optimal solution to the city-budget reciprocal-capacity program by z_city.",
+          "source_locator": "cited publication:1132-1132",
+          "source_quote_sha256": "bd454afb9f840d3cb9268695f59d05aed2c4458c155c545907a2dbf98cdec80c"
+        },
+        {
+          "id": "city_extreme_efficiency.city_endpoint_formula",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_city_extreme_efficiency",
+          "semantic_claim": "The source displays z_city_k as A_city(s)/E(s) times the square root of a divided by the category's Borough-aggregated admitted priority load.",
+          "source_locator": "cited publication:2962-2966",
+          "source_quote_sha256": "d4892ca086c5a476baca42c535a6e6959e81d0e701b42c89855d028cd0e32611"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:1102-1114; cited publication:1132-1132; cited publication:2962-2966",
+      "source_note": "The program, the source's optimizer notation, and its displayed endpoint are pinned separately. This remains formula/model vocabulary before the named two-Borough comparison proposition, so the later cardinality premise cannot silently gate this optimizer route.",
+      "source_status": "source_context",
+      "spec_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_city_extreme_efficiencySpec"
+      ],
+      "statement": "The source defines the city-budget reciprocal-capacity program, denotes its optimizer by z_city, and displays z_city_k = A_city(s)/E(s) times sqrt(a divided by the Borough-aggregated admitted priority load for category k).",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_city_extreme_efficiencySpec"
+      ],
+      "title": "City-budget efficiency optimizer"
+    },
+    "global_steady_gps_condition_context": {
+      "aliases": [
+        "opt-nonconvex",
+        "GPS policy domain"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "PaperInterface.lean makes both the global steady-operation condition and the target-local margin visible. SLA2026GPSParameters.lean derives the stronger all-cell/aggregate facts only inside the fixed-load-feasible policy bridge. The stationary selected-Palm GPS/FCFS proof uses the visible global condition plus the target margin and does not treat the fixed-load bridge as an unconditional source derivation.",
+          "classification": "steady_operation_regularization",
+          "formal_meaning": "For the selected Borough's SLA subsystem, Lean makes explicit the full-system well-definedness regularity implicit in the source's GPS/steady-operation language: nonnegative capacity, positive SLA weights, total weight at most one, and total SLA admitted load below capacity. The displayed target tail margin remains the separate condition s_target < C phi_target. Always-backlogged no-guarantee background work is excluded from the SLA load sum because it receives only residual capacity.",
+          "id": "LG24-STEADY-SLA-SUBSYSTEM-CONDITION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "40ce7cdccfcf8bf902783ad1073aceb73b7f2c0ffdd9f30465ebad684c8a50d9",
+          "source_locator": "cited publication:541-543; cited publication:600-602; cited publication:628-639",
+          "why_needed": "The standalone display explicitly states only the target-local margin, while the active remote-past construction needs a stable full SLA subsystem. The source's positive admitted streams and GPS active-set allocation make zero weight for any SLA class incompatible with a well-defined stationary full queue, and aggregate slack is needed for stationarity. The later fixed-load program proves stronger all-cell margins only for policies satisfying its own quantified SLA constraints, together with the positive SLA parameter recorded at :600-602; it cannot silently strengthen the standalone display. This convention exposes the implicit global regularity and keeps its dependency direction honest."
+        }
+      ],
+      "claim_bearing": false,
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperGlobalSteadyGPSCondition"
+      ],
+      "model_convention_ids": [
+        "LG24-STEADY-SLA-SUBSYSTEM-CONDITION-01"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 543,
+          "line_start": 541,
+          "publication_locator": "cited publication",
+          "quoted_text": "We assume that within each Borough, the server is managed with the Generalized Processor Sharing (GPS) scheme \\citep{parekh1993generalized}. {We use the ideal-fluid, preemptive-resume version of GPS and evaluate long-run response times after the system has reached steady operation.} Under the GPS scheme, each SLA category is assigned a weight $\\phi_{k,b}$ in each Borough $b$, such that $\\sum_{k\\in \\mathcal{S}}\\phi_{k,b} \\leq 1$. At any given time $t$, on a server with capacity $C_b$, the (potentially fractional)\n\ncapacity devoted to category $k \\in \\mathcal{S}$ is $C_b\\phi_{k,b}/\\sum_{k'\\in \\mathcal{K}_b(t)}\\phi_{k',b}$, where $\\mathcal{K}_b(t)$ denotes the set of categories for which there is at least one pending incident (there is a ``backlog'' of incidents) in Borough $b$. {Thus, every backlogged category $k$ receives service at rate at least $C_b\\phi_{k,b}$. }To finish formally describing the system, as standard in such queuing systems \\citep{liu2001maximizing}, we assume that there is an additional category of work that is always backlogged for which the city provides no guarantees---the worker services this category when there is no backlog in categories $k \\in \\mathcal{S}$. Within each queue, we assume a first-come-first-served (FCFS) discipline of service. At a high level, $\\phi_{k,b}$ determines the relative priority of different incident categories within a Borough---for example, a \\textit{Hazard} category may be higher risk on average, and so prioritized on average.",
+          "quoted_text_sha256": "1626aa46c3a717b4b0ed271414d8e9b22dd94b13f034609c71a83ad7930281a8"
+        },
+        {
+          "line_end": 602,
+          "line_start": 600,
+          "publication_locator": "cited publication",
+          "quoted_text": "  which we will henceforth refer to as the ``SLA constraint.'' Intuitively, this constraint states that: when $C_b$ budget is allocated to Borough $b$, and category $k$ is assigned a GPS parameter $\\phi_{k,b}$, then at least $\\frac{s_{k,b}}{\\lambda_{k,b}}(1-\\alpha_{k,b})$ fraction of all category $k$ requests in Borough $b$ should be {responded to} within $z_{k,b}$ days, i.e., the SLA would be $z_{k,b}$ days. Practically, enforcing the same tail constraint for all categories enhances the interpretability of the policy,\n\nthus we will consider {$\\alpha_{k,b}=\\bar\\alpha$ and write $a=-\\log(\\bar\\alpha)$} for all category--Borough cells $(k,b)$, which also simplifies notations. Note that {$\\bar\\alpha\\in(0,1)$}, and so {$a>0$}. In the appendix, we prove some of the statements using general $a_{k,b}$. ",
+          "quoted_text_sha256": "81896ac30030b9ee04bb048db4ed6aa252c4ecdeb21cb9c40e89557eba41637b"
+        },
+        {
+          "line_end": 639,
+          "line_start": 628,
+          "publication_locator": "cited publication",
+          "quoted_text": "The optimization task is as follows. {Fix the admitted rates $s$ and any convex loss $L(z)$. }The objective \\eqref{opt-obj} reflects efficiency and equity losses, as functions of the SLAs $\\textbf{z}$; constraint \\eqref{opt-sla} ensures that the solution meets the set of SLAs encoded in $\\textbf{z}$, where {$a$ comes} from our definition of SLAs in eqn \\eqref{def:sla}; constraint \\eqref{opt-gps} comes from the GPS scheduling scheme; constraint \\eqref{opt-budget} enforces the overall budget constraint across Boroughs.  \n\n\\begin{subequations}\n\\begin{align}\n    \\min_{\\textbf{z}\\,{>0}, \\phi\\ge 0, C_b\\ge 0} \\quad\n    & {L(\\textbf{z})} \\label{opt-obj}\\\\\n    \\ \\text{s.t.}\\quad\n    & -(C_b\\phi_{k,b} - {s_{k,b}}) z_{k,b}\n      + {a} \\le 0,\\nonumber\\\\\n    & \\quad \\quad \\quad \\quad \\forall k\\in \\mathcal{S}, b\\in \\mathcal{B}, \\label{opt-sla}\\\\\n    & \\sum_{k\\in \\mathcal{S}} \\phi_{k,b} \\le 1, \\forall b\\in\\mathcal{B}, \\label{opt-gps}\\\\\n    & \\sum_{b\\in \\mathcal{B}} C_b \\le C.\\label{opt-budget}",
+          "quoted_text_sha256": "2bbfac321f0350077aaa6200de71e79c229b7d272d9cf6ce35bbdb13186ac0b1"
+        }
+      ],
+      "source_kind": "model",
+      "source_location": "cited publication:541-543; cited publication:600-602; cited publication:628-639",
+      "source_note": "This is an explicit formalization of the implicit full-system well-definedness required by the source's GPS and post-steady-operation language, not a sixth named-theory claim. The source explicitly gives the GPS allocation rule, total-weight bound, background-work behavior, positive admitted streams, and the selected target margin; it does not print positivity of every weight or aggregate SLA slack as a standalone premise. A zero-weight positive-arrival SLA class would make the displayed active-set denominator/service interpretation fail, and aggregate slack is needed for a stationary full SLA subsystem. The fixed-load program separately derives stronger all-cell margins only in its own quantified policy domain. The active interface therefore keeps this global regularity separate from the displayed target-local slack.",
+      "source_status": "documented_source_model_convention",
+      "statement": "For one Borough, Lean makes explicit the full-SLA-subsystem well-definedness regularity implicit in the source's GPS/steady-operation language: nonnegative capacity, positive SLA-category GPS weights, total SLA weight at most one, and total SLA admitted load strictly below capacity. The displayed tail additionally assumes its separate target-local margin s_{k,b}<C_b phi_{k,b}. The always-backlogged no-guarantee background work consumes residual capacity and is not an SLA class in the aggregate load condition.",
+      "title": "SLA-class steady-operation condition"
+    },
+    "post_thinning_admitted_poisson_normal_form_context": {
+      "aliases": [
+        "independent thinning",
+        "admitted requests"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The direct admitted arrival/work and stationary Palm constructions are checked through the active queueing route. The convention covers only the source-stated admitted-stream normal form. It does not assert a raw-path or empirical-frequency theorem, and it does not credit an unproved raw-to-admitted transport.",
+          "classification": "explicit_source_model_normal_form",
+          "formal_meaning": "The source itself states the independent admitted Poisson streams at rates s after thinning, together with iid unit-mean exponential work. The active Lean route constructs that admitted-stream/Palm model directly at the stated rates and uses it for GPS/FCFS replay.",
+          "id": "LG24-POST-THINNING-ADMITTED-POISSON-NORMAL-FORM-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "ce00bff313c28ea951411c2b4c687ffcfc329a52be53904a2918dae77a63dc44",
+          "source_locator": "cited publication:530-537",
+          "why_needed": "The source writes the admitted-stream law explicitly, but the current library does not yet prove a pathwise raw-marked survivor re-enumeration, multiclass pushforward equality, selected-Palm transport, and response-functional correspondence. Calling the direct carrier a derivation from the raw carrier would therefore be false; taking the explicitly stated post-thinning law as the model normal form is precise and does not weaken a named paper conclusion."
+        }
+      ],
+      "claim_bearing": false,
+      "model_convention_ids": [
+        "LG24-POST-THINNING-ADMITTED-POISSON-NORMAL-FORM-01"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 532,
+          "line_start": 530,
+          "publication_locator": "cited publication",
+          "quoted_text": "The queuing network within each Borough operates as follows. We have a set of incident categories $k \\in \\mathcal{S}$ (e.g., Hazards versus less urgent incidents) for which we wish to define SLAs. Each category arrives according to a {Poisson process} with rate $\\lambda_{k,b} > 0 $ into their own queues, where each of these Poisson processes are mutually independent. In practice, not every incident is responded to; we model this as incidents being  dropped (independently) with probability $1 - \\pi_{k,b} \\in [0, 1)$, and define non-dropped incident rate as $s_{k,b}=\\lambda_{k,b}\\pi_{k,b}$.\n\nBy independent thinning, admitted requests form independent Poisson processes of rates $s_{k,b}>0$.",
+          "quoted_text_sha256": "394df02481f3c287b98e0a6d39852d64272da2d38706d71da799b6a4c9448c39"
+        },
+        {
+          "line_end": 537,
+          "line_start": 537,
+          "publication_locator": "cited publication",
+          "quoted_text": "Inspecting each incident takes up a random amount of time, {with iid unit-mean exponential service time, independent of other events.} {(And can be extended to different processing times by category).}",
+          "quoted_text_sha256": "bbe902b2da40613da4116be855acf6ad6c09f250601e03265810d1bf4e91741c"
+        }
+      ],
+      "source_kind": "model",
+      "source_location": "cited publication:530-532; cited publication:537-537",
+      "source_note": "This source-model convention records the exact scope of the active queue proof. It is not a new source theorem and receives no ordinary named-theory coverage credit. A future raw-to-admitted bridge must prove a measurable survivor re-enumeration, the multiclass law pushforward, selected-Palm transport, and response-functional correspondence before it can replace this normal-form reading.",
+      "source_status": "documented_source_model_convention",
+      "statement": "The source explicitly states that independent thinning yields independent admitted Poisson processes at the positive rates s_{k,b}, with iid unit-mean exponential work independent of other events. The active stochastic construction takes that stated admitted-stream law as its normal form; it does not claim a pathwise re-enumeration or selected-Palm transport from a separately constructed raw marked carrier.",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput.admittedWorkPrimitiveMeasure",
+        "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput.stationaryAdmittedAllClassBaseLaw",
+        "LG24ServiceLevelAgreements.SLA2026BoroughQueueingInput.stationaryAdmittedTargetPassiveTaggedInput"
+      ],
+      "title": "Post-thinning admitted-Poisson normal form"
+    },
+    "prop_centralization_gain": {
+      "aliases": [
+        "prop:strict_improvements_from_centralization"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_centralization"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "LG24ServiceLevelAgreements.paper_prop_centralization",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "LG24ServiceLevelAgreements.paper_prop_centralizationSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 1155,
+          "line_start": 1136,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{prop}{propcentralized}[Centralization gain]\n\\label{prop:strict_improvements_from_centralization}\nAssume $|\\mathcal B|\\geq2$.\nFor any $k\\in \\mathcal{S}, b\\in \\mathcal{B}$, the inspection-delay SLA under the extreme efficiency prioritizing city-budget policy is strictly better (shorter) than under the extreme efficiency prioritizing Borough-budget policy:\n\\begin{equation}\nz^{city}_{k} < z^{\\mathrm{eff}}_{k,b}.\n\\label{eq:pooling-sla-dominance}\n\\end{equation}\nFurthermore, the centralization gain in efficiency can be compared to the price of equity as follows\n\\begin{equation}\n\\begin{aligned}\n  &{\\textnormal{centralization gain}\n    \\geq\\textnormal{price of equity}}\\\\[-2pt]\n  &{\\qquad\\Longleftrightarrow\\qquad\n    1-\\frac{A^{\\mathrm{city}}(s)^2}{A_{\\mathrm{eff}}(s)^2}\n    \\geq\\chi^2\\!\\left(\n    q^{\\mathrm{eff}}\\middle\\|q^{\\mathrm{eq}}\\right).}\n\\end{aligned}\n\\end{equation}\n\\end{restatable}",
+          "quoted_text_sha256": "76bdedf2094699a92e70187ff502605dddc5627813b24b8881716a986cb52fb5"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "centralization_gain.strict_delay",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_prop_centralization",
+          "semantic_claim": "With at least two Boroughs, every city-budget extreme-efficiency SLA is strictly shorter than the corresponding Borough-budget extreme-efficiency SLA.",
+          "source_locator": "cited publication:1136-1143",
+          "source_quote_sha256": "37fe3a3bb799631045799a23e8283b3705051abd9699f061002abd594737c737"
+        },
+        {
+          "id": "centralization_gain.relative_price_comparison",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_prop_centralization",
+          "semantic_claim": "Relative centralization gain is at least relative price of equity exactly when 1 - A_city(s)^2/A_eff(s)^2 is at least chi-square(q_eff || q_eq).",
+          "source_locator": "cited publication:1144-1155",
+          "source_quote_sha256": "15f96a2299d61ad5cb30dbb8dcc2cc1036b7f1de2d74ca37812335a882b943b2"
+        }
+      ],
+      "source_kind": "proposition",
+      "source_location": "cited publication:1136-1155",
+      "source_note": "The preceding city-program optimizer and labelled relative-gain identity are separate source items because neither carries the proposition's two-Borough premise. This named proposition proves only the cellwise strict inequality and the full if-and-only-if comparison with the printed q-share orientation.",
+      "source_status": "exact",
+      "spec_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_centralizationSpec"
+      ],
+      "statement": "With at least two Boroughs, the city-budget extreme-efficiency delay is strictly shorter in every category-Borough cell than the Borough-budget extreme-efficiency delay, and relative centralization gain is at least relative price of equity exactly when 1 - (A_city/A_eff)^2 is at least chi-square(q_eff || q_eq).",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_centralizationSpec"
+      ],
+      "title": "Centralization gain"
+    },
+    "prop_extreme_efficiency": {
+      "aliases": [
+        "prop:extremeeff"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_extreme_efficiency"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "LG24ServiceLevelAgreements.paper_prop_extreme_efficiency",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "LG24ServiceLevelAgreements.paper_prop_extreme_efficiencySpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 832,
+          "line_start": 823,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{prop}{propextremeefficiency}[Extreme efficiency]\n\\label{prop:extremeeff}\nWhen $\\gamma=1$, the optimal efficiency maximizing solution to Problem \\eqref{opt-reformulated} {is given by}\n\\begin{equation}\n    {z^{\\mathrm{eff}}_{k,b}\n      =\\frac{{A_{\\mathrm{eff}}(s)}}{E(s)}\n      \\sqrt{\\frac{a}{s_{k,b}r_{k,b}}}.}\n      \\label{eq:fixed-load-efficient-endpoint}\n\\end{equation}\n\\end{restatable}",
+          "quoted_text_sha256": "ba5e3b01e337aa85a46df627803e010c5e0f2c065cea18d244787440edb31d54"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "extreme_efficiency.square_root_unique_endpoint",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_prop_extreme_efficiency",
+          "semantic_claim": "Under the source domain, the gamma = 1 fixed-load problem has exactly the displayed square-root efficiency endpoint.",
+          "source_locator": "cited publication:823-832",
+          "source_quote_sha256": "ba5e3b01e337aa85a46df627803e010c5e0f2c065cea18d244787440edb31d54"
+        }
+      ],
+      "source_kind": "proposition",
+      "source_location": "cited publication:823-832",
+      "source_note": "The source wording says the optimal solution is given by the displayed endpoint. The checked theorem now proves both optimality and uniqueness rather than only exhibiting a minimizer.",
+      "source_status": "exact",
+      "spec_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_extreme_efficiencySpec"
+      ],
+      "statement": "At gamma = 1, the fixed-load efficiency optimum is uniquely the displayed square-root delay endpoint z_eff_{k,b} = A_eff(s)/E(s) * sqrt(a/(s_{k,b} r_{k,b})).",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_extreme_efficiencySpec"
+      ],
+      "title": "Extreme efficiency"
+    },
+    "prop_extreme_equity": {
+      "aliases": [
+        "prop:extremefair"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_extreme_equity"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "LG24ServiceLevelAgreements.paper_prop_extreme_equity",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "LG24ServiceLevelAgreements.paper_prop_extreme_equitySpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 858,
+          "line_start": 842,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{prop}{propextremeequity}[Extreme equity]\n\\label{prop:extremefair}\nWhen $\\gamma=0$, {the efficiency-best equitable solution $z^{\\mathrm{eq}}$ satisfies}\n\n\n\n\n\n\n\n\\begin{equation}\n    {\\operatorname{Cost}_{k,b}(s,z^{\\mathrm{eq}})=M_k,\n      \\qquad k\\in\\mathcal S,\\ b\\in\\mathcal B.}\n\\end{equation}\n\n\n\\end{restatable}",
+          "quoted_text_sha256": "4f074340baef1f6c4ebcadbacce19ecbfd90a0a7fcf77df882a7ad07aad979f5"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "extreme_equity.categorywise_constant_cost",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_prop_extreme_equity",
+          "semantic_claim": "A gamma = 0 efficiency-best equitable solution exists and has one all-request cost level per category across Boroughs.",
+          "source_locator": "cited publication:842-858",
+          "source_quote_sha256": "4f074340baef1f6c4ebcadbacce19ecbfd90a0a7fcf77df882a7ad07aad979f5"
+        }
+      ],
+      "source_kind": "proposition",
+      "source_location": "cited publication:842-858",
+      "source_note": "The endpoint is represented existentially with category levels M_k, matching the source rather than inserting an unprinted closed form or an arbitrary selection rule.",
+      "source_status": "exact",
+      "spec_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_extreme_equitySpec"
+      ],
+      "statement": "At gamma = 0, there is an efficiency-best equitable fixed-load solution whose all-request cost is constant across Boroughs within each category: Cost_{k,b}(s,z_eq) = M_k.",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_extreme_equitySpec"
+      ],
+      "title": "Extreme equity"
+    },
+    "prop_opt_reformulation": {
+      "aliases": [
+        "prop:opt-reformulation"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_opt_reformulation"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "LG24ServiceLevelAgreements.paper_prop_opt_reformulation",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "LG24ServiceLevelAgreements.paper_prop_opt_reformulationSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 698,
+          "line_start": 686,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{prop}{reformulation}[Equivalent reciprocal-capacity representation]\n\\label{prop:opt-reformulation}\n{Fix $s$ with $E(s)>0$ and a convex loss $L$. The fixed-load design\nproblem is equivalent to the tail-threshold-only problem}\n\\begin{equation}\n  \\min_{z>0}\\ L(z)\n  \\quad\\textnormal{subject to}\\quad\n  \\sum_{k,b}\\frac{a}{z_{k,b}}\\leq E(s).\n  \\label{opt-reformulated}\n\\end{equation}\n\\end{restatable}\nWe use this representation in the analysis below. In \\Cref{app:fixed-load-theory-proofs}, we detail the transformation, the construction of supporting Borough capacities and GPS\nweights, and establish uniqueness when the reciprocal-capacity constraint is binding. ",
+          "quoted_text_sha256": "a97ec6c62ee6e5985d212fa2197ca291d8ba26a0bc7f84585455be613b66d3ae"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "opt_reformulation.reciprocal_capacity_equivalence",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_prop_opt_reformulation",
+          "semantic_claim": "For every source loss on delays, original fixed-load minimizers are exactly reciprocal-capacity minimizers under the stated fixed-load domain.",
+          "source_locator": "cited publication:686-698",
+          "source_quote_sha256": "a97ec6c62ee6e5985d212fa2197ca291d8ba26a0bc7f84585455be613b66d3ae"
+        }
+      ],
+      "source_kind": "proposition",
+      "source_location": "cited publication:686-698",
+      "source_note": "The checked endpoint proves equality of the two feasible delay sets and therefore minimizer equivalence for every loss; it does not use convexity as a hidden proof premise.",
+      "source_status": "exact",
+      "spec_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_opt_reformulationSpec"
+      ],
+      "statement": "For fixed admitted load with positive excess capacity and a convex loss, the original fixed-load design problem is equivalent to minimizing that loss over positive delays satisfying the reciprocal-capacity inequality sum_{k,b} a/z_{k,b} <= E(s).",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_opt_reformulationSpec"
+      ],
+      "title": "Equivalent reciprocal-capacity representation"
+    },
+    "prop_price_of_equity": {
+      "aliases": [
+        "prop:costofequity"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_price_of_equity"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "LG24ServiceLevelAgreements.paper_prop_price_of_equity",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "LG24ServiceLevelAgreements.paper_prop_price_of_equitySpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 959,
+          "line_start": 926,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{prop}{fixedloadalignment}[Price of equity]\n\\label{prop:costofequity}\nThe price of equity is\n\\begin{align}\n\\operatorname{PoE}_C(s)\n&:=\\frac{G(s,z^{\\mathrm{eq}})}{G(s,z^{\\mathrm{eff}})}-1\\notag\\\\[-2pt]\n&=\\frac{A_{\\mathrm{eff}}(s)^2}{E(s)G(s,z^{\\mathrm{eff}})}\\notag\\\\[-2pt]\n&\\quad\\times \\chi^2\\!\\left(q^{\\mathrm{eff}}\\middle\\|q^{\\mathrm{eq}}\\right)\n \\label{eq:price-of-equity-chi-square}\\\\[-2pt]\n&\\leq \\frac{1}{G(s,z^{\\mathrm{eff}})}\\sum_{k,b}\\lambda_{k,b}\\notag\\\\[-2pt]\n&\\quad\\times\\left[\n \\begin{gathered}\n \\max_{b'\\in\\mathcal B}\\operatorname{Cost}_{k,b'}(s,z^{\\mathrm{eff}})\\\\[-2pt]\n {}-\\operatorname{Cost}_{k,b}(s,z^{\\mathrm{eff}})\n \\end{gathered}\\right].\\notag\n\\end{align}\nThe price is zero if and only if\n$q^{\\mathrm{eq}}=q^{\\mathrm{eff}}$, equivalently if and only if\n$\\operatorname{Cost}_{k,b}(s,z^{\\mathrm{eff}})$ is constant across Boroughs for each  category $k$.  Moreover, suppose the fixed noninspection burden\n$r_{k,b}D_{k,b}\\left(1-s_{k,b}/\\lambda_{k,b}\\right)$ is constant across\nBoroughs within each category.\nThen, writing $z^{\\mathrm{eff}}(C)$ for the efficient solution at capacity $C$,\n\\begin{equation}\n\\operatorname{PoE}_{C'}(s)\n=\\frac{C-\\sum_{k,b}s_{k,b}}\n       {C'-\\sum_{k,b}s_{k,b}}\n \\frac{G(s,z^{\\mathrm{eff}}(C))}{G(s,z^{\\mathrm{eff}}(C'))}\n \\operatorname{PoE}_{C}(s)\n\\label{eq:poe-capacity-scaling}\n\\end{equation}\nfor all $C'>C>\\sum_{k,b}s_{k,b}$.\nThe multiplicative factor in Eq.~\\eqref{eq:poe-capacity-scaling} is less than one whenever\n$\\sum_{k,b}(\\lambda_{k,b}-s_{k,b})r_{k,b}D_{k,b}>0$; it equals one when this fixed noninspection component is zero.\n\\end{restatable}",
+          "quoted_text_sha256": "9f5ebac95ee2b24ef078741c136aaa25d3ffced5b6061532737c83b184d95dac"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "price_of_equity.relative_definition_and_pearson_identity",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_prop_price_of_equity",
+          "semantic_claim": "Price of equity is G(s,z_eq)/G(s,z_eff) - 1 and equals A_eff(s)^2/(E(s) G(s,z_eff)) times chi-square(q_eff || q_eq).",
+          "source_locator": "cited publication:926-941",
+          "source_quote_sha256": "325ae055617bb97ed3a02bc902c0dd6b5c1a751a4b28ce412e45f9092869fcf0"
+        },
+        {
+          "id": "price_of_equity.normalized_upper_bound_and_zero_characterization",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_prop_price_of_equity",
+          "semantic_claim": "The relative price has the printed 1/G(s,z_eff)-normalized range bound and is zero exactly when q_eq=q_eff, equivalently when efficient costs are Borough-constant within each category.",
+          "source_locator": "cited publication:935-946",
+          "source_quote_sha256": "3aa27d20841e566e0eeaac41ce85d92e089df2ac272e5f514b74b19d8c4052a2"
+        },
+        {
+          "id": "price_of_equity.relative_capacity_scaling",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_prop_price_of_equity",
+          "semantic_claim": "Under the stated categorywise fixed noninspection-burden condition, for all C' > C > sum s, relative price at C' equals the excess-capacity ratio times the efficient-cost ratio times relative price at C.",
+          "source_locator": "cited publication:944-956",
+          "source_quote_sha256": "1f66c5b20d99e83eb42db84ea9f7f185bf1a3dc0ce986d467e2839a2fbd38b5f"
+        },
+        {
+          "id": "price_of_equity.capacity_factor_classification",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_prop_price_of_equity",
+          "semantic_claim": "The relative price capacity-scaling factor is below one when the total fixed noninspection component is positive and equals one when it is zero.",
+          "source_locator": "cited publication:957-958",
+          "source_quote_sha256": "fd30a5bc8d0f6ed2f3d9f17a223ed3641ccd1d0567fa82d8b620c15cfccc4f2a"
+        }
+      ],
+      "source_kind": "proposition",
+      "source_location": "cited publication:926-959",
+      "source_note": "The relative denominator G(s,z_eff) is derived positive from the printed primitive domain rather than added as an assumption. The capacity-scaling equality quantifies arbitrary efficiency-best equitable endpoints and does not smuggle a canonical-selection convention into the result. Its factor classification is stated independently of those endpoint witnesses, because it follows directly from primitives, capacities, and the source's categorywise fixed-burden condition.",
+      "source_status": "exact",
+      "spec_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_price_of_equitySpec"
+      ],
+      "statement": "For an efficiency-best equitable endpoint, the relative price of equity G(s,z_eq)/G(s,z_eff) - 1 equals A_eff(s)^2/(E(s) G(s,z_eff)) times chi-square(q_eff || q_eq), satisfies the displayed normalized category-range upper bound, is zero exactly when the shares coincide exactly when efficient costs are categorywise Borough-constant, and obeys the displayed relative capacity-scaling identity. Its multiplicative factor is strictly below one for a positive fixed noninspection component and equals one when that component is zero.",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_prop_price_of_equitySpec"
+      ],
+      "title": "Price of equity"
+    },
+    "relative_price_of_equity_nonnegative_context": {
+      "aliases": [
+        "eq:price-of-equity-definition"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_relative_price_of_equity_nonnegative"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "LG24ServiceLevelAgreements.paper_relative_price_of_equity_nonnegative",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "LG24ServiceLevelAgreements.paper_relative_price_of_equity_nonnegativeSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 917,
+          "line_start": 912,
+          "publication_locator": "cited publication",
+          "quoted_text": "When is the efficiency and equity trade-off substantial? Akin to the algorithmic fairness literature, we define \\textit{price of equity} as the difference in efficiency loss between {the most equitable and most efficient solutions}, relative to the efficiency loss of the most efficient solution:\n\\begin{equation}\n{\\operatorname{PoE}_C(s)\n:=\\frac{G(s,z^{\\mathrm{eq}})}{G(s,z^{\\mathrm{eff}})}-1 \\geq 0.}\n\\label{eq:price-of-equity-definition}\n\\end{equation}",
+          "quoted_text_sha256": "1d5bb578dfccccdf57b58f85746c028ece7c576fdf7b8f35794acafa05c70f94"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "relative_price_of_equity.nonnegative_definition",
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_relative_price_of_equity_nonnegative",
+          "semantic_claim": "The relative price of equity G(s,z_eq)/G(s,z_eff) - 1 is nonnegative.",
+          "source_locator": "cited publication:912-917",
+          "source_quote_sha256": "1d5bb578dfccccdf57b58f85746c028ece7c576fdf7b8f35794acafa05c70f94"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:912-917",
+      "source_note": "The nonnegativity display appears immediately before the later named Price of equity proposition. It is kept in its own Spec/proof route so this source definition does not inherit the proposition's independent range, zero-characterization, and capacity-scaling clauses.",
+      "source_status": "source_context",
+      "spec_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_relative_price_of_equity_nonnegativeSpec"
+      ],
+      "statement": "The source-defined relative price of equity G(s,z_eq)/G(s,z_eff) - 1 is nonnegative.",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_relative_price_of_equity_nonnegativeSpec"
+      ],
+      "title": "Relative price of equity nonnegativity"
+    },
+    "sla_rate_fraction_context": {
+      "aliases": [
+        "def:sla",
+        "SLA constraint"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The direct admitted arrival/work and stationary Palm constructions are checked through the active queueing route. The convention covers only the source-stated admitted-stream normal form. It does not assert a raw-path or empirical-frequency theorem, and it does not credit an unproved raw-to-admitted transport.",
+          "classification": "explicit_source_model_normal_form",
+          "formal_meaning": "The source itself states the independent admitted Poisson streams at rates s after thinning, together with iid unit-mean exponential work. The active Lean route constructs that admitted-stream/Palm model directly at the stated rates and uses it for GPS/FCFS replay.",
+          "id": "LG24-POST-THINNING-ADMITTED-POISSON-NORMAL-FORM-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "ce00bff313c28ea951411c2b4c687ffcfc329a52be53904a2918dae77a63dc44",
+          "source_locator": "cited publication:530-537",
+          "why_needed": "The source writes the admitted-stream law explicitly, but the current library does not yet prove a pathwise raw-marked survivor re-enumeration, multiclass pushforward equality, selected-Palm transport, and response-functional correspondence. Calling the direct carrier a derivation from the raw carrier would therefore be false; taking the explicitly stated post-thinning law as the model normal form is precise and does not weaken a named paper conclusion."
+        },
+        {
+          "checked_scope": "PaperInterface.lean makes both the global steady-operation condition and the target-local margin visible. SLA2026GPSParameters.lean derives the stronger all-cell/aggregate facts only inside the fixed-load-feasible policy bridge. The stationary selected-Palm GPS/FCFS proof uses the visible global condition plus the target margin and does not treat the fixed-load bridge as an unconditional source derivation.",
+          "classification": "steady_operation_regularization",
+          "formal_meaning": "For the selected Borough's SLA subsystem, Lean makes explicit the full-system well-definedness regularity implicit in the source's GPS/steady-operation language: nonnegative capacity, positive SLA weights, total weight at most one, and total SLA admitted load below capacity. The displayed target tail margin remains the separate condition s_target < C phi_target. Always-backlogged no-guarantee background work is excluded from the SLA load sum because it receives only residual capacity.",
+          "id": "LG24-STEADY-SLA-SUBSYSTEM-CONDITION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "40ce7cdccfcf8bf902783ad1073aceb73b7f2c0ffdd9f30465ebad684c8a50d9",
+          "source_locator": "cited publication:541-543; cited publication:600-602; cited publication:628-639",
+          "why_needed": "The standalone display explicitly states only the target-local margin, while the active remote-past construction needs a stable full SLA subsystem. The source's positive admitted streams and GPS active-set allocation make zero weight for any SLA class incompatible with a well-defined stationary full queue, and aggregate slack is needed for stationarity. The later fixed-load program proves stronger all-cell margins only for policies satisfying its own quantified SLA constraints, together with the positive SLA parameter recorded at :600-602; it cannot silently strengthen the standalone display. This convention exposes the implicit global regularity and keeps its dependency direction honest."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_sla_from_stationary_gps_tail"
+      ],
+      "model_convention_ids": [
+        "LG24-POST-THINNING-ADMITTED-POISSON-NORMAL-FORM-01",
+        "LG24-STEADY-SLA-SUBSYSTEM-CONDITION-01"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "LG24ServiceLevelAgreements.paper_sla_from_stationary_gps_tail",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "LG24ServiceLevelAgreements.paper_sla_from_stationary_gps_tailSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 602,
+          "line_start": 586,
+          "publication_locator": "cited publication",
+          "quoted_text": "This follows from our assumptions and classical results in queuing theory (e.g., see \\cite{kleinrock1975queue} and \\cite{liu2001maximizing}). Combining the above, a sufficient condition to satisfy an SLA is\n\\begin{equation}\n    (\\phi_{k,b} C_b-{s_{k,b}})z_{k,b}\n    \\ +\\ \\log \\alpha_{k,b}\\geq0,\n    \\label{def:sla}\n\\end{equation}\n\n\n\n\n\n\n\n\n  which we will henceforth refer to as the ``SLA constraint.'' Intuitively, this constraint states that: when $C_b$ budget is allocated to Borough $b$, and category $k$ is assigned a GPS parameter $\\phi_{k,b}$, then at least $\\frac{s_{k,b}}{\\lambda_{k,b}}(1-\\alpha_{k,b})$ fraction of all category $k$ requests in Borough $b$ should be {responded to} within $z_{k,b}$ days, i.e., the SLA would be $z_{k,b}$ days. Practically, enforcing the same tail constraint for all categories enhances the interpretability of the policy,\n\nthus we will consider {$\\alpha_{k,b}=\\bar\\alpha$ and write $a=-\\log(\\bar\\alpha)$} for all category--Borough cells $(k,b)$, which also simplifies notations. Note that {$\\bar\\alpha\\in(0,1)$}, and so {$a>0$}. In the appendix, we prove some of the statements using general $a_{k,b}$. ",
+          "quoted_text_sha256": "1efa6fd96e706f323d87055a0a490487914e49a20569de3097bb887f61e5410f"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "sla.rate.fraction.context",
+          "identity_schema": 2,
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_sla_from_stationary_gps_tail",
+          "semantic_claim": "Under the source's GPS/steady-operation setting, whose full-SLA-subsystem well-definedness regularity is made explicit in Lean, and the displayed target-local margin, for alpha in (0,1), the logarithmic SLA constraint (C_b phi_{k,b} - s_{k,b}) z_{k,b} + log alpha_{k,b} >= 0 implies the displayed all-request response rate fraction s_{k,b}/lambda_{k,b} (1 - alpha_{k,b}). The formalized conclusion is the stationary Palm/intensity rate-fraction expression, not an empirical raw-arrival frequency theorem.",
+          "source_locator": "cited publication:586-602",
+          "source_quote_sha256": "1efa6fd96e706f323d87055a0a490487914e49a20569de3097bb887f61e5410f"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:586-602",
+      "source_note": "This unnumbered display is an explicitly selected semantic target. It is reviewed with the stationary-tail route above, taking the source's explicitly stated post-thinning admitted-Poisson law as the model normal form and preserving the source's admitted-to-all-request rate arithmetic. The full-system GPS well-definedness regularity is recorded as an implicit steady-operation refinement, not presented as a word-for-word display premise. It does not silently claim a raw-path, thinning-transport, or empirical-frequency coupling.",
+      "source_status": "exact",
+      "spec_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_sla_from_stationary_gps_tailSpec"
+      ],
+      "statement": "Under the source's GPS/steady-operation setting, whose full-SLA-subsystem well-definedness regularity is made explicit in Lean, and the displayed target-local margin, for alpha in (0,1), the logarithmic SLA constraint (C_b phi_{k,b} - s_{k,b}) z_{k,b} + log alpha_{k,b} >= 0 implies the displayed all-request response rate fraction s_{k,b}/lambda_{k,b} (1 - alpha_{k,b}). The formalized conclusion is the stationary Palm/intensity rate-fraction expression, not an empirical raw-arrival frequency theorem.",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_sla_from_stationary_gps_tailSpec"
+      ],
+      "title": "SLA rate-fraction consequence"
+    },
+    "source_context_all_request_cost": {
+      "aliases": [
+        "eq:all-request-burden"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperCost"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 751,
+          "line_start": 739,
+          "publication_locator": "cited publication",
+          "quoted_text": "Motivated by the importance of potential heterogeneity of {priority} across incident types and Boroughs, we {define the following {risk-based cost function} for each Borough, which is a function of these priority scores, {delay costs for inspected incidents}, and a fixed cost per dropped incident. Let $D_{k,b}\\geq0$ be the delay-equivalent penalty for a request that is not responded to, and define cost of a category-$k$ request in Borough $b$ as}\n\\begin{equation}\n    \n    \n    \\begin{aligned}\n    \n    \n    {\\operatorname{Cost}_{k,b}(s,z)}\n    &{=r_{k,b}\\left[\\frac{s_{k,b}}{\\lambda_{k,b}}z_{k,b}\n      +\\left(1-\\frac{s_{k,b}}{\\lambda_{k,b}}\\right)D_{k,b}\\right].}\n    \\end{aligned}\n    \\label{eq:all-request-burden}\n\\end{equation}",
+          "quoted_text_sha256": "168fce93c0f4f9e2665a35da4bfb822dc64aaa027373e5eaa0144a952c5fdc82"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:739-751",
+      "source_note": "This displayed source definition is vocabulary used by later propositions, not a separately named theorem.",
+      "source_status": "source_context",
+      "statement": "For each category-Borough cell, all-request cost is priority multiplied by the admitted fraction times delay plus the noninspection fraction times its penalty.",
+      "title": "All-request cost vocabulary"
+    },
+    "source_context_all_request_response_fraction": {
+      "aliases": [
+        "all-request response fraction"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperAllRequestResponseFraction"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 530,
+          "line_start": 530,
+          "publication_locator": "cited publication",
+          "quoted_text": "The queuing network within each Borough operates as follows. We have a set of incident categories $k \\in \\mathcal{S}$ (e.g., Hazards versus less urgent incidents) for which we wish to define SLAs. Each category arrives according to a {Poisson process} with rate $\\lambda_{k,b} > 0 $ into their own queues, where each of these Poisson processes are mutually independent. In practice, not every incident is responded to; we model this as incidents being  dropped (independently) with probability $1 - \\pi_{k,b} \\in [0, 1)$, and define non-dropped incident rate as $s_{k,b}=\\lambda_{k,b}\\pi_{k,b}$.",
+          "quoted_text_sha256": "8818d08301f9718119055516a65dce4d84ebf48faf1665af937ee8e282929855"
+        },
+        {
+          "line_end": 600,
+          "line_start": 600,
+          "publication_locator": "cited publication",
+          "quoted_text": "  which we will henceforth refer to as the ``SLA constraint.'' Intuitively, this constraint states that: when $C_b$ budget is allocated to Borough $b$, and category $k$ is assigned a GPS parameter $\\phi_{k,b}$, then at least $\\frac{s_{k,b}}{\\lambda_{k,b}}(1-\\alpha_{k,b})$ fraction of all category $k$ requests in Borough $b$ should be {responded to} within $z_{k,b}$ days, i.e., the SLA would be $z_{k,b}$ days. Practically, enforcing the same tail constraint for all categories enhances the interpretability of the policy,",
+          "quoted_text_sha256": "226aa7169df834e44c707760f5c9d1f2dba672240983ca37aa975125bb6c6cd5"
+        },
+        {
+          "line_end": 602,
+          "line_start": 602,
+          "publication_locator": "cited publication",
+          "quoted_text": "thus we will consider {$\\alpha_{k,b}=\\bar\\alpha$ and write $a=-\\log(\\bar\\alpha)$} for all category--Borough cells $(k,b)$, which also simplifies notations. Note that {$\\bar\\alpha\\in(0,1)$}, and so {$a>0$}. In the appendix, we prove some of the statements using general $a_{k,b}$. ",
+          "quoted_text_sha256": "3f53b387e0900c42450a6c4ed61a9774ece936b166742534131ac1864e8b397a"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:530-530; cited publication:600-600; cited publication:602-602",
+      "source_note": "This is the scalar rate-fraction vocabulary inside the selected SLA display. Its third argument is the source parameter alpha, not an assertion that it equals an actual selected-Palm tail probability. The implication from the constructed tail and logarithmic constraint remains the separate selected SLA theorem route.",
+      "source_status": "source_context",
+      "statement": "For the source's alpha parameter in (0,1) and positive arrival rate lambda_{k,b}, the displayed SLA explanation uses the scalar all-request timely-response fraction s_{k,b}/lambda_{k,b} times (1-alpha_{k,b}).",
+      "title": "All-request response-fraction formula"
+    },
+    "source_context_capacity_share": {
+      "aliases": [
+        "q(z)"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperCapacityShare"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 924,
+          "line_start": 922,
+          "publication_locator": "cited publication",
+          "quoted_text": "For either endpoint policy $z^j$ for $j\\in\\{\\mathrm{eff},\\mathrm{eq}\\}$, let $q^j=q(z^j)$ denote the fraction of total capacity slack $E(s)$ assigned to category--Borough cell $(k,b)$, where\n$q_{k,b}(z^j)=\\frac{a}{E(s)z^j_{k,b}}$\\footnote{The supporting policy satisfies $\\phi_{k,b}C_b=s_{k,b}+a/z_{k,b}$, so $a/z_{k,b}$ is the cell's guaranteed service-rate margin above its admitted load.  Because the reciprocal-capacity constraint binds, these margins sum to $E(s)$; hence\n$q_{k,b}(z)=(a/z_{k,b})/E(s)$.} For probability vectors $P$ and $Q$, let the Pearson chi-square divergence be $\\chi^2(P\\|Q)=\\sum_{k,b}(P_{k,b}-Q_{k,b})^2/Q_{k,b}$.",
+          "quoted_text_sha256": "db85415efeb169ac0befebee4ec90bbb74de5b0f6019267147b3a571c7a1791e"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:922-924",
+      "source_note": "This is unnumbered source formula vocabulary for the price-of-equity and centralization comparisons, not a standalone named definition. The source calls q a slack fraction only for the separately stated binding endpoint policies; normalization is not a property of the bare scalar formula and is not certified by this direct route.",
+      "source_status": "source_context",
+      "statement": "On the source's positive reciprocal-capacity formula domain, the displayed coordinate formula is q_{k,b}(z)=a/(E(s) z_{k,b}).",
+      "title": "Capacity-share vocabulary"
+    },
+    "source_context_categorywise_fixed_noninspection": {
+      "aliases": [
+        "capacity-scaling alignment condition"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "source_anchor_evidence": [
+        {
+          "line_end": 946,
+          "line_start": 944,
+          "publication_locator": "cited publication",
+          "quoted_text": "$\\operatorname{Cost}_{k,b}(s,z^{\\mathrm{eff}})$ is constant across Boroughs for each  category $k$.  Moreover, suppose the fixed noninspection burden\n$r_{k,b}D_{k,b}\\left(1-s_{k,b}/\\lambda_{k,b}\\right)$ is constant across\nBoroughs within each category.",
+          "quoted_text_sha256": "d1c0c1a4483207277488281c1771840736ac6d836efb1816b2ad7816f05c4adb"
+        }
+      ],
+      "source_kind": "model",
+      "source_location": "cited publication:944-946",
+      "source_note": "This is a printed condition within the price-of-equity proposition, exposed as support vocabulary rather than promoted to a named theorem.",
+      "source_status": "source_context",
+      "statement": "The capacity-scaling clause assumes the fixed noninspection burden r_{k,b} D_{k,b} (1-s_{k,b}/lambda_{k,b}) is constant across Boroughs within each category.",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paperCategorywiseFixedNoninspection"
+      ],
+      "title": "Categorywise fixed-noninspection condition"
+    },
+    "source_context_city_effective_load": {
+      "aliases": [
+        "A^city(s)",
+        "opt-centralized"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperCityEffectiveLoad"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 1114,
+          "line_start": 1102,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{subequations}\n\\begin{align}\n    {\\min_{z>0}}\\quad\n    &{G^{\\mathrm{city}}(s,z)}\\notag\\\\[-2pt]\n    &{=\\sum_{k,b}s_{k,b}r_{k,b}z_k}\\notag\\\\[-2pt]\n    &{\\quad+\\sum_{k,b}(\\lambda_{k,b}-s_{k,b})r_{k,b}D_{k,b}}\\\\\n    {\\textnormal{s.t.}}\\quad\n    &{\\sum_k\\frac{a}{z_k}\\leq E(s).}\n\\end{align}\n\\label{opt-centralized}\n\\end{subequations}\nLet $G^{\\mathrm{city}}(s,z^{\\mathrm{city}})$ denote the optimal value of Problem~\\eqref{opt-centralized}, define\n${A^{\\mathrm{city}}(s)}=\\sum_k\\sqrt{a\\sum_b s_{k,b}r_{k,b}},$",
+          "quoted_text_sha256": "556461befb1b7248bab8a8d01483bd0b0177eb3c48236f36d11b552a937aa9c3"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:1102-1114",
+      "source_note": "This is unnumbered city-program vocabulary preceding the named centralization proposition, not a separate named theory result.",
+      "source_status": "source_context",
+      "statement": "For the city-budget program, the source defines A_city(s) as the sum over categories of sqrt(a times the category's Borough-aggregated admitted priority load).",
+      "title": "City effective-load index"
+    },
+    "source_context_city_efficiency_loss": {
+      "aliases": [
+        "opt-centralized"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperCityEfficiencyLoss"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 1107,
+          "line_start": 1102,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{subequations}\n\\begin{align}\n    {\\min_{z>0}}\\quad\n    &{G^{\\mathrm{city}}(s,z)}\\notag\\\\[-2pt]\n    &{=\\sum_{k,b}s_{k,b}r_{k,b}z_k}\\notag\\\\[-2pt]\n    &{\\quad+\\sum_{k,b}(\\lambda_{k,b}-s_{k,b})r_{k,b}D_{k,b}}\\\\",
+          "quoted_text_sha256": "4008b40818f342cba8f658d69ecb0299561385e43d9cf76d51969b31f7bcb484"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:1102-1107",
+      "source_note": "This displayed city objective is source vocabulary for the city optimizer and centralization proposition, not a separate named theorem.",
+      "source_status": "source_context",
+      "statement": "The city-budget program defines city efficiency loss as the sum over category-Borough cells of admitted rate times priority times the category delay, plus the fixed noninspection contribution.",
+      "title": "City efficiency-loss formula"
+    },
+    "source_context_city_efficient_delay": {
+      "aliases": [
+        "z_city"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperCityEfficientDelay"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 2966,
+          "line_start": 2962,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{equation*}\n z^{\\mathrm{city}}_k\n =\\frac{A^{\\mathrm{city}}(s)}{E(s)}\n   \\sqrt{\\frac{a}{\\sum_b s_{k,b}r_{k,b}}}.\n\\end{equation*}",
+          "quoted_text_sha256": "d4892ca086c5a476baca42c535a6e6959e81d0e701b42c89855d028cd0e32611"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:2962-2966",
+      "source_note": "This is an unnumbered appendix endpoint formula used by the centralization proposition, not a new named result.",
+      "source_status": "source_context",
+      "statement": "The appendix displays the city endpoint z_city_k = A_city(s)/E(s) times sqrt(a divided by the Borough-aggregated admitted priority load for category k).",
+      "title": "City-efficient delay endpoint"
+    },
+    "source_context_effective_load": {
+      "aliases": [
+        "A_eff(s)"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperEffectiveLoad"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 785,
+          "line_start": 780,
+          "publication_locator": "cited publication",
+          "quoted_text": "For our theoretical results, it will be convenient to define a benchmark-specific effective-load index for the\nefficiency-maximizing solution,\n$A_{\\mathrm{eff}}(s) =\\sum_{k,b}\\sqrt{a s_{k,b}r_{k,b}}$.\\footnote{Any reduced problem of the form\n$\\min_x\\sum_i c_i x_i$ subject to $\\sum_i d_i/x_i\\leq E$ has optimal variable\ncost $(\\sum_i\\sqrt{c_i d_i})^2/E$, and so $A_{\\mathrm{eff}}$ captures the\ncost component corresponding to inspected incidents.}",
+          "quoted_text_sha256": "7b439b3162f80942a111d303db30cd0fe6b7b4f60c18f2db3ca9ca20b3a5c015"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:780-785",
+      "source_note": "This unnumbered benchmark index is source-context vocabulary for the endpoint and comparison formulas, not an additional named result.",
+      "source_status": "source_context",
+      "statement": "The source defines A_eff(s) as the sum over category-Borough cells of sqrt(a s_{k,b} r_{k,b}).",
+      "title": "Borough effective-load index"
+    },
+    "source_context_efficiency_best_equitable": {
+      "aliases": [
+        "z_eq",
+        "prop:extremefair"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "source_anchor_evidence": [
+        {
+          "line_end": 2803,
+          "line_start": 2788,
+          "publication_locator": "cited publication",
+          "quoted_text": "The most equitable solution minimizes\n\\begin{equation*}\n F(s,z)=\\sum_k\\left[\\max_b\\operatorname{Cost}_{k,b}(s,z)\n -\\min_b\\operatorname{Cost}_{k,b}(s,z)\\right] \\geq0\n\\end{equation*}\ngiven the constraint in Eq.~\\eqref{opt-reformulated}.  Write $\\operatorname{Cost}_{k,b}(s,z)=c_{k,b}z_{k,b}+d_{k,b}$, where\n\\begin{equation*}\n c_{k,b}=\\frac{s_{k,b}r_{k,b}}{\\lambda_{k,b}}>0,\n \\qquad\n d_{k,b}=\\left(1-\\frac{s_{k,b}}{\\lambda_{k,b}}\\right)r_{k,b}D_{k,b},\n\\end{equation*}  For any\n$M_k>\\max_b d_{k,b}$, setting $z_{k,b}=\\frac{M_k-d_{k,b}}{c_{k,b}}$\ngives $\\operatorname{Cost}_{k,b}(s,z)=M_k$.  As every $M_k$ increases, so does $z_{k,b}$. Thus,\n$\\sum_{k,b}a/z_{k,b}$ converges to zero, so these thresholds can be chosen to\nsatisfy Eq.~\\eqref{opt-reformulated}.  Thus the minimum equity loss is zero,\nwhich proves the stated categorywise equality. Note that we can then show that the efficiency-best solution among solutions equalizing costs exists, due to continuity of $G$ and compactness in $z$ (which is lower bounded due to the feasibility constraint; then, a single solution to the equity minimizing optimization produces a sublevel set for $G$, bounding $z$ from above.) Finally, note that the constraint binds at the efficiency-best equitable solution (otherwise, we can perturb $z$ to improve the efficiency loss while keeping the equity loss at $0$.)",
+          "quoted_text_sha256": "eed24a12cb0cdc15c179d913fd3303b054167440a1359db583779c0101b2358c"
+        }
+      ],
+      "source_kind": "model",
+      "source_location": "cited publication:2788-2803",
+      "source_note": "This unnumbered appendix construction gives the source semantics of the efficiency-best equitable endpoint without misclassifying it as another named definition or result.",
+      "source_status": "source_context",
+      "statement": "The appendix minimizes geographic range loss, constructs feasible zero-range equal-cost delays, and then identifies the efficiency-best solution among those equal-cost feasible delays as the equity endpoint.",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paperEfficiencyBestEquitable"
+      ],
+      "title": "Efficiency-best equitable endpoint vocabulary"
+    },
+    "source_context_efficiency_loss": {
+      "aliases": [
+        "eq:fixed-load-efficiency"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperEfficiencyLoss"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 763,
+          "line_start": 756,
+          "publication_locator": "cited publication",
+          "quoted_text": "{The first term is the {delay penalty} for {inspected} incidents, and the {second} term is the cost penalty for not {inspecting} an incident. We define efficiency by total arrival-weighted burden and horizontal geographic equity by comparing the same incident category across Boroughs:}\n\\begin{align}\n    G(s,z)&=\\sum_{k,b}\\lambda_{k,b}\\operatorname{Cost}_{k,b}(s,z),\n    \\label{eq:fixed-load-efficiency}\\\\\n    F(s,z)&=\\sum_k\\left[\\max_b\\operatorname{Cost}_{k,b}(s,z)\\right.\\notag\\\\[-2pt]\n    &\\hspace{24mm}\\left.-\\min_b\\operatorname{Cost}_{k,b}(s,z)\\right]\n    \\label{theoretical_equity_loss}\n\\end{align}",
+          "quoted_text_sha256": "65de68f8d8d6a3c09ac489f934decf2d6cab526d7ec227fcfe7c231002eef0fb"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:756-763",
+      "source_note": "This displayed source objective definition is support vocabulary, not a normal-scope named result.",
+      "source_status": "source_context",
+      "statement": "The source defines total efficiency loss as the arrival-weighted sum of all-request cell costs.",
+      "title": "Efficiency-loss vocabulary"
+    },
+    "source_context_efficient_delay_endpoint": {
+      "aliases": [
+        "eq:fixed-load-efficient-endpoint"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperEfficientDelay"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 831,
+          "line_start": 823,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{prop}{propextremeefficiency}[Extreme efficiency]\n\\label{prop:extremeeff}\nWhen $\\gamma=1$, the optimal efficiency maximizing solution to Problem \\eqref{opt-reformulated} {is given by}\n\\begin{equation}\n    {z^{\\mathrm{eff}}_{k,b}\n      =\\frac{{A_{\\mathrm{eff}}(s)}}{E(s)}\n      \\sqrt{\\frac{a}{s_{k,b}r_{k,b}}}.}\n      \\label{eq:fixed-load-efficient-endpoint}\n\\end{equation}",
+          "quoted_text_sha256": "be2fb2eb1a150a6294e6ff4ddc4bb22e3fdbc767ab5e54b85be71a7d1634e9a7"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:823-831",
+      "source_note": "This is the displayed formula contained in the named endpoint proposition. It is audited as source vocabulary for that proposition rather than a second named-theory obligation.",
+      "source_status": "source_context",
+      "statement": "The source displays the Borough-efficient endpoint z_eff_{k,b} = A_eff(s)/E(s) times sqrt(a divided by s_{k,b} r_{k,b}).",
+      "title": "Borough-efficient delay endpoint"
+    },
+    "source_context_equity_loss": {
+      "aliases": [
+        "theoretical_equity_loss"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperEquityLoss"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 763,
+          "line_start": 756,
+          "publication_locator": "cited publication",
+          "quoted_text": "{The first term is the {delay penalty} for {inspected} incidents, and the {second} term is the cost penalty for not {inspecting} an incident. We define efficiency by total arrival-weighted burden and horizontal geographic equity by comparing the same incident category across Boroughs:}\n\\begin{align}\n    G(s,z)&=\\sum_{k,b}\\lambda_{k,b}\\operatorname{Cost}_{k,b}(s,z),\n    \\label{eq:fixed-load-efficiency}\\\\\n    F(s,z)&=\\sum_k\\left[\\max_b\\operatorname{Cost}_{k,b}(s,z)\\right.\\notag\\\\[-2pt]\n    &\\hspace{24mm}\\left.-\\min_b\\operatorname{Cost}_{k,b}(s,z)\\right]\n    \\label{theoretical_equity_loss}\n\\end{align}",
+          "quoted_text_sha256": "65de68f8d8d6a3c09ac489f934decf2d6cab526d7ec227fcfe7c231002eef0fb"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:756-763",
+      "source_note": "This displayed objective formula is source vocabulary, not a separately named theorem. Its source domain has a nonempty finite Borough carrier so the printed extrema are defined.",
+      "source_status": "source_context",
+      "statement": "The source defines geographic equity loss F(s,z) as the sum over categories of the maximum all-request cost across Boroughs minus the minimum all-request cost across Boroughs.",
+      "title": "Geographic equity-loss formula"
+    },
+    "source_context_excess_capacity": {
+      "aliases": [
+        "E(s)"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperExcessCapacity"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 652,
+          "line_start": 647,
+          "publication_locator": "cited publication",
+          "quoted_text": "eliminate the auxiliary Borough capacities and GPS weights.} For the fixed admitted rates $s$, let $E(s)$ be the capacity in excess of admitted load,\n\n  ${E(s)=C-\\sum_{k,b}s_{k,b}>0.}$\n\nWith unit-mean service times, $\\sum_{k,b}s_{k,b}$ is the mean\nadmitted workload, so capacity slack $E(s)$ is the remaining service-rate slack available to tighten SLA guarantees.",
+          "quoted_text_sha256": "8f795054e4f010666366979a6608199dd1786e95f87563700362ce6b228329b2"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:647-652",
+      "source_note": "This unnumbered formula is source model vocabulary. The direct formula receipt must not turn the printed E(s)>0 domain condition into a property of the total Lean definition.",
+      "source_status": "source_context",
+      "statement": "The source defines excess capacity E(s) as total capacity C minus the sum of admitted rates over category-Borough cells; positive excess capacity is a separate fixed-load domain condition.",
+      "title": "Excess-capacity formula"
+    },
+    "source_context_fixed_noninspection_cost": {
+      "aliases": [
+        "fixed noninspection component"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperFixedNoninspectionCost"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 2861,
+          "line_start": 2857,
+          "publication_locator": "cited publication",
+          "quoted_text": "Recall also that $G(s,z)\n=\\sum_{k,b}s_{k,b}r_{k,b}z_{k,b} +\\sum_{k,b}(\\lambda_{k,b}-s_{k,b})r_{k,b}D_{k,b}.$ \n\nThe second sum is the fixed noninspection component, which does not depend on\n$z$.",
+          "quoted_text_sha256": "cb03fa1e05b638be021c2fe5f6ef3063661251783f4aa468b4e43a4bc758c428"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:2857-2861",
+      "source_note": "This appendix formula supplies the source vocabulary behind the capacity-scaling factor; it is not a separate named result. The surrounding decomposition of G(s,z) is source context, but this direct PaperInterface route certifies only the fixed summand and its z-independence.",
+      "source_status": "source_context",
+      "statement": "The source identifies the fixed noninspection component as the finite sum over category-Borough cells of (lambda_{k,b}-s_{k,b}) r_{k,b} D_{k,b}, which is independent of z.",
+      "title": "Fixed noninspection efficiency component"
+    },
+    "source_context_original_fixed_load_feasibility": {
+      "aliases": [
+        "opt-nonconvex"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "source_anchor_evidence": [
+        {
+          "line_end": 643,
+          "line_start": 630,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{subequations}\n\\begin{align}\n    \\min_{\\textbf{z}\\,{>0}, \\phi\\ge 0, C_b\\ge 0} \\quad\n    & {L(\\textbf{z})} \\label{opt-obj}\\\\\n    \\ \\text{s.t.}\\quad\n    & -(C_b\\phi_{k,b} - {s_{k,b}}) z_{k,b}\n      + {a} \\le 0,\\nonumber\\\\\n    & \\quad \\quad \\quad \\quad \\forall k\\in \\mathcal{S}, b\\in \\mathcal{B}, \\label{opt-sla}\\\\\n    & \\sum_{k\\in \\mathcal{S}} \\phi_{k,b} \\le 1, \\forall b\\in\\mathcal{B}, \\label{opt-gps}\\\\\n    & \\sum_{b\\in \\mathcal{B}} C_b \\le C.\\label{opt-budget}\n    \n\\end{align}\n\\label{opt-nonconvex}\n\\end{subequations}",
+          "quoted_text_sha256": "512db2d9da271417719782cf7cf8eba43dba3e8201a7eca7139bb92d6798ff0c"
+        }
+      ],
+      "source_kind": "model",
+      "source_location": "cited publication:630-643",
+      "source_note": "This is unnumbered source model vocabulary supporting the reciprocal-capacity proposition, not an additional named theory result.",
+      "source_status": "source_context",
+      "statement": "The unnumbered fixed-load program has positive SLA delays, nonnegative GPS weights and Borough capacities, the printed cellwise SLA inequality, per-Borough GPS-weight bound, and total capacity budget. The interface predicate is its existential projection onto the delay vector.",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paperOriginalFixedLoadFeasible"
+      ],
+      "title": "Original fixed-load feasibility vocabulary"
+    },
+    "source_context_pearson_chi_square": {
+      "aliases": [
+        "chi-square(q_eff || q_eq)"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperPearsonChiSquare"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 924,
+          "line_start": 922,
+          "publication_locator": "cited publication",
+          "quoted_text": "For either endpoint policy $z^j$ for $j\\in\\{\\mathrm{eff},\\mathrm{eq}\\}$, let $q^j=q(z^j)$ denote the fraction of total capacity slack $E(s)$ assigned to category--Borough cell $(k,b)$, where\n$q_{k,b}(z^j)=\\frac{a}{E(s)z^j_{k,b}}$\\footnote{The supporting policy satisfies $\\phi_{k,b}C_b=s_{k,b}+a/z_{k,b}$, so $a/z_{k,b}$ is the cell's guaranteed service-rate margin above its admitted load.  Because the reciprocal-capacity constraint binds, these margins sum to $E(s)$; hence\n$q_{k,b}(z)=(a/z_{k,b})/E(s)$.} For probability vectors $P$ and $Q$, let the Pearson chi-square divergence be $\\chi^2(P\\|Q)=\\sum_{k,b}(P_{k,b}-Q_{k,b})^2/Q_{k,b}$.",
+          "quoted_text_sha256": "db85415efeb169ac0befebee4ec90bbb74de5b0f6019267147b3a571c7a1791e"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:922-924",
+      "source_note": "This is an unnumbered divergence definition used inside named formulas; it is visible as support vocabulary only.",
+      "source_status": "source_context",
+      "statement": "For probability vectors P and Q over category-Borough cells, the source defines Pearson chi-square divergence as the sum of squared coordinate differences divided by Q.",
+      "title": "Pearson chi-square vocabulary"
+    },
+    "source_context_relative_centralization_gain": {
+      "aliases": [
+        "eq:aligned-pooling-gain"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperRelativeCentralizationGain"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 1127,
+          "line_start": 1115,
+          "publication_locator": "cited publication",
+          "quoted_text": "analogously to above. Then, the relative centralization gain is\n\n\n\n\n\\begin{equation}\n\\begin{aligned}\n  &1-\\frac{G^{\\mathrm{city}}(s,z^{\\mathrm{city}})}{G(s,z^{\\mathrm{eff}})}\\\\[-2pt]\n  &\\qquad=\\frac{A_{\\mathrm{eff}}(s)^2-A^{\\mathrm{city}}(s)^2}\n  {E(s)G(s,z^{\\mathrm{eff}})}.\n\\end{aligned}\n  \\label{eq:aligned-pooling-gain}\n\\end{equation}",
+          "quoted_text_sha256": "1e4d7c64197ba9b0fc3a98da2b05cdd79fecd56809d6d40b48a9d83042061a23"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:1115-1127",
+      "source_note": "The labelled identity has its own theorem route; this parallel support record makes the underlying definition visible without turning it into an additional normal-scope result.",
+      "source_status": "source_context",
+      "statement": "The source defines relative centralization gain as one minus city efficiency at the city endpoint divided by Borough efficiency at the efficient endpoint.",
+      "title": "Relative centralization-gain vocabulary"
+    },
+    "source_context_relative_price_of_equity": {
+      "aliases": [
+        "eq:price-of-equity-definition"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperPriceOfEquity"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 917,
+          "line_start": 912,
+          "publication_locator": "cited publication",
+          "quoted_text": "When is the efficiency and equity trade-off substantial? Akin to the algorithmic fairness literature, we define \\textit{price of equity} as the difference in efficiency loss between {the most equitable and most efficient solutions}, relative to the efficiency loss of the most efficient solution:\n\\begin{equation}\n{\\operatorname{PoE}_C(s)\n:=\\frac{G(s,z^{\\mathrm{eq}})}{G(s,z^{\\mathrm{eff}})}-1 \\geq 0.}\n\\label{eq:price-of-equity-definition}\n\\end{equation}",
+          "quoted_text_sha256": "1d5bb578dfccccdf57b58f85746c028ece7c576fdf7b8f35794acafa05c70f94"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:912-917",
+      "source_note": "This is the source's unnumbered defining display before the later named proposition; it remains support vocabulary rather than another normal-scope theorem.",
+      "source_status": "source_context",
+      "statement": "The source defines price of equity as G(s,z_eq)/G(s,z_eff) - 1, comparing the most equitable and most efficient endpoints relative to the latter's efficiency loss.",
+      "title": "Relative price-of-equity vocabulary"
+    },
+    "source_context_tradeoff_objective": {
+      "aliases": [
+        "eq:tradeoff-objective"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "model_or_formula",
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperTradeoff"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 769,
+          "line_start": 764,
+          "publication_locator": "cited publication",
+          "quoted_text": "This equity loss asks whether similar requests receive comparable service across Boroughs. Notably, our equity function $F$ is not weighted by incident arrival rates, unlike overall cost $G$ -- in practice, Boroughs differ substantially in the number of incidents, and equalizing overall induced cost is impractical; rather, we equalize {per-request burden}. To trace the trade-off, define\n\\begin{equation}\n    {L_\\gamma(s,z)=\\gamma G(s,z)+(1-\\gamma)F(s,z),}\n    \\quad \\gamma\\in[0,1].\n    \\label{eq:tradeoff-objective}\n\\end{equation}",
+          "quoted_text_sha256": "6ac7d6fb9645833f2ef503ea4551f198bbb2917fe16bba7cc3cdd12ad30415ec"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:764-769",
+      "source_note": "This is the unnumbered source objective definition used by the two endpoint propositions, not a named theorem.",
+      "source_status": "source_context",
+      "statement": "The source scalarizes efficiency and within-category geographic disparity as L_gamma(s,z) = gamma G(s,z) + (1-gamma) F(s,z) for gamma in [0,1].",
+      "title": "Efficiency-equity tradeoff vocabulary"
+    },
+    "source_domain_conditions": {
+      "aliases": [
+        "appendix shared domain"
+      ],
+      "claim_bearing": false,
+      "source_anchor_evidence": [
+        {
+          "line_end": 2688,
+          "line_start": 2686,
+          "publication_locator": "cited publication",
+          "quoted_text": "Throughout, $\\mathcal S$ and $\\mathcal B$ are finite,\n$\\lambda_{k,b}>0$, $0<s_{k,b}\\leq\\lambda_{k,b}$, $r_{k,b}>0$,\n$D_{k,b}\\geq0$, and $E(s)>0$. Let $a_{k,b}=-\\log\\alpha_{k,b}>0$. ",
+          "quoted_text_sha256": "e555a2df5fa366fd1f7c65791da900ca9e3a215db34d667ae8e12e9e0e50028b"
+        }
+      ],
+      "source_kind": "model",
+      "source_location": "cited publication:2686-2688",
+      "source_note": "The five proposition specifications expose the needed domain conditions directly. The source explicitly says the index sets are finite and uses category/Borough quantified programs; the review records nonempty finite index types as that necessary implicit modeling convention for minima, maxima, and positive denominators rather than treating nonemptiness as derivable from finiteness.",
+      "source_status": "source_domain_context",
+      "statement": "The fixed-load analysis uses finite categories and Boroughs, positive arrival and priority data, admitted rates between zero and arrival rates, nonnegative noninspection penalties, positive excess capacity, and positive tail parameters.",
+      "title": "Shared fixed-load domain"
+    },
+    "stationary_gps_response_tail_context": {
+      "aliases": [
+        "response times and SLAs"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The direct admitted arrival/work and stationary Palm constructions are checked through the active queueing route. The convention covers only the source-stated admitted-stream normal form. It does not assert a raw-path or empirical-frequency theorem, and it does not credit an unproved raw-to-admitted transport.",
+          "classification": "explicit_source_model_normal_form",
+          "formal_meaning": "The source itself states the independent admitted Poisson streams at rates s after thinning, together with iid unit-mean exponential work. The active Lean route constructs that admitted-stream/Palm model directly at the stated rates and uses it for GPS/FCFS replay.",
+          "id": "LG24-POST-THINNING-ADMITTED-POISSON-NORMAL-FORM-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "ce00bff313c28ea951411c2b4c687ffcfc329a52be53904a2918dae77a63dc44",
+          "source_locator": "cited publication:530-537",
+          "why_needed": "The source writes the admitted-stream law explicitly, but the current library does not yet prove a pathwise raw-marked survivor re-enumeration, multiclass pushforward equality, selected-Palm transport, and response-functional correspondence. Calling the direct carrier a derivation from the raw carrier would therefore be false; taking the explicitly stated post-thinning law as the model normal form is precise and does not weaken a named paper conclusion."
+        },
+        {
+          "checked_scope": "PaperInterface.lean makes both the global steady-operation condition and the target-local margin visible. SLA2026GPSParameters.lean derives the stronger all-cell/aggregate facts only inside the fixed-load-feasible policy bridge. The stationary selected-Palm GPS/FCFS proof uses the visible global condition plus the target margin and does not treat the fixed-load bridge as an unconditional source derivation.",
+          "classification": "steady_operation_regularization",
+          "formal_meaning": "For the selected Borough's SLA subsystem, Lean makes explicit the full-system well-definedness regularity implicit in the source's GPS/steady-operation language: nonnegative capacity, positive SLA weights, total weight at most one, and total SLA admitted load below capacity. The displayed target tail margin remains the separate condition s_target < C phi_target. Always-backlogged no-guarantee background work is excluded from the SLA load sum because it receives only residual capacity.",
+          "id": "LG24-STEADY-SLA-SUBSYSTEM-CONDITION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "40ce7cdccfcf8bf902783ad1073aceb73b7f2c0ffdd9f30465ebad684c8a50d9",
+          "source_locator": "cited publication:541-543; cited publication:600-602; cited publication:628-639",
+          "why_needed": "The standalone display explicitly states only the target-local margin, while the active remote-past construction needs a stable full SLA subsystem. The source's positive admitted streams and GPS active-set allocation make zero weight for any SLA class incompatible with a well-defined stationary full queue, and aggregate slack is needed for stationarity. The later fixed-load program proves stronger all-cell margins only for policies satisfying its own quantified SLA constraints, together with the positive SLA parameter recorded at :600-602; it cannot silently strengthen the standalone display. This convention exposes the implicit global regularity and keeps its dependency direction honest."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_stationary_gps_response_tail"
+      ],
+      "model_convention_ids": [
+        "LG24-POST-THINNING-ADMITTED-POISSON-NORMAL-FORM-01",
+        "LG24-STEADY-SLA-SUBSYSTEM-CONDITION-01"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "LG24ServiceLevelAgreements.paper_stationary_gps_response_tail",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "LG24ServiceLevelAgreements.paper_stationary_gps_response_tailSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 602,
+          "line_start": 555,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\paragraph{Response times and SLAs.} Reflecting practice, we consider SLAs in the following form: \n    \\textit{``In Borough $b$, at least a fraction {$\\frac{s_{k,b}}{\\lambda_{k,b}}(1 -\\alpha_{k,b})$} of category $k$ {incidents} are responded to by time $z_{k,b}$,\"}\n\nwhere $0<\\alpha_{k,b}<1$ and $0<s_{k,b}\\leq\\lambda_{k,b}$. It is thus important to quantify the tail distributions of the response times of non-dropped incidents. Mathematically, let $T_{k,b}$ be the {random variable corresponding to the response time of non-dropped incidents of category $k\\in \\mathcal{S}$ in Borough $b$}. Then, an SLA of the above form corresponds to {$\\mathbb{P}[T_{k,b} > z_{k,b}]\\le \\alpha_{k,b}$}. Assuming that these incidents are processed on a server with capacity $C_b$, and the GPS weight of this category satisfies $C_b\\phi_{k,b}>{s_{k,b}}$ (i.e. there is guaranteed to be enough capacity to {respond to all admitted requests} of this category), the tail probability of the response time distribution is bounded by\n\\begin{equation}\n\\begin{aligned}\n    {\\mathbb{P}[T_{k,b}> z_{k,b}]}\n    &\\le \\exp\\left(-(\\phi_{k,b} C_b-{s_{k,b}})z_{k,b}\\right).\n\\end{aligned}\n    \\label{tail_prob}\n\\end{equation}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThis follows from our assumptions and classical results in queuing theory (e.g., see \\cite{kleinrock1975queue} and \\cite{liu2001maximizing}). Combining the above, a sufficient condition to satisfy an SLA is\n\\begin{equation}\n    (\\phi_{k,b} C_b-{s_{k,b}})z_{k,b}\n    \\ +\\ \\log \\alpha_{k,b}\\geq0,\n    \\label{def:sla}\n\\end{equation}\n\n\n\n\n\n\n\n\n  which we will henceforth refer to as the ``SLA constraint.'' Intuitively, this constraint states that: when $C_b$ budget is allocated to Borough $b$, and category $k$ is assigned a GPS parameter $\\phi_{k,b}$, then at least $\\frac{s_{k,b}}{\\lambda_{k,b}}(1-\\alpha_{k,b})$ fraction of all category $k$ requests in Borough $b$ should be {responded to} within $z_{k,b}$ days, i.e., the SLA would be $z_{k,b}$ days. Practically, enforcing the same tail constraint for all categories enhances the interpretability of the policy,\n\nthus we will consider {$\\alpha_{k,b}=\\bar\\alpha$ and write $a=-\\log(\\bar\\alpha)$} for all category--Borough cells $(k,b)$, which also simplifies notations. Note that {$\\bar\\alpha\\in(0,1)$}, and so {$a>0$}. In the appendix, we prove some of the statements using general $a_{k,b}$. ",
+          "quoted_text_sha256": "0d4b6a3bce80ffceb55b52d7d5f55f504ce47e98380d9b3bc640d56dfb90ae98"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "stationary.gps.response.tail.context",
+          "identity_schema": 2,
+          "reviewed_lean_route": "LG24ServiceLevelAgreements.paper_stationary_gps_response_tail",
+          "semantic_claim": "For a typical non-dropped request in the source's steady ideal-fluid GPS/FCFS model, the response-time tail is at most exp(-(C_b phi_{k,b} - s_{k,b}) z_{k,b}). The displayed target-local margin is s_{k,b} < C_b phi_{k,b}. Lean makes explicit the full-SLA-subsystem well-definedness regularity implicit in the source's GPS/steady-operation language: nonnegative capacity, positive SLA weights with total at most one, and total SLA admitted load below capacity.",
+          "source_locator": "cited publication:555-602",
+          "source_quote_sha256": "0d4b6a3bce80ffceb55b52d7d5f55f504ce47e98380d9b3bc640d56dfb90ae98"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:555-602",
+      "source_note": "This unnumbered display is an explicitly selected semantic target, not a sixth named proposition. Its source-to-Lean route exposes selected-Palm response semantics, measurability, the source's explicitly stated post-thinning admitted-Poisson normal form, and the displayed target-local margin. For a full stationary GPS replay, Lean also makes explicit the implicit well-definedness regularity behind the source's GPS/steady-operation language: every positive-arrival SLA class has positive weight and the aggregate SLA load is below capacity. This is neither an all-class target-margin premise nor a claim that the later fixed-load program supplies the standalone display's premises. No raw-marked-path to direct-admitted-Palm transport is claimed.",
+      "source_status": "exact",
+      "spec_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_stationary_gps_response_tailSpec"
+      ],
+      "statement": "For a typical non-dropped request in the source's steady ideal-fluid GPS/FCFS model, the response-time tail is at most exp(-(C_b phi_{k,b} - s_{k,b}) z_{k,b}). The displayed target-local margin is s_{k,b} < C_b phi_{k,b}. Lean makes explicit the full-SLA-subsystem well-definedness regularity implicit in the source's GPS/steady-operation language: nonnegative capacity, positive SLA weights with total at most one, and total SLA admitted load below capacity.",
+      "support_lean_declarations": [
+        "LG24ServiceLevelAgreements.paper_stationary_gps_response_tailSpec"
+      ],
+      "title": "Stationary GPS response-time tail"
+    },
+    "target_guaranteed_service_margin_context": {
+      "aliases": [
+        "guaranteed to be enough capacity",
+        "C_b phi_{k,b} > s_{k,b}"
+      ],
+      "claim_bearing": false,
+      "lean_declarations": [
+        "LG24ServiceLevelAgreements.paperTargetGuaranteedSlack"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 558,
+          "line_start": 558,
+          "publication_locator": "cited publication",
+          "quoted_text": "where $0<\\alpha_{k,b}<1$ and $0<s_{k,b}\\leq\\lambda_{k,b}$. It is thus important to quantify the tail distributions of the response times of non-dropped incidents. Mathematically, let $T_{k,b}$ be the {random variable corresponding to the response time of non-dropped incidents of category $k\\in \\mathcal{S}$ in Borough $b$}. Then, an SLA of the above form corresponds to {$\\mathbb{P}[T_{k,b} > z_{k,b}]\\le \\alpha_{k,b}$}. Assuming that these incidents are processed on a server with capacity $C_b$, and the GPS weight of this category satisfies $C_b\\phi_{k,b}>{s_{k,b}}$ (i.e. there is guaranteed to be enough capacity to {respond to all admitted requests} of this category), the tail probability of the response time distribution is bounded by",
+          "quoted_text_sha256": "02c2065439e3ae5d93435076b9bb1f6ce0925154dba6393a6067f1ad7323795d"
+        }
+      ],
+      "source_kind": "model",
+      "source_location": "cited publication:558",
+      "source_note": "This literal source condition is the target-local premise of the selected tail and SLA results. It must not be conflated with the distinct aggregate steady-operation regularization or replaced by an all-class margin.",
+      "source_status": "source_context",
+      "statement": "For the selected SLA category and Borough, the displayed response-tail bound assumes the target-local margin s_{k,b} < C_b phi_{k,b}. This condition is separate from the globally steady SLA-subsystem regularization used to construct the remote-past queue.",
+      "title": "Target-local guaranteed-service margin"
+    }
+  },
+  "paper": "LG24ServiceLevelAgreements",
+  "paper_interface_namespace": "LG24ServiceLevelAgreements",
+  "schema": 1,
+  "semantic_contract_schema": 1,
+  "semantic_preflight_import_module": "LG24ServiceLevelAgreements.PaperInterface",
+  "semantic_route_schema": 2,
+  "source_anchor_evidence_required": true,
+  "source_artifact_sha256": "eda9c8c9688a350b6d7696bb8e456ea0ce0ffe4b1f33e70636e24f82bb052b35",
+  "source_claim_atoms_schema": 1,
+  "source_coverage_mode": "named_theoretical_statements",
+  "source_curated": true,
+  "source_inventory_kind": "source_curated_named_theory",
+  "source_inventory_policy": "Normal coverage is the source-presented named theoretical surface of the byte-pinned compiled transcript: its five Proposition environments. The separately labelled relative-centralization equation and the preceding city-program optimizer are independently audited source-facing support formulas, but neither is a sixth normal-scope theorem obligation. Unnumbered model and objective vocabulary is kept visible in PaperInterface.lean and discussed in the report as source context, but does not become a separate normal-scope theorem atom. Two unnumbered GPS/SLA displays are explicitly selected through status-configured source-to-Lean semantic routes because they state the stochastic construction completed by this paper; they remain outside normal named-theory coverage. Algorithms, simulations, figures, captions, and ordinary explanatory prose are deep-mode material unless a later audit explicitly selects deep_paper_with_all_prose_claims. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
+  "source_named_result_inventory_review": {
+    "candidate_presentations": [],
+    "complete": true,
+    "discovered_candidate_presentation_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "discovered_named_result_sha256": "38eddb1146d7ffd12489aaa9cc12d3e425c468623bb453a6c406d40da2a7f82d",
+    "discovered_prose_definition_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "environment_kinds": {
+      "prop": "proposition"
+    },
+    "method": "Read the complete byte-pinned intended transcript using its section, display, proposition, appendix, and algorithm structure; cross-checked all five visible Proposition environments, the two explicitly selected GPS/SLA displays, the optimizer and relative-centralization formula routes, and the remaining model equations. No additional normal-scope named result or selected material mathematical presentation was found beyond the existing source map.",
+    "prose_definition_presentations": [],
+    "schema": 1,
+    "source_artifact_sha256": "eda9c8c9688a350b6d7696bb8e456ea0ce0ffe4b1f33e70636e24f82bb052b35",
+    "validated_at": "2026-09-04T08:33:30Z",
+    "validator": "coordinator-source-inventory-review-2026-09-04"
+  },
+  "source_spec_correspondence_schema": 1,
+  "source_stage": "active private Overleaf cited publication",
+  "source_url": "https://git.overleaf.com/6a0b2ddc9d213ff09b84cb57",
+  "source_version": "Private Overleaf cited publication at 887a5ccdb076b6e811d8cbc34d3b0eed9b5bdb1a; intended compiled transcript",
+  "title": "Redesigning Service Level Agreements: Equity and Efficiency in City Government Operations"
+}

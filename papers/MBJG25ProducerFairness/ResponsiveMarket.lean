@@ -1,8 +1,8 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Real.Sqrt
-import EconCSLib.Foundations.Econometrics.RatingModels.BinaryRating
-import EconCSLib.Foundations.Probability.FinsetVariance
-import EconCSLib.Foundations.Probability.FiniteExpectation
+import AppliedModelingLib.Applications.RatingSystems.BinaryRating
+import AppliedModelingLib.Foundations.Probability.FinsetVariance
+import AppliedModelingLib.Foundations.Probability.FiniteExpectation
 
 namespace MBJG25ProducerFairness
 namespace Responsive
@@ -28,7 +28,7 @@ noncomputable def producerUnfairnessVariance
     (q_v : V → ℝ)
     (q : ℝ) : ℝ :=
   let S := Finset.univ.filter (fun v => q_v v = q)
-  EconCSLib.Statistics.finsetVariance S (fun v => selectionRate (selections v) (lifespan v))
+  AppliedModelingLib.Statistics.finsetVariance S (fun v => selectionRate (selections v) (lifespan v))
 
 /--
 Individual Producer Unfairness.
@@ -46,11 +46,11 @@ noncomputable def producerUnfairness
 theorem finite_bias_variance_decomposition
     {Ω : Type*} [Fintype Ω] [DecidableEq Ω]
     (μ : PMF Ω) (X : Ω → ℝ) (q : ℝ) :
-    EconCSLib.pmfExp μ (fun ω => (X ω - q) ^ 2) =
-      (EconCSLib.pmfExp μ X - q) ^ 2 +
-        EconCSLib.pmfExp μ (fun ω =>
-          (X ω - EconCSLib.pmfExp μ X) ^ 2) := by
-  let mean := EconCSLib.pmfExp μ X
+    AppliedModelingLib.pmfExp μ (fun ω => (X ω - q) ^ 2) =
+      (AppliedModelingLib.pmfExp μ X - q) ^ 2 +
+        AppliedModelingLib.pmfExp μ (fun ω =>
+          (X ω - AppliedModelingLib.pmfExp μ X) ^ 2) := by
+  let mean := AppliedModelingLib.pmfExp μ X
   have hpoint :
       (fun ω => (X ω - q) ^ 2) =
         (fun ω =>
@@ -58,9 +58,9 @@ theorem finite_bias_variance_decomposition
             (2 * (mean - q)) * (X ω - mean) + (mean - q) ^ 2) := by
     funext ω
     ring
-  rw [hpoint, EconCSLib.pmfExp_add, EconCSLib.pmfExp_add,
-    EconCSLib.pmfExp_const_mul, EconCSLib.pmfExp_sub,
-    EconCSLib.pmfExp_const, EconCSLib.pmfExp_const]
+  rw [hpoint, AppliedModelingLib.pmfExp_add, AppliedModelingLib.pmfExp_add,
+    AppliedModelingLib.pmfExp_const_mul, AppliedModelingLib.pmfExp_sub,
+    AppliedModelingLib.pmfExp_const, AppliedModelingLib.pmfExp_const]
   change _ = (mean - q) ^ 2 + _
   ring
 
@@ -79,33 +79,33 @@ theorem paper_responsive_mse_decomposition
     (N : α → ℝ)
     (posterior_rating : α → Ω → ℝ)
     (h_cond_mean : ∀ s,
-      EconCSLib.pmfExp (rating_dist s) (posterior_rating s) =
-      EconCSLib.Statistics.priorWeightedPosteriorMean alpha beta eta (N s) q_v)
+      AppliedModelingLib.pmfExp (rating_dist s) (posterior_rating s) =
+      AppliedModelingLib.Statistics.priorWeightedPosteriorMean alpha beta eta (N s) q_v)
     (h_cond_var : ∀ s,
-      EconCSLib.pmfExp (rating_dist s) (fun ω =>
+      AppliedModelingLib.pmfExp (rating_dist s) (fun ω =>
         (posterior_rating s ω -
-          EconCSLib.pmfExp (rating_dist s) (posterior_rating s)) ^ 2) =
-      EconCSLib.Statistics.priorWeightedVariance alpha beta eta (N s) q_v) :
-    EconCSLib.pmfExp state_dist (fun s =>
-      EconCSLib.pmfExp (rating_dist s) (fun ω =>
+          AppliedModelingLib.pmfExp (rating_dist s) (posterior_rating s)) ^ 2) =
+      AppliedModelingLib.Statistics.priorWeightedVariance alpha beta eta (N s) q_v) :
+    AppliedModelingLib.pmfExp state_dist (fun s =>
+      AppliedModelingLib.pmfExp (rating_dist s) (fun ω =>
         (posterior_rating s ω - q_v) ^ 2)) =
-      EconCSLib.pmfExp state_dist (fun s =>
-        EconCSLib.Statistics.priorWeightedSquaredBias alpha beta eta (N s) q_v) +
-      EconCSLib.pmfExp state_dist (fun s =>
-        EconCSLib.Statistics.priorWeightedVariance alpha beta eta (N s) q_v) := by
+      AppliedModelingLib.pmfExp state_dist (fun s =>
+        AppliedModelingLib.Statistics.priorWeightedSquaredBias alpha beta eta (N s) q_v) +
+      AppliedModelingLib.pmfExp state_dist (fun s =>
+        AppliedModelingLib.Statistics.priorWeightedVariance alpha beta eta (N s) q_v) := by
   have h_eq : ∀ s,
-      EconCSLib.pmfExp (rating_dist s) (fun ω =>
+      AppliedModelingLib.pmfExp (rating_dist s) (fun ω =>
         (posterior_rating s ω - q_v) ^ 2) =
-      EconCSLib.Statistics.priorWeightedSquaredBias alpha beta eta (N s) q_v +
-      EconCSLib.Statistics.priorWeightedVariance alpha beta eta (N s) q_v := by
+      AppliedModelingLib.Statistics.priorWeightedSquaredBias alpha beta eta (N s) q_v +
+      AppliedModelingLib.Statistics.priorWeightedVariance alpha beta eta (N s) q_v := by
     intro s
     have h := finite_bias_variance_decomposition
       (rating_dist s) (posterior_rating s) q_v
     rw [h_cond_var s, h_cond_mean s] at h
-    simpa [EconCSLib.Statistics.priorWeightedSquaredBias,
-      EconCSLib.Statistics.priorWeightedBias] using h
+    simpa [AppliedModelingLib.Statistics.priorWeightedSquaredBias,
+      AppliedModelingLib.Statistics.priorWeightedBias] using h
   simp only [h_eq]
-  exact EconCSLib.pmfExp_add state_dist _ _
+  exact AppliedModelingLib.pmfExp_add state_dist _ _
 
 end Responsive
 end MBJG25ProducerFairness

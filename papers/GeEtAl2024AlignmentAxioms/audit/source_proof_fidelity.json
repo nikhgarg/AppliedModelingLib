@@ -1,0 +1,184 @@
+{
+  "defects": [
+    {
+      "acceptance_condition": "The transparent corrected Lemma 3.4 Spec exposes the strict cone and its proof endpoint establishes it for every core minimizer.",
+      "affected_source_locators": [
+        "cited publication:351",
+        "cited publication:1162-1177"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "GE24-LEMMA34-WEAK-RELATION-01",
+      "repair_obligation": "State and prove the strict minimizer cone obtained from the Lemma 3.3 coordinate bounds and the displayed delta inequality.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "PaperInterface.lean and ProofInterface.lean expose and prove lemma3_4_correctedCopyCone; docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md records the source reading.",
+      "source_claim": "The printed Lemma 3.4 uses the weak region R_{c-prime over c} at epsilon zero as the optimizer-containment premise for perturbation stability.",
+      "source_locator": "cited publication:351; cited publication:1162-1177",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "At epsilon zero the copied feature and the original coincide, so the weak containment is true but vacuous. The source calculation also supplies the strict positive-epsilon cone that Lean states and proves; the final Theorem 3.1 endpoint is unchanged."
+    },
+    {
+      "acceptance_condition": "The transparent corrected Lemma 3.5 Spec states the complete strict gap and its proof endpoint establishes it from the corrected cone.",
+      "affected_source_locators": [
+        "cited publication:353-354",
+        "cited publication:1178-1211"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "GE24-LEMMA35-WEAK-HALFSPACE-02",
+      "repair_obligation": "Replace the open-set step by a strict closed-bad-half-space gap, coercive capture, compact uniform continuity, and an exterior barrier.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "LossBased.lean proves the perturbation gap; PaperInterface.lean and ProofInterface.lean expose and prove lemma3_5_correctedPerturbationGap; docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md records the repair.",
+      "source_claim": "The printed Lemma 3.5 claims that the weak epsilon-zero optimizer containment suffices for a strict positive-epsilon infimum gap and argues through an open-set stability step.",
+      "source_locator": "cited publication:353-354; cited publication:1178-1211",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The weak premise is vacuous at epsilon zero, but the corrected strict cone supports a complete proof of the same perturbation gap needed by Theorem 3.1. Lean proves the advertised final theorem without an added non-source assumption."
+    },
+    {
+      "acceptance_condition": "The Lemma 3.2 proof endpoint derives the separated minimizer conclusion under exactly the two source loss alternatives.",
+      "affected_source_locators": [
+        "cited publication:992-1130"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "GE24-APPENDIX-A1-ONE-SIDED-DERIVATIVE-03",
+      "repair_obligation": "Establish the finite point-selection certificate without assuming an ordinary derivative exists at the selected points.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "LossBased.lean proves the separate one-sided derivative routes consumed by lemma3_2_unconstrainedCoreSeparation.",
+      "source_claim": "Appendix A.1 uses point-selection and derivative reasoning to obtain the four finite inequalities needed for Lemma 3.2, but later abbreviates the selected points at a different scale.",
+      "source_locator": "cited publication:992-1130",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The source endpoint is unchanged. Lean supplies separate strictly-convex and nondecreasing-convex one-sided derivative arguments and derives the same four-point certificate."
+    },
+    {
+      "acceptance_condition": "The relevant transparent Specs expose the source-supported deterministic selector or local output premise, and their proof endpoints establish every stated axiom or counterexample.",
+      "affected_source_locators": [
+        "cited publication:416-489",
+        "cited publication:1398-1572"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "GE24-RULE-LEVEL-TIE-CONVENTION-04",
+      "repair_obligation": "Use one fixed profile-independent tie order where a rule-level source result requires one; for a finite proof whose source explicitly selects a local output WLOG, expose only that local premise.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "LCPO.lean, AppliedModelingLib/Alignment/Axioms/Kemeny.lean, C2Separability.lean, C6LeximaxPlurality.lean, PaperInterface.lean, and ProofInterface.lean use explicit profile-independent tie conventions where their rule-level results need them. C5ParetoKemeny.lean instead uses only the source's stated local WLOG v1 output premise.",
+      "source_claim": "The source permits arbitrary or consistent ties while stating winner-monotonicity and separability as properties of aggregation rules.",
+      "source_locator": "cited publication:416-489; cited publication:1398-1572",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "A rule is a function, so source results that quantify over a rule need a deterministic selection whenever their stated axiom needs one. Lean makes such conventions explicit for the C.3 and C.6 rule-level results. C.5 instead records the source proof's local WLOG output premise and does not impose a global tie convention."
+    },
+    {
+      "acceptance_condition": "The transparent Lemma 3.2 Spec retains p in (1/2, 1] while its proof endpoint supplies a checked witness with p < 1.",
+      "affected_source_locators": [
+        "cited publication:318-319",
+        "cited publication:1085-1130"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "GE24-LEMMA32-INTERIOR-WEIGHT-05",
+      "repair_obligation": "Construct an interior rational weight so both tails of the weighted loss are coercive and retain the printed existential conclusion.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "LossBased.lean constructs the interior rational weight and proves the full lemma3_2_unconstrainedCoreSeparation endpoint.",
+      "source_claim": "Lemma 3.2 permits a rational weight in (1/2, 1], while its minimizer-existence proof uses two-sided coercivity of the weighted loss.",
+      "source_locator": "cited publication:318-319; cited publication:1085-1130",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The claim is existential, and Lean constructs a witness in the strictly smaller interval (1/2, 1), which still proves the printed (1/2, 1] conclusion. No endpoint or assumption changes."
+    },
+    {
+      "acceptance_condition": "The finite six-candidate construction proves both submitted rankings feature-linearly feasible using the printed feature vectors.",
+      "affected_source_locators": [
+        "cited publication:328-358"
+      ],
+      "defect_kind": "algebra_or_sign",
+      "id": "GE24-SIX-CANDIDATE-FORWARD-WITNESS-06",
+      "repair_obligation": "Give a nondegenerate parameter that induces the printed forward ranking for every 0 < delta < 1 and sufficiently small positive epsilon.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "LossBased.lean checks the replacement (delta,2) reward ordering and uses it in the finite-voter Theorem 3.1 construction.",
+      "source_claim": "Footnote 7 says the forward six-candidate ranking is induced by parameter (1,1).",
+      "source_locator": "cited publication:328-358",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The printed parameter ranks c above c-prime under the printed features, but the intended forward ranking remains feasible. Lean supplies the valid parameter (delta,2), so the source profile and Theorem 3.1 endpoint are unchanged."
+    },
+    {
+      "acceptance_condition": "The transparent Theorem 3.1 Spec retains the positive-input two-candidate branch, and its proof endpoint establishes both PO and PMC failure using the corrected nonpositive-input lower bound under exactly the source loss assumptions.",
+      "affected_source_locators": [
+        "cited publication:362-363",
+        "cited publication:365-367"
+      ],
+      "defect_kind": "inequality_direction",
+      "id": "GE24-THEOREM31-POSITIVE-INFIMUM-DIRECTION-07",
+      "repair_obligation": "Reverse the restricted-infimum comparison to inf_{y <= 0} loss(y) > inf_y loss(y), replace 'lower bounded by loss(0) from above' by 'bounded below by loss(0)', and establish the nonpositive-input lower bound from strict convexity and the positive dip.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "LossBased.lean:452-489 proves strictConvexOn_nonpositive_lower_of_positive_dip; LossBased.lean:593-621 uses it in positiveInput_branch_fails_pareto_and_pmc; ProofInterface.lean:43-49 routes that checked branch into theorem3_1_lossBasedImpossibility.",
+      "source_claim": "In the positive-input branch of Theorem 3.1, after correctly asserting that every negative input has loss above loss(0), the proof prints inf_{y <= 0} loss(y) < inf_y loss(y) and later says the unanimous-order loss is lower bounded by loss(0) from above.",
+      "source_locator": "cited publication:362-367",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "A restricted infimum cannot be smaller than the unrestricted infimum. The intended strict reverse inequality follows because every nonpositive input has loss at least loss(0), while the positive witness has loss strictly below loss(0). Lean proves this corrected lower bound and the same two-candidate PO and PMC violations, so the Theorem 3.1 statement is unchanged."
+    },
+    {
+      "acceptance_condition": "The transparent Theorem 3.7 semantic target exposes the corrected Appendix-A.6 consequence and its proof endpoint proves the C1, Pareto, PMC, and no-PMC clauses; the Appendix-B target separately proves its own infeasibility example.",
+      "affected_source_locators": [
+        "cited publication:404-410",
+        "cited publication:1226-1265"
+      ],
+      "defect_kind": "other",
+      "id": "GE24-THEOREM37-PROOF-WITNESS-LOCATION-08",
+      "repair_obligation": "Prove the actual Appendix-A.6 no-PMC fact, keep the Appendix-B infeasibility example under its own source owner, and do not use Appendix B as a silent replacement for the source's Appendix-A.6 sentence.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "C1Impossibility.lean proves the Appendix-A.6 majority cycle and absence of a PMC ranking; PaperInterface.lean and ProofInterface.lean expose and prove the corrected Theorem 3.7 consequence; docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md records the source proof-location error.",
+      "source_claim": "The paragraph after Theorem 3.7 says its Appendix-A.6 proof constructs a profile with a PMC ranking that is not linearly feasible.",
+      "source_locator": "cited publication:404-410; cited publication:1226-1265; cited publication:1333-1385",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The Appendix-A.6 strict-majority graph contains an explicit directed cycle and therefore has no PMC ranking. This invalidates only the printed witness attribution: the C1-plus-Pareto implication and Theorem 3.7 remain proved, while Appendix B separately supplies the unique PMC ranking that is not linearly feasible."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "Only GeEtAl2024AlignmentAxioms.IsParetoKemenySelector and theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistencySpec. The C.4 feature table and the three literal C.5 profiles remain separately byte-pinned source constructions.",
+      "classification": "source_wlog_local_output_selection",
+      "formal_meaning": "For the finite C.5 construction, Lean assumes only the source proof's displayed local choice that the rule outputs v1 on the first profile. On every source-feasible profile it otherwise requires only Pareto-constrained Kemeny minimization; it does not assume a global tie key or a profile-independent tie-selection law.",
+      "id": "GE24-C5-LOCAL-WLOG-SELECTION-01",
+      "report_summary": "The C.5 counterexample uses the source proof's explicit local WLOG choice of v1 on its first profile; it adds no global tie-breaking convention.",
+      "source_locator": "cited publication:1509-1514",
+      "why_needed": "The source proof says 'Without loss of generality, assume that it outputs the ranking of v1.' The formal theorem records that exact local premise rather than strengthening it to a selector convention the source does not state."
+    },
+    {
+      "checked_scope": "Only GeEtAl2024AlignmentAxioms.IsFixedTieLeximaxPluralitySelector and theoremC_6_fixedTieLeximaxPluralitySatisfiesAxiomsSpec. The source's sequential feasibility and plurality-score construction remains separately byte-pinned.",
+      "classification": "source_definedness_clarification",
+      "formal_meaning": "Lean makes each sequential Leximax Plurality choice deterministic by using a fixed candidate-index order only when plurality scores tie. A strictly higher plurality score always wins, and the same fixed tie choice applies at every profile and prefix.",
+      "id": "GE24-C6-FIXED-TIE-CONVENTION-01",
+      "report_summary": "C.6 uses a fixed deterministic tie convention only to make the paper's sequential highest-plurality prescription a single rule; all strict plurality comparisons are unchanged.",
+      "source_locator": "cited publication:1530-1539; cited publication:1543-1572",
+      "why_needed": "The source describes a rule that ranks the feasible candidate with the highest plurality score at each position, but does not resolve equality. A fixed total tie convention turns that maximum correspondence into the ranking aggregation function needed by the C.6 statements without changing any strict score comparison."
+    }
+  ],
+  "paper": "GeEtAl2024AlignmentAxioms",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Theorem 3.1 and the Lemmas 3.2--3.5 optimizer-separation and perturbation chain.",
+      "source_locator": "cited publication:267-368; cited publication:992-1211"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Theorems 3.6--3.7, the post-Theorem 3.7 C1-plus-PO consequence, the Appendix-A.6 majority graph, and the finite Appendix-B unique-PMC infeasibility construction.",
+      "source_locator": "cited publication:389-410; cited publication:1212-1386"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Theorem 4.3 and the rule-level interpretation of arbitrary LCPO ties.",
+      "source_locator": "cited publication:412-499"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Appendix C definitions, finite counterexamples, and fixed rule-level tie conventions.",
+      "source_locator": "cited publication:1387-1572"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "f529f160b3948006993860690b17106037212012b0dfe25d9d76ef013eed22b6"
+}

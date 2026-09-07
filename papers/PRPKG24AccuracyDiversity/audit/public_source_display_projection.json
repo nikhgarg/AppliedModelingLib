@@ -1,0 +1,942 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "PRPKG24AccuracyDiversity",
+  "private_source_map_sha256": "f72f20a5f4188d45df50524bea68bc2ae85cf11a0d151905a99fa5b35227c3d7",
+  "public_manifest_path": "papers/PRPKG24AccuracyDiversity/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "bad4e351d924ec3d8d965a6a83ea1b8f6db7c2db1dd96ac0c17324a70d07cf69",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "prpkg_assumption_lemmaD2_domain",
+    "prpkg_assumption_positive_rounding_size",
+    "prpkg_corollary1_any_gamma",
+    "prpkg_corollary3_iid_bernoulli",
+    "prpkg_definition1_eq5_gamma_homogeneity",
+    "prpkg_definition2_eq6_sequence_homogeneity",
+    "prpkg_definition3_order_statistic_mean",
+    "prpkg_eq11_bounded_share_limit",
+    "prpkg_eq18_uniform_minimizes_gamma",
+    "prpkg_eq4_representation",
+    "prpkg_eq8_proposition2_uniform_finite",
+    "prpkg_eq9_theorem3_log_share",
+    "prpkg_lemma1_bounded_tail",
+    "prpkg_lemmaD1_i_exponential_limit",
+    "prpkg_lemmaD1_ii_power_limit",
+    "prpkg_lemmaD1_iii_log_limit",
+    "prpkg_lemmaD1_iv_sublinear_power_limit",
+    "prpkg_lemmaD2_bounded_integral",
+    "prpkg_lemmaD3_exponential_order_stats",
+    "prpkg_lemmaD4_pareto_order_stats",
+    "prpkg_lemmaD5_rounding",
+    "prpkg_proposition5_uniform_order_statistic",
+    "prpkg_theorem1_i_finite_discrete",
+    "prpkg_theorem1_ii_bounded",
+    "prpkg_theorem1_iii_exponential",
+    "prpkg_theorem1_iv_pareto",
+    "prpkg_theorem1_v_all_consumed",
+    "prpkg_theorem2_i_subunit_decay",
+    "prpkg_theorem2_ii_unit_decay",
+    "prpkg_theorem2_iii_superunit_decay",
+    "prpkg_theorem2_iv_all_consumed_decay",
+    "prpkg_theorem3_all_consumed_argmax"
+  ],
+  "selected_source_items": {
+    "prpkg_assumption_lemmaD2_domain": {
+      "source_anchors": [
+        {
+          "line_end": 2414,
+          "line_start": 2248,
+          "publication_locator": "cited publication",
+          "quoted_text": "(94)\n\n(95)\n\n=B\n(96)\n1\na− β\nfor some constant B (that can vary depending on j). Verifying (96) comprises the bulk of the technical work\nof the proof, and we isolate it in the following lemma.\nlim\n\na→∞\n\n24\n\n\fLemma D.2. For β > 0,\n\nZ ∞\u0012 \u0013\n1\na\nGX (x)j (1 − GX (x))a−j dx ∝ a− β .\nj\n0\n\n(97)\n\nfX (x)\ngX (x)\n= lim −\n=1\nlim\nx→M c(M − x)β−1\nx→0+ cxβ−1\n\n(98)\n\n(1 − ϵ)cxβ−1 ≤ gX (x) ≤ (1 + ϵ)cxβ−1\n\n(99)\n\nProof. We have that\n\nfor a positive constant c. So for all ϵ > 0 there exists δ > 0 such that\n\nfor all x < δ. Now note that gX (x) ≤ (1 + ϵ)cxβ−1 implies that\nZ x\nZ x\nc\nGX (x) =\ngX (u) du ≤ (1 + ϵ)\ncuβ−1 du = (1 + ϵ) xβ .\nβ\n0\n0\n\n(100)\n\nLikewise, gX (x) ≥ (1 − ϵ)cxβ−1 implies that\nZ x\nZ x\nc\nGX (x) =\ngX (u) du ≥ (1 − ϵ)\ncuβ−1 du = (1 − ϵ) xβ .\nβ\n0\n0\n\n(101)\n\nNow write\nZ ∞\u0012 \u0013\na\nGX (x)j (1 − GX (x))a−j dx\nj\n0\nZ δ\u0012 \u0013\nZ ∞\u0012 \u0013\n1\n1\na\na\n= aβ\nGX (x)j (1 − GX (x))a−j dx + a β\nGX (x)j (1 − GX (x))a−j dx.\nj\nj\n0\nδ\n1\n\naβ\n\n(102)\n(103)\n\nWe will analyze these two integral separately. It will turn out that the second integral vanishes as a grows.\nThe first integral. We have that\nZ δ\u0012 \u0013\n1\na\nGX (x)j (1 − GX (x))a−j dx\naβ\nj\n0\n\u0012 \u0013j\nZ δ\u0012 \u0013\n1\na\nc\nc\nj\nβ\n≤a\n(1 + ϵ)\nxβj (1 − (1 − ϵ) xβ )a−j dx\nj\nβ\nβ\n0\n\u0012 \u0013j \u0012 \u0013βj\n\u0012 \u0013β !a−j\nZ δa β1 \u0012 \u0013\na\nc\nx\nx\nc\nj\n=\n(1 + ϵ)\n1 − (1 − ϵ)\ndx\n1\nj\nβ\nβ a β1\n0\naβ\n\u0012 \u0013j β \u0012\n\u0013a−j\nZ δa β1 \u0012 \u0013\na\nc\nx j\ncx\n=\n(1 + ϵ)j\n1\n−\n(1\n−\nϵ)\ndx.\nβ\naj\nβa\nj\n0\nThen\n\n(104)\n(105)\n(106)\n\n(107)",
+          "quoted_text_sha256": "b843834e3c3348dc4ca65550376dd26308b1da33a68a192ad6bc8489d1a4ba27"
+        }
+      ],
+      "source_kind": "assumption"
+    },
+    "prpkg_assumption_positive_rounding_size": {
+      "source_anchors": [
+        {
+          "line_end": 3967,
+          "line_start": 3819,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma D.5. Let g1 , g2 , · · · , gm : [0, ∞)m → R be strictly convex functions over the non-negative reals. Then\ndefine\nm\nX\ngt (xt ).\n(190)\ng(x1 , · · · , xm ) :=\nt=1\n\nPm\n\n∗\n∗\nt=1 xt = n, if (x1 , · · · , xm ) is the maximum of g over the non-negative\n\nThen, under the constraint that\nreals and (a∗1 , · · · , a∗m ) is the maximum of g over the non-negative integers, then\n⌊x∗t ⌋ − m < a∗t < ⌊x∗t ⌋ + m\n\n(191)\n\nfor all t.\nProof. The key idea is to show that there cannot be i, j such that a∗i ≥ ⌈xi ⌉ + 1 and a∗j ≤ ⌈xj ⌉ − 1. If such a\npair does exist, we show that\ng(· · · , a∗i − 1, · · · , a∗j + 1, · · · ) ≥ g(· · · , a∗i , · · · , a∗j , · · · ),\n\n(192)\n\ncontradicting the optimality of a∗1 , · · · , a∗m . It suffices to show that\nor equivalently,\nThis holds, as\n\ngi (a∗i − 1) + gj (a∗j + 1) ≥ gi (a∗i ) + gj (a∗j ),\n\n(193)\n\ngj (a∗j + 1) − gj (a∗j ) ≥ gi (a∗i ) − gi (a∗i − 1).\n\n(194)\n\ngj (a∗j + 1) − gj (a∗j ) ≥\n\n∂gi\n∂gj\n=\n≥ gi (a∗i ) − gi (a∗i − 1).\n∂xj\n∂xi\n\n32\n\n(195)\n\n\fD.5\n\nProof of Proposition 2\n\nFor ease of exposition, we will begin by proving the result for k = 1 and then handle the more general case.\nFirst case (k = 1). Let us first consider the case k = 1. We would like to find an ordered tuple of\nnon-negative integers (a1 , · · · , am ) that maximizes\nm\nX\nt=1\n\nm\nX\n\npt µD (at , at ) =\n\nt=1\n\n\u0012\npt 1 −\n\n1\nat + 1\n\n\u0013\n(196)\n\nPm\nsubject to the constraint t=1 at = n. Our strategy will be to solve the relaxed optimization problem over\nnon-negative reals, and then show that the optimal integer solution is “close to” the optimal real solution.\nConsider the function g : [0, ∞)m → R, where\ng(x1 , · · · , xm ) =\nSubject to the constraint\n\nm\nX\nt=1\n\n\u0012\npt\n\n1\n1−\nxt + 1\n\n\u0013\n.\n\n(197)\n\nPm\n\nt=1 xt = n, g(x1 , · · · , xm ) is maximized exactly when\n\n∂g\n∂g\n∂g\n=\n= ··· =\n.\n∂x1\n∂x2\n∂xm\n\n(198)\n\nThis is clear after noting that g is convex on its domain and applying Lagrange multipliers. We have that\n\u00132\n\u0012\n∂g\n1\n.\n= pt\n∂xt\nxt + 1\n√\nSo if (x∗1 , · · · , x∗m ) is a maximum, then x∗t + 1 ∝ pt , meaning that\n\u0012 √\n\u0013\npt\nx∗t = Pm √\nn − 1.\ni=1 pi\n\n(199)\n\n(200)\n\nWe now apply Lemma D.5: if (a∗1 , · · · , a∗m ) is the optimal integer solution, then |a∗t − x∗t | ≤ m. Thus,\n√\npt\n∗\nP\nat − m √ n ≤ m + 1\n(201)\ni=1 pi",
+          "quoted_text_sha256": "b44e816f1b1df1ad589256818d9e5574527d283f7fccca0ad3e2875acaf7222d"
+        }
+      ],
+      "source_kind": "assumption"
+    },
+    "prpkg_corollary1_any_gamma": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 457,
+          "line_start": 443,
+          "publication_locator": "cited publication",
+          "quoted_text": "Corollary 1. For any γ ≥ 0, there exists D such that when Xi\nhomogeneous.\n\n∼ D and k is fixed, {Sn,k }∞\nn=1 is γ-\n\nIntuitively, heavy-tailed distributions (part (iv)) induce less diverse recommendations since the marginal\nreturns of recommending more items from the same type remains high: drawing more samples from a heavytailed distribution produces ever-increasing item values. This contrasts with bounded distributions like the\nuniform distribution (part (ii)), where once an item has close to the maximum value, additional draws of\nthat type will not further improve the utility significantly.\nA result for finite n and larger k. One limitation of our main results is that they are asymptotic (n → ∞)\nand are restricted to fixed consumption constraints k. Stronger results can be obtained by considering specific\ndistributions. For example, the result below characterizes for any n, k the representation of each type when\nconditional item values are uniformly distributed on [0, 1].\n(t) iid",
+          "quoted_text_sha256": "b9dbe262b946484f31ba554fcd35a6f4e15d416eb5ddb1f01b397d574b274d50"
+        }
+      ],
+      "source_kind": "corollary"
+    },
+    "prpkg_corollary3_iid_bernoulli": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 535,
+          "line_start": 518,
+          "publication_locator": "cited publication",
+          "quoted_text": "Corollary 3 (Conditional item values are i.i.d. Bernoulli). When Xi\n0-homogeneous.\n\n∼ Ber(q) for q > 0, then Sn,1 is\n\nTherefore, if the success probability is the same for all items, optimal solutions are 0-homogeneous (each\nitem is equally represented) for large n, even as the likelihoods pt vary across type.\n3.2.1\n\nDecaying success probabilities\n\nWe now consider a setting in which among items of the same type, the recommender knows that some items\nhave higher success probability. This maps onto settings where the recommender knows which items of a\ntype are most likely to be satisfactory, e.g., some action movies are more commonly liked than are others.\nThus, we assume that the recommender has access to items with decaying success probabilities.\n(t) iid\n\n(t)",
+          "quoted_text_sha256": "4e3387cfd76781d2a3744be914fa5df4cf579157a2bd36c2d73865a4903f8fe1"
+        }
+      ],
+      "source_kind": "corollary"
+    },
+    "prpkg_definition1_eq5_gamma_homogeneity": {
+      "source_anchors": [
+        {
+          "line_end": 300,
+          "line_start": 273,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 1 (γ-homogeneity). A set S is γ-homogeneous if for all t ∈ [m],\npγ\nrt (S) = Pmt\n\nγ.\ni=1 pi\n\n(5)\n\nγ-homogeneity captures several intuitive notions of diversity, using p1 , · · · , pm as a benchmark:\n1 The mathematical result in this example also appears in the context of resource allocation (e.g., [31]) and betting (e.g.,\n§22.2 in [32]) in the presence of logarithmic utility.\n\n4\n\n\f1\n• When γ = 0, rt (S) = m\n. There is “equal representation.”\n\n• When γ = 1, rt (S) = pt . There is “proportional representation,” where an item type is represented in\nproportion to its likelihood.\n• When γ = ∞, rt (S) = 1 for t = arg maxi∈[m] pi and rt (S) = 0 otherwise. There is “complete homogeneity,”\nwhere only the highest-likelihood item type is represented.\nA smaller γ corresponds to more diversity, with γ ≤ 1 indicating at least proportional representation. In\npractice, it is challenging to show that individual sets are γ-homogeneous; for one, since sets have an integer\nnumber of items from each type, it is typically impossible to obtain the exact ratios in (5). Instead, we will give\nprimarily asymptotic results, showing that as n grows large, the optimal set Sn,k approaches γ-homogeneity.\nFormally, we define γ-homogeneity over sequences of sets:",
+          "quoted_text_sha256": "36c8bfbd1626c0adeb7304c7ce25888896266e127ed96739d35528058a9135e8"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "prpkg_definition2_eq6_sequence_homogeneity": {
+      "semantic_context": [
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 66,
+              "line_start": 63,
+              "publication_locator": "cited publication",
+              "quoted_text": "Xi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)",
+              "quoted_text_sha256": "2981d1412721c030594a6beee24228c2d6eafc9b710e2e74d7296df8aba82aad"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 338,
+          "line_start": 301,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 2 (γ-homogeneity for set sequences). A sequence of sets {Sn }∞\nn=1 is γ-homogeneous if for all\nt ∈ [m],\npγ\n(6)\nlim rt (Sn ) = Pmt γ .\nn→∞\ni=1 pi\nOne perhaps surprising aspect of our results is that γ-homogeneity is sufficient to characterize diversity\nin a large class of settings, as opposed to requiring more complicated functions of proportions pt .\n\n3\n\nMain results\n\nWe now state our main results, which consider several settings reflecting different assumptions about the\n(t)\n(t) iid\nconditional item values Xi . In Section 3.1, we assume that Xi ∼ D are drawn from a shared distribution,\nwhich implies that the recommender has little information about the value of specific items. In Section 3.2,\n(t)\nXi are Bernoulli random variables with success probabilities differing depending on i and t, meaning that\nthe recommender has information about which items are more likely to satisfy a user.\nIn each setting, we analyze the diversity of optimal sets Sn,k for when k is fixed (i.e., accounting for\nconsumption constraints) and k = n (i.e., not accounting for consumption constraints). We sketch our proof\nstrategy in Section 4 and defer full proofs to Appendix D.\n\n3.1\n\ni.i.d. conditional item values\n(t) iid\n\nConsider the setting in which Xi ∼ D, i.e., conditional item values are drawn from a shared distribution.\nThis implies that the values of items behave similarly across types and within types, and the platform cannot\neasily distinguish between the items in a type. From the perspective of a hiring platform, there may be many\ncandidates with similar backgrounds (e.g., education or work history), none of whom can be distinguished\nfrom another by the platform. Conditional on a recruiter preferring this background, candidate values can\nbe modeled as coming from a shared distribution.",
+          "quoted_text_sha256": "d56fc209aa60c1a4057d88272a631fe5c1b6b1c58e904629ab5e9d1efa88bf06"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "prpkg_definition3_order_statistic_mean": {
+      "semantic_context": [
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 347,
+              "line_start": 344,
+              "publication_locator": "cited publication",
+              "quoted_text": "\nTheorem 1. Suppose Xi\n\n∼ D where D has finite mean. Then the following statements hold.",
+              "quoted_text_sha256": "b1ab58c5c1af9f7240238c27b13e4dc695ff74e6c0649f38b2571b25bca9e08f"
+            }
+          ]
+        },
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 643,
+              "line_start": 637,
+              "publication_locator": "cited publication",
+              "quoted_text": "\nWe now sketch the proof of Theorem 1(ii). (The general strategy applies to the rest of Theorem 1, as well\nas Theorem 2 and Theorem 3.) First, recall the general setup in Theorem 1, where the conditional item\n(t)\nvalues Xi are drawn i.i.d. from a shared distribution D. In other words, a user prefers type t ∈ [m] with\nprobability pt such that the user prefers exactly one type of item, and conditioned on the user preferring type\n8",
+              "quoted_text_sha256": "05734c22f380c1e8e4327ea2b16ed9d1dcd6c8e06b36c512816940f487e83d26"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 677,
+          "line_start": 663,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 3. Define µD (i, a) to be the expected value of the i-th order statistic2 of a random variables\ndrawn i.i.d. from D. (Thus, µD (1, a) is the expected minimum of a i.i.d. draws from D and µD (a, a) is the\nexpected maximum.)\nThen conditioned on the user preferring type t, the expected sum of the k highest value of items in S is\nPmin{k,at }\nequal to h(at ) := i=1\nµD (at − i + 1, at ), whichPfollows from the linearity of expectation. Therefore,\nm\nthe expected sum of the k highest value items in S is t=1 pt h(at ). Define An to be the set of tuples of nonPm\n(n) (n)\n(n)\nnegative integers whose entries sum to n. Then (a1 , a2 , · · · , am ) = arg max(a1 ,··· ,am )∈An t=1 pt h(at ).\nWe can then determine the limit in (10) given asymptotic information about h. In Lemma D.1 in the\nappendix, we develop general technical machinery for this task. Below, we state Lemma D.1(ii), which can\nbe used to prove Theorem 1(ii).",
+          "quoted_text_sha256": "70df5dffc4e0b47dac5a9818304bdfe14c4ea569dbf87a167259c093e7df5d98"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "prpkg_eq11_bounded_share_limit": {
+      "source_anchors": [
+        {
+          "line_end": 735,
+          "line_start": 703,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 1. If D has support bounded from above by M with pdf fD such that limx→M (Mf−x)\nβ−1 = c for some\n\nβ, c > 0, then lima→∞ M k−h(a)\n= 1.\n−1\nBa\n\nβ\n\nCombining Lemma 1 with Lemma D.1(ii), with σ = − β1 , we show that for D as in Theorem 1(ii),\nβ\n\n(n)\n\na\np β+1\nlim t = P t\nβ .\nn→∞ n\nm\nβ+1\ni=1 pi\n\n5\n\n(11)\n\nConclusion\n\nWe introduce and analyze a stylized model that reconciles the apparent accuracy-diversity trade-off in recommendations. We characterize the diversity of optimal sets both when “optimality” captures and does not\ncapture user consumption constraints. Broadly speaking, we show that the former naturally induces diversity\nwhile the latter results in homogeneity. Therefore, the apparent accuracy-diversity trade-off is partially due",
+          "quoted_text_sha256": "bbf7a83c22bf7bd18d68687ce50c90743a5613f2650a997c3ba93dcba6b2b3e0"
+        }
+      ],
+      "source_kind": "formula"
+    },
+    "prpkg_eq18_uniform_minimizes_gamma": {
+      "source_anchors": [
+        {
+          "line_end": 1145,
+          "line_start": 1122,
+          "publication_locator": "cited publication",
+          "quoted_text": "Proposition 4. Consider a non-constant function p(u, v) : Sd × Sd → (0, 1], interpreted as the probability\nthat item v does not satisfy a user with preference u, such that p(u, v) = q(∥u − v∥) can be expressed as\na function of the cosine distance between u and v. Then let µ be a probability measure with support Sd ,\nrepresenting the distribution of user preferences. Then for a probability measure α on Sd , define\n\u0014 Z\n\u0015\nZ\n1\nlog\nµ(u) exp n\nα(v) log p(u, v) dv du.\n(17)\nΓ(α) = lim\nn→∞ n\nSd\nSd\nThen\nΓ(π) ∈ inf Γ(α),\n\n(18)\n\nα\n\nwhere π is the uniform probability measure over Sd .",
+          "quoted_text_sha256": "ed24f491bd74286940f4dfbf427f7aba1c2a4ff8073a5874bdfafb180e28008e"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "prpkg_eq4_representation": {
+      "source_anchors": [
+        {
+          "line_end": 272,
+          "line_start": 258,
+          "publication_locator": "cited publication",
+          "quoted_text": "\nEvaluating diversity\n\nWe now formalize our approach to evaluating diversity. For a set S of items, we define\nrt (S) :=\n\n# of items in S of type t\n,\n|S|\n\n(4)\n\nthe representation of type t in S. Intuitively, a set of recommendations is diverse if all types are well\nrepresented. We now define an interpretable family of representations that interpolates between maximum\ndiversity and maximum homogeneity, and which arises naturally in many of our results.",
+          "quoted_text_sha256": "43b6c34bee38ae60b405fc443519448c2f18266bee70430bee7bb97a1f13ea63"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "prpkg_eq8_proposition2_uniform_finite": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 516,
+          "line_start": 459,
+          "publication_locator": "cited publication",
+          "quoted_text": "Proposition 2. When Xi\n\n∼ U ([0, 1]),\n\n√\npt\nrt (Sn,k ) − Pm √\ni=1\n\n6\n\npi\n\n≤\n\nm+1\n.\nn\n\n(8)\n\n\f√\n\np\n\nfor all k ≤ Pm m√pi n − m − 1.\ni=1\n\nTherefore, for any n, Sn,k is approximately 21 -homogeneous. In addition, for any k that is smaller than a\nconstant fraction of n, the diversity Sn,k does not depend on k. Thus, even for small sets of recommendations\nand large consumption constraints, diversity is optimal in this setting. We further give simulated results for\nsmall n and large k in Appendix B corroborating our theoretical results.\n\n3.2\n\nHeterogeneous Bernoulli conditional item values\n(t)\n\n(t)\n\nNow consider when Xi are independent random variables drawn from Ber(qi ), reflecting a model in which\nitems have binary values (i.e., a user is either satisfied or not satisfied by an item). In this section, we allow\n(t)\nqi to differ across i and t, implying that the recommender has knowledge about which items are more likely\n(t)\nto be successful conditional on a user’s preferred type. Specifically, in Section 3.2.1 we allow qi to vary\n(t)\nacross i and in Section 3.2.2 we allow qi to vary across t.\nOur results will focus on Sn,1 and Sn,n , which both have natural interpretations in this setting:\n• Sn,1 maximizes the probability that the user will be satisfied by at least one recommended item.\n• Sn,n maximizes the the expected number of recommended items the user will be satisfied by, which is\nequivalent to the standard metric of accuracy.\n(t)\n\nBefore proceeding, we note that the basic case qi\nrem 1(i).\n\n= q for all i, t is handled as a direct corollary of Theo(t) iid",
+          "quoted_text_sha256": "5dfa47902a558f45f0529d7dd516f668e9a04fc5dd58614d721a25ee6d53c1cd"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "prpkg_eq9_theorem3_log_share": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 606,
+              "line_start": 605,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 3 (Varying success probability across types). Suppose that for each fixed t, Xi\ni.i.d. Bernoulli random variables. Then",
+              "quoted_text_sha256": "e0d37e73fc092504b1a4b709dd5467ff8bce9c7e7a5daf164e262fc8bab5e300"
+            },
+            {
+              "line_end": 616,
+              "line_start": 616,
+              "publication_locator": "cited publication",
+              "quoted_text": "∼ Ber(qt ) are",
+              "quoted_text_sha256": "6098ea5f12df96f37ccee8aeac515d0f273642ad571c9985146e176fa19d658f"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 662,
+          "line_start": 605,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3 (Varying success probability across types). Suppose that for each fixed t, Xi\ni.i.d. Bernoulli random variables. Then\nlim rt (Sn,1 ) ∝\n\nn→∞\n\n1\n1\nlog 1−q\nt\n\n∼ Ber(qt ) are\n(9)\n\nwhile Sn,n contains only items of type t = arg maxt∈[m] pt qt .\nThe surprising high-level takeaway from Theorem 3 is that, for large n, a smaller success probability qt\nresults in more representation of type t. The less likely an item of a given type is satisfactory, the more that\ntype is recommended. Moreover, note that the amount of representation in this setting is independent of the\npopularities p1 , · · · , pm .\nThis paradox is illustrated in grocery stores, where more space is devoted to ice cream than milk, despite\nmilk being much more popular than ice cream. Here, p1 (the popularity of milk) is higher than p2 (the\npopularity of ice cream). However, q1 (the likelihood a given milk product satisfies a shopper looking for\nmilk) is also higher than q2 (the likelihood a given ice cream product satisfies a shopper looking for ice cream),\nsince people tend to have more specific tastes for ice cream. Thus, since q2 is smaller than q1 and the grocery\nstore should “recommend” many more ice creams than milks, explaining why more space is devoted to ice\ncream. Intuitively, while more shoppers want milk, these consumers can be satisfied with a small selection\nof milk; thus, it is more beneficial to devote more space to ice cream, for which shoppers have more specific\ntastes.\n\n4\n\nSketch of Proofs\n\nWe now sketch the proof of Theorem 1(ii). (The general strategy applies to the rest of Theorem 1, as well\nas Theorem 2 and Theorem 3.) First, recall the general setup in Theorem 1, where the conditional item\n(t)\nvalues Xi are drawn i.i.d. from a shared distribution D. In other words, a user prefers type t ∈ [m] with\nprobability pt such that the user prefers exactly one type of item, and conditioned on the user preferring type\n8\n\n\ft, the value of an item of that type is drawn i.i.d. from D. We are interested in analyzing, depending on D,\nthe composition of Sn,k , the set of n items maximizing the expected sum of the k highest value items in the\n(n)\nset. If Sn,k contains at items of type t, we need to analyze\n(n)\n\nat\n.\nn→∞ n\n\nlim rt (Sn,k ) = lim\n\nn→∞\n\n(10)\n\nWe first provide an expression for the expected sum of the k highest value items in a set S with at items of\ntype t. The following definition will be useful.",
+          "quoted_text_sha256": "3ff1d37a64b957dbff0224cdb2664b78930ff35c28584e85eb955fc1d2940bde"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "prpkg_lemma1_bounded_tail": {
+      "source_anchors": [
+        {
+          "line_end": 729,
+          "line_start": 703,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 1. If D has support bounded from above by M with pdf fD such that limx→M (Mf−x)\nβ−1 = c for some\n\nβ, c > 0, then lima→∞ M k−h(a)\n= 1.\n−1\nBa\n\nβ\n\nCombining Lemma 1 with Lemma D.1(ii), with σ = − β1 , we show that for D as in Theorem 1(ii),\nβ\n\n(n)\n\na\np β+1\nlim t = P t\nβ .\nn→∞ n\nm\nβ+1\ni=1 pi\n\n5\n\n(11)",
+          "quoted_text_sha256": "c1619f79e774aa96df11e1dddcccce316092303433113560303070e181230133"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "prpkg_lemmaD1_i_exponential_limit": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 1297,
+              "line_start": 1262,
+              "publication_locator": "cited publication",
+              "quoted_text": "Lemma D.1. Consider an integer m and p1 , p2 , · · · , pm ≥ 0. Let h : Z≥0 → R be monotonically increasing.\n(n)\n(n)\nFor each positive integer n, choose (a1 , · · · , am ) such that\n(n)\n\n(a1 , · · · , a(n)\nm )∈\n\narg max\n\nm\nX\n\npt h(at ),\n\n(27)\n\n(a1 ,··· ,am )∈An t=1\n\nand define\n(n)\n\nrt\n\n(n)\n\nat\n.\nn\n\n:=\n\n(28)\n\nThen the following statements hold.",
+              "quoted_text_sha256": "e0c06f6850d7687924da088514b123a8622308f3f777790b9351f4fdfee0244a"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1322,
+          "line_start": 1298,
+          "publication_locator": "cited publication",
+          "quoted_text": "(i) Suppose there exist constants A, B > 0 and σ < 0 such that\nlim\n\na→∞\n\nlog(A − h(a))\n= 1.\nBaσ\n\nThen\n(n)\n\nlim rt\n\nn→∞\n\n=\n\n1\n.\nm\n\n(29)\n\n(30)",
+          "quoted_text_sha256": "d9a27a6bf7594a37c48e94eca77b9ca9aae927171eec3fe555c973e5802a224a"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "prpkg_lemmaD1_ii_power_limit": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 1297,
+              "line_start": 1262,
+              "publication_locator": "cited publication",
+              "quoted_text": "Lemma D.1. Consider an integer m and p1 , p2 , · · · , pm ≥ 0. Let h : Z≥0 → R be monotonically increasing.\n(n)\n(n)\nFor each positive integer n, choose (a1 , · · · , am ) such that\n(n)\n\n(a1 , · · · , a(n)\nm )∈\n\narg max\n\nm\nX\n\npt h(at ),\n\n(27)\n\n(a1 ,··· ,am )∈An t=1\n\nand define\n(n)\n\nrt\n\n(n)\n\nat\n.\nn\n\n:=\n\n(28)\n\nThen the following statements hold.",
+              "quoted_text_sha256": "e0c06f6850d7687924da088514b123a8622308f3f777790b9351f4fdfee0244a"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1350,
+          "line_start": 1324,
+          "publication_locator": "cited publication",
+          "quoted_text": "(ii) Suppose there exist constants A, B > 0 and σ < 0 such that\nlim\n\na→∞\n\nA − h(a)\n= 1.\nBaσ\n\nThen\n\n(31)\n\n1\n1−σ\n\np\n(n)\nlim rt = P t\n.\n1\nn→∞\nm\n1−σ\ni=1 pi\n\n(32)",
+          "quoted_text_sha256": "e3f740c5a856fec576545ccb425c518a968c162ae6a26a4da61e3f6f2313b9b7"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "prpkg_lemmaD1_iii_log_limit": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 1297,
+              "line_start": 1262,
+              "publication_locator": "cited publication",
+              "quoted_text": "Lemma D.1. Consider an integer m and p1 , p2 , · · · , pm ≥ 0. Let h : Z≥0 → R be monotonically increasing.\n(n)\n(n)\nFor each positive integer n, choose (a1 , · · · , am ) such that\n(n)\n\n(a1 , · · · , a(n)\nm )∈\n\narg max\n\nm\nX\n\npt h(at ),\n\n(27)\n\n(a1 ,··· ,am )∈An t=1\n\nand define\n(n)\n\nrt\n\n(n)\n\nat\n.\nn\n\n:=\n\n(28)\n\nThen the following statements hold.",
+              "quoted_text_sha256": "e0c06f6850d7687924da088514b123a8622308f3f777790b9351f4fdfee0244a"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 1261,
+              "line_start": 1258,
+              "publication_locator": "cited publication",
+              "quoted_text": "Let Z≥0 denote the set of non-negative integers and An ⊂ Zm\n≥0 denote the set of m-tuples whose elements\nsum to n. We will say that a function h : Z≥0 → R is strictly concave if h(a + 1) − h(a) < h(a) − h(a − 1)\nfor all a.",
+              "quoted_text_sha256": "c7bbcad7c035217b14951c4efe144b4a81c6da54b093a07ae8c4ff9bf5e74f68"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1369,
+          "line_start": 1352,
+          "publication_locator": "cited publication",
+          "quoted_text": "(iii) Suppose h is strictly concave, and that there exist constants B, C > 0 such that\nlim h(a) − B log a − C = 0.\n\n(33)\n\n(n)\n\n(34)\n\na→∞\n\nThen\n\nlim rt\n\nn→∞\n\n= pt .",
+          "quoted_text_sha256": "242c81c7d4179088d5b5d7195621313adb77765cca6476921a8e94c040077737"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "prpkg_lemmaD1_iv_sublinear_power_limit": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 1297,
+              "line_start": 1262,
+              "publication_locator": "cited publication",
+              "quoted_text": "Lemma D.1. Consider an integer m and p1 , p2 , · · · , pm ≥ 0. Let h : Z≥0 → R be monotonically increasing.\n(n)\n(n)\nFor each positive integer n, choose (a1 , · · · , am ) such that\n(n)\n\n(a1 , · · · , a(n)\nm )∈\n\narg max\n\nm\nX\n\npt h(at ),\n\n(27)\n\n(a1 ,··· ,am )∈An t=1\n\nand define\n(n)\n\nrt\n\n(n)\n\nat\n.\nn\n\n:=\n\n(28)\n\nThen the following statements hold.",
+              "quoted_text_sha256": "e0c06f6850d7687924da088514b123a8622308f3f777790b9351f4fdfee0244a"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 1261,
+              "line_start": 1258,
+              "publication_locator": "cited publication",
+              "quoted_text": "Let Z≥0 denote the set of non-negative integers and An ⊂ Zm\n≥0 denote the set of m-tuples whose elements\nsum to n. We will say that a function h : Z≥0 → R is strictly concave if h(a + 1) − h(a) < h(a) − h(a − 1)\nfor all a.",
+              "quoted_text_sha256": "c7bbcad7c035217b14951c4efe144b4a81c6da54b093a07ae8c4ff9bf5e74f68"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1399,
+          "line_start": 1371,
+          "publication_locator": "cited publication",
+          "quoted_text": "(iv) Suppose h is strictly concave, and that there exist constants B > 0 and 0 < σ < 1 such that\nlim\n\nh(a)\n\na→∞ Baσ\n\nThen\n\n= 1.\n\n(35)\n\n1\n1−σ\n\np\n(n)\nlim rt = P t\n.\n1\nn→∞\nm\n1−σ\np\ni=1 i\n19\n\n(36)",
+          "quoted_text_sha256": "8e541d753765ed36ec91e0334d53c8e778665df5bca2ffa5ce242d66672e3144"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "prpkg_lemmaD2_bounded_integral": {
+      "source_anchors": [
+        {
+          "line_end": 2287,
+          "line_start": 2264,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fLemma D.2. For β > 0,\n\nZ ∞\u0012 \u0013\n1\na\nGX (x)j (1 − GX (x))a−j dx ∝ a− β .\nj\n0\n\n(97)\n\nfX (x)\ngX (x)\n= lim −\n=1\nlim\nx→M c(M − x)β−1\nx→0+ cxβ−1\n\n(98)\n\n(1 − ϵ)cxβ−1 ≤ gX (x) ≤ (1 + ϵ)cxβ−1\n\n(99)",
+          "quoted_text_sha256": "f84293b474f54519406c159c1fce832855aae1648e2953c73ec64a9647b59784"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "prpkg_lemmaD3_exponential_order_stats": {
+      "source_anchors": [
+        {
+          "line_end": 2785,
+          "line_start": 2778,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma D.3. For D an exponential distribution with rate parameter λ, so that fX (x) = λe−λx for λ > 0,\nlim µD (a − i, a) − log a − B(j) = 0\n\na→∞\n\n(127)\n\nfor a constant B(j) > 0. Moreover, µD (a − i, a) is strictly concave.",
+          "quoted_text_sha256": "da5457489b5b23360ae79ac90e0af115253ce15cf2778f828379b122c9ffa63f"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "prpkg_lemmaD4_pareto_order_stats": {
+      "source_anchors": [
+        {
+          "line_end": 2858,
+          "line_start": 2844,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma D.4. For D a Pareto distribution with pdf fX (x) = x−α−1 for α > 1,\nlim\n\nat →∞\n\nµD (a − i, a)\n1\n\naα\n\n=C\n\n(132)\n\nfor a constant C > 0. Moreover, µD (a − i, a) is strictly concave.",
+          "quoted_text_sha256": "e20e4c302a8c80da6268f0423536058267ca8f15a3147546b7d8580a5c17fb48"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "prpkg_lemmaD5_rounding": {
+      "source_anchors": [
+        {
+          "line_end": 3840,
+          "line_start": 3819,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma D.5. Let g1 , g2 , · · · , gm : [0, ∞)m → R be strictly convex functions over the non-negative reals. Then\ndefine\nm\nX\ngt (xt ).\n(190)\ng(x1 , · · · , xm ) :=\nt=1\n\nPm\n\n∗\n∗\nt=1 xt = n, if (x1 , · · · , xm ) is the maximum of g over the non-negative\n\nThen, under the constraint that\nreals and (a∗1 , · · · , a∗m ) is the maximum of g over the non-negative integers, then\n⌊x∗t ⌋ − m < a∗t < ⌊x∗t ⌋ + m\n\n(191)\n\nfor all t.",
+          "quoted_text_sha256": "4fdb320683f1b6ab8b745908db0d50242ff6e72db66a31e4c8d4ecbabc862fed"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "prpkg_proposition5_uniform_order_statistic": {
+      "source_anchors": [
+        {
+          "line_end": 2087,
+          "line_start": 2071,
+          "publication_locator": "cited publication",
+          "quoted_text": "Proposition 5. For Xi\n\n∼ D,\n\nmin{k,a}\n\nh(a) =\n\nX\ni=1\n\nµD (a − i + 1, a).\n\n(78)\n\nRecall that µD (i, a) is the expected value of the i-th order statistic of a random variables drawn i.i.d.\nfrom D.",
+          "quoted_text_sha256": "b2f7318ab7a616707f529d8aa5db02aba605a393fe80159d68c05ef6b9b315ab"
+        }
+      ],
+      "source_kind": "proposition"
+    },
+    "prpkg_theorem1_i_finite_discrete": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 342,
+              "line_start": 333,
+              "publication_locator": "cited publication",
+              "quoted_text": "Consider the setting in which Xi ∼ D, i.e., conditional item values are drawn from a shared distribution.\nThis implies that the values of items behave similarly across types and within types, and the platform cannot\neasily distinguish between the items in a type. From the perspective of a hiring platform, there may be many\ncandidates with similar backgrounds (e.g., education or work history), none of whom can be distinguished\nfrom another by the platform. Conditional on a recruiter preferring this background, candidate values can\nbe modeled as coming from a shared distribution.\nWe show that for a fixed k, as n grows large, the diversity of Sn,k theoretically varies between equal\nrepresentation, proportional representation, and near-complete homogeneity depending on the tail-behavior\nof D. In particular, distributions that are bounded or have exponential tails induce at least proportional\nrepresentation. Meanwhile, Sn,n is completely homogeneous.",
+              "quoted_text_sha256": "1bc5071f6f8599970251ed4db64d9b5322d93fc8916fbf5cfb416ca9084a5987"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 347,
+              "line_start": 345,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 1. Suppose Xi\n\n∼ D where D has finite mean. Then the following statements hold.",
+              "quoted_text_sha256": "f61f210f469d3df838e6954e686d23f1fca8be5460973244443c66b6aa32c21c"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 350,
+          "line_start": 349,
+          "publication_locator": "cited publication",
+          "quoted_text": "(i) [Finite Discrete] If D is a finite discrete distribution, {Sn,k }∞\nn=1 is 0-homogeneous.",
+          "quoted_text_sha256": "95fea7f2c417fc538aedbe426c39abdf0cb5e6cf4203ebcf8387ea21f4c3db39"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "prpkg_theorem1_ii_bounded": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 342,
+              "line_start": 333,
+              "publication_locator": "cited publication",
+              "quoted_text": "Consider the setting in which Xi ∼ D, i.e., conditional item values are drawn from a shared distribution.\nThis implies that the values of items behave similarly across types and within types, and the platform cannot\neasily distinguish between the items in a type. From the perspective of a hiring platform, there may be many\ncandidates with similar backgrounds (e.g., education or work history), none of whom can be distinguished\nfrom another by the platform. Conditional on a recruiter preferring this background, candidate values can\nbe modeled as coming from a shared distribution.\nWe show that for a fixed k, as n grows large, the diversity of Sn,k theoretically varies between equal\nrepresentation, proportional representation, and near-complete homogeneity depending on the tail-behavior\nof D. In particular, distributions that are bounded or have exponential tails induce at least proportional\nrepresentation. Meanwhile, Sn,n is completely homogeneous.",
+              "quoted_text_sha256": "1bc5071f6f8599970251ed4db64d9b5322d93fc8916fbf5cfb416ca9084a5987"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 347,
+              "line_start": 345,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 1. Suppose Xi\n\n∼ D where D has finite mean. Then the following statements hold.",
+              "quoted_text_sha256": "f61f210f469d3df838e6954e686d23f1fca8be5460973244443c66b6aa32c21c"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 365,
+          "line_start": 351,
+          "publication_locator": "cited publication",
+          "quoted_text": "(ii) [Bounded] If D has support bounded from above by M with pdf fD satisfying\nfD (x)\nlim\n=c\nx→M (M − x)β−1\nβ\nfor some β, c > 0, then {Sn,k }∞\nn=1 is β+1 -homogeneous.\n(This pdf class contains beta distributions, including the uniform distribution.)\n\n5\n\n(7)\n\n\f(t) iid",
+          "quoted_text_sha256": "aa0eb5b26d5becb5c5a09579f8adf3a806f2ef546cbd39b49def196f247326f9"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "prpkg_theorem1_iii_exponential": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 342,
+              "line_start": 333,
+              "publication_locator": "cited publication",
+              "quoted_text": "Consider the setting in which Xi ∼ D, i.e., conditional item values are drawn from a shared distribution.\nThis implies that the values of items behave similarly across types and within types, and the platform cannot\neasily distinguish between the items in a type. From the perspective of a hiring platform, there may be many\ncandidates with similar backgrounds (e.g., education or work history), none of whom can be distinguished\nfrom another by the platform. Conditional on a recruiter preferring this background, candidate values can\nbe modeled as coming from a shared distribution.\nWe show that for a fixed k, as n grows large, the diversity of Sn,k theoretically varies between equal\nrepresentation, proportional representation, and near-complete homogeneity depending on the tail-behavior\nof D. In particular, distributions that are bounded or have exponential tails induce at least proportional\nrepresentation. Meanwhile, Sn,n is completely homogeneous.",
+              "quoted_text_sha256": "1bc5071f6f8599970251ed4db64d9b5322d93fc8916fbf5cfb416ca9084a5987"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 347,
+              "line_start": 345,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 1. Suppose Xi\n\n∼ D where D has finite mean. Then the following statements hold.",
+              "quoted_text_sha256": "f61f210f469d3df838e6954e686d23f1fca8be5460973244443c66b6aa32c21c"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 433,
+          "line_start": 431,
+          "publication_locator": "cited publication",
+          "quoted_text": "(iii) [Exponential tail] If D = Exp(λ) for λ > 0, then {Sn,k }∞\nn=1 is 1-homogeneous.\nα",
+          "quoted_text_sha256": "5079b0959ef907d1642c7b255a53bbc0b115536cf7f07d3e65e7223fe863d74c"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "prpkg_theorem1_iv_pareto": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 342,
+              "line_start": 333,
+              "publication_locator": "cited publication",
+              "quoted_text": "Consider the setting in which Xi ∼ D, i.e., conditional item values are drawn from a shared distribution.\nThis implies that the values of items behave similarly across types and within types, and the platform cannot\neasily distinguish between the items in a type. From the perspective of a hiring platform, there may be many\ncandidates with similar backgrounds (e.g., education or work history), none of whom can be distinguished\nfrom another by the platform. Conditional on a recruiter preferring this background, candidate values can\nbe modeled as coming from a shared distribution.\nWe show that for a fixed k, as n grows large, the diversity of Sn,k theoretically varies between equal\nrepresentation, proportional representation, and near-complete homogeneity depending on the tail-behavior\nof D. In particular, distributions that are bounded or have exponential tails induce at least proportional\nrepresentation. Meanwhile, Sn,n is completely homogeneous.",
+              "quoted_text_sha256": "1bc5071f6f8599970251ed4db64d9b5322d93fc8916fbf5cfb416ca9084a5987"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 347,
+              "line_start": 345,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 1. Suppose Xi\n\n∼ D where D has finite mean. Then the following statements hold.",
+              "quoted_text_sha256": "f61f210f469d3df838e6954e686d23f1fca8be5460973244443c66b6aa32c21c"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 437,
+          "line_start": 434,
+          "publication_locator": "cited publication",
+          "quoted_text": "(iv) [Heavy tail] If D = Pareto(α) for α > 1, then {Sn,k }∞\nn=1 is α−1 -homogeneous.\n\nAdditionally,",
+          "quoted_text_sha256": "25ab3c7ffd8577c221555bc05692913ce64bb78c35ff3915892efe46071532fe"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "prpkg_theorem1_v_all_consumed": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 347,
+              "line_start": 345,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 1. Suppose Xi\n\n∼ D where D has finite mean. Then the following statements hold.",
+              "quoted_text_sha256": "f61f210f469d3df838e6954e686d23f1fca8be5460973244443c66b6aa32c21c"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 441,
+          "line_start": 438,
+          "publication_locator": "cited publication",
+          "quoted_text": "(v) Sn,n contains only items of type t = arg maxt∈[m] pt .\nAs Table 2 illustrates, the theorem shows how for fixed k, the diversity of optimal solutions depends on\nthe tail behavior of D. In fact, we can obtain γ-homogeneity for any γ:\n(t) iid",
+          "quoted_text_sha256": "670289f6f33e624d7531ffe9e330acf247b3f2dd461e9fb124a8ec54e41d84f7"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "prpkg_theorem2_i_subunit_decay": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 539,
+              "line_start": 537,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 2 (Decaying success probabilities). Suppose that Xi ∼ Ber(qi ) are i.i.d. Bernoulli random\n(t)\nvariables such that qi = c(i + d)−α for all i ≥ 1 and some α, c, d ≥ 0. Then the following statements hold.",
+              "quoted_text_sha256": "4f57ab97bdc66417bd991a887bf0e138d44e5db024e82223cb2ecafb9f1d26be"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 543,
+          "line_start": 540,
+          "publication_locator": "cited publication",
+          "quoted_text": "(i) {Sn,1 }∞\nn=1 is 0-homogeneous for α < 1.\n\n1",
+          "quoted_text_sha256": "8ba4de4eee7a44912f579a8b8e4e5f3cc6ee891c2a2197a938af36803d6b5c65"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "prpkg_theorem2_ii_unit_decay": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 539,
+              "line_start": 537,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 2 (Decaying success probabilities). Suppose that Xi ∼ Ber(qi ) are i.i.d. Bernoulli random\n(t)\nvariables such that qi = c(i + d)−α for all i ≥ 1 and some α, c, d ≥ 0. Then the following statements hold.",
+              "quoted_text_sha256": "4f57ab97bdc66417bd991a887bf0e138d44e5db024e82223cb2ecafb9f1d26be"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 546,
+          "line_start": 544,
+          "publication_locator": "cited publication",
+          "quoted_text": "(ii) {Sn,1 }∞\nn=1 is 1+c -homogeneous for α = 1.\n1",
+          "quoted_text_sha256": "c7ec525b1b909cd33b3f19786148e615c53dcc3dab8caf52182fe16bd616a758"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "prpkg_theorem2_iii_superunit_decay": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 539,
+              "line_start": 537,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 2 (Decaying success probabilities). Suppose that Xi ∼ Ber(qi ) are i.i.d. Bernoulli random\n(t)\nvariables such that qi = c(i + d)−α for all i ≥ 1 and some α, c, d ≥ 0. Then the following statements hold.",
+              "quoted_text_sha256": "4f57ab97bdc66417bd991a887bf0e138d44e5db024e82223cb2ecafb9f1d26be"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 551,
+          "line_start": 547,
+          "publication_locator": "cited publication",
+          "quoted_text": "(iii) {Sn,1 }∞\nn=1 is α -homogeneous for α > 1.\n\nAdditionally,\n1",
+          "quoted_text_sha256": "9c748611119b4527696d13e4933b8d8ce555dc651a08f69837ce249fcea02d33"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "prpkg_theorem2_iv_all_consumed_decay": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 539,
+              "line_start": 537,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 2 (Decaying success probabilities). Suppose that Xi ∼ Ber(qi ) are i.i.d. Bernoulli random\n(t)\nvariables such that qi = c(i + d)−α for all i ≥ 1 and some α, c, d ≥ 0. Then the following statements hold.",
+              "quoted_text_sha256": "4f57ab97bdc66417bd991a887bf0e138d44e5db024e82223cb2ecafb9f1d26be"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 564,
+          "line_start": 552,
+          "publication_locator": "cited publication",
+          "quoted_text": "(iv) {Sn,n }∞\nn=1 is α -homogeneous for α ≥ 0.\n\nWhen the success probabilities of items have moderate decay (α < 1), then 0-homogeneity is maintained in the case k = 1 (note that α = 0 recovers Corollary 3). Moreover, for all rates of decay, optimal\nrecommendations reflect at least proportional diversity for large n and k = 1.\nTheorem 2 also reveals surprising non-monotonic behavior. In particular, there is a discontinuity at\nα = 1, where homogeneity suddenly increases, but then decreases as α continues to increase. At α = 1, the\noptimal amount of diversity when α = 1 can range between 0 and 1 depending on c.\nWhen k = n, a larger rate of decay induces more diverse recommendations. Intuitively, when there is a\nlarger rate of decay, the recommender has fewer high-quality options of a given type and is more incentivized\nto recommend high-quality options of other types. Note that for moderate rates of decay (α < 1), Sn,n\nremains less than proportionally diverse for large n, unlike Sn,1 .\n7",
+          "quoted_text_sha256": "d03094eaa95a2259306a874e0804efcbf94898514fe86af86e85b4e2ed860c1e"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "prpkg_theorem3_all_consumed_argmax": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 71,
+              "line_start": 55,
+              "publication_locator": "cited publication",
+              "quoted_text": "There are m types of items indexed by [m] = {1, 2, · · · , m}. A user prefers exactly one type of item, preferring\n(t)\ntype t ∈ [m] with probability pt . The value of the i-th item of type t is a random variable Xi if the user\n(t)\n(t)\nprefers type t and 0 otherwise (so its expected value is pt E[Xi ]). The recommender knows only how Xi\nare distributed, not their realizations. We refer to pt as the likelihood of a type and the random variable\n(t)\nXi as a conditional item value (the value of an item conditional on the user preferring the item’s type).\nLet Sn,k be the set of n items that maximizes the expected total value of the k items with the highest\nrealized values. We call Sn,k the optimal set of n recommendations with respect to this objective. (We omit\nthe dependency of Sn,k on the other model parameters, as these will be clear from context.)\nSn,k arises naturally from an assumption that the user can only use k items, so that they derive value\nfrom the k highest value recommended items. So Sn,1 results from an assumption that the user uses only\none item, while Sn,n results from an assumption that the user uses every recommended item.\nSn,n maximizes the expected total value of all of the recommended items, so by linearity of expectation,\nSn,n contains the n items with the highest individual expected values.",
+              "quoted_text_sha256": "1728282a0447b58417df22260d6c5aa574865172514f584421163998d743a38d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchors": [
+            {
+              "line_end": 606,
+              "line_start": 605,
+              "publication_locator": "cited publication",
+              "quoted_text": "Theorem 3 (Varying success probability across types). Suppose that for each fixed t, Xi\ni.i.d. Bernoulli random variables. Then",
+              "quoted_text_sha256": "e0d37e73fc092504b1a4b709dd5467ff8bce9c7e7a5daf164e262fc8bab5e300"
+            },
+            {
+              "line_end": 616,
+              "line_start": 616,
+              "publication_locator": "cited publication",
+              "quoted_text": "∼ Ber(qt ) are",
+              "quoted_text_sha256": "6098ea5f12df96f37ccee8aeac515d0f273642ad571c9985146e176fa19d658f"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 619,
+          "line_start": 619,
+          "publication_locator": "cited publication",
+          "quoted_text": "while Sn,n contains only items of type t = arg maxt∈[m] pt qt .",
+          "quoted_text_sha256": "77d90832e2c56b332e1303c14b5fdc2203f86c84e94ef627a9766696652903ab"
+        }
+      ],
+      "source_kind": "theorem"
+    }
+  },
+  "source_artifact_sha256": "4dd55b1445de448e81d5494fbf9bafe4aac3f8c59f0ee62dac00aa1345dc4830",
+  "source_coverage_mode": "named_theoretical_statements"
+}

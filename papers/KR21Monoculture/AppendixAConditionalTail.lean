@@ -2,8 +2,8 @@ import KR21Monoculture.AppendixASourceFormula
 import Mathlib.MeasureTheory.Integral.Pi
 import Mathlib.MeasureTheory.Integral.Prod
 
-open EconCSLib MeasureTheory ProbabilityTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 
@@ -104,11 +104,11 @@ theorem sourceAppendixA_selectedTop_probability_eq_conditionalTail_integral
       forall i j : Candidate n, i ≠ j ->
         value i + sourceAppendixAProductNoise z i / theta ≠
           value j + sourceAppendixAProductNoise z j / theta) :
-    EconCSLib.measureProb ((sourceAppendixARestNoiseLaw n mu).prod mu)
+    AppliedModelingLib.measureProb ((sourceAppendixARestNoiseLaw n mu).prod mu)
         (fun z => SourceAppendixATopEvent value
           (sourceAppendixAProductNoise z) theta 0) =
       ∫ rest : Fin (n + 1) -> Real,
-        EconCSLib.measureProb mu
+        AppliedModelingLib.measureProb mu
           (fun epsilon => SourceAppendixAFirstTail value theta rest epsilon)
         ∂sourceAppendixARestNoiseLaw n mu := by
   classical
@@ -122,12 +122,12 @@ theorem sourceAppendixA_selectedTop_probability_eq_conditionalTail_integral
   have htail : MeasurableSet tail := by
     exact sourceAppendixA_firstTail_product_measurableSet value theta
   have htop_tail :
-      EconCSLib.measureProb (restLaw.prod mu)
+      AppliedModelingLib.measureProb (restLaw.prod mu)
           (fun z => SourceAppendixATopEvent value
             (sourceAppendixAProductNoise z) theta 0) =
-        EconCSLib.measureProb (restLaw.prod mu)
+        AppliedModelingLib.measureProb (restLaw.prod mu)
           (fun z => SourceAppendixAFirstTail value theta z.1 z.2) := by
-    unfold EconCSLib.measureProb
+    unfold AppliedModelingLib.measureProb
     apply congrArg ENNReal.toReal
     apply measure_congr
     filter_upwards [hnoTie] with z hz
@@ -143,14 +143,14 @@ theorem sourceAppendixA_selectedTop_probability_eq_conditionalTail_integral
     (f := tail.indicator (fun _ : Prod (Fin (n + 1) -> Real) Real =>
       (1 : Real))) hintegrable
   calc
-    EconCSLib.measureProb ((sourceAppendixARestNoiseLaw n mu).prod mu)
+    AppliedModelingLib.measureProb ((sourceAppendixARestNoiseLaw n mu).prod mu)
         (fun z => SourceAppendixATopEvent value
           (sourceAppendixAProductNoise z) theta 0) =
-        EconCSLib.measureProb (restLaw.prod mu)
+        AppliedModelingLib.measureProb (restLaw.prod mu)
           (fun z => SourceAppendixATopEvent value
             (sourceAppendixAProductNoise z) theta 0) := by
       rfl
-    _ = EconCSLib.measureProb (restLaw.prod mu)
+    _ = AppliedModelingLib.measureProb (restLaw.prod mu)
           (fun z => SourceAppendixAFirstTail value theta z.1 z.2) :=
       htop_tail
     _ = (restLaw.prod mu).real tail := by
@@ -163,7 +163,7 @@ theorem sourceAppendixA_selectedTop_probability_eq_conditionalTail_integral
           tail.indicator (fun _ : Prod (Fin (n + 1) -> Real) Real =>
             (1 : Real)) (rest, epsilon) ∂mu ∂restLaw := hfubini
     _ = ∫ rest : Fin (n + 1) -> Real,
-        EconCSLib.measureProb mu
+        AppliedModelingLib.measureProb mu
           (fun epsilon => SourceAppendixAFirstTail value theta rest epsilon)
         ∂restLaw := by
       apply integral_congr_ae
@@ -186,11 +186,11 @@ theorem sourceAppendixA_selectedTop_probability_eq_conditionalTail_integral
         (∫ epsilon : Real, fiber.indicator (fun _ : Real => (1 : Real)) epsilon ∂mu) =
             mu.real fiber := by
           simpa using (integral_indicator_one hfiber)
-        _ = EconCSLib.measureProb mu
+        _ = AppliedModelingLib.measureProb mu
             (fun epsilon => SourceAppendixAFirstTail value theta rest epsilon) := by
           rfl
     _ = ∫ rest : Fin (n + 1) -> Real,
-        EconCSLib.measureProb mu
+        AppliedModelingLib.measureProb mu
           (fun epsilon => SourceAppendixAFirstTail value theta rest epsilon)
         ∂sourceAppendixARestNoiseLaw n mu := by
       rfl

@@ -1,7 +1,7 @@
 import KR21Monoculture.OuterRUMMonotonicity
 import KR21Monoculture.LaplaceSourceNormalization
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 
 namespace KR21Monoculture
 

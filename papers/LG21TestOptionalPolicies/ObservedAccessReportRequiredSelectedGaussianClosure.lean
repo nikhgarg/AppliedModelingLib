@@ -16,7 +16,7 @@ noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
 open scoped ENNReal ProbabilityTheory
-open EconCSLib Probability
+open AppliedModelingLib Probability
 
 /-- At one observed public base, a positive literal Gaussian reporter branch
 rules out a positive literal Gaussian no-take branch.  The displayed PBO

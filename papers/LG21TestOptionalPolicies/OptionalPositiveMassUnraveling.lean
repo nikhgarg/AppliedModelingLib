@@ -29,7 +29,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
 
 /-! ## Generic semantic closure -/
 

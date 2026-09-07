@@ -10,8 +10,8 @@ single shared innovation vector at the two accuracies, exactly as in the
 source coupling.
 -/
 
-open EconCSLib Filter MeasureTheory ProbabilityTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib Filter MeasureTheory ProbabilityTheory
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 
@@ -35,7 +35,7 @@ theorem appendixC_general_source_score_eq_contract_score
     appendixCGeneralSourceScore value noise thetaA i =
       rumContractScore (thetaH / thetaA) (value i)
         (appendixCGeneralSourceScore value noise thetaH i) := by
-  unfold appendixCGeneralSourceScore rumContractScore EconCSLib.Probability.rumContractScore
+  unfold appendixCGeneralSourceScore rumContractScore AppliedModelingLib.Probability.rumContractScore
   field_simp [ne_of_gt hthetaA, ne_of_gt hthetaH]
   ring
 
@@ -130,12 +130,12 @@ theorem appendixC_general_source_lemma2_bottom_first_probability
       (fun i => measurable_pi_apply i) value thetaH
   change firstChoiceProb (rankingPMFOfMeasure mu rankA hrankA) bottom <=
     firstChoiceProb (rankingPMFOfMeasure mu rankH hrankH) bottom
-  change EconCSLib.SocialChoice.Ranking.firstChoiceProb
+  change AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb
       (rankingPMFOfMeasure mu rankA hrankA) bottom <=
-    EconCSLib.SocialChoice.Ranking.firstChoiceProb
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb
       (rankingPMFOfMeasure mu rankH hrankH) bottom
-  rw [EconCSLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure,
-    EconCSLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure]
+  rw [AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure,
+    AppliedModelingLib.SocialChoice.Ranking.firstChoiceProb_rankingPMFOfMeasure]
   refine measureProb_le_of_measure_le mu _ _ (measure_mono ?_)
   intro noise hnoise
   exact (appendixC_general_source_bottom_first_high_accuracy_imp_low_accuracy

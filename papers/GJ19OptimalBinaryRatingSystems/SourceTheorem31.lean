@@ -15,7 +15,7 @@ namespace GJ19OptimalBinaryRatingSystems
 
 noncomputable section
 
-open EconCSLib.Probability Filter MeasureTheory Topology
+open AppliedModelingLib.Probability Filter MeasureTheory Topology
 
 /--
 Primitive source data for a fixed finite Theorem 3.1 discretization.  All
@@ -154,7 +154,7 @@ theorem theorem31_source_matching_function_weighted_fixed_discretization
             (theorem31SourceWbar μ S.cut S.hcut_mono S.sampleRate levels hlevels
               S.weight)
             (binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
+          AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
             (BinaryEndpointLevelVector : (Fin (S.m + 2) → ℝ) → Prop)
             (fun _candidate : Fin (S.m + 2) → ℝ => limitingValue)
             (fun candidate : Fin (S.m + 2) → ℝ =>
@@ -178,13 +178,13 @@ theorem theorem31_source_matching_function_weighted_value_argmax_certificate
     (S : Theorem31SourceFiniteDiscretizationWeightedModel μ)
     (limitingValue : (ℕ → ℝ) → ℝ)
     (hcut_value :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible (S.m + 2))
         limitingValue S.cut) :
     ∃ levels : Fin (S.m + 2) → ℝ,
       ∃ hlevels : BinaryEndpointLevelVector levels,
         BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (BinaryEndpointLevelVector : (Fin (S.m + 2) → ℝ) → Prop)
             (fun candidate : Fin (S.m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate S.sampleRate)
@@ -193,7 +193,7 @@ theorem theorem31_source_matching_function_weighted_value_argmax_certificate
             (theorem31SourceWbar μ S.cut S.hcut_mono S.sampleRate levels
               hlevels S.weight)
             (binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) ∧
-          EconCSLib.Optimization.IsMaximizerOn
+          AppliedModelingLib.Optimization.IsMaximizerOn
             (monotoneIntervalCutpointsEndpointFeasible (S.m + 2))
             limitingValue S.cut := by
   simpa [Theorem31SourceFiniteDiscretizationWeightedModel.toFiniteWeightedModel]
@@ -204,52 +204,6 @@ theorem theorem31_source_matching_function_weighted_value_argmax_certificate
         S.toFiniteWeightedModel.hsample_mono S.weight S.hweight_int
         S.hweight_nonneg S.hweight_cont S.hweight_midpoint_pos
 
-/--
-Full lexicographic Theorem 3.1 under the standard minor uniqueness convention
-for the source value argmax.  This convention removes only the otherwise
-unspecified tie-breaking among multiple first-stage `S*` partitions; all
-finite rates and endpoint optimality are still derived from the primitive
-matching function.
--/
-theorem theorem31_source_matching_function_weighted_unique_value_argmax_lexicographic_certificate
-    (μ : Measure ℝ) [IsFiniteMeasure (μ.prod μ)]
-    [Measure.IsOpenPosMeasure (μ.prod μ)]
-    (S : Theorem31SourceFiniteDiscretizationWeightedModel μ)
-    (limitingValue : (ℕ → ℝ) → ℝ)
-    (rate : (ℕ → ℝ) → (Fin (S.m + 2) → ℝ) → ℝ)
-    (hcut_value :
-      EconCSLib.Optimization.IsMaximizerOn
-        (monotoneIntervalCutpointsEndpointFeasible (S.m + 2))
-        limitingValue S.cut)
-    (hcut_value_unique :
-      ∀ cut : ℕ → ℝ,
-        monotoneIntervalCutpointsEndpointFeasible (S.m + 2) cut →
-          limitingValue cut = limitingValue S.cut → cut = S.cut)
-    (hrate_cut :
-      ∀ levels : Fin (S.m + 2) → ℝ, BinaryEndpointLevelVector levels →
-        rate S.cut levels =
-          binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) :
-    ∃ levels : Fin (S.m + 2) → ℝ,
-      ∃ hlevels : BinaryEndpointLevelVector levels,
-        BinaryEndpointAwareAdjacentRatesEqualize levels S.sampleRate ∧
-          ExponentialRateCertificate
-            (theorem31SourceWbar μ S.cut S.hcut_mono S.sampleRate levels
-              hlevels S.weight)
-            (binaryEndpointAwareAdjacentRateObjective levels S.sampleRate) ∧
-          EconCSLib.Optimization.IsLexicographicMaximizerOn
-            (fun design : (ℕ → ℝ) × (Fin (S.m + 2) → ℝ) =>
-              monotoneIntervalCutpointsEndpointFeasible (S.m + 2) design.1 ∧
-                BinaryEndpointLevelVector design.2)
-            (fun design : (ℕ → ℝ) × (Fin (S.m + 2) → ℝ) =>
-              limitingValue design.1)
-            (fun design : (ℕ → ℝ) × (Fin (S.m + 2) → ℝ) =>
-              rate design.1 design.2)
-            (S.cut, levels) := by
-  simpa [Theorem31SourceFiniteDiscretizationWeightedModel.toFiniteWeightedModel]
-    using
-      theorem31_appropriate_finite_levels_weighted_unique_value_argmax_lexicographic_certificate
-        μ S.toFiniteWeightedModel limitingValue rate hcut_value
-        hcut_value_unique hrate_cut
 
 end
 

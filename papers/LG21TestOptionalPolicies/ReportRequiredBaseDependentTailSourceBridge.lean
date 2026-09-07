@@ -17,7 +17,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
 open scoped ENNReal NNReal ProbabilityTheory Topology
 open Probability
 
@@ -174,11 +174,11 @@ private theorem lg21ReportRequiredBaseDependentTail_selectedTake_fibre_positive
     exact lg21ReportRequiredBaseDependentTailObservationEvent_selectedFiber
       threshold publicObservation
   have hkernelEq : gaussianReal
-      (EconCSLib.Probability.gaussianSignalWeight priorVariance noiseVariance *
+      (AppliedModelingLib.Probability.gaussianSignalWeight priorVariance noiseVariance *
           publicObservation.2 +
-        EconCSLib.Probability.gaussianSignalPriorWeight priorVariance noiseVariance *
+        AppliedModelingLib.Probability.gaussianSignalPriorWeight priorVariance noiseVariance *
           baseMean publicObservation.1)
-      (EconCSLib.Probability.gaussianSignalPosteriorVariance
+      (AppliedModelingLib.Probability.gaussianSignalPosteriorVariance
         priorVariance noiseVariance)
       (selectedFiber
         (lg21ReportRequiredBaseDependentTailObservationEvent threshold)

@@ -18,6 +18,7 @@ try:
     from source_coverage_scope import (
         SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
         source_coverage_mode_from_map,
+        source_item_coverage_receipt_matches,
         source_item_coverage_sha256,
     )
 except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
@@ -29,6 +30,7 @@ except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
     from scripts.source_coverage_scope import (
         SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
         source_coverage_mode_from_map,
+        source_item_coverage_receipt_matches,
         source_item_coverage_sha256,
     )
 
@@ -991,6 +993,33 @@ def coverage_disposition(
     if review_target_index is None:
         return None, target_problem
 
+    legacy_selected_inventory: Mapping[str, Mapping[str, Any]] = {}
+    if any(
+        isinstance(item, Mapping)
+        and item.get("source_item_coverage_digest_schema")
+        == SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA
+        for item in raw_items.values()
+    ):
+        try:
+            import review_dashboard
+        except ModuleNotFoundError:  # pragma: no cover - module-style imports.
+            from scripts import review_dashboard
+        try:
+            _full, selected, selected_mode, selection_error = (
+                review_dashboard.paper_coverage_inventory(folder)
+            )
+        except Exception as exc:
+            return None, SavedStatusReuseProblem(
+                "coverage",
+                f"canonical selected source surface is unavailable: {exc}",
+            )
+        if selection_error or selected_mode != mode:
+            return None, SavedStatusReuseProblem(
+                "coverage",
+                selection_error or "canonical source coverage mode changed",
+            )
+        legacy_selected_inventory = selected
+
     projections: list[dict[str, object]] = []
     counts = {
         "total": 0,
@@ -1025,20 +1054,29 @@ def coverage_disposition(
                     "coverage", "selected coverage row has a malformed source digest"
                 )
             continue
-        if keyed_identity and current_digest_schema and not recorded_source_identity:
-            return None, SavedStatusReuseProblem(
-                "coverage", "selected coverage row lacks its current source digest"
-            )
         if (
             keyed_identity
             and current_digest_schema
-            and (recorded_source_identity != keyed_identity)
+            and not recorded_source_identity
         ):
             return None, SavedStatusReuseProblem(
-                "coverage",
-                "selected coverage row source digest disagrees with the current map",
+                "coverage", "selected coverage row lacks its current source digest"
             )
-        if keyed_identity and not current_digest_schema:
+        if keyed_identity and current_digest_schema:
+            selected_item = legacy_selected_inventory.get(key)
+            if not isinstance(selected_item, dict) or not source_item_coverage_receipt_matches(
+                selected_item,
+                mode,
+                digest_schema=digest_schema,
+                digest=recorded_source_identity,
+                legacy_navigation_key=key,
+            ):
+                return None, SavedStatusReuseProblem(
+                    "coverage",
+                    "selected coverage row source digest disagrees with the current map",
+                )
+            source_identity = keyed_identity
+        elif keyed_identity:
             if not legacy_aggregate_current:
                 return None, SavedStatusReuseProblem(
                     "coverage",

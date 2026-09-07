@@ -35,7 +35,7 @@ if str(ROOT) not in sys.path:
 
 try:  # Supports direct execution and package imports in focused tests.
     from scripts import source_record_current_revalidation as CURRENT
-    from scripts import source_record_differential_revalidation as DIFFERENTIAL
+    from scripts import source_record_obligation_groups as OBLIGATIONS
     from scripts.source_record_integrity import canonical_digest_payload
     from scripts.formalization_protocol import (
         FORMALIZATION_REVIEW_PROTOCOL_FIELD,
@@ -61,7 +61,7 @@ try:  # Supports direct execution and package imports in focused tests.
     )
 except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
     import source_record_current_revalidation as CURRENT
-    import source_record_differential_revalidation as DIFFERENTIAL
+    import source_record_obligation_groups as OBLIGATIONS
     from source_record_integrity import canonical_digest_payload
     from formalization_protocol import (
         FORMALIZATION_REVIEW_PROTOCOL_FIELD,
@@ -330,7 +330,7 @@ def _raw_groups(
         raw_audit, paper=paper, paper_dir=paper_dir
     ):
         raise SourceRecordManualComplementError(error)
-    groups, group_errors = DIFFERENTIAL._raw_item_groups(raw_audit)
+    groups, group_errors = OBLIGATIONS.raw_source_record_obligation_groups(raw_audit)
     if group_errors:
         raise SourceRecordManualComplementError(
             "current raw audit has malformed semantic groups: "
@@ -1133,6 +1133,31 @@ def _current_manual_group_records_with_closure_completion(
     return remaining, overlay_ledger, effective_strict_coverage, candidates
 
 
+def _classification_requirements_from_group(
+    group: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    """Project exact generated route requirements into the review template."""
+
+    requirements: list[dict[str, Any]] = []
+    raw_members = group.get("raw_members")
+    if not isinstance(raw_members, list):
+        return requirements
+    for member in raw_members:
+        if (
+            not isinstance(member, tuple)
+            or len(member) != 2
+            or not isinstance(member[1], Mapping)
+        ):
+            continue
+        route = member[1].get(RECURSIVE_FIELD_EXPLICIT_PARENT_ROUTE_FIELD)
+        if isinstance(route, Mapping):
+            requirements.append(copy.deepcopy(dict(route)))
+    return sorted(
+        requirements,
+        key=lambda requirement: _canonical_digest(requirement),
+    )
+
+
 def _manual_current_complement_template(
     raw_audit: Mapping[str, Any],
     *,
@@ -1195,6 +1220,9 @@ def _manual_current_complement_template(
                     requirements_by_parent.get(key, []),
                     key=lambda requirement: str(requirement["closure_sha256"]),
                 )
+            ),
+            "classification_requirements": _classification_requirements_from_group(
+                group
             ),
         }
     template = {
@@ -1392,10 +1420,16 @@ def _template_group_match_signature(
     # ``canonical_digest_payload`` is the audit's established canonical
     # descriptor equality.  Do *not* canonicalize the pin list: receipt order
     # is part of this bridge's declared relation.
+    requirements = entry.get("classification_requirements")
+    if not isinstance(requirements, list) or any(
+        not isinstance(requirement, Mapping) for requirement in requirements
+    ):
+        return "", f"{label} has malformed classification requirements"
     signature = json.dumps(
         {
             "descriptor": canonical_digest_payload(descriptor),
             "ordered_current_item_pins": pins,
+            "classification_requirements": canonical_digest_payload(requirements),
         },
         sort_keys=True,
         separators=(",", ":"),
@@ -1487,6 +1521,7 @@ _CURRENT_MANUAL_QUEUE_GROUP_FIELDS = (
     "current_group_semantic_descriptor_sha256",
     "current_item_pins",
     "required_record_field_closure_attestations",
+    "classification_requirements",
 )
 
 
@@ -2018,6 +2053,8 @@ def _review_response_error(
     required_closure_candidates: Sequence[RecordFieldClosureCompletionCandidate]
     | None = None,
     materialization_template: bool = False,
+    semantic_descriptor: object | None = None,
+    classification_requirements: object | None = None,
 ) -> str:
     """Validate reviewer-authored content before it enters a completed template."""
 
@@ -2037,6 +2074,12 @@ def _review_response_error(
         return f"{label} response lacks a reason"
     if not str(response.get("source_location") or "").strip():
         return f"{label} response lacks a source_location"
+    if error := _classification_specific_response_error(
+        response,
+        semantic_descriptor=semantic_descriptor,
+        classification_requirements=classification_requirements,
+    ):
+        return f"{label} {error}"
     if error := _closure_attestation_response_error(
         response, candidates=required_closure_candidates
     ):
@@ -2077,6 +2120,76 @@ def _review_response_error(
     return ""
 
 
+def _classification_specific_response_error(
+    response: Mapping[str, Any],
+    *,
+    semantic_descriptor: object | None,
+    classification_requirements: object | None,
+) -> str:
+    """Require route-owned fields as soon as a classification is selected.
+
+    The descriptor is generated from the current raw group.  Reading only its
+    explicit route records avoids guessing from a classification label while
+    preventing a reviewed template from reaching materialization with fields
+    that the shared target-disposition gate will necessarily reject.
+    """
+
+    route_records: list[Mapping[str, Any]] = []
+
+    def visit(value: object) -> None:
+        if isinstance(value, Mapping):
+            route = value.get(RECURSIVE_FIELD_EXPLICIT_PARENT_ROUTE_FIELD)
+            if isinstance(route, Mapping):
+                route_records.append(route)
+            for nested in value.values():
+                visit(nested)
+        elif isinstance(value, list):
+            for nested in value:
+                visit(nested)
+
+    visit(semantic_descriptor)
+    if classification_requirements is not None:
+        if not isinstance(classification_requirements, list) or any(
+            not isinstance(requirement, Mapping)
+            for requirement in classification_requirements
+        ):
+            return "has malformed generated classification requirements"
+        route_records.extend(classification_requirements)
+    if not route_records:
+        return ""
+    classification = str(response.get("classification") or "").strip()
+    for route in route_records:
+        permitted = route.get("permitted_classifications")
+        if (
+            not isinstance(permitted, list)
+            or not permitted
+            or any(not str(item).strip() for item in permitted)
+        ):
+            return "has a malformed explicit-parent permitted classification set"
+        permitted_values = {str(item).strip() for item in permitted}
+        if classification not in permitted_values:
+            return (
+                "classification is not permitted by its current explicit-parent route"
+            )
+        convention_id = str(route.get("convention_id") or "").strip()
+        convention_sha = _sha256(route.get("convention_sha256"))
+        if classification == "approved_source_convention":
+            ids = response.get("model_convention_ids")
+            hashes = response.get("model_convention_sha256_by_id")
+            if (
+                not convention_id
+                or not convention_sha
+                or not isinstance(ids, list)
+                or convention_id not in {str(item).strip() for item in ids}
+                or not isinstance(hashes, Mapping)
+                or _sha256(hashes.get(convention_id)) != convention_sha
+            ):
+                return (
+                    "approved_source_convention lacks its exact convention id/hash"
+                )
+    return ""
+
+
 def _completed_review_entry_error(entry: object, *, label: str) -> str:
     """Require one fully reviewed descriptor-and-pin bound current record."""
 
@@ -2091,7 +2204,12 @@ def _completed_review_entry_error(entry: object, *, label: str) -> str:
         for field in ("reviewer", "validated_at", "review_notes")
     ):
         return f"{label} lacks reviewer, validated_at, or review_notes"
-    return _review_response_error(entry.get("response"), label=label)
+    return _review_response_error(
+        entry.get("response"),
+        label=label,
+        semantic_descriptor=entry.get("current_group_semantic_descriptor"),
+        classification_requirements=entry.get("classification_requirements"),
+    )
 
 
 def _seeded_template_for_fragment_merge_error(
@@ -2533,6 +2651,15 @@ def _template_error(
             return f"{key}: manual record has a stale or mismatched semantic descriptor"
         if entry.get("current_item_pins") != expected["current_item_pins"]:
             return f"{key}: manual record has stale or incomplete current item pins"
+        expected_classification_requirements = (
+            _classification_requirements_from_group(expected)
+        )
+        if canonical_digest_payload(entry.get("classification_requirements")) != (
+            canonical_digest_payload(expected_classification_requirements)
+        ):
+            return (
+                f"{key}: manual record has stale or incomplete classification requirements"
+            )
         if entry.get("reviewed_current_semantics") is not True:
             return f"{key}: manual record must explicitly mark current semantics reviewed"
         if not str(entry.get("reviewer") or "").strip() or not str(
@@ -2548,6 +2675,8 @@ def _template_error(
                 key, []
             ),
             materialization_template=True,
+            semantic_descriptor=entry.get("current_group_semantic_descriptor"),
+            classification_requirements=entry.get("classification_requirements"),
         ):
             return error
     return ""

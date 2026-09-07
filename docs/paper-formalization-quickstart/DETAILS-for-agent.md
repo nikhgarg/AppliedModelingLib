@@ -8,7 +8,12 @@ New paper intake:
 Do new paper intake for <paper title>, and your goal is to fully formalize it.
 Use <arXiv URL>. The official source is <official URL> for documentation.
 Start with source/version inventory, named-result ledger, formula sanity pass,
-shared-library reuse checkpoint, and FORMALIZATION_PLAN.md.
+source-role classification, shared-library reuse checkpoint, and
+FORMALIZATION_PLAN.md. Draft one complete Spec plus a distinct proof endpoint
+for each source result; draft actual declarations for definitions, algorithms,
+models, assumptions, and conditions. Run the skill's non-certifying semantic-
+architecture pre-pass and refactor its findings before intake freeze or any
+semantic evidence issuance.
 ```
 
 Resume a paper:
@@ -39,15 +44,27 @@ report human-facing.
 - Fill the initial `FORMALIZATION_PLAN.md` before deep proof work: source
   inventory, named-result ledger, formula/dependency sanity pass, reusable API
   checkpoint, formal target map, and fallback boundaries.
+- Classify every selected source presentation by semantic role before choosing
+  a Lean shape. Results get one complete transparent `Spec : Prop` plus a
+  distinct proof/refutation endpoint. Definitions, algorithms, governing
+  models, assumptions, and conditions get their actual complete declarations,
+  which every semantically governed result Spec must actually use. A genuinely
+  standalone named definition may remain an independently reviewed standalone
+  declaration; do not attach it as a vacuous premise to an unrelated result.
+- Run the skill's non-certifying semantic-architecture pre-pass on the proposed
+  interface and Lean-produced dependency view. Resolve role errors, omitted
+  clauses, fake wrappers, dead duplicates, and source-model bypasses before
+  intake freeze. Its output is diagnostic planning material, never audit
+  evidence.
 - Build a small paper-facing interface first. A broad package row or
   source-looking certificate is not a substitute for matching each visible
-  theorem/formula target.
+  source result or for exposing the actual source definition/model it uses.
 
 ## During Proof Work
 
 - Search Mathlib, CSLib, Optlib, potential upstream Lean sources listed in
   [`../UPSTREAM_LEAN_SOURCES.md`](../UPSTREAM_LEAN_SOURCES.md), and existing
-  `EconCSLib` APIs before creating a local wrapper around a standard concept.
+  `AppliedModelingLib` APIs before creating a local wrapper around a standard concept.
 - If you use or port upstream material, cite the repository, file/module path,
   commit or release when available, license status, and what was reused.
 - Keep `PaperInterface.lean` readable: definitions and named source results
@@ -77,7 +94,11 @@ report human-facing.
   paper issues or none found, additional assumptions or proof boundaries,
   proof-strategy deviations, and reusable proof ideas.
 - Do not call a source assumption a caveat. Use kind, precise caveat language
-  only for real source discrepancy, ambiguity, or proof-boundary issues.
+  only for real theorem-facing source discrepancy, ambiguity, added non-source
+  assumption, or proof-boundary issues.
+- Do not call a corrected printed proof route a caveat when Lean proves the
+  same source theorem endpoint. Record it as a proof correction, typo, or
+  alternative proof in the post-formalization audit/final report.
 - For public tables, avoid separate `conditional` terminology; use
   `partially formalized` and name the exact remaining boundary.
 
@@ -95,11 +116,13 @@ At real completion or public-partial handoff, update:
 Then run the relevant checks from the repository root:
 
 ```bash
-lake build <paper target>
-python3 scripts/sync_paper_status.py --check
-python3 scripts/audit_repository.py --paper <paper> --paper-closeout --include-active --info-limit 0
-git diff --check
+PAPER=ABC24ShortTitle
+python3 scripts/sync_paper_status.py --paper "$PAPER"
+python3 scripts/paper_contribution.py check "$PAPER"
 ```
 
-Before claiming a public-ready branch, run the broader public-release checks
-listed in [`../AGENT_FORMALIZATION_WORKFLOW.md`](../AGENT_FORMALIZATION_WORKFLOW.md).
+For a one-paper public-ready branch, commit the paper-owned paths and run
+`python3 scripts/paper_contribution.py prepare-pr "$PAPER" --base upstream/main`.
+That contributor lane does not refresh aggregates or audit existing papers.
+Only shared/integration changes use the broader release checks listed in
+[`../AGENT_FORMALIZATION_WORKFLOW.md`](../AGENT_FORMALIZATION_WORKFLOW.md).

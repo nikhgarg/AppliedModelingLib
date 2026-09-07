@@ -19,7 +19,7 @@ selectors used by the main proofs.
 namespace Roth82StableMatching
 namespace PaperInterface
 
-open EconCSLib.Matching
+open AppliedModelingLib.Matching
 
 universe u v
 
@@ -1410,21 +1410,30 @@ def theorem2_side_optimal_stable_outcomesSpec : Prop :=
     Fintype.card M = Fintype.card W →
       strictMarriageDomain val_m val_w →
         (∃ mu : Assignment M W,
-          menOptimal val_m val_w mu ∧ completeMarriageOutcome mu) ∧
+          sourceMenOptimal val_m val_w mu) ∧
         (∃ nu : Assignment M W,
-          womenOptimal val_m val_w nu ∧ completeMarriageOutcome nu)
+          sourceWomenOptimal val_m val_w nu)
 
 theorem theorem2_side_optimal_stable_outcomes :
     theorem2_side_optimal_stable_outcomesSpec := by
   intro M W _ _ _ _ val_m val_w hcard hdomain
   rcases theorem2_optimal_stable_outcomes_on_strict_marriage_domain
       val_m val_w hdomain with ⟨⟨mu, hmen⟩, ⟨nu, hwomen⟩⟩
-  exact ⟨⟨mu, hmen,
-      operationalStable_complete_on_strict_domain_of_card_eq
-        val_m val_w mu hcard hdomain hmen.1⟩,
-    ⟨nu, hwomen,
-      operationalStable_complete_on_strict_domain_of_card_eq
-        val_m val_w nu hcard hdomain hwomen.1⟩⟩
+  refine ⟨⟨mu, ?_⟩, ⟨nu, ?_⟩⟩
+  · refine ⟨operational_and_complete_implies_sourceStableMarriage
+        val_m val_w mu hmen.1
+        (operationalStable_complete_on_strict_domain_of_card_eq
+          val_m val_w mu hcard hdomain hmen.1), ?_⟩
+    intro mu' hsource
+    exact hmen.2 mu'
+      (sourceStableMarriage_implies_operational val_m val_w mu' hdomain hsource)
+  · refine ⟨operational_and_complete_implies_sourceStableMarriage
+        val_m val_w nu hwomen.1
+        (operationalStable_complete_on_strict_domain_of_card_eq
+          val_m val_w nu hcard hdomain hwomen.1), ?_⟩
+    intro nu' hsource
+    exact hwomen.2 nu'
+      (sourceStableMarriage_implies_operational val_m val_w nu' hdomain hsource)
 
 def theorem3_no_stable_truthful_procedureSpec : Prop :=
   ¬ ∃ mechanism :
@@ -1584,18 +1593,19 @@ def lemma1_simple_report_same_partnerSpec : Prop :=
   ∀ {M W : Type*} [Fintype M] [Fintype W] [DecidableEq M] [DecidableEq W]
     (val_m : M → W → ℝ) (val_w : W → M → ℝ) (m : M)
     (report_m simple_report_m : W → ℝ) (wstar : W),
-    strictMarriageDomain (Function.update val_m m simple_report_m) val_w →
-      (menDeferredAcceptance (Function.update val_m m report_m) val_w).m_match m =
-          some wstar →
-      (∀ w, w ≠ wstar → simple_report_m w < simple_report_m wstar) →
-        (menDeferredAcceptance
-            (Function.update val_m m simple_report_m) val_w).m_match m =
+    strictMarriageDomain (Function.update val_m m report_m) val_w →
+      strictMarriageDomain (Function.update val_m m simple_report_m) val_w →
+        (menDeferredAcceptance (Function.update val_m m report_m) val_w).m_match m =
+            some wstar →
+        (∀ w, w ≠ wstar → simple_report_m w < simple_report_m wstar) →
           (menDeferredAcceptance
-            (Function.update val_m m report_m) val_w).m_match m
+              (Function.update val_m m simple_report_m) val_w).m_match m =
+            (menDeferredAcceptance
+              (Function.update val_m m report_m) val_w).m_match m
 
 theorem lemma1_simple_report_same_partner : lemma1_simple_report_same_partnerSpec := by
   intro M W _ _ _ _ val_m val_w m report_m simple_report_m wstar
-    hdomainSimple hyPartner hfirst
+    _hdomainReport hdomainSimple hyPartner hfirst
   exact lemma1_strict_simple_misrepresentation_same_partner
     val_m val_w m report_m simple_report_m wstar hdomainSimple hyPartner hfirst
 

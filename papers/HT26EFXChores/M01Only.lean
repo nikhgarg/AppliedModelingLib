@@ -15,7 +15,7 @@ Source: `EFXadditivechores.tex`, lines 681--700 and 732--759.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- A canonical M₀₁ allocation, with any prescribed set of long agents, can
 be extended across an M₃₄ pool. -/

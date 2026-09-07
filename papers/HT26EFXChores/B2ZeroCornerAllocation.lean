@@ -13,7 +13,7 @@ Source: `EFXadditivechores.tex`, lines 2665--2676.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- An allocation whose own bundles consist entirely of unit-cost chores is
 EFX once every comparison bundle meets the corresponding post-removal

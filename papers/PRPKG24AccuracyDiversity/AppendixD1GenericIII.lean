@@ -21,7 +21,7 @@ open scoped BigOperators
 namespace PRPKG24AccuracyDiversity
 namespace AppendixD1GenericIII
 
-open EconCSLib
+open AppliedModelingLib
 
 /-- The source's discrete forward increment. -/
 def forwardIncrement (h : ℕ → ℝ) (a : ℕ) : ℝ := h (a + 1) - h a
@@ -311,8 +311,8 @@ theorem tendsto_rawObjective_sub_weightedLogComparison_nhds_zero
     {m : ℕ} [NeZero m] {B C : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
     (a b : ℕ → CountAllocation m)
-    (ha_total : ∀ N, EconCSLib.Allocation.total (a N) = N)
-    (hb_total : ∀ N, EconCSLib.Allocation.total (b N) = N)
+    (ha_total : ∀ N, AppliedModelingLib.Allocation.total (a N) = N)
+    (hb_total : ∀ N, AppliedModelingLib.Allocation.total (b N) = N)
     (ha_top : ∀ i : ItemType m,
       Tendsto (fun N : ℕ => (a N).count i) atTop atTop)
     (hb_top : ∀ i : ItemType m,
@@ -320,13 +320,13 @@ theorem tendsto_rawObjective_sub_weightedLogComparison_nhds_zero
     (hrem : Tendsto (logRemainder h B C) atTop (nhds 0)) :
     Tendsto
       (fun N : ℕ =>
-        (EconCSLib.Allocation.objective (a N) p (fun _ : ItemType m => h) -
-          EconCSLib.Allocation.objective (b N) p (fun _ : ItemType m => h)) -
+        (AppliedModelingLib.Allocation.objective (a N) p (fun _ : ItemType m => h) -
+          AppliedModelingLib.Allocation.objective (b N) p (fun _ : ItemType m => h)) -
           B *
             (weightedLogObjective p
-                (fun i => EconCSLib.Allocation.share (a N) i) -
+                (fun i => AppliedModelingLib.Allocation.share (a N) i) -
               weightedLogObjective p
-                (fun i => EconCSLib.Allocation.share (b N) i)))
+                (fun i => AppliedModelingLib.Allocation.share (b N) i)))
       atTop (nhds 0) := by
   let ra : ℕ → ℝ := fun N => weightedLogRemainderSum p h B C (a N)
   let rb : ℕ → ℝ := fun N => weightedLogRemainderSum p h B C (b N)
@@ -346,21 +346,21 @@ theorem tendsto_rawObjective_sub_weightedLogComparison_nhds_zero
     exact (hb_top i).eventually_gt_atTop 0
   have hraw_eq :
       ∀ᶠ N : ℕ in atTop,
-        (EconCSLib.Allocation.objective (a N) p (fun _ : ItemType m => h) -
-          EconCSLib.Allocation.objective (b N) p (fun _ : ItemType m => h)) -
+        (AppliedModelingLib.Allocation.objective (a N) p (fun _ : ItemType m => h) -
+          AppliedModelingLib.Allocation.objective (b N) p (fun _ : ItemType m => h)) -
           B *
             (weightedLogObjective p
-                (fun i => EconCSLib.Allocation.share (a N) i) -
+                (fun i => AppliedModelingLib.Allocation.share (a N) i) -
               weightedLogObjective p
-                (fun i => EconCSLib.Allocation.share (b N) i)) =
+                (fun i => AppliedModelingLib.Allocation.share (b N) i)) =
           ra N - rb N := by
     filter_upwards [ha_pos, hb_pos, eventually_gt_atTop 0] with N haN hbN hN_pos
     have hN_ne : (N : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hN_pos)
     have hshare_a : ∀ i : ItemType m,
         ((a N).count i : ℝ) =
-          (N : ℝ) * EconCSLib.Allocation.share (a N) i := by
+          (N : ℝ) * AppliedModelingLib.Allocation.share (a N) i := by
       intro i
-      rw [EconCSLib.Allocation.share_eq_div_of_total_ne_zero
+      rw [AppliedModelingLib.Allocation.share_eq_div_of_total_ne_zero
         (a := a N) (k := i)]
       · rw [ha_total N]
         field_simp
@@ -368,45 +368,45 @@ theorem tendsto_rawObjective_sub_weightedLogComparison_nhds_zero
         exact Nat.ne_of_gt hN_pos
     have hshare_b : ∀ i : ItemType m,
         ((b N).count i : ℝ) =
-          (N : ℝ) * EconCSLib.Allocation.share (b N) i := by
+          (N : ℝ) * AppliedModelingLib.Allocation.share (b N) i := by
       intro i
-      rw [EconCSLib.Allocation.share_eq_div_of_total_ne_zero
+      rw [AppliedModelingLib.Allocation.share_eq_div_of_total_ne_zero
         (a := b N) (k := i)]
       · rw [hb_total N]
         field_simp
       · rw [hb_total N]
         exact Nat.ne_of_gt hN_pos
     have hshare_a_pos : ∀ i : ItemType m,
-        0 < EconCSLib.Allocation.share (a N) i := by
+        0 < AppliedModelingLib.Allocation.share (a N) i := by
       intro i
       have hcount_pos : 0 < ((a N).count i : ℝ) := by exact_mod_cast haN i
-      have hprod : 0 < (N : ℝ) * EconCSLib.Allocation.share (a N) i := by
+      have hprod : 0 < (N : ℝ) * AppliedModelingLib.Allocation.share (a N) i := by
         rw [← hshare_a i]
         exact hcount_pos
       have hN_real : 0 < (N : ℝ) := by exact_mod_cast hN_pos
       nlinarith
     have hshare_b_pos : ∀ i : ItemType m,
-        0 < EconCSLib.Allocation.share (b N) i := by
+        0 < AppliedModelingLib.Allocation.share (b N) i := by
       intro i
       have hcount_pos : 0 < ((b N).count i : ℝ) := by exact_mod_cast hbN i
-      have hprod : 0 < (N : ℝ) * EconCSLib.Allocation.share (b N) i := by
+      have hprod : 0 < (N : ℝ) * AppliedModelingLib.Allocation.share (b N) i := by
         rw [← hshare_b i]
         exact hcount_pos
       have hN_real : 0 < (N : ℝ) := by exact_mod_cast hN_pos
       nlinarith
     have hlog_a : ∀ i : ItemType m,
         Real.log ((a N).count i : ℝ) =
-          Real.log (N : ℝ) + Real.log (EconCSLib.Allocation.share (a N) i) := by
+          Real.log (N : ℝ) + Real.log (AppliedModelingLib.Allocation.share (a N) i) := by
       intro i
       rw [hshare_a i, Real.log_mul hN_ne (hshare_a_pos i).ne']
     have hlog_b : ∀ i : ItemType m,
         Real.log ((b N).count i : ℝ) =
-          Real.log (N : ℝ) + Real.log (EconCSLib.Allocation.share (b N) i) := by
+          Real.log (N : ℝ) + Real.log (AppliedModelingLib.Allocation.share (b N) i) := by
       intro i
       rw [hshare_b i, Real.log_mul hN_ne (hshare_b_pos i).ne']
     have hvalue_a : ∀ i : ItemType m,
         h ((a N).count i) =
-          B * (Real.log (N : ℝ) + Real.log (EconCSLib.Allocation.share (a N) i)) + C +
+          B * (Real.log (N : ℝ) + Real.log (AppliedModelingLib.Allocation.share (a N) i)) + C +
             logRemainder h B C ((a N).count i) := by
       intro i
       unfold logRemainder
@@ -414,20 +414,20 @@ theorem tendsto_rawObjective_sub_weightedLogComparison_nhds_zero
       ring
     have hvalue_b : ∀ i : ItemType m,
         h ((b N).count i) =
-          B * (Real.log (N : ℝ) + Real.log (EconCSLib.Allocation.share (b N) i)) + C +
+          B * (Real.log (N : ℝ) + Real.log (AppliedModelingLib.Allocation.share (b N) i)) + C +
             logRemainder h B C ((b N).count i) := by
       intro i
       unfold logRemainder
       rw [← hlog_b i]
       ring
-    unfold EconCSLib.Allocation.objective weightedLogObjective ra rb
+    unfold AppliedModelingLib.Allocation.objective weightedLogObjective ra rb
       weightedLogRemainderSum
     simp only
     rw [show
       (∑ i : ItemType m, p i * h ((a N).count i)) =
         ∑ i : ItemType m,
           p i *
-            (B * (Real.log (N : ℝ) + Real.log (EconCSLib.Allocation.share (a N) i)) + C +
+            (B * (Real.log (N : ℝ) + Real.log (AppliedModelingLib.Allocation.share (a N) i)) + C +
               logRemainder h B C ((a N).count i)) by
         refine Finset.sum_congr rfl ?_
         intro i _
@@ -436,7 +436,7 @@ theorem tendsto_rawObjective_sub_weightedLogComparison_nhds_zero
       (∑ i : ItemType m, p i * h ((b N).count i)) =
         ∑ i : ItemType m,
           p i *
-            (B * (Real.log (N : ℝ) + Real.log (EconCSLib.Allocation.share (b N) i)) + C +
+            (B * (Real.log (N : ℝ) + Real.log (AppliedModelingLib.Allocation.share (b N) i)) + C +
               logRemainder h B C ((b N).count i)) by
         refine Finset.sum_congr rfl ?_
         intro i _
@@ -450,14 +450,14 @@ theorem tendsto_rawObjective_sub_weightedLogComparison_nhds_zero
       intro x _
       ring
     have hshare_a_reorder :
-        (∑ x : ItemType m, p x * B * Real.log (EconCSLib.Allocation.share (a N) x)) =
-          ∑ x : ItemType m, B * (p x * Real.log (EconCSLib.Allocation.share (a N) x)) := by
+        (∑ x : ItemType m, p x * B * Real.log (AppliedModelingLib.Allocation.share (a N) x)) =
+          ∑ x : ItemType m, B * (p x * Real.log (AppliedModelingLib.Allocation.share (a N) x)) := by
       refine Finset.sum_congr rfl ?_
       intro x _
       ring
     have hshare_b_reorder :
-        (∑ x : ItemType m, B * p x * Real.log (EconCSLib.Allocation.share (b N) x)) =
-          ∑ x : ItemType m, B * (p x * Real.log (EconCSLib.Allocation.share (b N) x)) := by
+        (∑ x : ItemType m, B * p x * Real.log (AppliedModelingLib.Allocation.share (b N) x)) =
+          ∑ x : ItemType m, B * (p x * Real.log (AppliedModelingLib.Allocation.share (b N) x)) := by
       refine Finset.sum_congr rfl ?_
       intro x _
       ring
@@ -559,7 +559,7 @@ theorem sum_normalizedFloorCount_le
 theorem normalizedIntegerCompetitor_total
     {m : ℕ} [NeZero m] (p : ItemType m → ℝ)
     (hp_pos : ∀ i, 0 < p i) (N : ℕ) :
-    EconCSLib.Allocation.total (normalizedIntegerCompetitor p N) = N := by
+    AppliedModelingLib.Allocation.total (normalizedIntegerCompetitor p N) = N := by
   classical
   let anchor : ItemType m := roundingAnchor
   let S : ℕ := ∑ j ∈ Finset.univ.erase anchor, normalizedFloorCount p N j
@@ -734,7 +734,7 @@ optimizer.  No continuous relaxation or allocation-limit premise is used.
 theorem tendsto_optimalAllocation_count_atTop_of_log_remainder
     {m : ℕ} [NeZero m] {B C : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h)
@@ -770,10 +770,10 @@ theorem tendsto_optimalAllocation_count_atTop_of_log_remainder
   by_contra hnot
   have hcount_t_lt : (seq.allocation N).count t < K :=
     Nat.lt_of_not_ge hnot
-  have htotal : EconCSLib.Allocation.total (seq.allocation N) = N :=
+  have htotal : AppliedModelingLib.Allocation.total (seq.allocation N) = N :=
     (seq.optimal N).1
   obtain ⟨j, hj_large⟩ :=
-    EconCSLib.Allocation.exists_count_gt_of_card_mul_lt_total
+    AppliedModelingLib.Allocation.exists_count_gt_of_card_mul_lt_total
       (seq.allocation N) (by
         simpa [Fintype.card_fin, M, htotal] using hNlarge)
   have hj_ne_t : j ≠ t := by
@@ -824,16 +824,16 @@ theorem tendsto_optimalAllocation_count_atTop_of_log_remainder
         dsimp [eps]
         field_simp [ne_of_gt hW_pos]
   have hopt_exchange :=
-    EconCSLib.Allocation.weightedForwardMarginal_le_weightedBackwardMarginal_of_optimum
+    AppliedModelingLib.Allocation.weightedForwardMarginal_le_weightedBackwardMarginal_of_optimum
       (a := seq.allocation N) (weight := p)
       (valueOfCount := fun _ : ItemType m => h) (N := N)
       (seq.optimal N) hj_ne_t hj_pos
   have hopt_exchange' :
       p t * forwardIncrement h ((seq.allocation N).count t) ≤
         p j * forwardIncrement h ((seq.allocation N).count j - 1) := by
-    unfold EconCSLib.Allocation.weightedForwardMarginal
-      EconCSLib.Allocation.weightedBackwardMarginal
-      EconCSLib.Allocation.marginal at hopt_exchange
+    unfold AppliedModelingLib.Allocation.weightedForwardMarginal
+      AppliedModelingLib.Allocation.weightedBackwardMarginal
+      AppliedModelingLib.Allocation.marginal at hopt_exchange
     rw [dif_neg (ne_of_gt hj_pos)] at hopt_exchange
     change
       p t * (h ((seq.allocation N).count t + 1) - h ((seq.allocation N).count t)) ≤
@@ -901,7 +901,7 @@ theorem tendsto_normalizedIntegerCompetitor_share_nhds_normalizedWeight
     {m : ℕ} [NeZero m] (p : ItemType m → ℝ)
     (hp_pos : ∀ i, 0 < p i) (i : ItemType m) :
     Tendsto
-      (fun N : ℕ => EconCSLib.Allocation.share (normalizedIntegerCompetitor p N) i)
+      (fun N : ℕ => AppliedModelingLib.Allocation.share (normalizedIntegerCompetitor p N) i)
       atTop (nhds (normalizedWeight p i)) := by
   have hratio : Tendsto
       (fun N : ℕ =>
@@ -912,12 +912,12 @@ theorem tendsto_normalizedIntegerCompetitor_share_nhds_normalizedWeight
         abs_normalizedIntegerCompetitor_count_sub_target_le_card p hp_pos N i)
   refine hratio.congr' ?_
   filter_upwards [eventually_gt_atTop 0] with N hN
-  have htotal : EconCSLib.Allocation.total (normalizedIntegerCompetitor p N) = N :=
+  have htotal : AppliedModelingLib.Allocation.total (normalizedIntegerCompetitor p N) = N :=
     normalizedIntegerCompetitor_total p hp_pos N
-  have htotal_ne : EconCSLib.Allocation.total (normalizedIntegerCompetitor p N) ≠ 0 := by
+  have htotal_ne : AppliedModelingLib.Allocation.total (normalizedIntegerCompetitor p N) ≠ 0 := by
     rw [htotal]
     exact Nat.ne_of_gt hN
-  rw [EconCSLib.Allocation.share_eq_div_of_total_ne_zero
+  rw [AppliedModelingLib.Allocation.share_eq_div_of_total_ne_zero
     (a := normalizedIntegerCompetitor p N) (k := i) htotal_ne, htotal]
 
 /--
@@ -1016,10 +1016,10 @@ theorem tendsto_weightedLogObjective_normalizedIntegerCompetitor_nhds_normalized
     (hp_pos : ∀ i, 0 < p i) :
     Tendsto
       (fun N : ℕ => weightedLogObjective p
-        (fun i => EconCSLib.Allocation.share (normalizedIntegerCompetitor p N) i))
+        (fun i => AppliedModelingLib.Allocation.share (normalizedIntegerCompetitor p N) i))
       atTop (nhds (weightedLogObjective p (normalizedWeight p))) := by
   exact tendsto_weightedLogObjective_of_tendsto_coordinates p (normalizedWeight p)
-    (fun N i => EconCSLib.Allocation.share (normalizedIntegerCompetitor p N) i)
+    (fun N i => AppliedModelingLib.Allocation.share (normalizedIntegerCompetitor p N) i)
     (fun i => normalizedWeight_pos p hp_pos i)
     (fun i => tendsto_normalizedIntegerCompetitor_share_nhds_normalizedWeight p hp_pos i)
 
@@ -1031,7 +1031,7 @@ its coordinate growth, and the asymptotic expansion are all constructed here.
 theorem eventually_weightedLogObjective_target_sub_lt_optimal
     {m : ℕ} [NeZero m] {B C : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h) (hconc : StrictDiscreteConcave h)
@@ -1041,18 +1041,18 @@ theorem eventually_weightedLogObjective_target_sub_lt_optimal
     ∀ᶠ N : ℕ in atTop,
       weightedLogObjective p (normalizedWeight p) - δ <
         weightedLogObjective p
-          (fun i => EconCSLib.Allocation.share (seq.allocation N) i) := by
+          (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i) := by
   let a : ℕ → CountAllocation m := fun N => seq.allocation N
   let b : ℕ → CountAllocation m := fun N => normalizedIntegerCompetitor p N
   let La : ℕ → ℝ := fun N => weightedLogObjective p
-    (fun i => EconCSLib.Allocation.share (a N) i)
+    (fun i => AppliedModelingLib.Allocation.share (a N) i)
   let Lb : ℕ → ℝ := fun N => weightedLogObjective p
-    (fun i => EconCSLib.Allocation.share (b N) i)
+    (fun i => AppliedModelingLib.Allocation.share (b N) i)
   let Lq : ℝ := weightedLogObjective p (normalizedWeight p)
-  have ha_total : ∀ N : ℕ, EconCSLib.Allocation.total (a N) = N := by
+  have ha_total : ∀ N : ℕ, AppliedModelingLib.Allocation.total (a N) = N := by
     intro N
     exact (seq.optimal N).1
-  have hb_total : ∀ N : ℕ, EconCSLib.Allocation.total (b N) = N := by
+  have hb_total : ∀ N : ℕ, AppliedModelingLib.Allocation.total (b N) = N := by
     intro N
     exact normalizedIntegerCompetitor_total p hp_pos N
   have ha_top : ∀ i : ItemType m,
@@ -1066,8 +1066,8 @@ theorem eventually_weightedLogObjective_target_sub_lt_optimal
     exact tendsto_normalizedIntegerCompetitor_count_atTop p hp_pos i
   have hraw : Tendsto
       (fun N : ℕ =>
-        (EconCSLib.Allocation.objective (a N) p (fun _ : ItemType m => h) -
-          EconCSLib.Allocation.objective (b N) p (fun _ : ItemType m => h)) -
+        (AppliedModelingLib.Allocation.objective (a N) p (fun _ : ItemType m => h) -
+          AppliedModelingLib.Allocation.objective (b N) p (fun _ : ItemType m => h)) -
           B * (La N - Lb N))
       atTop (nhds 0) := by
     simpa [a, b, La, Lb] using
@@ -1086,14 +1086,14 @@ theorem eventually_weightedLogObjective_target_sub_lt_optimal
     hbenchmark (Ioi_mem_nhds (sub_lt_self Lq hδthird_pos))
   have hraw_upper :
       ∀ᶠ N : ℕ in atTop,
-        (EconCSLib.Allocation.objective (a N) p (fun _ : ItemType m => h) -
-          EconCSLib.Allocation.objective (b N) p (fun _ : ItemType m => h)) -
+        (AppliedModelingLib.Allocation.objective (a N) p (fun _ : ItemType m => h) -
+          AppliedModelingLib.Allocation.objective (b N) p (fun _ : ItemType m => h)) -
             B * (La N - Lb N) < B * δthird :=
     hraw (Iio_mem_nhds (mul_pos hB_pos hδthird_pos))
   filter_upwards [hbenchmark_lower, hraw_upper] with N hbenchN hrawN
   have hopt :
-      EconCSLib.Allocation.objective (b N) p (fun _ : ItemType m => h) ≤
-        EconCSLib.Allocation.objective (a N) p (fun _ : ItemType m => h) :=
+      AppliedModelingLib.Allocation.objective (b N) p (fun _ : ItemType m => h) ≤
+        AppliedModelingLib.Allocation.objective (a N) p (fun _ : ItemType m => h) :=
     (seq.optimal N).2 (b N) (hb_total N)
   have hmul : B * (-(La N - Lb N)) < B * δthird := by
     nlinarith
@@ -1113,7 +1113,7 @@ internal compact positive-domain separation.
 theorem eventually_optimalAllocation_share_ge_log_floor
     {m : ℕ} [NeZero m] {B C : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h) (hconc : StrictDiscreteConcave h)
@@ -1122,11 +1122,11 @@ theorem eventually_optimalAllocation_share_ge_log_floor
     ∀ᶠ N : ℕ in atTop, ∀ i : ItemType m,
       Real.exp
           ((weightedLogObjective p (normalizedWeight p) - 1) / p i) ≤
-        EconCSLib.Allocation.share (seq.allocation N) i := by
+        AppliedModelingLib.Allocation.share (seq.allocation N) i := by
   let Lq : ℝ := weightedLogObjective p (normalizedWeight p)
   have hL : ∀ᶠ N : ℕ in atTop,
       Lq - 1 < weightedLogObjective p
-        (fun i => EconCSLib.Allocation.share (seq.allocation N) i) := by
+        (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i) := by
     simpa [Lq] using
       eventually_weightedLogObjective_target_sub_lt_optimal
         p seq hp_pos hmono hconc hB_pos hrem (by norm_num : (0 : ℝ) < 1)
@@ -1143,23 +1143,23 @@ theorem eventually_optimalAllocation_share_ge_log_floor
   filter_upwards [hL, hcount_pos, eventually_gt_atTop 0] with N hLN hcountN hN
   intro i
   let x : ItemType m → ℝ :=
-    fun j => EconCSLib.Allocation.share (seq.allocation N) j
-  have htotal : EconCSLib.Allocation.total (seq.allocation N) = N :=
+    fun j => AppliedModelingLib.Allocation.share (seq.allocation N) j
+  have htotal : AppliedModelingLib.Allocation.total (seq.allocation N) = N :=
     (seq.optimal N).1
-  have htotal_ne : EconCSLib.Allocation.total (seq.allocation N) ≠ 0 := by
+  have htotal_ne : AppliedModelingLib.Allocation.total (seq.allocation N) ≠ 0 := by
     rw [htotal]
     exact Nat.ne_of_gt hN
   have hx_simplex : x ∈ stdSimplex ℝ (ItemType m) := by
     constructor
     · intro j
-      exact EconCSLib.Allocation.share_nonneg (a := seq.allocation N) (k := j)
+      exact AppliedModelingLib.Allocation.share_nonneg (a := seq.allocation N) (k := j)
     · dsimp [x]
-      exact EconCSLib.Allocation.sum_share_eq_one_of_total_ne_zero
+      exact AppliedModelingLib.Allocation.sum_share_eq_one_of_total_ne_zero
         (a := seq.allocation N) htotal_ne
   have hx_pos : ∀ j : ItemType m, 0 < x j := by
     intro j
     dsimp [x]
-    exact EconCSLib.Allocation.share_pos_of_count_pos
+    exact AppliedModelingLib.Allocation.share_pos_of_count_pos
       (a := seq.allocation N) j (hcountN j)
   have hterm_nonpos : ∀ j : ItemType m, p j * Real.log (x j) ≤ 0 := by
     intro j
@@ -1197,7 +1197,7 @@ the source's discrete strict concavity are both explicit.
 theorem corrected_lemmaD1_iii_normalized_optimizer_shares_of_log_remainder
     {m : ℕ} [NeZero m] {B C : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hmono : Monotone h) (hconc : StrictDiscreteConcave h)
@@ -1236,25 +1236,25 @@ theorem corrected_lemmaD1_iii_normalized_optimizer_shares_of_log_remainder
     exact weightedLogObjective_lt_normalizedWeight_of_ne p x hp_pos
       (hs_pos x hx) hx.1.2 hx_ne
   have hfloor : ∀ᶠ N : ℕ in atTop, ∀ i : ItemType m,
-      lower i ≤ EconCSLib.Allocation.share (seq.allocation N) i := by
+      lower i ≤ AppliedModelingLib.Allocation.share (seq.allocation N) i := by
     simpa [lower, Lq] using
       eventually_optimalAllocation_share_ge_log_floor
         p seq hp_pos hmono hconc hB_pos hrem
   have hactual_mem : ∀ᶠ N : ℕ in atTop,
-      (fun i => EconCSLib.Allocation.share (seq.allocation N) i) ∈ s := by
+      (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i) ∈ s := by
     filter_upwards [hfloor, eventually_gt_atTop 0] with N hfloorN hN
     constructor
     · constructor
       · intro i
-        exact EconCSLib.Allocation.share_nonneg (a := seq.allocation N) (k := i)
-      · exact EconCSLib.Allocation.sum_share_eq_one_of_total_ne_zero
+        exact AppliedModelingLib.Allocation.share_nonneg (a := seq.allocation N) (k := i)
+      · exact AppliedModelingLib.Allocation.sum_share_eq_one_of_total_ne_zero
           (a := seq.allocation N) (by
             rw [(seq.optimal N).1]
             exact Nat.ne_of_gt hN)
     · exact hfloorN
   intro t
   change Tendsto
-    (fun N : ℕ => EconCSLib.Allocation.share (seq.allocation N) t)
+    (fun N : ℕ => AppliedModelingLib.Allocation.share (seq.allocation N) t)
     atTop (nhds (normalizedWeight p t))
   rw [Metric.tendsto_nhds]
   intro ε hε_pos
@@ -1267,23 +1267,23 @@ theorem corrected_lemmaD1_iii_normalized_optimizer_shares_of_log_remainder
       (normalizedWeight p) hscompact hs_cont hs_strict εhalf hεhalf_pos
   have hobjective_lower : ∀ᶠ N : ℕ in atTop,
       Lq - η < weightedLogObjective p
-        (fun i => EconCSLib.Allocation.share (seq.allocation N) i) := by
+        (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i) := by
     simpa [Lq] using
       eventually_weightedLogObjective_target_sub_lt_optimal
         p seq hp_pos hmono hconc hB_pos hrem hη_pos
   filter_upwards [hactual_mem, hobjective_lower] with N hmemN hobjN
   have hnot_far :
       ¬ εhalf <
-        |EconCSLib.Allocation.share (seq.allocation N) t - normalizedWeight p t| := by
+        |AppliedModelingLib.Allocation.share (seq.allocation N) t - normalizedWeight p t| := by
     intro hfar
     have hgapN := hseparate
-      (fun i => EconCSLib.Allocation.share (seq.allocation N) i) hmemN ⟨t, hfar⟩
+      (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i) hmemN ⟨t, hfar⟩
     exact (not_lt_of_ge hgapN) hobjN
   have habs_le :
-      |EconCSLib.Allocation.share (seq.allocation N) t - normalizedWeight p t| ≤ εhalf :=
+      |AppliedModelingLib.Allocation.share (seq.allocation N) t - normalizedWeight p t| ≤ εhalf :=
     le_of_not_gt hnot_far
   have habs_lt :
-      |EconCSLib.Allocation.share (seq.allocation N) t - normalizedWeight p t| < ε :=
+      |AppliedModelingLib.Allocation.share (seq.allocation N) t - normalizedWeight p t| < ε :=
     lt_of_le_of_lt habs_le (by dsimp [εhalf]; linarith)
   simpa [Real.dist_eq] using habs_lt
 
@@ -1295,7 +1295,7 @@ weights are explicitly normalized probabilities, the corrected target
 theorem corrected_lemmaD1_iii_probability_optimizer_shares_of_log_remainder
     {m : ℕ} [NeZero m] {B C : ℝ} {h : ℕ → ℝ}
     (p : ItemType m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : ItemType m => h))
     (hp_pos : ∀ i : ItemType m, 0 < p i)
     (hsum : (∑ i : ItemType m, p i) = 1)

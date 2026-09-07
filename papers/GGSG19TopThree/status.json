@@ -22,7 +22,7 @@
     "reviewed_rows": 0,
     "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     "stale_rows": 0,
-    "total_rows": 23,
+    "total_rows": 15,
     "uncertain_rows": 0
   },
   "human_summary": "",
@@ -34,13 +34,13 @@
   "main_caveat": "",
   "paper_interface": {
     "declaration_rows": 35,
-    "line_count": 846,
+    "line_count": 371,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/GGSG19TopThree/PaperInterface.lean",
     "proof_interface_line_count": 12812,
     "proof_interface_path": "papers/GGSG19TopThree/ProofInterface.lean",
-    "review_rows": 23
+    "review_rows": 15
   },
   "publication_venue": "HCOMP 2019",
   "repository_visibility": "public",
@@ -51,7 +51,11 @@
       "assumption_randomized_mechanism_probability_weights",
       "assumption_mallows_nontrivial_winner_and_parameter_domain",
       "assumption_nontrivial_k_approval_cutoffs",
-      "assumption_mallows_repeated_insertion_parameter_domain"
+      "assumption_mallows_repeated_insertion_parameter_domain",
+      "model_arbitrary_ordered_tier_goal",
+      "model_finite_iid_strict_rankings",
+      "model_mallows_ranking_mass_and_parameter_domain",
+      "model_randomized_scoring_mechanism"
     ],
     "assumption_policy": "strict",
     "assumption_source_file": "papers/GGSG19TopThree/Assumptions.lean",
@@ -68,13 +72,6 @@
       "paper_definition_rate_optimal"
     ],
     "include_names": [
-      "source_model_k_ranking_scoreSpec",
-      "source_model_k_approval_scoreSpec",
-      "source_model_reasonable_positional_scoring_rulesSpec",
-      "source_model_cumulative_scores_ranking_and_outcomeSpec",
-      "paper_definition_design_invariant_statementSpec",
-      "paper_definition_large_deviation_rate_statementSpec",
-      "paper_definition_rate_optimal_statementSpec",
       "source_proposition1_thm_consistency_tieredSpec",
       "source_proposition2_thm_pairwiselearning_finite_supportSpec",
       "source_proposition3_lem_pairwiselearning_approval_finite_ternarySpec",
@@ -89,8 +86,7 @@
       "source_proof_mallows_common_pivotal_pairSpec",
       "source_mallows_repeated_insertion_probability_formulaSpec",
       "source_proof_mallows_four_candidate_joint_location_matrixSpec",
-      "source_example_durham_ward1_randomized_approval_improves_static3_static4Spec",
-      "source_mallows_arbitrary_pair_joint_location_dynamic_programSpec"
+      "source_example_durham_ward1_randomized_approval_improves_static3_static4Spec"
     ],
     "llm_assumption_review": {
       "assumption_judgment_file": "papers/GGSG19TopThree/audit/assumption_match_llm.json",
@@ -113,25 +109,17 @@
       "match_judgment_file": "papers/GGSG19TopThree/audit/statement_match_llm.json",
       "paper_coverage_audit_file": "papers/GGSG19TopThree/audit/paper_coverage_llm.json",
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
       "review_surface_audit_file": "papers/GGSG19TopThree/audit/review_surface_llm.json",
       "surface_audit_threshold": 30,
       "surface_warning_threshold": 120
     },
     "paper_coverage_required": true,
     "proposition_spec_proofs": {
-      "paper_definition_design_invariant_statementSpec": "paper_definition_design_invariant_statement",
-      "paper_definition_large_deviation_rate_statementSpec": "paper_definition_large_deviation_rate_statement",
-      "paper_definition_rate_optimal_statementSpec": "paper_definition_rate_optimal_statement",
       "source_corollary_lem_mallowsnorandoSpec": "source_corollary_lem_mallowsnorando",
       "source_corollary_lem_mallowsnorando_zero_noiseSpec": "source_corollary_lem_mallowsnorando_zero_noise",
       "source_example_durham_ward1_randomized_approval_improves_static3_static4Spec": "source_example_durham_ward1_randomized_approval_improves_static3_static4",
-      "source_mallows_arbitrary_pair_joint_location_dynamic_programSpec": "source_mallows_arbitrary_pair_joint_location_dynamic_program",
       "source_mallows_repeated_insertion_probability_formulaSpec": "source_mallows_repeated_insertion_probability_formula",
-      "source_model_cumulative_scores_ranking_and_outcomeSpec": "source_model_cumulative_scores_ranking_and_outcome",
-      "source_model_k_approval_scoreSpec": "source_model_k_approval_score",
-      "source_model_k_ranking_scoreSpec": "source_model_k_ranking_score",
-      "source_model_reasonable_positional_scoring_rulesSpec": "source_model_reasonable_positional_scoring_rules",
       "source_proof_mallows_common_pivotal_pairSpec": "source_proof_mallows_common_pivotal_pair",
       "source_proof_mallows_four_candidate_joint_location_matrixSpec": "source_proof_mallows_four_candidate_joint_location_matrix",
       "source_proposition1_thm_consistency_tieredSpec": "source_proposition1_thm_consistency_tiered",
@@ -148,35 +136,31 @@
     "require_v11_raw_source_spec_screening": true,
     "slices": [
       {
-        "id": "all",
+        "id": "additional_source_results",
         "names": [
-          "source_model_k_ranking_score",
-          "source_model_k_approval_score",
-          "source_model_reasonable_positional_scoring_rules",
-          "source_model_cumulative_scores_ranking_and_outcome",
-          "paper_definition_large_deviation_rate_statement",
-          "paper_definition_design_invariant_statement",
-          "paper_definition_rate_optimal_statement",
-          "source_proposition1_thm_consistency_tiered",
-          "source_proposition2_thm_pairwiselearning_finite_support",
-          "source_proposition3_lem_pairwiselearning_approval_finite_ternary",
-          "source_proposition4_thm_goal_learning_exact_minimum_rate",
-          "source_proposition4_thm_goal_learning_finite_sample_M_sq_bound",
-          "source_theorem1_lem_randomizebetterscoring_arbitrary_goal",
-          "source_theorem2_lem_randomizenotbetterapproval_pairwise",
-          "source_theorem_lem_randomizebetterapproval_w_selection_constructed",
-          "source_corollary_lem_mallowsnorando_zero_noise",
-          "source_corollary_lem_mallowsnorando",
-          "source_theorem_lem_mallowsnotWK_counterexample",
-          "source_example_durham_ward1_randomized_approval_improves_static3_static4",
-          "source_proof_mallows_common_pivotal_pair",
-          "source_proof_mallows_four_candidate_joint_location_matrix",
-          "MallowsArbitraryPairJointLocationDPOfQSpec",
-          "mallows_arbitrary_pair_joint_location_dp_ofQ_spec",
-          "source_mallows_repeated_insertion_probability_formula",
-          "source_mallows_arbitrary_pair_joint_location_dynamic_program"
+          "source_proposition1_thm_consistency_tieredSpec",
+          "source_proposition3_lem_pairwiselearning_approval_finite_ternarySpec",
+          "source_theorem1_lem_randomizebetterscoring_arbitrary_goalSpec",
+          "source_theorem2_lem_randomizenotbetterapproval_pairwiseSpec",
+          "source_corollary_lem_mallowsnorando_zero_noiseSpec",
+          "source_corollary_lem_mallowsnorandoSpec",
+          "source_theorem_lem_randomizebetterapproval_w_selection_constructedSpec",
+          "source_theorem_lem_mallowsnotWK_counterexampleSpec",
+          "source_proof_mallows_common_pivotal_pairSpec",
+          "source_mallows_repeated_insertion_probability_formulaSpec",
+          "source_proof_mallows_four_candidate_joint_location_matrixSpec",
+          "source_example_durham_ward1_randomized_approval_improves_static3_static4Spec"
         ],
-        "title": "All source-facing review rows"
+        "title": "Additional source results"
+      },
+      {
+        "id": "additional_source_results",
+        "names": [
+          "source_proposition2_thm_pairwiselearning_finite_supportSpec",
+          "source_proposition4_thm_goal_learning_exact_minimum_rateSpec",
+          "source_proposition4_thm_goal_learning_finite_sample_M_sq_boundSpec"
+        ],
+        "title": "Additional source results"
       }
     ],
     "source_definition_names": [],

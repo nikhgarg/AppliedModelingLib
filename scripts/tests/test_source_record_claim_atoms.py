@@ -217,6 +217,107 @@ class SourceRecordClaimAtomTests(unittest.TestCase):
         self.assertEqual(selection["source_coverage_atom_contract_companions"], [])
         self.assertEqual(selection["source_coverage_route_errors"], [])
 
+    def test_support_only_theorem_is_retained_without_a_direct_atom_route(self) -> None:
+        """A proof-support theorem is inventory-only, not a source endpoint."""
+
+        payload = self.payload()
+        item = payload["items"]["source_theorem_three"]
+        assert isinstance(item, dict)
+        item["source_status"] = "support_only"
+        item.pop("source_claim_atoms")
+        self.write_map(payload)
+
+        selected, _selected_map, selection = AUDIT.source_coverage_review_rows(
+            self.paper,
+            ["alpha", "beta"],
+            self.row_qualified_names(),
+        )
+        identities, errors = AUDIT.explicit_direct_source_route_identities(
+            payload,
+            row_qualified_names=self.row_qualified_names(),
+        )
+
+        self.assertIn(
+            "source_theorem_three",
+            selection["source_coverage_selected_source_items"],
+        )
+        self.assertEqual(selected, [])
+        self.assertEqual(selection["source_coverage_unrouted_source_items"], [])
+        self.assertEqual(selection["source_coverage_route_errors"], [])
+        self.assertEqual(identities, {})
+        self.assertEqual(errors, [])
+
+    def test_quarantined_source_defect_is_retained_without_a_direct_atom_route(self) -> None:
+        """A false printed theorem has defect support, not a proof endpoint."""
+
+        payload = self.payload()
+        item = payload["items"]["source_theorem_three"]
+        assert isinstance(item, dict)
+        item["source_status"] = "quarantined_source_defect"
+        item["support_lean_declarations"] = ["Fixture.proof_alpha"]
+        item.pop("source_claim_atoms")
+        self.write_map(payload)
+
+        selected, _selected_map, selection = AUDIT.source_coverage_review_rows(
+            self.paper,
+            ["alpha", "beta"],
+            self.row_qualified_names(),
+        )
+        identities, errors = AUDIT.explicit_direct_source_route_identities(
+            payload,
+            row_qualified_names=self.row_qualified_names(),
+        )
+
+        self.assertIn(
+            "source_theorem_three",
+            selection["source_coverage_selected_source_items"],
+        )
+        self.assertEqual(selected, [])
+        self.assertEqual(selection["source_coverage_unrouted_source_items"], [])
+        self.assertEqual(selection["source_coverage_route_errors"], [])
+        self.assertEqual(identities, {})
+        self.assertEqual(errors, [])
+
+    def test_source_declared_open_item_is_retained_without_a_proof_route(self) -> None:
+        """A valid named open problem remains inventory, not proof debt."""
+
+        payload = self.payload()
+        item = payload["items"]["source_theorem_three"]
+        assert isinstance(item, dict)
+        item.update(
+            {
+                "source_kind": "open_problem",
+                "claim_bearing": False,
+                "source_scope_classification": (
+                    "source_declared_open_nonresult_observation"
+                ),
+                "coverage_status": "source_declared_open",
+                "protocol_role": "source_declared_open",
+            }
+        )
+        item.pop("source_claim_atoms")
+        self.write_map(payload)
+
+        selected, _selected_map, selection = AUDIT.source_coverage_review_rows(
+            self.paper,
+            ["alpha", "beta"],
+            self.row_qualified_names(),
+        )
+        identities, errors = AUDIT.explicit_direct_source_route_identities(
+            payload,
+            row_qualified_names=self.row_qualified_names(),
+        )
+
+        self.assertIn(
+            "source_theorem_three",
+            selection["source_coverage_selected_source_items"],
+        )
+        self.assertEqual(selected, [])
+        self.assertEqual(selection["source_coverage_unrouted_source_items"], [])
+        self.assertEqual(selection["source_coverage_route_errors"], [])
+        self.assertEqual(identities, {})
+        self.assertEqual(errors, [])
+
     def test_single_atom_direct_spec_contract_adds_only_a_spec_companion(self) -> None:
         payload = self.single_evidence_atom_payload(with_semantic_contract=True)
         self.write_map(payload)

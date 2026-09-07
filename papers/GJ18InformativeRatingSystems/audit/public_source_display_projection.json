@@ -1,0 +1,292 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "GJ18InformativeRatingSystems",
+  "private_source_map_sha256": "b618624b4423fe83cfe2586b9667a681663e1a416c62ce3e7ea4c61eaec1a37c",
+  "public_manifest_path": "papers/GJ18InformativeRatingSystems/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "0de6effb039be3d8fd405912bb623e648ae2214863cbc420f85b4709d5cffc16",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "author_approved_corrected_model_theorem1_finite_real_rate",
+    "author_confirmed_clarified_model_theorem1_state_rate",
+    "source_appendix_pk_ld_complement_rate_iid_completion",
+    "source_appendix_problessthan_score_gap_rate_iid_completion",
+    "source_definition_aggregate_score_formula",
+    "source_definition_extended_rate_function_formula",
+    "source_definition_log_mgf_formula",
+    "source_definition_rate_function_formula",
+    "source_fidelity_diagnostic_unrestricted_real_pairwise_rate_mismatch",
+    "source_iid_completion_weak_inversion_bridge",
+    "source_theorem1_informative_rating_system_rate_iid_completion"
+  ],
+  "selected_source_items": {
+    "author_approved_corrected_model_theorem1_finite_real_rate": {
+      "source_anchors": [
+        {
+          "line_end": 764,
+          "line_start": 754,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{lemhatW}\n\t\\label{lem:hatW}\n\t\\begin{equation}\n\t\\label{eq:rW}\n\tr \\triangleq - \\lim_{k \\to \\infty} \\frac{1}{k} \\log (1- {W}_k) = \\min_{0 \\leq i < M} \\inf_{a \\in \\bbR} \\left \\{ g(\\theta_{i+1}) I(a|\\theta_{i+1}) + g(\\theta_i) I(a|\\theta_i)\\right\\}\n\t\\end{equation}\n\twhere\n\t$I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} {\\rho(\\theta, y | Y)} \\exp( z \\phi(y))$ is the log moment generating function of a single rating given to seller of type $\\theta$.\n%\n%\n\\end{restatable}",
+          "quoted_text_sha256": "e63468dac3b2c6a9547d94fdf512af4589b7a6b4475db2e65edc08ff9a6e1c3f"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "author_confirmed_clarified_model_theorem1_state_rate": {
+      "source_anchors": [
+        {
+          "line_end": 764,
+          "line_start": 754,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{lemhatW}\n\t\\label{lem:hatW}\n\t\\begin{equation}\n\t\\label{eq:rW}\n\tr \\triangleq - \\lim_{k \\to \\infty} \\frac{1}{k} \\log (1- {W}_k) = \\min_{0 \\leq i < M} \\inf_{a \\in \\bbR} \\left \\{ g(\\theta_{i+1}) I(a|\\theta_{i+1}) + g(\\theta_i) I(a|\\theta_i)\\right\\}\n\t\\end{equation}\n\twhere\n\t$I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} {\\rho(\\theta, y | Y)} \\exp( z \\phi(y))$ is the log moment generating function of a single rating given to seller of type $\\theta$.\n%\n%\n\\end{restatable}",
+          "quoted_text_sha256": "e63468dac3b2c6a9547d94fdf512af4589b7a6b4475db2e65edc08ff9a6e1c3f"
+        }
+      ],
+      "source_kind": "prose_assertion"
+    },
+    "source_appendix_pk_ld_complement_rate_iid_completion": {
+      "semantic_context": [
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 665,
+              "line_start": 665,
+              "publication_locator": "cited publication",
+              "quoted_text": "{\\bf Sellers}.  The system consists of a unit mass of sellers, each associated with a quality \\textit{type} $\\theta$, which is (initially) unknown to the platform. We assume $\\theta$ is drawn independently and uniformly at random from a finite and totally ordered set $\\Theta$, with $|\\Theta| = M$. We use $\\theta_i$ to denote the $i$th element of $\\Theta$ within this order, for $0\\leq i < M$.",
+              "quoted_text_sha256": "4c6fe893b409d91d809b90a6fbd69d25b79034552ba9b9a28820a120929d0132"
+            },
+            {
+              "line_end": 731,
+              "line_start": 721,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, given $\\theta_1 > \\theta_2$, define $P_k(\\theta_1, \\theta_2)$ as follows:\n\\begin{equation}\n\\label{eq:Pk}\nP_k(\\theta_1, \\theta_2) = \\mu_k(x_k(\\theta_1) > x_k(\\theta_2)|\\theta_1, \\theta_2) - \\mu_k(x_k(\\theta_1) < x_k(\\theta_2)|\\theta_1, \\theta_2).\n\\end{equation}\nThis expression captures the ``errors'' made by the ranking according to observed score.  In particular, when $\\theta_1 > \\theta_2$ but $x_k(\\theta_1) < x_k(\\theta_2)$, the aggregate score ranking swaps the ordering of sellers $\\theta_1$ and $\\theta_2$.  Thus, a good rating system has large $P_k(\\theta_1, \\theta_2)$.\n\nWe consider the problem of maximizing the following objective, a scaled version of {\\em Kendall's $\\tau$ rank correlation} between the estimated ranking of sellers and the true ranking:\n\\begin{equation}\n\\label{eq:objective}\nW_k = \\frac{2}{M(M-1)}\\sum_{\\theta_1 > \\theta_2 \\in \\Theta} P_k(\\theta_1, \\theta_2)",
+              "quoted_text_sha256": "570ed0ffc6d8958e85ae9fd11f3e78f6f2122f1ff62291afbd76183971bac4ff"
+            },
+            {
+              "line_end": 1718,
+              "line_start": 1714,
+              "publication_locator": "cited publication",
+              "quoted_text": "\t& = - \\lim_{k \\to \\infty} \\frac{1}{k} \\log \\left(1 - \\frac{2}{M(M-1)}\\sum_{\\theta_1 > \\theta_2 \\in \\Theta} P_k(\\theta_1, \\theta_2)\\right)\\\\\n\t&= - \\lim_{k \\to \\infty} \\frac{1}{k} \\log\\frac{2}{M(M-1)} \\sum_{0  \\leq i < j \\leq M} \\b{P}_k(\\theta_j, \\theta_i)\\\\\n\t&= -\\max_{0\\leq i < j \\leq M}\\left( \\lim_{k \\to \\infty} \\frac{1}{k} \\log \\left( \\b{P}_k(\\theta_j, \\theta_i)\\right)\\right)\\label{eqnstep:ldpproperty} \n\t= \\min_{0\\leq i < j \\leq M}\\left( -\\lim_{k \\to \\infty} \\frac{1}{k} \\left[\\log \\left(\\b{P}_k(\\theta_j, \\theta_i)\\right)\\right]\\right)\\\\\n\t&= \\min_{0 \\leq i < j \\leq M} \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_j) I(a|\\theta_j) + g(\\theta_i) I(a|\\theta_i)\\right\\}\\\\",
+              "quoted_text_sha256": "474978bf045aafe2a2a6b185eb8d3952c502505ea13ff956bd6ec6b9e1374657"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1681,
+          "line_start": 1670,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{lemma}{lemPkld}\n\t%\n\t\\label{lem:Pk_LD}\n\tGiven $\\theta_1, \\theta_2$, let $\\b{P}_k(\\theta_1, \\theta_2) = 1 - P_k(\\theta_1, \\theta_2)$.  Then:\n\t\\begin{equation}\n\t\\label{eq:LDrate}\n\t- \\lim_{k \\to \\infty} \\frac{1}{k} \\log \\b{P}_k(\\theta_1, \\theta_2) = \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_1) I(a|\\theta_1) + g(\\theta_2) I(a|\\theta_2) \\right \\},\n\t\\end{equation}\n\twhere $I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta)$ is the log moment generating function of a single rating given to seller of type $\\theta$:\n\t\\[ \\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} \\rho(\\theta, y | Y) \\exp( z \\phi(y) ). \\]\n\t%\n\\end{restatable}",
+          "quoted_text_sha256": "3d6ec04a845188543d635ce597a39cdace93315ebcbf3c4b9861d771e794a122"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "source_appendix_problessthan_score_gap_rate_iid_completion": {
+      "semantic_context": [
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 665,
+              "line_start": 665,
+              "publication_locator": "cited publication",
+              "quoted_text": "{\\bf Sellers}.  The system consists of a unit mass of sellers, each associated with a quality \\textit{type} $\\theta$, which is (initially) unknown to the platform. We assume $\\theta$ is drawn independently and uniformly at random from a finite and totally ordered set $\\Theta$, with $|\\Theta| = M$. We use $\\theta_i$ to denote the $i$th element of $\\Theta$ within this order, for $0\\leq i < M$.",
+              "quoted_text_sha256": "4c6fe893b409d91d809b90a6fbd69d25b79034552ba9b9a28820a120929d0132"
+            },
+            {
+              "line_end": 731,
+              "line_start": 721,
+              "publication_locator": "cited publication",
+              "quoted_text": "Formally, given $\\theta_1 > \\theta_2$, define $P_k(\\theta_1, \\theta_2)$ as follows:\n\\begin{equation}\n\\label{eq:Pk}\nP_k(\\theta_1, \\theta_2) = \\mu_k(x_k(\\theta_1) > x_k(\\theta_2)|\\theta_1, \\theta_2) - \\mu_k(x_k(\\theta_1) < x_k(\\theta_2)|\\theta_1, \\theta_2).\n\\end{equation}\nThis expression captures the ``errors'' made by the ranking according to observed score.  In particular, when $\\theta_1 > \\theta_2$ but $x_k(\\theta_1) < x_k(\\theta_2)$, the aggregate score ranking swaps the ordering of sellers $\\theta_1$ and $\\theta_2$.  Thus, a good rating system has large $P_k(\\theta_1, \\theta_2)$.\n\nWe consider the problem of maximizing the following objective, a scaled version of {\\em Kendall's $\\tau$ rank correlation} between the estimated ranking of sellers and the true ranking:\n\\begin{equation}\n\\label{eq:objective}\nW_k = \\frac{2}{M(M-1)}\\sum_{\\theta_1 > \\theta_2 \\in \\Theta} P_k(\\theta_1, \\theta_2)",
+              "quoted_text_sha256": "570ed0ffc6d8958e85ae9fd11f3e78f6f2122f1ff62291afbd76183971bac4ff"
+            },
+            {
+              "line_end": 1718,
+              "line_start": 1714,
+              "publication_locator": "cited publication",
+              "quoted_text": "\t& = - \\lim_{k \\to \\infty} \\frac{1}{k} \\log \\left(1 - \\frac{2}{M(M-1)}\\sum_{\\theta_1 > \\theta_2 \\in \\Theta} P_k(\\theta_1, \\theta_2)\\right)\\\\\n\t&= - \\lim_{k \\to \\infty} \\frac{1}{k} \\log\\frac{2}{M(M-1)} \\sum_{0  \\leq i < j \\leq M} \\b{P}_k(\\theta_j, \\theta_i)\\\\\n\t&= -\\max_{0\\leq i < j \\leq M}\\left( \\lim_{k \\to \\infty} \\frac{1}{k} \\log \\left( \\b{P}_k(\\theta_j, \\theta_i)\\right)\\right)\\label{eqnstep:ldpproperty} \n\t= \\min_{0\\leq i < j \\leq M}\\left( -\\lim_{k \\to \\infty} \\frac{1}{k} \\left[\\log \\left(\\b{P}_k(\\theta_j, \\theta_i)\\right)\\right]\\right)\\\\\n\t&= \\min_{0 \\leq i < j \\leq M} \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_j) I(a|\\theta_j) + g(\\theta_i) I(a|\\theta_i)\\right\\}\\\\",
+              "quoted_text_sha256": "474978bf045aafe2a2a6b185eb8d3952c502505ea13ff956bd6ec6b9e1374657"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1635,
+          "line_start": 1633,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma} \n\t$$\t\\lim_{k \\to \\infty}- \\frac{1}{k} \\log \\left[\\mu((x_k(\\theta_1) - x_k(\\theta_2)) \\leq 0 | \\theta_1 , \\theta_2)\\right] = \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_1) I(a|\\theta_1) + g(\\theta_2) I(a|\\theta_2) \\right \\}$$ where $I(a|\\ell) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, $\\Lambda(z|\\theta)$ is the log moment generating function of a single sample from $x(\\theta_1)$, and $g(\\theta)$ is the sampling rate. \\label{lem:problessthan}\n\\end{lemma}",
+          "quoted_text_sha256": "82007966668f2c65d91a6d2c3b2afa92da2dd4b3d4cec280ba3d3fbc25c0e10c"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "source_definition_aggregate_score_formula": {
+      "source_anchors": [
+        {
+          "line_end": 702,
+          "line_start": 697,
+          "publication_locator": "cited publication",
+          "quoted_text": "Let $y_0(\\theta), y_1(\\theta), y_2(\\theta), \\ldots$ be the sequence of ratings received by the seller of type $\\theta$.  The {\\em aggregate score} up to time $k$ of this seller is the average score from ratings received:\n\\begin{equation}\n\\label{eq:aggscore}\n x_k(\\theta) =  \\frac{1}{n_k(\\theta)} \\sum_{\\ell = 0}^{n_k(\\theta)} \\phi(y_\\ell(\\theta)).\n\\end{equation}\n(We presume $x_0(\\theta) = 0$ for all $\\theta$.)  Since $\\phi(y) \\in [0,1]$ for all $y$, the score $x_k$ also lies in $[0,1]$.",
+          "quoted_text_sha256": "e20467c150ddd3f7fdb08f7c10067af63a1ab5264cb479ed26db90c25c008d66"
+        }
+      ],
+      "source_kind": "formula"
+    },
+    "source_definition_extended_rate_function_formula": {
+      "source_anchors": [
+        {
+          "line_end": 761,
+          "line_start": 754,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{lemhatW}\n\t\\label{lem:hatW}\n\t\\begin{equation}\n\t\\label{eq:rW}\n\tr \\triangleq - \\lim_{k \\to \\infty} \\frac{1}{k} \\log (1- {W}_k) = \\min_{0 \\leq i < M} \\inf_{a \\in \\bbR} \\left \\{ g(\\theta_{i+1}) I(a|\\theta_{i+1}) + g(\\theta_i) I(a|\\theta_i)\\right\\}\n\t\\end{equation}\n\twhere\n\t$I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} {\\rho(\\theta, y | Y)} \\exp( z \\phi(y))$ is the log moment generating function of a single rating given to seller of type $\\theta$.",
+          "quoted_text_sha256": "2e30ce12249f90b59e8165cd7b7439390c65e6d7b9f8b626559d78a52ef7ba43"
+        },
+        {
+          "line_end": 1635,
+          "line_start": 1633,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma} \n\t$$\t\\lim_{k \\to \\infty}- \\frac{1}{k} \\log \\left[\\mu((x_k(\\theta_1) - x_k(\\theta_2)) \\leq 0 | \\theta_1 , \\theta_2)\\right] = \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_1) I(a|\\theta_1) + g(\\theta_2) I(a|\\theta_2) \\right \\}$$ where $I(a|\\ell) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, $\\Lambda(z|\\theta)$ is the log moment generating function of a single sample from $x(\\theta_1)$, and $g(\\theta)$ is the sampling rate. \\label{lem:problessthan}\n\\end{lemma}",
+          "quoted_text_sha256": "82007966668f2c65d91a6d2c3b2afa92da2dd4b3d4cec280ba3d3fbc25c0e10c"
+        },
+        {
+          "line_end": 1679,
+          "line_start": 1670,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{lemma}{lemPkld}\n\t%\n\t\\label{lem:Pk_LD}\n\tGiven $\\theta_1, \\theta_2$, let $\\b{P}_k(\\theta_1, \\theta_2) = 1 - P_k(\\theta_1, \\theta_2)$.  Then:\n\t\\begin{equation}\n\t\\label{eq:LDrate}\n\t- \\lim_{k \\to \\infty} \\frac{1}{k} \\log \\b{P}_k(\\theta_1, \\theta_2) = \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_1) I(a|\\theta_1) + g(\\theta_2) I(a|\\theta_2) \\right \\},\n\t\\end{equation}\n\twhere $I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta)$ is the log moment generating function of a single rating given to seller of type $\\theta$:\n\t\\[ \\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} \\rho(\\theta, y | Y) \\exp( z \\phi(y) ). \\]",
+          "quoted_text_sha256": "c0893d181d49ead93669af0c9430494a2d848dd2b24fafee7d2020332b4b7db6"
+        }
+      ],
+      "source_kind": "formula"
+    },
+    "source_definition_log_mgf_formula": {
+      "source_anchors": [
+        {
+          "line_end": 761,
+          "line_start": 754,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{lemhatW}\n\t\\label{lem:hatW}\n\t\\begin{equation}\n\t\\label{eq:rW}\n\tr \\triangleq - \\lim_{k \\to \\infty} \\frac{1}{k} \\log (1- {W}_k) = \\min_{0 \\leq i < M} \\inf_{a \\in \\bbR} \\left \\{ g(\\theta_{i+1}) I(a|\\theta_{i+1}) + g(\\theta_i) I(a|\\theta_i)\\right\\}\n\t\\end{equation}\n\twhere\n\t$I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} {\\rho(\\theta, y | Y)} \\exp( z \\phi(y))$ is the log moment generating function of a single rating given to seller of type $\\theta$.",
+          "quoted_text_sha256": "2e30ce12249f90b59e8165cd7b7439390c65e6d7b9f8b626559d78a52ef7ba43"
+        },
+        {
+          "line_end": 1635,
+          "line_start": 1633,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma} \n\t$$\t\\lim_{k \\to \\infty}- \\frac{1}{k} \\log \\left[\\mu((x_k(\\theta_1) - x_k(\\theta_2)) \\leq 0 | \\theta_1 , \\theta_2)\\right] = \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_1) I(a|\\theta_1) + g(\\theta_2) I(a|\\theta_2) \\right \\}$$ where $I(a|\\ell) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, $\\Lambda(z|\\theta)$ is the log moment generating function of a single sample from $x(\\theta_1)$, and $g(\\theta)$ is the sampling rate. \\label{lem:problessthan}\n\\end{lemma}",
+          "quoted_text_sha256": "82007966668f2c65d91a6d2c3b2afa92da2dd4b3d4cec280ba3d3fbc25c0e10c"
+        },
+        {
+          "line_end": 1679,
+          "line_start": 1670,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{lemma}{lemPkld}\n\t%\n\t\\label{lem:Pk_LD}\n\tGiven $\\theta_1, \\theta_2$, let $\\b{P}_k(\\theta_1, \\theta_2) = 1 - P_k(\\theta_1, \\theta_2)$.  Then:\n\t\\begin{equation}\n\t\\label{eq:LDrate}\n\t- \\lim_{k \\to \\infty} \\frac{1}{k} \\log \\b{P}_k(\\theta_1, \\theta_2) = \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_1) I(a|\\theta_1) + g(\\theta_2) I(a|\\theta_2) \\right \\},\n\t\\end{equation}\n\twhere $I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta)$ is the log moment generating function of a single rating given to seller of type $\\theta$:\n\t\\[ \\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} \\rho(\\theta, y | Y) \\exp( z \\phi(y) ). \\]",
+          "quoted_text_sha256": "c0893d181d49ead93669af0c9430494a2d848dd2b24fafee7d2020332b4b7db6"
+        }
+      ],
+      "source_kind": "formula"
+    },
+    "source_definition_rate_function_formula": {
+      "source_anchors": [
+        {
+          "line_end": 761,
+          "line_start": 754,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{lemhatW}\n\t\\label{lem:hatW}\n\t\\begin{equation}\n\t\\label{eq:rW}\n\tr \\triangleq - \\lim_{k \\to \\infty} \\frac{1}{k} \\log (1- {W}_k) = \\min_{0 \\leq i < M} \\inf_{a \\in \\bbR} \\left \\{ g(\\theta_{i+1}) I(a|\\theta_{i+1}) + g(\\theta_i) I(a|\\theta_i)\\right\\}\n\t\\end{equation}\n\twhere\n\t$I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} {\\rho(\\theta, y | Y)} \\exp( z \\phi(y))$ is the log moment generating function of a single rating given to seller of type $\\theta$.",
+          "quoted_text_sha256": "2e30ce12249f90b59e8165cd7b7439390c65e6d7b9f8b626559d78a52ef7ba43"
+        },
+        {
+          "line_end": 1635,
+          "line_start": 1633,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma} \n\t$$\t\\lim_{k \\to \\infty}- \\frac{1}{k} \\log \\left[\\mu((x_k(\\theta_1) - x_k(\\theta_2)) \\leq 0 | \\theta_1 , \\theta_2)\\right] = \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_1) I(a|\\theta_1) + g(\\theta_2) I(a|\\theta_2) \\right \\}$$ where $I(a|\\ell) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, $\\Lambda(z|\\theta)$ is the log moment generating function of a single sample from $x(\\theta_1)$, and $g(\\theta)$ is the sampling rate. \\label{lem:problessthan}\n\\end{lemma}",
+          "quoted_text_sha256": "82007966668f2c65d91a6d2c3b2afa92da2dd4b3d4cec280ba3d3fbc25c0e10c"
+        },
+        {
+          "line_end": 1679,
+          "line_start": 1670,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{lemma}{lemPkld}\n\t%\n\t\\label{lem:Pk_LD}\n\tGiven $\\theta_1, \\theta_2$, let $\\b{P}_k(\\theta_1, \\theta_2) = 1 - P_k(\\theta_1, \\theta_2)$.  Then:\n\t\\begin{equation}\n\t\\label{eq:LDrate}\n\t- \\lim_{k \\to \\infty} \\frac{1}{k} \\log \\b{P}_k(\\theta_1, \\theta_2) = \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_1) I(a|\\theta_1) + g(\\theta_2) I(a|\\theta_2) \\right \\},\n\t\\end{equation}\n\twhere $I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta)$ is the log moment generating function of a single rating given to seller of type $\\theta$:\n\t\\[ \\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} \\rho(\\theta, y | Y) \\exp( z \\phi(y) ). \\]",
+          "quoted_text_sha256": "c0893d181d49ead93669af0c9430494a2d848dd2b24fafee7d2020332b4b7db6"
+        }
+      ],
+      "source_kind": "formula"
+    },
+    "source_fidelity_diagnostic_unrestricted_real_pairwise_rate_mismatch": {
+      "source_anchors": [
+        {
+          "line_end": 683,
+          "line_start": 679,
+          "publication_locator": "cited publication",
+          "quoted_text": "Second, whenever a seller receives a rating $y \\in Y$, the platform gives the seller a {\\em score} $\\phi(y) \\in [0,1]$ depending only on the rating received. The score represents the relative positivity assigned to a rating $y$: high scores positively affect the seller's aggregate score (as we formally describe below).  Platforms often %\nuse equally spaced scores when translating rater's choices to an aggregate score {(e.g., the choice ``5 stars'' translates to a numeric $5$ when averaging, the choice ``4 stars'' translates to a numeric $4$ when averaging, etc.)}, but we allow the possibility that this choice should also be optimized.\n\n\nAt each rating opportunity (i.e., match made), the seller receives a rating from the set $Y$, and we assume that this rating depends only on the true quality of the seller. In particular, we presume that, given scale $Y$, the probability a seller of type $\\theta$ receives a rating $y$ is $\\rho(\\theta, y | Y)$, with corresponding cumulative mass function $R(\\theta,y| Y)$ reflecting the probability a seller of type $\\theta$ receives a rating $y$ or higher. In other words, the scale $Y$ induces a joint distribution between the underlying seller quality and the rating choices buyers make. We make the natural assumptions that $R(\\theta,y| Y)$ is strictly increasing in $\\theta$ and strictly decreasing with $y$.",
+          "quoted_text_sha256": "6bf229c9636562a5392368e12ba55284fc18c31acbb6038edc317d9655c3ac64"
+        },
+        {
+          "line_end": 761,
+          "line_start": 754,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{lemhatW}\n\t\\label{lem:hatW}\n\t\\begin{equation}\n\t\\label{eq:rW}\n\tr \\triangleq - \\lim_{k \\to \\infty} \\frac{1}{k} \\log (1- {W}_k) = \\min_{0 \\leq i < M} \\inf_{a \\in \\bbR} \\left \\{ g(\\theta_{i+1}) I(a|\\theta_{i+1}) + g(\\theta_i) I(a|\\theta_i)\\right\\}\n\t\\end{equation}\n\twhere\n\t$I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} {\\rho(\\theta, y | Y)} \\exp( z \\phi(y))$ is the log moment generating function of a single rating given to seller of type $\\theta$.",
+          "quoted_text_sha256": "2e30ce12249f90b59e8165cd7b7439390c65e6d7b9f8b626559d78a52ef7ba43"
+        },
+        {
+          "line_end": 1635,
+          "line_start": 1633,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma} \n\t$$\t\\lim_{k \\to \\infty}- \\frac{1}{k} \\log \\left[\\mu((x_k(\\theta_1) - x_k(\\theta_2)) \\leq 0 | \\theta_1 , \\theta_2)\\right] = \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_1) I(a|\\theta_1) + g(\\theta_2) I(a|\\theta_2) \\right \\}$$ where $I(a|\\ell) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, $\\Lambda(z|\\theta)$ is the log moment generating function of a single sample from $x(\\theta_1)$, and $g(\\theta)$ is the sampling rate. \\label{lem:problessthan}\n\\end{lemma}",
+          "quoted_text_sha256": "82007966668f2c65d91a6d2c3b2afa92da2dd4b3d4cec280ba3d3fbc25c0e10c"
+        },
+        {
+          "line_end": 1679,
+          "line_start": 1670,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{lemma}{lemPkld}\n\t%\n\t\\label{lem:Pk_LD}\n\tGiven $\\theta_1, \\theta_2$, let $\\b{P}_k(\\theta_1, \\theta_2) = 1 - P_k(\\theta_1, \\theta_2)$.  Then:\n\t\\begin{equation}\n\t\\label{eq:LDrate}\n\t- \\lim_{k \\to \\infty} \\frac{1}{k} \\log \\b{P}_k(\\theta_1, \\theta_2) = \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_1) I(a|\\theta_1) + g(\\theta_2) I(a|\\theta_2) \\right \\},\n\t\\end{equation}\n\twhere $I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta)$ is the log moment generating function of a single rating given to seller of type $\\theta$:\n\t\\[ \\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} \\rho(\\theta, y | Y) \\exp( z \\phi(y) ). \\]",
+          "quoted_text_sha256": "c0893d181d49ead93669af0c9430494a2d848dd2b24fafee7d2020332b4b7db6"
+        }
+      ],
+      "source_kind": "prose_assertion"
+    },
+    "source_iid_completion_weak_inversion_bridge": {
+      "source_anchors": [
+        {
+          "line_end": 683,
+          "line_start": 683,
+          "publication_locator": "cited publication",
+          "quoted_text": "At each rating opportunity (i.e., match made), the seller receives a rating from the set $Y$, and we assume that this rating depends only on the true quality of the seller. In particular, we presume that, given scale $Y$, the probability a seller of type $\\theta$ receives a rating $y$ is $\\rho(\\theta, y | Y)$, with corresponding cumulative mass function $R(\\theta,y| Y)$ reflecting the probability a seller of type $\\theta$ receives a rating $y$ or higher. In other words, the scale $Y$ induces a joint distribution between the underlying seller quality and the rating choices buyers make. We make the natural assumptions that $R(\\theta,y| Y)$ is strictly increasing in $\\theta$ and strictly decreasing with $y$.",
+          "quoted_text_sha256": "e55af7af36f7a6f0d4bb00af3966f6c54befaf399e8eb7d2b6752666ef58f426"
+        },
+        {
+          "line_end": 725,
+          "line_start": 721,
+          "publication_locator": "cited publication",
+          "quoted_text": "Formally, given $\\theta_1 > \\theta_2$, define $P_k(\\theta_1, \\theta_2)$ as follows:\n\\begin{equation}\n\\label{eq:Pk}\nP_k(\\theta_1, \\theta_2) = \\mu_k(x_k(\\theta_1) > x_k(\\theta_2)|\\theta_1, \\theta_2) - \\mu_k(x_k(\\theta_1) < x_k(\\theta_2)|\\theta_1, \\theta_2).\n\\end{equation}",
+          "quoted_text_sha256": "9ecd7d8ec6d976300d5b3b867406058ff2af8eb4c247799d53261ab3a74fdfad"
+        },
+        {
+          "line_end": 1646,
+          "line_start": 1633,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma} \n\t$$\t\\lim_{k \\to \\infty}- \\frac{1}{k} \\log \\left[\\mu((x_k(\\theta_1) - x_k(\\theta_2)) \\leq 0 | \\theta_1 , \\theta_2)\\right] = \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_1) I(a|\\theta_1) + g(\\theta_2) I(a|\\theta_2) \\right \\}$$ where $I(a|\\ell) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, $\\Lambda(z|\\theta)$ is the log moment generating function of a single sample from $x(\\theta_1)$, and $g(\\theta)$ is the sampling rate. \\label{lem:problessthan}\n\\end{lemma}\n%\n\t\\proof\n\t\\noindent$\\lim_{k \\to \\infty}- \\frac{1}{k} \\log \\left[\\mu((x_k(\\theta_1) - x_k(\\theta_2)) \\leq 0 | \\theta_1 , \\theta_2)\\right]$\n\t\\begin{align}\n\t&= \\lim_{k \\to \\infty}- \\frac{1}{k} \\log \\left[\\int_{a\\in \\mathcal{R}} \\mu((x_k(\\theta_1) = a | \\theta_1 ) \\mu(x_k(\\theta_2) \\geq a |\\theta_2)da\\right]\\\\\n\t&= \\lim_{k \\to \\infty}- \\frac{1}{k} \\log \\left[\\int_{a\\in \\mathcal{R}} e^{-kg(\\theta_1) I (a | \\theta_1)} e^{-kg(\\theta_2) I (a | \\theta_2)}da\\right] \\label{eqnpart:applyld}\\\\\n\t&= \\inf_{a \\in \\mathcal{R}} \\left \\{ g(\\theta_1) I(a|\\theta_1) + g(\\theta_2) I(a|\\theta_2) \\right \\} & \\text{Laplace principle}\n\t\\end{align}\n%\n\nWhere~\\eqref{eqnpart:applyld} is a basic result from large deviations, and $kg(\\theta_i)$ is the number of samples item of quality $\\theta_i$ has received. \\Halmos",
+          "quoted_text_sha256": "5b193dca27d9fa371b188c27c69f2ec688a229174261f3e1c9ac1dc8808b6ac9"
+        }
+      ],
+      "source_kind": "prose_assertion"
+    },
+    "source_theorem1_informative_rating_system_rate_iid_completion": {
+      "source_anchors": [
+        {
+          "line_end": 764,
+          "line_start": 754,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{lemhatW}\n\t\\label{lem:hatW}\n\t\\begin{equation}\n\t\\label{eq:rW}\n\tr \\triangleq - \\lim_{k \\to \\infty} \\frac{1}{k} \\log (1- {W}_k) = \\min_{0 \\leq i < M} \\inf_{a \\in \\bbR} \\left \\{ g(\\theta_{i+1}) I(a|\\theta_{i+1}) + g(\\theta_i) I(a|\\theta_i)\\right\\}\n\t\\end{equation}\n\twhere\n\t$I(a|\\theta) = \\sup_z \\{ za - \\Lambda(z|\\theta) \\}$, and $\\Lambda(z|\\theta) = \\log \\sum_{y \\in Y} {\\rho(\\theta, y | Y)} \\exp( z \\phi(y))$ is the log moment generating function of a single rating given to seller of type $\\theta$.\n%\n%\n\\end{restatable}",
+          "quoted_text_sha256": "e63468dac3b2c6a9547d94fdf512af4589b7a6b4475db2e65edc08ff9a6e1c3f"
+        }
+      ],
+      "source_kind": "prose_assertion"
+    }
+  },
+  "source_artifact_sha256": "5b813bc9f600735f17fd6061c9d9ce0814b47c07f22f12273e7b21d22d547da5",
+  "source_coverage_mode": "named_theoretical_statements"
+}

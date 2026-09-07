@@ -10,7 +10,7 @@ AdWords formalization. Detailed finite assignment, Balance/MSVV choice, and
 LP-duality lemmas live in `AdWords.lean`.
 -/
 
-namespace EconCSLib
+namespace AppliedModelingLib
 namespace Online
 
 /--
@@ -711,7 +711,7 @@ theorem paper_adwords_theorem9_no_randomized_algorithm_beats_msvv_ratio_of_certi
     (randomizedAlgorithm : PMF Algorithm) :
     ¬ ∀ input,
       AdWordsInstance.msvvRatio <
-        EconCSLib.pmfExp randomizedAlgorithm
+        AppliedModelingLib.pmfExp randomizedAlgorithm
           (fun algorithm => C.normalizedRevenue algorithm input) := by
   exact
     bMatching_no_randomized_algorithm_beats_msvvRatio_of_certificate
@@ -728,7 +728,7 @@ theorem paper_adwords_theorem9_no_randomized_algorithm_beats_msvv_ratio_of_permu
     (randomizedAlgorithm : PMF Algorithm) :
     ¬ ∀ permutation,
       AdWordsInstance.msvvRatio <
-        EconCSLib.pmfExp randomizedAlgorithm
+        AppliedModelingLib.pmfExp randomizedAlgorithm
           (fun algorithm => C.normalizedRevenue algorithm permutation) := by
   exact C.no_randomized_algorithm_beats_msvvRatio randomizedAlgorithm
 
@@ -746,7 +746,7 @@ theorem paper_adwords_theorem9_no_randomized_algorithm_beats_ratio_of_revenue_bo
     (randomizedAlgorithm : PMF Algorithm) :
     ¬ ∀ permutation,
       ratio <
-        EconCSLib.pmfExp randomizedAlgorithm
+        AppliedModelingLib.pmfExp randomizedAlgorithm
           (fun algorithm => C.normalizedRevenue algorithm permutation) := by
   exact C.no_randomized_algorithm_beats_ratio randomizedAlgorithm
 
@@ -762,7 +762,7 @@ theorem paper_adwords_theorem9_no_randomized_algorithm_beats_ratio_of_round_allo
     (randomizedAlgorithm : PMF Algorithm) :
     ¬ ∀ permutation,
       ratio <
-        EconCSLib.pmfExp randomizedAlgorithm
+        AppliedModelingLib.pmfExp randomizedAlgorithm
           (fun algorithm => C.normalizedRevenue algorithm permutation) := by
   exact C.no_randomized_algorithm_beats_ratio randomizedAlgorithm
 
@@ -780,7 +780,7 @@ theorem paper_adwords_theorem9_no_randomized_algorithm_beats_ratio_of_pointwise_
     (randomizedAlgorithm : PMF Algorithm) :
     ¬ ∀ permutation,
       ratio <
-        EconCSLib.pmfExp randomizedAlgorithm
+        AppliedModelingLib.pmfExp randomizedAlgorithm
           (fun algorithm => C.normalizedRevenue algorithm permutation) := by
   exact C.no_randomized_algorithm_beats_ratio randomizedAlgorithm
 
@@ -799,7 +799,7 @@ theorem paper_adwords_theorem9_no_randomized_algorithm_beats_ratio_of_symmetric_
     (randomizedAlgorithm : PMF Algorithm) :
     ¬ ∀ permutation,
       ratio <
-        EconCSLib.pmfExp randomizedAlgorithm
+        AppliedModelingLib.pmfExp randomizedAlgorithm
           (fun algorithm => C.normalizedRevenue algorithm permutation) := by
   exact C.no_randomized_algorithm_beats_ratio randomizedAlgorithm
 
@@ -817,7 +817,7 @@ theorem paper_adwords_theorem9_no_randomized_algorithm_beats_ratio_of_relabel_sy
     (randomizedAlgorithm : PMF Algorithm) :
     ¬ ∀ permutation,
       ratio <
-        EconCSLib.pmfExp randomizedAlgorithm
+        AppliedModelingLib.pmfExp randomizedAlgorithm
           (fun algorithm => C.normalizedRevenue algorithm permutation) := by
   exact C.no_randomized_algorithm_beats_ratio randomizedAlgorithm
 
@@ -836,7 +836,7 @@ theorem paper_adwords_theorem9_no_randomized_algorithm_beats_ratio_of_observed_p
     (randomizedAlgorithm : PMF Algorithm) :
     ¬ ∀ permutation,
       ratio <
-        EconCSLib.pmfExp randomizedAlgorithm
+        AppliedModelingLib.pmfExp randomizedAlgorithm
           (fun algorithm => C.normalizedRevenue algorithm permutation) := by
   exact C.no_randomized_algorithm_beats_ratio randomizedAlgorithm
 
@@ -854,7 +854,7 @@ theorem paper_adwords_theorem9_no_randomized_algorithm_beats_ratio_of_feasible_o
     (randomizedAlgorithm : PMF Algorithm) :
     ¬ ∀ permutation,
       ratio <
-        EconCSLib.pmfExp randomizedAlgorithm
+        AppliedModelingLib.pmfExp randomizedAlgorithm
           (fun algorithm => C.normalizedRevenue algorithm permutation) := by
   exact C.no_randomized_algorithm_beats_ratio randomizedAlgorithm
 
@@ -944,7 +944,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
       (N : ℕ) → Algorithm N → Fin N → Fin N → ℝ)
     (haverage :
       ∀ N algorithm,
-        EconCSLib.pmfExp (uniformPermutationDistribution N)
+        AppliedModelingLib.pmfExp (uniformPermutationDistribution N)
             (fun permutation => normalizedRevenue N algorithm permutation) ≤
           (∑ bidder : Fin N,
             min 1
@@ -963,7 +963,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm => normalizedRevenue N algorithm permutation) := by
   exact
     theorem9_eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
@@ -985,7 +985,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm => C.normalizedRevenue N algorithm permutation) := by
   exact C.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
 
@@ -1003,7 +1003,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm => C.normalizedRevenue N algorithm permutation) := by
   exact C.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
 
@@ -1020,7 +1020,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm => C.normalizedRevenue N algorithm permutation) := by
   exact C.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
 
@@ -1039,7 +1039,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm => C.normalizedRevenue N algorithm permutation) := by
   exact C.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
 
@@ -1056,7 +1056,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm => C.normalizedRevenue N algorithm permutation) := by
   exact C.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
 
@@ -1073,7 +1073,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm => C.normalizedRevenue N algorithm permutation) := by
   exact C.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
 
@@ -1091,7 +1091,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm =>
                   C.normalizedRevenue N algorithm permutation) := by
   exact C.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
@@ -1109,7 +1109,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm =>
                   C.normalizedRevenue N algorithm permutation) := by
   exact C.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
@@ -1133,7 +1133,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm =>
                   normalizedRevenue N algorithm permutation) := by
   exact C.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta_of_realized_revenue
@@ -1180,7 +1180,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (BMatchingIntegralPrefixAlgorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm =>
                   paper_adwords_theorem9_integral_prefix_algorithm_family.normalizedRevenue
                     N algorithm permutation) := by
@@ -1205,7 +1205,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (BMatchingIntegralPrefixAlgorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm =>
                   normalizedRevenue N algorithm permutation) := by
   exact
@@ -1226,7 +1226,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm => C.normalizedRevenue N algorithm permutation) := by
   exact C.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
 
@@ -1243,7 +1243,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm => C.normalizedRevenue N algorithm permutation) := by
   exact C.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
 
@@ -1261,7 +1261,7 @@ theorem paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_rat
         ∀ randomizedAlgorithm : PMF (Algorithm N),
           ¬ ∀ permutation,
             AdWordsInstance.msvvRatio + δ <
-              EconCSLib.pmfExp randomizedAlgorithm
+              AppliedModelingLib.pmfExp randomizedAlgorithm
                 (fun algorithm => C.normalizedRevenue N algorithm permutation) := by
   exact C.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
 
@@ -1934,4 +1934,4 @@ theorem paper_adwords_balance_msvv_competitive_of_small_bids_limit_family
   exact AdWordsInstance.balance_msvv_competitive_of_smallBidsLimitFamily F
 
 end Online
-end EconCSLib
+end AppliedModelingLib

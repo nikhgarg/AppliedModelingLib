@@ -1,0 +1,1481 @@
+{
+  "approved_review_context_schema": 1,
+  "inventory_complete": true,
+  "items": {
+    "algorithm_1_list_update": {
+      "aliases": [
+        "Algorithm 1",
+        "ListUpdate"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.listUpdate"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 424,
+          "line_start": 408,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{algorithm}[H]\n\\ifdraft\n\\else\n\\small\n\\fi \n\\KwInput{A model $f_t$, and a certificate of suboptimality $(g_{t+1},h_{t+1})$}\nDefine $f_{t+1}$ as follows:\n\\[ f_{t+1}(x)= \\begin{cases}\n      f_t(x) & \\text{if } g_{t+1}(x)=0 \\\\\n      h_{t+1}(x) & \\text{if } g_{t+1}(x)=1\n   \\end{cases}\n\\]\n\n\\KwOutput{$f_{t+1}$}\n\\caption{ListUpdate($f_t,(g_{t+1},h_{t+1})$): An Update Algorithm Constructing a Decision List}\n\\label{alg:basic}\n\\end{algorithm}",
+          "quoted_text_sha256": "a0a30bd909fe19261a95683e695bd40b34bfc8315ff752cf9d294abf7d4a5129"
+        }
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:408-424",
+      "source_status": "byte-pinned source algorithm",
+      "statement": "ListUpdate predicts with the replacement on the submitted group and with the current model off that group."
+    },
+    "algorithm_2_certificate_checker": {
+      "aliases": [
+        "Algorithm 2",
+        "CertificateChecker"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.certificateCheckerDecision",
+        "GHKR22BiasBounties.certificateCheckerRun",
+        "GHKR22BiasBounties.checkerAcceptanceBudget"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 547,
+          "line_start": 524,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{algorithm}\n\\ifdraft\n\\else \n\\small\n\\fi\n\\KwInput{Holdout dataset $D$, Target $\\epsilon$, and a stream of submissions  $(f_1,g_1,h_1),(f_2,g_2,h_2),\\ldots$ of length at most $U$}\n$\\mathbf{NumberAccepted} \\leftarrow 0$\n\n\\While{$\\mathbf{NumberAccepted} \\leq 2/\\epsilon$ and $i \\leq U$}{\n  Consider the next submission $(f_i,g_i,h_i)$ \\\\\n\n  Compute $\\mu_i \\leftarrow \\mu_D(g_i)$, $\\Delta_i \\leftarrow L(D,f_i,g_i) - L(D,h_i,g_i)$\n\n  \\If{$\\mu_i\\cdot \\Delta_i < \\frac{3\\epsilon}{4}$} {\n    \\KwOut{$\\pi_i = \\bot$ (Submission Rejected)}\n  }\n  \\Else{\n    \\KwOut{$\\pi_i = \\top$ (Submission Accepted)}\n    $\\mathbf{NumberAccepted} \\leftarrow \\mathbf{NumberAccepted}$+1.\n  }\n}\n\\caption{CertificateChecker($\\epsilon,D,U,(f_1,g_1,h_1),\\ldots )$: An algorithm that takes as input a stream of submissions $(f_i,g_i,h_i)$ and checks if $(g_i,h_i)$ is a certificate of sub-optimality for $f_i$ with sufficiently high parameter values.}\n\\label{alg:checker}\n\\end{algorithm}",
+          "quoted_text_sha256": "9c2e57b759f87310a89a34f97721d5b2d986da235ca697cc5eba7c7087baa177"
+        }
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:524-547",
+      "source_status": "byte-pinned source algorithm",
+      "statement": "CertificateChecker uses the empirical mass-weighted improvement threshold 3 epsilon / 4 and processes at most U proposals while no more than 2/epsilon have been accepted."
+    },
+    "algorithm_3_falsify_and_update": {
+      "aliases": [
+        "Algorithm 3",
+        "FalsifyAndUpdate"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.falsifyAndUpdateStep",
+        "GHKR22BiasBounties.adaptiveFalsifyAndUpdate"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 631,
+          "line_start": 604,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{algorithm}\n\\ifdraft\n\\else \n\\small\n\\fi\n\\KwInput{An initial model $f_0$, a holdout dataset $D$, Target $\\epsilon$, and a stream of submissions  $(g_1,h_1),(g_2,h_2),\\ldots$ of length at most $U$}\nLet $t \\leftarrow 0$ \\\\\n\nInitialize an instance of CertificateChecker($\\epsilon, D, U, \\ldots$)\n\n\\While{CertificateChecker has not halted}{\n  Consider the next submission $(g_i,h_i)$ \\\\\n\n  Feed the triple $(f_t,g_i,h_i)$ to CertificateChecker and receive $\\pi_i\\in \\{\\bot,\\top\\}$ \\\\\n\n  \\If{$\\pi_i = \\bot$}{\n    \\KwOut{Submission $(g_i,h_i)$ is rejected.}\n  }\n  \\Else{\n   Let $t \\leftarrow t+1$ and let $f_t = \\textrm{ListUpdate}(f_{t-1},(g_i,h_i))$ \\\\\n\n   \\KwOut{Submission $(g_i,h_i)$ is accepted. The new model is $f_{t}$.}\n  }\n\n}\n\\caption{FalsifyAndUpdate($\\epsilon,D,(f_1,g_1,h_1),\\ldots )$: An algorithm that maintains a sequence of models $f_1,\\ldots,f_T$ and accepts submissions of proposed certificates of sub-optimality $(g_i,h_i)$ that attempt to falsify the assertion that the current model $f_t$ is not $\\epsilon$-Bayes optimal. It either accepts or rejects each submission: if it accepts a submission then it also updates its current model $f_t$ and outputs a new model $f_{t+1}$.}\n\\label{alg:FalsifyAndUpdate}\n\\end{algorithm}",
+          "quoted_text_sha256": "e3d09c97c8943fcc98ca39d8fc7d8f571b9dfe70e598ba7437276090791bb28e"
+        }
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:604-631",
+      "source_status": "byte-pinned source algorithm",
+      "statement": "FalsifyAndUpdate feeds each proposal for the current model to CertificateChecker, keeps the model after rejection, and installs ListUpdate after acceptance."
+    },
+    "algorithm_4_monotone_falsify_and_update": {
+      "aliases": [
+        "Algorithm 4",
+        "MonotoneFalsifyAndUpdate"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:671-713",
+        "archival_source_quote_sha256": "a260e322601d6ad7484b9628bf764a114e626529b2100645ebe3ec2f4f568050",
+        "corrected_target_review_sha256": "40fd8499835244ed1f360b428bd06484d87208ecf20953b8a2021c00eb14f557",
+        "corrected_target_sha256": "49f0254f12c41d347a5d61ed9a776217ca27e49a32d6e8629bba81dafd7fd38b",
+        "governing_defect_ids": [
+          "algorithm-4-shared-state-and-restart"
+        ],
+        "schema": 1,
+        "statement": "External submissions and all historical repairs use one shared transcript-driven checker; after every accepted external or repair update, the protected-history scan restarts before a model is published."
+      },
+      "coverage_status": "corrected_source_statement",
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.monotoneBountyOutput"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 713,
+          "line_start": 671,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{algorithm}\n\\ifdraft\\else \n\\small\n\\fi\n\\KwInput{A model $f_0$, a holdout dataset $D$, Target $\\epsilon$, and a stream of submissions  $(g_1,h_1),(g_2,h_2),\\ldots$ of length at most $U$}\nLet $t \\leftarrow 0$ and Initialize an instance of CertificateChecker($\\epsilon, D, U + \\frac{8}{\\epsilon^3}, \\ldots$)\n\n\\While{CertificateChecker has not halted}{\n  Consider the next submission $(g_i,h_i)$ \\\\\n\n  Feed the triple $(f_t,g_i,h_i)$ to CertificateChecker and receive $\\pi_i\\in \\{\\bot,\\top\\}$ \\\\\n\n  \\If{$\\pi_i = \\bot$}{\n    \\KwOut{Submission $(g_i,h_i)$ is rejected.}\n  }\n  \\Else{\n    MonotoneProgress $\\leftarrow$ FALSE \\\\\n    $(g_U,h_U) \\leftarrow (g_i,h_i)$ \\\\\n    $t' \\leftarrow t$ and $f'_{t'} \\leftarrow f_t$ \\\\\n  \\While{MonotoneProgress $=$ FALSE and CertificateChecker has not halted}{\n    Let $t' \\leftarrow t'+1$ and let $f'_{t'} = \\textrm{ListUpdate}(f_{t'-1}',(g_U,h_U))$ \\\\\n    MonotoneProgress $\\leftarrow$ TRUE\n\n    \\For{each pair $\\ell < t$, $g_j \\in\n    \\cG(f_t)$}{\n      Feed the triple $(f_t,g_j,f_{\\ell})$ to CertificateChecker and receive $\\pi_U \\in \\{\\bot,\\top\\}$ \\\\\n      \\If{$\\pi_U = \\top$ (Submission accepted)} {\n        MonotoneProgress $\\leftarrow$ FALSE \\\\\n        $(g_U,h_U) \\leftarrow (g_j, f_\\ell)$\n      }\n\n    }\n\n   }\n   Let $t \\leftarrow t+1$ and let $f_t = f'_{t'}$ \\\\\n\n   \\KwOut{Submission $(g_i,h_i)$ is accepted. The new model is $f_{t}$.}\n  }\n\n}\n\\caption{MonotoneFalsifyAndUpdate($\\epsilon,D,(f_1,g_1,h_1),\\ldots )$: A version of FalsifyAndUpdate that guarantees approximate group-wise error monotonicity.}\n\\label{alg:MonFalsifyAndUpdate}\n\\end{algorithm}",
+          "quoted_text_sha256": "a260e322601d6ad7484b9628bf764a114e626529b2100645ebe3ec2f4f568050"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "algorithm.4.monotone.falsify.and.update",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.monotoneBountyOutput",
+          "semantic_claim": "MonotoneFalsifyAndUpdate recursively feeds repair proposals to CertificateChecker before publishing the updated model.",
+          "source_locator": "cited publication:671-713",
+          "source_quote_sha256": "a260e322601d6ad7484b9628bf764a114e626529b2100645ebe3ec2f4f568050"
+        }
+      ],
+      "source_defect_ids": [
+        "algorithm-4-shared-state-and-restart"
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:671-713",
+      "source_note": "The corrected state machine makes the intended shared adaptive state and recursive restart semantics explicit.",
+      "source_status": "corrected",
+      "statement": "MonotoneFalsifyAndUpdate recursively feeds repair proposals to CertificateChecker before publishing the updated model."
+    },
+    "algorithm_5_train_by_opt": {
+      "aliases": [
+        "Algorithm 5",
+        "TrainByOpt"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:786-811",
+        "archival_source_quote_sha256": "d80e12782a5208ef048f4a88bb899ce795b101a3694441d52544afc9a97b594a",
+        "corrected_target_review_sha256": "f60bed948259f2ed10dd1b098f42af04affeb5541f3cdb74fe958e7badc6c436",
+        "corrected_target_sha256": "36e4e590950428603a42bdb396a05f5f44f719613d21d879d8afb85251d92b77",
+        "governing_defect_ids": [
+          "algorithm-5-fresh-block-and-integer-horizon"
+        ],
+        "schema": 1,
+        "statement": "TrainByOpt optimizes and tests on the fresh block D_t at round t and runs for ceil(2/epsilon) rounds, applying ListUpdate exactly when the empirical objective exceeds 3 epsilon / 4."
+      },
+      "coverage_status": "corrected_source_statement",
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.trainByOptRun"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 811,
+          "line_start": 786,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{algorithm}\n\\ifdraft\n\\else\n\\small\n\\fi\n\\KwInput{A dataset $D$, a set of group/model pairs $\\cC$, and accuracy parameter $\\epsilon$.}\nLet $f_0:\\cX\\rightarrow \\{0,1\\}$ be an arbitrary initial model and $T = 2/\\epsilon$ \\\\\n\nRandomly divide $D$ into $T$ equally sized datasets: $D_1,\\ldots,D_T$.\n\n\\For{$t = 1$ to $T$}{\nLet\n$$(g_t,h_t) =\\arg\\max_{(g,h) \\in \\cC }\\mu_{D}(g)\\cdot (L(D,f_{t-1},g) - L(D,h,g))$$\n\n\\If{$\\mu_{D}(g_t)\\cdot (L(D,f_{t-1},g_t) - L(D,h_t,g_t)) \\leq \\frac{3\\epsilon}{4}$}{\n\\KwOut{Model $f_{t-1}$}\n}\n\\Else{\nLet $f_t = \\textrm{ListUpdate}(f_{t-1},(g_t,h_t))$\n}\n}\n\\KwOut{Model $f_T$}\n\n\\caption{TrainByOpt($D,\\cC,\\epsilon)$: An algorithm for training an $(\\epsilon,\\cC)$-Bayes optimal model given the ability to optimize over certificates $(g,h) \\in \\cC$.}\n\\label{alg:TrainByOpt}\n\\end{algorithm}",
+          "quoted_text_sha256": "d80e12782a5208ef048f4a88bb899ce795b101a3694441d52544afc9a97b594a"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "algorithm.5.train.by.opt",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.trainByOptRun",
+          "semantic_claim": "TrainByOpt partitions D into T=2/epsilon blocks but prints D rather than D_t in the round optimizer and test.",
+          "source_locator": "cited publication:786-811",
+          "source_quote_sha256": "d80e12782a5208ef048f4a88bb899ce795b101a3694441d52544afc9a97b594a"
+        }
+      ],
+      "source_defect_ids": [
+        "algorithm-5-fresh-block-and-integer-horizon"
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:786-811",
+      "source_note": "The source proof uses fresh independent blocks; ceil supplies the integer-safe interpretation of the real horizon.",
+      "source_status": "corrected",
+      "statement": "TrainByOpt partitions D into T=2/epsilon blocks but prints D rather than D_t in the round optimizer and test."
+    },
+    "algorithm_6_alternating_maximization": {
+      "aliases": [
+        "Algorithm 6",
+        "AltMinCertificateFinder"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:991-1005",
+        "archival_source_quote_sha256": "1b3dc99fdafa51b6f194ca46c523a85cfdde73a71f8ba890a3834f296aa52118",
+        "corrected_target_review_sha256": "694b29593e45ca38f2b4e67f7d62a769d0bf4902dc2828f2246febeff05302fd",
+        "corrected_target_sha256": "1dd506ab41ebeff121fbc3480e0d3dc222d3ae62842d889e0023629af6f150c7",
+        "governing_defect_ids": [
+          "algorithm-6-two-gap-and-positive-initialization"
+        ],
+        "schema": 1,
+        "statement": "At each state, test the exact model best-response gap and the exact group best-response gap separately, take one coordinate move only if its gap exceeds epsilon, and halt only when neither gap does."
+      },
+      "coverage_status": "corrected_source_statement",
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.measureCoordinateAscentStep",
+        "GHKR22BiasBounties.measureCoordinateAscentLoop"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 1005,
+          "line_start": 991,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{algorithm}\n\\KwInput{A dataset $D$, a model $f_{t-1}$, group and model classes $\\cG$ and $\\cH$, and an error parameter $\\epsilon$.}\nLet $(g^*,h^*) \\in \\cG \\times \\cH$ be an arbitrary initial certificate.  \\\\\nCurrentValue $\\leftarrow \\mu_{D}(g^*)\\cdot (L(D,f_{t-1},g^*) - L(D,h^*,g^*))$ \\\\\nLet:\n$$h^* = \\arg\\min_{h \\in \\cH} L(D_{g^*},h) \\ \\ \\ g^* = \\arg\\min_{g \\in \\cG} L(D_{h^*},g)$$\n\\While{$\\mu_{D}(g^*)\\cdot (L(D,f_{t-1},g^*) - L(D,h^*,g^*) \\geq \\textrm{CurrentValue}+\\epsilon$}{\nCurrentValue $\\leftarrow \\mu_{D}(g^*)\\cdot (L(D,f_{t-1},g^*) - L(D,h^*,g^*))$ \\\\\nLet:\n$$h^* = \\arg\\min_{h \\in \\cH} L(D_{g^*},h) \\ \\ \\ g^* = \\arg\\min_{g \\in \\cG} L(D_{h^*},g)$$\n}\n\\KwOut{Certificate $(g_t,h_t) = (g^*,h^*)$}\n\\caption{AltMinCertificateFinder($D,f_{t-1},\\cG,\\cH,\\epsilon)$: An algorithm for finding $\\epsilon$-locally optimal certificates of sub-optimality $(g_t,h_t) \\in \\cG\\times \\cH$ for model $f_{t-1}$.}\n\\label{alg:altmin}\n\\end{algorithm}",
+          "quoted_text_sha256": "1b3dc99fdafa51b6f194ca46c523a85cfdde73a71f8ba890a3834f296aa52118"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "algorithm.6.alternating.maximization",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.measureCoordinateAscentStep",
+          "semantic_claim": "The printed algorithm performs a full model-then-group sweep and compares only the resulting value with the value before the sweep.",
+          "source_locator": "cited publication:991-1005",
+          "source_quote_sha256": "1b3dc99fdafa51b6f194ca46c523a85cfdde73a71f8ba890a3834f296aa52118"
+        }
+      ],
+      "source_defect_ids": [
+        "algorithm-6-two-gap-and-positive-initialization"
+      ],
+      "source_kind": "algorithm",
+      "source_location": "cited publication:991-1005",
+      "source_note": "Separate gap tests ensure the returned pair is locally optimal in both coordinates at the same final state.",
+      "source_status": "corrected",
+      "statement": "The printed algorithm performs a full model-then-group sweep and compares only the resulting value with the value before the sweep."
+    },
+    "certificate_optimization_objective": {
+      "aliases": [
+        "Equation optproblem"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GHKR22BiasBounties.certificateOptimizationObjective"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.certificateOptimizationObjective",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.certificateOptimizationObjectiveSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 770,
+          "line_start": 766,
+          "publication_locator": "cited publication",
+          "quoted_text": "The algorithmic problem we need to solve at each round $t$ is, given an existing model $f_{t-1}$, find a $(\\mu,\\Delta)$-certificate of optimality $(g,h) \\in \\cC$ for $f_{t-1}$ that maximizes $\\mu\\cdot \\Delta$ as computed on the empirical data $D$ --- i.e. to solve:\n\\begin{equation}\n\\label{eq:optproblem}\n(g_t,h_t) =\\arg\\max_{(g,h) \\in \\cC }\\mu_{D}(g)\\cdot (L(D,f_{t-1},g) - L(D,h,g))\n\\end{equation}",
+          "quoted_text_sha256": "510793f210ca22db1a435d3d73377a0a312e3585a521233609c60483418704e3"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "certificate.optimization.objective",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.certificateOptimizationObjective",
+          "semantic_claim": "At each training round, choose a group-model pair maximizing empirical group mass times the current-minus-replacement conditional loss gap.",
+          "source_locator": "cited publication:766-770",
+          "source_quote_sha256": "510793f210ca22db1a435d3d73377a0a312e3585a521233609c60483418704e3"
+        }
+      ],
+      "source_kind": "equation",
+      "source_location": "cited publication:766-770",
+      "source_status": "byte-pinned algorithmic objective",
+      "statement": "At each training round, choose a group-model pair maximizing empirical group mass times the current-minus-replacement conditional loss gap.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.certificateOptimizationObjectiveSpec"
+      ]
+    },
+    "definition_17_derived_certificate": {
+      "aliases": [
+        "Definition 17",
+        "Definition C.6"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.derivedGroup",
+        "GHKR22BiasBounties.derivedModel"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 865,
+          "line_start": 847,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}\nGiven a ternary valued function $p:\\cX\\rightarrow \\{0,1,?\\}$, the $p$-derived group $g_p$ and model $h_p$ are defined as:\n\\ifdraft\n$$g_p(x) = \\begin{cases}\n      1 & \\text{if } p(x) \\in \\{0,1\\} \\\\\n      0 & \\text{if } p(x) = ?\n   \\end{cases} \\ \\ \\ \\ \\ \\ \\  \\ h_p(x) = \\begin{cases}\n      p(x) & \\text{if } p(x) \\in \\{0,1\\} \\\\\n      0 & \\text{if } p(x) = ?\n   \\end{cases}$$\n\\else $g_p(x) = \\begin{cases}\n      1 & \\text{if } p(x) \\in \\{0,1\\} \\\\\n      0 & \\text{if } p(x) = ?\n   \\end{cases} \\ \\ \\ \\ \\ \\ \\  \\ h_p(x) = \\begin{cases}\n      p(x) & \\text{if } p(x) \\in \\{0,1\\} \\\\\n      0 & \\text{if } p(x) = ?\n   \\end{cases}$ \\fi\nIn other words, interpreting $p(x) = ?$ as the decision for $p$ to ``defer'' on $x$, $g_p$ defines exactly the group of examples that $p$ does \\emph{not} defer on, and $h_p$ is the model that makes the same prediction as $p$ on every example that $p$ does not defer on. Given a class of ternary functions $K$, let the $K$-derived certificates $\\cC_K$ denote the set of pairs $(g_p,h_p)$ that can be so derived from some $p \\in K$: $\\cC_K = \\{(g_p,h_p) : p \\in K\\}$. Similarly let $\\cG_K = \\{g_p : p \\in K\\}$ and $\\cH_K = \\{h_p : p \\in K\\}$ denote the class of group indicator functions and models derived from $K$ respectively.\n\\end{definition}",
+          "quoted_text_sha256": "040766495480f7680dad177378345eb1c933f60d7f86cd0eba49f50c183b0b71"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:847-865",
+      "source_status": "byte-pinned source definition",
+      "statement": "A ternary predictor induces the group on which it does not defer and a binary replacement agreeing with its nondeferred prediction."
+    },
+    "definition_18_cost_sensitive_minimizer": {
+      "aliases": [
+        "Definition 18",
+        "Definition C.7"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.MeasureCostSensitiveMinimizer"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 874,
+          "line_start": 868,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}\nA cost-sensitive classification problem is defined by a model class $K$ consisting of functions $p:\\cX\\rightarrow \\cY$, where $\\cY$ is some finite label set,  a distribution $\\cD$ over $\\cX\\times \\cY$, and a set of real valued costs $c_{(x,y)}(\\hat y)$ for each pair $(x, y)$ in the support of $\\cD$ and each label $\\hat y \\in \\cY$. A solution $p^* \\in K$ to the cost-sensitive classification problem $(\\cD, K, \\{c_{(x,y)}\\})$ is given by:\n\\ifdraft\n$$p^* \\in \\arg\\min_{p \\in K} \\E_{(x,y) \\sim \\cD}\\left[ c_{(x,y)}(p(x))\\right]$$\n\\else $p^* \\in \\arg\\min_{p \\in K} \\E_{(x,y) \\sim \\cD}\\left[ c_{(x,y)}(p(x))\\right]$ \\fi\ni.e. the model that minimizes the expected costs for the labels it assigns to points drawn from $\\cD$.\n\\end{definition}",
+          "quoted_text_sha256": "d616aa88020067046d65928adafc9cb02d154922310ed139b364f478dbff4e16"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:868-874",
+      "source_status": "byte-pinned source definition",
+      "statement": "A cost-sensitive classifier minimizes expected example-dependent prediction cost over its model class."
+    },
+    "definition_19_induced_cost": {
+      "aliases": [
+        "Definition 19",
+        "Definition C.8"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.inducedCost"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 889,
+          "line_start": 878,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}\nGiven a binary model $f:\\cX\\rightarrow \\cY$, the induced costs of $f$  are defined as follows:\n\\ifdraft\n$$c^f_{(x,y)}(\\hat y) = \\begin{cases}\n      0 & \\text{if } \\hat y = ? \\\\\n      1 & \\text{if } f(x) = y \\neq \\hat y \\\\\n      -1 & \\text{if } \\hat y = y \\neq f(x) \\\\\n      0 & \\text{otherwise.}\n   \\end{cases}$$\n\\else $c^f_{(x,y)}(\\hat y) = 0$ if $\\hat y = ?$ or if $\\hat y = f(x)$, $c^f_{(x,y)}(\\hat y) = 1$ if $f(x) = y \\neq \\hat y$, and $c^f_{(x,y)}(\\hat y) = -1$ if $\\hat y = y \\neq f(x)$. \\fi\nIntuitively, it costs nothing to defer a decision to the existing model $f$ --- or equivalently, to make the same decision as $f$. On the other hand, making the \\emph{wrong} decision on an example $x$ costs $1$ when $f$ would have made the right decision, and making the right decision ``earns'' $1$ when $f$ would not have.\n\\end{definition}",
+          "quoted_text_sha256": "7c10d7039b19abd9161121d115f134d11d2d3fdcea7730d5974d6b24bbe150fe"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:878-889",
+      "source_status": "byte-pinned source definition",
+      "statement": "The current-model-induced ternary cost is zero on defer or agreement, one when the current model is right and the alternative wrong, and minus one in the reverse case."
+    },
+    "definition_1_subgroups": {
+      "aliases": [
+        "Definition 1",
+        "Definition 2.1"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.measureGroupMass",
+        "GHKR22BiasBounties.groupIndicator"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 318,
+          "line_start": 312,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}[Subgroups]\nA \\emph{subgroup} of the feature space $\\cX$ will be represented as an indicator function $g:\\cX\\rightarrow \\{0,1\\}$. We say that $x \\in \\cX$ is in group $g$ if $g(x) = 1$ and $x$ is \\emph{not} in group $g$ otherwise. Given a group $g$, we write $\\mu_g(\\cD)$ to denote its measure under the probability distribution $\\cD$:\n\\ifdraft\n$$\\mu_g(\\cD) = \\Pr_\\cD[g(x) = 1].$$\n\\else $\\mu_g(\\cD) = \\Pr_\\cD[g(x) = 1].$ \\fi\nWe write $\\mu_g(D)$ to denote the corresponding empirical measure under $D$, which results from viewing $D$ as the uniform distribution over its elements.\n\\end{definition}",
+          "quoted_text_sha256": "bc5f5e467eb5f77b4113ece5d3392f1aba18c3416da2317b10aff1b64b165986"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:312-318",
+      "source_status": "byte-pinned source definition",
+      "statement": "A subgroup is a Boolean indicator on the feature space, and its population mass is the probability that the indicator equals one."
+    },
+    "definition_2_model_loss": {
+      "aliases": [
+        "Definition 2",
+        "Definition 2.2"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Definitions 2 and 5 and all certificate objectives, in both finite-PMF and arbitrary-measure developments.",
+          "classification": "null_event_totalization",
+          "formal_meaning": "The mass-weighted group-loss numerator is the total primitive; conditional group loss is totalized to zero at mass zero, and every divided source display is recovered on positive-mass groups.",
+          "id": "zero-mass-group-totalization",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "b9d8f267c58e526eabbdb5c93996c9856acc5fb23f87ba05fed6996e3f6fefc4",
+          "source_locator": "cited publication:321-361",
+          "why_needed": "Conditional loss on a null group is undefined in ordinary probability notation, while the paper permits arbitrary subgroups."
+        }
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.measureModelLoss",
+        "GHKR22BiasBounties.measureGroupLoss",
+        "GHKR22BiasBounties.measureGroupLossNumerator"
+      ],
+      "model_convention_ids": [
+        "zero-mass-group-totalization"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 330,
+          "line_start": 321,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}[Model Loss]\nGiven a model $f:\\cX\\rightarrow \\cY$\nWe write $L(\\cD,f)$ to denote the average loss of $f$ on distribution $\\cD$:\n\\ifdraft\n$$L(\\cD,f) = \\E_{(x,y) \\sim \\cD}[\\ell(f(x),y)]$$\n\\else $L(\\cD,f) = \\E_{(x,y) \\sim \\cD}[\\ell(f(x),y)]$. \\fi\nWe  write $L(\\cD,f,g)$ to denote the loss on $f$ conditional on membership in $g$:\n$$L(\\cD,f,g) = \\E_{(x,y) \\sim \\cD}[\\ell(f(x),y) | g(x) = 1].$$\nGiven a dataset $D$, we write $L(D,f)$ and $L(D,f,g)$ to denote the corresponding empirical losses on $D$, which result from viewing $D$ as the uniform distribution over its elements.\n\\end{definition}",
+          "quoted_text_sha256": "c90e41f8812b5f6f8967a6b03fe81293153a3d70090b2107632acb51c4869e14"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:321-330",
+      "source_status": "byte-pinned source definition",
+      "statement": "Overall model loss is expected pointwise loss, and subgroup loss is the corresponding conditional expectation on subgroup membership."
+    },
+    "definition_3_bayes_optimal": {
+      "aliases": [
+        "Definition 3",
+        "Definition 2.3"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:333-339",
+        "archival_source_quote_sha256": "bf2bfe24e3809654ae8d4998e9cc3b0696e1606f0d6f8e2a5f656b71170abd06",
+        "corrected_target_review_sha256": "3dc560766fa326375fcf29f92bc4db514325c4ee50fbc35a4afddbe3c7b27f9e",
+        "corrected_target_sha256": "06a1fb80746fb7010df3672866bac13c088c1636d651329744c1744f0c16c2a8",
+        "governing_defect_ids": [
+          "observation-4-pointwise-null-set"
+        ],
+        "schema": 1,
+        "statement": "For an arbitrary population law, Bayes optimality means almost-everywhere minimization of conditional risk under a measurable regular conditional label kernel; off the governing feature law the model is irrelevant."
+      },
+      "coverage_status": "corrected_source_statement",
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.AEBayesOptimalForRisk",
+        "GHKR22BiasBounties.kernelConditionalRisk"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 339,
+          "line_start": 333,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}\nA \\emph{Bayes Optimal} model $f^*:\\cX \\rightarrow \\cY$ with respect to a loss function $\\ell$ and a distribution $\\cD$ satisfies:\n\\ifdraft\n$$f^*(x) \\in \\arg\\min_{y \\in \\cY} \\E_{(x', y') \\sim \\cD}\\left[\\ell(y, y') | x' = x\\right]$$\n\\else $f^*(x) \\in \\arg\\min_{y \\in \\cY} \\E_{(x', y') \\sim \\cD}\\left[\\ell(y, y') | x' = x\\right]$, \\fi\nwhere $f^*(x)$ can be defined arbitrarily for any $x$ that is not in the support of $\\cD$.\n\\end{definition}",
+          "quoted_text_sha256": "bf2bfe24e3809654ae8d4998e9cc3b0696e1606f0d6f8e2a5f656b71170abd06"
+        }
+      ],
+      "source_defect_ids": [
+        "observation-4-pointwise-null-set"
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:333-339",
+      "source_note": "Pointwise conditional distributions and pointwise minimizers are law-invariant only almost everywhere on arbitrary populations.",
+      "source_status": "corrected",
+      "statement": "A Bayes-optimal model minimizes conditional expected loss at each feature value, with arbitrary values permitted off the support."
+    },
+    "definition_5_approximate_bayes_optimal": {
+      "aliases": [
+        "Definition 5",
+        "Definition 2.5"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Definitions 2 and 5 and all certificate objectives, in both finite-PMF and arbitrary-measure developments.",
+          "classification": "null_event_totalization",
+          "formal_meaning": "The mass-weighted group-loss numerator is the total primitive; conditional group loss is totalized to zero at mass zero, and every divided source display is recovered on positive-mass groups.",
+          "id": "zero-mass-group-totalization",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "b9d8f267c58e526eabbdb5c93996c9856acc5fb23f87ba05fed6996e3f6fefc4",
+          "source_locator": "cited publication:321-361",
+          "why_needed": "Conditional loss on a null group is undefined in ordinary probability notation, while the paper permits arbitrary subgroups."
+        }
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.MeasureApproxBayesOptimal"
+      ],
+      "model_convention_ids": [
+        "zero-mass-group-totalization"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 361,
+          "line_start": 354,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}\nA model $f:\\cX\\rightarrow \\cY$ is $(\\epsilon,\\cC)$-Bayes optimal with respect to a collection of (group, model) pairs $\\cC$ if for each $(g,h) \\in \\cC$, the performance of $f$ on $g$ is within $\\epsilon$ of the performance of $h$ on $g$. In other words, for every $(g,h) \\in \\cC$:\n\\ifdraft\n$$L(\\cD,f,g) \\leq L(\\cD,h,g) + \\frac{\\epsilon}{\\mu_g(\\cD)}.$$\n\\else $L(\\cD,f,g) \\leq L(\\cD,h,g) + \\frac{\\epsilon}{\\mu_g(\\cD)}.$ \\fi\nWhen $\\cC$ is a product set $\\cC = \\cG\\times \\cH$, then we call $f$\n``$(\\epsilon,\\cG,\\cH)$-Bayes Optimal\" and the condition is equivalent to requiring that for every $g \\in G$, $f$ has performance on $g$ that is within $\\epsilon$ of the \\emph{best} model $h \\in \\cH$ on $g$. When $\\cG$ and $\\cH$ represent the set of all groups and models respectively, we call $f$ $\\epsilon$-Bayes optimal.\n\\end{definition}",
+          "quoted_text_sha256": "9f89c83313e86dfd04aa253277995964969c4bbdf73feee3924b6ed30dc2fda4"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:354-361",
+      "source_status": "byte-pinned source definition with zero-mass clarification",
+      "statement": "A model is epsilon-Bayes optimal relative to a pair class when its conditional loss on every pair's group is within epsilon divided by group mass of the comparison model's loss."
+    },
+    "definition_7_certificate": {
+      "aliases": [
+        "Definition 7",
+        "Definition 3.1"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.MeasureCertificateOfSuboptimality"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 384,
+          "line_start": 377,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{definition}\nA group indicator function $g:\\cX\\rightarrow \\{0,1\\}$ together with a model $h:\\cX \\rightarrow \\cY$ form a $(\\mu, \\Delta)$-certificate of sub-optimality for a model $f$  under distribution $\\cD$ if:\n\\begin{enumerate}\n    \\item Group $g$ has probability mass at least $\\mu$ under $\\cD$: $\\mu_g(\\cD) \\geq \\mu$, and\n    \\item $h$ improves on the performance of $f$ on group $g$ by at least $\\Delta$: $L(\\cD,f,g) \\geq L(\\cD,h,g) + \\Delta$\n\\end{enumerate}\n\\ifdraft We say that $(g,h)$ form a certificate of sub-optimality for $f$ if they form a $(\\mu,\\Delta)$-certificate of optimality for $f$ for any constants $\\mu,\\Delta > 0$. \\fi\n\\end{definition}",
+          "quoted_text_sha256": "9d7e241c99778caad7ed8bf0b3d00ddda7fd48efd3beb1fe8eb496d7ac696c63"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:377-384",
+      "source_status": "byte-pinned source definition",
+      "statement": "A pair is a (mu,Delta)-certificate when its group has mass at least mu and its replacement improves conditional group loss by at least Delta."
+    },
+    "lemma_15_vc_uniform_convergence": {
+      "aliases": [
+        "Lemma 15",
+        "Lemma C.4"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:773-779",
+        "archival_source_quote_sha256": "2df93ad70145886937cc76fe6c411cd87f0c6c05d750cbd6e3b22b4624ceff96",
+        "corrected_target_review_sha256": "d2edfe660b8069e5f6c04c38cc6c2d2e41a6aec76e1dacd8f33437479426956e",
+        "corrected_target_sha256": "74605fdb337a6b573ce8d8d7cb4b3efdc56a404ea82a06261bace2961f60b5e9",
+        "governing_defect_ids": [
+          "lemma-15-undefined-gp"
+        ],
+        "schema": 1,
+        "statement": "For every quantified g in G and h in H, the absolute difference between the population certificate objective for (g,h) and the empirical certificate objective for the same (g,h) is at most eta at the stated VC sample scale."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_lemma15"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_lemma15",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_lemma15Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 779,
+          "line_start": 773,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{lemma}[Adapted from \\citep{gerrymandering}]\n\\label{lem:samplecomplexity}\nLet $\\cG$ denote a class of group indicator functions with VC-dimension $d_G$ and $\\cH$ denote a class of binary models with VC-dimension $d_H$.  Let $f$ be an arbitrary binary model. Then if:\n $$n \\geq \\tilde O\\left(\\frac{(d_H + d_G) + \\log(1/\\delta)}{\\eta^2} \\right)$$\n we have that with probability $1-\\delta$ over the draw of a dataset $D \\sim \\cD^n$, for every $g \\in \\cG$ and $h \\in \\cH$:\n $$\\left|\\mu_{\\cD}(g)\\cdot (L(\\cD,f,g) - L(\\cD,h,g)) - \\mu_{D}(g_p)\\cdot (L(D,f,g) - L(D,h,g)) \\right| \\leq \\eta$$\n\\end{lemma}",
+          "quoted_text_sha256": "2df93ad70145886937cc76fe6c411cd87f0c6c05d750cbd6e3b22b4624ceff96"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma.15.vc.uniform.convergence",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_lemma15",
+          "semantic_claim": "The empirical term is printed with the undefined symbol g_p although the lemma quantifies only g and h.",
+          "source_locator": "cited publication:773-779",
+          "source_quote_sha256": "2df93ad70145886937cc76fe6c411cd87f0c6c05d750cbd6e3b22b4624ceff96"
+        }
+      ],
+      "source_defect_ids": [
+        "lemma-15-undefined-gp"
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:773-779",
+      "source_note": "The corrected target replaces the undefined g_p by the quantified group g and makes the VC radius explicit.",
+      "source_status": "corrected",
+      "statement": "The empirical term is printed with the undefined symbol g_p although the lemma quantifies only g and h.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_lemma15Spec"
+      ]
+    },
+    "lemma_21_fixed_group_erm": {
+      "aliases": [
+        "Lemma 21",
+        "Lemma C.10"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_lemma21"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_lemma21",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_lemma21Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 942,
+          "line_start": 939,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{lemma}{lemhopt}\n\\label{lem:hopt}\n Fix any $g_t \\in \\cG$ and dataset $D \\in \\cX^n$. Let $D_{g_t} = \\{(x,y) \\in \\cD : g_t(x) = 1\\}$ be the subset of $D$ consisting of members of group $g$. Let $h^* = \\arg\\min_{h \\in \\cH} L(D_{g_t},h)$. Then $h^*$ is a solution to optimization problem \\ref{eq:hmin}.\n\\end{restatable}",
+          "quoted_text_sha256": "29929f1e2a091fc87f2731103feabe2dcb24f5f88e7b067c2c988e3c74e076e4"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma.21.fixed.group.erm",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_lemma21",
+          "semantic_claim": "For a fixed group, empirical-risk minimization over the model class maximizes the certificate objective over that coordinate.",
+          "source_locator": "cited publication:939-942",
+          "source_quote_sha256": "29929f1e2a091fc87f2731103feabe2dcb24f5f88e7b067c2c988e3c74e076e4"
+        }
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:939-942",
+      "source_status": "byte-pinned source result",
+      "statement": "For a fixed group, empirical-risk minimization over the model class maximizes the certificate objective over that coordinate.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_lemma21Spec"
+      ]
+    },
+    "lemma_22_fixed_model_erm": {
+      "aliases": [
+        "Lemma 22",
+        "Lemma C.11"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_lemma22"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_lemma22",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_lemma22Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 966,
+          "line_start": 957,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{lemma}{lemgopt}\n\\label{lem:gopt}\n Fix any $h_t \\in \\cH$ and dataset $D \\in \\cX^n$. Let:\n \\ifdraft\n $$D_{h_t}^1 = \\{(x,y) \\in D : h_t(x) = y \\neq f_{t-1}(x)\\} \\ \\ \\ \\ D_{h_t}^0 = \\{(x,y) \\in D : h_t(x) \\neq y = f_{t-1}(x)\\}$$\n\n$$D_{h_t} = \\left(\\bigcup_{(x,y) \\in D_{h_t}^1} (x, 1)\\right) \\cup \\left(\\bigcup_{(x,y) \\in D_{h_t}^0} (x, 0)\\right)$$\n\\else $D_{h_t}^1 = \\{(x,y) \\in D : h_t(x) = y \\neq f_{t-1}(x)\\}$, $D_{h_t}^0 = \\{(x,y) \\in D : h_t(x) \\neq y = f_{t-1}(x)\\}$, and $D_{h_t} = \\left(\\bigcup_{(x,y) \\in D_{h_t}^1} (x, 1)\\right) \\cup \\left(\\bigcup_{(x,y) \\in D_{h_t}^0} (x, 0)\\right)$. \\fi\nLet $g^* = \\arg\\min_{g \\in \\cG} L(D_{h_t},g)$. Then $g^*$ is a solution to optimization problem \\eqref{eq:gmin}.\n\\end{restatable}",
+          "quoted_text_sha256": "6660759ec52b46615a68727c9248b70189c2bda3e25991cc1e60e116c01951a9"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma.22.fixed.model.erm",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_lemma22",
+          "semantic_claim": "For a fixed replacement model, ERM on the disagreement-labelled sample maximizes the certificate objective over the group coordinate.",
+          "source_locator": "cited publication:957-966",
+          "source_quote_sha256": "6660759ec52b46615a68727c9248b70189c2bda3e25991cc1e60e116c01951a9"
+        }
+      ],
+      "source_defect_ids": [
+        "lemma-22-disagreement-normalization"
+      ],
+      "source_kind": "lemma",
+      "source_location": "cited publication:957-966",
+      "source_status": "byte-pinned source result with repaired proof",
+      "statement": "For a fixed replacement model, ERM on the disagreement-labelled sample maximizes the certificate objective over the group coordinate.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_lemma22Spec"
+      ]
+    },
+    "observation_4_bayes_groupwise": {
+      "aliases": [
+        "Observation 4",
+        "Observation 2.4"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:342-348",
+        "archival_source_quote_sha256": "99505dc98b73cac9f22bc06cee0c3db7295f535594c4a166bb9a7e77cbfee9eb",
+        "corrected_target_review_sha256": "eb327a93c992b12bdf16a242c585e120587b288c9b38669a1345d01e9206941c",
+        "corrected_target_sha256": "1d2ada069e8d0ebcb2cd846a6b4b878589fefdab31fb29099cda129d8c01ca25",
+        "governing_defect_ids": [
+          "observation-4-pointwise-null-set"
+        ],
+        "schema": 1,
+        "statement": "Under a measurable conditional-label kernel and an arbitrary label space, a model is almost everywhere no worse than every integrable alternative model if and only if no such alternative improves its integrated conditional risk on any measurable subgroup; for countable labels this agrees with common-null-set actionwise Bayes optimality."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_observation4"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_observation4",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_observation4Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 348,
+          "line_start": 342,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{observation}\n\\label{obs:BO}\nFixing a loss function $\\ell$ and a distribution $\\cD$, $f^*$ is a Bayes optimal model if and only if for every group $g$ and every alternative model $h$:\n\\ifdraft\n$$L(\\cD, f^*, g) \\leq L(\\cD, h, g)$$\n\\else $L(\\cD, f^*, g) \\leq L(\\cD, h, g)$.\\fi\n\\end{observation}",
+          "quoted_text_sha256": "99505dc98b73cac9f22bc06cee0c3db7295f535594c4a166bb9a7e77cbfee9eb"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "observation.4.bayes.groupwise",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_observation4",
+          "semantic_claim": "Bayes optimality is equivalent to having no larger loss than any alternative model on every subgroup.",
+          "source_locator": "cited publication:342-348",
+          "source_quote_sha256": "99505dc98b73cac9f22bc06cee0c3db7295f535594c4a166bb9a7e77cbfee9eb"
+        }
+      ],
+      "source_defect_ids": [
+        "observation-4-pointwise-null-set"
+      ],
+      "source_kind": "claim",
+      "source_location": "cited publication:342-348",
+      "source_note": "The exact finite-support statement remains pointwise; the arbitrary-law replacement is necessarily almost everywhere.",
+      "source_status": "corrected",
+      "statement": "Bayes optimality is equivalent to having no larger loss than any alternative model on every subgroup.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_observation4Spec"
+      ]
+    },
+    "remark_13_complexity_independence": {
+      "aliases": [
+        "Remark 13",
+        "Remark 4.3"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_remark13"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_remark13",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_remark13Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 661,
+          "line_start": 659,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{remark}\nNote that FalsifyAndUpdate has sample complexity scaling only logarithmically with the total number of submissions $U$ that we can accept, and no dependence on the complexity of the submissions. This means that a relatively small holdout dataset $D$ is sufficient to run an extremely long-running bias bounty program (i.e. handling a number of submissions that is exponentially large in the size of the holdout set) that automatically updates the current model whenever submissions are accepted and bounties are awarded.\n\\end{remark}",
+          "quoted_text_sha256": "238a13e6986f311d25dad74617a3990b6ef1a7a8a725a94038b7fc17a6155af4"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "remark.13.complexity.independence",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_remark13",
+          "semantic_claim": "The adaptive checker sample bound depends logarithmically on the number of submissions and not on the syntactic complexity of submitted groups or models.",
+          "source_locator": "cited publication:659-661",
+          "source_quote_sha256": "238a13e6986f311d25dad74617a3990b6ef1a7a8a725a94038b7fc17a6155af4"
+        }
+      ],
+      "source_kind": "claim",
+      "source_location": "cited publication:659-661",
+      "source_status": "byte-pinned theorem-like remark",
+      "statement": "The adaptive checker sample bound depends logarithmically on the number of submissions and not on the syntactic complexity of submitted groups or models.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_remark13Spec"
+      ]
+    },
+    "remark_6_inverse_mass_scaling": {
+      "aliases": [
+        "Remark 6",
+        "Remark 2.6"
+      ],
+      "claim_bearing": false,
+      "inventory_role": "deep_audit_material",
+      "scope_disposition": "explanatory_remark_without_independent_proposition",
+      "scope_disposition_note": "Remark 6 motivates inverse-mass scaling and mentions an alternative convention but states no independently quantified mathematical conclusion. Definition 5's positive-mass equivalence is formalized.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 365,
+          "line_start": 363,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{remark}\nWe have chosen to define approximate Bayes optimality by letting the approximation term $\\epsilon$ scale proportionately to the inverse probability of the group $g$, similar to how notions of multigroup fairness are defined in  \\citep{gerrymandering,momentmulti,multivalid}. An alternative (slightly weaker) option would be to require error that is uniformly bounded by $\\epsilon$ for all groups, but to only make promises for groups $g$ that have probability $\\mu_g$ larger than some threshold, as is done in \\citep{multicalibration}. Some relaxation of this sort is necessary to provide guarantees on an unknown distribution based only on a finite sample from it, since we will necessarily have less statistical certainty about smaller subsets of our data.\n\\end{remark}",
+          "quoted_text_sha256": "964ddbe8ddc71cfc9160783cd08de6a634728ca1bbf68216eda7773afab297c6"
+        }
+      ],
+      "source_kind": "remark",
+      "source_location": "cited publication:363-365",
+      "statement": "Inverse-mass scaling is chosen to reflect weaker statistical certainty on small groups; a minimum-mass uniform-error alternative is possible."
+    },
+    "source_model_supervised_learning": {
+      "aliases": [
+        "Supervised-learning model"
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GHKR22BiasBounties.Model",
+        "GHKR22BiasBounties.Group",
+        "GHKR22BiasBounties.BoundedLoss"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 311,
+          "line_start": 310,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\section{Preliminaries}\nWe consider a supervised learning problem defined over \\emph{labelled examples} $(x,y) \\in \\cX \\times \\cY$. This can represent (for example) a binary classification problem if $\\cY = \\{0,1\\}$, a discrete multiclass classification problem if $\\cY = \\{1,\\ldots,k\\}$, or a regression problem if $\\cY = \\mathbb{R}$. We write $\\cD$ to denote a joint probability distribution over labelled examples: $\\cD \\in \\Delta (\\cX \\times \\cY)$. We will write $D \\sim \\cD^n$ to denote a dataset consisting of $n$ labelled examples sampled i.i.d. from $\\cD$. Our goal is to learn some \\emph{model} represented as a function $f:\\cX\\rightarrow \\cY$ which aims to predict the label of an example from its features, and we will evaluate the performance of our model with a loss function $\\ell:\\cY\\times \\cY \\rightarrow [0,1]$, where $\\ell(\\hat y, y)$ represents the ``cost'' of mistakenly labelling an example that has true label $y$ with the prediction $f(x) = \\hat y$. We will be interested in the performance of models $f$ not just \\emph{overall} on the underlying distribution, but also on particular subgroups of interest. A subgroup corresponds to an arbitrary subset of the feature space $\\cX$, which we will model using an indicator function:",
+          "quoted_text_sha256": "1a7fcc5cd8080abe228f083435e933ec4f24cbb126ffd511c4f0c4702e3a64ca"
+        }
+      ],
+      "source_kind": "definition",
+      "source_location": "cited publication:310-311",
+      "source_prose_definition_reconciliation": {
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "ddc0c00e246d2c593ee73310dd43bf9560fc4c486c1f93f354ea02aad53c2af6",
+        "relation": "source_item_represents_prose_definition",
+        "schema": 2,
+        "semantic_basis": "The source clause directly defines the prediction model and bounded-loss evaluation surface represented by this source-map item.",
+        "source_item_statement_sha256": "2793f0e1b119362db2c2a39f59a9b8a6505ff510539a5bd58a79f5d2d93b3a30",
+        "validated_at": "2026-08-30T00:00:00Z",
+        "validator": "Codex GHKR22 independent prose-definition semantic review",
+        "validator_type": "agent"
+      },
+      "source_status": "byte-pinned source model",
+      "statement": "Examples are drawn from an arbitrary joint probability distribution on features and labels; models predict labels from features and are evaluated by a loss taking values in [0,1]."
+    },
+    "theorem_10_update_bound": {
+      "aliases": [
+        "Theorem 10",
+        "Theorem 3.4",
+        "Theorem B.3"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_theorem10"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_theorem10",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_theorem10Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 464,
+          "line_start": 461,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{updatebound}\n\\label{thm:updatebound}\nFix any $\\epsilon > 0$. For any initial model $f_0$ with loss $L(\\cD,f_0) = \\ell_0$ and any sequence of models $f_1,\\ldots,f_T$, such that $f_i = \\textrm{ListUpdate}(f_{i-1},(g_{i},h_{i}))$ and each pair $(g_i,h_{i})$ forms a $(\\mu,\\Delta)$-certificate of suboptimality for $f_{i-1}$ for some $\\mu, \\Delta$ such that  $\\mu\\cdot \\Delta \\geq \\epsilon$, the length of the update sequence must be at most $T \\leq \\frac{\\ell_0}{\\epsilon} \\leq \\frac{1}{\\epsilon}$.\n\\end{restatable}",
+          "quoted_text_sha256": "97d8fbc8cee9776f6ec7e9c332da013b4229167736216ebd8f84b79443a2892a"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem.10.update.bound",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_theorem10",
+          "semantic_claim": "Any sequence of ListUpdates with certificate value at least epsilon has length at most the initial loss divided by epsilon, hence at most one divided by epsilon.",
+          "source_locator": "cited publication:461-464",
+          "source_quote_sha256": "97d8fbc8cee9776f6ec7e9c332da013b4229167736216ebd8f84b79443a2892a"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:461-464",
+      "source_status": "byte-pinned source result",
+      "statement": "Any sequence of ListUpdates with certificate value at least epsilon has length at most the initial loss divided by epsilon, hence at most one divided by epsilon.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_theorem10Spec"
+      ]
+    },
+    "theorem_11_adaptive_checker": {
+      "aliases": [
+        "Theorem 11",
+        "Theorem 4.1",
+        "Theorem C.1"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:549-561",
+        "archival_source_quote_sha256": "0d7ac360acd8ef14240a2c44b5580a4312d97d7278f4fa3b076c448cc5ec6102",
+        "corrected_target_review_sha256": "ae59f761dcfd49e543fcf47c89548f785939d9475ddb0a9b1bd46ae70314f2a8",
+        "corrected_target_sha256": "f93c4005f80f7faf5e3d899f7d9497398fa15343b0402745f8025323245732a2",
+        "governing_defect_ids": [
+          "adaptive-checker-confidence-and-transcript-count"
+        ],
+        "schema": 1,
+        "statement": "For every adaptive strategy, the probability that any issued checker decision violates the epsilon-rejection or epsilon/2-acceptance semantics is at most 2 U (U+1)^floor(2/epsilon) exp(-n epsilon^2/32)."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_theorem11"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_theorem11",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_theorem11Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 561,
+          "line_start": 549,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{certchecker}\n\\label{thm:adaptive}\nLet $\\cD \\in \\Delta(\\cX \\times \\cY)$ be any distribution over labelled examples, and let $D \\sim \\cD^n$ be a holdout dataset consisting of $n$ i.i.d. samples from $\\cD$. Suppose:\n\\ifdraft\n$$n \\geq \\frac{65 \\ln(2U/\\delta')}{\\epsilon^3}$$\n\\else $n \\geq \\frac{65 \\ln(2U/\\delta')}{\\epsilon^3}$. \\fi\nLet $\\pi$ be the output stream generated by CertificateChecker$(\\epsilon,D,(f_1,g_1,h_1),\\ldots)$ (Algorithm \\ref{alg:checker}).\nThen for any possibly adaptive process generating a stream of up to $U$ submissions $(f_i,g_i,h_i)$ as a function of the output stream $\\pi \\in \\{\\bot,\\top\\}^*$, with probability $1-\\delta$ over the randomness of $D$:\n\\begin{enumerate}\n    \\item For every round $i$ such that $\\pi_i = \\bot$ (the submission is rejected), we have that $(g_i,h_i)$ is not a $(\\mu,\\Delta)$ certificate of sub-optimality for $f_i$ for any $(\\mu,\\Delta)$ with $\\mu\\cdot \\Delta \\geq \\epsilon$. And:\n    \\item For every round $i$ such that $\\pi_i = \\top$ (the submission is accepted), we have that $(g_i,h_i)$ is a $(\\mu,\\Delta)$-certificate of sub-optimality for $f_i$ for $\\mu\\cdot\\Delta \\geq \\epsilon/2$.\n\\end{enumerate}\n\\end{restatable}",
+          "quoted_text_sha256": "0d7ac360acd8ef14240a2c44b5580a4312d97d7278f4fa3b076c448cc5ec6102"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem.11.adaptive.checker",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_theorem11",
+          "semantic_claim": "At a sample size written with an undefined delta-prime, all adaptive rejection and acceptance decisions satisfy the displayed source guarantees with probability 1-delta.",
+          "source_locator": "cited publication:549-561",
+          "source_quote_sha256": "0d7ac360acd8ef14240a2c44b5580a4312d97d7278f4fa3b076c448cc5ec6102"
+        }
+      ],
+      "source_defect_ids": [
+        "adaptive-checker-confidence-and-transcript-count",
+        "algorithm-2-nonstrict-guard-final-acceptance"
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:549-561",
+      "source_note": "The explicit tail uses the exact sparse family and directly implies any desired confidence corollary whose right side is at most delta.",
+      "source_status": "corrected",
+      "statement": "At a sample size written with an undefined delta-prime, all adaptive rejection and acceptance decisions satisfy the displayed source guarantees with probability 1-delta.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_theorem11Spec"
+      ]
+    },
+    "theorem_12_falsify_and_update": {
+      "aliases": [
+        "Theorem 12",
+        "Theorem 4.2",
+        "Theorem C.2"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:633-645",
+        "archival_source_quote_sha256": "e6c6750ec6fc782f80283c20f962c9e3b8a3530cd9dc91e4fdf1af0600867ef3",
+        "corrected_target_review_sha256": "ca8a9a9d2f426307667548f84f1730da361d6da1fd262f5b47692edd5aea1292",
+        "corrected_target_sha256": "5b92c86221ebf609ebd4b292da426e5ddc239e4f02fbe53130f4ddc0dfe45df1",
+        "governing_defect_ids": [
+          "adaptive-checker-confidence-and-transcript-count"
+        ],
+        "schema": 1,
+        "statement": "The complete adaptive FalsifyAndUpdate failure event, including incorrect decisions, premature termination, and an excess update count, has the same explicit exact sparse-transcript tail as the checker."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_theorem12"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_theorem12",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_theorem12Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 645,
+          "line_start": 633,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{bountySC}\n\\label{thm:bounty-SC}\nFix any $\\epsilon,\\delta > 0$. Let $\\cD \\in \\Delta(\\cX \\times \\cY)$ be any distribution over labelled examples, and let $D \\sim \\cD^n$ be a holdout dataset consisting of $n$ i.i.d. samples from $\\cD$. Suppose:\n\\ifdraft\n$$n \\geq \\frac{65 \\ln(2U/\\delta')}{\\epsilon^3}.$$\n\\else $n \\geq \\frac{65 \\ln(2U/\\delta')}{\\epsilon^3}.$ \\fi\nThen for any (possibly adaptive) process generating a sequence of at most $U$ submissions $\\{(g_i,h_i)\\}_{i=1}^U$, with probability at least $1-\\delta$, we have that FalsifyAndUpdate$(\\epsilon,D,\\cdots)$ satisfies:\n\\begin{enumerate}\n    \\item If $(g_i,h_i)$ is rejected, then $(g_i,h_i)$ is not a $(\\mu,\\Delta)$-certificate of sub-optimality for $f_t$, where $f_t$ is the current model at the time of submission $i$, for any $\\mu, \\Delta$ such that $\\mu\\cdot \\Delta \\geq \\epsilon$.\n    \\item If $(g_i,h_i)$ is accepted, then $(g_i,h_i)$ is a $(\\mu,\\Delta)$-certificate of sub-optimality for $f_t$, where $f_t$ is the current model at the time of submission $i$, for some $\\mu, \\Delta$ such that $\\mu\\cdot \\Delta \\geq \\frac{\\epsilon}{2}$. Moreover, the new model $f_{t+1}$ output satisfies $L(\\cD,f_{t+1}, g_i) = L(\\cD, h_i, g_i)$ and $L(\\cD,f_{t+1}) \\leq L(\\cD,f_t) - \\frac{\\epsilon}{2}$.\n    \\item FalsifyAndUpdate does not halt before receiving all $U$ submissions.\n\\end{enumerate}\n\\end{restatable}",
+          "quoted_text_sha256": "e6c6750ec6fc782f80283c20f962c9e3b8a3530cd9dc91e4fdf1af0600867ef3"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem.12.falsify.and.update",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_theorem12",
+          "semantic_claim": "At the source's displayed sample size, FalsifyAndUpdate has all listed semantics with probability 1-delta.",
+          "source_locator": "cited publication:633-645",
+          "source_quote_sha256": "e6c6750ec6fc782f80283c20f962c9e3b8a3530cd9dc91e4fdf1af0600867ef3"
+        }
+      ],
+      "source_defect_ids": [
+        "adaptive-checker-confidence-and-transcript-count"
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:633-645",
+      "source_note": "This is the source theorem with its undefined confidence parameter replaced by an explicit failure probability.",
+      "source_status": "corrected",
+      "statement": "At the source's displayed sample size, FalsifyAndUpdate has all listed semantics with probability 1-delta.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_theorem12Spec"
+      ]
+    },
+    "theorem_14_monotone_bounty": {
+      "aliases": [
+        "Theorem 14",
+        "Theorem 4.4",
+        "Theorem C.3"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:717-726",
+        "archival_source_quote_sha256": "341b7bb503ccffb9af963edba57b99c70f1971260156796ac376fdcd8111099d",
+        "corrected_target_review_sha256": "76dfbcc841be17b44fa486d884aa9af1c570d33b35ef4f7b289e937cc3f50fd3",
+        "corrected_target_sha256": "2b0265729da2606aa0178152fdae9ca4ae1cab345d12441ee0eb18a54db857f1",
+        "governing_defect_ids": [
+          "adaptive-checker-confidence-and-transcript-count",
+          "algorithm-4-shared-state-and-restart"
+        ],
+        "schema": 1,
+        "statement": "For the shared-state restarting monotone process, the complete failure event has the exact sparse-transcript tail at query horizon U+floor(2/epsilon)^3, and outside it every published model satisfies the advertised historical-group monotonicity bound."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_theorem14"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_theorem14",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_theorem14Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 726,
+          "line_start": 717,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{bountymonotone}\n\\label{thm:bounty-monotone-SC}\nFix any $\\epsilon,\\delta > 0$. Let $\\cD \\in \\Delta(\\cX \\times \\cY)$ be any distribution over labelled examples, and let $D \\sim \\cD^n$ be a holdout dataset consisting of $n$ i.i.d. samples from $\\cD$. Suppose: \\ifdraft\n$$n \\geq \\frac{65 \\ln\\left(\\frac{2(U+\\frac{8}{\\epsilon^3})}{\\delta'}\\right)}{\\epsilon^3}.$$\n\\else $n \\geq \\frac{65 \\ln\\left(\\frac{2(U+\\frac{8}{\\epsilon^3})}{\\delta'}\\right)}{\\epsilon^3}.$\\fi\nThen for any (possibly adaptive) process generating a sequence of at most $U$ submissions $\\{(g_i,h_i)\\}_{i=1}^U$, with probability at least $1-\\delta$, we have that MonotoneFalsifyAndUpdate$(\\epsilon,D,\\cdots)$ satisfies all of the properties proven in Theorem \\ref{thm:bounty-SC} for FalsifyAndUpdate, and additionally satisfies the following error monotonicity property. Consider any model $f_t$ that is output, and any group $g_j \\in \\cG(f_t)$. Then:\n\\ifdraft\n$$L(\\cD,f_t,g_j) \\leq \\min_{\\ell < t} L(\\cD, f_{\\ell}, g_j) + \\frac{\\epsilon}{\\mu_\\cD(g_j)} $$\n\\else $L(\\cD,f_t,g_j) \\leq \\min_{\\ell < t} L(\\cD, f_{\\ell}, g_j) + \\frac{\\epsilon}{\\mu_\\cD(g_j)}$. \\fi\n\\end{restatable}",
+          "quoted_text_sha256": "341b7bb503ccffb9af963edba57b99c70f1971260156796ac376fdcd8111099d"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem.14.monotone.bounty",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_theorem14",
+          "semantic_claim": "At the source's displayed sample size, MonotoneFalsifyAndUpdate inherits Theorem 12 and satisfies the stated historical-group monotonicity inequality with probability 1-delta.",
+          "source_locator": "cited publication:717-726",
+          "source_quote_sha256": "341b7bb503ccffb9af963edba57b99c70f1971260156796ac376fdcd8111099d"
+        }
+      ],
+      "source_defect_ids": [
+        "adaptive-checker-confidence-and-transcript-count",
+        "algorithm-4-shared-state-and-restart"
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:717-726",
+      "source_note": "The corrected theorem combines the exact checker tail with the explicit shared-state process needed by the monotonicity proof.",
+      "source_status": "corrected",
+      "statement": "At the source's displayed sample size, MonotoneFalsifyAndUpdate inherits Theorem 12 and satisfies the stated historical-group monotonicity inequality with probability 1-delta.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_theorem14Spec"
+      ]
+    },
+    "theorem_16_train_by_opt": {
+      "aliases": [
+        "Theorem 16",
+        "Theorem C.5"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_theorem16"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_theorem16",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_theorem16Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 822,
+          "line_start": 816,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{samplecomplexity}\nFix an arbitrary distribution $\\cD$ over $\\cX\\times \\cY$, a class of group indicator functions $\\cG$ of VC-dimension $d_G$ and a class of binary models $\\cH$ of VC-dimension $d_H$. Let $\\cC \\subseteq \\cG \\times \\cH$ and $\\epsilon > 0$ be arbitrary.  If: \\ifdraft\n$$n \\geq \\tilde O\\left(\\frac{(d_H + d_G) + \\log(1/\\delta)}{\\epsilon^3} \\right)$$\n\\else $n \\geq \\tilde O\\left(\\frac{(d_H + d_G) + \\log(1/\\delta)}{\\epsilon^3} \\right)$ \\fi\nand $D \\sim \\cD^n$,\nthen with probability $1-\\delta$,  TrainByOpt$(D,\\cC,\\epsilon)$ (Algorithm \\ref{alg:TrainByOpt}) returns a model $f$ that is $(\\epsilon,\\cC)$-Bayes optimal, using at most $2/\\epsilon$ calls to a sub-routine for solving the optimization problem over $(g,h) \\in \\cC$ given in \\eqref{eq:optproblem}.\n\\end{restatable}",
+          "quoted_text_sha256": "2599b5077efa8f36def625637c5f6b83e9bcf94c1f1ff68c305beed4bdee08c8"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem.16.train.by.opt",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_theorem16",
+          "semantic_claim": "At the stated VC sample scale, TrainByOpt returns an epsilon-Bayes-optimal model with probability at least 1-delta using at most 2/epsilon optimization calls.",
+          "source_locator": "cited publication:816-822",
+          "source_quote_sha256": "2599b5077efa8f36def625637c5f6b83e9bcf94c1f1ff68c305beed4bdee08c8"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:816-822",
+      "source_status": "byte-pinned source result with explicit constants",
+      "statement": "At the stated VC sample scale, TrainByOpt returns an epsilon-Bayes-optimal model with probability at least 1-delta using at most 2/epsilon optimization calls.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_theorem16Spec"
+      ]
+    },
+    "theorem_20_ternary_reduction": {
+      "aliases": [
+        "Theorem 20",
+        "Lemma C.9"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_theorem20"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_theorem20",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_theorem20Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 900,
+          "line_start": 893,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{lemCSC}\n\\label{lem:CSC}\nFix an arbitrary distribution $\\cD$ over $\\cX\\times \\cY$, let $K$ be a class of ternary valued functions, and let $f:\\cX\\rightarrow \\{0,1\\}$ be any binary valued model. Let $p^*$ be a solution to the cost-sensitive classification problem $(\\cD, K, \\{c_{(x,y)}^f\\})$, where $c_{(x,y)}^f$ are the induced costs of $f$. We have that:\n\\ifdraft\n$$(g_{p^*},h_{p^*}) \\in \\arg\\max_{(g,h) \\in \\cC_K }\\mu_{\\cD}(g)\\cdot (L(\\cD,f,g) - L(\\cD,h,g))$$\n\\else $(g_{p^*},h_{p^*}) \\in \\arg\\max_{(g,h) \\in \\cC_K }\\mu_{\\cD}(g)\\cdot (L(\\cD,f,g) - L(\\cD,h,g))$. \\fi\nIn other words, when $\\cD$ is the empirical distribution over $D$, $(g_{p^*},h_{p^*})$ form a solution to optimization problem \\eqref{eq:optproblem}.\n\\end{restatable}",
+          "quoted_text_sha256": "ad2c223bfdb79bf2abbd33748b1ee0d782f76b2786ba68dcc67249b08b71c4d9"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem.20.ternary.reduction",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_theorem20",
+          "semantic_claim": "A minimizer of the induced ternary cost maximizes the certificate objective over the certificate pairs derived from the ternary class.",
+          "source_locator": "cited publication:893-900",
+          "source_quote_sha256": "ad2c223bfdb79bf2abbd33748b1ee0d782f76b2786ba68dcc67249b08b71c4d9"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:893-900",
+      "source_status": "byte-pinned source result",
+      "statement": "A minimizer of the induced ternary cost maximizes the certificate objective over the certificate pairs derived from the ternary class.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_theorem20Spec"
+      ]
+    },
+    "theorem_23_coordinate_ascent": {
+      "aliases": [
+        "Theorem 23",
+        "Theorem C.12"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:1008-1014",
+        "archival_source_quote_sha256": "19b6115163fb95e1677934a24e545b1c62bbdf747e2c692c27ea911999fcd845",
+        "corrected_target_review_sha256": "cadfcf44f69fc969e12197520df0745ac932db4e913e67bf7b5c5b48e66cc358",
+        "corrected_target_sha256": "b246a8c9139c956035d76ebeb14401cd4e24e45e55b1c0f3fb28b4400724e067",
+        "governing_defect_ids": [
+          "algorithm-6-two-gap-and-positive-initialization"
+        ],
+        "schema": 1,
+        "statement": "From an admissible initialization with positive certificate objective, repaired two-gap coordinate ascent returns a positive certificate that is epsilon-locally optimal in both coordinates; every strict-update trajectory has at most 2/epsilon updates."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_theorem23"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_theorem23",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_theorem23Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 1014,
+          "line_start": 1008,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{localopt}\nLet $D \\in (\\cX\\times\\cY)^n$ be an arbitrary dataset, $f_{t-1}:\\cX\\rightarrow \\cY$ be an arbitrary model, $\\cG$ and $\\cH$ be arbitrary group and model classes, and $\\epsilon > 0$. Then after solving at most $2/\\epsilon$ empirical risk minimization problems over each of $\\cG$ and $\\cH$, AltMinCertificateFinder (Algorithm \\ref{alg:altmin}) returns a $(\\mu,\\Delta)$-certificate of sub-optimality $(g_t,h_t)$ for $f_{t-1}$  that is an $\\epsilon$-approximate local optimum (or saddle point) in the sense that:\n\\begin{enumerate}\n    \\item For every $h \\in \\cH$, $(g_t,h)$ is not a $(\\mu', \\Delta')$ certificate of sub-optimality for $f_{t-1}$ for any $\\mu'\\cdot \\Delta' \\geq \\mu\\cdot \\Delta + \\epsilon$, and\n    \\item For every $g \\in \\cG$, $(g,h_t)$ is not a $(\\mu', \\Delta')$ certificate of sub-optimality for $f_{t-1}$ for any $\\mu'\\cdot \\Delta' \\geq \\mu\\cdot \\Delta + \\epsilon$\n\\end{enumerate}\n\\end{restatable}",
+          "quoted_text_sha256": "19b6115163fb95e1677934a24e545b1c62bbdf747e2c692c27ea911999fcd845"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem.23.coordinate.ascent",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_theorem23",
+          "semantic_claim": "The printed theorem starts from an arbitrary pair and concludes that the returned locally optimal pair is a positive certificate after at most 2/epsilon ERM rounds.",
+          "source_locator": "cited publication:1008-1014",
+          "source_quote_sha256": "19b6115163fb95e1677934a24e545b1c62bbdf747e2c692c27ea911999fcd845"
+        }
+      ],
+      "source_defect_ids": [
+        "algorithm-6-two-gap-and-positive-initialization"
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:1008-1014",
+      "source_note": "A checked one-point counterexample refutes arbitrary-start positivity; positive initialization is sufficient and preserves local optimality and the strict-update rate.",
+      "source_status": "corrected",
+      "statement": "The printed theorem starts from an arbitrary pair and concludes that the returned locally optimal pair is a positive certificate after at most 2/epsilon ERM rounds.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_theorem23Spec"
+      ]
+    },
+    "theorem_8_certificate_characterization": {
+      "aliases": [
+        "Theorem 8",
+        "Theorem 3.2",
+        "Theorem B.1"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_theorem8"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_theorem8",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_theorem8Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 392,
+          "line_start": 389,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{BOQ}\n\\label{thm:BOQ}\nFix any $\\epsilon > 0$, and any collection of (group,model) pairs $\\cC$. There exists a $(\\mu,\\Delta)$-certificate of sub-optimality $(g,h) \\in \\cC$ for $f$ if and only if $f$ is not $(\\epsilon,\\cC)$-Bayes optimal for $\\epsilon < \\mu\\Delta$.\n\\end{restatable}",
+          "quoted_text_sha256": "132526e975f276fc7ff68ea1a7e4e95f875bab15255cd1d0a9c2fb522b3308ac"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem.8.certificate.characterization",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_theorem8",
+          "semantic_claim": "A certificate in the comparison class with product exceeding epsilon exists exactly when the current model is not epsilon-Bayes optimal relative to that class.",
+          "source_locator": "cited publication:389-392",
+          "source_quote_sha256": "132526e975f276fc7ff68ea1a7e4e95f875bab15255cd1d0a9c2fb522b3308ac"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:389-392",
+      "source_status": "byte-pinned source result",
+      "statement": "A certificate in the comparison class with product exceeding epsilon exists exactly when the current model is not epsilon-Bayes optimal relative to that class.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_theorem8Spec"
+      ]
+    },
+    "theorem_9_list_update_progress": {
+      "aliases": [
+        "Theorem 9",
+        "Theorem 3.3",
+        "Theorem B.2"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GHKR22BiasBounties.source_theorem9"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GHKR22BiasBounties.source_theorem9",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GHKR22BiasBounties.source_theorem9Spec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 433,
+          "line_start": 426,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{restatable}{theorem}{progress}\n\\label{thm:progress}\nAlgorithm \\ref{alg:basic} (ListUpdate) has the following properties. If $(g_{t+1},h_{t+1})$ form a $(\\mu,\\Delta)$-certificate of sub-optimality for $f_{t}$, and $f_{t+1} = \\textrm{ListUpdate}(f_t,(g_{t+1},h_{t+1}))$ then:\n\\begin{enumerate}\n    \\item The new model matches the performance of $h_{t+1}$ on group $g_{t+1}$: $L(\\cD,f_{t+1},g_{t+1}) = L(\\cD, h_{t+1},g_{t+1})$, and\n    \\item The overall performance of the model is improved by at least $\\mu\\cdot \\Delta$: $L(\\cD, f_{t+1}) \\leq L(\\cD, f_t) - \\mu\\cdot \\Delta$.\n\\end{enumerate}\n\\end{restatable}",
+          "quoted_text_sha256": "12634da9a1c97adef17ed82aa0a0c00cb74f92beff204fc421702eabc507870c"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem.9.list.update.progress",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GHKR22BiasBounties.source_theorem9",
+          "semantic_claim": "ListUpdate matches the replacement's loss on the submitted group and lowers total loss by at least mu times Delta.",
+          "source_locator": "cited publication:426-433",
+          "source_quote_sha256": "12634da9a1c97adef17ed82aa0a0c00cb74f92beff204fc421702eabc507870c"
+        }
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:426-433",
+      "source_status": "byte-pinned source result",
+      "statement": "ListUpdate matches the replacement's loss on the submitted group and lowers total loss by at least mu times Delta.",
+      "support_lean_declarations": [
+        "GHKR22BiasBounties.source_theorem9Spec"
+      ]
+    }
+  },
+  "library_semantic_prerequisite_sources": {
+    "AppliedModelingLib.Learning.Prediction.BoundedLoss": "source_model_supervised_learning"
+  },
+  "paper": "GHKR22BiasBounties",
+  "paper_interface_namespace": "GHKR22BiasBounties",
+  "paper_semantic_prerequisite_sources": {
+    "GHKR22BiasBounties.AEBayesOptimalForRisk": "definition_3_bayes_optimal",
+    "GHKR22BiasBounties.BoundedLoss": "source_model_supervised_learning",
+    "GHKR22BiasBounties.Group": "source_model_supervised_learning",
+    "GHKR22BiasBounties.MeasureApproxBayesOptimal": "definition_5_approximate_bayes_optimal",
+    "GHKR22BiasBounties.MeasureCertificateOfSuboptimality": "definition_7_certificate",
+    "GHKR22BiasBounties.MeasureCostSensitiveMinimizer": "definition_18_cost_sensitive_minimizer",
+    "GHKR22BiasBounties.Model": "source_model_supervised_learning",
+    "GHKR22BiasBounties.adaptiveFalsifyAndUpdate": "algorithm_3_falsify_and_update",
+    "GHKR22BiasBounties.certificateCheckerDecision": "algorithm_2_certificate_checker",
+    "GHKR22BiasBounties.certificateCheckerRun": "algorithm_2_certificate_checker",
+    "GHKR22BiasBounties.checkerAcceptanceBudget": "algorithm_2_certificate_checker",
+    "GHKR22BiasBounties.derivedGroup": "definition_17_derived_certificate",
+    "GHKR22BiasBounties.derivedModel": "definition_17_derived_certificate",
+    "GHKR22BiasBounties.falsifyAndUpdateStep": "algorithm_3_falsify_and_update",
+    "GHKR22BiasBounties.groupIndicator": "definition_1_subgroups",
+    "GHKR22BiasBounties.inducedCost": "definition_19_induced_cost",
+    "GHKR22BiasBounties.kernelConditionalRisk": "definition_3_bayes_optimal",
+    "GHKR22BiasBounties.listUpdate": "algorithm_1_list_update",
+    "GHKR22BiasBounties.measureCoordinateAscentLoop": "algorithm_6_alternating_maximization",
+    "GHKR22BiasBounties.measureCoordinateAscentStep": "algorithm_6_alternating_maximization",
+    "GHKR22BiasBounties.measureGroupLoss": "definition_2_model_loss",
+    "GHKR22BiasBounties.measureGroupLossNumerator": "definition_2_model_loss",
+    "GHKR22BiasBounties.measureGroupMass": "definition_1_subgroups",
+    "GHKR22BiasBounties.measureModelLoss": "definition_2_model_loss",
+    "GHKR22BiasBounties.monotoneBountyOutput": "algorithm_4_monotone_falsify_and_update",
+    "GHKR22BiasBounties.trainByOptRun": "algorithm_5_train_by_opt"
+  },
+  "publication_corrected_target_projection": {
+    "approval_material_included": false,
+    "schema": 1
+  },
+  "schema": 1,
+  "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
+  "source_anchor_evidence_required": true,
+  "source_artifact": {
+    "canonical_archive_member": "main.tex",
+    "canonical_archive_sha256": "6de92b7e9b7e0d687220f21192d7b7d38d1b87377f56a21b69850ef03f1ed7f5",
+    "canonical_source_url": "https://arxiv.org/e-print/2201.10408v4",
+    "path": "cited publication",
+    "sha256": "138f9031c66f3688e484aec30eee2152ed3e3f6ea002d1b31f3ea786b15cd155"
+  },
+  "source_artifact_sha256": "138f9031c66f3688e484aec30eee2152ed3e3f6ea002d1b31f3ea786b15cd155",
+  "source_claim_atoms_schema": 1,
+  "source_coverage_mode": "named_theoretical_statements",
+  "source_inventory_policy": "The inventory contains every named mathematical definition, observation, theorem, lemma, theorem-like remark, and labelled algorithm in the governing arXiv v4 main source. It also retains the optimization objective used by Algorithms 5 and 6 and every independently repeated appendix presentation as an explicit presentation alias. Empirical sections, figures, tables, deployment descriptions, and open-ended desiderata are outside mathematical theorem scope. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
+  "source_named_result_inventory_review": {
+    "candidate_presentations": [
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "source_model_supervised_learning",
+        "presentation_label": "Supervised-learning population, model, group, and bounded-loss model",
+        "schema": 1,
+        "scope_disposition": "material_named_claim",
+        "semantic_basis": "This prose model fixes the carriers and probability semantics used by every numbered result.",
+        "source_anchor": {
+          "line_end": 311,
+          "line_start": 310,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\section{Preliminaries}\nWe consider a supervised learning problem defined over \\emph{labelled examples} $(x,y) \\in \\cX \\times \\cY$. This can represent (for example) a binary classification problem if $\\cY = \\{0,1\\}$, a discrete multiclass classification problem if $\\cY = \\{1,\\ldots,k\\}$, or a regression problem if $\\cY = \\mathbb{R}$. We write $\\cD$ to denote a joint probability distribution over labelled examples: $\\cD \\in \\Delta (\\cX \\times \\cY)$. We will write $D \\sim \\cD^n$ to denote a dataset consisting of $n$ labelled examples sampled i.i.d. from $\\cD$. Our goal is to learn some \\emph{model} represented as a function $f:\\cX\\rightarrow \\cY$ which aims to predict the label of an example from its features, and we will evaluate the performance of our model with a loss function $\\ell:\\cY\\times \\cY \\rightarrow [0,1]$, where $\\ell(\\hat y, y)$ represents the ``cost'' of mistakenly labelling an example that has true label $y$ with the prediction $f(x) = \\hat y$. We will be interested in the performance of models $f$ not just \\emph{overall} on the underlying distribution, but also on particular subgroups of interest. A subgroup corresponds to an arbitrary subset of the feature space $\\cX$, which we will model using an indicator function:",
+          "quoted_text_sha256": "1a7fcc5cd8080abe228f083435e933ec4f24cbb126ffd511c4f0c4702e3a64ca"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "certificate_optimization_objective",
+        "presentation_label": "Empirical certificate optimization objective",
+        "schema": 1,
+        "scope_disposition": "material_named_claim",
+        "semantic_basis": "The displayed objective is the exact optimization problem used by Algorithms 5 and 6 and Theorems 16 and 23.",
+        "source_anchor": {
+          "line_end": 770,
+          "line_start": 766,
+          "publication_locator": "cited publication",
+          "quoted_text": "The algorithmic problem we need to solve at each round $t$ is, given an existing model $f_{t-1}$, find a $(\\mu,\\Delta)$-certificate of optimality $(g,h) \\in \\cC$ for $f_{t-1}$ that maximizes $\\mu\\cdot \\Delta$ as computed on the empirical data $D$ --- i.e. to solve:\n\\begin{equation}\n\\label{eq:optproblem}\n(g_t,h_t) =\\arg\\max_{(g,h) \\in \\cC }\\mu_{D}(g)\\cdot (L(D,f_{t-1},g) - L(D,h,g))\n\\end{equation}",
+          "quoted_text_sha256": "510793f210ca22db1a435d3d73377a0a312e3585a521233609c60483418704e3"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "decision_list_representation",
+        "presentation_label": "Iterated ListUpdate decision-list representation",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "The prose explains the structural interpretation of the already formalized runUpdates semantics and Theorem 10 length bound; it does not add an independent theorem conclusion.",
+        "source_anchor": {
+          "line_end": 459,
+          "line_start": 448,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\else \n\\fi\n\n\\ifdraft\n\\begin{figure}\n    \n    \\includegraphics[scale=0.2]{decision-list-basic.png}\n    \\caption{The decision list model $f_t$ output by Algorithm \\ref{alg:basic} after $t$ iterations.}\\label{fig:dl}\n\\end{figure}\n\\else\n\\fi\n",
+          "quoted_text_sha256": "b895a884dd2bb5ff212b0d9588c266adff57136d517ee5081df0b5f669455d7d"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "pointer_decision_list_representation",
+        "presentation_label": "Back-pointer implementation of monotonicity repairs",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This implementation observation explains how accepted repair updates reuse prior prefixes. Its mathematical size guarantee is already the accepted-update bound in Theorem 14.",
+        "source_anchor": {
+          "line_end": 758,
+          "line_start": 741,
+          "publication_locator": "cited publication",
+          "quoted_text": "The proof can be found in the appendix.\n\\fi\n\n\\begin{figure}\n    \\centering\n    \\ifdraft\n    \\includegraphics[scale=0.35]{pdl.png}\n    \\else\n    \\includegraphics[scale=0.18]{pdl.png}\n    \\fi\n    \\caption{A pointer decision list. The shaded nodes are monotonicity repairs caused by update $g_t$. In this example, there were two monotonicity repairs, corresponding to certificates of sub-optimality $(g_i,f_{t-1})$ and $(g_j,f_{i+1})$. Rather than replicating the models $f_{t-1}$ and $f_{i+1}$, the updates are implemented using pointers to the prefix of the decision list representing models $f_{t-1}$ and $f_{i-1}$. Theorem \\ref{thm:bounty-monotone-SC} guarantees that the entire length of the list (including nodes that implement back-pointers) cannot grow beyond $2/\\epsilon$.}\n    \\label{fig:pdl}\n\\end{figure}\nAlgorithm \\ref{alg:MonFalsifyAndUpdate} introduces updates of the form $(g_j,f_{\\ell})$, where $f_{\\ell}$ is a decision list previously generated by ListUpdate. We might worry that these updates could produce a very large model, since on such an update, the new model $f_\\ell$ at the first leaf of the new decision list entirely replicates some previous decision list $f_{\\ell}$. However, note that for any such update, $f_{\\ell}$ is a \\emph{prefix} of $f_t$. Therefore, rather than replicating $f_{\\ell}$, we can  introduce a backpointer to level $\\ell$ of our existing decision list, without increasing our model's size. We call such a model a \\emph{pointer decision list}, as shown in Figure \\ref{fig:pdl}. We call the pointer nodes that are introduced to repair non-monotonicities introduced by previous updates \\emph{repair nodes} of our pointer decision list. These are the nodes that are shaded in our illustration in Figure \\ref{fig:pdl}. \n\\ifdraft\n\\else\n\\vspace{-0.2cm}\n\\fi",
+          "quoted_text_sha256": "ce371810b7d09d771e404c98cf8e82cac93ffd726c3d4c75b21b167ceb8506e7"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "observation_4_bayes_groupwise",
+        "presentation_label": "obs:BO",
+        "schema": 1,
+        "scope_disposition": "material_named_claim",
+        "semantic_basis": "This numbered observation is a main mathematical result and is routed to the corrected arbitrary-law source Spec.",
+        "source_anchor": {
+          "line_end": 348,
+          "line_start": 342,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{observation}\n\\label{obs:BO}\nFixing a loss function $\\ell$ and a distribution $\\cD$, $f^*$ is a Bayes optimal model if and only if for every group $g$ and every alternative model $h$:\n\\ifdraft\n$$L(\\cD, f^*, g) \\leq L(\\cD, h, g)$$\n\\else $L(\\cD, f^*, g) \\leq L(\\cD, h, g)$.\\fi\n\\end{observation}",
+          "quoted_text_sha256": "99505dc98b73cac9f22bc06cee0c3db7295f535594c4a166bb9a7e77cbfee9eb"
+        },
+        "visible_kind": "observation"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "remark_6_inverse_mass_scaling",
+        "presentation_label": "remark@363",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "The remark motivates the definition and states no independent quantitative conclusion beyond the surrounding definition.",
+        "source_anchor": {
+          "line_end": 365,
+          "line_start": 363,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{remark}\nWe have chosen to define approximate Bayes optimality by letting the approximation term $\\epsilon$ scale proportionately to the inverse probability of the group $g$, similar to how notions of multigroup fairness are defined in  \\citep{gerrymandering,momentmulti,multivalid}. An alternative (slightly weaker) option would be to require error that is uniformly bounded by $\\epsilon$ for all groups, but to only make promises for groups $g$ that have probability $\\mu_g$ larger than some threshold, as is done in \\citep{multicalibration}. Some relaxation of this sort is necessary to provide guarantees on an unknown distribution based only on a finite sample from it, since we will necessarily have less statistical certainty about smaller subsets of our data.\n\\end{remark}",
+          "quoted_text_sha256": "964ddbe8ddc71cfc9160783cd08de6a634728ca1bbf68216eda7773afab297c6"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "remark_13_complexity_independence",
+        "presentation_label": "remark@659",
+        "schema": 1,
+        "scope_disposition": "material_named_claim",
+        "semantic_basis": "This numbered remark asserts the theorem-like logarithmic submission-horizon dependence captured by source_remark13Spec.",
+        "source_anchor": {
+          "line_end": 661,
+          "line_start": 659,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\begin{remark}\nNote that FalsifyAndUpdate has sample complexity scaling only logarithmically with the total number of submissions $U$ that we can accept, and no dependence on the complexity of the submissions. This means that a relatively small holdout dataset $D$ is sufficient to run an extremely long-running bias bounty program (i.e. handling a number of submissions that is exponentially large in the size of the holdout set) that automatically updates the current model whenever submissions are accepted and bounties are awarded.\n\\end{remark}",
+          "quoted_text_sha256": "238a13e6986f311d25dad74617a3990b6ef1a7a8a725a94038b7fc17a6155af4"
+        },
+        "visible_kind": "remark"
+      }
+    ],
+    "complete": true,
+    "discovered_candidate_presentation_sha256": "6dd08d06c1f018c378692fc116877ac0c5e5ebb147459433e499f1e37469a75f",
+    "discovered_named_result_sha256": "1afaac257334d8c0114cbb156b77301f7bfe57aa3c31e31769cb79ba62ec9bb1",
+    "discovered_prose_definition_sha256": "befd3fa5d19a69a4c87371f861ff7ef9edb8903e96a82b146670715fffc57914",
+    "method": "Read the complete byte-pinned governing cited publication and cited publication; mechanically scanned every definition, observation, theorem, lemma, remark, algorithm, and displayed optimization presentation; then performed a holistic prose pass for additional mathematical objects and claims before finalizing the Lean routes. Cross-checked the published FAccT extraction for numbering and presentation differences.",
+    "prose_definition_presentations": [
+      {
+        "defined_entity_kind": "object",
+        "defined_object": "model",
+        "definitional_clause": "Our goal is to learn some \\emph{model} represented as a function $f:\\cX\\rightarrow \\cY$ which aims to predict the label of an example from its features, and we will evaluate the performance of our model with a loss function $\\ell:\\cY\\times \\cY \\rightarrow [0,1]$, where $\\ell(\\hat y, y)$ represents the ``cost'' of mistakenly labelling an example that has true label $y$ with the prediction $f(x) = \\hat y$.",
+        "presentation_kind": "definition",
+        "schema": 1,
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "line_end": 311,
+          "line_start": 310,
+          "publication_locator": "cited publication",
+          "quoted_text": "\\section{Preliminaries}\nWe consider a supervised learning problem defined over \\emph{labelled examples} $(x,y) \\in \\cX \\times \\cY$. This can represent (for example) a binary classification problem if $\\cY = \\{0,1\\}$, a discrete multiclass classification problem if $\\cY = \\{1,\\ldots,k\\}$, or a regression problem if $\\cY = \\mathbb{R}$. We write $\\cD$ to denote a joint probability distribution over labelled examples: $\\cD \\in \\Delta (\\cX \\times \\cY)$. We will write $D \\sim \\cD^n$ to denote a dataset consisting of $n$ labelled examples sampled i.i.d. from $\\cD$. Our goal is to learn some \\emph{model} represented as a function $f:\\cX\\rightarrow \\cY$ which aims to predict the label of an example from its features, and we will evaluate the performance of our model with a loss function $\\ell:\\cY\\times \\cY \\rightarrow [0,1]$, where $\\ell(\\hat y, y)$ represents the ``cost'' of mistakenly labelling an example that has true label $y$ with the prediction $f(x) = \\hat y$. We will be interested in the performance of models $f$ not just \\emph{overall} on the underlying distribution, but also on particular subgroups of interest. A subgroup corresponds to an arbitrary subset of the feature space $\\cX$, which we will model using an indicator function:",
+          "quoted_text_sha256": "1a7fcc5cd8080abe228f083435e933ec4f24cbb126ffd511c4f0c4702e3a64ca"
+        }
+      }
+    ],
+    "schema": 1,
+    "source_artifact_sha256": "138f9031c66f3688e484aec30eee2152ed3e3f6ea002d1b31f3ea786b15cd155",
+    "validated_at": "2026-08-30T00:00:00Z",
+    "validator": "Codex GHKR22 source-only main-and-appendix inventory"
+  },
+  "source_spec_correspondence_schema": 1,
+  "source_version": "arXiv:2201.10408v4, cross-checked against FAccT 2022 DOI 10.1145/3531146.3533172",
+  "title": "An Algorithmic Framework for Bias Bounties"
+}

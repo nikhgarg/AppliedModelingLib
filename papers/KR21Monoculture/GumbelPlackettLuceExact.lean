@@ -8,7 +8,7 @@ the Plackett--Luce weights.  It closes the previously conditional Gumbel
 certificate without identifying either distribution by definition.
 -/
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 
 namespace KR21Monoculture
 

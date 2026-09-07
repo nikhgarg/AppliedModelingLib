@@ -2,8 +2,8 @@ import KR21Monoculture.W11RankingCells
 import KR21Monoculture.W11ScoreTransport
 import Mathlib.MeasureTheory.Function.JacobianOneDim
 
-open EconCSLib MeasureTheory Filter
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory Filter
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal
 
 namespace KR21Monoculture

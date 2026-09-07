@@ -1,30 +1,21 @@
 # Governing-Model Clarification
 
-This note states the finite model used for the paper's formalized rating-system
-results. It distinguishes that current mathematical model from an archival
-presentation that leaves several ingredients implicit or ill-typed.
+## Model readings
 
-## Finite ordinal model
-
-Seller types are ordered as `theta_0 < ... < theta_(M-1)` with `M >= 2` and a
-uniform prior. Each type has a match rate `g(theta)` satisfying
-`0 < g(theta) <= 1`, so that by horizon `k` it has `floor(k g(theta))` ratings.
-Conditional on the seller type, ratings are independent and identically
-distributed with the stated ordinal law; seller histories are independent. The
-horizon-`k` state is the resulting finite product law.
-
-The rating scale has at least two ordered levels with strictly increasing
-scores. The displayed tail comparisons apply at their valid cutoffs; they do
-not impose an impossible strict condition at the bottom cutoff.
+- **Accumulating ratings → positive sampling rates `g(theta)>0`.** This makes explicit the growing-sample regime used by the paper’s convergence and large-deviation arguments (`cited publication:669–670, 745`).
+- **Independent rating histories → a product probability law.** This realizes the independence used in the Appendix’s pairwise factorization; the ranking objective uses only those pairwise marginals (`cited publication:1638–1642`).
 
 ## Theorem 1 reading
 
-The Theorem 1 rate minimizes over the valid adjacent pairs `0 <= i <= M-2`.
-Its rate function is extended-real inside the infimum, so an infeasible
-threshold has infinite cost rather than an artificial real value. The resulting
-minimum is finite and gives the stated real exponential rate.
+- The printed adjacent-pair minimum through `i=M-1` → `0<=i<=M-2`, where `M` is the number of ordered seller types: the last printed term refers to an undefined next type.
+- Strict cross-quality upper-tail comparisons at every rating → only above the lowest rating. At the lowest rating the upper-tail probability is one for every type, so it cannot be strictly increasing.
+- Real-valued intermediate rate costs → extended-real Legendre costs inside the infimum, so thresholds outside rating support have infinite cost. The final minimum is finite. This avoids a terminal full-support assumption and retains the stated exponential rate for the ranking error.
 
-Under this finite ordinal iid model, the advertised Theorem 1 conclusion is
-the large-deviation rate for `1 - W_k`. This is a current governing-model
-clarification, not an assertion that each clause was written explicitly in the
-archival recurrence.
+## Displayed indices and finite-state route
+
+- In the aggregate-score display, `n_k(theta)+1` summands indexed through `n_k(theta)` → exactly `n_k(theta)` ratings, indexed from zero through `n_k(theta)-1`.
+- The Appendix's continuum substitution → a finite iid probability comparison with a fixed-constant event sandwich before taking normalized logarithms. This supplies the discrete probability rate without treating the continuum integral as an exact finite probability.
+
+## Population-state boundary
+
+- Theorem 1's population recurrence → an explicitly declared iid rating law. The formalization has not connected that law to the printed recurrence, whose transition uses `n_k` and `n_(k-1)` while updating `mu_k` to `mu_(k+1)`. This is an unproved model connection, not a counterexample to the ranking-rate theorem.

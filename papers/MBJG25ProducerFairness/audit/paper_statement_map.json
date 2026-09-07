@@ -1,1484 +1,346 @@
 {
-  "generated_at": "2026-07-18T19:30:00Z",
+  "approved_review_context_schema": 1,
   "items": {
-    "mbjg25_appendix_c_responsive_mse_decomposition": {
-      "aliases": [
-        "paper_facing_responsive_mse_decomposition"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_responsive_mse_decomposition"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_responsive_mse_decomposition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_responsive_mse_decompositionSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 1815,
-          "line_start": 1750,
-          "publication_locator": "cited publication",
-          "quoted_text": "50\n\n1\nFigure 8: Lineplot of mean-squared\nerror different quality\nestimators in fixed setting over time. η = 0 represents the\nsample mean estimator, η = 1 represents the empirical\nBayes (EB) estimator. The sample mean estimator (η = 0)\nhas high MSE for low time-steps, due to variance in ratings. On the other extreme, for extremely high prior strength\nη = 1000, the platform never learns from ratings data. This\npresents evidence that proper calibration of prior strength\ncan help solve the cold start problem in the context of accurate quality estimates for products.\n\nDiscussion of bias-variance decomposition\nin responsive model\n\nThis appendix discusses a decomposition of the biasvariance decomposition in Equation 7 as applied to the responsive setting. While mean-squared prediction error may\nno longer serve as an ideal metric for consumer and producer welfare in this setting, we demonstrate that markets\nthat care about MSE for its own sake can still reason about\nprediction error for a prior-weighted rating system so long as\nthey can make statements about the changes in how products\nare sampled based on changes in qv and η.\nLet the number of reviews for product v with fixed true\nquality qv , prior parameters α̃, β̃ and system-level prior\nstrength η, calculated at timestep t, be Nα̃,β̃ (qv , η, t). We\nfocus on the number of reviews for a product at a fixed\ntime t with fixed prior parameters α̃, β̃, and so we simplify by omitting these variables in this notation, letting\nN (qv , η) denote the number of reviews. Now, at this time\nt, a prior-weighted rating system’s estimated quality for v\nis given by q̂ηα̃,ηβ̃ (v, N (qv , η)), and the MSE is given by\nE[(q̂ηα̃,ηβ̃ (v, N (qv , η)) − qv )2 |qv ]. We can break down bias\nand variance of mean-squared prediction error through the\nusage of the tower law of probability:\nE[(q̂ηα̃,ηβ̃ (v, N (qv , η)) − qv )2 |qv ]\nh\ni\n= E E[(q̂ηα̃,ηβ̃ (v, N (qv , η)) − qv )2 ] N (qv , η), qv\n\n(19)\n\n\fWhen the number of reviews at a given point in time is\nfixed, we can treat the estimated quality identically to how it\nis calculated in the fixed setting. This gives us the following\nbias-variance breakdown:\nE[(q̂ηα̃,ηβ̃ (v, N (qv , η)) − qv )2 |qv ]\n\n!2 \nη α̃ − η α̃qv − η β̃qv\nqv \n= E\nη α̃ + η β̃ + N (qv , η)\n\"\n#\nN (qv , η)qv (1 − qv )\n+E\nqv\n(η α̃ + η β̃ + N (qv , η))2\n\ncan be achieved by setting the prior strength η in a priorweighted rating system to zero. For a product with n ratings, k of which are positive, a population average rating of\nC, and an integer-valued threshold m, the Bayesian rating q\nof a product is calculated to be\nn\nk\nm\n· +\n·C",
-          "quoted_text_sha256": "4d27109a99f29ceb94fae51dfeb7cb02fb5625717112850704e9b384fd6b62b3"
-        }
-      ],
-      "source_kind": "claim",
-      "source_location": "ICWSM 19(1), Appendix C, Equations 19-20; cited publication:1750-1815",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Appendix C Equations 19-20 apply the tower law over random review count and decompose responsive-market conditional MSE into expected squared fixed-model bias plus expected fixed-model variance.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_responsive_mse_decompositionSpec"
-      ]
-    },
-    "mbjg25_appendix_f_k_one_endpoint": {
-      "aliases": [
-        "paper_facing_k_sampling_one_is_argmax"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_k_sampling_one_is_argmax"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_k_sampling_one_is_argmax",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_k_sampling_one_is_argmaxSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 2175,
-          "line_start": 2090,
-          "publication_locator": "cited publication",
-          "quoted_text": "F\n\nRobustness tests for different selection\nmechanisms\n\nThe responsive-setting empirical setup detailed in Section\n4.2 assumes that agents are Thompson samplers, which\nis meant to serve as a metaphor for real-world customers\nroughly choosing the best product on the market based on\nthe ratings information available to them. The amount of\nnoise in this decision-making process can vary from platform to platform; for example, users in some online platforms may pay less attention to other user-generated reviews, due to the user interface de-emphasizing ratings. In\norder to capture how our results may change in response to\nthis noisiness, we use this appendix to repeat our empirical\nexperiments while replacing our Thompson sampling choice\nalgorithm with lower-fidelity variants.\nTo generalize our Thompson sampling algorithm into\na parameterizable algorithm that we can tune, we use ksampling. This is a simple variant of Thompson sampling,\nwhich is defined as follows: Instead of drawing a sample\nfrom n different samples and selecting the arm that maximizes the expected reward conditional on that sample, we instead take the top-k most expected reward-maximizing arms\nand select one of those arms uniformly at random. Note that\nat k = 1, this approach is equivalent to traditional Thompson\nsampling, while at k = n, we are picking an arm uniformly\n\n1.0\n\nNucleus Size\n1\n2\n3\n4\n5\nPrior Strength\n0.001\n1\n10\n100\n1000\n10000\n\n0.9\n0.8\nExpected Total Regret\n\n4.0\n\n0.7\n0.6\n0.5\n0.4\n0.3\n0.2\n\n0.100\n\n0.125\n0.150\n0.175\n0.200\nStandard Deviation of Selection Rate\n\n0.225\n\n1\nFigure 12: Scatterplot of average\nstandard deviation in selection rate against total expected regret for robustness tests\nof the responsive setting when the consumer sampling algorithm is modified. Colours represent the nucleus size k,\nwhile size represents the prior strength η. The efficiencyfairness trade-off illustrated in Figure 3 holds for all values\nof k except for when k = 5, where sampling products purely\nat random at each timestep incurs a regret-maximizing but\n”fair” solution, and the value of η does not affect fairness or\nefficiency.\n\nat random.9\nWe repeat our KuaiRec experiments while replacing Thompson sampling with k-sampling, varying k ∈\n{1, 2, 3, 4, 5}; we refer to k as the nucleus size. We choose\nour η values from {0.001, 1, 10, 100, 1000, 10000}, and\nkeep all other hyperparameters unchanged from Section 4.2.\nNote that because we keep the market size of 5 unchanged\nfrom our original simulations, our sampling algorithm samples uniformly at random when k = 5.\nWe find that the central efficiency-fairness trade-off is surprisingly resilient to degradations in the consumer sampling\nalgorithm in identifying the best-performing product. While\nthe uniformly random selection case k = 5 behaves chaotically, due to the product choice at each timestep being completely randomly chosen and not informed by any kind of\nprior knowledge, all other nucleus sizes yield an efficiencyversus-fairness curve that (while noisy for higher values of\nk) qualitatively exhibit similar behavior as in our primary\nexperiments. In particular, as η increases, regret generally\nincreases while unfairness decreases.",
-          "quoted_text_sha256": "6bea113164b49e17e79c0fc2f18873275a8090c34b09027cc0eda5aced305b41"
-        }
-      ],
-      "source_kind": "claim",
-      "source_location": "ICWSM 19(1), Appendix F, paragraph after k-sampling definition; cited publication:2090-2175",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "At k=1, k-sampling selects the profile argmax and is the one-profile choice step of traditional Thompson sampling.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_k_sampling_one_is_argmaxSpec"
-      ]
-    },
-    "mbjg25_appendix_f_k_sampling_rule": {
-      "aliases": [
-        "paper_facing_k_sampling_mechanism"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_k_sampling_mechanism"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_k_sampling_mechanism",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_k_sampling_mechanismSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 2175,
-          "line_start": 2090,
-          "publication_locator": "cited publication",
-          "quoted_text": "F\n\nRobustness tests for different selection\nmechanisms\n\nThe responsive-setting empirical setup detailed in Section\n4.2 assumes that agents are Thompson samplers, which\nis meant to serve as a metaphor for real-world customers\nroughly choosing the best product on the market based on\nthe ratings information available to them. The amount of\nnoise in this decision-making process can vary from platform to platform; for example, users in some online platforms may pay less attention to other user-generated reviews, due to the user interface de-emphasizing ratings. In\norder to capture how our results may change in response to\nthis noisiness, we use this appendix to repeat our empirical\nexperiments while replacing our Thompson sampling choice\nalgorithm with lower-fidelity variants.\nTo generalize our Thompson sampling algorithm into\na parameterizable algorithm that we can tune, we use ksampling. This is a simple variant of Thompson sampling,\nwhich is defined as follows: Instead of drawing a sample\nfrom n different samples and selecting the arm that maximizes the expected reward conditional on that sample, we instead take the top-k most expected reward-maximizing arms\nand select one of those arms uniformly at random. Note that\nat k = 1, this approach is equivalent to traditional Thompson\nsampling, while at k = n, we are picking an arm uniformly\n\n1.0\n\nNucleus Size\n1\n2\n3\n4\n5\nPrior Strength\n0.001\n1\n10\n100\n1000\n10000\n\n0.9\n0.8\nExpected Total Regret\n\n4.0\n\n0.7\n0.6\n0.5\n0.4\n0.3\n0.2\n\n0.100\n\n0.125\n0.150\n0.175\n0.200\nStandard Deviation of Selection Rate\n\n0.225\n\n1\nFigure 12: Scatterplot of average\nstandard deviation in selection rate against total expected regret for robustness tests\nof the responsive setting when the consumer sampling algorithm is modified. Colours represent the nucleus size k,\nwhile size represents the prior strength η. The efficiencyfairness trade-off illustrated in Figure 3 holds for all values\nof k except for when k = 5, where sampling products purely\nat random at each timestep incurs a regret-maximizing but\n”fair” solution, and the value of η does not affect fairness or\nefficiency.\n\nat random.9\nWe repeat our KuaiRec experiments while replacing Thompson sampling with k-sampling, varying k ∈\n{1, 2, 3, 4, 5}; we refer to k as the nucleus size. We choose\nour η values from {0.001, 1, 10, 100, 1000, 10000}, and\nkeep all other hyperparameters unchanged from Section 4.2.\nNote that because we keep the market size of 5 unchanged\nfrom our original simulations, our sampling algorithm samples uniformly at random when k = 5.\nWe find that the central efficiency-fairness trade-off is surprisingly resilient to degradations in the consumer sampling\nalgorithm in identifying the best-performing product. While\nthe uniformly random selection case k = 5 behaves chaotically, due to the product choice at each timestep being completely randomly chosen and not informed by any kind of\nprior knowledge, all other nucleus sizes yield an efficiencyversus-fairness curve that (while noisy for higher values of\nk) qualitatively exhibit similar behavior as in our primary\nexperiments. In particular, as η increases, regret generally\nincreases while unfairness decreases.",
-          "quoted_text_sha256": "6bea113164b49e17e79c0fc2f18873275a8090c34b09027cc0eda5aced305b41"
-        }
-      ],
-      "source_kind": "algorithm",
-      "source_location": "ICWSM 19(1), Appendix F, k-sampling definition; cited publication:2090-2175",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Appendix F defines k-sampling by taking the k products with the highest values in the sampled reward profile and selecting uniformly from that top-k set.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_k_sampling_mechanismSpec"
-      ]
-    },
-    "mbjg25_appendix_f_market_size_endpoint": {
-      "aliases": [
-        "paper_facing_k_sampling_market_size_is_uniform"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_k_sampling_market_size_is_uniform"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_k_sampling_market_size_is_uniform",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_k_sampling_market_size_is_uniformSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 2175,
-          "line_start": 2090,
-          "publication_locator": "cited publication",
-          "quoted_text": "F\n\nRobustness tests for different selection\nmechanisms\n\nThe responsive-setting empirical setup detailed in Section\n4.2 assumes that agents are Thompson samplers, which\nis meant to serve as a metaphor for real-world customers\nroughly choosing the best product on the market based on\nthe ratings information available to them. The amount of\nnoise in this decision-making process can vary from platform to platform; for example, users in some online platforms may pay less attention to other user-generated reviews, due to the user interface de-emphasizing ratings. In\norder to capture how our results may change in response to\nthis noisiness, we use this appendix to repeat our empirical\nexperiments while replacing our Thompson sampling choice\nalgorithm with lower-fidelity variants.\nTo generalize our Thompson sampling algorithm into\na parameterizable algorithm that we can tune, we use ksampling. This is a simple variant of Thompson sampling,\nwhich is defined as follows: Instead of drawing a sample\nfrom n different samples and selecting the arm that maximizes the expected reward conditional on that sample, we instead take the top-k most expected reward-maximizing arms\nand select one of those arms uniformly at random. Note that\nat k = 1, this approach is equivalent to traditional Thompson\nsampling, while at k = n, we are picking an arm uniformly\n\n1.0\n\nNucleus Size\n1\n2\n3\n4\n5\nPrior Strength\n0.001\n1\n10\n100\n1000\n10000\n\n0.9\n0.8\nExpected Total Regret\n\n4.0\n\n0.7\n0.6\n0.5\n0.4\n0.3\n0.2\n\n0.100\n\n0.125\n0.150\n0.175\n0.200\nStandard Deviation of Selection Rate\n\n0.225\n\n1\nFigure 12: Scatterplot of average\nstandard deviation in selection rate against total expected regret for robustness tests\nof the responsive setting when the consumer sampling algorithm is modified. Colours represent the nucleus size k,\nwhile size represents the prior strength η. The efficiencyfairness trade-off illustrated in Figure 3 holds for all values\nof k except for when k = 5, where sampling products purely\nat random at each timestep incurs a regret-maximizing but\n”fair” solution, and the value of η does not affect fairness or\nefficiency.\n\nat random.9\nWe repeat our KuaiRec experiments while replacing Thompson sampling with k-sampling, varying k ∈\n{1, 2, 3, 4, 5}; we refer to k as the nucleus size. We choose\nour η values from {0.001, 1, 10, 100, 1000, 10000}, and\nkeep all other hyperparameters unchanged from Section 4.2.\nNote that because we keep the market size of 5 unchanged\nfrom our original simulations, our sampling algorithm samples uniformly at random when k = 5.\nWe find that the central efficiency-fairness trade-off is surprisingly resilient to degradations in the consumer sampling\nalgorithm in identifying the best-performing product. While\nthe uniformly random selection case k = 5 behaves chaotically, due to the product choice at each timestep being completely randomly chosen and not informed by any kind of\nprior knowledge, all other nucleus sizes yield an efficiencyversus-fairness curve that (while noisy for higher values of\nk) qualitatively exhibit similar behavior as in our primary\nexperiments. In particular, as η increases, regret generally\nincreases while unfairness decreases.",
-          "quoted_text_sha256": "6bea113164b49e17e79c0fc2f18873275a8090c34b09027cc0eda5aced305b41"
-        }
-      ],
-      "source_kind": "claim",
-      "source_location": "ICWSM 19(1), Appendix F, paragraph after k-sampling definition; cited publication:2090-2175",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "When k equals the number of products in the market, k-sampling is uniform random selection over the whole market.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_k_sampling_market_size_is_uniformSpec"
-      ]
-    },
-    "mbjg25_corrected_interior_quality_lower_bound": {
-      "aliases": [
-        "assumption_quality_positive"
-      ],
+    "mbjg25_appendix_d_beta_shape": {
       "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_anchor_evidence": [
-        {
-          "line_end": 450,
-          "line_start": 443,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
-        }
-      ],
-      "source_defect_id": "MBJG25-THEOREM3-1-STRICT-ENDPOINT-01",
-      "source_kind": "assumption",
-      "source_location": "ICWSM 19(1), Theorem 3.1 and Appendix A Equation 11; cited publication:443-450 and 1533-1552 and 1638-1650",
-      "source_note": "Formalized source-correction condition implied by the source formula.",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "The corrected strict-variance conclusion restricts true quality to 0 < q_v so that the Bernoulli variance numerator is positive.",
-      "support_lean_declarations": [
-        "assumption_quality_positive"
-      ]
-    },
-    "mbjg25_corrected_interior_quality_upper_bound": {
-      "aliases": [
-        "assumption_quality_lt_one"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_anchor_evidence": [
-        {
-          "line_end": 450,
-          "line_start": 443,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
-        }
-      ],
-      "source_defect_id": "MBJG25-THEOREM3-1-STRICT-ENDPOINT-01",
-      "source_kind": "assumption",
-      "source_location": "ICWSM 19(1), Theorem 3.1 and Appendix A Equation 11; cited publication:443-450 and 1533-1552 and 1638-1650",
-      "source_note": "Formalized source-correction condition implied by the source formula.",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "The corrected strict-variance conclusion restricts true quality to q_v < 1 so that the Bernoulli variance numerator is positive.",
-      "support_lean_declarations": [
-        "assumption_quality_lt_one"
-      ]
-    },
-    "mbjg25_eq1_posterior_rating": {
-      "aliases": [
-        "paper_posterior_rating"
-      ],
-      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:1271-1287",
+        "archival_source_quote_sha256": "ae48d15869cf403bce1864f949c2e10dc611add627a44f38614f904af1b45958",
+        "corrected_target_review_sha256": "44355207571aba74ccecfbbc5dd31710f5137b20d67237041fdbed8840ee2e67",
+        "corrected_target_sha256": "3f217a47c2779d5bc16d821715cb194cc53a0c347a54a70995823f7d8f573844",
+        "governing_defect_ids": [
+          "MBJG25-EQ20-BETA-SHAPE-01"
+        ],
+        "schema": 1,
+        "statement": "Corrected Appendix D formula: a Bayesian weighted average with population baseline C and strength m has Beta pseudo-counts m C and m (1-C), equivalently a baseline Beta(C, 1-C); its posterior rating is (k + m C) / (n + m)."
+      },
+      "coverage_status": "corrected_source_statement",
+      "inventory_role": "corrected_source_target",
       "lean_declarations": [
-        "MBJG25ProducerFairness.paper_posterior_rating"
+        "MBJG25ProducerFairness.paper_eq20_bayesian_rating_equivalence"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_posterior_rating",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_posterior_ratingSpec"
-      },
       "source_anchor_evidence": [
         {
-          "line_end": 276,
-          "line_start": 203,
+          "line_end": 1287,
+          "line_start": 1271,
           "publication_locator": "cited publication",
-          "quoted_text": "Beta-Bernoulli setting, this posterior distribution for product\nv at timestep t is a Beta distribution with parameters\nα = α̂ + R(v, t),\nβ = β̂ + (|S(v, t)| − R(v, t)),\nwhere R(v, t) ∼ Binomial(t, qv ) is the number of positive\nratings received by the item so far (and so |S(v, t)| − R(v, t)\nis the number of negative ratings). We can compute the posterior mean estimated quality for product v at timestep t as:\n\nModel Primitives\n\nOur modeling framework is as follows.\nProducts. There is a universe of products V . Product v ∈\nV has unobserved true quality qv , where 0 ≤ qv ≤ 1.\nBinary ratings that accumulate over time. Products accumulate ratings over time, as users interact with and rate\nproducts. To capture this phenomenon, we assume the market operates over discrete time periods t, and products can\nreceive ratings at each time period. We assume these ratings\nare binary, i.e., 0 or 1.\nCrucially, the true quality of a product should impact the\nrating received; we suppose that a rating for product v is\nBernoulli(qv ), independent of all other randomness in the\nsystem. Since ratings accumulate, we use S(v, T ) to denote\nthe set of binary ratings that product v ∈ V has received\nafter T timesteps have elapsed.\nWe assume binary ratings as a simplification for ease of\nexposition; our results qualitatively extend to other settings,\nas we demonstrate in Appendix E. We note that this choice\ncaptures how many platforms elicit ratings (e.g., in any platform that uses a thumbs-up/thumbs-down system); in other\nplatforms with more than two options, ratings often follow a\n“J-curve” where users mostly only use the extreme options\n(Hu, Zhang, and Pavlou 2009). In Appendix G, we demonstrate that our results hold even when we assume users’ distribution over ratings is centered or even right-skewed.\nPrior-Weighted Rating System. In a prior-weighted rating system, the prior distribution is a design choice of the\nplatform. The system operates by estimating a posterior distribution of the estimated true quality for each product, given\nthe prior and the received ratings on that product.\nWe primarily consider rating systems where the prior represents a Beta distribution.1 Then, in this setting, the platform chooses the prior Beta distribution parameters (α̂, β̂).2\nWe will refer to α̂ + β̂ as the prior strength, as it indicates\nhow strongly the prior is concentrated around its mean (and\nhow many ratings will be needed to “overwhelm”) the prior.\nAfter a product receives a rating, the platform updates its\nestimation posterior distribution for its true quality. In our\n1\nThis choice is natural, given that ratings are assumed to be\nBernoulli. The Beta distribution is the conjugate prior for Bernoulli\ndata, i.e., with this choice of prior, the posterior distribution remains a Beta distribution but with different parameters.\n2\nα\nIn a Beta(α, β) distribution, the mean is α+β\n; the higher that\nα + β are, the more concentrated the distribution around the mean.\nA common interpretation of the parameters is that α+β is the number of trials (coin flips), and α represents the number of successes.\n\nq̂α̂,β̂ (v, t) =\n\nα̂ + R(v, t)\nα̂ + β̂ + |S(v, t)|\n\n.\n\n(1)\n\nThe platform impacts the operation of a prior-weighted\nrating system only through the prior choice, determined here\nby α̂ and β̂. There are two aspects of this choice: the shape\nof the prior, and its strength relative to observed ratings in\ndetermining the posterior. In our analysis, we fix the prior\nshape by relying on market-level data, in a manner inspired\nby empirical Bayesian statistical methods (Robbins 1964).\nOur analysis shows that the strength of the prior then mediates the tradeoff between efficiency and producer fairness.\nFormally, to reason about a prior’s strength, we fix a prior\nshape (α̃, β̃), then set (α̂, β̂) = (η α̃, η β̃) for some prior\nstrength η ≥ 0, providing us with a single-parameter lever\nto adjust the strength of the prior. We elaborate on how we\ncalibrate the prior shape in Section 3.2. Note in particular\nthat if η = 0, then the platform simply implements sample\naveraging to compute the estimated quality of an item.",
-          "quoted_text_sha256": "802b26f9478302dfa57e192497802cf0fa6ec0518ea6399cca0a6abec61a8d38"
+          "quoted_text": "bias-variance breakdown:                                                       ings, k of which are positive, a population average rating of\n                                                                               C, and an integer-valued threshold m, the Bayesian rating q\n                                                                               of a product is calculated to be\n  E[(q̂ηα̃,ηβ̃ (v, N (qv , η)) − qv )2 |qv ]\n                                                 !2 \n                        η α̃ −  η α̃q   − η β̃q                                                     n    k  m\n             = E\n                                      v         v\n                                                     qv                                      q=        · +   ·C\n                       η α̃ + η β̃ + N (qv , η)                                                   n+m n n+m\n                                                                                                  k + mC\n                           \"                                 #                                  =        ,\n                               N (qv , η)qv (1 − qv )                                              n+m\n                     +E                                   qv     (22)\n                             (η α̃ + η β̃ + N (qv , η))2                         which is equivalent to a prior-weighted rating system\n                                                                               with prior strength m and baseline prior distribution of\n                                                                               Beta(C, 1).",
+          "quoted_text_sha256": "ae48d15869cf403bce1864f949c2e10dc611add627a44f38614f904af1b45958"
         }
       ],
-      "source_kind": "definition",
-      "source_location": "ICWSM 19(1), p. 1013, Equation 1; cited publication:203-276",
-      "source_prose_definition_reconciliation": {
-        "judgment": "semantically_equivalent",
-        "presentation_sha256": "0f2e23dfe1ac225a392d6dc0f70d39fde4edf44039b9c7a858b2ee54c4964d9c",
-        "relation": "source_item_represents_prose_definition",
-        "schema": 2,
-        "semantic_basis": "Equation 1 directly defines the posterior mean rating recorded in the source-map statement.",
-        "source_item_statement_sha256": "57c1f63b989be5299e6ee2dbb4841a0ddba2847393f3057ca256c2087432fd87",
-        "validated_at": "2026-08-19T17:20:00Z",
-        "validator": "Codex MBJG25 direct source-item semantic reconciliation",
-        "validator_type": "agent"
-      },
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Equation 1 defines the posterior mean rating after binary feedback as (alpha_hat + R(v,t)) / (alpha_hat + beta_hat + |S(v,t)|).",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_posterior_ratingSpec"
-      ]
-    },
-    "mbjg25_eq20_bayesian_rating_equivalence": {
-      "aliases": [
-        "paper_facing_eq20_bayesian_rating_equivalence"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_eq20_bayesian_rating_equivalence"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_eq20_bayesian_rating_equivalence",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_eq20_bayesian_rating_equivalenceSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 1835,
-          "line_start": 1810,
-          "publication_locator": "cited publication",
-          "quoted_text": "of a product is calculated to be\nn\nk\nm\n· +\n·C\nn+m n n+m\nk + mC\n=\n,\nn+m\nwhich is equivalent to a prior-weighted rating system\nwith prior strength m and baseline prior distribution of\nBeta(C, 1).\nq=\n\n(20)\n\nFrom here, one may proceed with the proofs of the theorems in Section 3 so long as they can make statements about\nthe bias and variance terms in the above expression. In the\nresponsive model in this paper, N (qv , η) is a noisy random\nvariable that is a function of the play distribution in a multiarmed bandit. The theoretical challenge in proving stronger\nresults in the responsive setting is being able to characterize N (qv , η) for finite samples, and how it changes with η\n– in this work, we show empirical results that the tradeoff\nholds for a variety of consumer choice models (Thompson\nsampling, and various models discussed in Appendix F).",
-          "quoted_text_sha256": "f98e7f046233ef287ac49e917cc1301e075b5c41f4bab8f1314d28291ef74177"
-        }
-      ],
-      "source_defect_id": "MBJG25-EQ20-BETA-SHAPE-01",
-      "source_kind": "claim",
-      "source_location": "ICWSM 19(1), Appendix D, Equation 20 and following paragraph; cited publication:1810-1835",
-      "source_note": "The printed Beta(C,1) label is corrected to Beta(C,1-C), the unique shape whose mean is C and whose strength-one scaling yields Equation 20.",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Equation 20 simplifies the convex combination of the observed positive-rating share and population baseline C to (k+m*C)/(n+m), which is the binary posterior formula with pseudo-counts m*C and m*(1-C).",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_eq20_bayesian_rating_equivalenceSpec"
-      ]
-    },
-    "mbjg25_eq20_positive_rating_count": {
-      "aliases": [
-        "assumption_positive_rating_count"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "formalization_side_condition_not_a_source_claim",
-      "scope_disposition_note": "This is a Lean-side nonzero-denominator condition, not a separately source-presented theorem, definition, or assumption. The displayed Equation 20 claim is inventoried separately.",
-      "source_anchor_evidence": [
-        {
-          "line_end": 1830,
-          "line_start": 1810,
-          "publication_locator": "cited publication",
-          "quoted_text": "of a product is calculated to be\nn\nk\nm\n· +\n·C\nn+m n n+m\nk + mC\n=\n,\nn+m\nwhich is equivalent to a prior-weighted rating system\nwith prior strength m and baseline prior distribution of\nBeta(C, 1).\nq=\n\n(20)\n\nFrom here, one may proceed with the proofs of the theorems in Section 3 so long as they can make statements about\nthe bias and variance terms in the above expression. In the\nresponsive model in this paper, N (qv , η) is a noisy random",
-          "quoted_text_sha256": "e25f496dc3a7a0ed5d576254bfa14e9385d7f8f1f95c31228f1f023689224408"
-        }
+      "source_defect_ids": [
+        "MBJG25-EQ20-BETA-SHAPE-01"
       ],
       "source_kind": "formula",
-      "source_location": "ICWSM 19(1), Appendix D, Equation 20; cited publication:1810-1830",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Formalization-side nonzero observed-rating-count premise required to manipulate the displayed weighted-average denominator.",
-      "support_lean_declarations": [
-        "assumption_positive_rating_count"
-      ]
+      "source_location": "cited publication:1271-1287",
+      "source_note": "Documented local source correction. The displayed weighted-average estimator is preserved; only the incompatible printed Beta-shape label is corrected, with no additional named theorem claim.",
+      "source_status": "corrected",
+      "statement": "Appendix D says that its Bayesian weighted-average display with population baseline C and threshold m is equivalent to a prior-weighted binary rating with baseline Beta(C,1)."
     },
-    "mbjg25_eq21_corrected_ordinal_posterior_rating": {
-      "aliases": [
-        "paper_ordinal_posterior_rating"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_ordinal_posterior_rating"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_ordinal_posterior_rating",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_ordinal_posterior_ratingSpec"
+    "mbjg25_appendix_e_ordinal_prior": {
+      "claim_bearing": false,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:1305-1322",
+        "archival_source_quote_sha256": "f36ab60be100006369ef93e63bc97f482122e1dd175712cba739a20f589169e8",
+        "corrected_target_review_sha256": "4ac2062d2bc6651c4405107cf198cea36637d8c4c000c70aea47d26ba2804216",
+        "corrected_target_sha256": "2f9d02232041e5c3c8610a240190c551613bbaac5b2c5bc7610e7d116111f71d",
+        "governing_defect_ids": [
+          "MBJG25-EQ21-PRIOR-OMISSION-01"
+        ],
+        "schema": 1,
+        "statement": "Corrected Appendix E formula: the ordinal Dirichlet posterior expected rating weights every rating j by alphaHat_j + N(v,j,t) and divides by the sum of alphaHat_j + N(v,j,t); the printed observed-count-only display is the zero-prior special case."
       },
+      "coverage_status": "corrected_source_statement",
+      "inventory_role": "corrected_source_target",
+      "lean_declarations": [
+        "MBJG25ProducerFairness.paper_eq21_ordinal_posterior_formula"
+      ],
       "source_anchor_evidence": [
         {
-          "line_end": 2029,
-          "line_start": 1903,
+          "line_end": 1322,
+          "line_start": 1305,
           "publication_locator": "cited publication",
-          "quoted_text": "Because of the ordinal nature of the ratings data in this\nwhere the exact rating aggregation method is hidden to comsetting, we need to adjust our model primitives as defined in\nbat fake reviews and brigading, sample mean rating systems\nSection 2.1. Rather than a Beta-Bernoulli setting, we model\nwhere the overall rating of a product is the average ratour ratings as being drawn from a categorical distribution\ning it has received over a certain period of time by trustwith a Dirichlet prior. Let K be the set of possible ratings\nworthy reviewers, and Bayesian ratings, which calculates\nfor a product v (i.e. K = {1, 2, 3, 4, 5} for Amazon proda weighted average between the sample mean rating and a\nucts and K = {0, 1, 2, 3, 4, 5} for Goodreads products). If\npopulation-level mean rating. Assuming the reviews are bi7\nnary, both sample mean and Bayesian ratings are captured\nLicensed under the MIT License\n8\nby our prior-weighted ratings system. Sample mean ratings\nLicensed under the Apache 2.0 license\n\n\fProduct Category\nChildren\nComics & Graphic\nFantasy & Paranormal\nHistory & Biography\nMystery, Crime, Thriller\nPoetry\nRomance\nYoung Adult\nAll Beauty\nBeauty & Personal Care\nClothing, Shoes, Jewelry\nHealth & Personal Care\nIndustrial & Scientific\nMagazine Subscriptions\nPatio, Lawn, Garden\nSports & Outdoor\nTools, Home Improvement\nVideo Games\n\nPlatform\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\n\n# Items\n124.1k\n89.4k\n258.6k\n302.9k\n219.2k\n36.5k\n335.4k\n93.4k\n112.6k\n94.3k\n7.2mil\n60.3k\n427.5k\n3.4k\n851.7k\n1.6mil\n1.5mil\n137.2k\n\n# Ratings\n734.6k\n542.4k\n3.4mil\n2.1mil\n1.8mil\n154.6k\n3.6mil\n2.4mil\n701.5k\n2.1mil\n66.0mil\n494.1k\n5.2mil\n71.5k\n16.5mil\n19.6mil\n27.0mil\n4.6mil\n\nTable 2: Table showing details about each dataset used in\nAppendix E.\n\nratings for a product v are drawn from a categorical distribution with weights {pv,k }P\nk∈K , then we define the true quality\nqv of this product to be j∈K pv,j · j.\nTo estimate the quality of a product at time T , we define\nS(v, k, T ) to be the set of k-star reviews for product v at\ntime T , and N (v, k, t) := |S(v, k, T )|. The prior parameters, instead of being for a Beta distribution, are now for a\nDirichlet distribution; they are given by α̂ = {α̂j }j∈K . Due\nto the conjugacy of the Dirichlet distribution and the categorical distribution, we can define the estimated quality for\nv at time t as\n\nP\n\nj∈K\nq̂α̂ (v, t) = P\n\nN (v, j, t) · j\n\nj∈K N (v, j, t)\n\n(21)\n\nOur notions of prior strength and shape remain the same\nas before; that is, if we fix a prior shape α̃ = {α̃j }j∈K ,\nour choice of strength η ≥ 0 changes the Dirichlet prior\nby setting α̂ = {η α̃j }j∈K . The rest of our also model definitions remain unchanged. We kept the same experimental\nhyperparameters of the original experiment in Section 4.2,\nwith the exception of our η values now being chosen from\n{0.001, 1, 10, 100, 1000, 10000}, and our Thompson sampling model for consumer choice now using Dirichlet priors rather than Beta priors. To fit the Dirichlet distribution to",
-          "quoted_text_sha256": "0b2dcb4d08063e7833bc3710e05bd1a143d1d7db6049a2771051c61982d8d6d9"
+          "quoted_text": "Fantasy & Paranormal              Goodreads    258.6k    3.4mil              To estimate the quality of a product at time T , we define\nHistory & Biography               Goodreads    302.9k    2.1mil           S(v, k, T ) to be the set of k-star reviews for product v at\nMystery, Crime, Thriller          Goodreads    219.2k    1.8mil           time T , and N (v, k, t) := |S(v, k, T )|. The prior parame-\nPoetry                            Goodreads    36.5k     154.6k           ters, instead of being for a Beta distribution, are now for a\nRomance                           Goodreads    335.4k    3.6mil           Dirichlet distribution; they are given by α̂ = {α̂j }j∈K . Due\nYoung Adult                       Goodreads    93.4k     2.4mil           to the conjugacy of the Dirichlet distribution and the cate-\nAll Beauty                        Amazon       112.6k    701.5k           gorical distribution, we can define the estimated quality for\nBeauty & Personal Care            Amazon       94.3k     2.1mil           v at time t as\nClothing, Shoes, Jewelry          Amazon       7.2mil    66.0mil\nHealth & Personal Care            Amazon       60.3k     494.1k                                                                       P\nIndustrial & Scientific           Amazon       427.5k    5.2mil                                                                     j∈K         N (v, j, t) · j\nMagazine Subscriptions            Amazon       3.4k      71.5k                                                        q̂α̂ (v, t) = P                                              (23)\n                                                                                                                                            j∈K N (v, j, t)\nPatio, Lawn, Garden               Amazon       851.7k    16.5mil\nSports & Outdoor                  Amazon       1.6mil    19.6mil             Our notions of prior strength and shape remain the same\nTools, Home Improvement           Amazon       1.5mil    27.0mil          as before; that is, if we fix a prior shape α̃ = {α̃j }j∈K ,\nVideo Games                       Amazon       137.2k    4.6mil           our choice of strength η ≥ 0 changes the Dirichlet prior\n                                                                          by setting α̂ = {η α̃j }j∈K . The rest of our also model def-",
+          "quoted_text_sha256": "f36ab60be100006369ef93e63bc97f482122e1dd175712cba739a20f589169e8"
         }
       ],
-      "source_defect_id": "MBJG25-EQ21-PRIOR-OMISSION-01",
-      "source_kind": "definition",
-      "source_location": "ICWSM 19(1), Appendix E, Equation 21 and surrounding Dirichlet-prior paragraphs; cited publication:1903-2029",
-      "source_note": "The printed display omits alphaHat from both sums; the notation and adjacent paragraphs uniquely require the prior pseudo-count terms.",
-      "source_prose_definition_reconciliation": {
-        "judgment": "semantically_equivalent",
-        "presentation_sha256": "3f8160858d88e99d9469139be1a3a19431269b49cfc2b6e19b00f2dc3654b859",
-        "relation": "source_item_represents_prose_definition",
-        "schema": 2,
-        "semantic_basis": "Appendix E introduces the Dirichlet prior and declares the estimated-quality display; the map records the documented prior-term correction.",
-        "source_item_statement_sha256": "36a565d29f56d6204ab0aeebf803c59c7e8ba2fe0f99f68f744928cd6264614e",
-        "validated_at": "2026-08-19T17:20:00Z",
-        "validator": "Codex MBJG25 direct source-item semantic reconciliation",
-        "validator_type": "agent"
-      },
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Corrected Equation 21: under a Dirichlet prior, ordinal posterior expected rating is the rating-value-weighted sum of prior pseudo-count plus observed count, divided by total prior plus observed mass.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_ordinal_posterior_ratingSpec"
-      ]
-    },
-    "mbjg25_eq21_printed_zero_prior_comparison": {
-      "aliases": [
-        "paper_facing_eq21_zero_prior_comparison"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_eq21_zero_prior_comparison"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_eq21_zero_prior_comparison",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_eq21_zero_prior_comparisonSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 2029,
-          "line_start": 1903,
-          "publication_locator": "cited publication",
-          "quoted_text": "Because of the ordinal nature of the ratings data in this\nwhere the exact rating aggregation method is hidden to comsetting, we need to adjust our model primitives as defined in\nbat fake reviews and brigading, sample mean rating systems\nSection 2.1. Rather than a Beta-Bernoulli setting, we model\nwhere the overall rating of a product is the average ratour ratings as being drawn from a categorical distribution\ning it has received over a certain period of time by trustwith a Dirichlet prior. Let K be the set of possible ratings\nworthy reviewers, and Bayesian ratings, which calculates\nfor a product v (i.e. K = {1, 2, 3, 4, 5} for Amazon proda weighted average between the sample mean rating and a\nucts and K = {0, 1, 2, 3, 4, 5} for Goodreads products). If\npopulation-level mean rating. Assuming the reviews are bi7\nnary, both sample mean and Bayesian ratings are captured\nLicensed under the MIT License\n8\nby our prior-weighted ratings system. Sample mean ratings\nLicensed under the Apache 2.0 license\n\n\fProduct Category\nChildren\nComics & Graphic\nFantasy & Paranormal\nHistory & Biography\nMystery, Crime, Thriller\nPoetry\nRomance\nYoung Adult\nAll Beauty\nBeauty & Personal Care\nClothing, Shoes, Jewelry\nHealth & Personal Care\nIndustrial & Scientific\nMagazine Subscriptions\nPatio, Lawn, Garden\nSports & Outdoor\nTools, Home Improvement\nVideo Games\n\nPlatform\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nGoodreads\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\nAmazon\n\n# Items\n124.1k\n89.4k\n258.6k\n302.9k\n219.2k\n36.5k\n335.4k\n93.4k\n112.6k\n94.3k\n7.2mil\n60.3k\n427.5k\n3.4k\n851.7k\n1.6mil\n1.5mil\n137.2k\n\n# Ratings\n734.6k\n542.4k\n3.4mil\n2.1mil\n1.8mil\n154.6k\n3.6mil\n2.4mil\n701.5k\n2.1mil\n66.0mil\n494.1k\n5.2mil\n71.5k\n16.5mil\n19.6mil\n27.0mil\n4.6mil\n\nTable 2: Table showing details about each dataset used in\nAppendix E.\n\nratings for a product v are drawn from a categorical distribution with weights {pv,k }P\nk∈K , then we define the true quality\nqv of this product to be j∈K pv,j · j.\nTo estimate the quality of a product at time T , we define\nS(v, k, T ) to be the set of k-star reviews for product v at\ntime T , and N (v, k, t) := |S(v, k, T )|. The prior parameters, instead of being for a Beta distribution, are now for a\nDirichlet distribution; they are given by α̂ = {α̂j }j∈K . Due\nto the conjugacy of the Dirichlet distribution and the categorical distribution, we can define the estimated quality for\nv at time t as\n\nP\n\nj∈K\nq̂α̂ (v, t) = P\n\nN (v, j, t) · j\n\nj∈K N (v, j, t)\n\n(21)\n\nOur notions of prior strength and shape remain the same\nas before; that is, if we fix a prior shape α̃ = {α̃j }j∈K ,\nour choice of strength η ≥ 0 changes the Dirichlet prior\nby setting α̂ = {η α̃j }j∈K . The rest of our also model definitions remain unchanged. We kept the same experimental\nhyperparameters of the original experiment in Section 4.2,\nwith the exception of our η values now being chosen from\n{0.001, 1, 10, 100, 1000, 10000}, and our Thompson sampling model for consumer choice now using Dirichlet priors rather than Beta priors. To fit the Dirichlet distribution to",
-          "quoted_text_sha256": "0b2dcb4d08063e7833bc3710e05bd1a143d1d7db6049a2771051c61982d8d6d9"
-        }
-      ],
-      "source_defect_id": "MBJG25-EQ21-PRIOR-OMISSION-01",
-      "source_kind": "claim",
-      "source_location": "ICWSM 19(1), Appendix E, Equation 21 and following prior-strength paragraph; cited publication:1903-2029",
-      "source_note": "Checked comparison evidence for the formalized Equation 21 source correction.",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "The expression printed in Equation 21 is exactly the zero-prior special case of the corrected Dirichlet posterior expected-rating formula.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_eq21_zero_prior_comparisonSpec"
-      ]
-    },
-    "mbjg25_eq2_fixed_market_mse": {
-      "aliases": [
-        "paper_fixed_market_mse"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_fixed_market_mse"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_fixed_market_mse",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_fixed_market_mseSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 333,
-          "line_start": 315,
-          "publication_locator": "cited publication",
-          "quoted_text": "Informally, efficiency is measured by whether or not the rating system is successfully identifying high-quality products.\nIndividual producer fairness is measured by whether products of similar true quality are treated similarly.\nMetrics in fixed setting. In the fixed model, we focus\nprimarily on an accuracy measure: the mean-squared error\n(MSE) of the estimated quality in predicting true quality,\ndefined at timestep t as\nP\nM SE(q̂ηα̃,ηβ̃ ) =\n\n2\nv∈V (q̂η α̃,η β̃ (v, t) − qv )\n\n|V |\n\n.\n\n(2)\n\nWhy MSE? Via the bias-variance decomposition, meansquared error encodes a metric for efficiency and a metric",
-          "quoted_text_sha256": "989003560ec5c047add58ab52fae9923af4397dfee4d41dab72107f096dac893"
-        }
-      ],
-      "source_kind": "definition",
-      "source_location": "ICWSM 19(1), p. 1014, Equation 2; cited publication:315-333",
-      "source_prose_definition_reconciliation": {
-        "judgment": "semantically_equivalent",
-        "presentation_sha256": "0bb9a4bbb85bb1f4ec8139ce4862e674b28ef8950eb890f526f0c2633342e55d",
-        "relation": "source_item_represents_prose_definition",
-        "schema": 2,
-        "semantic_basis": "The source names mean-squared error and Equation 2 gives the product-average squared-error formula stated in the map.",
-        "source_item_statement_sha256": "db37f6d8c51439e49bce9f4b0c77d7a234cfeccfe810ef2f987b489e3cc7fe65",
-        "validated_at": "2026-08-19T17:20:00Z",
-        "validator": "Codex MBJG25 direct source-item semantic reconciliation",
-        "validator_type": "agent"
-      },
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Equation 2 defines fixed-market MSE as the average over products of squared posterior-rating error relative to true quality.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_fixed_market_mseSpec"
-      ]
-    },
-    "mbjg25_eq3_fixed_bias_variance_decomposition": {
-      "aliases": [
-        "paper_facing_fixed_mse_decomposition"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_fixed_mse_decomposition"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_fixed_mse_decomposition",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_fixed_mse_decompositionSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 345,
-          "line_start": 333,
-          "publication_locator": "cited publication",
-          "quoted_text": "Why MSE? Via the bias-variance decomposition, meansquared error encodes a metric for efficiency and a metric\nfor producer unfairness. For product v with true quality qv :\n\u0010\n\u00112\nE[(q̂ηα̃,ηβ̃ (v, t) − qv )2 |qv ] = E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\n+ Var[q̂ηα̃,ηβ̃ (v, t)|qv ].\n(3)\nWhen conditioned on a product with given true quality\nqv , the variance component of the MSE (second component\non the right-hand side) represents an objective for producer\nfairness, as the estimator should ideally estimate products\nof similar true quality similarly, even if that estimated quality is biased. The bias component of MSE is correlated with\nconsumer efficiency; in particular, a rating system that consistently underrates high-quality products or overrates lowquality ones will lead to poor consumer experiences.",
-          "quoted_text_sha256": "a0df8ee0b7186a921f4c4b4a56f47616544240f80c16ecb98e62aec4c02044fb"
-        }
-      ],
-      "source_kind": "claim",
-      "source_location": "ICWSM 19(1), p. 1014, Equation 3; cited publication:333-345",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Equation 3 states that conditional mean squared error for one product equals squared conditional bias plus conditional variance.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_fixed_mse_decompositionSpec"
-      ]
-    },
-    "mbjg25_eq4_expected_regret": {
-      "aliases": [
-        "paper_facing_expected_regret"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_expected_regret"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_expected_regret",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_expected_regretSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 369,
-          "line_start": 354,
-          "publication_locator": "cited publication",
-          "quoted_text": "Efficiency. Formally, to measure efficiency, we use total\nexpected regret compared to the best item in the marketplace\nat each time step:\n\nE\n\n\" T\nX\nt=1\n\n#\nmax {qv } − qv(t) .\n\nv∈M (t)\n\n(4)",
-          "quoted_text_sha256": "5285c4a770ebaab411bfeb35887e37a3b6d6e144a76a37e55275ac10d1581785"
-        }
-      ],
-      "source_kind": "definition",
-      "source_location": "ICWSM 19(1), p. 1014, Equation 4; cited publication:354-369",
-      "source_prose_definition_reconciliation": {
-        "judgment": "semantically_equivalent",
-        "presentation_sha256": "ce07f6d795a3d81c9f0c063fc4013a08cbccb5032f7df70d9319605157fd43eb",
-        "relation": "source_item_represents_prose_definition",
-        "schema": 2,
-        "semantic_basis": "The source identifies total expected regret and presents the finite-horizon best-available-product gap sum.",
-        "source_item_statement_sha256": "ca99b66b9b85587978ba4a098c45ff598e6e0b4cb3b6d24f182203fd237dbf21",
-        "validated_at": "2026-08-19T17:20:00Z",
-        "validator": "Codex MBJG25 direct source-item semantic reconciliation",
-        "validator_type": "agent"
-      },
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Equation 4 defines finite-horizon expected regret as the expected sum of the quality gap between the best currently available product and the selected product.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_expected_regretSpec"
-      ]
-    },
-    "mbjg25_fixed_bias": {
-      "aliases": [
-        "paper_bias"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_bias"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_bias",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_biasSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 341,
-          "line_start": 333,
-          "publication_locator": "cited publication",
-          "quoted_text": "Why MSE? Via the bias-variance decomposition, meansquared error encodes a metric for efficiency and a metric\nfor producer unfairness. For product v with true quality qv :\n\u0010\n\u00112\nE[(q̂ηα̃,ηβ̃ (v, t) − qv )2 |qv ] = E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\n+ Var[q̂ηα̃,ηβ̃ (v, t)|qv ].\n(3)\nWhen conditioned on a product with given true quality\nqv , the variance component of the MSE (second component",
-          "quoted_text_sha256": "9af67f4d4cd59e4bdeb1b8ab78a6f161550a82c7f8334ba203b9632609dc4f6f"
-        }
+      "source_defect_ids": [
+        "MBJG25-EQ21-PRIOR-OMISSION-01"
       ],
       "source_kind": "formula",
-      "source_location": "ICWSM 19(1), p. 1014, Equation 3 and Appendix A; cited publication:333-341 and 1497-1517",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "The fixed-model bias is the conditional expected posterior rating minus true product quality q_v.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_biasSpec"
-      ]
+      "source_location": "cited publication:1305-1322",
+      "source_note": "Documented local source correction. The corrected Dirichlet posterior formula is distinguished from the printed zero-prior display, with no additional named theorem claim.",
+      "source_status": "corrected",
+      "statement": "Appendix E's displayed ordinal posterior average sums observed rating counts while the surrounding text introduces Dirichlet prior pseudo-counts alphaHat_j."
     },
-    "mbjg25_fixed_posterior_mean": {
+    "mbjg25_fixed_binary_model": {
       "aliases": [
-        "paper_posterior_mean"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_posterior_mean"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_posterior_mean",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_posterior_meanSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 276,
-          "line_start": 203,
-          "publication_locator": "cited publication",
-          "quoted_text": "Beta-Bernoulli setting, this posterior distribution for product\nv at timestep t is a Beta distribution with parameters\nα = α̂ + R(v, t),\nβ = β̂ + (|S(v, t)| − R(v, t)),\nwhere R(v, t) ∼ Binomial(t, qv ) is the number of positive\nratings received by the item so far (and so |S(v, t)| − R(v, t)\nis the number of negative ratings). We can compute the posterior mean estimated quality for product v at timestep t as:\n\nModel Primitives\n\nOur modeling framework is as follows.\nProducts. There is a universe of products V . Product v ∈\nV has unobserved true quality qv , where 0 ≤ qv ≤ 1.\nBinary ratings that accumulate over time. Products accumulate ratings over time, as users interact with and rate\nproducts. To capture this phenomenon, we assume the market operates over discrete time periods t, and products can\nreceive ratings at each time period. We assume these ratings\nare binary, i.e., 0 or 1.\nCrucially, the true quality of a product should impact the\nrating received; we suppose that a rating for product v is\nBernoulli(qv ), independent of all other randomness in the\nsystem. Since ratings accumulate, we use S(v, T ) to denote\nthe set of binary ratings that product v ∈ V has received\nafter T timesteps have elapsed.\nWe assume binary ratings as a simplification for ease of\nexposition; our results qualitatively extend to other settings,\nas we demonstrate in Appendix E. We note that this choice\ncaptures how many platforms elicit ratings (e.g., in any platform that uses a thumbs-up/thumbs-down system); in other\nplatforms with more than two options, ratings often follow a\n“J-curve” where users mostly only use the extreme options\n(Hu, Zhang, and Pavlou 2009). In Appendix G, we demonstrate that our results hold even when we assume users’ distribution over ratings is centered or even right-skewed.\nPrior-Weighted Rating System. In a prior-weighted rating system, the prior distribution is a design choice of the\nplatform. The system operates by estimating a posterior distribution of the estimated true quality for each product, given\nthe prior and the received ratings on that product.\nWe primarily consider rating systems where the prior represents a Beta distribution.1 Then, in this setting, the platform chooses the prior Beta distribution parameters (α̂, β̂).2\nWe will refer to α̂ + β̂ as the prior strength, as it indicates\nhow strongly the prior is concentrated around its mean (and\nhow many ratings will be needed to “overwhelm”) the prior.\nAfter a product receives a rating, the platform updates its\nestimation posterior distribution for its true quality. In our\n1\nThis choice is natural, given that ratings are assumed to be\nBernoulli. The Beta distribution is the conjugate prior for Bernoulli\ndata, i.e., with this choice of prior, the posterior distribution remains a Beta distribution but with different parameters.\n2\nα\nIn a Beta(α, β) distribution, the mean is α+β\n; the higher that\nα + β are, the more concentrated the distribution around the mean.\nA common interpretation of the parameters is that α+β is the number of trials (coin flips), and α represents the number of successes.\n\nq̂α̂,β̂ (v, t) =\n\nα̂ + R(v, t)\nα̂ + β̂ + |S(v, t)|\n\n.\n\n(1)\n\nThe platform impacts the operation of a prior-weighted\nrating system only through the prior choice, determined here\nby α̂ and β̂. There are two aspects of this choice: the shape\nof the prior, and its strength relative to observed ratings in\ndetermining the posterior. In our analysis, we fix the prior\nshape by relying on market-level data, in a manner inspired\nby empirical Bayesian statistical methods (Robbins 1964).\nOur analysis shows that the strength of the prior then mediates the tradeoff between efficiency and producer fairness.\nFormally, to reason about a prior’s strength, we fix a prior\nshape (α̃, β̃), then set (α̂, β̂) = (η α̃, η β̃) for some prior\nstrength η ≥ 0, providing us with a single-parameter lever\nto adjust the strength of the prior. We elaborate on how we\ncalibrate the prior shape in Section 3.2. Note in particular\nthat if η = 0, then the platform simply implements sample\naveraging to compute the estimated quality of an item.",
-          "quoted_text_sha256": "802b26f9478302dfa57e192497802cf0fa6ec0518ea6399cca0a6abec61a8d38"
-        }
-      ],
-      "source_kind": "formula",
-      "source_location": "ICWSM 19(1), pp. 1013-1015, Sections 2.1 and Appendix A derivation; cited publication:203-276 and 1497-1517",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "After fixing prior shape (alpha_tilde,beta_tilde) and strength eta, the conditional expected posterior rating in the fixed model is (eta*alpha_tilde + t*q_v) / (eta*alpha_tilde + eta*beta_tilde + t).",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_posterior_meanSpec"
-      ]
-    },
-    "mbjg25_fixed_squared_bias": {
-      "aliases": [
+        "paper_posterior_mean",
+        "paper_bias",
+        "paper_variance",
         "paper_squared_bias"
       ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_squared_bias"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_squared_bias",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_squared_biasSpec"
-      },
-      "source_anchor_evidence": [
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
         {
-          "line_end": 341,
-          "line_start": 333,
-          "publication_locator": "cited publication",
-          "quoted_text": "Why MSE? Via the bias-variance decomposition, meansquared error encodes a metric for efficiency and a metric\nfor producer unfairness. For product v with true quality qv :\n\u0010\n\u00112\nE[(q̂ηα̃,ηβ̃ (v, t) − qv )2 |qv ] = E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\n+ Var[q̂ηα̃,ηβ̃ (v, t)|qv ].\n(3)\nWhen conditioned on a product with given true quality\nqv , the variance component of the MSE (second component",
-          "quoted_text_sha256": "9af67f4d4cd59e4bdeb1b8ab78a6f161550a82c7f8334ba203b9632609dc4f6f"
+          "checked_scope": "This convention is used only by the fixed-model formula specification and Theorems 3.1--3.2. It does not alter the reusable real-analytic lemmas that prove the displayed formulas after the natural review count is cast to `Real`.",
+          "classification": "source_supported_model_interpretation",
+          "formal_meaning": "The fixed-model theorems range over a positive natural number of accumulated binary reviews. Lean therefore uses `t : Nat` with `0 < t`, and casts that count into the displayed rational formulas; `t` is not silently generalized to an arbitrary positive real.",
+          "id": "MBJG25-DISCRETE-NONDEGENERATE-OBSERVATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "a270e9041374154167d28a064fa5db4043d2622207ab6afd64506d478fabb80e",
+          "source_locator": "cited publication:164-180; cited publication:195-219; cited publication:1069-1104",
+          "why_needed": "The source says ratings arrive in discrete time periods and that the fixed model accumulates one rating at each timestep. The sample-average interpretation at zero prior strength is undefined with no reviews, so the source-facing conditional formulas require a nondegenerate observation count."
         }
       ],
-      "source_kind": "formula",
-      "source_location": "ICWSM 19(1), p. 1014, Equation 3 and Appendix A; cited publication:333-341 and 1497-1517",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "The squared-bias component is the square of conditional expected posterior rating minus true quality.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_squared_biasSpec"
-      ]
-    },
-    "mbjg25_fixed_variance": {
-      "aliases": [
-        "paper_variance"
-      ],
-      "claim_bearing": true,
+      "claim_bearing": false,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "MBJG25ProducerFairness.paper_variance"
+        "MBJG25ProducerFairness.paper_fixed_binary_model_formulaSpec"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_variance",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_varianceSpec"
-      },
+      "model_convention_ids": [
+        "MBJG25-DISCRETE-NONDEGENERATE-OBSERVATION-01"
+      ],
       "source_anchor_evidence": [
         {
-          "line_end": 1552,
-          "line_start": 1533,
+          "line_end": 219,
+          "line_start": 159,
           "publication_locator": "cited publication",
-          "quoted_text": "Variance can also be broken down accordingly:\n\"\nVar[q̂ηα̃,ηβ̃ (v, t)|qv ] = E\n\n\u0010\n\n\u00112\nq̂ηα̃,ηβ̃ (v, t) − E[q̂ηα̃,ηβ̃ (v, t)] qv\n(8)\n2\n\nE[(R(v, t) − E[R(v, t)]) |qv ]\n(η α̃ + η β̃ + t)2\nVar[R(v, t)|qv ]\n=\n(η α̃ + η β̃ + t)2\ntqv (1 − qv )\n=\n.\n(η α̃ + η β̃ + t)2",
-          "quoted_text_sha256": "a4daa36e24f32d0dc281dacbf3e987c4aa833fbf777148ff8ae20319ad3ff23a"
+          "quoted_text": "with binary reviews, our model extends readily to ordinal                       is the number of negative ratings). We can compute the pos-\nreviews as well (see Appendix E).                                               terior mean estimated quality for product v at timestep t as:\n                                                                                                                    α̂ + R(v, t)\n2.1    Model Primitives                                                                       q̂α̂,β̂ (v, t) =                         .   (1)\nOur modeling framework is as follows.                                                                            α̂ + β̂ + |S(v, t)|\n   Products. There is a universe of products V . Product v ∈                       The platform impacts the operation of a prior-weighted\nV has unobserved true quality qv , where 0 ≤ qv ≤ 1.                            rating system only through the prior choice, determined here\n   Binary ratings that accumulate over time. Products ac-                       by α̂ and β̂. There are two aspects of this choice: the shape\ncumulate ratings over time, as users interact with and rate                     of the prior, and its strength relative to observed ratings in\nproducts. To capture this phenomenon, we assume the mar-                        determining the posterior. In our analysis, we fix the prior\nket operates over discrete time periods t, and products can                     shape by relying on market-level data, in a manner inspired\nreceive ratings at each time period. We assume these ratings                    by empirical Bayesian statistical methods (Robbins 1964).\nare binary, i.e., 0 or 1.                                                       Our analysis shows that the strength of the prior then medi-\n   Crucially, the true quality of a product should impact the                   ates the tradeoff between efficiency and producer fairness.\nrating received; we suppose that a rating for product v is                         Formally, to reason about a prior’s strength, we fix a prior\nBernoulli(qv ), independent of all other randomness in the\n                                                                                shape (α̃, β̃), then set (α̂, β̂) = (η α̃, η β̃) for some prior\nsystem. Since ratings accumulate, we use S(v, T ) to denote\n                                                                                strength η ≥ 0, providing us with a single-parameter lever\nthe set of binary ratings that product v ∈ V has received\n                                                                                to adjust the strength of the prior. We elaborate on how we\nafter T timesteps have elapsed.\n                                                                                calibrate the prior shape in Section 3.2. Note in particular\n   We assume binary ratings as a simplification for ease of\n                                                                                that if η = 0, then the platform simply implements sample\nexposition; our results qualitatively extend to other settings,\n                                                                                averaging to compute the estimated quality of an item.\nas we demonstrate in Appendix E. We note that this choice\ncaptures how many platforms elicit ratings (e.g., in any plat-                  2.2   Fixed and Responsive Models\nform that uses a thumbs-up/thumbs-down system); in other\nplatforms with more than two options, ratings often follow a                    We study two models for how customers may interact with\n“J-curve” where users mostly only use the extreme options                       items, and items accumulate ratings over time. We begin\n(Hu, Zhang, and Pavlou 2009). In Appendix G, we demon-                          with a fixed model in which the products receive ratings at\nstrate that our results hold even when we assume users’ dis-                    the same rate, regardless of their past ratings. We then study\ntribution over ratings is centered or even right-skewed.                        a (more realistic) responsive model in which products with\n   Prior-Weighted Rating System. In a prior-weighted rat-                       higher estimated ratings receive ratings more often.\ning system, the prior distribution is a design choice of the                       Fixed model. In the fixed setting, all products stay in the\nplatform. The system operates by estimating a posterior dis-                    market for the entire time horizon, and each product v ∈ V\ntribution of the estimated true quality for each product, given                 accumulates one rating at each timestep t. In this model, the\nthe prior and the received ratings on that product.                             platform eventually accurately learns the true quality of all\n   We primarily consider rating systems where the prior rep-                    products, but has noisy estimates for each finite time t.\nresents a Beta distribution.1 Then, in this setting, the plat-                     Responsive model. The responsive model differs from\nform chooses the prior Beta distribution parameters (α̂, β̂).2                  the fixed model in two ways: (1) items enter and exit the\n                                                                                marketplace over time; (2) items are more likely to receive\nWe will refer to α̂ + β̂ as the prior strength, as it indicates                 ratings if they have a higher estimated quality in the rating\nhow strongly the prior is concentrated around its mean (and                     system. These changes in the responsive model capture se-\nhow many ratings will be needed to “overwhelm”) the prior.                      lection effects (Acemoglu et al. 2022), in which consumers\n   After a product receives a rating, the platform updates its                  may react to previous ratings, more often choosing to inter-\nestimation posterior distribution for its true quality. In our                  act with (and thus rate) items with more positive ratings in\n    1\n      This choice is natural, given that ratings are assumed to be\n                                                                                the past; these effects are not present in the fixed model.\nBernoulli. The Beta distribution is the conjugate prior for Bernoulli              At each timestep t, only a subset M (t) ⊆ V of the prod-\ndata, i.e., with this choice of prior, the posterior distribution re-           ucts is available for purchase. A single consumer chooses\nmains a Beta distribution but with different parameters.                        a single product v(t) to purchase and provides a rating on\n    2\n      In a Beta(α, β) distribution, the mean is α+βα\n                                                     ; the higher that          that product, and at the end of the timestep, each product\nα + β are, the more concentrated the distribution around the mean.              v ∈ M (t) exits the marketplace with some uniform, ex-\nA common interpretation of the parameters is that α+β is the num-               ogenous probability and is replaced by another product not\nber of trials (coin flips), and α represents the number of successes.           currently in the market. The customer choice will depend",
+          "quoted_text_sha256": "0c19b25009be276256075a5a44887efc863a532bb0ffaea8e4fa97db6f951a16"
+        },
+        {
+          "line_end": 1104,
+          "line_start": 1069,
+          "publication_locator": "cited publication",
+          "quoted_text": "   compromising anonymity...                                                       Bias2 = (E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv )2                        (6)\n                                                                                                \"                     #     !2\n (a) If your work uses existing assets, did you cite the cre-                                     η α̃ + R(v, t)\n      ators? Yes; we cite the datasets used (Gao et al. 2022;                            = E                        qv − qv                        (7)\n                                                                                                  η α̃ + η β̃ + t\n      Wan et al. 2019; Wan and McAuley 2018; Hou et al.\n                                                                                                                      !2\n      2024).                                                                                 η α̃ − η α̃qv − η β̃qv\n (b) Did you mention the license of the assets? Yes, when                                =                                .                        (8)\n      we first perform in-depth analysis for each dataset.                                        η α̃ + η β̃ + t\n (c) Did you include any new assets in the supplemental                     Variance can also be broken down accordingly:\n      material or as a URL? No, because we did not develop\n      any new datasets or assets outside of our simulation\n      experiments.                                                          Variance = Var[q̂ηα̃,ηβ̃ (v, t)|qv ]                    (9)\n (d) Did you discuss whether and how consent was ob-                                     \"\n                                                                                           \u0010                                   \u00112\n                                                                                                                                   #\n      tained from people whose data you’re using/curating?                           = E q̂ηα̃,ηβ̃ (v, t) − E[q̂ηα̃,ηβ̃ (v, t)] qv\n      No, because the license for the dataset permits sharing\n      and adaptation of the content so long as it is properly                                                                                 (10)\n      attributed.                                                                                                           2\n                                                                                        E[(R(v, t) − E[R(v, t)]) |qv ]\n (e) Did you discuss whether the data you are using/cu-                               =                                                       (11)\n      rating contains personally identifiable information or                                    (η α̃ + η β̃ + t)2\n      offensive content? No, because the original authors of                            Var[R(v, t)|qv ]\n                                                                                      =                                                       (12)\n      the dataset fully anonymized it.                                                  (η α̃ + η β̃ + t)2\n  (f) If you are curating or releasing new datasets, did you                              tqv (1 − qv )\n      discuss how you intend to make your datasets FAIR?                              =                    .                                  (13)\n      N/A                                                                               (η α̃ + η β̃ + t)2\n (g) If you are curating or releasing new datasets, did you                 The expected MSE can be written as follows:\n      create a Datasheet for the Dataset? N/A\n6. Additionally, if you used crowdsourcing or conducted                                                            !2\n   research with human subjects, without compromising                                   η α̃ − η α̃qv − η β̃qv                tqv (1 − qv )\n                                                                             MSE =                                      +                      .\n   anonymity...                                                                              η α̃ + η β̃ + t                (η α̃ + η β̃ + t)2",
+          "quoted_text_sha256": "5cb207addebac7d8a3fb14b6678a89c98b3d603e88a3b1c9f3be196213eb8bd8"
         }
       ],
-      "source_kind": "formula",
-      "source_location": "ICWSM 19(1), Appendix A, Equations 8-11; cited publication:1533-1552",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "The fixed-model conditional variance of the posterior rating is t*q_v*(1-q_v)/(eta*alpha_tilde + eta*beta_tilde + t)^2.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_varianceSpec"
-      ]
+      "source_kind": "model",
+      "source_location": "cited publication:159-219; cited publication:1069-1104",
+      "source_note": "This source-model declaration packages the discrete nondegenerate-domain conditional formulas used by the two named fixed-model theorems; it is not an additional theorem-result row.",
+      "statement": "In the fixed Beta-Bernoulli model, after a positive discrete review count t and prior parameters (eta alpha, eta beta), the conditional expected posterior mean, bias, variance, and squared bias are the displayed rational formulas used in Appendix A and Theorems 3.1-3.2."
     },
-    "mbjg25_individual_producer_unfairness": {
-      "aliases": [
-        "paper_facing_individual_producer_unfairness"
+    "mbjg25_theorem3_1": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "This convention is used only by the fixed-model formula specification and Theorems 3.1--3.2. It does not alter the reusable real-analytic lemmas that prove the displayed formulas after the natural review count is cast to `Real`.",
+          "classification": "source_supported_model_interpretation",
+          "formal_meaning": "The fixed-model theorems range over a positive natural number of accumulated binary reviews. Lean therefore uses `t : Nat` with `0 < t`, and casts that count into the displayed rational formulas; `t` is not silently generalized to an arbitrary positive real.",
+          "id": "MBJG25-DISCRETE-NONDEGENERATE-OBSERVATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "a270e9041374154167d28a064fa5db4043d2622207ab6afd64506d478fabb80e",
+          "source_locator": "cited publication:164-180; cited publication:195-219; cited publication:1069-1104",
+          "why_needed": "The source says ratings arrive in discrete time periods and that the fixed model accumulates one rating at each timestep. The sample-average interpretation at zero prior strength is undefined with no reviews, so the source-facing conditional formulas require a nondegenerate observation count."
+        }
       ],
       "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:313-320",
+        "archival_source_quote_sha256": "905d0153047b2ce7eb683d4edaa2493c19becbb168bbed56f4cc32700db014b8",
+        "corrected_target_review_sha256": "0ad224cf727a3070ec692b9759c745620db3cbca9fca3849454c199c5ab430b3",
+        "corrected_target_sha256": "5aabbe931bb7d941e80855384d3b1f0438cd472cf54c215a0637883cf8b847a5",
+        "governing_defect_ids": [
+          "MBJG25-THEOREM3-1-STRICT-ENDPOINT-01"
+        ],
+        "schema": 1,
+        "statement": "Corrected Theorem 3.1: in the fixed Beta-Bernoulli model, after a positive discrete review count and for nonnegative prior strengths with etaLow <= etaHigh, squared conditional bias is nondecreasing; conditional variance weakly decreases for every true quality q in [0,1], and strictly decreases when 0 < q < 1 and etaLow < etaHigh."
+      },
+      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_individual_producer_unfairness"
+        "MBJG25ProducerFairness.paper_theorem3_1_proof"
+      ],
+      "model_convention_ids": [
+        "MBJG25-DISCRETE-NONDEGENERATE-OBSERVATION-01"
       ],
       "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_individual_producer_unfairness",
-        "evidence_mode": "definitionally_realizes",
+        "evidence_declaration": "MBJG25ProducerFairness.paper_theorem3_1_proof",
+        "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_individual_producer_unfairnessSpec"
+        "spec_declaration": "MBJG25ProducerFairness.paper_theorem3_1Spec"
       },
       "source_anchor_evidence": [
         {
-          "line_end": 386,
-          "line_start": 376,
+          "line_end": 334,
+          "line_start": 313,
           "publication_locator": "cited publication",
-          "quoted_text": "Fairness. To capture variance conditional on quality, our\nchosen fairness metric is the standard deviation in selection rate given true quality. This individual fairness notion\nis conditional on quality: items of similar quality ought to\nbe picked at similar rates. Let σ̂(U ) be the sample standard\ndeviation computed on a set of real-valued numbers U . For a\nfixed true quality q, the individual (un)fairness metric is the\nstandard deviation in selection rate conditioned on an item\nbeing of that true quality:\nσ̂ ({SR(v)|qv = q}) .\n\n(5)",
-          "quoted_text_sha256": "a78f537565935b1419957b614adafb7badf8758ae81579d360a5c54d18b353d2"
+          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating sys-                      iments, is attached in the submission.\ntem in the fixed setting with prior parameters (η α̃, η β̃). Fix                  Model calibration. To pick a prior shape (α̃, β̃), we make\nproduct v with true quality qv and consider quality estima-                    use of the empirical Bayes (EB) method (Robbins 1964),\ntion after t timesteps.                                                        which provides an approach for computing an estimate of\n   Then, as η             ≥ 0 increases, (1) squared bias                      prior parameters across a population. We perform a 60-40\n\u0010                              \u00112                                              train-test split on the products in the our dataset. We use all\n  E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv     is nondecreasing; (2) vari-                 available ratings data for products in the training set to cali-\nance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.                    brate (α̃, β̃) using EB. The remaining 1,331 products (in the\n                                                                               test set) are the universe of products V on which the simu-\n   Theorem 3.1 establishes the trade-off between fairness                      lation is run. We are interested in investigating how ratings\nand efficiency. As the prior strength of a prior-weighted rat-                 in the marketplace change over time, so our marketplace is\ning system increases, it is less likely for two identical prod-                simulated over time; we fix a finite time horizon T , and at\nucts to be rated differently, reducing variance while increas-                 each timestep t, either draw one review for all v ∈ V in the\ning estimation bias.                                                           fixed model, or draw one review for the specific v ∈ V cho-\n   The above theorem characterizes error for a given quality                   sen by the consumer at timestep t in the responsive model.\nlevel qv as prior strength changes. We are also interested in                     Fixed model parameters. We set a time horizon of T =\nhow the true quality of the product influences the efficiency                  50, and run our simulations for four different values of\nand fairness metric, i.e., how the platform estimates quality                  η ∈ {0, 1, 10, 1000}. The first two η values correspond to\nfor different true quality levels. An ideal statistical estimator              prior-weighted rating systems under the sample mean esti-\nfor quality should have low MSE across all quality levels.                     mator and the baseline empirical Bayes (EB) estimator re-\nOur next theorem characterizes how efficiency and unfair-                      spectively. η = 10 corresponds to a setting where the prior\nness vary with true product quality:                                           is difficult to overcome in early timesteps, but eventually is",
+          "quoted_text_sha256": "9a0bab537f3bc36c6e6065d4a92eefcd7643ee3235f92def0bd499f9db274eb6"
         }
       ],
-      "source_kind": "definition",
-      "source_location": "ICWSM 19(1), p. 1014, Equation 5; cited publication:376-386",
-      "source_note": "The source denotes the statistic by sigma-hat without spelling out its finite-sample divisor; Lean records the empirical-distribution divisor |U| and the empty-class convention explicitly.",
-      "source_prose_definition_reconciliation": {
-        "judgment": "semantically_equivalent",
-        "presentation_sha256": "db630bb2fc8932d5901cd3b262a1215199d2e77e407b8ead4365532caf48fa91",
-        "relation": "source_item_represents_prose_definition",
-        "schema": 2,
-        "semantic_basis": "The source defines the quality-conditional individual metric as the standard deviation of selection rates at fixed quality.",
-        "source_item_statement_sha256": "7c3b252ac0f7280aeb6e1416317f44559ed10152cad1b686ddb4d3f18d81232a",
-        "validated_at": "2026-08-19T17:20:00Z",
-        "validator": "Codex MBJG25 direct source-item semantic reconciliation",
-        "validator_type": "agent"
-      },
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Equation 5 defines quality-conditional individual producer unfairness as the standard deviation of selection rates among products with the same true quality.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_individual_producer_unfairnessSpec"
-      ]
-    },
-    "mbjg25_marketplace_producer_unfairness": {
-      "aliases": [
-        "paper_facing_marketplace_producer_unfairness"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_marketplace_producer_unfairness"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_marketplace_producer_unfairness",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_marketplace_producer_unfairnessSpec"
-      },
-      "source_anchor_evidence": [
+      "source_claim_atoms": [
         {
-          "line_end": 390,
-          "line_start": 386,
-          "publication_locator": "cited publication",
-          "quoted_text": "(5)\n\nTo get a marketplace-level metric of producer unfairness,\nwe take the expectation of eq. (5) over true qualities q.\nWe do not use a statistical measure as in the fixed setting for two reasons: (1) The responsive model allows for",
-          "quoted_text_sha256": "ec81b72c8e44bdcdb8c280a9cf8829895f58c356b3f3ab6c3eff575581f06faa"
+          "id": "mbjg25.theorem3.1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "MBJG25ProducerFairness.paper_theorem3_1_proof",
+          "semantic_claim": "Theorem 3.1 states that, in the fixed prior-weighted binary-rating model, as nonnegative prior strength eta increases, squared conditional bias is nondecreasing and conditional variance is strictly decreasing.",
+          "source_locator": "cited publication:313-334",
+          "source_quote_sha256": "9a0bab537f3bc36c6e6065d4a92eefcd7643ee3235f92def0bd499f9db274eb6"
         }
       ],
-      "source_kind": "definition",
-      "source_location": "ICWSM 19(1), p. 1014, paragraph after Equation 5; cited publication:386-390",
-      "source_prose_definition_reconciliation": {
-        "judgment": "semantically_equivalent",
-        "presentation_sha256": "6b61dd359b1a4f7d2e4164eec5af166dc18352b89ab856bbc17506d9acfc6442",
-        "relation": "source_item_represents_prose_definition",
-        "schema": 2,
-        "semantic_basis": "The source defines the marketplace-level producer-unfairness metric as the expectation of Equation 5 over true qualities.",
-        "source_item_statement_sha256": "ade7ce35044e851335e8d43f9ad6c18606f5cc8a760e92c7a556f746a824f532",
-        "validated_at": "2026-08-19T17:20:00Z",
-        "validator": "Codex MBJG25 direct source-item semantic reconciliation",
-        "validator_type": "agent"
-      },
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Marketplace-level producer unfairness is the expectation of quality-conditional individual unfairness over true product qualities.",
+      "source_defect_ids": [
+        "MBJG25-THEOREM3-1-STRICT-ENDPOINT-01"
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:313-334",
+      "source_note": "Owner-authorized localized correction. The archival universal strict-decrease clause is retained with its exact endpoint counterexamples; this target is not claimed to be an archival equivalence.",
+      "source_status": "corrected",
+      "statement": "Theorem 3.1 states that, in the fixed prior-weighted binary-rating model, as nonnegative prior strength eta increases, squared conditional bias is nondecreasing and conditional variance is strictly decreasing.",
       "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_marketplace_producer_unfairnessSpec"
-      ]
-    },
-    "mbjg25_nonnegative_prior_strength": {
-      "aliases": [
-        "assumption_prior_strength_nonnegative"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_anchor_evidence": [
-        {
-          "line_end": 276,
-          "line_start": 270,
-          "publication_locator": "cited publication",
-          "quoted_text": "Formally, to reason about a prior’s strength, we fix a prior\nshape (α̃, β̃), then set (α̂, β̂) = (η α̃, η β̃) for some prior\nstrength η ≥ 0, providing us with a single-parameter lever\nto adjust the strength of the prior. We elaborate on how we\ncalibrate the prior shape in Section 3.2. Note in particular\nthat if η = 0, then the platform simply implements sample\naveraging to compute the estimated quality of an item.",
-          "quoted_text_sha256": "cdbc31da396b862317b90f7e787f0c6ebb4e43e74b204cbe4e1a61e9efb0269a"
-        }
-      ],
-      "source_kind": "assumption",
-      "source_location": "ICWSM 19(1), Section 2.1 and Theorem 3.1; cited publication:270-276 and 443-450",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Prior strength eta is nonnegative in the source parameterization (alpha_hat,beta_hat)=(eta*alpha_tilde,eta*beta_tilde).",
-      "support_lean_declarations": [
-        "assumption_prior_strength_nonnegative"
-      ]
-    },
-    "mbjg25_nonnegative_review_count": {
-      "aliases": [
-        "assumption_nonnegative_time"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_anchor_evidence": [
-        {
-          "line_end": 292,
-          "line_start": 203,
-          "publication_locator": "cited publication",
-          "quoted_text": "Beta-Bernoulli setting, this posterior distribution for product\nv at timestep t is a Beta distribution with parameters\nα = α̂ + R(v, t),\nβ = β̂ + (|S(v, t)| − R(v, t)),\nwhere R(v, t) ∼ Binomial(t, qv ) is the number of positive\nratings received by the item so far (and so |S(v, t)| − R(v, t)\nis the number of negative ratings). We can compute the posterior mean estimated quality for product v at timestep t as:\n\nModel Primitives\n\nOur modeling framework is as follows.\nProducts. There is a universe of products V . Product v ∈\nV has unobserved true quality qv , where 0 ≤ qv ≤ 1.\nBinary ratings that accumulate over time. Products accumulate ratings over time, as users interact with and rate\nproducts. To capture this phenomenon, we assume the market operates over discrete time periods t, and products can\nreceive ratings at each time period. We assume these ratings\nare binary, i.e., 0 or 1.\nCrucially, the true quality of a product should impact the\nrating received; we suppose that a rating for product v is\nBernoulli(qv ), independent of all other randomness in the\nsystem. Since ratings accumulate, we use S(v, T ) to denote\nthe set of binary ratings that product v ∈ V has received\nafter T timesteps have elapsed.\nWe assume binary ratings as a simplification for ease of\nexposition; our results qualitatively extend to other settings,\nas we demonstrate in Appendix E. We note that this choice\ncaptures how many platforms elicit ratings (e.g., in any platform that uses a thumbs-up/thumbs-down system); in other\nplatforms with more than two options, ratings often follow a\n“J-curve” where users mostly only use the extreme options\n(Hu, Zhang, and Pavlou 2009). In Appendix G, we demonstrate that our results hold even when we assume users’ distribution over ratings is centered or even right-skewed.\nPrior-Weighted Rating System. In a prior-weighted rating system, the prior distribution is a design choice of the\nplatform. The system operates by estimating a posterior distribution of the estimated true quality for each product, given\nthe prior and the received ratings on that product.\nWe primarily consider rating systems where the prior represents a Beta distribution.1 Then, in this setting, the platform chooses the prior Beta distribution parameters (α̂, β̂).2\nWe will refer to α̂ + β̂ as the prior strength, as it indicates\nhow strongly the prior is concentrated around its mean (and\nhow many ratings will be needed to “overwhelm”) the prior.\nAfter a product receives a rating, the platform updates its\nestimation posterior distribution for its true quality. In our\n1\nThis choice is natural, given that ratings are assumed to be\nBernoulli. The Beta distribution is the conjugate prior for Bernoulli\ndata, i.e., with this choice of prior, the posterior distribution remains a Beta distribution but with different parameters.\n2\nα\nIn a Beta(α, β) distribution, the mean is α+β\n; the higher that\nα + β are, the more concentrated the distribution around the mean.\nA common interpretation of the parameters is that α+β is the number of trials (coin flips), and α represents the number of successes.\n\nq̂α̂,β̂ (v, t) =\n\nα̂ + R(v, t)\nα̂ + β̂ + |S(v, t)|\n\n.\n\n(1)\n\nThe platform impacts the operation of a prior-weighted\nrating system only through the prior choice, determined here\nby α̂ and β̂. There are two aspects of this choice: the shape\nof the prior, and its strength relative to observed ratings in\ndetermining the posterior. In our analysis, we fix the prior\nshape by relying on market-level data, in a manner inspired\nby empirical Bayesian statistical methods (Robbins 1964).\nOur analysis shows that the strength of the prior then mediates the tradeoff between efficiency and producer fairness.\nFormally, to reason about a prior’s strength, we fix a prior\nshape (α̃, β̃), then set (α̂, β̂) = (η α̃, η β̃) for some prior\nstrength η ≥ 0, providing us with a single-parameter lever\nto adjust the strength of the prior. We elaborate on how we\ncalibrate the prior shape in Section 3.2. Note in particular\nthat if η = 0, then the platform simply implements sample\naveraging to compute the estimated quality of an item.\n\n2.2\n\nFixed and Responsive Models\n\nWe study two models for how customers may interact with\nitems, and items accumulate ratings over time. We begin\nwith a fixed model in which the products receive ratings at\nthe same rate, regardless of their past ratings. We then study\na (more realistic) responsive model in which products with\nhigher estimated ratings receive ratings more often.\nFixed model. In the fixed setting, all products stay in the\nmarket for the entire time horizon, and each product v ∈ V\naccumulates one rating at each timestep t. In this model, the\nplatform eventually accurately learns the true quality of all\nproducts, but has noisy estimates for each finite time t.",
-          "quoted_text_sha256": "392b9fbe50ae0f6c966deb656122f1fa1d2ce8dddf0daa5635cf71bd6b02e8be"
-        }
-      ],
-      "source_kind": "assumption",
-      "source_location": "ICWSM 19(1), Sections 2.1-2.2 and Appendix A; cited publication:203-292 and 1533-1552",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Elapsed time and review-count mass are nonnegative in the fixed and responsive models.",
-      "support_lean_declarations": [
-        "assumption_nonnegative_time"
-      ]
-    },
-    "mbjg25_positive_fixed_time": {
-      "aliases": [
-        "assumption_positive_time"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_anchor_evidence": [
-        {
-          "line_end": 292,
-          "line_start": 288,
-          "publication_locator": "cited publication",
-          "quoted_text": "Fixed model. In the fixed setting, all products stay in the\nmarket for the entire time horizon, and each product v ∈ V\naccumulates one rating at each timestep t. In this model, the\nplatform eventually accurately learns the true quality of all\nproducts, but has noisy estimates for each finite time t.",
-          "quoted_text_sha256": "57ceb01db89ffbc653282b69704d4d344c1dde0f0d0cb917b99af02c9b05a0d3"
-        }
-      ],
-      "source_kind": "assumption",
-      "source_location": "ICWSM 19(1), Sections 2.2-3.1 and Appendix A; cited publication:288-292 and 443-469 and 1497-1552",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "The fixed-setting results evaluate quality after a positive number of elapsed review timesteps.",
-      "support_lean_declarations": [
-        "assumption_positive_time"
-      ]
-    },
-    "mbjg25_positive_prior_shape": {
-      "aliases": [
-        "assumption_positive_prior_shape"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_anchor_evidence": [
-        {
-          "line_end": 276,
-          "line_start": 233,
-          "publication_locator": "cited publication",
-          "quoted_text": "Prior-Weighted Rating System. In a prior-weighted rating system, the prior distribution is a design choice of the\nplatform. The system operates by estimating a posterior distribution of the estimated true quality for each product, given\nthe prior and the received ratings on that product.\nWe primarily consider rating systems where the prior represents a Beta distribution.1 Then, in this setting, the platform chooses the prior Beta distribution parameters (α̂, β̂).2\nWe will refer to α̂ + β̂ as the prior strength, as it indicates\nhow strongly the prior is concentrated around its mean (and\nhow many ratings will be needed to “overwhelm”) the prior.\nAfter a product receives a rating, the platform updates its\nestimation posterior distribution for its true quality. In our\n1\nThis choice is natural, given that ratings are assumed to be\nBernoulli. The Beta distribution is the conjugate prior for Bernoulli\ndata, i.e., with this choice of prior, the posterior distribution remains a Beta distribution but with different parameters.\n2\nα\nIn a Beta(α, β) distribution, the mean is α+β\n; the higher that\nα + β are, the more concentrated the distribution around the mean.\nA common interpretation of the parameters is that α+β is the number of trials (coin flips), and α represents the number of successes.\n\nq̂α̂,β̂ (v, t) =\n\nα̂ + R(v, t)\nα̂ + β̂ + |S(v, t)|\n\n.\n\n(1)\n\nThe platform impacts the operation of a prior-weighted\nrating system only through the prior choice, determined here\nby α̂ and β̂. There are two aspects of this choice: the shape\nof the prior, and its strength relative to observed ratings in\ndetermining the posterior. In our analysis, we fix the prior\nshape by relying on market-level data, in a manner inspired\nby empirical Bayesian statistical methods (Robbins 1964).\nOur analysis shows that the strength of the prior then mediates the tradeoff between efficiency and producer fairness.\nFormally, to reason about a prior’s strength, we fix a prior\nshape (α̃, β̃), then set (α̂, β̂) = (η α̃, η β̃) for some prior\nstrength η ≥ 0, providing us with a single-parameter lever\nto adjust the strength of the prior. We elaborate on how we\ncalibrate the prior shape in Section 3.2. Note in particular\nthat if η = 0, then the platform simply implements sample\naveraging to compute the estimated quality of an item.",
-          "quoted_text_sha256": "9e05984ec2a26aa98496e3bf8d0dbaf2fdacf8c75670533aa8016bcb473cfa67"
-        }
-      ],
-      "source_kind": "assumption",
-      "source_location": "ICWSM 19(1), Section 2.1 and Theorems 3.1-3.2; cited publication:233-276 and 443-469",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "The fixed prior shape has positive total mass so its Beta mean and scaled prior parameters are defined.",
-      "support_lean_declarations": [
-        "assumption_positive_prior_shape"
-      ]
-    },
-    "mbjg25_quality_lower_bound": {
-      "aliases": [
-        "assumption_quality_nonnegative"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_anchor_evidence": [
-        {
-          "line_end": 223,
-          "line_start": 213,
-          "publication_locator": "cited publication",
-          "quoted_text": "Our modeling framework is as follows.\nProducts. There is a universe of products V . Product v ∈\nV has unobserved true quality qv , where 0 ≤ qv ≤ 1.\nBinary ratings that accumulate over time. Products accumulate ratings over time, as users interact with and rate\nproducts. To capture this phenomenon, we assume the market operates over discrete time periods t, and products can\nreceive ratings at each time period. We assume these ratings\nare binary, i.e., 0 or 1.\nCrucially, the true quality of a product should impact the\nrating received; we suppose that a rating for product v is\nBernoulli(qv ), independent of all other randomness in the\nsystem. Since ratings accumulate, we use S(v, T ) to denote",
-          "quoted_text_sha256": "856aeaa11d194e78d1b94f5ba4ddba4928801eab334d668681f524035117054b"
-        }
-      ],
-      "source_kind": "assumption",
-      "source_location": "ICWSM 19(1), Section 2.1; cited publication:213-223",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Every product's Bernoulli true quality satisfies 0 <= q_v.",
-      "support_lean_declarations": [
-        "assumption_quality_nonnegative"
-      ]
-    },
-    "mbjg25_quality_upper_bound": {
-      "aliases": [
-        "assumption_quality_at_most_one"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_anchor_evidence": [
-        {
-          "line_end": 223,
-          "line_start": 213,
-          "publication_locator": "cited publication",
-          "quoted_text": "Our modeling framework is as follows.\nProducts. There is a universe of products V . Product v ∈\nV has unobserved true quality qv , where 0 ≤ qv ≤ 1.\nBinary ratings that accumulate over time. Products accumulate ratings over time, as users interact with and rate\nproducts. To capture this phenomenon, we assume the market operates over discrete time periods t, and products can\nreceive ratings at each time period. We assume these ratings\nare binary, i.e., 0 or 1.\nCrucially, the true quality of a product should impact the\nrating received; we suppose that a rating for product v is\nBernoulli(qv ), independent of all other randomness in the\nsystem. Since ratings accumulate, we use S(v, T ) to denote",
-          "quoted_text_sha256": "856aeaa11d194e78d1b94f5ba4ddba4928801eab334d668681f524035117054b"
-        }
-      ],
-      "source_kind": "assumption",
-      "source_location": "ICWSM 19(1), Section 2.1; cited publication:213-223",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Every product's Bernoulli true quality satisfies q_v <= 1.",
-      "support_lean_declarations": [
-        "assumption_quality_at_most_one"
-      ]
-    },
-    "mbjg25_selection_rate": {
-      "aliases": [
-        "paper_facing_selection_rate"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_selection_rate"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_selection_rate",
-        "evidence_mode": "definitionally_realizes",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_selection_rateSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 353,
-          "line_start": 346,
-          "publication_locator": "cited publication",
-          "quoted_text": "Metrics in responsive setting. In the responsive setting,\nbecause consumers choose (and rate) higher rated items at\nhigher probabilities, we base our metrics directly off of how\noften products are selected. We define lv to be the lifespan\nof a product v in the responsive model. The selection rate\nof a product v as the fraction of times that it was rated (and\nthus the fraction of times the product was purchased) during\nits lifespan, SR(v) := |S(v, t)|/lv .",
-          "quoted_text_sha256": "3736e2b0e786bc8bdaba21e98d5915e85fed4889f11b2738a5e4321aa52c060b"
-        }
-      ],
-      "source_kind": "definition",
-      "source_location": "ICWSM 19(1), p. 1014, Section 2.3; cited publication:346-353",
-      "source_prose_definition_reconciliation": {
-        "judgment": "semantically_equivalent",
-        "presentation_sha256": "3282088c5e085c56c780b92e3177a79634ebd71091e6bb79192b2f88e9ad6946",
-        "relation": "source_item_represents_prose_definition",
-        "schema": 2,
-        "semantic_basis": "The source identifies the selection rate and explicitly gives its ratings-per-lifespan ratio.",
-        "source_item_statement_sha256": "925b5b0c97a25930a8a3f7757db74227f7d52bd96f5adec09c66b07456a49ec4",
-        "validated_at": "2026-08-19T17:20:00Z",
-        "validator": "Codex MBJG25 direct source-item semantic reconciliation",
-        "validator_type": "agent"
-      },
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Section 2.3 defines a product's selection rate as its number of selections (equivalently ratings) divided by its lifespan.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_selection_rateSpec"
-      ]
-    },
-    "mbjg25_strict_prior_strength_order": {
-      "aliases": [
-        "assumption_prior_strength_strict_order"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_anchor_evidence": [
-        {
-          "line_end": 450,
-          "line_start": 443,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
-        }
-      ],
-      "source_kind": "assumption",
-      "source_location": "ICWSM 19(1), Theorem 3.1 and Appendix A; cited publication:443-450 and 1638-1650",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Strict variance decrease compares prior strengths satisfying eta_low < eta_high.",
-      "support_lean_declarations": [
-        "assumption_prior_strength_strict_order"
+        "MBJG25ProducerFairness.paper_theorem3_1Spec"
       ]
     },
     "mbjg25_theorem3_1_appendix_presentation": {
-      "claim_bearing": true,
-      "inventory_role": "repeated_source_presentation",
+      "claim_bearing": false,
+      "inventory_role": "source_presentation_alias",
       "source_anchor_evidence": [
         {
-          "line_end": 1496,
-          "line_start": 1484,
+          "line_end": 1129,
+          "line_start": 1120,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\n\n\f≥ 0 increases, (1) squared bias\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variThen, as η\n\n\u0010\n\nThis demonstrates that variance is always strictly decreasing for η ≥ 0.\n\nance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "d668ad04c48818a8c6905c1297f20ae032fea84ffa861594e0523772c7b4eefe"
+          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating sys-                    Similarly, we differentiate the variance term with respect\ntem in the fixed setting with prior parameters (η α̃, η β̃). Fix          to η:\nproduct v with true quality qv and consider quality estima-\ntion after t timesteps.                                                           ∂ tqv (1 − qv )          ∂          1\n   Then, as η             ≥ 0 increases, (1) squared bias                                                ∝                                    (16)\n\u0010                              \u00112                                                 ∂η (η α̃ + η β̃ + t) 2   ∂η (η α̃ + η β̃ + t)2\n  E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv     is nondecreasing; (2) vari-\n                                                                                                                  −2(α̃ + β̃)\nance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.                                                =                      .           (17)\n                                                                                                               (η α̃ + η β̃ + t)3",
+          "quoted_text_sha256": "131d00b9198d8a1ae9cc259636243adb892a1a47cabde573ad11e82d1902e6c7"
         }
       ],
       "source_kind": "theorem",
-      "source_location": "ICWSM 19(1), Appendix A, repeated Theorem 3.1 proof presentation; cited publication:1484-1496",
+      "source_location": "cited publication:1120-1129",
+      "source_note": "This is the same visible theorem label and statement as the main-text presentation, retained only for source inventory traceability.",
       "source_presentation_alias": {
-        "canonical_source_item": "mbjg25_theorem3_1_squared_bias_monotonicity",
-        "label_relation": "same_visible_label",
+        "canonical_source_item": "mbjg25_theorem3_1",
         "relation": "repeated_source_presentation",
         "schema": 1,
-        "semantic_basis": "The appendix repeats the visible Theorem 3.1 label, hypotheses, and its squared-bias and variance conclusions before the proof; it is not a new source claim.",
-        "validated_at": "2026-08-19T17:20:00Z",
-        "validator": "Codex MBJG25 source-presentation repetition review"
+        "semantic_basis": "The Appendix A presentation has the same visible theorem label and repeats the same two monotonicity clauses as the Section 3.1 presentation; it introduces no independent theorem claim.",
+        "validated_at": "2026-08-18T00:00:00Z",
+        "validator": "v11 source-first review-surface preparation"
       },
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Appendix A repeats the printed Theorem 3.1 statement before its proof."
+      "statement": "Appendix A repeats the visibly labelled Theorem 3.1 statement before its proof."
     },
-    "mbjg25_theorem3_1_endpoint_one_evidence": {
+    "mbjg25_theorem3_2": {
       "aliases": [
-        "paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_one"
+        "paper_theorem3_2_proof"
       ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_one"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_one",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_oneSpec"
-      },
-      "source_anchor_evidence": [
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
         {
-          "line_end": 450,
-          "line_start": 443,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
+          "checked_scope": "This convention is used only by the fixed-model formula specification and Theorems 3.1--3.2. It does not alter the reusable real-analytic lemmas that prove the displayed formulas after the natural review count is cast to `Real`.",
+          "classification": "source_supported_model_interpretation",
+          "formal_meaning": "The fixed-model theorems range over a positive natural number of accumulated binary reviews. Lean therefore uses `t : Nat` with `0 < t`, and casts that count into the displayed rational formulas; `t` is not silently generalized to an arbitrary positive real.",
+          "id": "MBJG25-DISCRETE-NONDEGENERATE-OBSERVATION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "a270e9041374154167d28a064fa5db4043d2622207ab6afd64506d478fabb80e",
+          "source_locator": "cited publication:164-180; cited publication:195-219; cited publication:1069-1104",
+          "why_needed": "The source says ratings arrive in discrete time periods and that the fixed model accumulates one rating at each timestep. The sample-average interpretation at zero prior strength is undefined with no reviews, so the source-facing conditional formulas require a nondegenerate observation count."
         }
       ],
-      "source_defect_id": "MBJG25-THEOREM3-1-STRICT-ENDPOINT-01",
-      "source_kind": "example",
-      "source_location": "ICWSM 19(1), p. 1015, Theorem 3.1 and Appendix A Equation 11; cited publication:443-450 and 1533-1552",
-      "source_note": "Checked mathematical evidence for the schema-2 source correction, not a separately advertised paper theorem.",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "At q_v=1, the variance numerator t*q_v*(1-q_v) is zero for every prior strength, refuting the printed closed-interval strict wording at the upper endpoint.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_oneSpec"
-      ]
-    },
-    "mbjg25_theorem3_1_endpoint_zero_evidence": {
-      "aliases": [
-        "paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_zero"
-      ],
       "claim_bearing": true,
       "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_zero"
+        "MBJG25ProducerFairness.paper_theorem3_2_proof"
+      ],
+      "model_convention_ids": [
+        "MBJG25-DISCRETE-NONDEGENERATE-OBSERVATION-01"
       ],
       "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_zero",
+        "evidence_declaration": "MBJG25ProducerFairness.paper_theorem3_2_proof",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_zeroSpec"
+        "spec_declaration": "MBJG25ProducerFairness.paper_theorem3_2Spec"
       },
       "source_anchor_evidence": [
         {
-          "line_end": 450,
-          "line_start": 443,
+          "line_end": 344,
+          "line_start": 335,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
+          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating sys-                      shifted significantly by ratings data. η = 1000 corresponds\ntem in the fixed setting with prior parameters (η α̃, η β̃). Con-              to a setting where the posterior is essentially equal to the\nsider quality estimation after t timesteps.                                    prior throughout the entire simulation, i.e., ratings data is\n   Then, as a function of true product quality, squared bias                   ignored. We ran all of our experiments (for both the fixed\n\u0010                              \u00112                                              and responsive models) on an internally-provided comput-\n  E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv    is convex with a global mini-                ing cluster, where the compute power required for our simu-\nmum at α̃+α̃\n                , while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave          lations was negligible.\n             β̃\nwith a global maximum at 1/2.",
+          "quoted_text_sha256": "2e7eab0056f59c299df35b6aa477f51fe4b44bc0eb3019dab5ccfcf3ef0d7a9a"
         }
       ],
-      "source_defect_id": "MBJG25-THEOREM3-1-STRICT-ENDPOINT-01",
-      "source_kind": "example",
-      "source_location": "ICWSM 19(1), p. 1015, Theorem 3.1 and Appendix A Equation 11; cited publication:443-450 and 1533-1552",
-      "source_note": "Checked mathematical evidence for the schema-2 source correction, not a separately advertised paper theorem.",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "At q_v=0, the variance numerator t*q_v*(1-q_v) is zero for every prior strength, refuting the printed closed-interval strict wording at the lower endpoint.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_counterexample_quality_zeroSpec"
-      ]
-    },
-    "mbjg25_theorem3_1_squared_bias_monotonicity": {
-      "aliases": [
-        "paper_facing_theorem3_1_squared_bias_nondecreasing"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_1_squared_bias_nondecreasing"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_1_squared_bias_nondecreasing",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_1_squared_bias_nondecreasingSpec"
-      },
-      "source_anchor_evidence": [
+      "source_claim_atoms": [
         {
-          "line_end": 450,
-          "line_start": 443,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
+          "id": "mbjg25.theorem3.2",
+          "identity_schema": 2,
+          "reviewed_lean_route": "MBJG25ProducerFairness.paper_theorem3_2_proof",
+          "semantic_claim": "Theorem 3.2 states that in the fixed prior-weighted binary-rating model, squared conditional bias as a function of true quality is convex with global minimum at the prior mean, while conditional variance is concave with global maximum at one half.",
+          "source_locator": "cited publication:335-344",
+          "source_quote_sha256": "2e7eab0056f59c299df35b6aa477f51fe4b44bc0eb3019dab5ccfcf3ef0d7a9a"
         }
       ],
       "source_kind": "theorem",
-      "source_location": "ICWSM 19(1), p. 1015, Theorem 3.1 and Appendix A Equations 6-7 and 12-13; cited publication:443-450 and 1497-1517 and 1606-1637",
-      "source_presentation_reconciliation": {
-        "boundary_reason": "completed_statement_then_explanation",
-        "core_anchor": {
-          "line_end": 450,
-          "line_start": 443,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
-        },
-        "presentation_kind": "theorem",
-        "presentation_label": "Theorem 3.1",
-        "relation": "conservative_text_span_core",
-        "schema": 1,
-        "semantic_basis": "The OCR index conservatively includes explanatory text after the completed displayed Theorem 3.1 statement; this exact core ends at its second conclusion.",
-        "validated_at": "2026-08-19T17:20:00Z",
-        "validator": "Codex MBJG25 source-statement core reconciliation"
-      },
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Theorem 3.1 states that squared conditional bias is nondecreasing as prior strength eta increases in the fixed model.",
+      "source_location": "cited publication:335-344",
+      "source_note": "The direct target keeps the source model's true-quality interval visible for every convexity, concavity, minimizer, and maximizer clause.",
+      "statement": "Theorem 3.2 states that in the fixed prior-weighted binary-rating model, squared conditional bias as a function of true quality is convex with global minimum at the prior mean, while conditional variance is concave with global maximum at one half.",
       "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_1_squared_bias_nondecreasingSpec"
-      ]
-    },
-    "mbjg25_theorem3_1_variance_closed_interval_correction": {
-      "aliases": [
-        "paper_facing_theorem3_1_variance_weak_decrease"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_weak_decrease"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_weak_decrease",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_weak_decreaseSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 450,
-          "line_start": 443,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
-        }
-      ],
-      "source_defect_id": "MBJG25-THEOREM3-1-STRICT-ENDPOINT-01",
-      "source_kind": "theorem",
-      "source_location": "ICWSM 19(1), p. 1015, Theorem 3.1 and Appendix A Equations 11 and 14-15; cited publication:443-450 and 1533-1552 and 1638-1650",
-      "source_note": "The printed theorem says strictly decreasing on the closed Bernoulli interval. The corrected weak endpoint is paired with a strict interior theorem and checked endpoint counterexamples.",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Corrected Theorem 3.1 variance conclusion: on 0 <= q_v <= 1, increasing nonnegative prior strength weakly decreases posterior-rating variance.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_weak_decreaseSpec"
-      ]
-    },
-    "mbjg25_theorem3_1_variance_strict_interior_correction": {
-      "aliases": [
-        "paper_facing_theorem3_1_variance_strict_decrease_interior"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_interior"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_interior",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_interiorSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 450,
-          "line_start": 443,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
-        }
-      ],
-      "source_defect_id": "MBJG25-THEOREM3-1-STRICT-ENDPOINT-01",
-      "source_kind": "theorem",
-      "source_location": "ICWSM 19(1), p. 1015, Theorem 3.1 and Appendix A Equations 11 and 14-15; cited publication:443-450 and 1533-1552 and 1638-1650",
-      "source_note": "This repairs the printed statement's endpoint-domain slip without changing its substantive interior monotonicity conclusion.",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Corrected Theorem 3.1 strict conclusion: for 0 < q_v < 1, positive elapsed reviews, positive prior-shape mass, and a strict increase in nonnegative prior strength, posterior-rating variance strictly decreases.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_1_variance_strict_decrease_interiorSpec"
+        "MBJG25ProducerFairness.paper_theorem3_2Spec"
       ]
     },
     "mbjg25_theorem3_2_appendix_presentation": {
-      "claim_bearing": true,
-      "inventory_role": "repeated_source_presentation",
+      "claim_bearing": false,
+      "inventory_role": "source_presentation_alias",
       "source_anchor_evidence": [
         {
-          "line_end": 1700,
-          "line_start": 1519,
+          "line_end": 1145,
+          "line_start": 1137,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.\n\u0010\n\nThen, as a function of true product quality, squared bias\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis convex with a global mini-\n\nα̃\nmum at α̃+\n, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave\nβ̃\nwith a global maximum at 1/2.\n\nVariance can also be broken down accordingly:\n\"\nVar[q̂ηα̃,ηβ̃ (v, t)|qv ] = E\n\n\u0010\n\n\u00112\nq̂ηα̃,ηβ̃ (v, t) − E[q̂ηα̃,ηβ̃ (v, t)] qv\n(8)\n2\n\nE[(R(v, t) − E[R(v, t)]) |qv ]\n(η α̃ + η β̃ + t)2\nVar[R(v, t)|qv ]\n=\n(η α̃ + η β̃ + t)2\ntqv (1 − qv )\n=\n.\n(η α̃ + η β̃ + t)2\n\n=\n\n(9)\n\n# Proof. Using the expression of variance derived in Equation\n11, it is evident that the error from variance takes on a concave shape with a global maximum at 1/2 when interpreted\nas a function of qv . To conclude the proof it suffices to show\nthat the bias term derived in Equation 7 is convex and has\nα̃\nglobal minimum α̃+\nwhen interpreted as a function of qv .\nβ̃\nWe begin again by differentiating:\n\n(10)\n(11)\n\n∂\n∂\n(E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv )2 =\n∂qv\n∂qv\n\nThe expected MSE can be written as follows:\n\nMSE =\n\nη α̃ − η α̃qv − η β̃qv\nη α̃ + η β̃ + t\n\n!2\n\n∝ −2\n\ntqv (1 − qv )\n+\n.\n(η α̃ + η β̃ + t)2\n\n\u00132\nη α̃ + tqv\n− qv\nη α̃ + η β̃ + t\n(16)\n!\nη α̃ − η α̃qv − η β̃qv\n.\nη α̃ + η β̃ + t\n(17)\n\n\u0012\n\nWe now differentiate the bias term with respect to η:\n∂\n∂η\n\nη α̃ − η α̃qv − η β̃qv\nη α̃ + η β̃ + t\n\nα̃\nThis final term is negative when qv < α̃+\n, positive when\nβ̃\n\n!2\n∝\n\n∂\nη2\n(12)\n∂η (η(α̃ + β̃) + t)2\n\n=\n\n2ηt2\n.\n(η(α̃ + β̃) + t)4\n\n(13)\n\nThis value is clearly positive for all η > 0 and 0 at η =\n0, indicating the value of the bias term does indeed strictly\nincrease when η increases, while being nondecreasing at η =\n0.\nSimilarly, we differentiate the variance term with respect\nto η:\n∂ tqv (1 − qv )\n∂\n1\n∝\n∂η (η α̃ + η β̃ + t)2\n∂η (η α̃ + η β̃ + t)2\n=\n\n−2(α̃ + β̃)\n.\n(η α̃ + η β̃ + t)3\n\n(14)\n(15)\n\nα̃\nqv > α̃+\n, and zero at equality, implying a local minimum\nβ̃\nα̃\n.\nat α̃+\nβ̃\n\nTo prove convexity, note that\n∂2\n(E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv )2 ∝ 2\n∂qv2\n\nη α̃ + η β̃\nη α̃ + η β̃ + t\n\n!\n≥ 0,\n(18)\n\nindicating the function is convex.\n\nB\n\nSupplemental Visualizations\n\nThis appendix contains supplemental graphs from our calibrated simulations.\n\n\f400\n\nCount\n\n300\n\n200\n\n100\n\n0\n\n0.0\n\n0.2\n\n0.4",
-          "quoted_text_sha256": "a8db6f62bf7335a41f6d1d0ae1df0854c8f35ef27ec7cff5454569269c5b5154"
+          "quoted_text": "\fTheorem 3.2. Suppose we have a prior-weighted rating sys-\ntem in the fixed setting with prior parameters (η α̃, η β̃). Con-                                      0.14                                        η\nsider quality estimation after t timesteps.                                                                                                            0\n   Then, as a function of true product quality, squared bias                                           0.12\n\u0010                              \u00112                                                                                                                      1\n  E[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv    is convex with a global mini-                                        0.10                                            10\n          α̃\n                                                                                                                                                       1000\nmum at α̃+      , while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave",
+          "quoted_text_sha256": "68e8372d0f26ab5be9c56b322442ab4e5845c4d8a3e13123f2419b9b2b0246ac"
         }
       ],
       "source_kind": "theorem",
-      "source_location": "ICWSM 19(1), Appendix A, repeated Theorem 3.2 proof presentation; cited publication:1519-1700",
+      "source_location": "cited publication:1137-1145",
+      "source_note": "This is the same visible theorem label and statement as the main-text presentation, retained only for source inventory traceability.",
       "source_presentation_alias": {
-        "canonical_source_item": "mbjg25_theorem3_2_squared_bias_convexity",
-        "label_relation": "same_visible_label",
+        "canonical_source_item": "mbjg25_theorem3_2",
         "relation": "repeated_source_presentation",
         "schema": 1,
-        "semantic_basis": "The appendix repeats the visible Theorem 3.2 label, hypotheses, and its squared-bias and variance conclusions before the proof; it is not a new source claim.",
-        "validated_at": "2026-08-19T17:20:00Z",
-        "validator": "Codex MBJG25 source-presentation repetition review"
+        "semantic_basis": "The Appendix A presentation has the same visible theorem label and repeats the same four shape clauses as the Section 3.1 presentation; it introduces no independent theorem claim.",
+        "validated_at": "2026-08-18T00:00:00Z",
+        "validator": "v11 source-first review-surface preparation"
       },
-      "source_presentation_reconciliation": {
-        "boundary_reason": "completed_statement_then_explanation",
-        "core_anchor": {
-          "line_end": 1531,
-          "line_start": 1519,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.\n\u0010\n\nThen, as a function of true product quality, squared bias\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis convex with a global mini-\n\nα̃\nmum at α̃+\n, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave\nβ̃\nwith a global maximum at 1/2.",
-          "quoted_text_sha256": "435103b935350ee17ad0c10042ddd8376a8a275bdd8c793e23f6ddcd96252540"
-        },
-        "presentation_kind": "theorem",
-        "presentation_label": "Theorem 3.2",
-        "relation": "conservative_text_span_core",
-        "schema": 1,
-        "semantic_basis": "The OCR index conservatively includes the Appendix A proof after the completed repeated Theorem 3.2 statement; this exact core ends at the second conclusion.",
-        "validated_at": "2026-08-19T17:20:00Z",
-        "validator": "Codex MBJG25 source-statement core reconciliation"
-      },
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Appendix A repeats the printed Theorem 3.2 statement before its proof."
-    },
-    "mbjg25_theorem3_2_squared_bias_convexity": {
-      "aliases": [
-        "paper_facing_theorem3_2_squared_bias_convex_in_quality"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_2_squared_bias_convex_in_quality"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_2_squared_bias_convex_in_quality",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_2_squared_bias_convex_in_qualitySpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 469,
-          "line_start": 460,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.\nThen, as a function of true product quality, squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis convex with a global miniα̃\nmum at α̃+\n, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave\nβ̃\nwith a global maximum at 1/2.",
-          "quoted_text_sha256": "6958d7791fcd10638cef757fc074e5437fc61cf0111b88874ee07d09cc1daf28"
-        }
-      ],
-      "source_kind": "theorem",
-      "source_location": "ICWSM 19(1), p. 1015, Theorem 3.2 and Appendix A Equation 18; cited publication:460-469 and 1664-1674",
-      "source_presentation_reconciliation": {
-        "boundary_reason": "completed_statement_then_explanation",
-        "core_anchor": {
-          "line_end": 469,
-          "line_start": 460,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.\nThen, as a function of true product quality, squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis convex with a global miniα̃\nmum at α̃+\n, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave\nβ̃\nwith a global maximum at 1/2.",
-          "quoted_text_sha256": "6958d7791fcd10638cef757fc074e5437fc61cf0111b88874ee07d09cc1daf28"
-        },
-        "presentation_kind": "theorem",
-        "presentation_label": "Theorem 3.2",
-        "relation": "conservative_text_span_core",
-        "schema": 1,
-        "semantic_basis": "The OCR index conservatively includes explanatory text after the completed displayed Theorem 3.2 statement; this exact core ends at its second conclusion.",
-        "validated_at": "2026-08-19T17:20:00Z",
-        "validator": "Codex MBJG25 source-statement core reconciliation"
-      },
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Theorem 3.2 states that squared bias is convex as a function of true product quality.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_2_squared_bias_convex_in_qualitySpec"
-      ]
-    },
-    "mbjg25_theorem3_2_squared_bias_minimizer": {
-      "aliases": [
-        "paper_facing_theorem3_2_squared_bias_global_min_at_prior_mean"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_2_squared_bias_global_min_at_prior_mean"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_2_squared_bias_global_min_at_prior_mean",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_2_squared_bias_global_min_at_prior_meanSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 469,
-          "line_start": 460,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.\nThen, as a function of true product quality, squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis convex with a global miniα̃\nmum at α̃+\n, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave\nβ̃\nwith a global maximum at 1/2.",
-          "quoted_text_sha256": "6958d7791fcd10638cef757fc074e5437fc61cf0111b88874ee07d09cc1daf28"
-        }
-      ],
-      "source_kind": "theorem",
-      "source_location": "ICWSM 19(1), p. 1015, Theorem 3.2 and Appendix A; cited publication:460-469 and 1655-1663",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Theorem 3.2 states that squared bias has a global minimum at the prior mean alpha_tilde/(alpha_tilde+beta_tilde).",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_2_squared_bias_global_min_at_prior_meanSpec"
-      ]
-    },
-    "mbjg25_theorem3_2_variance_concavity": {
-      "aliases": [
-        "paper_facing_theorem3_2_variance_concave_in_quality"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_2_variance_concave_in_quality"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_2_variance_concave_in_quality",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_2_variance_concave_in_qualitySpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 469,
-          "line_start": 460,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.\nThen, as a function of true product quality, squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis convex with a global miniα̃\nmum at α̃+\n, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave\nβ̃\nwith a global maximum at 1/2.",
-          "quoted_text_sha256": "6958d7791fcd10638cef757fc074e5437fc61cf0111b88874ee07d09cc1daf28"
-        }
-      ],
-      "source_kind": "theorem",
-      "source_location": "ICWSM 19(1), p. 1015, Theorem 3.2 and Appendix A Equation 11; cited publication:460-469 and 1533-1561",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Theorem 3.2 states that posterior-rating variance is concave as a function of true product quality.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_2_variance_concave_in_qualitySpec"
-      ]
-    },
-    "mbjg25_theorem3_2_variance_maximizer": {
-      "aliases": [
-        "paper_facing_theorem3_2_variance_global_max_at_half"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_2_variance_global_max_at_half"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_2_variance_global_max_at_half",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_theorem3_2_variance_global_max_at_halfSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 469,
-          "line_start": 460,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.2. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Consider quality estimation after t timesteps.\nThen, as a function of true product quality, squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis convex with a global miniα̃\nmum at α̃+\n, while variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is concave\nβ̃\nwith a global maximum at 1/2.",
-          "quoted_text_sha256": "6958d7791fcd10638cef757fc074e5437fc61cf0111b88874ee07d09cc1daf28"
-        }
-      ],
-      "source_kind": "theorem",
-      "source_location": "ICWSM 19(1), p. 1015, Theorem 3.2 and Appendix A Equation 11; cited publication:460-469 and 1533-1561",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "Theorem 3.2 states that posterior-rating variance has a global maximum at true quality one half.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_theorem3_2_variance_global_max_at_halfSpec"
-      ]
-    },
-    "mbjg25_thompson_sampling_choice": {
-      "aliases": [
-        "paper_facing_thompson_sampling_mechanism"
-      ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_thompson_sampling_mechanism"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "MBJG25ProducerFairness.paper_facing_thompson_sampling_mechanism",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "MBJG25ProducerFairness.paper_facing_thompson_sampling_mechanismSpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 708,
-          "line_start": 680,
-          "publication_locator": "cited publication",
-          "quoted_text": "sampling algorithm. This section is organized as follows. We\n\nfirst outline how we implement simulations for the responsive model, and then investigate how tuning prior strength\naffects the producer fairness and match quality metrics. We\nconclude with a discussion of results, and compare our simulation outcomes with those from the fixed model.\n\n4.1\n\nResponsive Model Implementation\n\nHere, we describe our simulation implementation of the responsive model. (Note that, as discussed in Section 2.3, the\nchanges in the responsive setting make quality estimation\ninherently biased, complicating the theory developed in the\nfixed setting; Appendix C demonstrates the dependency of\nbias and variance on the exact dynamics of the sampling\nalgorithm used for consumer choice in this setting.) An\noverview of the responsive model’s design and metrics for\nefficiency and fairness are provided in Section 2.\nUsers adaptively choose products on the market. At\neach timestep t, a subset of the products M (t) ⊆ V is available for purchase. A single user interacts with a single item\nat each timestep, making their choice as a function of past\nratings. In particular, in the main text, we model this user as\na Thompson sampler that utilizes the posterior quality distribution for each item. That is, for each v ∈ M (t), the consumer draws a sample xv ∼ Beta(α̂+R(v, t), β̂+|S(v, t)|−\nR(v, t)), and then chooses and rates the product v(t) that\nmaximizes xv .4 Thompson sampling is a well-studied algorithm for trading off between exploitation and exploration\nin multi-armed bandit problems (Russo et al. 2018). Prior\nwork has also argued that it serves as a reasonable approximation of real-world consumer choice; for example, Krafft\net al. (2021) demonstrate that when individual human decisions are aggregated together in consumer financial markets, the behavior is remarkably close to that of a distributed\nThompson sampling setting.",
-          "quoted_text_sha256": "d1c5e59ed91e35477ad7631615baf64dc1ce84e58e51f6baef80f127ab3dd6c0"
-        }
-      ],
-      "source_kind": "algorithm",
-      "source_location": "ICWSM 19(1), p. 1017, Section 4.1; cited publication:680-708",
-      "source_note": "Lean exposes the exact draw-a-joint-profile then argmax policy map; the source's independent Beta posteriors instantiate the supplied joint belief law, while calibrated simulation code is empirical implementation scope.",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "In each responsive-market period, Thompson sampling draws one posterior-quality value for every currently available product and chooses a product attaining the maximum draw.",
-      "support_lean_declarations": [
-        "MBJG25ProducerFairness.paper_facing_thompson_sampling_mechanismSpec"
-      ]
-    },
-    "mbjg25_weak_prior_strength_order": {
-      "aliases": [
-        "assumption_prior_strength_weak_order"
-      ],
-      "claim_bearing": false,
-      "inventory_role": "pending_source_anchor_inventory",
-      "scope_disposition": "requires_byte_pinned_source_anchor_and_dedicated_spec_mapping",
-      "scope_disposition_note": "This source-inventory item predates the v11 byte-pinned source-anchor migration and is retained explicitly until its exact source excerpt and one-to-one Spec route are prepared.",
-      "source_anchor_evidence": [
-        {
-          "line_end": 450,
-          "line_start": 443,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 3.1. Suppose we have a prior-weighted rating system in the fixed setting with prior parameters (η α̃, η β̃). Fix\nproduct v with true quality qv and consider quality estimation after t timesteps.\nThen, as η\n≥ 0 increases, (1) squared bias\n\u0010\n\u00112\nE[q̂ηα̃,ηβ̃ (v, t)|qv ] − qv\nis nondecreasing; (2) variance Var[q̂ηα̃,ηβ̃ (v, t)|qv ] is strictly decreasing in η.",
-          "quoted_text_sha256": "6b1dc4719adeba9cee9556997c0393aff7fca7e223156d8f57778ad2ec8d5148"
-        }
-      ],
-      "source_kind": "assumption",
-      "source_location": "ICWSM 19(1), Theorem 3.1 and Appendix A; cited publication:443-450 and 1606-1650",
-      "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
-      "statement": "The nondecreasing/nonincreasing clauses compare a lower prior strength eta_low with eta_high satisfying eta_low <= eta_high.",
-      "support_lean_declarations": [
-        "assumption_prior_strength_weak_order"
-      ]
+      "statement": "Appendix A repeats the visibly labelled Theorem 3.2 statement before its proof."
     }
   },
   "paper": "MBJG25ProducerFairness",
   "paper_interface_namespace": "MBJG25ProducerFairness",
-  "publication_source_display_projection": {
-    "manifest": "audit/public_source_display_projection.json",
-    "raw_source_bytes_included": false,
+  "paper_semantic_prerequisite_sources": {
+    "MBJG25ProducerFairness.paper_fixed_binary_model_formulaSpec": "mbjg25_fixed_binary_model"
+  },
+  "publication_corrected_target_projection": {
+    "approval_material_included": false,
     "schema": 1
   },
   "schema": 1,
   "semantic_contract_schema": 1,
-  "source_access_status": "available_pinned_published_pdf_with_local_ocr",
+  "semantic_preflight_import_module": "MBJG25ProducerFairness.ProofInterface",
+  "semantic_route_schema": 2,
   "source_anchor_evidence_required": true,
-  "source_artifact_sha256": "150d8df530dc92bc165a55309abed044004a0877f4cce41309ef4030b5bab0fe",
+  "source_artifact_sha256": "c5ae8e229ea8033e636af335e5d63f5dd27e098492c9fb013f333e71edd5c1f9",
+  "source_claim_atoms_schema": 1,
   "source_coverage_mode": "named_theoretical_statements",
   "source_curated": true,
   "source_inventory_kind": "source_curated",
-  "source_inventory_policy": "Independent source-first inventory from the pinned line-numbered ICWSM text extraction. Published-paper page, section, theorem, and equation locators remain the human-facing references. The inventory includes all mathematical formulas, metrics, named results, and the responsive-market choice rule; raw datasets, calibrated estimates, plots, and simulator implementation are empirical non-theorem scope. Lean identifiers are routing only, never semantic evidence. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
+  "source_inventory_policy": "The ordinary current-protocol surface contains the two named theoretical results in Section 3.1 and their repeated Appendix A presentations. The fixed Beta-Bernoulli formulas are retained as source-semantic prerequisites. Standalone responsive-market simulations and appendix algorithms are not ordinary named-theory claims. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
   "source_named_result_inventory_review": {
+    "candidate_presentations": [],
     "complete": true,
-    "discovered_named_result_sha256": "e785e362fbf4854cdc33c089448036bde9c93cebb53169a8eb575acee50285b9",
-    "discovered_prose_definition_sha256": "0bf25ad46c5b3d176319c5d34533e983f7b0aa63f1221702324a027a9c132968",
-    "method": "Independent source-only scan of the pinned ICWSM text extraction. It identifies each visible Theorem before any Lean route is considered; reconciliation is by byte-pinned source spans and exact quotes, not map keys or Lean declaration names.",
-    "prose_definition_presentations": [
-      {
-        "defined_entity_kind": "object",
-        "defined_object": "q̂α̂,β̂ (v, t)",
-        "definitional_clause": "q̂α̂,β̂ (v, t) =\n\nα̂ + R(v, t)\nα̂ + β̂ + |S(v, t)|\n\n.\n\n(1)",
-        "presentation_kind": "definition",
-        "schema": 1,
-        "scope_disposition": "normal_named_theory_definition",
-        "source_anchor": {
-          "line_end": 260,
-          "line_start": 253,
-          "publication_locator": "cited publication",
-          "quoted_text": "q̂α̂,β̂ (v, t) =\n\nα̂ + R(v, t)\nα̂ + β̂ + |S(v, t)|\n\n.\n\n(1)",
-          "quoted_text_sha256": "59a9c6b72409d65ff3c69b01f623fb6c5be8b35aa458afb12ebe3da557a77f45"
-        }
-      },
-      {
-        "defined_entity_kind": "object",
-        "defined_object": "M SE(q̂ηα̃,ηβ̃ )",
-        "definitional_clause": "Metrics in fixed setting. In the fixed model, we focus\nprimarily on an accuracy measure: the mean-squared error\n(MSE) of the estimated quality in predicting true quality,\ndefined at timestep t as\nP\nM SE(q̂ηα̃,ηβ̃ ) =\n\n2\nv∈V (q̂η α̃,η β̃ (v, t) − qv )\n\n|V |\n\n.\n\n(2)",
-        "presentation_kind": "definition",
-        "schema": 1,
-        "scope_disposition": "normal_named_theory_definition",
-        "source_anchor": {
-          "line_end": 331,
-          "line_start": 317,
-          "publication_locator": "cited publication",
-          "quoted_text": "Metrics in fixed setting. In the fixed model, we focus\nprimarily on an accuracy measure: the mean-squared error\n(MSE) of the estimated quality in predicting true quality,\ndefined at timestep t as\nP\nM SE(q̂ηα̃,ηβ̃ ) =\n\n2\nv∈V (q̂η α̃,η β̃ (v, t) − qv )\n\n|V |\n\n.\n\n(2)",
-          "quoted_text_sha256": "b6bbc7dfe852b7a7fc9db7abcffbe154f9065b710a179edbc4b86072707e36d8"
-        }
-      },
-      {
-        "defined_entity_kind": "object",
-        "defined_object": "SR(v)",
-        "definitional_clause": "Metrics in responsive setting. In the responsive setting,\nbecause consumers choose (and rate) higher rated items at\nhigher probabilities, we base our metrics directly off of how\noften products are selected. We define lv to be the lifespan\nof a product v in the responsive model. The selection rate\nof a product v as the fraction of times that it was rated (and\nthus the fraction of times the product was purchased) during\nits lifespan, SR(v) := |S(v, t)|/lv .",
-        "presentation_kind": "definition",
-        "schema": 1,
-        "scope_disposition": "normal_named_theory_definition",
-        "source_anchor": {
-          "line_end": 353,
-          "line_start": 346,
-          "publication_locator": "cited publication",
-          "quoted_text": "Metrics in responsive setting. In the responsive setting,\nbecause consumers choose (and rate) higher rated items at\nhigher probabilities, we base our metrics directly off of how\noften products are selected. We define lv to be the lifespan\nof a product v in the responsive model. The selection rate\nof a product v as the fraction of times that it was rated (and\nthus the fraction of times the product was purchased) during\nits lifespan, SR(v) := |S(v, t)|/lv .",
-          "quoted_text_sha256": "3736e2b0e786bc8bdaba21e98d5915e85fed4889f11b2738a5e4321aa52c060b"
-        }
-      },
-      {
-        "defined_entity_kind": "object",
-        "defined_object": "expected regret",
-        "definitional_clause": "Efficiency. Formally, to measure efficiency, we use total\nexpected regret compared to the best item in the marketplace\nat each time step:\n\nE\n\n\" T\nX\nt=1\n\n#\nmax {qv } − qv(t) .\n\nv∈M (t)\n\n(4)",
-        "presentation_kind": "definition",
-        "schema": 1,
-        "scope_disposition": "normal_named_theory_definition",
-        "source_anchor": {
-          "line_end": 369,
-          "line_start": 354,
-          "publication_locator": "cited publication",
-          "quoted_text": "Efficiency. Formally, to measure efficiency, we use total\nexpected regret compared to the best item in the marketplace\nat each time step:\n\nE\n\n\" T\nX\nt=1\n\n#\nmax {qv } − qv(t) .\n\nv∈M (t)\n\n(4)",
-          "quoted_text_sha256": "5285c4a770ebaab411bfeb35887e37a3b6d6e144a76a37e55275ac10d1581785"
-        }
-      },
-      {
-        "defined_entity_kind": "object",
-        "defined_object": "σ̂ ({SR(v)|qv = q})",
-        "definitional_clause": "Fairness. To capture variance conditional on quality, our\nchosen fairness metric is the standard deviation in selection rate given true quality. This individual fairness notion\nis conditional on quality: items of similar quality ought to\nbe picked at similar rates. Let σ̂(U ) be the sample standard\ndeviation computed on a set of real-valued numbers U . For a\nfixed true quality q, the individual (un)fairness metric is the\nstandard deviation in selection rate conditioned on an item\nbeing of that true quality:\nσ̂ ({SR(v)|qv = q}) .\n\n(5)",
-        "presentation_kind": "definition",
-        "schema": 1,
-        "scope_disposition": "normal_named_theory_definition",
-        "source_anchor": {
-          "line_end": 386,
-          "line_start": 376,
-          "publication_locator": "cited publication",
-          "quoted_text": "Fairness. To capture variance conditional on quality, our\nchosen fairness metric is the standard deviation in selection rate given true quality. This individual fairness notion\nis conditional on quality: items of similar quality ought to\nbe picked at similar rates. Let σ̂(U ) be the sample standard\ndeviation computed on a set of real-valued numbers U . For a\nfixed true quality q, the individual (un)fairness metric is the\nstandard deviation in selection rate conditioned on an item\nbeing of that true quality:\nσ̂ ({SR(v)|qv = q}) .\n\n(5)",
-          "quoted_text_sha256": "a78f537565935b1419957b614adafb7badf8758ae81579d360a5c54d18b353d2"
-        }
-      },
-      {
-        "defined_entity_kind": "object",
-        "defined_object": "marketplace-level metric of producer unfairness",
-        "definitional_clause": "To get a marketplace-level metric of producer unfairness,\nwe take the expectation of eq. (5) over true qualities q.",
-        "presentation_kind": "definition",
-        "schema": 1,
-        "scope_disposition": "normal_named_theory_definition",
-        "source_anchor": {
-          "line_end": 389,
-          "line_start": 388,
-          "publication_locator": "cited publication",
-          "quoted_text": "To get a marketplace-level metric of producer unfairness,\nwe take the expectation of eq. (5) over true qualities q.",
-          "quoted_text_sha256": "7d90447b9d809c68f7a00c705b170c86b035653a31967b3ad32fe729994cd6ae"
-        }
-      },
-      {
-        "defined_entity_kind": "object",
-        "defined_object": "q̂α̂ (v, t)",
-        "definitional_clause": "To estimate the quality of a product at time T , we define\nS(v, k, T ) to be the set of k-star reviews for product v at\ntime T , and N (v, k, t) := |S(v, k, T )|. The prior parameters, instead of being for a Beta distribution, are now for a\nDirichlet distribution; they are given by α̂ = {α̂j }j∈K . Due\nto the conjugacy of the Dirichlet distribution and the categorical distribution, we can define the estimated quality for\nv at time t as\n\nP\n\nj∈K\nq̂α̂ (v, t) = P\n\nN (v, j, t) · j\n\nj∈K N (v, j, t)\n\n(21)",
-        "presentation_kind": "definition",
-        "schema": 1,
-        "scope_disposition": "normal_named_theory_definition",
-        "source_anchor": {
-          "line_end": 2021,
-          "line_start": 2005,
-          "publication_locator": "cited publication",
-          "quoted_text": "To estimate the quality of a product at time T , we define\nS(v, k, T ) to be the set of k-star reviews for product v at\ntime T , and N (v, k, t) := |S(v, k, T )|. The prior parameters, instead of being for a Beta distribution, are now for a\nDirichlet distribution; they are given by α̂ = {α̂j }j∈K . Due\nto the conjugacy of the Dirichlet distribution and the categorical distribution, we can define the estimated quality for\nv at time t as\n\nP\n\nj∈K\nq̂α̂ (v, t) = P\n\nN (v, j, t) · j\n\nj∈K N (v, j, t)\n\n(21)",
-          "quoted_text_sha256": "25f5edfbe0986188c76f678edc68eb6b95e5026c8d470441d11fe6b75a360076"
-        }
-      }
-    ],
+    "discovered_candidate_presentation_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "discovered_named_result_sha256": "7514c8f724d318bbf3c43cd24f8db4f8e6fefa1b039c695e37aa4d4ebf95e787",
+    "discovered_prose_definition_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "method": "Read the pinned ICWSM 2025 extraction source-first, identify every visible named theoretical presentation, and reconcile the two Section 3.1 theorems and their Appendix A repetitions against byte-pinned source-map anchors. The responsive-market material and appendices contain no additional named theoretical result presentation.",
+    "prose_definition_presentations": [],
     "schema": 1,
-    "source_artifact_sha256": "150d8df530dc92bc165a55309abed044004a0877f4cce41309ef4030b5bab0fe",
-    "validated_at": "2026-08-19T17:20:00Z",
-    "validator": "Codex MBJG25 source-only named-result reconciliation"
+    "source_artifact_sha256": "c5ae8e229ea8033e636af335e5d63f5dd27e098492c9fb013f333e71edd5c1f9",
+    "validated_at": "2026-09-04T20:06:35-04:00",
+    "validator": "MBJG25 source-only current-protocol inventory pass"
   },
   "source_spec_correspondence_schema": 1,
-  "source_url": "https://doi.org/10.1609/icwsm.v19i1.35854",
+  "source_url": "https://ojs.aaai.org/index.php/ICWSM/article/view/35865",
+  "source_version": "ICWSM 2025, 19(1), 1139-1157",
   "title": "Balancing Producer Fairness and Efficiency via Prior-Weighted Rating System Design"
 }

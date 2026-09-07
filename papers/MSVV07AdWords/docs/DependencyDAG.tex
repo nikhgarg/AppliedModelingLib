@@ -15,7 +15,7 @@
 \node[dag_model, right=0.35cm of legLem, dag_template_legend] (legDef)
   {\textbf{Definition}\\model};
 \node[dag_partial, right=0.35cm of legDef, dag_template_legend] (legPart)
-  {\textbf{Source-open}\\heuristic};
+  {\textbf{Qualified}\\scope / source-open};
 
 
 }
@@ -32,7 +32,7 @@
 \node[dag_model, below=of SmallBids, text width=3.5cm] (Balance)
   {\textbf{Algorithm (Sec. 3)}\\Balance/MSVV scaled-bid rule};
 \node[dag_result, left=of Balance, text width=3.5cm] (Cost)
-  {\textbf{Operational Routes}\\cost-threaded scan; slab/type/fiber accounting; Sec.~6 $\alpha/\beta$ formulas; exact tightness};
+  {\textbf{Operational Routes}\\cost-threaded scan; slab/type/fiber accounting; Sec.~6 $\alpha/\beta$ formulas; fluid tightness};
 \node[dag_result, below=of Balance, text width=3.5cm] (LP)
   {\textbf{LP/Dual Surface}\\displayed programs, witnesses, and weak duality};
 \node[dag_result, below=of LP, text width=3.5cm] (History)
@@ -46,7 +46,7 @@
 \node[dag_lemma, below=of L2, text width=3.7cm] (L3)
   {\textbf{Lemma 3 (Sec. 4)}\\exact factor-LP optimizer, upper bound, and $N/e$ limit};
 \node[dag_lemma, below=of L3, text width=3.7cm] (L4)
-  {\textbf{Lemma 4 (Sec. 5)}\\standard-LP dual optimality certificate};
+  {\textbf{Lemma 4 (Sec. 5)}\\constructed tradeoff LP: the fixed geometric dual is optimal};
 \node[dag_lemma, below=of L4, text width=3.7cm] (L5)
   {\textbf{Lemma 5 (Sec. 5)}\\right side $l=b+\Delta(\pi,\psi)$};
 \node[dag_lemma, below=of L5, text width=3.7cm] (L6)
@@ -59,18 +59,18 @@
   {\textbf{Finite Charge Lemmas}\\query-dual summation plus explicit error};
 \node[dag_result, below=of Charge, text width=3.5cm] (Delta)
   {\textbf{Finite $\delta$ Theorem}\\explicit small-bids error bound};
-\node[dag_result, below=of Delta, text width=3.5cm] (T8)
-  {\textbf{Theorem 8 (Sec. 5)}\\suffix exponent and unspent coefficient $k-i$; small-bids limit};
+\node[dag_partial, below=of Delta, text width=3.5cm] (T8)
+  {\textbf{Theorem 8 (Sec. 5)}\\finite bound proved; limit requires vanishing error, not yet derived from the source regime};
 
 % Extensions
 \node[dag_result, below=of T8, text width=3.5cm] (Sec6)
-  {\textbf{Section 6}\\effective bids, CTRs, availability, slots};
+  {\textbf{Section 6}\\effective-charge bound; active-bidder comparison; CTRs; multiple slots outside this audit};
 \node[dag_partial, below=of Sec6, text width=3.5cm] (Sec8)
-  {\textbf{Section 8: Source-open}\\models and proposals encoded; guarantees and heuristics remain open in the paper};
+  {\textbf{Section 8: Source-open}\\retained definitions checked; weighted-bid runner uncredited; performance questions open in the paper};
 \node[dag_result, below=of Sec8, text width=3.5cm] (AppArithmetic)
   {\textbf{Appendix Corrections}\\printed phase total and positive phase-3 residual; true factor below $1-1/e$};
 \node[dag_result, below=of AppArithmetic, text width=3.5cm] (AppConstruction)
-  {\textbf{Appendix Execution}\\fluid source-rule run, $\mathrm{OPT}=1$, and DERIVED $\kappa>1$ family with limits};
+  {\textbf{Appendix Execution}\\fluid source-rule run, $\mathrm{OPT}=1$, and derived $\kappa>1$ family with limits};
 
 % Lower bound
 \node[dag_model, right=of L4, text width=3.7cm] (Yao)

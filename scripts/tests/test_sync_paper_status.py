@@ -19,6 +19,7 @@ for import_root in (ROOT, ROOT / "scripts"):
         sys.path.insert(0, import_root_text)
 
 import sync_paper_status  # noqa: E402
+from source_coverage_scope import SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA  # noqa: E402
 
 
 def write_json(path: Path, payload: dict[str, object]) -> None:
@@ -714,6 +715,46 @@ class ScopedDashboardAuditTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "inventory is stale"):
                     sync_paper_status.paper_facing_human_review_total(folder, payload)
 
+    def test_source_claim_total_excludes_nonclaims_aliases_and_deep_rows(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            folder = Path(temp_dir) / "papers" / "SourceClaimSurface"
+            (folder / "audit").mkdir(parents=True)
+            payload = paper_status(folder.name)
+            payload["review_surface"] = {
+                "include_names": ["claimSpec"],
+                "assumption_names": ["sourceCondition"],
+            }
+            payload["human_review"] = {
+                "reviewed_rows": 0,
+                "total_rows": 2,
+                "surface": "source_claims_v1",
+            }
+            write_json(
+                folder / "audit" / "paper_statement_map.json",
+                {
+                    "items": {
+                        "claim": {"claim_bearing": True},
+                        "source_model_prerequisite": {
+                            "claim_bearing": False,
+                            "inventory_role": "source_premise_declaration",
+                        },
+                        "repeated_presentation": {
+                            "claim_bearing": True,
+                            "inventory_role": "source_presentation_alias",
+                        },
+                        "deep_claim": {
+                            "claim_bearing": True,
+                            "inventory_role": "deep_audit_material",
+                        },
+                    }
+                },
+            )
+
+            self.assertEqual(
+                sync_paper_status.paper_facing_human_review_total(folder, payload),
+                2,
+            )
+
     def test_default_does_not_reuse_counts_when_trusted_material_changed(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -1109,8 +1150,58 @@ class ScopedDashboardAuditTests(unittest.TestCase):
                     folder, payload
                 )
 
-        self.assertIn("Author-approved corrected model", rendered)
+        self.assertIn("The formalized model differs from the pinned archive", rendered)
+        self.assertNotIn("Author-approved", rendered)
         self.assertIn("GOVERNING.md", rendered)
+        self.assertIn("contract.json", rendered)
+
+    def test_corrected_readme_prefers_explicit_reader_clarification(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "CorrectedPaper"
+            docs = folder / "docs"
+            audit = folder / "audit"
+            docs.mkdir(parents=True)
+            audit.mkdir()
+            clarification = docs / "GOVERNING_MODEL_CLARIFICATION.md"
+            clarification.write_text("# Governing-model clarification\n", encoding="utf-8")
+            governing = docs / "GOVERNING_CORRECTED_MODEL.md"
+            governing.write_text("# Governing corrected model\n", encoding="utf-8")
+            contract = audit / "contract.json"
+            contract.write_text("{}\n", encoding="utf-8")
+            payload = paper_status(folder.name)
+            payload.update(
+                {
+                    "status": "formalized",
+                    "formalization_scope": {
+                        "kind": "author_approved_corrected_model",
+                    },
+                    "artifacts": {
+                        "source_clarifications": (
+                            "papers/CorrectedPaper/docs/"
+                            "GOVERNING_MODEL_CLARIFICATION.md"
+                        ),
+                        "governing_corrected_model": (
+                            "papers/CorrectedPaper/docs/GOVERNING_CORRECTED_MODEL.md"
+                        ),
+                        "corrected_model_semantic_contract": (
+                            "papers/CorrectedPaper/audit/contract.json"
+                        ),
+                    },
+                }
+            )
+            with mock.patch.object(sync_paper_status, "ROOT", root):
+                rendered = sync_paper_status.generated_paper_readme_block(
+                    folder, payload
+                )
+
+        self.assertIn(
+            "- Source clarifications and assumptions: "
+            "[GOVERNING_MODEL_CLARIFICATION.md]"
+            "(docs/GOVERNING_MODEL_CLARIFICATION.md)",
+            rendered,
+        )
+        self.assertNotIn("GOVERNING_CORRECTED_MODEL.md", rendered)
         self.assertIn("contract.json", rendered)
 
     def test_generated_readme_links_present_human_review_packet(self) -> None:
@@ -1142,6 +1233,65 @@ class ScopedDashboardAuditTests(unittest.TestCase):
             rendered,
         )
 
+    def test_readme_links_memo_and_stable_metadata_without_legacy_audit_claims(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "ReviewedPaper"
+            (folder / "docs").mkdir(parents=True)
+            (folder / "audit").mkdir()
+            memo = folder / "docs" / "SOURCE_CLARIFICATIONS.md"
+            memo.write_text("# Source clarifications\n", encoding="utf-8")
+            dag = folder / "docs" / "DependencyDAG.pdf"
+            dag.write_bytes(b"%PDF-fixture\n")
+            for relative in (
+                "status.json",
+                "audit/paper_statement_map.json",
+                "audit/paper_coverage_llm.json",
+                "audit/source_record_audit.json",
+                "audit/statement_match_llm.json",
+            ):
+                (folder / relative).write_text("{}\n", encoding="utf-8")
+            with mock.patch.object(sync_paper_status, "ROOT", root):
+                rendered = sync_paper_status.generated_paper_readme_block(
+                    folder, paper_status(folder.name)
+                )
+                memo.unlink()
+                dag.unlink()
+                without_memo = sync_paper_status.generated_paper_readme_block(
+                    folder, paper_status(folder.name)
+                )
+                (folder / "docs" / "SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md").write_text(
+                    "# Source clarifications\n", encoding="utf-8"
+                )
+                alternate_memo = sync_paper_status.generated_paper_readme_block(
+                    folder, paper_status(folder.name)
+                )
+                memo.write_text("# Source clarifications\n", encoding="utf-8")
+                both_memos = sync_paper_status.generated_paper_readme_block(
+                    folder, paper_status(folder.name)
+                )
+        self.assertIn("[SOURCE_CLARIFICATIONS.md](docs/SOURCE_CLARIFICATIONS.md)", rendered)
+        self.assertNotIn("SOURCE_CLARIFICATIONS.md", without_memo)
+        self.assertIn(
+            "[SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md)",
+            alternate_memo,
+        )
+        self.assertIn(
+            "[SOURCE_CLARIFICATIONS.md](docs/SOURCE_CLARIFICATIONS.md)",
+            both_memos,
+        )
+        self.assertIn(
+            "[SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md]"
+            "(docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md)",
+            both_memos,
+        )
+        self.assertIn("[DependencyDAG.pdf](docs/DependencyDAG.pdf)", rendered)
+        self.assertIn("Dependency DAG: not tracked in this folder.", without_memo)
+        self.assertIn("[status.json](status.json)", rendered)
+        self.assertIn("[paper statement map](audit/paper_statement_map.json)", rendered)
+        for legacy in ("paper_coverage_llm.json", "source_record_audit.json", "statement_match_llm.json"):
+            self.assertNotIn(legacy, rendered)
+
     def test_current_corrected_scope_uses_contract_label_not_stale_archive_sidecars(
         self,
     ) -> None:
@@ -1158,11 +1308,11 @@ class ScopedDashboardAuditTests(unittest.TestCase):
             ):
                 self.assertEqual(
                     sync_paper_status.llm_translation_label(folder, payload),
-                    "author-approved corrected target; semantic contract current",
+                    "formalized target differs from the pinned archive; semantic contract current",
                 )
                 self.assertEqual(
                     sync_paper_status.llm_paper_coverage_label(folder, payload),
-                    "author-approved corrected target; semantic contract current",
+                    "formalized target differs from the pinned archive; semantic contract current",
                 )
 
     def test_status_row_evaluates_corrected_scope_only_once(self) -> None:
@@ -1185,11 +1335,11 @@ class ScopedDashboardAuditTests(unittest.TestCase):
 
         self.assertEqual(
             row["llm_as_judge_translation"],
-            "author-approved corrected target; semantic contract current",
+            "formalized target differs from the pinned archive; semantic contract current",
         )
         self.assertEqual(
             row["llm_as_judge_paper_coverage"],
-            "author-approved corrected target; semantic contract current",
+            "formalized target differs from the pinned archive; semantic contract current",
         )
         current_scope.assert_called_once_with(folder, payload)
 
@@ -2048,7 +2198,7 @@ class AggregateSidecarFreshnessTests(unittest.TestCase):
                             "source_evidence": "source.txt:1-1 records the exact source claim.",
                             "statement_sha256": source_item["statement_sha256"],
                             "source_item_coverage_digest_schema": (
-                                review_dashboard.SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA
+                                SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA
                             ),
                             "source_item_coverage_sha256": (
                                 review_dashboard.source_item_coverage_sha256(
@@ -2097,6 +2247,7 @@ class AggregateSidecarFreshnessTests(unittest.TestCase):
             {
                 "papers": [
                     {
+                        "id": "Example",
                         "title": "Example Paper",
                         "authors": "Example Author",
                         "publication": "Example Venue",
@@ -2147,6 +2298,50 @@ class AggregateSidecarFreshnessTests(unittest.TestCase):
             )
 
         self.assertEqual(v11_counts.call_count, 2)
+
+    def test_all_current_protocol_opt_ins_use_graph_status_without_legacy_reads(self) -> None:
+        cases = (
+            ({"require_source_spec_correspondence": True}, {}),
+            ({"require_v11_raw_source_spec_screening": True}, {}),
+            ({"llm_statement_review": {"require_theorem_realization_contract": True}}, {}),
+            ({"llm_statement_review": {"required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-v3"}}, {}),
+            ({}, {"source_spec_correspondence_schema": 1}),
+        )
+        for opt_in, source_map in cases:
+            with self.subTest(opt_in=opt_in, source_map=source_map):
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    root = Path(temp_dir)
+                    folder = root / "papers" / "Fixture"
+                    audit = folder / "audit"
+                    audit.mkdir(parents=True)
+                    write_json(audit / "paper_statement_map.json", source_map)
+                    payload = paper_status("Fixture")
+                    payload["review_surface"] = {**opt_in, "include_names": ["claimSpec"]}
+                    payload["human_review"] = {"total_rows": 1}
+                    receipt = SimpleNamespace(payload={"schema": 6, "paper": "Fixture"})
+                    projection = SimpleNamespace(
+                        review_declarations_by_source_item={"claim": ("Fixture.claimSpec",)},
+                        source_lean_verdicts_by_source_item={"claim": "matches"},
+                    )
+                    with (
+                        mock.patch.object(sync_paper_status, "ROOT", root),
+                        mock.patch("final_closure_receipt.load_final_closure_receipt", return_value=receipt),
+                        mock.patch("obligation_closure_credential.validate_nonaccepting_recorded_graph_projection", return_value=projection),
+                        mock.patch.object(sync_paper_status, "saved_sidecar_reuse_authorization", side_effect=AssertionError("selected v11 consulted legacy reuse")),
+                        mock.patch.object(sync_paper_status, "load_llm_statement_judgments", side_effect=AssertionError("selected v11 read legacy judgments")),
+                    ):
+                        self.assertEqual(sync_paper_status.llm_translation_label(folder, payload), "accepted closeout: 1/1 raw-source-to-Spec match")
+                        self.assertEqual(sync_paper_status.llm_paper_coverage_label(folder, payload), "accepted closeout: 1/1 source claims covered")
+
+    def test_correspondence_only_failed_graph_stays_in_current_status_lane(self) -> None:
+        payload = paper_status("Fixture")
+        payload["review_surface"] = {"require_source_spec_correspondence": True}
+        with (
+            mock.patch.object(sync_paper_status, "current_v11_source_spec_counts", return_value=(None, "graph unavailable")),
+            mock.patch.object(sync_paper_status, "saved_sidecar_reuse_authorization", side_effect=AssertionError("failed v11 graph fell back to legacy")),
+        ):
+            label = sync_paper_status.llm_translation_label(Path("/tmp/Fixture"), payload)
+            self.assertIn("graph unavailable", label)
 
     def test_v11_status_counts_read_the_pinned_ledger_without_elaboration(self) -> None:
         """The static status projection must not turn a receipt check into Lean work."""
@@ -2199,6 +2394,269 @@ class AggregateSidecarFreshnessTests(unittest.TestCase):
             {"total": 1, "matches": 1, "mismatch": 0, "uncertain": 0, "unknown": 0},
         )
 
+    def test_schema6_status_uses_only_the_nonaccepting_recorded_projection(self) -> None:
+        """Website rendering must not invoke the terminal Lean validator."""
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            write_json(
+                audit / "paper_statement_map.json",
+                {
+                    "schema": 1,
+                    "paper": "Fixture",
+                    "items": {
+                        "claim": {
+                            "semantic_contract": {
+                                "spec_declaration": "Fixture.claimSpec"
+                            }
+                        }
+                    },
+                },
+            )
+            payload = paper_status("Fixture")
+            payload["review_surface"] = {
+                "require_v11_raw_source_spec_screening": True,
+                "include_names": ["claimSpec"],
+            }
+            payload["human_review"] = {"total_rows": 1}
+            receipt = SimpleNamespace(
+                payload={
+                    "schema": 6,
+                    "paper": "Fixture",
+                    "closure_status": "current",
+                    "accepted_graph": {"graph_sha256": "a" * 64},
+                }
+            )
+            with (
+                mock.patch.object(sync_paper_status, "ROOT", root),
+                mock.patch(
+                    "final_closure_receipt.load_final_closure_receipt",
+                    return_value=receipt,
+                ),
+                mock.patch(
+                    "obligation_closure_credential.validate_nonaccepting_recorded_graph_projection",
+                    return_value=SimpleNamespace(
+                        graph_sha256="a" * 64,
+                        review_declarations_by_source_item={
+                            "claim": ("Fixture.claimSpec",)
+                        },
+                        source_lean_verdicts_by_source_item={"claim": "matches"},
+                    ),
+                ) as projection,
+                mock.patch(
+                    "final_closure_receipt.validate_final_closure_receipt",
+                    side_effect=AssertionError("status launched terminal validation"),
+                ),
+                mock.patch.object(
+                    sync_paper_status,
+                    "load_json_object",
+                    side_effect=AssertionError(
+                        "status reparsed a graph-authenticated source map"
+                    ),
+                ),
+            ):
+                counts, problem = sync_paper_status.current_v11_source_spec_counts(
+                    folder, payload
+                )
+
+        self.assertEqual(problem, "")
+        self.assertEqual(counts["matches"], 1)
+        projection.assert_called_once_with(root, "Fixture", receipt.payload)
+
+    def test_schema6_status_counts_explicit_condition_and_excludes_deep_items(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            write_json(
+                audit / "paper_statement_map.json",
+                {
+                    "schema": 1,
+                    "paper": "Fixture",
+                    "items": {
+                        "corrected_result": {
+                            "semantic_contract": {
+                                "spec_declaration": "Fixture.correctedResultSpec"
+                            }
+                        },
+                        "paper_condition": {
+                            "lean_declarations": ["Fixture.PaperCondition"]
+                        },
+                        "deep_support": {
+                            "inventory_role": "deep_audit_material",
+                            "lean_declarations": ["Fixture.DeepSupport"]
+                        },
+                    },
+                },
+            )
+            # This stale legacy spelling must not influence graph-native status.
+            write_json(
+                audit / "v11_raw_source_spec_screening.json",
+                {
+                    "schema": 2,
+                    "paper": "Fixture",
+                    "validator": "old reviewer",
+                    "validated_at": "2026-08-18",
+                    "items": {
+                        "Fixture.correctedResultSpec": {
+                            "judgment": "matches_approved_corrected_target"
+                        }
+                    },
+                },
+            )
+            payload = paper_status("Fixture")
+            payload["review_surface"] = {
+                "require_v11_raw_source_spec_screening": True,
+                "include_names": ["correctedResultSpec"],
+                "source_condition_items": ["paper_condition"],
+            }
+            payload["human_review"] = {"total_rows": 2}
+            receipt = SimpleNamespace(payload={"schema": 6})
+            projection = SimpleNamespace(
+                graph_sha256="a" * 64,
+                review_declarations_by_source_item={
+                    "corrected_result": ("Fixture.correctedResultSpec",),
+                    "paper_condition": ("Fixture.PaperCondition",),
+                    "deep_support": ("Fixture.DeepSupport",),
+                },
+                source_lean_verdicts_by_source_item={
+                    "corrected_result": "matches",
+                    "paper_condition": "matches",
+                    "deep_support": "does_not_match",
+                },
+            )
+            with (
+                mock.patch.object(sync_paper_status, "ROOT", root),
+                mock.patch(
+                    "final_closure_receipt.load_final_closure_receipt",
+                    return_value=receipt,
+                ),
+                mock.patch(
+                    "obligation_closure_credential.validate_nonaccepting_recorded_graph_projection",
+                    return_value=projection,
+                ),
+            ):
+                counts, problem = sync_paper_status.current_v11_source_spec_counts(
+                    folder, payload
+                )
+
+        self.assertEqual(problem, "")
+        self.assertEqual(
+            counts,
+            {
+                "total": 2,
+                "matches": 2,
+                "mismatch": 0,
+                "uncertain": 0,
+                "unknown": 0,
+                "recorded_closeout": 1,
+            },
+        )
+
+    def test_schema6_status_requires_explicit_condition_item_selection(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            folder = root / "papers" / "Fixture"
+            audit = folder / "audit"
+            audit.mkdir(parents=True)
+            write_json(
+                audit / "paper_statement_map.json",
+                {
+                    "schema": 1,
+                    "paper": "Fixture",
+                    "items": {
+                        "claim": {
+                            "semantic_contract": {
+                                "spec_declaration": "Fixture.claimSpec"
+                            }
+                        },
+                        "condition": {
+                            "lean_declarations": ["Fixture.Condition"]
+                        },
+                    },
+                },
+            )
+            payload = paper_status("Fixture")
+            payload["review_surface"] = {
+                "require_v11_raw_source_spec_screening": True,
+                "include_names": ["claimSpec"],
+            }
+            payload["human_review"] = {"total_rows": 2}
+            receipt = SimpleNamespace(payload={"schema": 6})
+            projection = SimpleNamespace(
+                graph_sha256="a" * 64,
+                review_declarations_by_source_item={
+                    "claim": ("Fixture.claimSpec",),
+                    "condition": ("Fixture.Condition",),
+                },
+                source_lean_verdicts_by_source_item={
+                    "claim": "matches",
+                    "condition": "matches",
+                },
+            )
+            with (
+                mock.patch.object(sync_paper_status, "ROOT", root),
+                mock.patch(
+                    "final_closure_receipt.load_final_closure_receipt",
+                    return_value=receipt,
+                ),
+                mock.patch(
+                    "obligation_closure_credential.validate_nonaccepting_recorded_graph_projection",
+                    return_value=projection,
+                ),
+            ):
+                counts, problem = sync_paper_status.current_v11_source_spec_counts(
+                    folder, payload
+                )
+
+        self.assertIsNone(counts)
+        self.assertIn("selection does not equal total_rows", problem)
+
+    def test_public_display_preserves_internal_coverage_dispositions(self) -> None:
+        for status in ("formalized", "formalized with caveat", "partially formalized", "conditional"):
+            with self.subTest(status=status):
+                payload = paper_status("LimitedScope")
+                payload["status"] = status
+                payload["human_summary"] = (
+                    "Limited scope: Theorem 3 proves the forward implication; "
+                    "the reverse implication remains unproved."
+                )
+                original = dict(payload)
+                self.assertEqual(sync_paper_status.human_status_label(status), "Formalized")
+                self.assertEqual(sync_paper_status.human_note(payload), payload["human_summary"])
+                self.assertEqual(payload, original)
+        self.assertEqual(sync_paper_status.status_label("partially formalized"), "Partially formalized")
+        for status in ("not started", "not formalized", "paper draft", "scaffold"):
+            with self.subTest(status=status):
+                self.assertEqual(
+                    sync_paper_status.human_status_label(status),
+                    sync_paper_status.status_label(status),
+                )
+
+    def test_designated_unfinished_papers_retain_partial_display_and_count(self) -> None:
+        with mock.patch.object(sync_paper_status, "CATALOG_PAYLOAD", {
+            "preserve_partial_status": ["Unfinished"],
+        }):
+            labels = [
+                sync_paper_status.human_status_label(status, paper_id=paper)
+                for paper, status in [
+                    ("Unfinished", "partially formalized"),
+                    ("Other", "partially formalized"),
+                    ("Unfinished", "formalized"),
+                ]
+            ]
+        self.assertEqual(labels, ["Partially formalized", "Formalized", "Formalized"])
+        with mock.patch.object(sync_paper_status, "component_loc", return_value=0):
+            rendered = sync_paper_status.render_site_stats_block({"papers": [
+                {"id": str(i), "status": label, "lean_loc": 0}
+                for i, label in enumerate(labels)
+            ]})
+        self.assertIn("2 formalized papers and 1 partially formalized paper", rendered)
+
     def test_draft_human_summary_is_not_projected_as_public_note(self) -> None:
         payload = paper_status("DraftSummary")
         payload["status"] = "formalized"
@@ -2217,6 +2675,28 @@ class AggregateSidecarFreshnessTests(unittest.TestCase):
             "Draft wording that is not user-approved.",
         )
 
+    def test_public_copy_survives_incoming_paper_summary_and_status_changes(self) -> None:
+        payload = paper_status("ProtectedCopy")
+        payload.update({
+            "human_summary": "Unrequested replacement from a paper closeout.",
+            "human_summary_review": {"status": "human_approved"},
+            "main_caveat": "Implementation details from an audit.",
+        })
+        for preserved in ("An exact maintainer note.", ""):
+            with mock.patch.dict(sync_paper_status.CATALOG_PAYLOAD, {
+                "public_summary_overrides": {"ProtectedCopy": preserved},
+            }):
+                for status in ("formalized", "partially formalized"):
+                    payload["status"] = status
+                    self.assertEqual(sync_paper_status.human_note(payload), preserved)
+
+    def test_malformed_public_copy_never_falls_back_to_paper_draft(self) -> None:
+        with mock.patch.dict(sync_paper_status.CATALOG_PAYLOAD, {
+            "public_summary_overrides": {"ProtectedCopy": None},
+        }):
+            with self.assertRaisesRegex(ValueError, "exact text"):
+                sync_paper_status.human_note(paper_status("ProtectedCopy"))
+
     def test_site_artifact_anchor_uses_neutral_local_preview_route(self) -> None:
         anchor = sync_paper_status.artifact_anchor(
             "Review packet", "papers/Fixture/docs/HUMAN_REVIEW_PACKET.pdf"
@@ -2227,10 +2707,109 @@ class AggregateSidecarFreshnessTests(unittest.TestCase):
 
     def test_site_uses_a_preview_capability_before_rewriting_artifact_links(self) -> None:
         site_text = (ROOT / "site" / "index.html").read_text(encoding="utf-8")
-        self.assertIn('fetch("/.econcslib-local-artifacts"', site_text)
+        self.assertIn('fetch("/.local-artifact-capability"', site_text)
         self.assertIn('data-local-artifact-href', site_text)
         self.assertNotIn('data-private-local-href', site_text)
         self.assertNotIn('/private-artifacts/', site_text)
+
+    def test_site_preserves_display_name_and_former_name_without_slack(self) -> None:
+        site_text = (ROOT / "site" / "index.html").read_text(encoding="utf-8")
+        sync_paper_status.assert_required_static_site_copy(site_text)
+        self.assertIn("<title>Applied Modeling Lib</title>", site_text)
+        self.assertIn("This project was previously called EconCSLib.", site_text)
+        self.assertNotIn("join.slack.com", site_text)
+        self.assertNotIn("Slack workspace link", sync_paper_status.SITE_REQUIRED_STATIC_COPY)
+
+    def test_publication_fallback_never_renders_source_provenance(self) -> None:
+        with mock.patch.object(sync_paper_status, "PUBLICATION_OVERRIDES", {}):
+            label, year = sync_paper_status.publication_for({
+                "id": "Fixture",
+                "source_version": "Private Overleaf draft.tex at revision SHA-256 abc123",
+            })
+        self.assertEqual(label, "Publication details not listed")
+        self.assertEqual(year, 9999)
+        with mock.patch.object(sync_paper_status, "SOURCE_URL_OVERRIDES", {}):
+            self.assertEqual(sync_paper_status.source_url_for({
+                "id": "Fixture", "source_url": "https://www.overleaf.com/project/private",
+            }), "")
+
+    def test_site_total_includes_shared_library_and_public_paper_roots_once(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "AppliedModelingLib").mkdir()
+            (root / "papers").mkdir()
+            (root / "AppliedModelingLib" / "Shared.lean").write_text("a\nb\n")
+            (root / "AppliedModelingLib.lean").write_text("c\n")
+            (root / "papers" / "A.lean").write_text("d\n")
+            (root / "papers" / "B.lean").write_text("e\n")
+            (root / "papers" / "Private.lean").write_text("not counted\n")
+            with mock.patch.object(sync_paper_status, "ROOT", root):
+                rendered = sync_paper_status.render_site_stats_block({"papers": [
+                    {"id": "A", "status": "Formalized", "lean_loc": 10},
+                    {"id": "B", "status": "Formalized", "lean_loc": 20},
+                ]})
+        self.assertIn("35 total lines of Lean code", rendered)
+        self.assertIn("2 formalized papers", rendered)
+        self.assertNotIn("partially formalized", rendered)
+
+    def test_site_links_the_actual_paper_interface_locally_and_publicly(self) -> None:
+        rendered = sync_paper_status.site_paper_artifact_links({
+            "id": "Fixture",
+            "status": "Formalized",
+            "review_entrypoint": "papers/Fixture/FINAL_VALIDATION_REPORT.md",
+            "artifacts": {"paper_interface": "papers/Fixture/PaperInterface.lean"},
+        })
+        self.assertIn(
+            'href="https://github.com/nikhgarg/EconCSLib/blob/main/papers/Fixture/PaperInterface.lean"',
+            rendered,
+        )
+        self.assertIn('data-local-artifact-href="/artifacts/papers/Fixture/PaperInterface.lean"', rendered)
+        self.assertIn(">Lean statements</a>", rendered)
+        self.assertIn(">Report</a>", rendered)
+        self.assertIn(
+            '<a href="https://github.com/nikhgarg/EconCSLib/tree/main/papers/Fixture">Repo</a>',
+            rendered,
+        )
+        self.assertNotIn(">Formalized</a>", rendered)
+
+    def test_site_links_generated_packet_and_pdf_dag_without_status_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            docs = root / "papers" / "Fixture" / "docs"
+            docs.mkdir(parents=True)
+            (docs / "HUMAN_REVIEW_PACKET.pdf").write_bytes(b"%PDF-1.5\n")
+            (docs / "DependencyDAG.pdf").write_bytes(b"%PDF-1.5\n")
+            with mock.patch.object(sync_paper_status, "ROOT", root):
+                rendered = sync_paper_status.site_paper_artifact_links({
+                    "id": "Fixture",
+                    "review_entrypoint": "papers/Fixture/FINAL_VALIDATION_REPORT.md",
+                    "artifacts": {"dependency_dag_tex": "papers/Fixture/docs/DependencyDAG.tex"},
+                })
+        self.assertIn("docs/HUMAN_REVIEW_PACKET.pdf", rendered)
+        self.assertIn("docs/DependencyDAG.pdf", rendered)
+        self.assertNotIn("docs/DependencyDAG.tex", rendered)
+
+    def test_library_catalog_uses_existing_nonoverlapping_architecture_paths(self) -> None:
+        covered_files: set[Path] = set()
+        represented_areas: set[str] = set()
+        for component in sync_paper_status.LIBRARY_COMPONENTS:
+            component_files: set[Path] = set()
+            self.assertTrue(component["examples"])
+            for relative in component["paths"]:
+                path = ROOT / relative
+                self.assertTrue(path.exists(), relative)
+                represented_areas.add(Path(relative).parts[1].removesuffix(".lean"))
+                if path.is_dir():
+                    component_files.update(path.rglob("*.lean"))
+                else:
+                    component_files.add(path)
+            self.assertFalse(covered_files & component_files, component["title"])
+            covered_files.update(component_files)
+        research_areas = {
+            path.name for path in (ROOT / "AppliedModelingLib").iterdir()
+            if path.is_dir() and path.name != "Audit"
+        }
+        self.assertEqual(represented_areas, research_areas)
 
 
 if __name__ == "__main__":

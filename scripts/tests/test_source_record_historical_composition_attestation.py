@@ -18,6 +18,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts import source_record_current_revalidation as CURRENT  # noqa: E402
+from scripts import source_record_obligation_groups as OBLIGATIONS  # noqa: E402
 from scripts import (  # noqa: E402
     source_record_historical_composition_attestation as COMPOSITION,
 )
@@ -30,7 +31,7 @@ from scripts.source_record_integrity import stamp_source_record_audit_receipts  
 
 
 PAPER = "FixtureHistoricalComposition"
-PROMPT = CURRENT.SOURCE_RECORD_V10_PROMPT_VERSION
+PROMPT = OBLIGATIONS.SOURCE_RECORD_V10_PROMPT_VERSION
 
 
 def _sha(text: str) -> str:
@@ -110,7 +111,7 @@ class HistoricalCompositionAttestationTests(unittest.TestCase):
         raw_path = audit / "source_record_audit.archived.json"
         _write(raw_path, raw)
 
-        groups, group_errors = CURRENT._raw_item_groups(raw)
+        groups, group_errors = OBLIGATIONS.raw_source_record_obligation_groups(raw)
         self.assertEqual(group_errors, {})
         descriptors = {
             key: str(group["descriptor_sha256"]) for key, group in groups.items()

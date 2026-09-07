@@ -2,7 +2,7 @@ import KR21Monoculture.AppendixCTheorem7Boundaries
 import KR21Monoculture.LaplaceTheorem2Definition1Transport
 import KR21Monoculture.GaussianTheorem2Definition1Transport
 
-open EconCSLib Filter MeasureTheory ProbabilityTheory
+open AppliedModelingLib Filter MeasureTheory ProbabilityTheory
 open scoped ENNReal NNReal Topology
 
 namespace KR21Monoculture
@@ -309,6 +309,36 @@ theorem sourceUnitVarianceLaplacePairwiseConditional_lt_winner
     sourceUnitVarianceLaplacePairWinnerProbability_eq_named htheta]
   exact theorem7LaplacianProductStrictConditionalRatioAt_lt_winner hlam hx
 
+/-- Literal source-coordinate Laplace form of the right-tail equality in
+Appendix C (C.2): as the cutoff tends to `+∞`, the strict conditional ratio
+converges to the strict unconditional pairwise-winner probability. -/
+theorem sourceUnitVarianceLaplacePairConditionalRatio_tendsto_atTop_winner
+    {theta xi xj : ℝ} (htheta : 0 < theta) :
+    Filter.Tendsto
+      (fun a => sourceUnitVarianceLaplacePairConditionalRatio theta xi xj a)
+      Filter.atTop
+      (nhds (sourceUnitVarianceLaplacePairWinnerProbability theta xi xj)) := by
+  have hlam : 0 < Real.sqrt 2 * theta :=
+    mul_pos (Real.sqrt_pos.2 (by norm_num)) htheta
+  have htail := theorem7LaplacianProductConditionalRatioAt_tendsto_atTop_winner
+    (lam := Real.sqrt 2 * theta) (xi := xi) (xj := xj) hlam
+  have hstrict :
+      Filter.Tendsto
+        (fun a => theorem7LaplacianProductStrictConditionalRatioAt
+          (Real.sqrt 2 * theta) xi xj a)
+        Filter.atTop
+        (nhds ((theorem7LaplacianPairMeasure (Real.sqrt 2 * theta) xi xj
+          theorem7LaplacianPairWinnerEvent).toReal)) :=
+    htail.congr' (Filter.Eventually.of_forall fun a => by
+      change theorem7LaplacianProductConditionalRatioAt
+          (Real.sqrt 2 * theta) xi xj a =
+        theorem7LaplacianProductStrictConditionalRatioAt
+          (Real.sqrt 2 * theta) xi xj a
+      rw [theorem7LaplacianProductConditionalRatioAt_eq_pdf_cdf hlam,
+        ← theorem7LaplacianProductStrictConditionalRatioAt_eq_pdf_cdf hlam])
+  simpa only [sourceUnitVarianceLaplacePairConditionalRatio_eq_named htheta,
+    sourceUnitVarianceLaplacePairWinnerProbability_eq_named htheta] using hstrict
+
 /-! ## Standard-Gaussian source scores -/
 
 /-- Two iid literal standard-Gaussian innovations. -/
@@ -519,7 +549,7 @@ theorem theorem8GaussianPairStd_strict_winner_measure_eq_winner
   letI : NoAtoms μj := ProbabilityTheory.noAtoms_gaussianReal
     (theorem8GaussianVarianceFromStd_ne_zero (ne_of_gt hsigma))
   simpa [theorem8GaussianPairMeasureStd,
-    EconCSLib.Probability.independentGaussianPairMeasureWithStd,
+    AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd,
     theorem8GaussianPairWinnerEvent, μi, μj] using
       pair_strict_winner_measure_eq_weak μi μj
 
@@ -614,6 +644,47 @@ theorem theorem8GaussianProductStrictConditionalRatioAtStd_lt_winner
     theorem8GaussianPairMeasureStd_winner_eq_scaled hsigma]
   exact theorem8GaussianProductStrictConditionalRatioAt_lt_winner hscaled
 
+/-- The arbitrary-standard-deviation strict Gaussian conditional ratio has
+the canonical right-tail winner limit after the explicit positive score-scale
+transport. -/
+theorem theorem8GaussianProductStrictConditionalRatioAtStd_tendsto_atTop_winner
+    {sigma xi xj : ℝ} (hsigma : 0 < sigma) :
+    Filter.Tendsto
+      (fun a => theorem8GaussianProductStrictConditionalRatioAtStd sigma xi xj a)
+      Filter.atTop
+      (nhds ((theorem8GaussianPairMeasureStd sigma xi xj
+        theorem8GaussianPairWinnerEvent).toReal)) := by
+  let c : ℝ := theorem8GaussianCanonicalScale sigma
+  have hc : 0 < c := theorem8GaussianCanonicalScale_pos hsigma
+  have hscale : Filter.Tendsto (fun a : ℝ => c * a) Filter.atTop Filter.atTop := by
+    simpa [c] using
+      (Filter.Tendsto.const_mul_atTop hc Filter.tendsto_id :
+        Filter.Tendsto (fun a : ℝ => theorem8GaussianCanonicalScale sigma * a)
+          Filter.atTop Filter.atTop)
+  have hnonneg :
+      0 ≤ ∫ x : ℝ,
+        theorem8GaussianPDF (c * xi) x * theorem8GaussianCDF (c * xj) x := by
+    refine integral_nonneg fun x => ?_
+    exact mul_nonneg (theorem8GaussianPDF_nonneg (c * xi) x)
+      (theorem8GaussianCDF_nonneg (c * xj) x)
+  have hcanonical :
+      Filter.Tendsto
+        (fun a => theorem8GaussianProductStrictConditionalRatioAt
+          (c * xi) (c * xj) a)
+        Filter.atTop
+        (nhds ((theorem8GaussianPairMeasure (c * xi) (c * xj)
+          theorem8GaussianPairWinnerEvent).toReal)) := by
+    rw [theorem8GaussianPairWinner_measure_eq_integral,
+      ENNReal.toReal_ofReal hnonneg]
+    exact theorem8GaussianProductStrictConditionalRatioAt_tendsto_atTop_unconditionalIntegral
+      (c * xi) (c * xj)
+  have htransported := hcanonical.comp hscale
+  rw [theorem8GaussianPairMeasureStd_winner_eq_scaled hsigma]
+  exact htransported.congr' (Filter.Eventually.of_forall fun a => by
+    simpa [c] using
+      (theorem8GaussianProductStrictConditionalRatioAtStd_eq_scaled
+        (σ := sigma) (xi := xi) (xj := xj) (a := a) hsigma).symm)
+
 /-- Source-faithful Gaussian form of (C.1): scores are literally
 `x + epsilon / theta` for iid standard-Gaussian innovations, and all source
 events remain strict. -/
@@ -625,5 +696,20 @@ theorem sourceStandardGaussianPairwiseConditional_lt_winner
     sourceStandardGaussianPairWinnerProbability_eq_named htheta]
   exact theorem8GaussianProductStrictConditionalRatioAtStd_lt_winner
     (one_div_pos.mpr htheta) hx
+
+/-- Literal source-coordinate standard-Gaussian form of the right-tail
+equality in Appendix C (C.2): the strict conditional ratio converges to the
+strict unconditional pairwise-winner probability as the cutoff tends to
+`+∞`. -/
+theorem sourceStandardGaussianPairConditionalRatio_tendsto_atTop_winner
+    {theta xi xj : ℝ} (htheta : 0 < theta) :
+    Filter.Tendsto
+      (fun a => sourceStandardGaussianPairConditionalRatio theta xi xj a)
+      Filter.atTop
+      (nhds (sourceStandardGaussianPairWinnerProbability theta xi xj)) := by
+  simpa only [sourceStandardGaussianPairConditionalRatio_eq_named,
+    sourceStandardGaussianPairWinnerProbability_eq_named htheta] using
+    (theorem8GaussianProductStrictConditionalRatioAtStd_tendsto_atTop_winner
+      (sigma := 1 / theta) (xi := xi) (xj := xj) (one_div_pos.mpr htheta))
 
 end KR21Monoculture

@@ -10,7 +10,7 @@ only the GSP/position-auction surface under the citation-specific namespace.
 
 namespace EOS07GSP
 
-export EconCSLib.Auction (
+export AppliedModelingLib.Auction (
   paper_gsp_truthful_bidding_not_dominant_example
   paper_gsp_mechanism_not_truthful
   paper_sorted_gsp_three_bidder_two_slot_not_truthful

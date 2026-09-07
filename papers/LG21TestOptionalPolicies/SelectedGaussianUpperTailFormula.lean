@@ -18,7 +18,7 @@ noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
 open scoped ENNReal NNReal ProbabilityTheory
-open EconCSLib Probability
+open AppliedModelingLib Probability
 
 /-- A positive-variance mathlib Gaussian viewed as a location-scale law. -/
 def lg21GaussianScaleLawOfNNRealVariance

@@ -117,14 +117,14 @@
       "correction_id": "LG21-CORR-THEOREM32-DEMOGRAPHIC-TYPO-2026-07-27",
       "defect_kind": "other",
       "does_not_claim_archive_derivation": true,
-      "governing_disposition": "repaired_in_governing_proof",
+      "governing_disposition": "replaced_by_authorized_correction",
       "id": "LG21-THEOREM32-DEMOGRAPHIC-TYPO-01",
       "repair_obligation": "Read the summary as referring to observable fairness, preserve the theorem's latent-skill consequence through the stated implication chain, and keep hidden-access demographic fairness source-declared open.",
-      "resolution": "repaired_in_lean",
-      "resolution_evidence": "The source inventory records lines 465-470 as source-declared open, while the reviewed clarified Theorem 3.2 rows expose only latent-skill or observable fairness; no demographic-impossibility row is claimed.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The approved corrected summary target reads the isolated final word as observable, while the source inventory keeps lines 465-470 source-declared open and no demographic-impossibility theorem is claimed.",
       "source_claim": "The final summary sentence says any policy satisfying demographic fairness is test-blank or leads to no reporting, although the theorem and proof address latent-skill and observable fairness and the main text explicitly leaves hidden-access demographic fairness open.",
       "source_locator": "cited publication:1770-1782",
-      "statement_impact": "proof_only",
+      "statement_impact": "source_statement",
       "status_impact": "formalized_note",
       "status_impact_rationale": "This isolated use of demographic is contradicted by the named theorem, the preceding proof, and the explicit open-question paragraph; observable is the contextually consistent word. Correcting that word does not change an advertised theorem endpoint and does not warrant a caveat."
     },
@@ -262,7 +262,7 @@
     {
       "approval": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-29: for zero-mass deviations, state the result up to measure zero rather than imposing an off-path payoff completion.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-29",
         "conditions": [
           "only behavioral conclusions up to the continuous population law are claimed",
@@ -283,7 +283,7 @@
     {
       "approval": {
         "approval_kind": "explicit_user_instruction",
-        "approval_reference": "User instruction on 2026-07-30: formalize the Theorem 3.1 stability condition as a visible operational/equilibrium refinement, record it in the post-formalization report as an additional refinement, and do not present it as a caveat.",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
         "approved_at": "2026-07-30",
         "conditions": [
           "the exact candidate closure and source context must be independently pinned",
@@ -712,6 +712,46 @@
       },
       "source_locator": "cited publication:256-324; cited publication:424-450; cited publication:953-1045; cited publication:1432-1598",
       "why_needed": "Definition 1 specifies individual action feasibility, best responses, and PBO consistency, while the Theorem 3.1 proof says that extreme profiles are not stable and sketches an increasing/cutoff argument. It does not define or derive absence of every positive-mass locally recalibrated collective candidate encoded by the Lean endpoints. Making that equilibrium-scope strengthening visible prevents it from being silently treated as a consequence of bare Definition 1 or as a literal source assumption."
+    },
+    {
+      "approval": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-01",
+        "conditions": [
+          "apply only to the source's one-student Section 4 population model",
+          "record it as an ordinary source-model clarification, not an additional assumption or caveat",
+          "show the approval to every affected independent semantic reviewer"
+        ]
+      },
+      "checked_scope": "LG21ContinuousGaussianPopulation and lg21ContinuousGaussianPopulationLaw in ContinuousPopulation.lean, together with the Section 4 source routes that condition or resample that population. The convention applies only to the one-student marginal used by the selected results.",
+      "classification": "user_approved_source_model_convention",
+      "formal_meaning": "For the one-representative-student Gaussian population used by the Section 4 results, the source description that access Z is deterministic, pre-set, and uncorrelated with latent skill q and the observed features is read as access being independent of the complete latent-skill and feature-noise block. The Lean population law therefore uses the product of the access law and the joint skill/noise law.",
+      "id": "LG21-SECTION4-PRESET-ACCESS-INDEPENDENCE-01",
+      "limitation": "This does not assert a general theorem that uncorrelated random variables are independent, does not alter the source text, and does not add an independence claim across different students, samples, or empirical aggregates.",
+      "report_summary": "The pre-set, uncorrelated access description is formalized as independence of access from the one-student skill/noise block used by the Section 4 population law.",
+      "source_locator": "cited publication:199-208",
+      "why_needed": "The Section 4 conditional-law and resampling arguments compare the access and no-access groups while retaining the same latent-skill and feature-noise model. Pairwise uncorrelatedness of a Boolean access indicator would not itself establish the product-law factorization used by those arguments; the author approved this as the intended model reading."
+    },
+    {
+      "approval": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-01",
+        "conditions": [
+          "record it as an ordinary source-model clarification, not an additional assumption or caveat",
+          "tie it to the exact Gaussian precision calculations and affected source carrier",
+          "show the approval to every affected independent semantic reviewer"
+        ]
+      },
+      "checked_scope": "LG21ObservedAccessGaussianSource in ObservedAccessVoluntaryActiveBranchModels.lean and the Section 4 posterior, Gaussian-law, Proposition 4.2, Proposition 4.3, and Theorem 4.4 routes that use its prior_variance_positive, non_test_noise_variance_positive, and test_noise_variance_positive fields.",
+      "classification": "user_approved_source_model_convention",
+      "formal_meaning": "The Gaussian model and its displayed posterior and resampling precision formulae are read on the nondegenerate domain: the prior variance and every feature-noise variance, including the test-feature variance, are strictly positive. The Lean observed-access source carrier makes those conditions explicit.",
+      "id": "LG21-GAUSSIAN-PRECISION-NONDEGENERACY-01",
+      "limitation": "This is an approved reading of the source's Gaussian precision calculations, not a claim that the printed sentence at source.txt:2394 alone states positivity of every variance and not a new restriction beyond the intended nondegenerate model domain.",
+      "report_summary": "The Gaussian precision formulae are formalized on their intended nondegenerate domain: positive prior and feature-noise variances.",
+      "source_locator": "cited publication:199-204; cited publication:2341-2395; cited publication:2419-2553",
+      "why_needed": "The source explicitly notes positivity of the test-noise variance and repeatedly uses reciprocal prior and feature-noise variances in the Gaussian calculations. The explicit positive fields make that common nondegeneracy/definedness domain visible rather than relying on an implicit division-by-zero convention."
     }
   ],
   "paper": "LG21TestOptionalPolicies",

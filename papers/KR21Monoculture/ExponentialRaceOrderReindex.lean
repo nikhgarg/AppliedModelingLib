@@ -9,7 +9,7 @@ so the finite exponential-race calculation can work on ordered coordinates
 without treating a ranking as notation for a different probability law.
 -/
 
-open EconCSLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib MeasureTheory ProbabilityTheory
 
 namespace KR21Monoculture
 

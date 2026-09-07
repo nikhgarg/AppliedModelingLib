@@ -1,6 +1,6 @@
 # Foundations: Probability
 
-Use for `EconCSLib/Foundations/Probability/*`, finite PMFs, expectations,
+Use for `AppliedModelingLib/Foundations/Probability/*`, finite PMFs, expectations,
 conditional probability, finite variance, finite Markov kernels/chains/MDPs,
 stochastic dominance/couplings, concentration, measure inequalities,
 continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
@@ -50,10 +50,10 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   bridge already connects that source notation to `sampleTopKSum` and
   reflected endpoint-loss expectations.
 - For a fixed finite family of rank terms with a common asymptotic scale, use
-  `EconCSLib.Math.finite_sum_asymptoticEquivalent_common_scale` instead of
+  `AppliedModelingLib.Math.finite_sum_asymptoticEquivalent_common_scale` instead of
   rebuilding finite-sum asymptotic algebra in a paper file. If the paper has a
   main term plus an `o(scale)` remainder, use
-  `EconCSLib.Math.asymptoticEquivalent_add_negligible_common_scale`.
+  `AppliedModelingLib.Math.asymptoticEquivalent_add_negligible_common_scale`.
 - For bounded order-statistic or tail-integral source kernels, prefer a direct
   adjacent finite-difference asymptotic when the source kernel is available.
   Prove the adjacent-drop limit for each fixed rank term, assemble the finite
@@ -96,7 +96,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   do not need a local `hupper` followed by `GaussianScaleLaw.toMeasure_Ico_pos`.
 - For KR-style random-utility Gaussian reductions that normalize an arbitrary
   positive standard deviation to the paper's variance-`1/2` convention, use
-  `EconCSLib.Foundations.Probability.BivariateGaussian` before adding
+  `AppliedModelingLib.Foundations.Probability.BivariateGaussian` before adding
   paper-local scaling proofs. The reusable entry points are
   `gaussianVarianceFromStd`, `canonicalHalfVarianceScale`,
   `gaussianReal_map_canonicalHalfVarianceScale`,
@@ -419,7 +419,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   replacement lemmas should be extracted to library modules when a second paper
   needs them or when the paper-local file becomes too large to navigate.
   For continuous accepted-set reward accounting, start from
-  `EconCSLib.Foundations.Probability.ContinuousReward` instead of recreating
+  `AppliedModelingLib.Foundations.Probability.ContinuousReward` instead of recreating
   trip-mass/time/payment wrappers in each paper.
 - For CTMC papers with explicit counterexamples, isolate the counterexample in
   a narrow module and reduce continuous weighted-Dirac integrals to named
@@ -489,7 +489,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
 - For pure PMFs, use lemmas such as `pmfExp_pure`,
   `pmfPairExp_pure_left`, and `pmfPairExp_pure_right` when available.
 - For finite-label papers, start from
-  `EconCSLib.Foundations.Probability.FiniteLabel`: use
+  `AppliedModelingLib.Foundations.Probability.FiniteLabel`: use
   `finiteLabelIndicator`, `finiteLabelShare`,
   `finiteLabelAggregateScore`, `FiniteLabelSimplex`,
   `sum_finiteLabelShare_eq_measureReal_univ`,
@@ -499,7 +499,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   label shares, aggregate posteriors, posterior-simplex constraints, and
   classifier-error terms.
 - For finite Bayesian signal kernels, use
-  `EconCSLib.Foundations.Probability.Kernel`:
+  `AppliedModelingLib.Foundations.Probability.Kernel`:
   `pmfKernelJoint`, `pmfKernelSignalMarginal`,
   `pmfKernelSignalProb`, `pmfKernelPosteriorExpectation`,
   `pmfKernelPosteriorExpectation_mul_signalProb_eq_sum_of_pos`,
@@ -521,7 +521,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   bounded posterior estimates, resampling policies, and conditioning-on-event
   arguments before introducing source-specific Gaussian algebra.
 - For finite binary-mixture or test-reporting policies, start from
-  `EconCSLib.Foundations.Probability.FiniteMixture` instead of writing
+  `AppliedModelingLib.Foundations.Probability.FiniteMixture` instead of writing
   paper-local event-share algebra. Use `binaryMixturePMF`,
   `pmfEventShare`, `indexedPMFEventShare`, full-support bridges such as
   `indexedPMFEventShare_pos_of_full_support_exists`,
@@ -535,7 +535,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   cancellation to turn equality of the mixture with the unselected law into
   equality of selected and unselected component laws.
 - For Gaussian admissions/testing papers, start with
-  `EconCSLib.Foundations.Probability.Gaussian` before making paper-local
+  `AppliedModelingLib.Foundations.Probability.Gaussian` before making paper-local
   definitions. Use `GaussianScaleLaw.standardize`,
   `StandardGaussianCDFAPI.normalCDF_mono`,
   `GaussianPriorSignal.posteriorVariance_eq_mul_div`,
@@ -610,7 +610,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   mixture mass is continuous in the access parameter and strictly antitone in
   the cutoff, so the level-set squeeze often removes a standalone continuity
   hypothesis from the paper-facing theorem. Use
-  `EconCSLib.Foundations.Probability.GaussianDerivatives` for admissions
+  `AppliedModelingLib.Foundations.Probability.GaussianDerivatives` for admissions
   lemmas that differentiate affine standardized Gaussian upper tails:
   `StandardGaussianDerivativeAPI.affineUpperTail_hasDerivAt`,
   `StandardGaussianDerivativeAPI.affineUpperTailDifference_hasDerivAt`, and
@@ -629,7 +629,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   `gaussianPDFReal`, Gaussian laws, affine transforms, moments). Use those
   before creating any new primitive normal-distribution definitions. For the
   concrete standard-normal CDF/density layer, use
-  `EconCSLib.Foundations.Probability.GaussianMathlib`: continuity is fastest
+  `AppliedModelingLib.Foundations.Probability.GaussianMathlib`: continuity is fastest
   through `ProbabilityTheory.cdf` as a Stieltjes function plus `NoAtoms`,
   strict monotonicity through positive Gaussian mass on `Ioc` via
   `setLIntegral_pos_iff` and `support_gaussianPDF`, and the median through
@@ -639,8 +639,8 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   continuous on `(0,1)`, not globally on all real inputs, so paper proofs
   should prove their quantile arguments lie in `(0,1)` from selectivity or
   capacity assumptions. The concrete standard-normal inverse-Mills/hazard
-  bridge now lives in `EconCSLib.Foundations.Probability.GaussianMills` and
-  `EconCSLib.Foundations.Probability.GaussianMathlib`: use
+  bridge now lives in `AppliedModelingLib.Foundations.Probability.GaussianMills` and
+  `AppliedModelingLib.Foundations.Probability.GaussianMathlib`: use
   `standardGaussianHazardInverseCertificate` when a paper needs the real
   standard-normal hazard, and remember the inverse law is only stated for
   positive right-hand sides (`0 < y`) because the hazard is positive. Keep
@@ -711,7 +711,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   `normalUpperTailMean` with monotonicity in the threshold instead of trying to
   prove a new two-parameter truncated-normal theorem.
 - For finite rating-scale large-deviation papers, start with
-  `EconCSLib.Foundations.Probability.FiniteSupportMGF`: use `finiteMGF`,
+  `AppliedModelingLib.Foundations.Probability.FiniteSupportMGF`: use `finiteMGF`,
   `finiteLogMGF`, `finiteLegendreValue`, `finiteRateFunction`, and
   `FiniteRatingLDPModel` to state source log-MGF and rate-function formulas
   before adding paper-specific rating designs or ranking rules.
@@ -731,7 +731,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   theorem; it is usually a one-line consumer of pairwise certificates once the
   pairwise finite-support endpoints are source-shaped.
 - For exponential-rate aggregation, use
-  `EconCSLib.Foundations.Probability.LargeDeviations`: represent the analytic
+  `AppliedModelingLib.Foundations.Probability.LargeDeviations`: represent the analytic
   distribution-family theorem as an `ExponentialRateCertificate` or
   `LargeDeviationRateCertificate`, convert exact rates to weaker eventual
   upper bounds with
@@ -756,7 +756,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   finite separable-optimization and FOC bridges belong in optimization or the
   recommender layer; top-`k` expectation oracles and distribution-family
   asymptotic certificates belong in probability. Use
-  `EconCSLib.Foundations.Probability.OrderStatistics`:
+  `AppliedModelingLib.Foundations.Probability.OrderStatistics`:
   `TopKExpectationOracle`, `TopKExpectationOracle.marginalTopK`,
   `TopKExpectationOracle.HasDiminishingReturnsAt`,
   `TopKExpectationOracle.HasNonnegativeMarginalsAt`, and
@@ -800,7 +800,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   proved once as certificate providers and then fed into the paper's
   homogeneity/FOC certificates.
 - For bounded reflected-CDF arguments, use
-  `EconCSLib.Probability.reflectedCDFMass μ M` instead of expanding
+  `AppliedModelingLib.Probability.reflectedCDFMass μ M` instead of expanding
   `Measure.real {y | M - y <= x}` in a paper folder. The library supplies
   `reflectedCDFMass_measurable`, `reflectedCDFMass_mono`,
   `reflectedCDFMass_nonneg`, `reflectedCDFMass_le_one`, and
@@ -875,20 +875,20 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   `paretoRankGammaRatioMean_scaled_limit`; the remaining work is then only to
   identify actual Pareto order-statistic means with that exact sequence.
   The reusable gamma-ratio route lives in
-  `EconCSLib.Foundations.Math.GammaAsymptotics`: it proves the shifted product
+  `AppliedModelingLib.Foundations.Math.GammaAsymptotics`: it proves the shifted product
   identity against `Real.GammaSeq`, uses `Real.GammaSeq_tendsto_Gamma` to get
   `Γ(q+1)/Γ(q+1-δ) ~ q^δ` for `0 < δ < 1`, and exposes
   `scaled_difference_limit_of_value_asymptotic_and_scaled_drop` for the generic
   finite-difference step. Reuse
-  `EconCSLib.Math.gamma_ratio_nat_add_one_sub_asymptoticEquivalent`,
-  `EconCSLib.Math.scaled_difference_limit_of_value_asymptotic_and_scaled_drop`,
+  `AppliedModelingLib.Math.gamma_ratio_nat_add_one_sub_asymptoticEquivalent`,
+  `AppliedModelingLib.Math.scaled_difference_limit_of_value_asymptotic_and_scaled_drop`,
   `paretoRankGammaRatioMean_value_asymptoticEquivalent`,
   `paretoRankGammaRatioMean_succ_div_self`,
   `paretoRankGammaRatioMean_scaled_drop`, and
   `pareto_rank_scaled_limit_of_value_asymptotic_and_scaled_drop` rather than
   subtracting asymptotic equivalents.
 - For real-valued threshold/tail arguments, use
-  `EconCSLib.Foundations.Probability.RealDistribution`: `lowerCDFMass`,
+  `AppliedModelingLib.Foundations.Probability.RealDistribution`: `lowerCDFMass`,
   `upperTailMass`, `lowerCDFMass_mono`, `upperTailMass_antitone`,
   `lowerCDFMass_eq_cdf`, `upperTailMass_eq_one_sub_cdf`,
   `reflectedCDFMass`, and `UpperTailThresholdCertificate`. Put concrete
@@ -916,8 +916,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
 - For finite-PMF variance and Chebyshev steps, use `pmfVariance`,
   `pmfProb_abs_sub_mean_gt_le_variance_div_sq`, and
   `pmfProb_lt_half_expectation_le_four_div_expectation_of_variance_le_expectation`.
-  This is the right route for arguments like Immorlica-Mahdian Lemma 4.1:
-  first prove `Var(Y) <= E[Y]`, then obtain
+  When the actual sampling law satisfies `Var(Y) <= E[Y]`, obtain
   `Pr[Y < E[Y]/2] <= 4/E[Y]`, and finally bound reciprocal-successor
   expectations by splitting on the lower-half event.
 - For variance of a sum of indicator events under pairwise negative
@@ -932,45 +931,15 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   comparison such as `Pr[F_i | F_j] <= Pr[F_i]`, use
   `pmfConditionalProb_eq_inter_div_of_pos` and
   `pmfProb_inter_le_mul_of_conditionalProb_le` from
-  `EconCSLib.Foundations.Probability.Conditional`. Then, if the paper has
-  independent copies across agents, keep the `n`th-power identities explicit in
-  the paper folder and compose them with `pow_le_pow_left₀`; this is the
-  Immorlica-Mahdian Lemma 4.4 route from one-man list events to all-men absence
-  events. For IM05's omitted multiset/permutation detail, use
-  `im05_namesBeforeFirst`, `im05_integerMultisetPermutationSample`,
-  `im05_integerMultisetPermutationSample_nonempty`,
-  `im05_integerMultisetPermutationList`, `im05_integerMultisetPermutationList_count`,
-  `paper_im05_lemma4_4_multiset_event_inclusion_probability`,
-  `paper_im05_lemma4_4_integerMultiset_event_inclusion_probability`,
-  `paper_im05_lemma4_4_one_man_comparison_from_permutation_limits`,
-  `paper_im05_lemma4_4_one_man_comparison_from_integerMultiset_limits`,
-  `paper_im05_lemma4_4_freshList_conditional_comparison_family_from_permutation_limits`,
-  `paper_im05_lemma4_4_freshList_conditional_comparison_family_from_integerMultiset_limits`,
-  and
-  `paper_im05_lemma4_4_variance_le_expectation_from_freshList_integerMultiset_limits`:
-  the finite event inclusion is now derived internally from the permutation
-  events, with a concrete inhabited uniform count-vector word model available,
-  and the order-closed limit-passing algebra is closed. If the source approximation is
-  already expressed as numeric sequences rather than permutation events, use
-  `paper_im05_lemma4_4_one_man_comparison_from_multiset_limits`,
-  `paper_im05_lemma4_4_freshList_conditional_comparison_family_from_multiset_limits`,
-  and
-  `paper_im05_lemma4_4_variance_le_expectation_from_freshList_multiset_limits`.
-  If the approximation is represented by pointwise-convergent weight vectors,
-  use
-  `paper_im05_lemma4_4_freshList_conditional_comparison_family_from_weight_limits`,
-  `paper_im05_lemma4_4_freshList_conditional_comparison_family_from_pair_weight_limits`,
-  or
-  `paper_im05_lemma4_4_freshList_conditional_comparison_family_from_scaled_count_weight_limits`;
-  if the finite source-law equalities from uniform count-vector permutations are
-  the only remaining obligations, use
-  `paper_im05_lemma4_4_freshList_conditional_comparison_family_from_integerMultiset_finite_laws_and_scaled_count_limits`
-  and
-  `paper_im05_lemma4_4_variance_le_expectation_from_freshList_weight_limits`.
-  The remaining source-specific obligation is the finite law bridge from the
-  integer-multiset first-distinct-name process to the raw integer-weight
-  fresh-list events; the scaled-count bridge then handles normalization and
-  limiting.
+  `AppliedModelingLib.Foundations.Probability.Conditional`. For independent
+  copies across agents, keep the `n`th-power identities explicit and compose
+  them with `pow_le_pow_left₀`. Establish the event-level inequality for the
+  actual sampling law first; without-replacement sampling does not automatically
+  grant every proposed negative-correlation statement. If that comparison is
+  unavailable, look for a direct variance argument, such as Efron–Stein, and
+  prove its hypotheses for the actual sampling law.
+  Retained conditional `_from_*` lemmas are tools, not proofs that their
+  comparison or limiting-law hypotheses hold in the source model.
 - For deferred-decision prefix products, avoid reproving the multiplication
   chain in each paper. Use `pmfProb_ge_pow_of_nested_conditionalProb_ge`:
   prove `event 0` is certain, `event (r+1) -> event r`, and a per-step lower
@@ -979,10 +948,10 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   `one_sub_le_pmfConditionalProb_compl_of_conditionalProb_le`; if the complement
   target is only equivalent under the current prefix, use
   `pmfConditionalProb_congr_of_condition`; if both the conditioning event and
-  target need to be replaced, use `pmfConditionalProb_congr`. In IM05 this
-  supports the named `im05_listPrefixOmits` route, with the concrete Algorithm
-  4.2 filtered without-replacement law now supplied by the fresh-list PMF
-  prefix-set theorems.
+  target need to be replaced, use `pmfConditionalProb_congr`. For a recursive
+  fresh-list model, express omission through the realized prefix set and use
+  the concrete PMF's prefix-set theorems to supply the filtered
+  without-replacement law.
 - For weighted without-replacement deferred-decision steps, state the one-step
   law through `finiteWeightedPMFExcluding_apply_toReal_eq_div_one_sub` rather
   than re-normalizing by hand: after excluding the realized prefix set, the
@@ -991,55 +960,31 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   statewise for realized prefixes, use
   `pmfConditionalProb_le_of_state_refinement` to average upper bounds and
   `pmfConditionalProb_eq_of_state_refinement` when every refined state has the
-  same conditional probability.
-  The IM05 wrappers named
-  `paper_im05_lemma4_3_*_from_algorithm4_2_prefix_states` are the preferred
-  paper-facing interface: the concrete process should prove prefix positivity,
-  statewise filtered atom equalities, and then instantiate the product-model
-  wrappers, not restate the tail/rank algebra.
+  same conditional probability. At the paper interface, have the concrete
+  process prove prefix positivity and statewise filtered atom equalities, then
+  instantiate the product-model theorem instead of restating its tail/rank
+  algebra.
 - For independent identical finite copies, use `pmfProduct` and
   `pmfProduct_prob_forall` instead of supplying an `n`th-power identity by
-  hand. In IM05, `paper_im05_lemma4_3_product_absence_probability`,
-  `paper_im05_lemma4_3_absence_probability_ge_rank_power_from_algorithm4_2_prefix_states_product`,
-  and
-  `paper_im05_lemma4_3_expected_absent_count_lower_bound_from_algorithm4_2_prefix_states_product`
-  are the direct product-model entry points once the one-man list law is
-  available. For Lemma 4.4, use
-  `paper_im05_lemma4_4_product_event_probability`,
-  `paper_im05_lemma4_4_product_joint_event_probability`, and
-  `paper_im05_lemma4_4_variance_le_expectation_from_single_man_conditional_product`
-  to lift one-man conditional negative dependence to all-men absence events.
+  hand. Build the paper-facing product-model endpoint only after the one-copy
+  law is available. Product identities can transport a proved one-copy
+  dependence inequality, but cannot supply that inequality themselves.
   Use `pmfProb_congr` for pointwise-equivalent event shapes before invoking
   the product theorem.
-- For IM05-style ranked popularity tails, use the paper wrappers
-  `im05_popularityRankTail_card`,
-  `im05_popularityRankTail_popular`, and
-  `paper_im05_lemma4_3_expected_absent_count_lower_bound_from_algorithm4_2_ranked_tails_product`.
-  They sit on top of `FiniteRanking.lowerRankFinset_mono` and discharge the
-  `rank-k` cardinality and pointwise popularity assumptions. The
-  ranked-top-prefix mass side is now handled by
-  `paper_im05_lemma4_3_previous_mass_le_Q_of_card_le_top_prefix` and
-  `paper_im05_lemma4_3_realized_prefixSet_mass_le_Q_of_top_prefix_of_pos_support`,
-  using `FiniteSum.finset_sum_le_sum_of_card_le_pairwise_sdiff`.
-- For Algorithm 4.2 prefix states, prefer the prefix-set interface when the
-  concrete sample is a list: `im05_listPrefixSet`,
-  `im05_listPrefixOmits_iff_not_mem_prefixSet`,
-  `paper_im05_lemma4_3_one_man_omit_probability_ge_rank_power_from_algorithm4_2_prefix_sets`,
-  `paper_im05_lemma4_3_absence_probability_ge_rank_power_from_algorithm4_2_prefix_sets_product`,
-  and
-  `paper_im05_lemma4_3_expected_absent_count_lower_bound_from_algorithm4_2_ranked_tails_prefix_sets_product_of_top_prefix_mass`.
-  These wrappers derive `w ∉ previous` and available-mass positivity from the
-  realized prefix event and `prevMass <= Q`. For the concrete recursive
-  fresh-list sampler, use
-  `paper_im05_algorithm4_2_freshList_prefixSet_omit_conditional_atom_formula`
-  to discharge the statewise filtered-draw equality, or use
-  `paper_im05_lemma4_3_expected_absent_count_lower_bound_from_algorithm4_2_freshList_ranked_tails_prefix_sets_product_of_top_prefix_mass`
-  for the full ranked-tail product wrapper. Under full support and `k < #W`,
-  use `paper_im05_algorithm4_2_freshList_omit_pos_of_full_support` and
-  `paper_im05_algorithm4_2_freshList_prefix_omit_pos_of_full_support` to
-  discharge the positivity side conditions for Lemma 4.3/Lemma 4.4 wrappers.
+- For ranked popularity tails, place thin paper wrappers over
+  `FiniteRanking.lowerRankFinset_mono` to discharge the rank-cardinality and
+  pointwise popularity assumptions. Handle ranked top-prefix mass with
+  `FiniteSum.finset_sum_le_sum_of_card_le_pairwise_sdiff`, proving both the
+  deterministic top-prefix bound and its realized-prefix specialization.
+- For prefix-state algorithms whose concrete sample is a list, prefer a
+  prefix-set interface. Prove that omission is nonmembership in the realized
+  prefix set, then derive `w ∉ previous` and available-mass positivity from the
+  realized-prefix event and `prevMass <= Q`. The concrete recursive sampler
+  should supply the statewise filtered-draw equality. Under full support and
+  `k < #W`, prove omission and positive-prefix events have positive probability
+  before invoking conditional-probability wrappers.
 - For concrete finite without-replacement laws, use
-  `EconCSLib.Foundations.Probability.WithoutReplacement`. The key constructors
+  `AppliedModelingLib.Foundations.Probability.WithoutReplacement`. The key constructors
   are `finiteWeightedPMFAvailable`, `finiteFreshList`,
   `finiteWithoutReplacementPMF`, `finiteWithoutReplacementPMF_head_prob`,
   `finiteWithoutReplacementPMF_head_tail_prob`,
@@ -1060,17 +1005,11 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   `finiteWithoutReplacementPMF_event_prob_tendsto`; combine event convergence
   with
   `pmfConditionalProb_tendsto_of_inter_tendsto_of_condition_tendsto` when the
-  paper needs conditional event convergence. In IM05 the paper-facing wrappers
-  are `paper_im05_algorithm4_2_freshList_event_prob_tendsto`,
-  `paper_im05_algorithm4_2_freshList_omit_prob_tendsto`, and
-  `paper_im05_algorithm4_2_freshList_conditional_omit_tendsto`.
-  Full-support availability is supplied by
-  `finiteAvailableWeight_pos_of_full_support_of_card_lt`. In IM05, the
-  paper-facing aliases are `im05_algorithm42FreshListPMF` and
-  `paper_im05_algorithm4_2_freshList_zero_prefix_conditional_atom_formula`;
-  the paper-facing positive-prefix atom laws are
-  `paper_im05_algorithm4_2_freshList_prefixSet_conditional_atom_formula` and
-  `paper_im05_algorithm4_2_freshList_prefixSet_omit_conditional_atom_formula`.
+  paper needs conditional event convergence. Full-support availability is
+  supplied by `finiteAvailableWeight_pos_of_full_support_of_card_lt`. Expose
+  thin paper-facing aliases for the sampler, zero-prefix formula,
+  positive-prefix atom law, and conditional omission law rather than duplicating
+  their probability proofs.
 - For negligible-perturbation expectation arguments where two natural-valued
   counts agree on a good event, use
   `pmfExpReciprocalSucc_le_add_prob_of_eq_on_event`. It reduces the proof to
@@ -1105,7 +1044,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   `#earlier / n` bound unless the source supplies a sharper prescribed-value
   reduction.
 - For balls-into-bins arguments, use
-  `EconCSLib.Foundations.Probability.Occupancy`: deterministic used/empty-bin
+  `AppliedModelingLib.Foundations.Probability.Occupancy`: deterministic used/empty-bin
   sets, `occupancyFirstHitBalls` for ordered first appearances, bin/domain
   relabeling for used and empty bins, the uniform `occupancyPMF`, and
   reciprocal empty-bin expectations.
@@ -1143,11 +1082,11 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
 ## Finite Markov Chains and Dynamic Models
 
 - For dynamic EC/platform papers with controlled actions, start with
-  `EconCSLib.Foundations.Probability.MDP`: `FiniteMDP`, `FiniteMDP.Policy`,
+  `AppliedModelingLib.Foundations.Probability.MDP`: `FiniteMDP`, `FiniteMDP.Policy`,
   `controlledKernel`, `actionValue`, `policyValueStep`, `horizonValue`,
   `optimalStep`, `optimalValue`, and occupancy masses.
 - For passive dynamics, use the finite kernel interface in
-  `EconCSLib.Foundations.Probability.MarkovChain`: `FiniteMarkovKernel`,
+  `AppliedModelingLib.Foundations.Probability.MarkovChain`: `FiniteMarkovKernel`,
   `transitionProb`, `step`, `iterate`, `expectedNext`, `drift`, `Stationary`,
   `Absorbing`, `ExpectedLe`, and `StochasticallyMonotone`.
 - Model policy-induced dynamics with `controlledKernel` when actions matter, or
@@ -1167,7 +1106,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   states under every monotone observable. Use `ExpectedLe` when the comparison
   is only for the paper's specific value function or welfare/potential metric.
 - For finite first-order stochastic dominance, use
-  `EconCSLib.Foundations.Probability.StochasticDominance`.
+  `AppliedModelingLib.Foundations.Probability.StochasticDominance`.
   `PMF.FirstOrderLe μ ν` is the expectation order against every monotone
   observable, and `PMF.MonotoneCoupling` is the certificate interface for a
   joint distribution supported on ordered pairs. Use this for admissions,
@@ -1187,7 +1126,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
 - For textbook probability inequalities that appear in a paper, upstream a
   generic statement in `MeasureInequalities.lean` and leave paper wrappers thin.
   Finite union bounds, complement/intersection bounds, and Bonferroni
-  truncations are reusable enough for `EconCSLib`.
+  truncations are reusable enough for `AppliedModelingLib`.
 - For finite Bonferroni proofs, prove the pointwise counting identity first:
   the sum over `powersetCard k` of event indicators equals
   `(activeEvents.card.choose k : ℝ)`. Then use alternating binomial-sum lemmas
@@ -1249,7 +1188,7 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   whether the renewal theorem or LLN bridge needs a reusable library statement
   or a paper-local assumption.
 - For CTMC papers, prove the closed-form transition probabilities, ODE/forward
-  equation, and probability bounds in `EconCSLib` when reusable. In the paper
+  equation, and probability bounds in `AppliedModelingLib` when reusable. In the paper
   folder, add source-level bridge statements connecting those probabilities to
   the paper's integrals, cycle probabilities, or time fractions; do not mark the
   stochastic theorem green until the process/renewal bridge is discharged or
@@ -1264,14 +1203,14 @@ continuous densities, CTMCs, renewal-reward reductions, and RUM/noise models.
   rankings, continuous density/change-of-variables inequalities over scores,
   and concrete model instantiation proving support, positive source regions,
   normalization, and score-to-ranking interface facts.
-- Upstream only paper-neutral RUM infrastructure. Good `EconCSLib` candidates
+- Upstream only paper-neutral RUM infrastructure. Good `AppliedModelingLib` candidates
   include additive noise well-ordering, Gaussian/Laplacian kernels, scalar
   contraction geometry, pointwise density-product swap inequalities, finite
   density-product atom comparisons, and continuous `withDensity`
   change-of-variables comparisons. The pure order/noise layer lives in
-  `EconCSLib.Foundations.Probability.RandomUtility`; finite and continuous
+  `AppliedModelingLib.Foundations.Probability.RandomUtility`; finite and continuous
   score-density wrappers live in
-  `EconCSLib.Foundations.Probability.RandomUtilityDensity`. Reuse
+  `AppliedModelingLib.Foundations.Probability.RandomUtilityDensity`. Reuse
   `StrictlyWellOrderedNoise`, `WeaklyWellOrderedNoise`,
   `gaussianNoiseKernel_strictlyWellOrdered`,
   `laplacianNoiseKernel_weaklyWellOrdered`, `rumContractScore`,

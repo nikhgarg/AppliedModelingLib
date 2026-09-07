@@ -1,6 +1,6 @@
 cff-version: 1.2.0
-message: "If you use EconCSLib, please cite the repository and the relevant formalized paper(s)."
-title: "EconCSLib: A Lean library and audit trail for Economics and Computation"
+message: "If you use AppliedModelingLib, please cite the repository and the relevant formalized paper(s)."
+title: "AppliedModelingLib: A Lean library and audit trail for applied mathematical modeling"
 type: software
 authors:
   - family-names: Garg

@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.repository == 'nikhgarg/EconCSLib'
+    if: github.repository == 'nikhgarg/EconCSLib' || github.repository == 'nikhgarg/AppliedModelingLib'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

@@ -15,7 +15,7 @@ the exact compiling Lean endpoint used by the paper folder.
 
 namespace EOS07GSP
 
-open EconCSLib.Auction
+open AppliedModelingLib.Auction
 
 /-- Audit for the Section 2.2 first-price running example: the displayed
 successive bid revisions in the two-slot, three-bidder first-price example are

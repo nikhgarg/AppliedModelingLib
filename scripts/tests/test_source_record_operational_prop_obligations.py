@@ -169,6 +169,31 @@ class OperationalPropFieldObligationTests(unittest.TestCase):
             )
         )
 
+    def test_exact_recursive_container_route_is_structural_only(self) -> None:
+        field = {
+            "judgment_key": "Fixture.Model.child",
+            "source_component_section": "recursive_field_items",
+            "source_claim_component_kind": "recursive_record_field",
+            "type": "Fixture.Child",
+            "nested_structures": ["Fixture.Child"],
+            "recursive_field_explicit_parent_route": {
+                "permitted_classifications": ["container_recursively_audited"]
+            },
+        }
+        judgment = {"classification": "container_recursively_audited"}
+        self.assertEqual(
+            OBLIGATIONS.operational_prop_field_obligation_errors(
+                field,
+                judgment,
+                current_component_sha256s_by_source_judgment_key={
+                    str(field["judgment_key"]): {
+                        OBLIGATIONS.source_claim_component_sha256(field)
+                    }
+                },
+            ),
+            [],
+        )
+
     def test_opaque_leaf_requires_a_sort_refresh_instead_of_data_credit(self) -> None:
         field = {
             "judgment_key": "Fixture.Opaque.leaf",

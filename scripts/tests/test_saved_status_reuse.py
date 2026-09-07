@@ -24,7 +24,9 @@ from saved_status_reuse import (  # noqa: E402
 )
 from scripts import review_dashboard  # noqa: E402
 from source_coverage_scope import (  # noqa: E402
+    PREVIOUS_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
     SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
+    legacy_source_item_coverage_sha256_before_navigation_key_exclusion,
     source_item_coverage_sha256,
 )
 
@@ -235,6 +237,47 @@ class SavedStatusReuseProjectionTests(unittest.TestCase):
         self.assertIsNone(coverage_problem)
         self.assertEqual(statement_before.sha256, statement_after.sha256)
         self.assertEqual(coverage_before.sha256, coverage_after.sha256)
+
+    def test_keyful_schema_five_digest_migrates_only_under_its_current_key(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = self.fixture(Path(temporary))
+            statement_map = self.load(folder, "paper_statement_map.json")
+            _full, selected, mode, mode_error = (
+                review_dashboard.paper_coverage_inventory(folder)
+            )
+            self.assertFalse(mode_error)
+            item = selected["source-navigation"]
+            coverage = self.load(folder, "paper_coverage_llm.json")
+            coverage["items"]["source-navigation"][
+                "source_item_coverage_sha256"
+            ] = legacy_source_item_coverage_sha256_before_navigation_key_exclusion(
+                item, mode
+            )
+            coverage["items"]["source-navigation"][
+                "source_item_coverage_digest_schema"
+            ] = PREVIOUS_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA
+            self.write(folder, "paper_coverage_llm.json", coverage)
+
+            migrated, migrated_problem = coverage_disposition(folder)
+            self.assertIsNone(migrated_problem)
+            self.assertIsNotNone(migrated)
+
+            source = statement_map["items"].pop("source-navigation")
+            statement_map["items"]["renamed-source-navigation"] = source
+            self.write(folder, "paper_statement_map.json", statement_map)
+            row = coverage["items"].pop("source-navigation")
+            coverage["items"]["renamed-source-navigation"] = row
+            self.write(folder, "paper_coverage_llm.json", coverage)
+
+            stale, stale_problem = coverage_disposition(folder)
+
+        self.assertIsNone(stale)
+        self.assertIn(
+            "legacy coverage row has no current aggregate source identity",
+            stale_problem.reason,
+        )
 
     def test_only_configured_statement_rows_are_counted(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

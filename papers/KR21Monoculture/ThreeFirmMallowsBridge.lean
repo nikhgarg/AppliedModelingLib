@@ -1,7 +1,7 @@
 import KR21Monoculture.QuantitativeWitnesses
-import EconCSLib.SocialChoice.Ranking.Mallows
+import AppliedModelingLib.SocialChoice.Ranking.Mallows
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -16,7 +16,7 @@ weight correspondence; normalization and the full source experiment are
 separate obligations.
 -/
 
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib.SocialChoice.Ranking
 
 /-- Every named source ranking acts bijectively on the four candidate slots. -/
 theorem sourceFourRankingAt_bijective (pi : SourceFourRanking) :

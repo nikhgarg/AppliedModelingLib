@@ -9,7 +9,7 @@ constructors here lets future proof work target this module instead of
 rechecking the full theorem ledger after every small route edit.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology ENNReal
 

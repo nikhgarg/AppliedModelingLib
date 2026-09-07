@@ -36,6 +36,160 @@ def exact_anchor(
 
 
 class SourceNamedResultIndexTests(unittest.TestCase):
+    def test_numbered_nonstandard_headings_require_exact_reviewed_dispositions(
+        self,
+    ) -> None:
+        source_text = (
+            "Remark 4. The cutoff-proportion bound is independent of n.\n"
+            "The constant depends only on c.\n"
+            "Remark 5. This paragraph is only explanatory.\n"
+            "Observation 6. This is a separately labelled source observation.\n"
+            "Theorem 7. The main conclusion holds.\n"
+        )
+
+        legacy = index.extract_named_result_presentations(
+            source_text, source_format="text"
+        )
+        self.assertEqual(
+            [(item.kind, item.label) for item in legacy],
+            [("unclassified", "Observation 6"), ("theorem", "Theorem 7")],
+        )
+
+        discovered = index.extract_named_result_presentations(
+            source_text,
+            source_format="text",
+            include_review_candidates=True,
+        )
+        candidates = index.review_candidate_presentations(discovered)
+        self.assertEqual(
+            [(index.review_candidate_visible_kind(item.kind), item.label) for item in candidates],
+            [
+                ("remark", "Remark 4"),
+                ("remark", "Remark 5"),
+                ("observation", "Observation 6"),
+            ],
+        )
+
+        records = [
+            {
+                "schema": 1,
+                "id": "remark4",
+                "presentation_label": "Remark 4",
+                "visible_kind": "remark",
+                "scope_disposition": "material_named_claim",
+                "semantic_basis": "This numbered remark states a quantitative rate claim.",
+                "discovery_basis": "mechanical_labelled_heading",
+                "source_anchor": exact_anchor(source_text, "source.txt", 1, 2),
+            },
+            {
+                "schema": 1,
+                "id": "remark5",
+                "presentation_label": "Remark 5",
+                "visible_kind": "remark",
+                "scope_disposition": "deep_audit_material",
+                "semantic_basis": "This numbered remark is explanatory and asserts no new result.",
+                "discovery_basis": "mechanical_labelled_heading",
+                "source_anchor": exact_anchor(source_text, "source.txt", 3, 3),
+            },
+            {
+                "schema": 1,
+                "id": "observation6",
+                "presentation_label": "Observation 6",
+                "visible_kind": "observation",
+                "scope_disposition": "deep_audit_material",
+                "semantic_basis": "This labelled observation is retained for deep review only.",
+                "discovery_basis": "mechanical_labelled_heading",
+                "source_anchor": exact_anchor(source_text, "source.txt", 4, 4),
+            },
+        ]
+        classified = index.classify_review_candidate_presentations(
+            discovered,
+            records,
+            source_text=source_text,
+            source_path="source.txt",
+        )
+        self.assertEqual(
+            [(item.kind, item.label) for item in classified],
+            [("claim", "Remark 4"), ("theorem", "Theorem 7")],
+        )
+        with self.assertRaisesRegex(ValueError, "without a disposition"):
+            index.classify_review_candidate_presentations(
+                discovered,
+                records[:-1],
+                source_text=source_text,
+                source_path="source.txt",
+            )
+
+    def test_holistic_full_text_candidate_joins_the_same_classified_inventory(
+        self,
+    ) -> None:
+        source_text = (
+            "The model discussion implies a uniform finite bound.\n"
+            "For every admissible input, the expected cost is at most four.\n"
+            "Theorem 2. The algorithm succeeds.\n"
+        )
+        discovered = index.extract_named_result_presentations(
+            source_text,
+            source_format="text",
+            include_review_candidates=True,
+        )
+        records = [
+            {
+                "schema": 1,
+                "id": "unnumbered_cost_bound",
+                "presentation_label": "Unnumbered finite-cost claim",
+                "visible_kind": "holistic",
+                "scope_disposition": "material_named_claim",
+                "semantic_basis": "A full-text source-first read identifies an independently asserted bound.",
+                "discovery_basis": "holistic_full_text_review",
+                "source_anchor": exact_anchor(source_text, "source.txt", 1, 2),
+            }
+        ]
+        augmented = index.add_holistic_review_candidate_presentations(
+            discovered,
+            records,
+        )
+        classified = index.classify_review_candidate_presentations(
+            augmented,
+            records,
+            source_text=source_text,
+            source_path="source.txt",
+        )
+        self.assertEqual(
+            [(item.kind, item.label) for item in classified],
+            [
+                ("claim", "Unnumbered finite-cost claim"),
+                ("theorem", "Theorem 2"),
+            ],
+        )
+
+    def test_tex_numbered_remark_is_an_opt_in_review_candidate(self) -> None:
+        source_text = (
+            "\\newtheorem{paperremark}{Remark}\n"
+            "\\begin{paperremark}\\label{rem:rate}\n"
+            "The rate is independent of n.\n"
+            "\\end{paperremark}\n"
+        )
+
+        self.assertEqual(
+            index.extract_tex_named_result_presentations(source_text), []
+        )
+        candidates = index.extract_tex_named_result_presentations(
+            source_text, include_review_candidates=True
+        )
+        self.assertEqual(
+            [
+                (
+                    index.review_candidate_visible_kind(item.kind),
+                    item.label,
+                    item.line_start,
+                    item.line_end,
+                )
+                for item in candidates
+            ],
+            [("remark", "rem:rate", 2, 4)],
+        )
+
     def test_text_extractor_recognizes_each_supported_presentation_kind(self) -> None:
         source_text = (
             "Theorem 1. Result.\n"
@@ -88,6 +242,162 @@ class SourceNamedResultIndexTests(unittest.TestCase):
             [
                 ("theorem", "Theorem 3", 6),
                 ("theorem", "Theorem 4", 9),
+            ],
+        )
+
+    def test_defined_before_reference_is_not_a_named_result_heading(self) -> None:
+        source_text = (
+            "Experiment 1 is the experiment defined before\n"
+            "Lemma 6.1: every man chooses a random list.\n"
+            "\n"
+            "Lemma 6.2. A genuine standalone lemma.\n"
+        )
+
+        presentations = index.extract_text_named_result_presentations(source_text)
+
+        self.assertEqual(
+            [(item.kind, item.label, item.line_start) for item in presentations],
+            [("lemma", "Lemma 6.2", 4)],
+        )
+
+    def test_bare_preposition_before_wrapped_reference_is_not_a_heading(self) -> None:
+        """A PDF line wrap after ``in`` must not manufacture a result."""
+
+        source_text = (
+            "Proof of Theorem 7. We prove this theorem by leveraging convergence in\n"
+            "Lemma 10. We first condition on the following successful event.\n"
+            "A separate argument follows from\n"
+            "Theorem 3. This is still a cross-reference.\n"
+            "The conclusion is established by\n"
+            "Proposition 4. This is also a cross-reference.\n"
+            "\n"
+            "Lemma 11. This is a genuine source presentation.\n"
+        )
+
+        presentations = index.extract_text_named_result_presentations(source_text)
+
+        self.assertEqual(
+            [(item.kind, item.label, item.line_start) for item in presentations],
+            [("lemma", "Lemma 11", 8)],
+        )
+
+    def test_two_column_interleave_does_not_hide_prior_reference(self) -> None:
+        source_text = (
+            "  Experiment 1 is the experiment defined before\n"
+            "                                                                      right-column prose\n"
+            "    Lemma 6.1: every man chooses a random list.\n"
+        )
+
+        self.assertEqual(
+            index.extract_text_named_result_presentations(source_text), []
+        )
+
+    def test_two_column_headings_do_not_truncate_each_other(self) -> None:
+        source_text = (
+            "                                                            Theorem 3.10. Suppose the loss is smooth\n"
+            "Theorem 3.8. Suppose the update contracts.                   and the samples are independent.\n"
+            "The contraction factor is below one.                         Then the empirical trajectory stays close.\n"
+            "The iterates converge to the unique stable point.            This holds with high probability.\n"
+            "Both displayed conclusions are complete.\n"
+            "4. Next Section\n"
+        )
+
+        presentations = index.extract_text_named_result_presentations(source_text)
+
+        self.assertEqual(
+            [
+                (item.label, item.line_start, item.line_end)
+                for item in presentations
+            ],
+            [
+                ("Theorem 3.10", 1, 5),
+                ("Theorem 3.8", 2, 5),
+            ],
+        )
+
+        source_items = {}
+        for item in presentations:
+            source_items[item.label] = {
+                "source_anchor_evidence": [
+                    exact_anchor(
+                        source_text,
+                        "source.txt",
+                        item.line_start,
+                        item.line_end,
+                    )
+                ],
+                "source_presentation_reconciliation": {
+                    "schema": 1,
+                    "relation": "conservative_text_span_core",
+                    "presentation_kind": item.kind,
+                    "presentation_label": item.label,
+                    "core_anchor": exact_anchor(
+                        source_text,
+                        "source.txt",
+                        item.line_start,
+                        item.line_end,
+                    ),
+                    "boundary_reason": "interleaved_parallel_columns",
+                    "semantic_basis": (
+                        "The exact source span conservatively retains both rendered "
+                        "columns while the visible heading identifies this result."
+                    ),
+                    "validator": "fixture source-only reviewer",
+                    "validated_at": "2026-08-29T12:00:00Z",
+                },
+            }
+
+        reconciliations = index.reconcile_named_result_presentations(
+            presentations,
+            source_items,
+            source_text=source_text,
+            source_path="source.txt",
+        )
+        self.assertEqual(
+            [
+                (entry.presentation.label, [match.item_id for match in entry.matches])
+                for entry in reconciliations
+            ],
+            [
+                ("Theorem 3.10", ["Theorem 3.10"]),
+                ("Theorem 3.8", ["Theorem 3.8"]),
+            ],
+        )
+
+    def test_embedded_decimal_heading_accepts_bounded_subtitle(self) -> None:
+        source_text = (
+            "left-column prose                     Theorem 1.2 (Informal). If the loss is Lipschitz,\n"
+            "more left-column prose                every stable point lies near the optimum.\n"
+            "2. Framework\n"
+        )
+
+        presentations = index.extract_text_named_result_presentations(source_text)
+
+        self.assertEqual(
+            [
+                (item.kind, item.label, item.line_start, item.line_end)
+                for item in presentations
+            ],
+            [("theorem", "Theorem 1.2", 1, 2)],
+        )
+
+    def test_ocr_spaced_titles_are_named_source_presentations(self) -> None:
+        source_text = (
+            "T HEOREM A. The first conclusion holds.\n"
+            "C ONJECTURE 1. The open conclusion might hold.\n"
+            "left-column prose                         L EMMA 6.1. The bound holds.\n"
+            "C OROLLARY 3.2. The consequence follows.\n"
+        )
+
+        presentations = index.extract_text_named_result_presentations(source_text)
+
+        self.assertEqual(
+            [(item.kind, item.label, item.line_start) for item in presentations],
+            [
+                ("theorem", "Theorem A", 1),
+                ("open_problem", "Conjecture 1", 2),
+                ("lemma", "Lemma 6.1", 3),
+                ("corollary", "Corollary 3.2", 4),
             ],
         )
 
@@ -677,6 +987,22 @@ class SourceNamedResultIndexTests(unittest.TestCase):
             ],
         )
 
+    def test_text_extractor_excludes_parallel_table_column_model_headers(self) -> None:
+        source_text = (
+            "Model A                 Model B\n"
+            "Spatial utility         Social optimum\n"
+            "Table 1: Summary of convergence results\n"
+            "Model A: Agents exactly maximize over the local query set.\n"
+            "Model A and Model B are compared below.\n"
+        )
+
+        presentations = index.extract_text_named_result_presentations(source_text)
+
+        self.assertEqual(
+            [(item.kind, item.label) for item in presentations],
+            [("unclassified", "Model A")],
+        )
+
     def test_named_conjecture_has_an_explicit_nonproof_presentation_kind(self) -> None:
         source_text = (
             "Conjecture 1. Every admissible input has a witness.\n"
@@ -908,7 +1234,7 @@ class SourceNamedResultIndexTests(unittest.TestCase):
             source_path="source.txt",
         )
         self.assertTrue(
-            any("nonblank continuation" in error for error in heading_only_errors),
+            any("visible statement continuation" in error for error in heading_only_errors),
             heading_only_errors,
         )
 
@@ -925,6 +1251,288 @@ class SourceNamedResultIndexTests(unittest.TestCase):
         self.assertTrue(
             any("visible statement continuation" in error for error in truncated_errors),
             truncated_errors,
+        )
+
+    def test_source_presentation_core_accepts_complete_same_line_statement(self) -> None:
+        source_text = (
+            "Theorem 3.7. All C1 linear rank aggregation rules fail PO.\n"
+            "The next paragraph explains the result.\n"
+        )
+        presentations = index.extract_named_result_presentations(
+            source_text, source_format="text"
+        )
+        self.assertEqual(
+            [(item.label, item.line_start, item.line_end) for item in presentations],
+            [("Theorem 3.7", 1, 2)],
+        )
+        item = {
+            "source_anchor_evidence": [exact_anchor(source_text, "source.txt", 1, 2)],
+            "source_presentation_reconciliation": {
+                "schema": 1,
+                "relation": "conservative_text_span_core",
+                "presentation_kind": "theorem",
+                "presentation_label": "Theorem 3.7",
+                "core_anchor": exact_anchor(source_text, "source.txt", 1, 1),
+                "boundary_reason": "completed_statement_then_explanation",
+                "semantic_basis": "The complete theorem is printed on its heading line.",
+                "validator": "fixture source-only reviewer",
+                "validated_at": "2026-07-28T12:00:00Z",
+            },
+        }
+        self.assertEqual(
+            index.source_presentation_reconciliation_errors(
+                item,
+                presentations,
+                source_text=source_text,
+                source_path="source.txt",
+            ),
+            (),
+        )
+
+    def test_complete_indexed_presentation_reconciliation_accepts_display_span(self) -> None:
+        source_text = "Claim 1.\nDisplayed formula\n(1)\n"
+        presentations = [
+            index.NamedResultPresentation(
+                kind="claim",
+                label="Claim 1",
+                line_start=1,
+                line_end=3,
+                presentation="holistic",
+            )
+        ]
+        item = {
+            "source_presentation_reconciliation": {
+                "schema": 1,
+                "relation": "conservative_text_span_core",
+                "presentation_kind": "claim",
+                "presentation_label": "Claim 1",
+                "core_anchor": exact_anchor(source_text, "source.txt", 1, 3),
+                "boundary_reason": "complete_indexed_presentation",
+                "semantic_basis": "The independent source index identifies this complete displayed claim.",
+                "validator": "fixture source-only reviewer",
+                "validated_at": "2026-09-02T00:00:00Z",
+            }
+        }
+        self.assertEqual(
+            index.source_presentation_reconciliation_errors(
+                item,
+                presentations,
+                source_text=source_text,
+                source_path="source.txt",
+            ),
+            (),
+        )
+
+    def test_complete_indexed_presentation_rejects_unknown_heading_without_crashing(self) -> None:
+        source_text = "Claim 1. Every admissible input has a witness.\n"
+        presentations = index.extract_named_result_presentations(
+            source_text, source_format="text"
+        )
+        item = {
+            "source_presentation_reconciliation": {
+                "schema": 1,
+                "relation": "conservative_text_span_core",
+                "presentation_kind": "claim",
+                "presentation_label": "Claim 2",
+                "core_anchor": exact_anchor(source_text, "source.txt", 1, 1),
+                "boundary_reason": "complete_indexed_presentation",
+                "semantic_basis": "Fixture source-only basis.",
+                "validator": "fixture source-only reviewer",
+                "validated_at": "2026-09-04T00:00:00Z",
+            }
+        }
+        errors = index.source_presentation_reconciliation_errors(
+            item,
+            presentations,
+            source_text=source_text,
+            source_path="source.txt",
+        )
+        self.assertTrue(
+            any("exactly one independently extracted presentation" in error for error in errors),
+            errors,
+        )
+
+    def test_source_presentation_core_is_independent_of_semantic_review_anchor(self) -> None:
+        """Raw source coverage may use a different authenticated text route."""
+
+        source_text = "Theorem 4. Every admissible input has a witness.\n"
+        presentations = index.extract_named_result_presentations(
+            source_text, source_format="text"
+        )
+        item = {
+            # This separate visual-review anchor deliberately does not point
+            # into the raw source-inventory text passed to the validator.
+            "source_anchor_evidence": [
+                {
+                    "path": "visual-review.md",
+                    "line_start": 1,
+                    "line_end": 1,
+                    "quoted_text": "Theorem 4. Every admissible input has a witness.",
+                    "quoted_text_sha256": hashlib.sha256(
+                        b"Theorem 4. Every admissible input has a witness."
+                    ).hexdigest(),
+                }
+            ],
+            "source_presentation_reconciliation": {
+                "schema": 1,
+                "relation": "conservative_text_span_core",
+                "presentation_kind": "theorem",
+                "presentation_label": "Theorem 4",
+                "core_anchor": exact_anchor(source_text, "source.txt", 1, 1),
+                "boundary_reason": "completed_statement_then_explanation",
+                "semantic_basis": "The raw source statement is complete on its heading line.",
+                "validator": "fixture source-only reviewer",
+                "validated_at": "2026-09-01T00:00:00Z",
+            },
+        }
+        self.assertEqual(
+            index.source_presentation_reconciliation_errors(
+                item,
+                presentations,
+                source_text=source_text,
+                source_path="source.txt",
+            ),
+            (),
+        )
+
+    def test_source_presentation_cores_keep_interleaved_columns_independent(self) -> None:
+        source_text = (
+            "Theorem 1. Under the assumptions, the optimal\n"
+            "Assumption A5. Users decide\n"
+            "independently.\n"
+            "price equals the marginal externality,\n"
+            "at the welfare-maximizing flow.\n"
+        )
+        presentations = [
+            index.NamedResultPresentation(
+                kind="theorem",
+                label="Theorem 1",
+                line_start=1,
+                line_end=5,
+                presentation="text_heading",
+            ),
+            index.NamedResultPresentation(
+                kind="claim",
+                label="Assumption A5",
+                line_start=2,
+                line_end=3,
+                presentation="holistic_full_text_review",
+            ),
+        ]
+
+        def item(kind: str, label: str, start: int, end: int) -> dict[str, object]:
+            return {
+                "source_anchor_evidence": [
+                    exact_anchor(source_text, "source.txt", start, end)
+                ],
+                "source_presentation_reconciliation": {
+                    "schema": 1,
+                    "relation": "conservative_text_span_core",
+                    "presentation_kind": kind,
+                    "presentation_label": label,
+                    "core_anchor": exact_anchor(
+                        source_text, "source.txt", start, end
+                    ),
+                    "boundary_reason": "completed_statement_then_explanation",
+                    "semantic_basis": (
+                        "The exact source core contains this complete visible "
+                        "presentation in an interleaved two-column transcript."
+                    ),
+                    "validator": "fixture source-only reviewer",
+                    "validated_at": "2026-08-29T12:00:00Z",
+                },
+            }
+
+        source_items = {
+            "opaque_theorem": item("theorem", "Theorem 1", 1, 5),
+            "opaque_assumption": item("claim", "Assumption A5", 2, 3),
+        }
+        reconciliations = index.reconcile_named_result_presentations(
+            presentations,
+            source_items,
+            source_text=source_text,
+            source_path="source.txt",
+        )
+        self.assertEqual(
+            [
+                (entry.presentation.label, [match.item_id for match in entry.matches])
+                for entry in reconciliations
+            ],
+            [
+                ("Theorem 1", ["opaque_theorem"]),
+                ("Assumption A5", ["opaque_assumption"]),
+            ],
+        )
+
+        # Exclusive reconciliation cannot absorb the neighboring column.  If
+        # that row is absent, the independent presentation remains uncovered.
+        theorem_only = index.reconcile_named_result_presentations(
+            presentations,
+            {"opaque_theorem": source_items["opaque_theorem"]},
+            source_text=source_text,
+            source_path="source.txt",
+        )
+        self.assertEqual(
+            [item.label for item in index.uncovered_named_result_presentations(theorem_only)],
+            ["Assumption A5"],
+        )
+
+    def test_source_presentation_core_rejects_same_line_heading_without_statement(self) -> None:
+        source_text = "Theorem 3.7.\nThe conclusion continues here.\n"
+        presentations = index.extract_named_result_presentations(
+            source_text, source_format="text"
+        )
+        item = {
+            "source_anchor_evidence": [exact_anchor(source_text, "source.txt", 1, 2)],
+            "source_presentation_reconciliation": {
+                "schema": 1,
+                "relation": "conservative_text_span_core",
+                "presentation_kind": "theorem",
+                "presentation_label": "Theorem 3.7",
+                "core_anchor": exact_anchor(source_text, "source.txt", 1, 1),
+                "boundary_reason": "completed_statement_then_explanation",
+                "semantic_basis": "Fixture source-only basis.",
+                "validator": "fixture source-only reviewer",
+                "validated_at": "2026-07-28T12:00:00Z",
+            },
+        }
+        errors = index.source_presentation_reconciliation_errors(
+            item,
+            presentations,
+            source_text=source_text,
+            source_path="source.txt",
+        )
+        self.assertTrue(
+            any("complete same-line statement" in error for error in errors), errors
+        )
+
+    def test_source_presentation_core_rejects_same_line_fragment_before_continuation(self) -> None:
+        source_text = "Theorem 3.7. Every admissible input.\nAnd every witness.\n"
+        presentations = index.extract_named_result_presentations(
+            source_text, source_format="text"
+        )
+        item = {
+            "source_anchor_evidence": [exact_anchor(source_text, "source.txt", 1, 2)],
+            "source_presentation_reconciliation": {
+                "schema": 1,
+                "relation": "conservative_text_span_core",
+                "presentation_kind": "theorem",
+                "presentation_label": "Theorem 3.7",
+                "core_anchor": exact_anchor(source_text, "source.txt", 1, 1),
+                "boundary_reason": "completed_statement_then_explanation",
+                "semantic_basis": "Fixture source-only basis.",
+                "validator": "fixture source-only reviewer",
+                "validated_at": "2026-07-28T12:00:00Z",
+            },
+        }
+        errors = index.source_presentation_reconciliation_errors(
+            item,
+            presentations,
+            source_text=source_text,
+            source_path="source.txt",
+        )
+        self.assertTrue(
+            any("visible statement continuation" in error for error in errors), errors
         )
 
     def test_text_extractor_rejects_sentence_continuation_cross_reference(self) -> None:
@@ -1021,6 +1629,24 @@ class SourceNamedResultIndexTests(unittest.TestCase):
                 presentation,
                 source_text=source_text,
                 source_path="source.txt",
+            )
+        )
+
+    def test_paper_local_anchor_matches_one_repository_relative_artifact(self) -> None:
+        source_text = "Theorem 1. Every input has a witness.\n"
+        presentation = index.extract_text_named_result_presentations(source_text)[0]
+
+        self.assertTrue(
+            index.byte_pinned_anchor_covers_presentation(
+                exact_anchor(source_text, "source.txt", 1, 1),
+                presentation,
+                source_text=source_text,
+                source_path="papers/Fixture/source.txt",
+            )
+        )
+        self.assertFalse(
+            index.source_paths_match(
+                "source.txt", "appendix/Fixture/source.txt"
             )
         )
 

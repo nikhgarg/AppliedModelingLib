@@ -52,21 +52,21 @@
       "status_impact_rationale": "This is an isolated transcription slip in the proof; the correct endpoint formula is stated before and after it and is formalized directly."
     },
     {
-      "acceptance_condition": "The formal integral-rate object does not infer a zero complement error merely from equal beta levels.",
+      "acceptance_condition": "The finite-level rate theorem is proved for the actual source ranking-quality gap, including all pair contributions required by its definition.",
       "affected_source_locators": [
         "cited publication member cited publication, extracted lines 1143-1270; Supplement Appendix C",
         "cited publication member cited publication, extracted lines 1328-1364; Supplement Appendix C"
       ],
       "defect_kind": "event_or_measure",
       "id": "GJ19-C3-TIE-COMPLEMENT-01",
-      "repair_obligation": "State the decomposition on cross-level cells, or explicitly erase within-cell ties before applying the finite-component exponential-rate argument.",
-      "resolution": "repaired_in_lean",
-      "resolution_evidence": "The paper-facing C.3 row selects the least finite separated-cell exponent internally. The corrected C.4 row constructs and transports the canonical selected cross-level realization for its finite branch and separately uses the defined tie-erased source Wbar for its non-step reverse branch; it neither uses the erroneous tied-pair complement equality nor labels the two kernels as one unchanged-object iff.",
-      "source_claim": "The Lemma C.3 proof says the complement error term is zero when two beta levels agree, although Pbar = 1-P_k is one on an uninformative tied comparison; the intended weighted-gap decomposition instead removes within-cell ties.",
+      "repair_obligation": "Control the signed within-cell contributions and identify the full source W-W_k asymptotic exponent; do not replace that obligation by a tie-erased objective.",
+      "resolution": "open_proof_obligation",
+      "resolution_evidence": "The finite and non-finite-step branches currently concern different pairwise integrals. For equal Bernoulli parameter 1/3, the signed ordering advantage of a two-sample mean over a one-sample mean is 2/27. This witnesses a finite-sample obstruction to simply erasing within-cell pairs, not a counterexample to the asymptotic source theorem.",
+      "source_claim": "The Lemma C.3 proof says the complement error term is zero when two beta levels agree.",
       "source_locator": "cited publication member cited publication, extracted lines 1143-1198; Supplement Appendix C",
       "statement_impact": "proof_only",
-      "status_impact": "formalized_note",
-      "status_impact_rationale": "The cross-cell objective and tie-erased limiting-gap object give the intended minimum adjacent exponent; correcting the local complement sentence does not change the substantive rate theorem."
+      "status_impact": "partially_formalized",
+      "status_impact_rationale": "The separated cross-cell rate theorem is proved, but its integral is not yet identified with the source W-W_k gap. Equal rating probabilities with different sample counts can have nonzero finite-sample signed ordering contributions, so erasing within-cell pairs is not an established source-model identity."
     },
     {
       "acceptance_condition": "The checked lower-bound statement has an explicit inequality and positive constant or a stronger explicit formula.",
@@ -111,14 +111,14 @@
       ],
       "defect_kind": "logical_dependency",
       "id": "GJ19-T31-GENERAL-G-CLOSURE-01",
-      "repair_obligation": "Construct a source value-maximizing ordered partition, derive its cell matching rates from g, and prove rate maximality across the entire value-maximizing fiber before applying lexicographic composition.",
-      "resolution": "repaired_in_lean",
-      "resolution_evidence": "sourceCellMatchingRate_eq_lower_cutpoint, theorem31_source_matching_function_weighted_value_argmax_certificate, and theorem31_source_matching_function_weighted_unique_value_argmax_lexicographic_certificate derive the general-g source assembly; PaperInterface exposes the selected and unique-tie forms.",
+      "repair_obligation": "Prove the adjacent-rate formula for the actual source W-W_k quantity under the full matching model and cover the two-level endpoint.",
+      "resolution": "open_proof_obligation",
+      "resolution_evidence": "PaperInterface.theorem31_source_matching_function_lexicographic_formula constructs strict finite cutpoints, the full all-cross-cell value maximizer, and a globally rate-formula-optimal equalized design without uniqueness or supplied optimization conclusions. C.3/C.4 do not yet identify this formula with the source exponent.",
       "source_claim": "Theorem 3.1 claims the continuum discretization and level choices jointly give the value-then-rate optimal binary system for the source nondecreasing matching function g.",
       "source_locator": "cited publication member cited publication, extracted lines 487-517; Main paper Section 3",
       "statement_impact": "source_statement",
-      "status_impact": "formalized_note",
-      "status_impact_rationale": "Lean now derives every finite cell rate from the source nondecreasing matching function, constructs the equalized rate optimizer, and closes the selected-discretization source rate certificate. The full lexicographic wrapper states a uniqueness convention only to resolve the source's unspecified first-stage tie among value-maximizing partitions; that routine tie convention does not materially change the advertised endpoint."
+      "status_impact": "partially_formalized",
+      "status_impact_rationale": "Global maximization of the full cross-cell value and the displayed adjacent-rate formula is proved across all tied primary optimizers for M >= 3. Identifying that formula with the actual W-W_k exponent remains a formalization gap, and the two-level infinite-rate endpoint is outside the real-valued formula."
     },
     {
       "acceptance_condition": "A paper-facing executable or operational theorem analyzes the returned output of Algorithm 1 itself and proves the source epsilon and runtime guarantees without reading the optimum as an input.",
@@ -169,6 +169,26 @@
       "statement_impact": "source_statement",
       "status_impact": "formalized_note",
       "status_impact_rationale": "The literal joint-convexity wording is incompatible with the stated continuum of diagonal minima, but the continuity and strict one-coordinate separation properties actually used in the proof are correct and formalized. This is a local prose overstatement, not a change to any advertised theorem endpoint."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "Only the normalized design vocabulary source_definition_step_rule_partition_levels and BinaryEndpointLevelVector. This reading supplies no proof of global optimality and does not resolve the separate W-W_k exponent-identification gap.",
+      "classification": "source_optimal_design_domain",
+      "formal_meaning": "The general step-rule definition allows interior extreme probability levels. The endpoint-normalized Lean vector represents the optimal-design domain used in Lemma 3.1, whose statement and proof set the extreme levels to zero and one. It does not define every source-admissible step rule.",
+      "id": "GJ19-OPTIMAL-ENDPOINT-DOMAIN-01",
+      "report_summary": "The endpoint-normalized vector represents the optimal designs of Lemma 3.1; the paper also permits general step rules.",
+      "source_locator": "audit/cited publication:354-368; audit/cited publication:529-541; audit/cited publication:2483-2487",
+      "why_needed": "The original inventory linked the normalized design vocabulary only to the general definition. The Lemma 3.1 context identifies its actual role without claiming that arbitrary step rules already have endpoint levels zero and one."
+    },
+    {
+      "checked_scope": "sourceBernoulliKL, paperBernoulliKL, and their selected rate-formula uses. The clarification does not establish the still-unproved connection of that rate to the source W-W_k objective.",
+      "classification": "standard_mathematical_term_with_local_formula_clarification",
+      "formal_meaning": "Use the standard Bernoulli Kullback-Leibler divergence a log(a/b)+(1-a) log((1-a)/(1-b)). Footnote 6 and its appendix repetition invert both ratios. The source names KL divergence and later uses its minimum at equality, convexity in the trial probability, and nonnegative rate formulas, which select the standard sign.",
+      "id": "GJ19-BERNOULLI-KL-SIGN-01",
+      "report_summary": "In the KL footnote, reverse both logarithm ratios to obtain the standard nonnegative Bernoulli divergence used by the proof.",
+      "source_locator": "audit/cited publication:519-526; audit/cited publication:2404-2408; audit/cited publication:2452-2489",
+      "why_needed": "The displayed footnote has the opposite sign from the named divergence and the surrounding rate calculation. Reversing both ratios is a local formula clarification, not an added assumption or a claim that the main large-deviation result is false."
     }
   ],
   "paper": "GJ19OptimalBinaryRatingSystems",

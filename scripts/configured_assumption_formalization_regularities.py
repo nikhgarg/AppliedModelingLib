@@ -663,10 +663,10 @@ def _current_group_descriptors(raw_audit: Mapping[str, object]) -> tuple[dict[in
 
     try:
         try:
-            from scripts.source_record_differential_revalidation import _raw_item_groups
+            from scripts.source_record_obligation_groups import raw_source_record_obligation_groups
         except ModuleNotFoundError:  # pragma: no cover - direct script fallback.
-            from source_record_differential_revalidation import _raw_item_groups
-        groups, group_errors = _raw_item_groups(raw_audit)
+            from source_record_obligation_groups import raw_source_record_obligation_groups
+        groups, group_errors = raw_source_record_obligation_groups(raw_audit)
     except Exception as exc:  # noqa: BLE001 - fail closed at an audit boundary.
         return {}, [f"could not reconstruct current raw-group descriptors: {exc}"]
     if group_errors:

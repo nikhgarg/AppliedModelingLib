@@ -20,7 +20,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
 open scoped ENNReal NNReal ProbabilityTheory Topology
 open Probability
 
@@ -171,6 +171,10 @@ structure LG21ReportRequiredLocalTailEntry
         (lg21HiddenAccessStudentBase testFeature student.2) = true} = 0
   candidate : LG21ReportRequiredTailCandidateData ℝ
     (LG21NonTestFeature Feature testFeature -> ℝ) ℝ
+  /-- The deviation preserves the paper's fixed Gaussian test technology. -/
+  candidate_test_law : ∀ latentSkill publicBase,
+    candidate.testLaw latentSkill publicBase =
+      gaussianReal latentSkill (M.noiseVariance testFeature)
   candidate_take_measurable : Measurable (fun pair : ℝ ×
     (LG21NonTestFeature Feature testFeature -> ℝ) =>
     candidate.takeDecision pair.1 pair.2)
@@ -424,6 +428,9 @@ structure LG21ReportRequiredTailLocalBranchEvidence
       (lg21HiddenAccessBaseRegionEvent testFeature region))
     (candidate : LG21ReportRequiredTailCandidateData ℝ
       (LG21NonTestFeature Feature testFeature -> ℝ) ℝ) where
+  candidate_test_law : ∀ latentSkill publicBase,
+    candidate.testLaw latentSkill publicBase =
+      gaussianReal latentSkill (M.noiseVariance testFeature)
   candidate_take_measurable : Measurable (fun pair : ℝ ×
     (LG21NonTestFeature Feature testFeature -> ℝ) =>
     candidate.takeDecision pair.1 pair.2)
@@ -480,6 +487,7 @@ theorem lg21ReportRequired_not_stable_of_zeroCurrentTakeRegion
       current_take_measurable := hcurrentTake
       current_take_zero := hcurrentTakeZero
       candidate := candidate
+      candidate_test_law := evidence.candidate_test_law
       candidate_take_measurable := evidence.candidate_take_measurable
       candidate_report_positive := evidence.report_positive
       candidate_noReport_positive := evidence.noReport_positive
@@ -798,7 +806,11 @@ theorem lg21ReportRequired_not_stable_of_globalCurrentTake_zero_of_source
     lg21ReportRequired_not_stable_of_zeroCurrentTakeRegion
       currentTake hcurrentTake Set.univ MeasurableSet.univ hregionPositive
       hlocalCurrentTakeZero candidate
-      { candidate_take_measurable := hcandidateTakeMeasurable
+      { candidate_test_law := by
+          intro latentSkill publicBase
+          simp [candidate, lg21ReportRequiredHiddenAccessTailCandidate,
+            noiseVariance]
+        candidate_take_measurable := hcandidateTakeMeasurable
         report_positive := hreportPositive
         noReport_positive := hnoReportPositive
         report_pbo := hreportPBO

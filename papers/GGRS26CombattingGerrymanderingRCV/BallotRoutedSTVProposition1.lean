@@ -15,7 +15,7 @@ from the actual transition relation.
 namespace GGRS26CombattingGerrymanderingRCV
 
 open scoped BigOperators
-open EconCSLib.SocialChoice.Voting
+open AppliedModelingLib.SocialChoice.Voting
 
 variable {Voter Candidate : Type*} [DecidableEq Voter] [DecidableEq Candidate]
 
@@ -787,8 +787,9 @@ theorem ballotRoutedSTV_twoPartyQuotaLowerBounds_of_terminalRun
 
 /--
 Source-uniform Proposition 1 over every terminal execution of a reachable
-ballot-routed surplus-transfer policy.  Nondeterministic policies model random
-whole-vote transfer and arbitrary within-party ties pathwise.
+ballot-routed surplus-transfer policy.  Proposition-valued policies cover
+random whole-vote transfer and the source's random within-party tie support
+pathwise, without asserting a probability law.
 -/
 theorem proposition1_seatSharesRounded_of_ballotRoutedSTVTerminalRun_and_pavMinArgmax
     {partyVoters otherPartyVoters allVoters : Finset Voter}

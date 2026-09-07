@@ -1,13 +1,10 @@
 {
   "command": "lake build GS62CollegeAdmissions",
-  "commit": "e8d9ba3d44bdae98bfa9739fe2b83569b792a131",
-  "formalization_review_protocol_sha256": "345e2b1c89c9ca81d8d51463fa57ad502450652e438ef4561cf76f9c5ca1fe09",
+  "commit": "2c9664328542c95d2534f756d42bc3e5830e0391",
+  "lean_entrypoint": "papers/GS62CollegeAdmissions.lean",
+  "lean_import_closure_sha256": "2d0507fd0ab2159ba1cf3a205b134236262ddf7bab899fae9924d1647bc50c0c",
   "paper": "GS62CollegeAdmissions",
-  "paper_interface_sha256": "2e7eae9aeacca5e8043df83af9d53d7a50601f0feab0b95111e644bd1bed24b7",
   "result": "passed",
-  "schema": 1,
-  "source_artifact_sha256": "159e8d7735c826a6725bcbe41370aa4f87c3d30bf9d55aa87a0a00b23cfd615d",
-  "statement_map_sha256": "c48ddc877a39cb440bb78b3c4e6bc98c98bfde4ac508f9acf077057d1adaabbd",
-  "status_sha256": "372b832896483d15b1269944b36b23327e5391bface8cdbdb01b18145fc01646",
+  "schema": 3,
   "target": "GS62CollegeAdmissions"
 }

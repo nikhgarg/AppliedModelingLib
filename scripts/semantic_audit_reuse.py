@@ -55,21 +55,21 @@ from typing import Any, Callable, Iterable, Mapping, Sequence
 
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT / "scripts") not in sys.path:
-    sys.path.insert(0, str(ROOT / "scripts"))
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-import review_dashboard  # noqa: E402
-from formalization_protocol import (  # noqa: E402
+from scripts import review_dashboard  # noqa: E402
+from scripts.formalization_protocol import (  # noqa: E402
     FORMALIZATION_REVIEW_PROTOCOL_FIELD,
     formalization_protocol_receipt_matches,
     formalization_review_protocol_digest,
 )
-from lean_signature_manifest import (  # noqa: E402
+from scripts.lean_signature_manifest import (  # noqa: E402
     normalize_signature_manifest,
     semantic_dependency_manifest,
     signature_manifest_digest,
 )
-from source_coverage_scope import (  # noqa: E402
+from scripts.source_coverage_scope import (  # noqa: E402
     SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
     filter_source_inventory_for_coverage,
     source_coverage_mode_from_map,
@@ -77,9 +77,10 @@ from source_coverage_scope import (  # noqa: E402
     source_item_coverage_sha256,
     source_named_result_environment_kinds_from_map,
 )
-from source_record_target_disposition import (  # noqa: E402
+from scripts.source_record_target_disposition import (  # noqa: E402
     model_convention_semantic_digest,
 )
+from scripts.source_map_inventory import inventory_from_source_map  # noqa: E402
 
 
 REUSE_SCHEMA = 2
@@ -159,140 +160,6 @@ def _string_list(value: object) -> list[str]:
     else:
         values = [value]
     return [str(item).strip() for item in values if str(item).strip()]
-
-
-def _safe_relative_source(folder: Path, raw_path: object) -> Path | None:
-    text = str(raw_path or "").strip()
-    if not text:
-        return None
-    candidate = (folder / text).resolve()
-    try:
-        candidate.relative_to(folder.resolve())
-    except ValueError:
-        return None
-    return candidate
-
-
-def inventory_from_source_map(
-    folder: Path, payload: Mapping[str, Any]
-) -> dict[str, dict[str, Any]]:
-    """Build the source-only inventory projection used by coverage digests.
-
-    ``review_dashboard.paper_statement_inventory`` reads the canonical current
-    file.  Migration additionally needs a supplied historical map snapshot, so
-    this small projection mirrors its source-facing fields without writing a
-    temporary map into the paper directory.
-    """
-
-    raw_items = payload.get("items")
-    if not isinstance(raw_items, Mapping):
-        return {}
-    map_artifact_path = str(payload.get("source_artifact_path") or "").strip()
-    map_artifact_sha256 = _valid_digest(payload.get("source_artifact_sha256"))
-    map_anchor_required = payload.get("source_anchor_evidence_required") is True
-    text_cache: dict[Path, list[str]] = {}
-    inventory: dict[str, dict[str, Any]] = {}
-    for raw_key, raw_item in raw_items.items():
-        key = str(raw_key or "").strip()
-        if not key or not isinstance(raw_item, Mapping):
-            continue
-        direct = str(raw_item.get("statement") or "").strip()
-        source_location = str(raw_item.get("source_location") or "").strip()
-        statement = ""
-        if direct:
-            statement = review_dashboard.normalize_statement(direct)
-        else:
-            source_path = _safe_relative_source(
-                folder, raw_item.get("source_text_file") or "source.txt"
-            )
-            try:
-                start = int(str(raw_item.get("start_line")))
-                end = int(str(raw_item.get("end_line")))
-            except (TypeError, ValueError):
-                continue
-            if source_path is None or start <= 0 or end < start:
-                continue
-            try:
-                lines = text_cache[source_path]
-            except KeyError:
-                try:
-                    lines = source_path.read_text(encoding="utf-8").splitlines()
-                except OSError:
-                    continue
-                text_cache[source_path] = lines
-            if start > len(lines):
-                continue
-            statement = review_dashboard.normalize_statement(
-                "\n".join(lines[start - 1 : min(end, len(lines))])
-            )
-            if not source_location:
-                source_location = f"{source_path.name}:{start}-{end}"
-        if not statement:
-            continue
-        inventory[key] = {
-            "title": str(raw_item.get("title") or "").strip(),
-            "statement": statement,
-            "aliases": _string_list(raw_item.get("aliases")),
-            "source": "audit/paper_statement_map.json",
-            "coverage_status": str(raw_item.get("coverage_status") or "").strip().lower(),
-            "protocol_role": str(raw_item.get("protocol_role") or "").strip().lower(),
-            "corrected_target": raw_item.get("corrected_target"),
-            "source_kind": str(raw_item.get("source_kind") or "").strip().lower(),
-            "claim_bearing": raw_item.get("claim_bearing"),
-            "source_scope_classification": str(
-                raw_item.get("source_scope_classification") or ""
-            ).strip().lower(),
-            "user_approved_scope_exclusion": raw_item.get(
-                "user_approved_scope_exclusion"
-            ),
-            "scope_reason": str(raw_item.get("scope_reason") or "").strip(),
-            "source_evidence": str(raw_item.get("source_evidence") or "").strip(),
-            "source_artifact_path": str(
-                raw_item.get("source_artifact_path") or map_artifact_path
-            ).strip(),
-            "source_artifact_sha256": _valid_digest(
-                raw_item.get("source_artifact_sha256") or map_artifact_sha256
-            ),
-            "canonical_source_artifact_path": map_artifact_path,
-            "canonical_source_artifact_sha256": map_artifact_sha256,
-            "source_anchor_evidence_required": (
-                raw_item.get("source_anchor_evidence_required") is True
-                or map_anchor_required
-            ),
-            "source_anchor_evidence": raw_item.get("source_anchor_evidence"),
-            "source_defect_ids": _string_list(raw_item.get("source_defect_ids")),
-            "support_lean_declarations": _string_list(
-                raw_item.get("support_lean_declarations")
-            ),
-            "spec_lean_declarations": _string_list(raw_item.get("spec_lean_declarations")),
-            "semantic_contract": raw_item.get("semantic_contract"),
-            "lean_declarations": _string_list(raw_item.get("lean_declarations")),
-            "proof_lean_declarations": _string_list(
-                raw_item.get("proof_lean_declarations")
-            ),
-            "source_location": source_location,
-            "source_url": str(
-                raw_item.get("source_url") or payload.get("source_url") or ""
-            ).strip(),
-            "source_note": str(raw_item.get("source_note") or "").strip(),
-            "source_status": str(raw_item.get("source_status") or "").strip(),
-            "statement_sha256": review_dashboard.statement_digest(statement),
-        }
-        if MODEL_CONVENTION_IDS_FIELD in raw_item:
-            # Preserve the raw value so an explicit null, scalar, duplicate, or
-            # empty list fails closed rather than looking like an absent field.
-            inventory[key][MODEL_CONVENTION_IDS_FIELD] = copy.deepcopy(
-                raw_item.get(MODEL_CONVENTION_IDS_FIELD)
-            )
-        for semantic_field in (
-            review_dashboard.SOURCE_DEFINITION_PARTITION_FIELD,
-            "source_presentation_alias",
-        ):
-            if semantic_field in raw_item:
-                inventory[key][semantic_field] = copy.deepcopy(
-                    raw_item.get(semantic_field)
-                )
-    return inventory
 
 
 def canonical_coverage_inventory_projection(
@@ -2292,9 +2159,20 @@ def migrate_coverage_items(
             continue
         rows = _string_list(entry.get("review_rows"))
         pins = entry.get("review_row_signature_sha256")
-        if not rows or not isinstance(pins, Mapping) or set(rows) != {
-            str(name).strip() for name in pins if str(name).strip()
-        }:
+        zero_row_scope_exclusion = (
+            str(entry.get("coverage") or "").strip().lower()
+            == review_dashboard.USER_APPROVED_SCOPE_EXCLUSION
+        )
+        if zero_row_scope_exclusion:
+            row_pin_error = bool(rows) or not isinstance(pins, Mapping) or bool(pins)
+        else:
+            row_pin_error = (
+                not rows
+                or not isinstance(pins, Mapping)
+                or set(rows)
+                != {str(name).strip() for name in pins if str(name).strip()}
+            )
+        if row_pin_error:
             decisions[key] = {"accepted": False, "reason": "coverage item has no exact review-row signature pins"}
             continue
         rebound_rows: list[str] = []
@@ -3409,6 +3287,11 @@ def _statement_validator(
         entry,
         inventory=normalized_inventory,
         require_statement_target=True,
+        require_verbatim_source_inputs=(
+            review_dashboard.statement_review_requires_verbatim_source_inputs(
+                entry
+            )
+        ),
     )
     if route_error:
         return f"source route pins are invalid after migration: {route_error}"

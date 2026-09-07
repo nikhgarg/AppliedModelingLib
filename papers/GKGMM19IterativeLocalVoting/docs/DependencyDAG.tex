@@ -3,25 +3,6 @@
 
 \begin{document}
 
-% Agent visual validation loop:
-% 1. Compile this file to PDF after every substantive DAG edit.
-% 2. Inspect the PDF or a rendered PNG, not just the TeX source.
-% 3. Increase spacing or reroute arrows until no box, legend, note, edge, or label overlaps.
-%
-% Intended lifecycle:
-% - During paper intake, replace the scaffold below with every named result in the
-%   paper and the dependency arrows between them.
-% - After intake, treat this as a stable topology: update node styles/status/text
-%   as proofs close, but avoid adding boxes or arrows unless the original named
-%   result inventory or dependency map was actually incomplete.
-%
-% Arrow direction rule:
-% Draw edges from prerequisite/source node to dependent/target node.  The
-% `dag_arrow` and `dag_dashed_arrow` styles use an explicit end-arrow (`->`),
-% so the arrowhead should always land on the node that consumes the dependency.
-% Do not reverse the coordinate order just to make routing easier; use anchors
-% or an orthogonal route through empty space instead.
-
 \begin{tikzpicture}[
   x=1cm,
   y=1cm,
@@ -30,7 +11,6 @@
 
 \dagPaperMetadata{Iterative Local Voting for Collective Decision-making in Continuous Spaces}{N. Garg, V. Kamble, A. Goel, D. Marn, K. Munagala}{JAIR 64:315--355}{2019}{https://doi.org/10.1613/jair.1.11358}
 
-% --- Legend: README status vocabulary plus formalized node-type styles. ---
 \dagPaperLegendRightOfMetadata{
 \node[dag_result, dag_template_legend] (legRes) at (0,0) {formalized\\result};
 \node[dag_lemma, dag_template_legend] (legLem) at (4.2,0) {formalized\\lemma};
@@ -45,62 +25,70 @@
 \begin{dagPaperBody}
 
 \node[dag_model] (C123) at (0,-4.4) {
-  \textbf{C1--C3 / Algorithm 1} \\
+  \textbf{C1--C3 and Algorithm 1} \\
   Convex bounded space, unique ideals, bounded density, radius $r_0/t$
 };
-\node[dag_model] (UtilityDefs) at (8.4,-4.4) {
+\node[dag_model] (Definitions) at (8.4,-4.4) {
   \textbf{Definitions 1--3} \\
   $L^p$, weighted Euclidean, and decomposable utility classes
 };
-\node[dag_lemma] (FiniteSupport) at (16.8,-4.4) {
-  \textbf{Finite Analytic Support} \\
-  Lemma 3, finite norms, gradients, projections, sampled traces
+\node[dag_lemma] (Appendix) at (16.8,-4.4) {
+  \textbf{Appendix analytic support} \\
+  Lemmas 1--4, including the corrected block-event estimate
 };
 
-\node[dag_partial] (SourceSemantics) at (0,-10.0) {
-  \textbf{Finite-Coordinate Source Semantics} \\
-  Lemmas 1, 2, 4 and theorem-specific source records made explicit
+\node[dag_result] (Theorem1) at (0,-10.2) {
+  \textbf{Theorem 1} \\
+  Six finite-coordinate iid norm/model cases
 };
-\node[dag_unformalized] (SSGM) at (8.4,-10.0) {
-  \textbf{SSGM Convergence Theorem} \\
-  Remaining reusable-library stochastic subgradient proof
+\node[dag_result] (Theorem2) at (8.4,-10.2) {
+  \textbf{Theorem 2} \\
+  Finite-exponent Model B Holder-dual cases
 };
-\node[dag_result] (Theorem3Drift) at (16.8,-10.0) {
-  \textbf{Theorem 3 Drift Argument} \\
-  Projected global-tail update and finite-directional-field contradiction
+\node[dag_result, text width=5.3cm] (Proposition1) at (16.8,-10.2) {
+  \textbf{Proposition 1} \\
+  Concrete Definition 2 joint-law Model A and B convergence;\\
+  Model A uses canonical water-filling
 };
 
-\node[dag_partial, text width=9.2cm, minimum width=9.8cm] (SSGMEndpoints) at (4.2,-16.0) {
-  \textbf{Theorems 1--2 and Propositions 1--2} \\
-  Convergence endpoints are derived from explicit source semantics
-  plus the reusable-library SSGM theorem
+\node[dag_result, text width=5.8cm] (Proposition2) at (4.2,-16.4) {
+  \textbf{Proposition 2} \\
+  Coordinatewise median convergence;\\
+  Model B uses full-radius coordinate steps
 };
-\node[dag_result] (Thm3Constrained) at (15.6,-16.0) {
-  \textbf{Theorem 3 Constrained Alternative} \\
-  Projected convergence gives $G(x^*)=0$ or no aggregate feasible direction
-};
-\node[dag_caveat, text width=4.8cm, minimum height=2.25cm] (Thm3Full) at (15.6,-21.2) {
+\node[dag_result, text width=5.3cm] (Theorem3Constrained) at (12.6,-16.4) {
   \textbf{Theorem 3} \\
-  Original endpoint under explicit full-space condition
+  Constrained-space alternative
 };
-\node[dag_partial, text width=9.2cm, minimum width=9.8cm] (PaperStatus) at (4.2,-21.2) {
-  \textbf{Paper Status} \\
-  Partially formalized: only the reusable-library SSGM convergence theorem remains
+\node[dag_result, text width=4.6cm] (Theorem3Full) at (18.8,-16.4) {
+  \textbf{Theorem 3} \\
+  Printed endpoint in full space
 };
 
-\draw[dag_arrow] (C123) -- (SourceSemantics);
-\draw[dag_arrow] (UtilityDefs.south west) -- (SourceSemantics.north east);
-\draw[dag_arrow] (UtilityDefs) -- (SSGM);
-\draw[dag_arrow] (FiniteSupport.south west) -- (SSGM.north east);
-\draw[dag_arrow] (FiniteSupport) -- (Theorem3Drift);
-\draw[dag_arrow] (C123.east) -- (UtilityDefs.west);
-\draw[dag_arrow] (UtilityDefs.east) -- (FiniteSupport.west);
-\draw[dag_arrow] (SourceSemantics.south east) -- (SSGMEndpoints.north west);
-\draw[dag_dashed_arrow] (SSGM.south) -- (SSGMEndpoints.north);
-\draw[dag_arrow] (Theorem3Drift) -- (Thm3Constrained);
-\draw[dag_arrow] (Thm3Constrained) -- (Thm3Full);
-\draw[dag_dashed_arrow] (SSGMEndpoints) -- (PaperStatus);
-\draw[dag_arrow] (Thm3Full.west) -- (PaperStatus.east);
+\node[dag_result, text width=7.6cm, minimum width=8.0cm] (PaperStatus) at (9.4,-25.2) {
+  \textbf{Paper status} \\
+  Formalized: all selected results are proved; Proposition 2 and Theorem 3
+  use the source clarifications recorded in the validation report.
+};
+
+\draw[dag_arrow] (C123) -- (Theorem1);
+\draw[dag_arrow] (C123) -- (Theorem2);
+\draw[dag_arrow] (C123.east) -- (Proposition1.west);
+\draw[dag_arrow] (Definitions.south west) -- (Theorem1.north east);
+\draw[dag_arrow] (Definitions) -- (Theorem2);
+\draw[dag_arrow] (Definitions.south east) -- (Proposition1.north west);
+\draw[dag_arrow] (Definitions.south) -- (Proposition2.north east);
+\draw[dag_arrow] (Appendix.south west) -- (Theorem2.north east);
+\draw[dag_arrow] (Appendix) -- (Proposition1);
+\draw[dag_arrow] (C123.south east) -- (Theorem3Constrained.north west);
+\draw[dag_arrow] (Definitions.south east) -- (Theorem3Constrained.north west);
+\draw[dag_arrow] (Theorem3Constrained) -- (Theorem3Full);
+\draw[dag_dashed_arrow] (Theorem1) -- (PaperStatus.north west);
+\draw[dag_dashed_arrow] (Theorem2) -- (PaperStatus.north);
+\draw[dag_dashed_arrow] (Proposition1) -- (PaperStatus.north east);
+\draw[dag_dashed_arrow] (Proposition2) -- (PaperStatus.west);
+\draw[dag_dashed_arrow] (Theorem3Constrained.south) -- (PaperStatus.north east);
+\draw[dag_dashed_arrow] (Theorem3Full.south west) -- (PaperStatus.east);
 \end{dagPaperBody}
 \end{tikzpicture}
 \end{document}

@@ -1,0 +1,98 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[x=1cm,y=1cm,
+  every node/.append style={outer sep=4pt,font=\sffamily\small}]
+
+\dagPaperMetadata
+  {Redesigning Service Level Agreements: Equity and Efficiency in City Government Operations}
+  {Zhi Liu and Nikhil Garg}
+  {ACM Conference on Economics and Computation (EC)}
+  {2024; current manuscript revision}
+  {https://arxiv.org/abs/2410.14825}
+
+\dagPaperLegendRightOfMetadata{
+\node[dag_result,dag_template_legend] (legRes) at (0,0)
+  {checked result};
+\node[dag_model,dag_template_legend] (legModel) at (4,0)
+  {source model};
+}
+\daglegend{(legRes)(legModel)}{Legend}
+
+\begin{dagPaperBody}
+\node[font=\sffamily\bfseries\Large,anchor=west] at (-2.7,-0.9)
+  {Current five-proposition theory and selected supporting results};
+
+\node[dag_model] (Model) at (0,-3.6) {
+  \textbf{Inspection model}\\
+  fixed admitted loads; GPS service; all-request delay and non-inspection costs
+};
+\node[dag_result] (Tail) at (7,-3.6) {
+  \textbf{Equation (1): stationary GPS tail}\\
+  typical-admitted-request response has tail at most
+  $e^{-(C_b\phi_{k,b}-s_{k,b})z}$
+};
+\node[dag_result] (Fraction) at (14,-3.6) {
+  \textbf{All-request SLA consequence}\\
+  timely-request intensity fraction is at least
+  $(s_{k,b}/\lambda_{k,b})(1-\alpha)$
+};
+
+\node[dag_result] (Reform) at (0,-7.8) {
+  \textbf{Proposition 2.1}\\
+  \textbf{Reciprocal-capacity representation}\\
+  original GPS-policy and reduced SLA programs have the same minimizers
+};
+\node[dag_result] (Efficiency) at (7,-7.8) {
+  \textbf{Proposition 2.2}\\
+  \textbf{Extreme efficiency}\\
+  the square-root allocation gives the unique all-request efficiency minimizer
+};
+\node[dag_result] (Equity) at (14,-7.8) {
+  \textbf{Proposition 2.3: extreme equity}\\
+  equal within-category burdens, with an efficiency-best equitable endpoint
+};
+
+\node[dag_result] (Nonnegative) at (0,-12.3) {
+  \textbf{Relative price of equity}\\
+  the efficiency loss from requiring equity is nonnegative
+};
+\node[dag_result] (City) at (7,-12.3) {
+  \textbf{City efficiency endpoint}\\
+  pooling categories across Boroughs gives the stated city-wide optimizer
+};
+\node[dag_result] (Price) at (14,-12.3) {
+  \textbf{Proposition 2.4: price of equity}\\
+  relative Pearson-divergence identity, upper bound, zero-price characterization,
+  and conditional capacity scaling
+};
+
+\node[dag_result] (Gain) at (7,-16.8) {
+  \textbf{Relative centralization gain}\\
+  the gain equals the effective-load-square difference divided by
+  excess capacity times the original efficiency cost
+};
+\node[dag_result] (Centralization) at (14,-16.8) {
+  \textbf{Proposition 2.5: centralization}\\
+  with at least two Boroughs, every cell's SLA improves strictly;
+  the gain--price comparison has the stated Pearson-divergence criterion
+};
+
+\draw[dag_dashed_arrow] (Model.east) -- (Tail.west);
+\draw[dag_arrow] (Tail.east) -- (Fraction.west);
+\draw[dag_dashed_arrow] (Model.south) -- (Reform.north);
+\draw[dag_arrow] (Reform.east) -- (Efficiency.west);
+\draw[dag_arrow] (Reform.north) -- ++(0,0.65) -| (Equity.north);
+\draw[dag_arrow] (Efficiency.south west) -- (Nonnegative.north east);
+\draw[dag_arrow] (Equity.south west) -- ++(-0.4,-1.0) -| (Nonnegative.north);
+\draw[dag_arrow] (Efficiency.south) -- (City.north);
+\draw[dag_arrow] (Equity.south) -- (Price.north);
+\draw[dag_arrow] (Efficiency.north east) -- ++(0.5,0.6) -| (Price.east);
+\draw[dag_arrow] (City.south) -- (Gain.north);
+\draw[dag_arrow] (Gain.east) -- (Centralization.west);
+\draw[dag_arrow] (Price.south) -- (Centralization.north);
+
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

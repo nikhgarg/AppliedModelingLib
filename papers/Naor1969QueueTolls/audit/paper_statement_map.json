@@ -1,0 +1,849 @@
+{
+  "approved_review_context_schema": 1,
+  "items": {
+    "finiteCapacityStationaryLaw": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The stationary mass, normalizer, mean, generating function, welfare, and revenue APIs are total finite-sum expressions; nonunit rational identities are auxiliary consequences only.",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "All finite-capacity stationary quantities are represented by finite sums at rho equal to one, rather than by undefined rational displays; these sums give the finite values the source says are obtained by limits.",
+          "id": "NAOR1969-RHO-ONE-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "248f4108a3317f14857cd6d22d04be7ce594ebdbe9e9ca5cb265c03149233e72",
+          "source_locator": "cited publication:283-288; cited publication:477-490",
+          "why_needed": "The source suppresses singularity qualifications for several displayed geometric formulas. The finite-sum representation preserves their intended traffic-intensity-one meaning without adding a non-source exclusion."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "Naor1969QueueTolls.finiteCapacityStationaryLaw"
+      ],
+      "model_convention_ids": [
+        "NAOR1969-RHO-ONE-01"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "Naor1969QueueTolls.finiteCapacityStationaryLaw",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "Naor1969QueueTolls.finiteCapacityStationaryLawSpec"
+      },
+      "semantic_contract_template": {
+        "evidence_declaration": "finiteCapacityStationaryLaw",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "finiteCapacityStationaryLawSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 95,
+          "line_start": 82,
+          "publication_locator": "cited publication",
+          "quoted_text": "Having posed the above fundamental conditions necessary to create a framework for a queueing system with tolls we can now proceed to a detailed description of a model and a cost structure:\n(i) A stationary Poisson stream of customers with parameter A arrives at a\nsingle service station.\n(ii) The station renders service in such a way that the service times are independently, identically, and exponentially distributed with intensity parameter p.\n(iii) On successful completion of service, the customer is endowed with a reward\nR (expressible in monetary units). All customer rewards are equal.\n(iv) The cost to a customer for staying in a queue (i.e. for queueing) is C monetary units in unit time. All customer costs are equal.\n(v) The newly arrived customer is required to choose one of two alternatives:\neither (a) he joins the queue, incurs the losses associated with spending some of\nhis time in it, and finally obtains the reward; or (b) he refuses to join the queue an\naction which does not bring about any gain or loss. The choice of one of these two\nalternatives will be made by the customer on comparing the net gains associated\nwith each of them. To avoid ambiguity it will be stipulated that, in the case of a tie,\nthe customer will join the queue.",
+          "quoted_text_sha256": "aa6785d6e9f98ddc32ded0ba0c2f16cec5be04975f87e21154f5cbb38298dccb"
+        },
+        {
+          "line_end": 173,
+          "line_start": 132,
+          "publication_locator": "cited publication",
+          "quoted_text": "2. SOME PROPERTIES OF THE MODEL\nUnder the model assumptions given in the previous section, it is clear that all\nreasonable strategies will be of the following nature. A newly arrived customer\nwill observe the queue size, i say, at that instant. This quantity is a random variable\nwhose distribution is partly determined by the strategy pursued. Now if the observed value of this random variable falls short of a constant n (the selected strategy),\nthe newly arrived customer will join the queue; if the observed value i is equal to n\nthe new customer is diverted and does not join the queue. The observed value i\ncan never exceed n in this model.\nClearly we are confronted with a system that is identical with a queueing model\nin which finite waiting space only is available to queueing customers. If we define\n(2)\n\nit'\n\nP\n\nwe obtain the following steady state equations:\n(3)\n\npip) = pi.\n\n(0n<i< n),\n\n\f18\n\nP. NAOR\n\nthe solution3 of which is\n\n(4)\n\nPi\n\n(Oi\n\nIP\n\np\n\n1 +p + +pp\n\nn).",
+          "quoted_text_sha256": "791f65123d686376fe2ab1bd51a4b398c5d6ad51c6b320914121cb9791db628f"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "naor.stationary.finite_capacity_geometric_law",
+          "reviewed_lean_route": "Naor1969QueueTolls.finiteCapacityStationaryLaw",
+          "semantic_claim": "Under the finite threshold policy, the queue is a finite-capacity birth--death queue and its stationary probabilities are the normalized geometric solution of the balance equations.",
+          "source_locator": "cited publication:132-173",
+          "source_quote_sha256": "791f65123d686376fe2ab1bd51a4b398c5d6ad51c6b320914121cb9791db628f"
+        }
+      ],
+      "source_item": "Finite-capacity stationary law",
+      "source_kind": "claim",
+      "source_location": "cited publication:82-95; cited publication:132-173",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "c53f503f6699557fc7f29ea9853a40a4f07566c3fffe160c60fcb9aab4f2e070",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "07b50dd1bbccaa7eacf9810c2276ebb043467814cbf5f1d7386ac49cffbd4294",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct review of the byte-pinned equations (3)--(4) against the complete Lean-expanded Spec confirmed the same positive-rate finite-threshold birth--death model, existence of a stationary law satisfying the generator balance equations, and normalized truncated-geometric mass formula. No declaration name, map summary, or wrapper equivalence was used as semantic evidence.",
+            "source_atom_sha256": "eca2980761e63830ac707ef52cf010ca490f53b21b9346ec1b1a35904b75d296",
+            "spec_component_sha256s": [
+              "b750a229a8d8b256fccc104b9369956c5642dd2674c51ace31b70519d451d847"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "7511b1fd28a98b6d89d648ed646893318f8d4195c27c44614d7223c589b14cb8",
+        "spec_closure_sha256": "210c460dbb194bceb6b9a6f8b3d546fd29cc7ef851f16bbd14fb194bc87df51d",
+        "spec_surface_sha256": "b750a229a8d8b256fccc104b9369956c5642dd2674c51ace31b70519d451d847"
+      },
+      "source_status": "independently inventoried from the pinned source text extraction",
+      "source_url": "https://www.jstor.org/stable/1909200",
+      "spec_lean_declarations": [
+        "finiteCapacityStationaryLawSpec"
+      ],
+      "statement": "The queue observed under an admission threshold has the normalized truncated geometric stationary law solving the birth–death balance equations.",
+      "support_lean_declarations": [
+        "Naor1969QueueTolls.finiteCapacityStationaryLawSpec"
+      ]
+    },
+    "revenueContinuousCrossing": {
+      "claim_bearing": false,
+      "inventory_role": "proof_support",
+      "source_anchor_evidence": [
+        {
+          "line_end": 834,
+          "line_start": 768,
+          "publication_locator": "cited publication",
+          "quoted_text": "The objective function of the toll collector is given by\n\n(27)\n\nM = (x-)\n\n=\n\nPn\n\n(R-\n\nA ) =\n\n-Pn+\n\n1\n\nV\n\nThe maximization of M (which is considered a function of feasible n-s) is\nbrought about by techniques similar to those used in previous sections. Let the\nappropriate value of n be designated by nr, It is then possible to manipulate the\ninequalities associated with the maximum value of M in (27) in such a fashion that\na convenient quantity vr-analogous to vo in (23)-should be defined by\n1\n28~ ~~( ( P, 1)(1 -\n\n(28)\n\nVr\n\npv- 1 (1\n\np)2\n\nVs\n\nThe integer nr which maximizes toll revenue is derived (as analogous integers\nbefore) by applying the bracket function on Vr:\n' Such a measure would have to be explained very carefully to the participants since it is in apparent\ncontradiction with \"common sense.\"\n\n\fREGULATION\n\n(29)\n\nOF QUEUES\n\n23\n\nnr = [Vrl.\n\nFurther (rather tedious) manipulation yields\n(30)\n\nVr<\n\n(given vs > 1),\n\nv0< vS\n\nthe approximative meaning of which is the following. Some toll collection may be\nbeneficial to a queueing system if an appropriate objective function (representing\npublic good) is chosen. If the toll collecting agency is a decision maker tending to\nmaximize its own revenue, however, the entrance fees Or, levied on joining customers,\nwill be too high and social optimality will (frequently) not be attained:",
+          "quoted_text_sha256": "278dbbecf2d5f12bdd3dcac08f1fb4614f22c13e20bfb2a48143d8c92522adb7"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:768-834",
+      "source_note": "This is the printed derivation route for the revenue/social ordering. Lean proves the discrete ordering directly by maximizing revenue on the finite social prefix and proving it cannot increase afterwards; it does not treat the displayed real-exponent vᵣ parametrization as an unproved premise.",
+      "source_status": "support_only",
+      "source_url": "https://www.jstor.org/stable/1909200",
+      "statement": "Equations (28)--(30) introduce a continuous revenue crossing value vᵣ, identify the revenue optimizer by its floor, and compare vᵣ with v₀ and the self-interested service value.",
+      "support_lean_declarations": [
+        "Naor1969QueueTolls.socialAndRevenueThresholdOrder_impl",
+        "Naor1969QueueTolls.revenueThreshold_succ_le_of_value_le_opportunityCost",
+        "EconCSLib.Probability.Queueing.finiteCapacityAdmissionRevenue_succ_sub"
+      ]
+    },
+    "selfOptimizingThreshold": {
+      "claim_bearing": true,
+      "lean_declarations": [
+        "Naor1969QueueTolls.selfOptimizingThreshold"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "Naor1969QueueTolls.selfOptimizingThreshold",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "Naor1969QueueTolls.selfOptimizingThresholdSpec"
+      },
+      "semantic_contract_template": {
+        "evidence_declaration": "selfOptimizingThreshold",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "selfOptimizingThresholdSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 131,
+          "line_start": 120,
+          "publication_locator": "cited publication",
+          "quoted_text": "Secondly, for our model to make sense it is required that under favorable circumstances a customer will desire to queue up for (completion of) service. Hence if a\nnewly arrived customer encounters a completely empty service station he should\nmake the \"pro-queueing\" choice. His expected loss is given by CV' whereas his\nreward to be collected at the end of service equals R. If the dimensionless quantity\n(Rp/C) is denoted by v, it is clear that in meaningful models the following inequality\nmust hold\n(1)\n\nVS= >C ) 1.\n\nIf inequality (1) does not hold the optimal policy is to disband the service station\nand divert the customer stream altogether.",
+          "quoted_text_sha256": "fb3b0657ea5343c805d815ed15981816942351289a01380cad51b051e17ee11d"
+        },
+        {
+          "line_end": 338,
+          "line_start": 296,
+          "publication_locator": "cited publication",
+          "quoted_text": "The newly arrived customer weighs the two alternatives-to join or not to join\nthe queue-by the net gains associated with them. The net gain, in the first case,\nis equal to\n(t2)\n\nGi = R- (i+ 1)C-.\n\nIn the alternative case the net gain is zero. Hence self interest is served if a strategy\nis established in the following fashion. An integer, ns,is found which satisfies simultaneously two inequalities\n(13)\n\nR-n\n\nC-\n\n0\n\nand\n(14)\n\nR- (ns+ l)C-\n\n< O.\n\nInequality (13) pertains to the case where the number of queueing customers\n(including the one in service) encountered by the newly arrived customer falls\nshort of the critical number by one. The customer, of course, is supposed to join\nand indeed the inequality is in his favor. Inequality (14) relates to the unfavorable\nevent: the critical number, ns, of customers is already in the queue. We can incorporate the two inequalities in one expression\n(15)\n\nnS <C\n\n1\n\nAlternatively we may express the same idea in different notation\n(16)\n\nnS-I[Vs]\n\nwhere [ ] is the well known bracket function; that is, ns is the largest integer not\nexceeding vs.\nWe note that the critical number, ns, derived by \"actualizing self interest\" depends on ,u,R, and C, but not on the arrival intensity A.This fact alone sufficesbefore pursuing further detailed investigation-to throw serious doubt on the",
+          "quoted_text_sha256": "4abcc50518e992566caf39575e87448f2eafbe2601a6980717356225cbae1222"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "naor.self_optimization.floor_threshold",
+          "reviewed_lean_route": "Naor1969QueueTolls.selfOptimizingThreshold",
+          "semantic_claim": "The individual net gain is reward minus the expected queueing cost, and the self-interested admission threshold is the largest integer not exceeding the dimensionless service value.",
+          "source_locator": "cited publication:296-338",
+          "source_quote_sha256": "4abcc50518e992566caf39575e87448f2eafbe2601a6980717356225cbae1222"
+        }
+      ],
+      "source_item": "Self-optimizing admission threshold",
+      "source_kind": "claim",
+      "source_location": "cited publication:120-131; cited publication:296-338",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "c53f503f6699557fc7f29ea9853a40a4f07566c3fffe160c60fcb9aab4f2e070",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "00b8c8233cbfb5779940a1c16b5f760dbb4aebe291832ff7f2463479a3526ef7",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct review of the byte-pinned equations (12)--(16) against the complete Lean-expanded Spec confirmed the same reward-minus-waiting-cost joining gain, strict meaningful-model condition, floor threshold, nonnegative joining gain below the threshold, and negative gain at and above it. No declaration name, source summary, or theorem wrapper supplied semantic credit.",
+            "source_atom_sha256": "f4ef778b5678214f0c10146eb133d3e4f8aa74bec63395cf02101324cd716e5b",
+            "spec_component_sha256s": [
+              "dca3d746ac7ec85a2547fd7b992dfa6e94d4e9b5c16bb7d98d3b12107154564a"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "1e452fbb3798f0f4c4607697324631451bc36632102cb8d5e58a48088262a602",
+        "spec_closure_sha256": "b5089a9946027aa09f81cdb6fcd7cbb039a0e51621c9e7722715cdcd6740763d",
+        "spec_surface_sha256": "dca3d746ac7ec85a2547fd7b992dfa6e94d4e9b5c16bb7d98d3b12107154564a"
+      },
+      "source_status": "independently inventoried from the pinned source text extraction",
+      "source_url": "https://www.jstor.org/stable/1909200",
+      "spec_lean_declarations": [
+        "selfOptimizingThresholdSpec"
+      ],
+      "statement": "A customer joins exactly below the integer threshold obtained by flooring reward times service rate divided by waiting cost.",
+      "support_lean_declarations": [
+        "Naor1969QueueTolls.selfOptimizingThresholdSpec"
+      ]
+    },
+    "socialAndRevenueThresholdOrder": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The stationary mass, normalizer, mean, generating function, welfare, and revenue APIs are total finite-sum expressions; nonunit rational identities are auxiliary consequences only.",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "All finite-capacity stationary quantities are represented by finite sums at rho equal to one, rather than by undefined rational displays; these sums give the finite values the source says are obtained by limits.",
+          "id": "NAOR1969-RHO-ONE-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "248f4108a3317f14857cd6d22d04be7ce594ebdbe9e9ca5cb265c03149233e72",
+          "source_locator": "cited publication:283-288; cited publication:477-490",
+          "why_needed": "The source suppresses singularity qualifications for several displayed geometric formulas. The finite-sum representation preserves their intended traffic-intensity-one meaning without adding a non-source exclusion."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "Naor1969QueueTolls.socialAndRevenueThresholdOrder"
+      ],
+      "model_convention_ids": [
+        "NAOR1969-RHO-ONE-01"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 131,
+              "line_start": 120,
+              "publication_locator": "cited publication",
+              "quoted_text": "Secondly, for our model to make sense it is required that under favorable circumstances a customer will desire to queue up for (completion of) service. Hence if a\nnewly arrived customer encounters a completely empty service station he should\nmake the \"pro-queueing\" choice. His expected loss is given by CV' whereas his\nreward to be collected at the end of service equals R. If the dimensionless quantity\n(Rp/C) is denoted by v, it is clear that in meaningful models the following inequality\nmust hold\n(1)\n\nVS= >C ) 1.\n\nIf inequality (1) does not hold the optimal policy is to disband the service station\nand divert the customer stream altogether.",
+              "quoted_text_sha256": "fb3b0657ea5343c805d815ed15981816942351289a01380cad51b051e17ee11d"
+            },
+            {
+              "line_end": 364,
+              "line_start": 341,
+              "publication_locator": "cited publication",
+              "quoted_text": "If the viewpoint is taken that the expected sum of the net gains accruing to\ncustomers in unit time is the public good which should be optimized, we must\nproceed in a different mode from that outlined in the previous section. We note\nthat expected total net gain, P, under some strategy n is given by\n(17)\n\nP =(-C)R=-RCE {i} =\n\n(l -Pn)-Cq\n\np\n-AR l\npna cL1P\n\nn pn+l\n\n\f20\n\nP. NAOR\n\nBy some elementary (but lengthy) considerations it can be shown that the\nfunction P in its dependence on n is \"discretely unimodal\" or, in other words, a\nlocal maximum is a global maximum. Hence we seek that strategy, no say, which is\nassociated with two inequalities",
+              "quoted_text_sha256": "8669e1c51af9464d1f2e738cb3ac8c7f900203b141e83b0bd3244d68ee89baed"
+            },
+            {
+              "line_end": 503,
+              "line_start": 477,
+              "publication_locator": "cited publication",
+              "quoted_text": "To deal with (22) it will be convenient to investigate a function,\n\n(23)\n\nVs= [vo( (-p)-p\n\n(' -P vo)] (1 _p)-\n\n2\n\nof two independent variables p (> 0) and vo() 1). We note, in passing, that no true\nsingularity exists for this function if p = 1; rather the function is well behaved and\na nonzero and finite function value exists at that value of p, to wit: vs= (vo(vo+ 1)/2).\nNext we study a setting in which the value of p is arbitrary (positive) but fixed; we\nnote that vs is a boundlessly increasing function of vo. Hence the integers between\nwhich vo lies (viewed now as a function of v, and p) will obey the inequalities associated with (22). As a result we arrive at\n(24)\n\nno = [vo],\n\nan expression which is completely analogous to (18). Further manipulations lead\nto the inequality\n(25)\n\nVO< Vs\n\nwhere the equality sign holds only4 if vs equals unity.",
+              "quoted_text_sha256": "21eac693f88b89481f97c1c017471e921662a17e5de0e6b49147fcf12e96e16d"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "Naor1969QueueTolls.socialAndRevenueThresholdOrder",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "Naor1969QueueTolls.socialAndRevenueThresholdOrderSpec"
+      },
+      "semantic_contract_template": {
+        "evidence_declaration": "socialAndRevenueThresholdOrder",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "socialAndRevenueThresholdOrderSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 834,
+          "line_start": 768,
+          "publication_locator": "cited publication",
+          "quoted_text": "The objective function of the toll collector is given by\n\n(27)\n\nM = (x-)\n\n=\n\nPn\n\n(R-\n\nA ) =\n\n-Pn+\n\n1\n\nV\n\nThe maximization of M (which is considered a function of feasible n-s) is\nbrought about by techniques similar to those used in previous sections. Let the\nappropriate value of n be designated by nr, It is then possible to manipulate the\ninequalities associated with the maximum value of M in (27) in such a fashion that\na convenient quantity vr-analogous to vo in (23)-should be defined by\n1\n28~ ~~( ( P, 1)(1 -\n\n(28)\n\nVr\n\npv- 1 (1\n\np)2\n\nVs\n\nThe integer nr which maximizes toll revenue is derived (as analogous integers\nbefore) by applying the bracket function on Vr:\n' Such a measure would have to be explained very carefully to the participants since it is in apparent\ncontradiction with \"common sense.\"\n\n\fREGULATION\n\n(29)\n\nOF QUEUES\n\n23\n\nnr = [Vrl.\n\nFurther (rather tedious) manipulation yields\n(30)\n\nVr<\n\n(given vs > 1),\n\nv0< vS\n\nthe approximative meaning of which is the following. Some toll collection may be\nbeneficial to a queueing system if an appropriate objective function (representing\npublic good) is chosen. If the toll collecting agency is a decision maker tending to\nmaximize its own revenue, however, the entrance fees Or, levied on joining customers,\nwill be too high and social optimality will (frequently) not be attained:",
+          "quoted_text_sha256": "278dbbecf2d5f12bdd3dcac08f1fb4614f22c13e20bfb2a48143d8c92522adb7"
+        },
+        {
+          "line_end": 847,
+          "line_start": 835,
+          "publication_locator": "cited publication",
+          "quoted_text": "(31)\n\nOr =\n\nR\n\n- Cnlr\nr-\n\nC\n-\n\n(Vs-nr)",
+          "quoted_text_sha256": "c63711868246cdce3fc77e625fd19b78a5984527a27a0113e0da073e42538707"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "naor.revenue.threshold.no_higher_than_social",
+          "reviewed_lean_route": "Naor1969QueueTolls.socialAndRevenueThresholdOrder",
+          "semantic_claim": "The revenue-maximizing toll threshold is no higher than the social threshold, which is itself below the self-interested threshold when the service value exceeds one.",
+          "source_locator": "cited publication:768-834",
+          "source_quote_sha256": "278dbbecf2d5f12bdd3dcac08f1fb4614f22c13e20bfb2a48143d8c92522adb7"
+        },
+        {
+          "id": "naor.revenue.optimal_toll_formula",
+          "reviewed_lean_route": "Naor1969QueueTolls.socialAndRevenueThresholdOrder",
+          "semantic_claim": "The toll corresponding to the revenue-maximizing threshold is R - C n_r / mu, equivalently (C / mu)(v_s - n_r).",
+          "source_locator": "cited publication:835-847",
+          "source_quote_sha256": "c63711868246cdce3fc77e625fd19b78a5984527a27a0113e0da073e42538707"
+        }
+      ],
+      "source_item": "Revenue threshold ordering and optimal toll formula",
+      "source_kind": "claim",
+      "source_location": "cited publication:768-834; cited publication:835-847",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "c53f503f6699557fc7f29ea9853a40a4f07566c3fffe160c60fcb9aab4f2e070",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "97b0a7927171c79846bf8408083f1700e8866f9a8e3be30355c7721fec6c92df",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "overlap_justification": "The expanded Spec combines optimizer existence, threshold ordering, and the toll-revenue objective in one proposition. This atom supplies the optimizer/order clauses, while the separate toll-formula atom supplies the fee used inside that objective; both intentionally cite the full surface but certify distinct clauses.",
+            "semantic_bridge": "Direct review of the byte-pinned equations (27)--(30), with the separately pinned social- and self-threshold context, against the complete Lean-expanded Spec confirmed existence of revenue and welfare maximizers with revenue threshold no higher than social threshold and social threshold no higher than the floor self-interested threshold.",
+            "source_atom_sha256": "45317119cb5f00bbc338c21560ea3ba3f16da673bd357ec8b4ca52afa7dbd9c4",
+            "spec_component_sha256s": [
+              "fedf509163e8d5e7cb3f0295ccc53e4f4549ed99eb9cbcc230e37976b9f1485a"
+            ]
+          },
+          {
+            "overlap_justification": "The expanded Spec combines optimizer existence, threshold ordering, and the toll-revenue objective in one proposition. This atom supplies the exact fee embedded in the objective, while the separate ordering atom supplies the optimizer/order clauses; both intentionally cite the full surface but certify distinct clauses.",
+            "semantic_bridge": "Direct review of byte-pinned equation (31) against the fully expanded definitions used by the Spec confirmed that the revenue objective evaluates the source toll R - C n_r / mu, equivalently (C / mu)(v_s - n_r), at the selected revenue threshold. The equality is checked in expanded Lean code rather than inferred from the thresholdFee or tollRevenue names.",
+            "source_atom_sha256": "a02305966d40c9763f09e1fe910d09d59023e08f704104a393c4bb734def6f38",
+            "spec_component_sha256s": [
+              "fedf509163e8d5e7cb3f0295ccc53e4f4549ed99eb9cbcc230e37976b9f1485a"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "ee8ce37361a61e35d3423cd081160de28b5b832d0bce57a3d5dd6b1eaf40679e",
+        "spec_closure_sha256": "90826f0b1f7d7b5188bcedefcf0b58427b89e77c768737be31c7a8b726194e93",
+        "spec_surface_sha256": "fedf509163e8d5e7cb3f0295ccc53e4f4549ed99eb9cbcc230e37976b9f1485a"
+      },
+      "source_status": "independently inventoried from the pinned source text extraction",
+      "source_url": "https://www.jstor.org/stable/1909200",
+      "spec_lean_declarations": [
+        "socialAndRevenueThresholdOrderSpec"
+      ],
+      "statement": "A toll-revenue-maximizing finite admission threshold can be selected no higher than the social threshold, which is no higher than the self-interested threshold; the corresponding revenue-maximizing fee is R - C n_r / mu.",
+      "support_lean_declarations": [
+        "Naor1969QueueTolls.socialAndRevenueThresholdOrderSpec"
+      ]
+    },
+    "socialContinuousCrossing": {
+      "claim_bearing": false,
+      "inventory_role": "proof_support",
+      "source_anchor_evidence": [
+        {
+          "line_end": 503,
+          "line_start": 341,
+          "publication_locator": "cited publication",
+          "quoted_text": "If the viewpoint is taken that the expected sum of the net gains accruing to\ncustomers in unit time is the public good which should be optimized, we must\nproceed in a different mode from that outlined in the previous section. We note\nthat expected total net gain, P, under some strategy n is given by\n(17)\n\nP =(-C)R=-RCE {i} =\n\n(l -Pn)-Cq\n\np\n-AR l\npna cL1P\n\nn pn+l\n\n\f20\n\nP. NAOR\n\nBy some elementary (but lengthy) considerations it can be shown that the\nfunction P in its dependence on n is \"discretely unimodal\" or, in other words, a\nlocal maximum is a global maximum. Hence we seek that strategy, no say, which is\nassociated with two inequalities\n(18)\n( )\n\n,.R [P ?('1-np)\nLl~_pno+-\n\n(1P]\npnoI\nI_pno+2-c\n\nFpno-l(1_p)\n\nPnon(oP)\n\n[(n lO+1)Pn'+-\n\n-\n\npno+l\n\nno+2] <<0\n(no+2)p\n_pno+2\n\n-\n\nand\n\n.RlL I\n\n(19)\n\np no\n\nI\n\nP\n\nC\n\nl\n+1\n_p pno+l\n\nnopno\n\nL_pno\n-P\n\n(no+1)Pno+'j\n-\n\n_\n\n+!\n_-pno\n\n__\n\n_\n\nFurther manipulations transform (18) and (19) into equivalent inequalities\n(20)\n\nR(1 -p)2\n\n<\n\n't\n\n=\n\n-[(nO+1)(1-_p)-p(l\n\n_\n\n[1-2p+no(1\n\np) + pno+21]\n\n_pno+ 1)]\n\nand\n(21)\n\nR (1 - p)2 > _\n\n[no(1-p)-p(l-pno)]\n\nThese two inequalities in turn can be cast into the following form\nno2P))\n\n(1_-(\n\n(i-p)2\n\n_pno)\n\nR/i\n\n(no+ l) (l-P)\n\nC\n\nP2(\n\nP\n\nn\n\n(1p)2\n\nTo deal with (22) it will be convenient to investigate a function,\n\n(23)\n\nVs= [vo( (-p)-p\n\n(' -P vo)] (1 _p)-\n\n2\n\nof two independent variables p (> 0) and vo() 1). We note, in passing, that no true\nsingularity exists for this function if p = 1; rather the function is well behaved and\na nonzero and finite function value exists at that value of p, to wit: vs= (vo(vo+ 1)/2).\nNext we study a setting in which the value of p is arbitrary (positive) but fixed; we\nnote that vs is a boundlessly increasing function of vo. Hence the integers between\nwhich vo lies (viewed now as a function of v, and p) will obey the inequalities associated with (22). As a result we arrive at\n(24)\n\nno = [vo],\n\nan expression which is completely analogous to (18). Further manipulations lead\nto the inequality\n(25)\n\nVO< Vs\n\nwhere the equality sign holds only4 if vs equals unity.",
+          "quoted_text_sha256": "29c8526159ae9c8b4c7e9f130494053b37fa2253888ec90ca3c024a2d58fd903"
+        }
+      ],
+      "source_kind": "formula",
+      "source_location": "cited publication:341-503",
+      "source_note": "This is the printed derivation route for the social-threshold conclusion. Lean proves the same discrete global-maximizer and self-threshold ordering directly from finite stationary-sum marginal identities, so this continuous real-exponent parametrization is retained as proof support rather than a duplicate endpoint.",
+      "source_status": "support_only",
+      "source_url": "https://www.jstor.org/stable/1909200",
+      "statement": "Equations (18)--(25) introduce a continuous crossing value v₀, use its floor to identify a social optimizer, and compare that crossing with the self-interested service value.",
+      "support_lean_declarations": [
+        "Naor1969QueueTolls.socialOptimalThreshold_exists_with_cross_impl",
+        "EconCSLib.Probability.Queueing.finiteCapacityLinearHoldingReward_succ_sub",
+        "EconCSLib.Probability.Queueing.finiteCapacityOpportunityCost_monotone"
+      ]
+    },
+    "socialOptimalThreshold": {
+      "aliases": [
+        "socialOptimalThreshold"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The stationary mass, normalizer, mean, generating function, welfare, and revenue APIs are total finite-sum expressions; nonunit rational identities are auxiliary consequences only.",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "All finite-capacity stationary quantities are represented by finite sums at rho equal to one, rather than by undefined rational displays; these sums give the finite values the source says are obtained by limits.",
+          "id": "NAOR1969-RHO-ONE-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "248f4108a3317f14857cd6d22d04be7ce594ebdbe9e9ca5cb265c03149233e72",
+          "source_locator": "cited publication:283-288; cited publication:477-490",
+          "why_needed": "The source suppresses singularity qualifications for several displayed geometric formulas. The finite-sum representation preserves their intended traffic-intensity-one meaning without adding a non-source exclusion."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "Naor1969QueueTolls.socialOptimalThreshold"
+      ],
+      "model_convention_ids": [
+        "NAOR1969-RHO-ONE-01"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "Naor1969QueueTolls.socialOptimalThreshold",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "Naor1969QueueTolls.socialOptimalThresholdSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 131,
+          "line_start": 120,
+          "publication_locator": "cited publication",
+          "quoted_text": "Secondly, for our model to make sense it is required that under favorable circumstances a customer will desire to queue up for (completion of) service. Hence if a\nnewly arrived customer encounters a completely empty service station he should\nmake the \"pro-queueing\" choice. His expected loss is given by CV' whereas his\nreward to be collected at the end of service equals R. If the dimensionless quantity\n(Rp/C) is denoted by v, it is clear that in meaningful models the following inequality\nmust hold\n(1)\n\nVS= >C ) 1.\n\nIf inequality (1) does not hold the optimal policy is to disband the service station\nand divert the customer stream altogether.",
+          "quoted_text_sha256": "fb3b0657ea5343c805d815ed15981816942351289a01380cad51b051e17ee11d"
+        },
+        {
+          "line_end": 364,
+          "line_start": 341,
+          "publication_locator": "cited publication",
+          "quoted_text": "If the viewpoint is taken that the expected sum of the net gains accruing to\ncustomers in unit time is the public good which should be optimized, we must\nproceed in a different mode from that outlined in the previous section. We note\nthat expected total net gain, P, under some strategy n is given by\n(17)\n\nP =(-C)R=-RCE {i} =\n\n(l -Pn)-Cq\n\np\n-AR l\npna cL1P\n\nn pn+l\n\n\f20\n\nP. NAOR\n\nBy some elementary (but lengthy) considerations it can be shown that the\nfunction P in its dependence on n is \"discretely unimodal\" or, in other words, a\nlocal maximum is a global maximum. Hence we seek that strategy, no say, which is\nassociated with two inequalities",
+          "quoted_text_sha256": "8669e1c51af9464d1f2e738cb3ac8c7f900203b141e83b0bd3244d68ee89baed"
+        },
+        {
+          "line_end": 503,
+          "line_start": 477,
+          "publication_locator": "cited publication",
+          "quoted_text": "To deal with (22) it will be convenient to investigate a function,\n\n(23)\n\nVs= [vo( (-p)-p\n\n(' -P vo)] (1 _p)-\n\n2\n\nof two independent variables p (> 0) and vo() 1). We note, in passing, that no true\nsingularity exists for this function if p = 1; rather the function is well behaved and\na nonzero and finite function value exists at that value of p, to wit: vs= (vo(vo+ 1)/2).\nNext we study a setting in which the value of p is arbitrary (positive) but fixed; we\nnote that vs is a boundlessly increasing function of vo. Hence the integers between\nwhich vo lies (viewed now as a function of v, and p) will obey the inequalities associated with (22). As a result we arrive at\n(24)\n\nno = [vo],\n\nan expression which is completely analogous to (18). Further manipulations lead\nto the inequality\n(25)\n\nVO< Vs\n\nwhere the equality sign holds only4 if vs equals unity.",
+          "quoted_text_sha256": "21eac693f88b89481f97c1c017471e921662a17e5de0e6b49147fcf12e96e16d"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "naor.social.threshold.global_optimum_and_self_bound",
+          "reviewed_lean_route": "Naor1969QueueTolls.socialOptimalThreshold",
+          "semantic_claim": "For the displayed aggregate reward-minus-queueing-cost objective, the source uses its discrete-unimodality derivation to select a globally optimal finite admission threshold; the derivation itself remains proof support rather than a second endpoint.",
+          "source_locator": "cited publication:341-364",
+          "source_quote_sha256": "8669e1c51af9464d1f2e738cb3ac8c7f900203b141e83b0bd3244d68ee89baed"
+        },
+        {
+          "id": "naor.social.threshold.bounded_by_self",
+          "reviewed_lean_route": "Naor1969QueueTolls.socialOptimalThreshold",
+          "semantic_claim": "The social threshold selected by the source is no higher than the self-interested threshold.",
+          "source_locator": "cited publication:477-503",
+          "source_quote_sha256": "21eac693f88b89481f97c1c017471e921662a17e5de0e6b49147fcf12e96e16d"
+        }
+      ],
+      "source_kind": "claim",
+      "source_location": "cited publication:120-131; cited publication:341-364; cited publication:477-503",
+      "source_note": "This is the paper's social-optimization conclusion. The unnumbered discrete-unimodality sentence and the printed continuous v₀ parametrization are retained as proof support for this conclusion, not as additional source endpoints.",
+      "statement": "Aggregate reward less queueing cost has a globally optimal finite admission threshold, which can be selected no higher than the self-interested threshold.",
+      "support_lean_declarations": [
+        "Naor1969QueueTolls.socialOptimalThresholdSpec"
+      ]
+    },
+    "socialTollImplementsOptimalThreshold": {
+      "claim_bearing": true,
+      "lean_declarations": [
+        "Naor1969QueueTolls.socialTollImplementsOptimalThreshold"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 131,
+              "line_start": 120,
+              "publication_locator": "cited publication",
+              "quoted_text": "Secondly, for our model to make sense it is required that under favorable circumstances a customer will desire to queue up for (completion of) service. Hence if a\nnewly arrived customer encounters a completely empty service station he should\nmake the \"pro-queueing\" choice. His expected loss is given by CV' whereas his\nreward to be collected at the end of service equals R. If the dimensionless quantity\n(Rp/C) is denoted by v, it is clear that in meaningful models the following inequality\nmust hold\n(1)\n\nVS= >C ) 1.\n\nIf inequality (1) does not hold the optimal policy is to disband the service station\nand divert the customer stream altogether.",
+              "quoted_text_sha256": "fb3b0657ea5343c805d815ed15981816942351289a01380cad51b051e17ee11d"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 364,
+              "line_start": 341,
+              "publication_locator": "cited publication",
+              "quoted_text": "If the viewpoint is taken that the expected sum of the net gains accruing to\ncustomers in unit time is the public good which should be optimized, we must\nproceed in a different mode from that outlined in the previous section. We note\nthat expected total net gain, P, under some strategy n is given by\n(17)\n\nP =(-C)R=-RCE {i} =\n\n(l -Pn)-Cq\n\np\n-AR l\npna cL1P\n\nn pn+l\n\n\f20\n\nP. NAOR\n\nBy some elementary (but lengthy) considerations it can be shown that the\nfunction P in its dependence on n is \"discretely unimodal\" or, in other words, a\nlocal maximum is a global maximum. Hence we seek that strategy, no say, which is\nassociated with two inequalities",
+              "quoted_text_sha256": "8669e1c51af9464d1f2e738cb3ac8c7f900203b141e83b0bd3244d68ee89baed"
+            },
+            {
+              "line_end": 503,
+              "line_start": 477,
+              "publication_locator": "cited publication",
+              "quoted_text": "To deal with (22) it will be convenient to investigate a function,\n\n(23)\n\nVs= [vo( (-p)-p\n\n(' -P vo)] (1 _p)-\n\n2\n\nof two independent variables p (> 0) and vo() 1). We note, in passing, that no true\nsingularity exists for this function if p = 1; rather the function is well behaved and\na nonzero and finite function value exists at that value of p, to wit: vs= (vo(vo+ 1)/2).\nNext we study a setting in which the value of p is arbitrary (positive) but fixed; we\nnote that vs is a boundlessly increasing function of vo. Hence the integers between\nwhich vo lies (viewed now as a function of v, and p) will obey the inequalities associated with (22). As a result we arrive at\n(24)\n\nno = [vo],\n\nan expression which is completely analogous to (18). Further manipulations lead\nto the inequality\n(25)\n\nVO< Vs\n\nwhere the equality sign holds only4 if vs equals unity.",
+              "quoted_text_sha256": "21eac693f88b89481f97c1c017471e921662a17e5de0e6b49147fcf12e96e16d"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "Naor1969QueueTolls.socialTollImplementsOptimalThreshold",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "Naor1969QueueTolls.socialTollImplementsOptimalThresholdSpec"
+      },
+      "semantic_contract_template": {
+        "evidence_declaration": "socialTollImplementsOptimalThreshold",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "socialTollImplementsOptimalThresholdSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 338,
+          "line_start": 296,
+          "publication_locator": "cited publication",
+          "quoted_text": "The newly arrived customer weighs the two alternatives-to join or not to join\nthe queue-by the net gains associated with them. The net gain, in the first case,\nis equal to\n(t2)\n\nGi = R- (i+ 1)C-.\n\nIn the alternative case the net gain is zero. Hence self interest is served if a strategy\nis established in the following fashion. An integer, ns,is found which satisfies simultaneously two inequalities\n(13)\n\nR-n\n\nC-\n\n0\n\nand\n(14)\n\nR- (ns+ l)C-\n\n< O.\n\nInequality (13) pertains to the case where the number of queueing customers\n(including the one in service) encountered by the newly arrived customer falls\nshort of the critical number by one. The customer, of course, is supposed to join\nand indeed the inequality is in his favor. Inequality (14) relates to the unfavorable\nevent: the critical number, ns, of customers is already in the queue. We can incorporate the two inequalities in one expression\n(15)\n\nnS <C\n\n1\n\nAlternatively we may express the same idea in different notation\n(16)\n\nnS-I[Vs]\n\nwhere [ ] is the well known bracket function; that is, ns is the largest integer not\nexceeding vs.\nWe note that the critical number, ns, derived by \"actualizing self interest\" depends on ,u,R, and C, but not on the arrival intensity A.This fact alone sufficesbefore pursuing further detailed investigation-to throw serious doubt on the",
+          "quoted_text_sha256": "4abcc50518e992566caf39575e87448f2eafbe2601a6980717356225cbae1222"
+        },
+        {
+          "line_end": 761,
+          "line_start": 731,
+          "publication_locator": "cited publication",
+          "quoted_text": "narrow self interest-the facilities of the system are overly congested. To arrive at\nan ameliorated state of affairs it is necessary to reduce the strategy n from n, to no.\nThis can be done in two distinct ways: either through an administrative rule to\nthe effect that the maximally permissible queue size should be smaller5 than a\nprima facie admissible number n8; or, alternatively, a toll 0 is imposed on customers\njoining the queue and their (individually) expected net gain is reduced in such a way\nthat no is the current criterion of newly arrived customers based on their present\ncomparison of alternatives.\nWhat is the optimal value, 0*, or rather the optimal range, of the toll? Clearly\nthis is given by\n\n(26)\n\n-(v5-no-1)\n\n(\n\n=R-\n\n1\n\n< 0*\n\nR - Cn = At (V5-no)\n\nIf a toll taken from this range is levied on customers joining the queue, the combined income (in unit time) of customers and the revenue agency is maximized.\nWe might explicitly mention that expenditure incurred in toll collection and in\ninformation processing is considered negligible in this presentation.\nClearly, if the toll revenue may be used for redistribution of income among the\npopulation or for socially useful purposes the proposed imposition of tolls is an\noptimal procedure.",
+          "quoted_text_sha256": "9ce29119aec46cd7eea7a1cebd171e61fea4578e598903a293c0db6770b03529"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "naor.toll.interval.implements_social_threshold",
+          "reviewed_lean_route": "Naor1969QueueTolls.socialTollImplementsOptimalThreshold",
+          "semantic_claim": "A toll strictly above the rejecting-state gain cutoff and no greater than the accepting-state gain cutoff makes the selected social threshold the individual admission criterion; with transferable toll revenue the resulting combined income is maximal.",
+          "source_locator": "cited publication:731-761",
+          "source_quote_sha256": "9ce29119aec46cd7eea7a1cebd171e61fea4578e598903a293c0db6770b03529"
+        }
+      ],
+      "source_item": "Socially implementing toll interval",
+      "source_kind": "claim",
+      "source_location": "cited publication:296-338; cited publication:731-761",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "c53f503f6699557fc7f29ea9853a40a4f07566c3fffe160c60fcb9aab4f2e070",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "931b171e48f89628c3502c2e42954deceb44fa9098df39312975c0b44929b0b6",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct review of byte-pinned equation (26) and its accompanying toll-transfer passage against the complete Lean-expanded Spec confirmed the same strict lower and weak upper toll cutoffs, induced floor admission threshold, and preservation of the selected welfare maximizer for combined customer income plus transferred toll revenue. No source paraphrase or Lean identifier supplied semantic evidence.",
+            "source_atom_sha256": "2d038ec590d0dc21a2e08d89bbe9e5a17319eda99efd964b3f301a2a3dab5df8",
+            "spec_component_sha256s": [
+              "7eea9994f235eb925db1e0abda2c14eff777b31444537fec056851c6f1899802"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "d98e469e1cd5f2e4b549a74001b97f8acae0baf857360b3051c7dfd7115be631",
+        "spec_closure_sha256": "dafa2bf520be03828a867a98ad163091545eadaf5d3c6b1bc183ab77f58181bb",
+        "spec_surface_sha256": "7eea9994f235eb925db1e0abda2c14eff777b31444537fec056851c6f1899802"
+      },
+      "source_status": "independently inventoried from the pinned source text extraction",
+      "source_url": "https://www.jstor.org/stable/1909200",
+      "spec_lean_declarations": [
+        "socialTollImplementsOptimalThresholdSpec"
+      ],
+      "statement": "Any toll in the stated interval changes individual joining incentives so that a selected welfare-maximizing threshold is chosen.",
+      "support_lean_declarations": [
+        "Naor1969QueueTolls.socialTollImplementsOptimalThresholdSpec"
+      ]
+    },
+    "source_concluding_qualitative_generalizations": {
+      "claim_bearing": true,
+      "coverage_status": "user_approved_scope_exclusion",
+      "inventory_role": "deep_only",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "The existing user-approved source inventory retains these unnumbered qualitative extensions outside the selected named-theory surface; they remain visible to holistic review without becoming new human-review denominator rows.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 870,
+          "line_start": 853,
+          "publication_locator": "cited publication",
+          "quoted_text": "There is very little to add to the critique of the model and the general conclusions\ndrawn from its structure. One point should be re-emphasized: The results in qualitative form are independent of the specifics of the model. Thus, for instance, if\nservice times were distributed in some manner other then exponentially, we still\nwould derive benefits from the collection of tolls, though the derivation of no (or\nan equivalent doctrine) may be much more complex than that presented in this\nstudy.\nThe basic features of the model are shaped by the assumption of the existence of\na public good and by the assumption of possible nonadmission of customers to\nthe service station. Rewards are considered to be constant and equal. Again, no\nbasically different results would have been obtained had these rewards been\ndrawn from a distribution. A strong modification may be called for if we were to\nassume that the reward obtained depends in some way on the effective traffic density. Again, without going into detailed arguments, it can be shown that a policy of\n\"laissez faire\" is only rarely and accidentally a correct one (i.e., socially optimal).\nIn this latter more general case, in which effective interaction between customers\nand therefore dependence on traffic density is assumed, the proper strategy is not\nnecessarily the imposition of a toll; cases can be constructed where the handing\nout of subsidies to joining customers optimizes public good. The detailed analysis\nof such situations is the subject of further investigation.",
+          "quoted_text_sha256": "a32ac5160804fa5adc123efae6d7260092db9c63aca90bbfd1faecc887fd9bb9"
+        }
+      ],
+      "source_kind": "prose_assertion",
+      "source_location": "cited publication:853-870",
+      "source_note": "Retained as an explicit deep-audit scope item; it does not enter the denominator of the selected six-row human review surface.",
+      "statement": "The concluding remarks assert qualitative robustness to nonexponential service and heterogeneous rewards, and say that traffic-dependent rewards may make subsidies rather than tolls socially optimal.",
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-08-15",
+        "reason": "These unnumbered qualitative extensions go beyond the paper's stated M/M/1 model and selected numbered-formula review surface; they remain visible rather than silently omitted.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "a32ac5160804fa5adc123efae6d7260092db9c63aca90bbfd1faecc887fd9bb9",
+        "source_evidence": "The pinned concluding paragraph explicitly asserts qualitative robustness to other service-time and reward models and notes that traffic-dependent rewards may make subsidies optimal.",
+        "source_locator": "cited publication:853-870"
+      }
+    },
+    "source_social_crossing_numerical_generalizations": {
+      "claim_bearing": true,
+      "coverage_status": "user_approved_scope_exclusion",
+      "inventory_role": "deep_only",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "The existing user-approved source inventory retains this unnumbered numerical generalization outside the selected named-theory surface; it remains visible to holistic review without becoming a new human-review denominator row.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 718,
+          "line_start": 714,
+          "publication_locator": "cited publication",
+          "quoted_text": "in vo=2 and the converse of this statement holds as well. It is easy to prove both\nimplications. Indeed one may even state (and prove) the following generalizations:\n(a) whenever the inequality v, - p >2 holds, the appropriate value of vo can be\nbracketed by v, - p > vo > 2; and (b) whenever the inequality v, - p < 2 holds, it\nmay be established that v, - p < vo< 2.",
+          "quoted_text_sha256": "cfd0f66d0bd147d8536ea9a9b497b3a286ab0fb642fb8adced2794de033cc8c3"
+        }
+      ],
+      "source_kind": "prose_assertion",
+      "source_location": "cited publication:714-718",
+      "source_note": "Retained as an explicit deep-audit scope item; it does not enter the denominator of the selected six-row human review surface.",
+      "statement": "The discussion after the social-threshold analysis gives two unnumbered numerical inequalities comparing the continuous social crossing v_0 with 2 and with v_s - rho.",
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-08-15",
+        "reason": "This unnumbered numerical generalization is outside the selected numbered-formula and named-theory review surface and remains visible in the source inventory rather than being silently omitted.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "cfd0f66d0bd147d8536ea9a9b497b3a286ab0fb642fb8adced2794de033cc8c3",
+        "source_evidence": "The pinned paragraph explicitly states two unnumbered comparisons between v_0, 2, and v_s - rho as generalizations of the preceding numerical discussion.",
+        "source_locator": "cited publication:714-718"
+      }
+    },
+    "stationaryPerformance": {
+      "aliases": [
+        "stationaryPerformance"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The stationary mass, normalizer, mean, generating function, welfare, and revenue APIs are total finite-sum expressions; nonunit rational identities are auxiliary consequences only.",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "All finite-capacity stationary quantities are represented by finite sums at rho equal to one, rather than by undefined rational displays; these sums give the finite values the source says are obtained by limits.",
+          "id": "NAOR1969-RHO-ONE-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "248f4108a3317f14857cd6d22d04be7ce594ebdbe9e9ca5cb265c03149233e72",
+          "source_locator": "cited publication:283-288; cited publication:477-490",
+          "why_needed": "The source suppresses singularity qualifications for several displayed geometric formulas. The finite-sum representation preserves their intended traffic-intensity-one meaning without adding a non-source exclusion."
+        }
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "Naor1969QueueTolls.stationaryPerformance"
+      ],
+      "model_convention_ids": [
+        "NAOR1969-RHO-ONE-01"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "Naor1969QueueTolls.stationaryPerformance",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "Naor1969QueueTolls.stationaryPerformanceSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 281,
+          "line_start": 175,
+          "publication_locator": "cited publication",
+          "quoted_text": "The generating function is derived as\n\n(5)\n\n(5)\n\nn\n\n-p P\n~~I\n\ng(z) =\n\npIz\n\np 1\n\nl\n\n-(pZ)n+\n1 -pz\n\nPn+\n\n'\n\nThe expected value, q, of the random variable equals\np[1-(n+\n\n1) pn +npn+ 1]\n\nP\n\n(n +1) pn\n\nI -P\npn+)\n1pn+p\n(1-p)(l-_\nq=E{i} =\nThe expected number of customers, C say, diverted from the service station in\nunit time is given by\n\n(6)\n\n(7)\n\n-\n\n= iPn\n\npI(n+1\n\nWe mention, in passing, that the busy fraction b, i.e., the degree of utilization of\nthe service station, is, of course, not equal to p (as in the \"usual\"models) but rather\nnP\n\n(8)\n\nb=\n\nPi\n\n-Po\n\n_ p(n~f)\n-\n\nP\n\ni=l\n\nn1\n\nThe expected number of customers joining the queue in unit time equals\n(9)(9)\n\n,1-4\n\n= pn~X(-~=1\n(-Pn)\n\n=ip\n\np___\n\nn+1t)\n\nPn__\n\nn+1t\n\nThe expected number of customers leaving the service station in unit time equals\n(10)\n\njbb=u(l-po)=u\n\n-Iij\n\n;Pt;]1\n\nThese two quantities must be identical under steady state conditions and, indeed,\nit is easy to verify that\n(11)\n\np = 1- Po\nl-pn",
+          "quoted_text_sha256": "bd72ab4bfd3a6fb617d9c2ac3d944ec08aff3412c180ded13b5da8ad81ecd4a2"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "naor.stationary.performance_formulas",
+          "reviewed_lean_route": "Naor1969QueueTolls.stationaryPerformance",
+          "semantic_claim": "The stationary queue-length law has the displayed generating-function, mean, blocked-flow, admitted-flow, and completed-flow identities.",
+          "source_locator": "cited publication:175-281",
+          "source_quote_sha256": "bd72ab4bfd3a6fb617d9c2ac3d944ec08aff3412c180ded13b5da8ad81ecd4a2"
+        }
+      ],
+      "source_kind": "claim",
+      "source_location": "cited publication:175-281",
+      "source_note": "This source item collects the stationary performance formulas (5)--(11). The Lean statement expresses their finite-sum form, which remains defined at traffic intensity one where the printed rational displays are interpreted by their stated limits.",
+      "source_spec_correspondence": {
+        "closure_environment_sha256": "c53f503f6699557fc7f29ea9853a40a4f07566c3fffe160c60fcb9aab4f2e070",
+        "closure_node_dispositions": [],
+        "item_identity_sha256": "9dcb6a0590239a75b7873cc22ea38c42aa91af607183ade1eac7f1156303d60e",
+        "schema": 1,
+        "source_atom_bindings": [
+          {
+            "semantic_bridge": "Direct review of the byte-pinned equations (5)--(11) against the complete Lean-expanded Spec confirmed the same normalized finite stationary generating function and mean, rejected-plus-admitted arrival decomposition, admitted/completed flow equality, and busy-fraction identity. The finite-sum Lean forms also retain the source's stated traffic-intensity-one interpretation without using names or paraphrases as evidence.",
+            "source_atom_sha256": "fcad27f61433b3945133c5ff3d73cf2b1f6b0d977f7f38c8aedc1fa61b8f2d41",
+            "spec_component_sha256s": [
+              "6fda90dd6b44ad32198d1169907adcc516065bba541f0c23581bc0e8a1e08299"
+            ]
+          }
+        ],
+        "source_atoms_sha256": "bbcc5c363675b6d58116d36c8eef793c0ccde691038ddd43f301dfc6452aa620",
+        "spec_closure_sha256": "1c380bc03b8ddda0b9c8c82581a011d7f6ea0a5342860b8c965b19b5e5b249ea",
+        "spec_surface_sha256": "6fda90dd6b44ad32198d1169907adcc516065bba541f0c23581bc0e8a1e08299"
+      },
+      "statement": "The finite stationary law has the displayed probability generating function, and the rejected, admitted, and completed flows satisfy the stationary balance identities.",
+      "support_lean_declarations": [
+        "Naor1969QueueTolls.stationaryPerformanceSpec"
+      ]
+    }
+  },
+  "paper": "Naor1969QueueTolls",
+  "paper_interface_namespace": "Naor1969QueueTolls",
+  "schema": 1,
+  "seed_scaffold": false,
+  "semantic_contract_policy": {
+    "activation": "Before Lean drafting, independently inventory every material source atom against exact pinned source quote bytes; do not infer that inventory from declaration, binder, field, or function names. After a source item has an audited paper-local specification and a theorem/lemma proving or refuting it, add top-level semantic_contract_schema: 1, classify every item with an explicit claim_bearing Boolean, and record semantic_contract for each true item. At formalized closeout, also add source_claim_atoms_schema: 1 and source_spec_correspondence_schema: 1. Bind each atom to an elaborated Spec component and account for every material Lean-closure terminal, including proof and instance arguments, by source atom, approved source correction/additional assumption, checked Lean derivation, or version-pinned foundation basis. Each statement-first row supplies an inactive semantic_contract_template pairing its transparent `...Spec : Prop` with its theorem/lemma. Promote that exact template only after the independent source audit passes, the theorem has exactly the transparent Spec type, the closure record passes, and the proof hole is replaced. Do not manufacture a contract from the temporary by-sorry statement skeleton alone. Legacy v10 evidence remains readable but is not a v11 realization credential. For a source-game result whose feasible-action equilibrium comparison uses a conditional/posterior or observation-contingent value, add the separately byte-pinned `semantic_context_requirements` kind `strategic_observation_totality`; it requires an explicit off-path/zero-probability totality audit and cannot be satisfied by a Lean-only default value.",
+    "evidence_modes": [
+      "proves",
+      "refutes"
+    ],
+    "required_fields": [
+      "spec_declaration",
+      "evidence_declaration",
+      "evidence_mode",
+      "semantic_shape"
+    ],
+    "schema": 1,
+    "semantic_shapes": [
+      "plain"
+    ],
+    "shape_policy": "Only plain exact-proposition contracts are currently enforced. Do not record a specialized runtime, preprocessing, or refinement shape until the audit implements its structural check.",
+    "source_defect_routing": "Every repaired_in_lean source-proof defect must be linked from a successfully checked contract item through source_defect_ids."
+  },
+  "semantic_contract_schema": 1,
+  "source_anchor_evidence_required": true,
+  "source_artifact_sha256": "1f0b933683a0f80dd0f70091fde0be6168bfbe7d8ec979f06008b4b691880614",
+  "source_claim_atoms_schema": 1,
+  "source_coverage_mode": "named_theoretical_statements",
+  "source_curated": true,
+  "source_inventory_kind": "named_theoretical_results_and_model_formulas",
+  "source_inventory_policy": "Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
+  "source_named_result_inventory_review": {
+    "candidate_presentations": [
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_001",
+        "presentation_label": "Meaningful-model boundary and all-diverted alternative",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This unnumbered model-boundary discussion supplies the positive-service-value regime already visible as a premise of the selected self and social threshold routes. Its alternative all-diverted-policy observation is not an independently presented named theory result.",
+        "source_anchor": {
+          "line_end": 131,
+          "line_start": 120,
+          "publication_locator": "cited publication",
+          "quoted_text": "Secondly, for our model to make sense it is required that under favorable circumstances a customer will desire to queue up for (completion of) service. Hence if a\nnewly arrived customer encounters a completely empty service station he should\nmake the \"pro-queueing\" choice. His expected loss is given by CV' whereas his\nreward to be collected at the end of service equals R. If the dimensionless quantity\n(Rp/C) is denoted by v, it is clear that in meaningful models the following inequality\nmust hold\n(1)\n\nVS= >C ) 1.\n\nIf inequality (1) does not hold the optimal policy is to disband the service station\nand divert the customer stream altogether.",
+          "quoted_text_sha256": "fb3b0657ea5343c805d815ed15981816942351289a01380cad51b051e17ee11d"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_002",
+        "presentation_label": "Discrete-unimodality proof support",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This unnumbered sentence is proof support for the selected global social-threshold conclusion; it is not a separately source-presented named result and therefore does not add a second paper claim.",
+        "source_anchor": {
+          "line_end": 364,
+          "line_start": 361,
+          "publication_locator": "cited publication",
+          "quoted_text": "By some elementary (but lengthy) considerations it can be shown that the\nfunction P in its dependence on n is \"discretely unimodal\" or, in other words, a\nlocal maximum is a global maximum. Hence we seek that strategy, no say, which is\nassociated with two inequalities",
+          "quoted_text_sha256": "0d911bf1bd2859ce9281780f8ddeb315f5d003e55a19a764cccfc02bdf1974fb"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_003",
+        "presentation_label": "Continuous-crossing rho-one convention",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This is source-model and derivation support for the selected social-threshold route. Its rho-one meaning is already carried as the tracked NAOR1969-RHO-ONE-01 convention rather than as an additional human-denominator claim.",
+        "source_anchor": {
+          "line_end": 492,
+          "line_start": 487,
+          "publication_locator": "cited publication",
+          "quoted_text": "of two independent variables p (> 0) and vo() 1). We note, in passing, that no true\nsingularity exists for this function if p = 1; rather the function is well behaved and\na nonzero and finite function value exists at that value of p, to wit: vs= (vo(vo+ 1)/2).\nNext we study a setting in which the value of p is arbitrary (positive) but fixed; we\nnote that vs is a boundlessly increasing function of vo. Hence the integers between\nwhich vo lies (viewed now as a function of v, and p) will obey the inequalities associated with (22). As a result we arrive at",
+          "quoted_text_sha256": "5cdaf8fbac55d2b1811f95bca9e381398774a23cd236e18f00a9927a92e4887b"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_004",
+        "presentation_label": "Continuous-crossing strictness qualification",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This qualification concerns the paper's continuous-crossing derivation. The selected Lean result directly states the resulting weak threshold order, so this unnumbered proof discussion is retained without becoming a second claim.",
+        "source_anchor": {
+          "line_end": 508,
+          "line_start": 499,
+          "publication_locator": "cited publication",
+          "quoted_text": "(25)\n\nVO< Vs\n\nwhere the equality sign holds only4 if vs equals unity.\n4\n\nThe equality sign would hold also in the physically meaningless, and therefore excluded, case\n\np=O (arbitrary v).",
+          "quoted_text_sha256": "14a025f39b1ea2f5cf9ac2ba2512de548524d22eb2919a8eeec4fa142d79d1e8"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_005",
+        "presentation_label": "Continuous-crossing numerical observation",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This is an unnumbered numerical observation in the continuous-crossing discussion, within the already approved exclusion of such numerical generalizations from the selected named-theory surface.",
+        "source_anchor": {
+          "line_end": 518,
+          "line_start": 514,
+          "publication_locator": "cited publication",
+          "quoted_text": "To exhibit some properties of the functional relationship discussed in the present section the form vo = vo (v, p), i.e., vo as a function of the arguments v, and p,\nwas chosen. A set of numerical values of vo was computed for selected values of the\narguments vsand p. The results are presented in Table I. We note, in passing, that\nan interesting specific numerical relationship exists: whenever v, - p =2 this results\nTABLE I",
+          "quoted_text_sha256": "35225b878c2c9c92f3ac7ce631b400a7d67f6807ff4321246d0ab4c40952d238"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_006",
+        "presentation_label": "Continuous-crossing numerical generalizations",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "These unnumbered numerical generalizations are already retained by the explicit user-approved deep-only source item and do not enter the selected named-theory surface.",
+        "source_anchor": {
+          "line_end": 718,
+          "line_start": 714,
+          "publication_locator": "cited publication",
+          "quoted_text": "in vo=2 and the converse of this statement holds as well. It is easy to prove both\nimplications. Indeed one may even state (and prove) the following generalizations:\n(a) whenever the inequality v, - p >2 holds, the appropriate value of vo can be\nbracketed by v, - p > vo > 2; and (b) whenever the inequality v, - p < 2 holds, it\nmay be established that v, - p < vo< 2.",
+          "quoted_text_sha256": "cfd0f66d0bd147d8536ea9a9b497b3a286ab0fb642fb8adced2794de033cc8c3"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_007",
+        "presentation_label": "Floor-coincidence qualification",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "This unnumbered interpretive qualification follows the selected threshold comparison; it does not alter the source or Lean weak-order endpoint and is not an independent named result.",
+        "source_anchor": {
+          "line_end": 724,
+          "line_start": 721,
+          "publication_locator": "cited publication",
+          "quoted_text": "Inequality (25) (which typically would be strict) points to the fact that consideration of narrow self interest does not ordinarily lead to overall optimality. We note,\nof course, that even a strict inequality need not demonstrate a socially nonoptimal\nsituation if self interest is actualized since both vs and vo may possibly be found\nbetween the same integers such that [vs] and [vo] are identical. Frequently it",
+          "quoted_text_sha256": "0a115b314f27de2f0987df5e26bd1ae41acd9fd23bb38b52a124608372f85e96"
+        },
+        "visible_kind": "holistic"
+      },
+      {
+        "discovery_basis": "holistic_full_text_review",
+        "id": "holistic_008",
+        "presentation_label": "Toll implementation and combined-income conclusion",
+        "schema": 1,
+        "scope_disposition": "material_named_claim",
+        "semantic_basis": "This is the source's direct toll-implementation conclusion, including the combined-income condition. It is already covered by the selected socialTollImplementsOptimalThreshold source route, whose current anchor contains this entire span.",
+        "source_anchor": {
+          "line_end": 761,
+          "line_start": 739,
+          "publication_locator": "cited publication",
+          "quoted_text": "What is the optimal value, 0*, or rather the optimal range, of the toll? Clearly\nthis is given by\n\n(26)\n\n-(v5-no-1)\n\n(\n\n=R-\n\n1\n\n< 0*\n\nR - Cn = At (V5-no)\n\nIf a toll taken from this range is levied on customers joining the queue, the combined income (in unit time) of customers and the revenue agency is maximized.\nWe might explicitly mention that expenditure incurred in toll collection and in\ninformation processing is considered negligible in this presentation.\nClearly, if the toll revenue may be used for redistribution of income among the\npopulation or for socially useful purposes the proposed imposition of tolls is an\noptimal procedure.",
+          "quoted_text_sha256": "9f083a8b139d1a90448d2b86306263c042f87843cb554bd778f0bb9481ab217d"
+        },
+        "visible_kind": "holistic"
+      }
+    ],
+    "complete": true,
+    "discovered_candidate_presentation_sha256": "dba42f0470e80381ccf83698b04d3f3807f8b3781965b63dab2cd22dfcb2258f",
+    "discovered_named_result_sha256": "8859e4ac13ddf94818ce5fbec95b572ff0fa77a1a082cdd3eaf9487aa41d3323",
+    "discovered_prose_definition_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "method": "Read all 887 lines of the byte-pinned source and manually screened numbered-equation context, prose, and footnotes for independently source-presented theorem-like claims and material clauses or dependencies of selected results; left standalone formulas, tables, and merely qualitative discussion deep-only.",
+    "prose_definition_presentations": [],
+    "schema": 1,
+    "source_artifact_sha256": "1f0b933683a0f80dd0f70091fde0be6168bfbe7d8ec979f06008b4b691880614",
+    "validated_at": "2026-09-02T07:21:23Z",
+    "validator": "naor_source_inventory"
+  },
+  "source_pdf_artifact": {
+    "path": "cited publication",
+    "sha256": "f9d8cae99e0012dd24ac4f53bceba0e8bb3c7c98d44f11a3071c8d9a82eee621"
+  },
+  "source_spec_correspondence_schema": 1,
+  "source_url": "https://www.jstor.org/stable/1909200",
+  "source_version": "Econometrica 37(1), January 1969, pp. 15–24 (JSTOR scan)"
+}

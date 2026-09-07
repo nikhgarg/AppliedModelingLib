@@ -2,7 +2,7 @@ import KR21Monoculture.Mallows
 import KR21Monoculture.FirstChoiceDecomposition
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -24,7 +24,7 @@ theorem mallowsPartition_pos {n : ℕ} {q : ℝ} (hq : 0 < q)
     0 < mallowsPartition q ρ := by
   classical
   unfold mallowsPartition
-  apply EconCSLib.sum_univ_pos_of_pos_of_nonneg (a₀ := ρ)
+  apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg (a₀ := ρ)
   · simpa using mallowsWeight_pos (hq := hq) ρ ρ
   · intro π
     exact mallowsWeight_nonneg (hq := hq) ρ π
@@ -186,7 +186,7 @@ theorem centerFirstMissProb_pos :
 theorem centerFirstProb_lt_one :
     firstChoiceProb M.law M.centerFirst < 1 := by
   have hmiss := M.centerFirstMissProb_pos
-  unfold firstChoiceMissProb EconCSLib.SocialChoice.Ranking.firstChoiceMissProb at hmiss
+  unfold firstChoiceMissProb AppliedModelingLib.SocialChoice.Ranking.firstChoiceMissProb at hmiss
   unfold firstChoiceProb
   linarith
 

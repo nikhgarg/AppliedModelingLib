@@ -18,8 +18,8 @@ It is not needed for the ranking-law, outer conditional, or strategy transport:
 those follow from the literal product law and score map themselves.
 -/
 
-open EconCSLib MeasureTheory ProbabilityTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib.SocialChoice.Ranking
 
 namespace KR21Monoculture
 

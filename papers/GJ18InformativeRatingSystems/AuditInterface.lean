@@ -20,7 +20,7 @@ namespace GJ18InformativeRatingSystems
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /-- Source object: the paper's log-MGF `Lambda(z | theta)`. -/
 abbrev paperLogMGF {Seller Rating : Type*} [Fintype Rating]
@@ -170,9 +170,9 @@ is the high-type expected score minus the low-type expected score.
 theorem lemmaC_equal_sample_pairwise_gap_mean_formula
     {Seller Rating : Type*} [Fintype Rating] [DecidableEq Rating]
     (M : FiniteRatingLDPModel Seller Rating) (hi lo : Seller) :
-    EconCSLib.pmfExp (pairedRatingLaw M hi lo) (pairedRatingGapScore M) =
-      EconCSLib.pmfExp (M.typeLaw hi) M.score -
-        EconCSLib.pmfExp (M.typeLaw lo) M.score :=
+    AppliedModelingLib.pmfExp (pairedRatingLaw M hi lo) (pairedRatingGapScore M) =
+      AppliedModelingLib.pmfExp (M.typeLaw hi) M.score -
+        AppliedModelingLib.pmfExp (M.typeLaw lo) M.score :=
   pairedRatingGapMean_eq_sub M hi lo
 
 /--
@@ -183,7 +183,7 @@ theorem lemmaC_two_population_sample_mgf_product_formula
     {Seller Rating : Type*} [Fintype Rating] [DecidableEq Rating]
     (M : FiniteRatingLDPModel Seller Rating) (hi lo : Seller)
     (nHi nLo : ℕ) (cHi cLo z : ℝ) :
-    EconCSLib.pmfExp (twoSampleRatingLaw M hi lo nHi nLo)
+    AppliedModelingLib.pmfExp (twoSampleRatingLaw M hi lo nHi nLo)
         (fun sample =>
           Real.exp (z * twoSampleScoreGapSum M cHi cLo sample)) =
       (M.mgf hi (z * cHi)) ^ nHi *
@@ -299,7 +299,7 @@ theorem lemmaC_integer_rate_block_error_rate_from_stationary_tilt
     (gHi gLo : ℕ)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp (twoSampleRateBlockLaw M hi lo gHi gLo)
+        AppliedModelingLib.pmfExp (twoSampleRateBlockLaw M hi lo gHi gLo)
           (twoSampleRateBlockScore M gHi gLo))
     {samplePos sampleNeg : (Fin gHi → Rating) × (Fin gLo → Rating)}
     (hmassPos :
@@ -401,7 +401,7 @@ theorem lemmaC_integer_rate_block_source_threshold_rate_from_stationary_tilt
         twoSampleRateBlockChernoffRate M hi lo gHi gLo)
     (hmean :
       0 ≤
-        EconCSLib.pmfExp (twoSampleRateBlockLaw M hi lo gHi gLo)
+        AppliedModelingLib.pmfExp (twoSampleRateBlockLaw M hi lo gHi gLo)
           (twoSampleRateBlockScore M gHi gLo))
     {samplePos sampleNeg : (Fin gHi → Rating) × (Fin gLo → Rating)}
     (hmassPos :
@@ -452,7 +452,7 @@ theorem lemmaC_integer_rate_block_source_threshold_rate_from_common_derivatives
         (-(z * (gLo : ℝ)⁻¹)))
     (hmean :
       0 ≤
-        EconCSLib.pmfExp (twoSampleRateBlockLaw M hi lo gHi gLo)
+        AppliedModelingLib.pmfExp (twoSampleRateBlockLaw M hi lo gHi gLo)
           (twoSampleRateBlockScore M gHi gLo))
     {samplePos sampleNeg : (Fin gHi → Rating) × (Fin gLo → Rating)}
     (hmassPos :
@@ -501,7 +501,7 @@ theorem lemmaC_integer_rate_block_source_threshold_rate_from_logMGF_derivatives
         (-(z * (gLo : ℝ)⁻¹)))
     (hmean :
       0 ≤
-        EconCSLib.pmfExp (twoSampleRateBlockLaw M hi lo gHi gLo)
+        AppliedModelingLib.pmfExp (twoSampleRateBlockLaw M hi lo gHi gLo)
           (twoSampleRateBlockScore M gHi gLo))
     {samplePos sampleNeg : (Fin gHi → Rating) × (Fin gLo → Rating)}
     (hmassPos :
@@ -545,7 +545,7 @@ theorem lemmaC_integer_rate_two_population_source_threshold_rate_from_logMGF_der
         (-(z * (gLo : ℝ)⁻¹)))
     (hmean :
       0 ≤
-        EconCSLib.pmfExp (twoSampleRateBlockLaw M hi lo gHi gLo)
+        AppliedModelingLib.pmfExp (twoSampleRateBlockLaw M hi lo gHi gLo)
           (twoSampleRateBlockScore M gHi gLo))
     {samplePos sampleNeg : (Fin gHi → Rating) × (Fin gLo → Rating)}
     (hmassPos :
@@ -644,7 +644,7 @@ theorem lemmaC_pk_complement_source_threshold_rate_from_logMGF_derivatives
         (-(z * (gLo : ℝ)⁻¹)))
     (hmean :
       0 ≤
-        EconCSLib.pmfExp (twoSampleRateBlockLaw M hi lo gHi gLo)
+        AppliedModelingLib.pmfExp (twoSampleRateBlockLaw M hi lo gHi gLo)
           (twoSampleRateBlockScore M gHi gLo))
     {samplePos sampleNeg : (Fin gHi → Rating) × (Fin gLo → Rating)}
     (hmassPos :
@@ -850,11 +850,11 @@ theorem lemmaC_floor_score_gap_rate_from_logMGF_derivative_minimizer
         pairwiseSellerThresholdRate M sampleRate hi lo)
     (hmean_hi :
       0 ≤
-        EconCSLib.pmfExp (M.typeLaw hi)
+        AppliedModelingLib.pmfExp (M.typeLaw hi)
           (fun r : Rating => M.score r - a))
     (hmean_lo :
       0 ≤
-        EconCSLib.pmfExp (M.typeLaw lo)
+        AppliedModelingLib.pmfExp (M.typeLaw lo)
           (fun r : Rating => a - M.score r))
     {hiPos hiNeg loPos loNeg : Rating}
     (hmass_hi_pos : 0 < (M.typeLaw hi hiPos).toReal)
@@ -1404,12 +1404,12 @@ theorem theorem1_floor_weighted_objective_oneSub_exact_rate_from_adjacent_logMGF
     (hmean_hi :
       ∀ p : Pair,
         0 ≤
-          EconCSLib.pmfExp (M.typeLaw (pairHi p))
+          AppliedModelingLib.pmfExp (M.typeLaw (pairHi p))
             (fun r : Rating => M.score r - a p))
     (hmean_lo :
       ∀ p : Pair,
         0 ≤
-          EconCSLib.pmfExp (M.typeLaw (pairLo p))
+          AppliedModelingLib.pmfExp (M.typeLaw (pairLo p))
             (fun r : Rating => a p - M.score r))
     (hiPos hiNeg loPos loNeg : Pair → Rating)
     (hmass_hi_pos :
@@ -1780,7 +1780,7 @@ theorem theorem1_finite_chain_uniform_floor_objective_oneSub_exact_min_adjacent_
         ∀ᶠ k in Filter.atTop,
           twoSampleFloorScoreGapLeftTailProb M sampleRate
               (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k ≤
-            ∑ m : EconCSLib.FiniteIntervalAdjacentIndex
+            ∑ m : AppliedModelingLib.FiniteIntervalAdjacentIndex
                 (finiteChainOrderedPairLo p) (finiteChainOrderedPairHi p),
               twoSampleFloorScoreGapLeftTailProb M sampleRate m.succ m.1 k) :
     HasExponentialRate
@@ -1834,7 +1834,7 @@ theorem theorem1_finite_chain_uniform_floor_objective_oneSub_exact_min_adjacent_
       ∀ (p : finiteChainOrderedPair n) (k : ℕ),
         twoSampleFloorScoreGapLeftTailProb M sampleRate
             (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k =
-          EconCSLib.pmfProb (μ k)
+          AppliedModelingLib.pmfProb (μ k)
             (fun ω => score k ω (finiteChainOrderedPairHi p) ≤
               score k ω (finiteChainOrderedPairLo p))) :
     HasExponentialRate
@@ -1886,7 +1886,7 @@ theorem theorem1_finite_chain_uniform_floor_objective_oneSub_exact_min_adjacent_
       ∀ (p : finiteChainOrderedPair n) (k : ℕ),
         twoSampleFloorScoreGapLeftTailProb M sampleRate
             (finiteChainOrderedPairHi p) (finiteChainOrderedPairLo p) k =
-          EconCSLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
+          AppliedModelingLib.pmfProb (finiteChainJointFloorRatingLaw M sampleRate k)
             (fun sample =>
               finiteChainJointFloorAverageScore M sampleRate k sample
                   (finiteChainOrderedPairHi p) ≤
@@ -2256,8 +2256,8 @@ theorem theorem1_finite_chain_uniform_floor_objective_oneSub_extended_min_adjace
     (hpositive_sample : ∀ θ : Fin n, 0 < sampleRate θ)
     (hmean_gap :
       ∀ p : finiteChainOrderedPair n,
-        EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score ≤
-          EconCSLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score)
+        AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairLo p)) M.score ≤
+          AppliedModelingLib.pmfExp (M.typeLaw (finiteChainOrderedPairHi p)) M.score)
     (rLow rHigh : Rating)
     (hmass_low : ∀ θ : Fin n, 0 < (M.typeLaw θ rLow).toReal)
     (hmass_high : ∀ θ : Fin n, 0 < (M.typeLaw θ rHigh).toReal)
@@ -2288,9 +2288,9 @@ theorem theorem1_finite_chain_uniform_floor_objective_oneSub_extended_min_adjace
     (hpositive_sample : ∀ θ : Fin n, 0 < sampleRate θ)
     (htail :
       ∀ p : finiteChainOrderedPair n, ∀ t : Fin (m + 1),
-        EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
+        AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
             (fun r => t ≤ r) ≤
-          EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
+          AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
             (fun r => t ≤ r))
     (hscore_mono : Monotone M.score)
     (hmass_low : ∀ θ : Fin n, 0 < (M.typeLaw θ 0).toReal)
@@ -2322,9 +2322,9 @@ theorem theorem1_finite_chain_uniform_floor_objective_oneSub_extended_min_adjace
     (hpositive_sample : ∀ θ : Fin n, 0 < sampleRate θ)
     (htail :
       ∀ p : finiteChainOrderedPair n, ∀ t : Fin (m + 1),
-        EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
+        AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairLo p))
             (fun r => t ≤ r) ≤
-          EconCSLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
+          AppliedModelingLib.pmfProb (M.typeLaw (finiteChainOrderedPairHi p))
             (fun r => t ≤ r))
     (hscore_mono : Monotone M.score)
     (hfull_support : M.fullSupport)
@@ -2720,7 +2720,7 @@ theorem theorem1_finite_pk_complement_ranking_error_exact_rate_from_adjacent_log
     (hmean :
       ∀ p : Pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (twoSampleRateBlockLaw M (pairHi p) (pairLo p)
               (gHi p) (gLo p))
             (twoSampleRateBlockScore M (gHi p) (gLo p)))
@@ -2808,7 +2808,7 @@ theorem theorem1_integer_rate_weighted_objective_oneSub_exact_rate_from_adjacent
     (hmean :
       ∀ p : Pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (twoSampleRateBlockLaw M (pairHi p) (pairLo p)
               (gHi p) (gLo p))
             (twoSampleRateBlockScore M (gHi p) (gLo p)))
@@ -2893,7 +2893,7 @@ theorem theorem1_floor_weighted_objective_oneSub_exact_rate_from_nat_sampleRates
     (hmean :
       ∀ p : Pair,
         0 ≤
-          EconCSLib.pmfExp
+          AppliedModelingLib.pmfExp
             (twoSampleRateBlockLaw M (pairHi p) (pairLo p)
               (gHi p) (gLo p))
             (twoSampleRateBlockScore M (gHi p) (gLo p)))

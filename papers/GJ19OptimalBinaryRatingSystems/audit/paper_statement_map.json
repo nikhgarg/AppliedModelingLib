@@ -1,4 +1,5 @@
 {
+  "approved_review_context_schema": 1,
   "generated_at": "2026-07-19T12:55:00Z",
   "items": {
     "algorithm1_bisect_next_level": {
@@ -58,15 +59,10 @@
         "theorem32_weighted_nested_bisection_output"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.theorem32_weighted_nested_bisection_output"
+        "GJ19OptimalBinaryRatingSystems.theorem32WeightedNestedBisectionOutput"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.theorem32_weighted_nested_bisection_output",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.theorem32_weighted_nested_bisection_outputSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 587,
@@ -76,16 +72,23 @@
           "quoted_text_sha256": "ced4a7be72afcbed3fc09a7ea4c32618574e1a7290a677fe4ef726de39a8652f"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "algorithm1.high.level",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.theorem32WeightedNestedBisectionOutput",
+          "semantic_claim": "Algorithm 1 performs an outer bisection on t_{M-2}; each candidate reconstructs the other levels by inner bisections at the last-pair target rate and updates the outer interval by comparing the candidate first and last rates.",
+          "source_locator": "audit/cited publication:550-587",
+          "source_quote_sha256": "ced4a7be72afcbed3fc09a7ea4c32618574e1a7290a677fe4ef726de39a8652f"
+        }
+      ],
       "source_defect_ids": [
         "GJ19-ALG1-PSEUDOCODE-TYPO-01",
         "GJ19-T32-EXECUTABLE-ALGORITHM-01"
       ],
       "source_kind": "algorithm",
       "source_location": "audit/cited publication:550-587; Main paper Section 3",
-      "statement": "Algorithm 1 performs an outer bisection on t_{M-2}; each candidate reconstructs the other levels by inner bisections at the last-pair target rate and updates the outer interval by comparing the candidate first and last rates.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.theorem32_weighted_nested_bisection_outputSpec"
-      ]
+      "statement": "Algorithm 1 performs an outer bisection on t_{M-2}; each candidate reconstructs the other levels by inner bisections at the last-pair target rate and updates the outer interval by comparing the candidate first and last rates."
     },
     "algorithm1_pairwise_rate": {
       "aliases": [],
@@ -108,15 +111,10 @@
         "appendixB1_active_set"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_active_set"
+        "GJ19OptimalBinaryRatingSystems.sourceAppendixBActiveSet"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_active_set",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_active_setSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 1828,
@@ -124,6 +122,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\nFormal specification of system state update\n\nRecall that µk (Θ, X) is the mass of items with true quality θ ∈ Θ ⊆ [0, 1] and a reputation score\nx ∈ X ⊆ [0, 1] at time k. Let Ek = {θ : nk (θ) = nk−1 (θ) + 1}. These are the items who receive an\nadditional rating at time k; for all θ ∈ Ekc , nk (θ) = nk−1 (θ). Our system is completely deterministic,\nand evolves according to the distributions of the individual seller dynamics.\nFor each θ ∈ Ek , x, x0 , define ω(θ, x, x0 ) as follows:\nω(θ, x, x0 ) = β(θ)I{nk (θ)x − nk−1 (θ)x0 = 1} + (1 − β(θ))I{nk (θ)x − nk−1 (θ)x0 = 0}.",
           "quoted_text_sha256": "ec57d9856e071deebe2ab297bd432a4b0ff1860137b16b62ddae087e83219e33"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "appendixB1.active.set",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.sourceAppendixBActiveSet",
+          "semantic_claim": "Appendix B.1 defines E_k as the item qualities receiving one additional rating between times k-1 and k.",
+          "source_locator": "audit/cited publication:1820-1828",
+          "source_quote_sha256": "ec57d9856e071deebe2ab297bd432a4b0ff1860137b16b62ddae087e83219e33"
         }
       ],
       "source_kind": "definition",
@@ -139,10 +147,7 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "Appendix B.1 defines E_k as the item qualities receiving one additional rating between times k-1 and k.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_active_setSpec"
-      ]
+      "statement": "Appendix B.1 defines E_k as the item qualities receiving one additional rating between times k-1 and k."
     },
     "appendixB1_state_update": {
       "aliases": [
@@ -150,10 +155,10 @@
       ],
       "claim_bearing": true,
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_state_update"
+        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_state_update_realizes_spec"
       ],
       "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_state_update",
+        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_state_update_realizes_spec",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
         "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_state_updateSpec"
@@ -165,6 +170,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Z\nZ Z\n1\n\nµk+1 (Θ, X) =\nEk\n\nx0 =0\n\nω(θ, x, x0 )dxµk (dx0 , dθ) +\n\nx∈X\n\nEkc\n\nµk (dx, dθ).\nx∈X\n\nIt is straightforward but tedious to check that the preceding dynamics are well defined, given our\nprimitives.\n",
           "quoted_text_sha256": "1a51c6fd4df0440542b6df61f8559b95b9df2f989a135ad7d8bb663e3141acaf"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "appendixB1.state.update",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_state_update_realizes_spec",
+          "semantic_claim": "The state-update display evolves mu_{k+1} by integrating the transition kernel over E_k and carrying the complement E_k^c forward unchanged.",
+          "source_locator": "audit/cited publication:1832-1852",
+          "source_quote_sha256": "1a51c6fd4df0440542b6df61f8559b95b9df2f989a135ad7d8bb663e3141acaf"
         }
       ],
       "source_kind": "formula",
@@ -179,15 +194,10 @@
         "appendixB1_transition_kernel"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_transition_kernel"
+        "GJ19OptimalBinaryRatingSystems.sourceAppendixBTransitionKernel"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_transition_kernel",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_transition_kernelSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 1831,
@@ -195,6 +205,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "ω(θ, x, x0 ) = β(θ)I{nk (θ)x − nk−1 (θ)x0 = 1} + (1 − β(θ))I{nk (θ)x − nk−1 (θ)x0 = 0}.\nThen ω gives the probability of transition from x0 to x when an item receives a rating. We then\nhave:\nZ Z",
           "quoted_text_sha256": "88144f52dae47043dd3f7219353f37bbfec24516f43dc2a0d15da803fcd1b9b9"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "appendixB1.transition.kernel",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.sourceAppendixBTransitionKernel",
+          "semantic_claim": "Appendix B.1 defines omega(theta,x,x') as the Bernoulli transition probability from reputation x' to x when an item receives a new rating.",
+          "source_locator": "audit/cited publication:1828-1831",
+          "source_quote_sha256": "88144f52dae47043dd3f7219353f37bbfec24516f43dc2a0d15da803fcd1b9b9"
         }
       ],
       "source_kind": "definition",
@@ -210,25 +230,17 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "Appendix B.1 defines omega(theta,x,x') as the Bernoulli transition probability from reputation x' to x when an item receives a new rating.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB1_transition_kernelSpec"
-      ]
+      "statement": "Appendix B.1 defines omega(theta,x,x') as the Bernoulli transition probability from reputation x' to x when an item receives a new rating."
     },
     "appendixC5_rate_notation_eq23": {
       "aliases": [
         "source_appendixC5_rate_notation_eq23"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_appendixC5_rate_notation_eq23"
+        "GJ19OptimalBinaryRatingSystems.binaryEndpointAwareAdjacentRate"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_appendixC5_rate_notation_eq23",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_appendixC5_rate_notation_eq23Spec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 2714,
@@ -236,6 +248,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\nAdditional necessary lemmas\n\nNow, we begin the set-up that will lead to a proof for Theorem 3.2. It turns out that proving the\ntheorem requires, in the process, essentially proving our convergence result with M → ∞, Theorem B.1. For Theorem 3.2, we need a lower bound for t1 as a function of M . This seems hard\nto do in general. Luckily, in our case, there is a property for how t∗ changes when M is doubled.\nUsing this property, we can derive that t∗1 ≥ O(M −3 ).\n−1\nRecall that step-wise increasing β with M intervals Si = [si , si+1 ) has levels {ti }M\ni=0 , where\nt0 = 1, tM −1 = 1, and s0 , 0, sM , 1.\nFurthermore, we use the following notation for the large deviation rate\n#\n\"\ng\ng\n\nri = −(gi−1 + gi ) log (1 − ti−1 )\n\ngi−1\ngi−1 +gi\n\n(1 − ti )\n\ngi\ngi−1 +gi\n\ni−1\ngi−1 +gi\n\n+ ti−1\n\ng\n\ni\n+gi\n\nti i−1\n\n(23)\n\nfor i ∈ {1 . . . M − 1}, which implies r1 = −g1 log(1 − t1 ) and rM −1 = −gM −2 log(tM −2 ).\nWe further use rM −1 to be the rate achieved by the optimal βM with M intervals.\n−1\nLemma C.5. Suppose g uniform, i.e. gi = 1, ∀i and that βM has values√{ti }M",
           "quoted_text_sha256": "7fdf1e2afb1870296b7314615311fbc9af3c45e0991dab5952ec60d83d9eba9e"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "appendixC5.rate.notation.eq23",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.binaryEndpointAwareAdjacentRate",
+          "semantic_claim": "Equation (23) fixes the adjacent closed-rate notation r_i used in the refinement and Theorem 3.2 analysis.",
+          "source_locator": "audit/cited publication:2670-2714",
+          "source_quote_sha256": "7fdf1e2afb1870296b7314615311fbc9af3c45e0991dab5952ec60d83d9eba9e"
         }
       ],
       "source_defect_ids": [
@@ -254,10 +276,7 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "Equation (23) fixes the adjacent closed-rate notation r_i used in the refinement and Theorem 3.2 analysis.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_appendixC5_rate_notation_eq23Spec"
-      ]
+      "statement": "Equation (23) fixes the adjacent closed-rate notation r_i used in the refinement and Theorem 3.2 analysis."
     },
     "corollaryC1_rate_tends_to_zero": {
       "aliases": [
@@ -280,6 +299,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Corollary C.1. Suppose g uniform, i.e. gi = 1, ∀i. ∀\u000f > 0, ∃M s.t. ∀M 0 ≥ M , rM < \u000f.\n0",
           "quoted_text_sha256": "608f8745407b7f7b953983a38c7dc39928829fa094fd93c2677450d109b8354f"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "corollaryC1.rate.tends.to.zero",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.paper_corollaryC2_uniform_equalized_last_rate_tendsto_zero",
+          "semantic_claim": "Corollary C.1 says the optimal uniform-matching finite-chain rate tends to zero as the number of intervals grows.",
+          "source_locator": "audit/cited publication:3041-3042",
+          "source_quote_sha256": "608f8745407b7f7b953983a38c7dc39928829fa094fd93c2677450d109b8354f"
         }
       ],
       "source_kind": "corollary",
@@ -319,6 +348,16 @@
           "quoted_text_sha256": "741810b14cc415abed1d3522527e33165ce2d8187495e5d9d460a25284300fdb"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "corollaryC2.uniform.mesh.tends.to.zero",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.paper_corollaryC2_uniform_equalized_adjacent_mesh_tendsto_zero",
+          "semantic_claim": "For uniform matching, the maximum gap between adjacent optimal levels tends to zero as the number of intervals grows.",
+          "source_locator": "audit/cited publication:3093-3094",
+          "source_quote_sha256": "741810b14cc415abed1d3522527e33165ce2d8187495e5d9d460a25284300fdb"
+        }
+      ],
       "source_kind": "corollary",
       "source_location": "audit/cited publication:3094-3125; Supplement Appendix C; audit/cited publication:3093-3094",
       "statement": "Corollary C.2 says the maximum adjacent level gap of optimal uniform-matching rules tends to zero.",
@@ -355,6 +394,19 @@
           "quoted_text": "Corollary C.3. With monotonically non-decreasing g, ∃C > 0 s.t. ∀M, tM\n1 ≥ CM",
           "quoted_text_sha256": "9cace519642501d6c672a05b08b06a96f2062c963711490fdeb92af0cd7857b2"
         }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "corollaryC3.monotone.first.level.bound",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.corollaryC3_monotone_scaled_first_level_ge_half_inv_adjacent_count_sq",
+          "semantic_claim": "For nondecreasing matching, Corollary C.3 extends the stated first-level polynomial lower bound.",
+          "source_locator": "audit/cited publication:3267-3268",
+          "source_quote_sha256": "9cace519642501d6c672a05b08b06a96f2062c963711490fdeb92af0cd7857b2"
+        }
+      ],
+      "source_defect_ids": [
+        "GJ19-C5-LANDAU-LOWER-BOUND-01"
       ],
       "source_kind": "corollary",
       "source_location": "audit/cited publication:3268-3274; Supplement Appendix C; audit/cited publication:3267-3268",
@@ -393,6 +445,16 @@
           "quoted_text_sha256": "a7ca7d81609b1d49cb51816709202055db1cf6a89196fa2d1b70bceaa7fce0aa"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "corollaryC4.kendall.spearman.subsequence",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_corollaryC4_kendall_spearman_subsequence",
+          "semantic_claim": "For Kendall tau and Spearman rho, Corollary C.4 gives a uniformly convergent optimal geometric subsequence.",
+          "source_locator": "audit/cited publication:3589-3590",
+          "source_quote_sha256": "a7ca7d81609b1d49cb51816709202055db1cf6a89196fa2d1b70bceaa7fce0aa"
+        }
+      ],
       "source_kind": "corollary",
       "source_location": "audit/cited publication:3590-3593; Supplement Appendix C; audit/cited publication:3589-3590",
       "statement": "Corollary C.4 applies Theorem B.1 to Kendall and Spearman weights to obtain uniformly convergent optimal subsequences.",
@@ -405,15 +467,37 @@
         "definitionC1_kendall_spearman_population_objectives"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.definitionC1_kendall_spearman_population_objectives"
+        "GJ19OptimalBinaryRatingSystems.kendallConstantWeightOrderedPairIntervalObjective",
+        "GJ19OptimalBinaryRatingSystems.spearmanLinearWeightOrderedPairIntervalObjective"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.definitionC1_kendall_spearman_population_objectives",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.definitionC1_kendall_spearman_population_objectivesSpec"
-      },
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 3615,
+              "line_start": 3614,
+              "publication_locator": "cited publication",
+              "quoted_text": "Lemma C.10. Spearman’s ρ can also be written as being proportional to\ni.e. with w(θ1 , θ2 ) = (θ1 − θ2 ).",
+              "quoted_text_sha256": "a94208d2a8bf5def0d7936a04f568e47dcac968c4b18743f5fb459cc65c56f6a"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 3631,
+              "line_start": 3629,
+              "publication_locator": "cited publication",
+              "quoted_text": "R\n\nθ1 >θ2 (θ1 −θ2 )Pk (θ1 , θ2 )dθ1 dθ2 ,",
+              "quoted_text_sha256": "dd79d7f515f3c1b941a92343351cd4264a946ae1059a0eea050c31b17f8028f5"
+            }
+          ]
+        }
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 3614,
@@ -430,28 +514,74 @@
           "quoted_text_sha256": "03fa759bc3b90af65f10d17fd2cd61d6ad8ed84d1d34e580a28659f21ea42290"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "definitionC1.kendall.spearman.population.objectives",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.kendallConstantWeightOrderedPairIntervalObjective",
+          "semantic_claim": "Definition C.1 specifies the population Kendall tau and Spearman rho ranking objectives in terms of pairwise ranking probabilities.",
+          "source_locator": "audit/cited publication:3598-3612",
+          "source_quote_sha256": "03fa759bc3b90af65f10d17fd2cd61d6ad8ed84d1d34e580a28659f21ea42290"
+        }
+      ],
       "source_kind": "definition",
       "source_location": "audit/cited publication:3595-3614; Supplement Appendix C; audit/cited publication:3598-3612",
-      "statement": "Definition C.1 gives the Kendall constant-weight and Spearman linear-distance population ranking objectives.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.definitionC1_kendall_spearman_population_objectivesSpec"
-      ]
+      "statement": "Definition C.1 gives the Kendall constant-weight and Spearman linear-distance population ranking objectives."
     },
     "definition_bernoulli_kl": {
       "aliases": [
         "definition_bernoulli_kl_formula",
         "definition_bernoulli_kl_top_formula"
       ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.definition_bernoulli_kl_formula"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "sourceBernoulliKL, paperBernoulliKL, and their selected rate-formula uses. The clarification does not establish the still-unproved connection of that rate to the source W-W_k objective.",
+          "classification": "standard_mathematical_term_with_local_formula_clarification",
+          "formal_meaning": "Use the standard Bernoulli Kullback-Leibler divergence a log(a/b)+(1-a) log((1-a)/(1-b)). Footnote 6 and its appendix repetition invert both ratios. The source names KL divergence and later uses its minimum at equality, convexity in the trial probability, and nonnegative rate formulas, which select the standard sign.",
+          "id": "GJ19-BERNOULLI-KL-SIGN-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "6895a2bc3485ffa7cb5f9041da649dba7ea1725f6d08b0cb8a56dfd39a16d423",
+          "report_summary": "In the KL footnote, reverse both logarithm ratios to obtain the standard nonnegative Bernoulli divergence used by the proof.",
+          "source_locator": "audit/cited publication:519-526; audit/cited publication:2404-2408; audit/cited publication:2452-2489",
+          "why_needed": "The displayed footnote has the opposite sign from the named divergence and the surrounding rate calculation. Reversing both ratios is a local formula clarification, not an added assumption or a claim that the main large-deviation result is false."
+        }
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.definition_bernoulli_kl_formula",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.definition_bernoulli_kl_formulaSpec"
-      },
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GJ19OptimalBinaryRatingSystems.sourceBernoulliKL"
+      ],
+      "model_convention_ids": [
+        "GJ19-BERNOULLI-KL-SIGN-01"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "line_end": 2408,
+              "line_start": 2404,
+              "publication_locator": "cited publication",
+              "quoted_text": "Remark C.2. The KL divergence for two Bernoulli random variables is continuous and strictly\nconvex, with minima at a = b, when a, b ∈ (0, 1). Note that inf a {gi KL(a||ti ) + g(i + 1)KL(a||ti+1 )},\nfor all feasible g, is also continuous and strictly convex in ti , ti+1 , with minima at ti = ti+1 .\nOne consequence of the above fact is that fixing either ti or ti+1 and moving the other farther\naway monotonically increases KL, while moving it closer decreases KL.",
+              "quoted_text_sha256": "5681fe3b2579c4c7a81031b321cef5a014b7106d4987e3ac9f1900cecbf96222"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 2489,
+              "line_start": 2452,
+              "publication_locator": "cited publication",
+              "quoted_text": "Proof. Recall r(t) , − limk→∞ k1 log(W −Wk ) = min0≤i≤M −2 inf a∈R {gi+1 KL(a||ti+1 ) + gi KL(a||ti )}.\nWe show the following:\nr(t) =\nmin\n\nlog(1 − t1 )−g1 ,\n\"\nlog (1 − ti−1 )\n\ngi−1\ngi−1 +gi\n\n(1 − ti )\n\ngi\ngi−1 +gi\n\ngi−1\ngi−1 +gi\n\n+ ti−1\n\ngi\ngi−1 +gi\n\nti\n\n#−gi−1 −gi\nfor 1 < i < M − 1,\n\n!\nlog(tM −2 )−gM −2\nand t∗ maximizes rw (t) ⇐⇒ all the terms inside the minimization rw (t∗ ) are equal. Further, the\noptimal levels t∗ are unique. The result immediately follows, that {ti } is the unique solution that\nequalizes the rates inside the minimization, by noting that the optimal r has t0 = 0, tM −1 = 1.\nWe first prove the alternative form for r. Note that {gi−1 KL(a||ti−1 ) + gi KL(a||ti )} is convex\nin a, and so we can find an analytic form for the infinum over a.\n",
+              "quoted_text_sha256": "fc0274c94aaac112bf83d7fdc2c318f3540a2efb4b684a97d0e2d28d2832bbfc"
+            }
+          ]
+        }
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 526,
@@ -459,6 +589,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "We further note that the choice of M is not conse6\nb\n1−b\nquential; in the Appendix Section B.4 we show that\nKL(a||b) = a log a + (1 − a) log 1−a is the Kullbackin an appropriate sense, a sequence of optimal βM\nLeibler (KL) divergence between Bernoulli random varifor\neach M converges as M gets large.\nables with success probabilities a and b respectively.",
           "quoted_text_sha256": "41b18049f15026b6b889c376aa5a3727ef9f014f516f16770262910447aedf69"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "definition.bernoulli.kl",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.sourceBernoulliKL",
+          "semantic_claim": "The Bernoulli KL divergence is KL(a||b)=a log(a/b)+(1-a)log((1-a)/(1-b)), with the intended endpoint convention.",
+          "source_locator": "audit/cited publication:519-526",
+          "source_quote_sha256": "41b18049f15026b6b889c376aa5a3727ef9f014f516f16770262910447aedf69"
         }
       ],
       "source_kind": "definition",
@@ -474,25 +614,17 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "The Bernoulli KL divergence is KL(a||b)=a log(a/b)+(1-a)log((1-a)/(1-b)), with the intended endpoint convention.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.definition_bernoulli_kl_formulaSpec"
-      ]
+      "statement": "The Bernoulli KL divergence is KL(a||b)=a log(a/b)+(1-a)log((1-a)/(1-b)), with the intended endpoint convention."
     },
     "definition_large_deviation_rate": {
       "aliases": [
         "source_definition_large_deviation_rate"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_large_deviation_rate"
+        "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_large_deviation_rate"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_large_deviation_rate",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_large_deviation_rateSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 360,
@@ -500,6 +632,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Large deviations & discretization\n\nRecall the question: What β yields the highest value\nof Wk ?. We now refine objective Wk and constrain β\nto form a non-degenerate, feasible optimization task.\nLarge deviation rate function. Wk is not one\nobjective: it has a different value per time k, and\nno single β simultaneously optimizes Wk for all\n3\nWe use θ1 θ2 (θ1 − θ2 ), (1 − θ1 )(1 − θ2 )(θ1 − θ2 ), and\n1\n( 2 − θ1 )2 ( 12 − θ2 )2 (θ1 − θ2 ) as examples.\n\nk.4 Considering asymptotic performance is also\ninsufficient: when β is strictly increasing in θ,\nlimk→∞ Pk (θ1 , θ2 |β) = 1 ∀θ1 , θ2 by the law of large\nnumbers. Thus, W , limk→∞ Wk = 1, and any such\nβ is asymptotically optimal.\nFor this reason, we consider maximization of the\nrate at which Wk converges, i.e., how fast the estimated item ranking converges to the true item ranking. We use a large deviations approach (Dembo\nand Zeitouni, 2010) to quantify this convergence\nrate. Formally, given sequence Yk ≤ limk→∞ Yk =\nY , the large deviations rate of convergence is\n− limk→∞ k1 log(Y − Yk ) = c. If c exists then Yk approaches Y exponentially fast: Y − Yk = e−kc+o(k) .\nThen, we wish to choose β to maximize Wk ’s large\ndeviations rate, r = − limk→∞ k1 log(W − Wk ).\nDiscretizing β. Unfortunately, even this problem\nis degenerate if we consider continuous β: for any β\nthat is not piecewise constant, the large deviations\nrate of convergence is zero, i.e., convergence of Wk\nto its limit is only polynomially fast, and characterizing the dependence of this convergence rate on β\nis intractable. Thus, the rate of convergence for Wk\nis not a satisfactory objective with continuous β.\nWe make progress by discretizing β; in particular,\nwe restrict attention to optimization over stepwise\nincreasing β functions.5 Among stepwise increasing\nβ, the large deviations rate of Wk to its limiting\nvalue W can be shown to be nondegenerate, i.e. ∃c >\n0 s.t. W − Wk = e−kc+o(k) . (See Lemma C.4 in the\nAppendix for further discussion.)",
           "quoted_text_sha256": "d3e9b81c737c209cf3096359fd724deb714ee4b3d6976831456f15e64a875b22"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "definition.large.deviation.rate",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_large_deviation_rate",
+          "semantic_claim": "For a fixed rating rule beta, the large-deviation rate is the limit -lim_{k to infinity} k^{-1} log(W-W_k), when that limit exists.",
+          "source_locator": "audit/cited publication:321-360",
+          "source_quote_sha256": "d3e9b81c737c209cf3096359fd724deb714ee4b3d6976831456f15e64a875b22"
         }
       ],
       "source_kind": "definition",
@@ -515,25 +657,17 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "For a fixed rating rule beta, the large-deviation rate is the limit -lim_{k to infinity} k^{-1} log(W-W_k), when that limit exists.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_large_deviation_rateSpec"
-      ]
+      "statement": "For a fixed rating rule beta, the large-deviation rate is the limit -lim_{k to infinity} k^{-1} log(W-W_k), when that limit exists."
     },
     "definition_lexicographic_objective": {
       "aliases": [
         "source_definition_lexicographic_optimality"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_lexicographic_optimality"
+        "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_lexicographic_optimality"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_lexicographic_optimality",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_lexicographic_optimalitySpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 476,
@@ -541,6 +675,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Our optimization problem: Within the class of\nstepwise increasing functions with M levels, find the\nβ that is optimal, i.e. is\n\nFor Kendall’s τ and Spearman’s ρ, the optimal intervals are simply equispaced in [0, 1], i.e. Si∗ =\n[ Mi , i+1\nM ), because the entire item quality distribution is equally important. For other objective weight\nfunctions w, the difficulty of finding the optimal subsets S ∗ depends on the properties of w. Since S ∗ is\ntrivial for Kendall’s τ and Spearman’s ρ – and w\nis just an analytic tool that formalizes a platform’s\ngoals – we focus on finding the optimal levels t∗ .\n\n(1) Asymptotically optimal. It yields the highest limiting value of Wk . AND\n(2) Rate optimal. It yields the fastest large deviations rate r among asymptotically optimal β.\n\u0001\nA remarkable result of our paper is a O M log2 M\n\u000f\nprocedure to find an optimal β with M levels.",
           "quoted_text_sha256": "edbdafd57cd8416a0d2fafbe6302d29f317de34b9ac2934443fa577d4597cf5a"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "definition.lexicographic.objective",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_lexicographic_optimality",
+          "semantic_claim": "A rating rule is optimal when it first maximizes the limiting value W and then maximizes the exponential convergence rate among limiting-value maximizers.",
+          "source_locator": "audit/cited publication:459-476",
+          "source_quote_sha256": "edbdafd57cd8416a0d2fafbe6302d29f317de34b9ac2934443fa577d4597cf5a"
         }
       ],
       "source_kind": "definition",
@@ -556,25 +700,17 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "A rating rule is optimal when it first maximizes the limiting value W and then maximizes the exponential convergence rate among limiting-value maximizers.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_lexicographic_optimalitySpec"
-      ]
+      "statement": "A rating rule is optimal when it first maximizes the limiting value W and then maximizes the exponential convergence rate among limiting-value maximizers."
     },
     "definition_pairwise_accuracy_eq1": {
       "aliases": [
         "source_definition_pairwise_accuracy_eq1"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_pairwise_accuracy_eq1"
+        "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_pairwise_accuracy_eq1"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_pairwise_accuracy_eq1",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_pairwise_accuracy_eq1Spec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 256,
@@ -582,6 +718,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Platform objective. The platform wishes to rank\nthe items accurately. Given β and θ1 > θ2 , define:\n\u0001\nPk (θ1 , θ2 |β) =µk xk (θ1 ) > xk (θ2 )|θ1 , θ2\n\u0001\n− µk xk (θ1 ) < xk (θ2 )|θ1 , θ2\n(1)\n\nItems. The system consists of a set [0, 1] of items,\nwhere each item is associated with a unique (but unknown) quality θ ∈ [0, 1]; i.e., the system consists of\na continuum of a unit mass of items whose unknown\nqualities are uniform2 in [0, 1]. Below, we discretize\nthe continuous quality space [0, 1] into M types, to\ncalculate a stepwise increasing β. We will make clear\nwhy we introduce a continuum but then discretize.\n\nThis expression captures observed score ranking’s\naccuracy. When θ1 > θ2 but xk (θ1 ) < xk (θ2 ), the\nranking mistakenly orders θ1 below θ2 . A good system has large Pk (θ1 , θ2 |β). Integrating across items",
           "quoted_text_sha256": "df89e81673b9b4076b73e49a1489d6102ac222482927399a878d527c71ca18e4"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "definition.pairwise.accuracy.eq1",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_pairwise_accuracy_eq1",
+          "semantic_claim": "Equation (1) defines P_k(theta_1,theta_2) as the probability that the higher-quality item receives the higher reputation score, with the source tie convention.",
+          "source_locator": "audit/cited publication:238-256",
+          "source_quote_sha256": "df89e81673b9b4076b73e49a1489d6102ac222482927399a878d527c71ca18e4"
         }
       ],
       "source_kind": "definition",
@@ -597,25 +743,61 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "Equation (1) defines P_k(theta_1,theta_2) as the probability that the higher-quality item receives the higher reputation score, with the source tie convention.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_pairwise_accuracy_eq1Spec"
-      ]
+      "statement": "Equation (1) defines P_k(theta_1,theta_2) as the probability that the higher-quality item receives the higher reputation score, with the source tie convention."
     },
     "definition_step_rule_partition_levels": {
       "aliases": [
         "source_definition_step_rule_partition_levels"
       ],
-      "claim_bearing": true,
-      "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_step_rule_partition_levels"
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only the normalized design vocabulary source_definition_step_rule_partition_levels and BinaryEndpointLevelVector. This reading supplies no proof of global optimality and does not resolve the separate W-W_k exponent-identification gap.",
+          "classification": "source_optimal_design_domain",
+          "formal_meaning": "The general step-rule definition allows interior extreme probability levels. The endpoint-normalized Lean vector represents the optimal-design domain used in Lemma 3.1, whose statement and proof set the extreme levels to zero and one. It does not define every source-admissible step rule.",
+          "id": "GJ19-OPTIMAL-ENDPOINT-DOMAIN-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "0b558dd0dcf8600dfcea8820debeccf9dc3dca50ae5785a93201d3d8c76bbf12",
+          "report_summary": "The endpoint-normalized vector represents the optimal designs of Lemma 3.1; the paper also permits general step rules.",
+          "source_locator": "audit/cited publication:354-368; audit/cited publication:529-541; audit/cited publication:2483-2487",
+          "why_needed": "The original inventory linked the normalized design vocabulary only to the general definition. The Lemma 3.1 context identifies its actual role without claiming that arbitrary step rules already have endpoint levels zero and one."
+        }
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_step_rule_partition_levels",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_step_rule_partition_levelsSpec"
-      },
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_step_rule_partition_levels"
+      ],
+      "model_convention_ids": [
+        "GJ19-OPTIMAL-ENDPOINT-DOMAIN-01"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "scope",
+          "source_anchor_evidence": [
+            {
+              "line_end": 541,
+              "line_start": 529,
+              "publication_locator": "cited publication",
+              "quoted_text": "\nAlgorithm to find the optimal levels We now\ndescribe how to find t∗ , the maximizer of r(t).\nThe following lemma describes a system of equations\nto find the t∗ that maximizes r. It states that t∗\nequalizes the rates at which each interval i is separated from its neighbors. The proof involves manipulation of r and convexity, and is in the appendix.\nLemma 3.1. The unique solution t∗ to the following\nsystem of equations maximizes r(t):\nr(t0 , t1 ) = r(t1 , t2 ) = · · · = r(tM −2 , tM −1 )\n\n(4)\n\nt0 = 0, tM −1 = 1",
+              "quoted_text_sha256": "8bb83d12680c1e99fbbf0c46772a402d3bc1ec7d2997bddee72c3ca704798f10"
+            }
+          ]
+        },
+        {
+          "semantic_role": "prior_result",
+          "source_anchor_evidence": [
+            {
+              "line_end": 2487,
+              "line_start": 2483,
+              "publication_locator": "cited publication",
+              "quoted_text": "log(tM −2 )−gM −2\nand t∗ maximizes rw (t) ⇐⇒ all the terms inside the minimization rw (t∗ ) are equal. Further, the\noptimal levels t∗ are unique. The result immediately follows, that {ti } is the unique solution that\nequalizes the rates inside the minimization, by noting that the optimal r has t0 = 0, tM −1 = 1.\nWe first prove the alternative form for r. Note that {gi−1 KL(a||ti−1 ) + gi KL(a||ti )} is convex",
+              "quoted_text_sha256": "174d519122614641c1b5180975d38cc2b2be4998fde39f7d4318a54c44a4b680"
+            }
+          ]
+        }
+      ],
       "source_anchor_evidence": [
         {
           "line_end": 368,
@@ -623,6 +805,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "We make progress by discretizing β; in particular,\nwe restrict attention to optimization over stepwise\nincreasing β functions.5 Among stepwise increasing\nβ, the large deviations rate of Wk to its limiting\nvalue W can be shown to be nondegenerate, i.e. ∃c >\n0 s.t. W − Wk = e−kc+o(k) . (See Lemma C.4 in the\nAppendix for further discussion.)\nNotationally, we will calculate an optimal stepwise\nincreasing β with M levels, i.e. there are M intervals\nSi ⊂ [0, 1] and levels ti such that when θ1 , θ2 ∈ Si ,\nthen β(θ1 ) = β(θ2 ) , ti . The challenge is calculating an optimal S ∗ = {Si } and t∗ = {ti }.\nThe physical interpretation is that we group the\nitems into M subsets (types) Si ⊂ [0, 1]. When\nitems θ1 , θ2 are in the same subset, then their asymptotic reputation scores are the same, limk xk (θ1 ) =\nlimk xk (θ2 ) , ti . These items cannot be distinguished from one another even asymptotically.",
           "quoted_text_sha256": "98e796118753eaa105894b5b3e30fd9cfd3ff607df907bc9f3be71ba1f85c5df"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "definition.step.rule.partition.levels",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_step_rule_partition_levels",
+          "semantic_claim": "The design beta is a nondecreasing step rule on ordered quality intervals with levels 0=t_0<...<t_{M-1}=1 and ordered cutpoints.",
+          "source_locator": "audit/cited publication:354-368",
+          "source_quote_sha256": "98e796118753eaa105894b5b3e30fd9cfd3ff607df907bc9f3be71ba1f85c5df"
         }
       ],
       "source_defect_ids": [
@@ -641,25 +833,17 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "The design beta is a nondecreasing step rule on ordered quality intervals with levels 0=t_0<...<t_{M-1}=1 and ordered cutpoints.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_step_rule_partition_levelsSpec"
-      ]
+      "statement": "The design beta is a nondecreasing step rule on ordered quality intervals with levels 0=t_0<...<t_{M-1}=1 and ordered cutpoints."
     },
     "definition_weighted_objective_eq2": {
       "aliases": [
         "source_definition_weighted_objective_eq2"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_weighted_objective_eq2"
+        "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_weighted_objective_eq2"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_weighted_objective_eq2",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_weighted_objective_eq2Spec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 288,
@@ -667,6 +851,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "creates the following objective for each time k:\nZ\nWk =\nw(θ1 , θ2 )Pk (θ1 , θ2 |β)dθ1 dθ2\n(2)\n\nMatching with buyers. Items accumulate ratings\nover time by matching with buyers. We assume the\n\nWeight function w(θ1 , θ2 ) > 0 indicates how much\nthe platform cares about not mistaking a quality θ1\nitem with Ra quality θ2 item. We consider scaled w\nsuch that θ1 >θ2 w(θ1 , θ2 )dθ1 dθ2 = 1.\n\n1\nNote that a rating is not the same as a reward; buyers\noften give positive ratings after bad experiences.\n2\nAny distribution can be handled by considering θ to\nbe the item’s quantile rather than its absolute quality.\n\nθ1 >θ2\n\nOur first question then becomes: What β yields the\nhighest value of Wk ? As discussed above, the plat-\n\n\fDesigning Optimal Binary Rating Systems\n\nform influences β through the design of its rating\nsystem. The optimal choice of β sets the benchmark.\nDiscussion. Objective function. The specification\n(2) of the objective is quite rich. It contains scaled",
           "quoted_text_sha256": "c6e49964340d44cb742d6e68e90322ebb88ea42bccc3434cd3654d859fb4d623"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "definition.weighted.objective.eq2",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_weighted_objective_eq2",
+          "semantic_claim": "Equation (2) defines W_k as the normalized positive-weight integral of pairwise ranking accuracy over ordered quality pairs.",
+          "source_locator": "audit/cited publication:257-288",
+          "source_quote_sha256": "c6e49964340d44cb742d6e68e90322ebb88ea42bccc3434cd3654d859fb4d623"
         }
       ],
       "source_kind": "definition",
@@ -682,25 +876,17 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "Equation (2) defines W_k as the normalized positive-weight integral of pairwise ranking accuracy over ordered quality pairs.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_definition_weighted_objective_eq2Spec"
-      ]
+      "statement": "Equation (2) defines W_k as the normalized positive-weight integral of pairwise ranking accuracy over ordered quality pairs."
     },
     "experiment_empirical_question_response": {
       "aliases": [
         "appendixB5_empirical_question_response"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_empirical_question_response"
+        "GJ19OptimalBinaryRatingSystems.sourceExperimentEmpiricalQuestionResponse"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_empirical_question_response",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_empirical_question_responseSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 2027,
@@ -708,6 +894,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\nLearning ψ(θ, y) through experiments\n\nNow, we show how a platform would run an experiment to decide to learn ψ(θ, y). In particular,\none potential issue is that the platform does not have any items with know quality that it can use\nas representative items in its optimization. In this case, we show that it can use ratings within the\nexperiment itself to identify these representative items. The results essentially follow from the law\nof large numbers.\nWe assume that |Θ| = L representative items i ∈ {1 . . . L} are in the experiment, and each are\nmatched N times. The experiment proceeds as follows: every time an item is matched, show the\nbuyer a random question from Y. For each word y ∈ Y, track the empirical ψ̂(i, y), the proportion\nof times a positive response was given to question y. Alternatively, if Y is totally ordered (i.e. a\npositive rating for a given y also implies positive ratings would be given to all “easier” y 0 ), and\ncan be phrased as a multiple choice question, data collection can be faster: e.g., as we do in our\nexperiments: Y consists of a set of totally ordered adjectives that can describe the item; the rater is\nasked to pick an adjective out of the set; this is interpreted as the item receiving a positive answer\nto the questions induced by the chosen answer and all worse adjectives, and a negative answer to\nall better adjectives.\nFirst, suppose the platform approximately knows the quality θi of each item i, and θi are evenly\ndistributed in [0, 1]. Suppose the items are ordered by index, i.e. θ1 < θ2 < · · · < θL . Then let\nψ̂(θ, y) = ψ̂(i, y) when θ ∈ [θi−1 , θi ]. Call this procedure KnownTypeExperiment.\nLemma B.2. Suppose ψ(θ, y) is Lipschitz continuous in θ. With KnownTypeExperiment, ψ̂(i, y) →\nψ(θi , y)∀y uniformly as N → ∞. As L → ∞, ψ̂(θ, y) → ψ(θ, y)∀θ uniformly.",
           "quoted_text_sha256": "898d73ba83bb657cabe3115fba547c5e1ad05e1acea95d501a18a99c2874fe9b"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "experiment.empirical.question.response",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.sourceExperimentEmpiricalQuestionResponse",
+          "semantic_claim": "For each item and question y, the experiment tracks the fraction of question-y observations receiving a positive response.",
+          "source_locator": "audit/cited publication:2005-2027",
+          "source_quote_sha256": "898d73ba83bb657cabe3115fba547c5e1ad05e1acea95d501a18a99c2874fe9b"
         }
       ],
       "source_kind": "definition",
@@ -723,25 +919,17 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "For each item and question y, the experiment tracks the fraction of question-y observations receiving a positive response.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_empirical_question_responseSpec"
-      ]
+      "statement": "For each item and question y, the experiment tracks the fraction of question-y observations receiving a positive response."
     },
     "experiment_random_question_observations": {
       "aliases": [
         "appendixB5_random_question_experiment"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_random_question_experiment"
+        "GJ19OptimalBinaryRatingSystems.SourceRandomQuestionExperiment"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_random_question_experiment",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_random_question_experimentSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 2027,
@@ -751,27 +939,29 @@
           "quoted_text_sha256": "898d73ba83bb657cabe3115fba547c5e1ad05e1acea95d501a18a99c2874fe9b"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "experiment.random.question.observations",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.SourceRandomQuestionExperiment",
+          "semantic_claim": "On every experimental match, the platform draws a question from Y and records a binary positive or negative response for that item.",
+          "source_locator": "audit/cited publication:2005-2027",
+          "source_quote_sha256": "898d73ba83bb657cabe3115fba547c5e1ad05e1acea95d501a18a99c2874fe9b"
+        }
+      ],
       "source_kind": "algorithm",
       "source_location": "audit/cited publication:2005-2027; Supplement Appendix B.5",
-      "statement": "On every experimental match, the platform draws a question from Y and records a binary positive or negative response for that item.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_random_question_experimentSpec"
-      ]
+      "statement": "On every experimental match, the platform draws a question from Y and records a binary positive or negative response for that item."
     },
     "known_type_experiment_definition": {
       "aliases": [
         "appendixB5_known_type_experiment"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_known_type_experiment"
+        "GJ19OptimalBinaryRatingSystems.SourceKnownTypeExperiment"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_known_type_experiment",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_known_type_experimentSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 2027,
@@ -781,12 +971,19 @@
           "quoted_text_sha256": "898d73ba83bb657cabe3115fba547c5e1ad05e1acea95d501a18a99c2874fe9b"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "known.type.experiment.definition",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.SourceKnownTypeExperiment",
+          "semantic_claim": "KnownTypeExperiment records finitely many approximately known representative qualities and their empirical response frequencies for each question.",
+          "source_locator": "audit/cited publication:2005-2027",
+          "source_quote_sha256": "898d73ba83bb657cabe3115fba547c5e1ad05e1acea95d501a18a99c2874fe9b"
+        }
+      ],
       "source_kind": "algorithm",
       "source_location": "audit/cited publication:2005-2027; Supplement Appendix B",
-      "statement": "KnownTypeExperiment records finitely many approximately known representative qualities and their empirical response frequencies for each question.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_known_type_experimentSpec"
-      ]
+      "statement": "KnownTypeExperiment records finitely many approximately known representative qualities and their empirical response frequencies for each question."
     },
     "known_type_neighbor_extension": {
       "aliases": [],
@@ -828,6 +1025,16 @@
           "quoted_text_sha256": "5602d33164c7b5a5dfa2c6f13119f011ed509284522f53057ead15c42b2025be"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma31.closed.adjacent.rate",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.lemma31_closed_adjacent_rate_formula",
+          "semantic_claim": "Lemma 3.1 gives the closed weighted Bernoulli adjacent-rate formula obtained at the common threshold.",
+          "source_locator": "audit/cited publication:542-571",
+          "source_quote_sha256": "5602d33164c7b5a5dfa2c6f13119f011ed509284522f53057ead15c42b2025be"
+        }
+      ],
       "source_kind": "formula",
       "source_location": "audit/cited publication:542-571; Main paper Section 3",
       "statement": "Lemma 3.1 gives the closed weighted Bernoulli adjacent-rate formula obtained at the common threshold.",
@@ -856,6 +1063,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Algorithm to find the optimal levels We now\ndescribe how to find t∗ , the maximizer of r(t).\nThe following lemma describes a system of equations\nto find the t∗ that maximizes r. It states that t∗\nequalizes the rates at which each interval i is separated from its neighbors. The proof involves manipulation of r and convexity, and is in the appendix.\nLemma 3.1. The unique solution t∗ to the following\nsystem of equations maximizes r(t):\nr(t0 , t1 ) = r(t1 , t2 ) = · · · = r(tM −2 , tM −1 )\n\n(4)\n\nt0 = 0, tM −1 = 1\n\u0014\u0012\ngi−1\ngi\nr(ti−1 , ti ) , − log (1 − ti−1 ) gi−1 +gi (1 − ti ) gi−1 +gi\ngi−1\n\ngi\n",
           "quoted_text_sha256": "6a72fc14dcff2e543c6a7e64b0dc1bfb8d2d51b71d5f8cb91d9c9a4bda528df7"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemma31.equalization.eq4",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_lemma31_equalization_eq4",
+          "semantic_claim": "Lemma 3.1 says the unique finite level vector maximizing the minimum adjacent rate equalizes all adjacent rates subject to t_0=0 and t_{M-1}=1.",
+          "source_locator": "audit/cited publication:530-549",
+          "source_quote_sha256": "6a72fc14dcff2e543c6a7e64b0dc1bfb8d2d51b71d5f8cb91d9c9a4bda528df7"
         }
       ],
       "source_kind": "lemma",
@@ -920,6 +1137,16 @@
           "quoted_text_sha256": "1f2a0134bc31f6e7ba81ea5d6940abe8956d75519da0dce71580fe63d8a3f425"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaB1.matching.rate.shift",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.lemmaB1_matching_rate_shift",
+          "semantic_claim": "Lemma B.1 says that a one-crossing shift between matching-rate vectors g and g-tilde implies the corresponding optimal levels satisfy t*_k >= t-tilde*_k.",
+          "source_locator": "audit/cited publication:1927-1949",
+          "source_quote_sha256": "1f2a0134bc31f6e7ba81ea5d6940abe8956d75519da0dce71580fe63d8a3f425"
+        }
+      ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:1927-1949; Supplement Appendix B",
       "statement": "Lemma B.1 says that a one-crossing shift between matching-rate vectors g and g-tilde implies the corresponding optimal levels satisfy t*_k >= t-tilde*_k.",
@@ -948,6 +1175,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\nLearning ψ(θ, y) through experiments\n\nNow, we show how a platform would run an experiment to decide to learn ψ(θ, y). In particular,\none potential issue is that the platform does not have any items with know quality that it can use\nas representative items in its optimization. In this case, we show that it can use ratings within the\nexperiment itself to identify these representative items. The results essentially follow from the law\nof large numbers.\nWe assume that |Θ| = L representative items i ∈ {1 . . . L} are in the experiment, and each are\nmatched N times. The experiment proceeds as follows: every time an item is matched, show the\nbuyer a random question from Y. For each word y ∈ Y, track the empirical ψ̂(i, y), the proportion\nof times a positive response was given to question y. Alternatively, if Y is totally ordered (i.e. a\npositive rating for a given y also implies positive ratings would be given to all “easier” y 0 ), and\ncan be phrased as a multiple choice question, data collection can be faster: e.g., as we do in our\nexperiments: Y consists of a set of totally ordered adjectives that can describe the item; the rater is\nasked to pick an adjective out of the set; this is interpreted as the item receiving a positive answer\nto the questions induced by the chosen answer and all worse adjectives, and a negative answer to\nall better adjectives.\nFirst, suppose the platform approximately knows the quality θi of each item i, and θi are evenly\ndistributed in [0, 1]. Suppose the items are ordered by index, i.e. θ1 < θ2 < · · · < θL . Then let\nψ̂(θ, y) = ψ̂(i, y) when θ ∈ [θi−1 , θi ]. Call this procedure KnownTypeExperiment.\nLemma B.2. Suppose ψ(θ, y) is Lipschitz continuous in θ. With KnownTypeExperiment, ψ̂(i, y) →\nψ(θi , y)∀y uniformly as N → ∞. As L → ∞, ψ̂(θ, y) → ψ(θ, y)∀θ uniformly.\nProof. The proof follows directly from the Strong Law of Large Numbers. As N → ∞, ∀i, ψ̂(i, x) →\nψ(θi , x) uniformly. Now, let L → ∞. ∀\u000f, ∃L0 s.t. ∀L > L0 , ∀θ, ∃i s.t. |θ −θi | < \u000f. ψ(θ, x) is Lipschitz\nin θ by assumption, and so ψ̂(θ, x) → ψ(θ, x) uniformly.\nWe now relax the assumption that the platform has an existing set of items with known qualities.",
           "quoted_text_sha256": "c2c2ba79abc917ae29bfa4d0e07a46e3fbc5e818d81b9d3bbfadb322b95d5358"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaB2.fixed.finite.slln.step",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.lemmaB2_knownTypeExperiment_random_question_slln",
+          "semantic_claim": "For a fixed finite representative set and finite question set with positive question mass, the Strong Law makes every empirical conditional question-response frequency converge simultaneously to its source response probability as N tends to infinity.",
+          "source_locator": "audit/cited publication:2005-2031",
+          "source_quote_sha256": "c2c2ba79abc917ae29bfa4d0e07a46e3fbc5e818d81b9d3bbfadb322b95d5358"
         }
       ],
       "source_kind": "claim",
@@ -980,6 +1217,16 @@
           "quoted_text_sha256": "403073f812cafe238758ddf38f30072425ab53226cf55416a170b9423a0c9c6a"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaB2.known.type.learning",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.paper_lemmaB2_knownTypeExperiment_uniform_convergence_of_lipschitz_tracking",
+          "semantic_claim": "Lemma B.2 claims uniform convergence of the KnownTypeExperiment estimator to psi under Lipschitz continuity as the per-item samples and representative mesh grow.",
+          "source_locator": "audit/cited publication:2027-2031",
+          "source_quote_sha256": "403073f812cafe238758ddf38f30072425ab53226cf55416a170b9423a0c9c6a"
+        }
+      ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:2027-2031; Supplement Appendix B",
       "statement": "Lemma B.2 claims uniform convergence of the KnownTypeExperiment estimator to psi under Lipschitz continuity as the per-item samples and representative mesh grow.",
@@ -1008,6 +1255,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Suppose instead the platform has many items L of unknown quality who are expected to match N\ntimes each over the experiment time period. For each item, the platform would again ask questions\nfrom Y, drawn according to any distribution (with positive mass on each question). Then generate\nψ̂(θ, y) as follows: first, rank the items according to their ratings during the experiment itself.\nThen, for each y, ψ̂(θ, y) is\nthe empirical\nperformance of the θth percentile item in the ranking, i.e.\n\u0002 i−1\n\u0003\ni\nψ̂(θ, y) = ψ̂(θi , y) for θ ∈ L , L . Call this procedure UnknownTypeExperiment.\nLemma B.3. Suppose ψ(θ, y) is Lipschitz continuous in θ. With UnknownTypeExperiment, ψ̂(θ, y) →\nψ(θ, y)∀y, θ uniformly as L, N → ∞.\nProof. Fix L. Denote each item in the experiment as i ∈ {1 . . . L} (with true quality θi 6= θj ),\nand each item has N samples. Without loss of generality, assume the items are indexed according\nto their rank on the average of their scores on the samples, defined as the percentage of positive\nratings received. i = 1 is then the worst item, and i = L is the best item according to scores in the\nexperiment.\nFor ψ(θ, x) increasing in θ, as N → ∞, P r(θi > θj |i < j) → 0 almost surely by SLLN, and for\na fixed L, {θi } this convergence\u0002is uniform.\nFurthermore, by SLLN, ψ̂(i, x) → ψ(θi , x) as N → ∞.\n\u0003\ni−1 i\nRecall ψ̂(θ, x) = ψ̂(i, x) for θ ∈ L , L .\n10\n\n\fNow, let L → ∞. ∀\u000f, ∃L0 s.t. ∀L > L0 , ∀θ, ∃i s.t. |θ − θi | < \u000f. ψ(θ, x) is Lipschitz in θ by\nassumption, and so ψ̂(θ, x) → ψ(θ, x) uniformly.\n",
           "quoted_text_sha256": "ee68bb9230e2b3d283af18883803eb35c8d5d375c49951d253e236b791805ad1"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaB3.fixed.finite.slln.ranking.step",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.lemmaB3_unknownTypeExperiment_random_question_response_and_rank",
+          "semantic_claim": "For fixed finite L, the Strong Law makes empirical question responses converge and makes empirical average-score ranking recover the true quality order, provided the mixed expected score is strictly increasing in true quality.",
+          "source_locator": "audit/cited publication:2032-2060",
+          "source_quote_sha256": "ee68bb9230e2b3d283af18883803eb35c8d5d375c49951d253e236b791805ad1"
         }
       ],
       "source_defect_ids": [
@@ -1041,6 +1298,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "ψ(θ, y)∀y, θ uniformly as L, N → ∞.\nProof. Fix L. Denote each item in the experiment as i ∈ {1 . . . L} (with true quality θi 6= θj ),\nand each item has N samples. Without loss of generality, assume the items are indexed according\nto their rank on the average of their scores on the samples, defined as the percentage of positive\nratings received. i = 1 is then the worst item, and i = L is the best item according to scores in the\nexperiment.\nFor ψ(θ, x) increasing in θ, as N → ∞, P r(θi > θj |i < j) → 0 almost surely by SLLN, and for\na fixed L, {θi } this convergence\u0002is uniform.\nFurthermore, by SLLN, ψ̂(i, x) → ψ(θi , x) as N → ∞.\n\u0003\ni−1 i\nRecall ψ̂(θ, x) = ψ̂(i, x) for θ ∈ L , L .\n10\n\n\fNow, let L → ∞. ∀\u000f, ∃L0 s.t. ∀L > L0 , ∀θ, ∃i s.t. |θ − θi | < \u000f. ψ(θ, x) is Lipschitz in θ by\nassumption, and so ψ̂(θ, x) → ψ(θ, x) uniformly.\n",
           "quoted_text_sha256": "e54efae32790578d780789bb387c7382c03b4d8245bfc5aed2c960ca0ef107c2"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaB3.unknown.type.learning",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.paper_lemmaB3_unknownTypeExperiment_uniform_convergence_of_ranking_tracking",
+          "semantic_claim": "Lemma B.3 claims the UnknownTypeExperiment estimator converges uniformly to psi as the numbers of items and samples grow, under the printed Lipschitz hypothesis.",
+          "source_locator": "audit/cited publication:2044-2060",
+          "source_quote_sha256": "e54efae32790578d780789bb387c7382c03b4d8245bfc5aed2c960ca0ef107c2"
         }
       ],
       "source_defect_ids": [
@@ -1083,6 +1350,16 @@
           "quoted_text_sha256": "a94208d2a8bf5def0d7936a04f568e47dcac968c4b18743f5fb459cc65c56f6a"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC10.spearman.reduction",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.paper_lemmaC10_spearman_linear_weight_ordered_pair_interval_objective_eq_gap_objective",
+          "semantic_claim": "Lemma C.10 rewrites Spearman rho as a weighted ordered-pair objective with weight theta-one minus theta-two.",
+          "source_locator": "audit/cited publication:3614-3615",
+          "source_quote_sha256": "a94208d2a8bf5def0d7936a04f568e47dcac968c4b18743f5fb459cc65c56f6a"
+        }
+      ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:3615-3697; Supplement Appendix C; audit/cited publication:3614-3615",
       "statement": "Lemma C.10 reduces the Spearman ordered-pair interval integral to the cubic interval-gap objective.",
@@ -1120,6 +1397,16 @@
           "quoted_text_sha256": "9b38c09b2dca9fa7494c7d4950efa614f0a500f01ac106b391a757d63f4277c0"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC11.kendall.equispaced",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.paper_lemmaC11_kendall_constant_weight_ordered_pair_interval_objective_le_equispaced",
+          "semantic_claim": "Lemma C.11 says equispaced intervals maximize the displayed constant-weight Kendall objective.",
+          "source_locator": "audit/cited publication:3697-3711",
+          "source_quote_sha256": "9b38c09b2dca9fa7494c7d4950efa614f0a500f01ac106b391a757d63f4277c0"
+        }
+      ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:3698-3712; Supplement Appendix C; audit/cited publication:3697-3711",
       "statement": "Lemma C.11 and equation (27) show equispaced intervals maximize the finite Kendall constant-weight objective.",
@@ -1155,6 +1442,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Lemma C.12. When w is (θ1 − θ2 ), i.e. for Spearman’s ρ rank correlation, the intervals s that\nmaximize (20),\nX Z\nw(θ1 , θ2 )d(θ1 , θ2 )\n(28)\n0≤i<j<M\n\nθ2 ∈Si ,θ1 ∈Sj\n\nare {si = Mi }M\ni=0 , i.e. the same as those for Kendall’s τ .",
           "quoted_text_sha256": "14e300f97e3837a9626202ceadf60c160e1183468ab246b50c5e5fbe2e18e2ed"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC12.spearman.equispaced",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.paper_lemmaC12_spearman_linear_weight_ordered_pair_interval_objective_le_equispaced",
+          "semantic_claim": "Lemma C.12 says equispaced intervals maximize the displayed linear-weight Spearman objective.",
+          "source_locator": "audit/cited publication:3712-3722",
+          "source_quote_sha256": "14e300f97e3837a9626202ceadf60c160e1183468ab246b50c5e5fbe2e18e2ed"
         }
       ],
       "source_kind": "lemma",
@@ -1207,6 +1504,16 @@
           "quoted_text_sha256": "06dbd9a9d88edfc98175763b3d6a6e509a4426c09e15417b563dbf8925c217e2"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC1.pairwise.error.rate",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_lemmaC1_pairwise_error_rate_from_derivatives",
+          "semantic_claim": "Lemma C.1 identifies the large-deviation exponent of the pairwise score-error event as the infimum over a common threshold of the two weighted Bernoulli rate functions.",
+          "source_locator": "audit/cited publication:2083-2131",
+          "source_quote_sha256": "06dbd9a9d88edfc98175763b3d6a6e509a4426c09e15417b563dbf8925c217e2"
+        }
+      ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:2083-2131; Supplement Appendix B",
       "statement": "Lemma C.1 identifies the large-deviation exponent of the pairwise score-error event as the infimum over a common threshold of the two weighted Bernoulli rate functions.",
@@ -1217,7 +1524,7 @@
     "lemmaC1_transcript_repeated_label": {
       "aliases": [],
       "claim_bearing": false,
-      "inventory_role": "repeated_source_presentation",
+      "inventory_role": "source_presentation_alias",
       "source_anchor_evidence": [
         {
           "line_end": 2168,
@@ -1233,9 +1540,9 @@
         "canonical_source_item": "lemmaC1_pairwise_error_rate",
         "relation": "repeated_source_presentation",
         "schema": 1,
-        "semantic_basis": "The PDF transcript repeats the visible label `Lemma C.1` within the surrounding proof layout; it is a running/repeated presentation of the canonical Lemma C.1, not a second mathematical claim.",
-        "validated_at": "2026-08-19T00:00:00Z",
-        "validator": "GJ19 v11 archive-surface presentation reconciliation"
+        "semantic_basis": "The later byte-pinned label appears at the end of Lemma C.2's proof as a citation to canonical Lemma C.1; it neither restates nor changes Lemma C.1's hypotheses or conclusion.",
+        "validated_at": "2026-08-18T00:00:00Z",
+        "validator": "v11 source-first review-surface preparation"
       },
       "source_url": "https://proceedings.mlr.press/v89/garg19a.html; https://proceedings.mlr.press/v89/garg19a/garg19a.pdf; https://proceedings.mlr.press/v89/garg19a/garg19a-supp.pdf",
       "statement": "The PDF transcript repeats the visible label `Lemma C.1` within the surrounding proof layout; it is a running/repeated presentation of the canonical Lemma C.1, not a second mathematical claim."
@@ -1261,6 +1568,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Lemma C.2. Let θ1 > θ2 and I(a|θ) = KL(a||β(θ)). Further, Let P k (θ1 , θ2 ) = 1 − Pk (θ1 , θ2 ).\nThen,\n1\n− lim log P k (θ1 , θ2 ) = inf {g(θ1 )I(a|θ1 ) + g(θ2 )I(a|θ2 )} ,\n(4)\na∈R\nk→∞ k\nProof. Follows directly from Lemma C.1.\n− lim\n\n1\n\nk→∞ k\n\nlog P k (θ1 , θ2 |β)\n\n1\n= lim − log [1 + µk (xk (θ1 ) − xk (θ2 ) < 0|θ1 , θ2 ) − µk (xk (θ1 ) − xk (θ2 ) > 0|θ1 , θ2 )]\nk→∞ k\n1\n= lim − log [2µk (xk (θ1 ) − xk (θ2 ) < 0|θ1 , θ2 ) + µk (xk (θ1 ) − xk (θ2 ) = 0|θ1 , θ2 )]\nk→∞ k\n1\n= lim − log [µk (xk (θ1 ) − xk (θ2 ) ≤ 0|θ1 , θ2 )]\nk→∞ k\n= inf {g(θ1 )I(a|θ1 ) + g(θ2 )I(a|θ2 )}\nLemma C.1\na∈R\n",
           "quoted_text_sha256": "30a284c43bd8e5416b57563b91f821278abdaf1e0b9651f2e05fe95338974ee7"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC2.binary.complement.rate",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_lemmaC2_binary_complement_rate",
+          "semantic_claim": "Lemma C.2 applies Lemma C.1 to the complement ranking-error probability and obtains the same adjacent Bernoulli exponent.",
+          "source_locator": "audit/cited publication:2133-2161",
+          "source_quote_sha256": "30a284c43bd8e5416b57563b91f821278abdaf1e0b9651f2e05fe95338974ee7"
         }
       ],
       "source_kind": "lemma",
@@ -1291,6 +1608,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\nRate function for Wk\n\nOur next lemma shows that we can obtain a nontrivial large deviations rate for Wk when β is a\nstep-wise increasing\nR function.\nRecall Wk = θ1 >θ2 w(θ1 , θ2 )Pk (θ1 , θ2 |β)d(θ1 , θ2 ).\nLet P k (θ1 , θ2 ) = 1 − Pk (θ1 , θ2 ).\nR\nFurther, let W k = (limk Wk ) − Wk = θ1 >θ2 w(θ1 , θ2 )P k (θ1 , θ2 |β)d(θ1 , θ2 ). (recall we assumed\nw integrates to 1 without loss of generality).\nLemma C.3. Suppose β is piecewise constant with M levels {ti }. Let gi , inf θ∈Si g(θ) = g(si )\nThen,\n1\n− lim log W k = min inf {gi+1 I(a|ti+1 ) + gi I(a|ti )} , r,\n(6)\n0≤i≤M −2 a∈R\nk→∞ k\nwhere I(a|t) = KL(a||t) as defined in Lemma C.2.\nProof. When β is step-wise increasing with M levels {ti }, then\nX Z\nWk =\nw(θ1 , θ2 )P k (θ1 , θ2 |β)d(θ1 , θ2 )\n0≤i<j<M\n\nθ2 ∈Si ,θ1 ∈Sj\n\nas P k (θ1 , θ2 ) = 0 when β(θ1 ) = β(θ2 ).\n\n13\n\n\f− limk→∞ k1 log W k\n1\n= − lim log\nk→∞ k\n1\n= − lim log\nk→∞ k\n\nZ\nw(θ1 , θ2 )P k (θ1 , θ2 |β)d(θ1 , θ2 )\nX Z\nw(θ1 , θ2 )P k (θ1 , θ2 |β)d(θ1 , θ2 )\n\n0≤i<j<M\n\n=\n=\n\nmin\n\ninf\n\n(8)\n\nθ2 ∈Si ,θ1 ∈Sj\n\n\" Z\n#!\n1\n= − max\nlim\nlog\nw(θ1 , θ2 )P k (θj , θi |β)d(θ1 , θ2 )\n0≤i<j<M k→∞ k\nθ2 ∈Si ,θ1 ∈Sj\n\u0013\n\u0012\n\u0003\n1\u0002\n= − max\nsup\nlog w(θ1 , θ2 )P k (θj , θi |β)\nlim\n0≤i<j<M θ1 ∈Sj ,θ2 ∈Si k→∞ k\n\u0012\n\u0013\n1\n= − max\nsup\nlim log P k (θj , θi |β)\n0≤i<j<M θ1 ∈Sj ,θ2 ∈Si k→∞ k\n\u0012\n\u0013\n1\n− lim log P k (θj , θi |β)\n= min\ninf\n0≤i<j<M θ1 ∈Sj ,θ2 ∈Si\nk→∞ k\n=\n\n(7)\n\nθ1 >θ2\n\ninf {g(θ1 )I(a|tj ) + g(θ2 )I(a|ti )}\n\n0≤i<j<M θ1 ∈Sj ,θ2 ∈Si a∈R\n\n(9)\n(10)\n(11)\n(12)\n(13)\n\nmin\n\ninf {gj I(a|tj ) + gi I(a|ti )}\n\n(14)\n\nmin\n\ninf {gi+1 I(a|ti+1 ) + gi I(a|ti )}\n\n(15)\n\n0≤i<j<M a∈R\n\n0≤i<M −1 a∈R\n\nThe last line follows from adjacent ti , ti+1 dominating the rate due to monotonicity properties.\nLine (10) follows from Theorem C.1.\n\u0011i\nh\n\u0010P\nN \u000f\n\u000f\n= maxN\nLine (9) follows from: ∀a\u000fi ≥ 0, lim sup\u000f→0 \u000f log\na\ni lim sup\u000f→0 \u000f log(ai ), which\ni\ni\nis a finite case version (with fewer assumptions) of Theorem C.1. See, e.g., Lemma 1.2.15 in (Dembo\nand Zeitouni, 2010) for a proof of this property.\n",
           "quoted_text_sha256": "80899135cab14588101a0c2f3161898ca21ed820b5f21da45ad337f49e78ff5b"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC3.piecewise.constant.rate",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.paper_lemmaC3_partition_integral_hasExponentialRate_of_min_component_uniform_logRate",
+          "semantic_claim": "Lemma C.3 says a finite piecewise-constant response has objective-gap exponent equal to the minimum adjacent weighted Bernoulli separation rate.",
+          "source_locator": "audit/cited publication:2227-2364",
+          "source_quote_sha256": "80899135cab14588101a0c2f3161898ca21ed820b5f21da45ad337f49e78ff5b"
         }
       ],
       "source_defect_ids": [
@@ -1355,6 +1682,16 @@
           "quoted_text_sha256": "2c77cf18fa3af3c6a0046a3366de0d3a917202c03fe15c924251dd43c48009d7"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC4.positive.rate.iff.step",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.paper_lemmaC4_finite_selected_pullback_positive_rate_and_nonfiniteStep_source_zero_rate",
+          "semantic_claim": "Lemma C.4 states that a piecewise-constant rating rule has a positive large-deviation rate exactly in the stated source setting.",
+          "source_locator": "audit/cited publication:2365-2365",
+          "source_quote_sha256": "2c77cf18fa3af3c6a0046a3366de0d3a917202c03fe15c924251dd43c48009d7"
+        }
+      ],
       "source_defect_ids": [
         "GJ19-C1-UNIFORM-REMARK-01",
         "GJ19-C3-TIE-COMPLEMENT-01"
@@ -1391,10 +1728,10 @@
       ],
       "claim_bearing": true,
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_lemmaC5_refinement_equations24_25"
+        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_lemmaC5_refinement_equations24_25_realizes_spec"
       ],
       "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_lemmaC5_refinement_equations24_25",
+        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_lemmaC5_refinement_equations24_25_realizes_spec",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
         "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_lemmaC5_refinement_equations24_25Spec"
@@ -1406,6 +1743,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\u0014√\n√\n1 − ti − 1 − ti−1\n√\nwhere c =\n√\nti−1 − ti\n\n(24)\n(25)\n\nThe proof for (25) is algebraically tedious and is shown in Remark C.3 below.\nThen, by the proof of Lemma 3.1, which shows that equalizing the rates inside the minimization\n−2\nterms implies an optimal {ti }, β2M −1 has the levels {t0i }2M\ni=0 .\nRemark C.3.\n\"s\u0012\n\nc\n1−\n1+c\n\nr\n\n\u0013\n(1 − ti ) +\n\n#2\n\ni\np\np\n1h\n1 + (1 − ti−1 )(1 − ti ) + ti−1 ti\n2\n\u00152\n\u0014√\n√\n1 − ti − 1 − ti−1\n√\nwhere c =\n√\nti−1 − ti\n\nc\nti\n1+c\n\n=\n\n√\n√\n√\n√\nProof. Let x = ti , y = 1 − ti , z = ti−1 , and w = 1 − ti−1 . Note that x > z, w > y, y =\n1 − x2 , w = 1 − z 2 . Then,\nc\n(y − w)2\n1\n(x − z)2\n=\n, and\n=\nc+1\n2 − 2xz − 2yw\nc+1\n2 − 2xz − 2yw\n1\n(To show the above two equalities, factor out (x−z)\n2 from numerator and denominator, and substi2\n2\ntute y = 1 − x , w = 1 − z ).\n\n18\n\n\fNow, the left hand side:\n\"s\u0012\n\nc\n1−\n1+c\n\n#2\nc\n(1 − ti ) +\nti\n1+c\ni2\nhp\np\n(x − z)2 y 2 + (y − w)2 x2\nr\n\n\u0013\n\n1\n2 − 2xz − 2yw\n(x − z)2 y 2 + (y − w)2 x2 + 2xy(x − z)(w − y)\n=\n2 − 2xz − 2yw\n2\n2\n2\n2\nz y + w x − 2wxyz\n=\n2 − 2xz − 2yw\n=\n\np\np\n(y − w)2 = w − y, (x − z)2 = x − z\n\nThe right hand side:\ni\np\np\n1h\n1 + (1 − ti−1 )(1 − ti ) + ti−1 ti\n2\n1\n= [1 + (wy + xz)]\n2\nMultiplying both sides by 2 − 2xz − 2yw, we have:\n\"s\u0012\n\nc\n1−\n1+c\n\nr\n\n\u0013\n(1 − ti ) +\n\nc\nti\n1+c\n\n#2\n=\n\ni\np\np\n1h\n1 + (1 − ti−1 )(1 − ti ) + ti−1 ti\n2\n\n≡ z 2 y 2 + w2 x2 − 2wxyz = 1 − (wy + xz)2\n≡ z 2 (1 − x2 ) + (1 − z 2 )x2 − 2wxyz = 1 − w2 y 2 − x2 z 2 − 2wxyz\n≡ z 2 − 2x2 z 2 + x2 = 1 − (1 − z 2 )(1 − x2 ) − x2 z 2\n≡0=0\n",
           "quoted_text_sha256": "2094fc338b9b21fcde62795ca3959bd15131934e7c42839484a58e5aea0d2fa6"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC5.refinement.equations24.25",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_lemmaC5_refinement_equations24_25_realizes_spec",
+          "semantic_claim": "Equations (24)-(25) and Remark C.3 verify the new interior levels and equal adjacent rates in the doubled uniform chain.",
+          "source_locator": "audit/cited publication:2884-3038",
+          "source_quote_sha256": "2094fc338b9b21fcde62795ca3959bd15131934e7c42839484a58e5aea0d2fa6"
         }
       ],
       "source_defect_ids": [
@@ -1421,7 +1768,7 @@
     "lemmaC5_transcript_repeated_label_3071": {
       "aliases": [],
       "claim_bearing": false,
-      "inventory_role": "repeated_source_presentation",
+      "inventory_role": "source_presentation_alias",
       "source_anchor_evidence": [
         {
           "line_end": 3092,
@@ -1437,9 +1784,9 @@
         "canonical_source_item": "lemmaC5_uniform_doubled_chain",
         "relation": "repeated_source_presentation",
         "schema": 1,
-        "semantic_basis": "The PDF transcript exposes `Lemma C.5` as a repeated proof-layout label at this page position; it points to the canonical Lemma C.5 rather than presenting a new result.",
-        "validated_at": "2026-08-19T00:00:00Z",
-        "validator": "GJ19 v11 archive-surface presentation reconciliation"
+        "semantic_basis": "This page-break label cites canonical Lemma C.5 within the later Corollary C.1 calculation; its surrounding text contains no second Lemma C.5 statement.",
+        "validated_at": "2026-08-18T00:00:00Z",
+        "validator": "v11 source-first review-surface preparation"
       },
       "source_url": "https://proceedings.mlr.press/v89/garg19a.html; https://proceedings.mlr.press/v89/garg19a/garg19a.pdf; https://proceedings.mlr.press/v89/garg19a/garg19a-supp.pdf",
       "statement": "The PDF transcript exposes `Lemma C.5` as a repeated proof-layout label at this page position; it points to the canonical Lemma C.5 rather than presenting a new result."
@@ -1447,7 +1794,7 @@
     "lemmaC5_transcript_repeated_label_3197": {
       "aliases": [],
       "claim_bearing": false,
-      "inventory_role": "repeated_source_presentation",
+      "inventory_role": "source_presentation_alias",
       "source_anchor_evidence": [
         {
           "line_end": 3232,
@@ -1463,9 +1810,9 @@
         "canonical_source_item": "lemmaC5_uniform_doubled_chain",
         "relation": "repeated_source_presentation",
         "schema": 1,
-        "semantic_basis": "The PDF transcript exposes `Lemma C.5` as a repeated proof-layout label at this page position; it points to the canonical Lemma C.5 rather than presenting a new result.",
-        "validated_at": "2026-08-19T00:00:00Z",
-        "validator": "GJ19 v11 archive-surface presentation reconciliation"
+        "semantic_basis": "This page-break label cites canonical Lemma C.5 within the Lemma C.8 calculation; its surrounding text contains no second Lemma C.5 statement.",
+        "validated_at": "2026-08-18T00:00:00Z",
+        "validator": "v11 source-first review-surface preparation"
       },
       "source_url": "https://proceedings.mlr.press/v89/garg19a.html; https://proceedings.mlr.press/v89/garg19a/garg19a.pdf; https://proceedings.mlr.press/v89/garg19a/garg19a-supp.pdf",
       "statement": "The PDF transcript exposes `Lemma C.5` as a repeated proof-layout label at this page position; it points to the canonical Lemma C.5 rather than presenting a new result."
@@ -1473,7 +1820,7 @@
     "lemmaC5_transcript_repeated_label_3530": {
       "aliases": [],
       "claim_bearing": false,
-      "inventory_role": "repeated_source_presentation",
+      "inventory_role": "source_presentation_alias",
       "source_anchor_evidence": [
         {
           "line_end": 3565,
@@ -1489,9 +1836,9 @@
         "canonical_source_item": "lemmaC5_uniform_doubled_chain",
         "relation": "repeated_source_presentation",
         "schema": 1,
-        "semantic_basis": "The PDF transcript exposes `Lemma C.5` as a repeated proof-layout label at this page position; it points to the canonical Lemma C.5 rather than presenting a new result.",
-        "validated_at": "2026-08-19T00:00:00Z",
-        "validator": "GJ19 v11 archive-surface presentation reconciliation"
+        "semantic_basis": "This page-break label cites canonical Lemma C.5 in the proof of Theorem B.1; its surrounding text is an application of that lemma, not a second statement.",
+        "validated_at": "2026-08-18T00:00:00Z",
+        "validator": "v11 source-first review-surface preparation"
       },
       "source_url": "https://proceedings.mlr.press/v89/garg19a.html; https://proceedings.mlr.press/v89/garg19a/garg19a.pdf; https://proceedings.mlr.press/v89/garg19a/garg19a-supp.pdf",
       "statement": "The PDF transcript exposes `Lemma C.5` as a repeated proof-layout label at this page position; it points to the canonical Lemma C.5 rather than presenting a new result."
@@ -1499,7 +1846,7 @@
     "lemmaC5_transcript_repeated_label_3567": {
       "aliases": [],
       "claim_bearing": false,
-      "inventory_role": "repeated_source_presentation",
+      "inventory_role": "source_presentation_alias",
       "source_anchor_evidence": [
         {
           "line_end": 3587,
@@ -1515,9 +1862,9 @@
         "canonical_source_item": "lemmaC5_uniform_doubled_chain",
         "relation": "repeated_source_presentation",
         "schema": 1,
-        "semantic_basis": "The PDF transcript exposes `Lemma C.5` as a repeated proof-layout label at this page position; it points to the canonical Lemma C.5 rather than presenting a new result.",
-        "validated_at": "2026-08-19T00:00:00Z",
-        "validator": "GJ19 v11 archive-surface presentation reconciliation"
+        "semantic_basis": "This page-break label again cites canonical Lemma C.5 in the continuation of the proof of Theorem B.1; it has no independent hypotheses or conclusion.",
+        "validated_at": "2026-08-18T00:00:00Z",
+        "validator": "v11 source-first review-surface preparation"
       },
       "source_url": "https://proceedings.mlr.press/v89/garg19a.html; https://proceedings.mlr.press/v89/garg19a/garg19a.pdf; https://proceedings.mlr.press/v89/garg19a/garg19a-supp.pdf",
       "statement": "The PDF transcript exposes `Lemma C.5` as a repeated proof-layout label at this page position; it points to the canonical Lemma C.5 rather than presenting a new result."
@@ -1550,6 +1897,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Lemma C.5. Suppose g uniform, i.e. gi = 1, ∀i and that βM has values√{ti }M\ni=0\u0001 . Then β2M −1\n2M −2\n1\n0\n0\n0\nhas values {ti }i=0 , where t2i = ti , ∀i ∈ {0 . . . M − 1}, t1 = 2 1 − 1 − t1 and t02M −3 =\n√\n1\n2 (1 + tM −2 ).",
           "quoted_text_sha256": "ce9babdd751efbbe53ff36491e86dd2ff7e95e022d4d6de2e30e8746e15eea06"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC5.uniform.doubled.chain",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_lemmaC5_uniform_doubled_chain",
+          "semantic_claim": "Lemma C.5 gives the displayed construction of the optimal levels for a doubled uniform-matching chain from the smaller chain.",
+          "source_locator": "audit/cited publication:2714-2724",
+          "source_quote_sha256": "ce9babdd751efbbe53ff36491e86dd2ff7e95e022d4d6de2e30e8746e15eea06"
         }
       ],
       "source_defect_ids": [
@@ -1594,6 +1951,16 @@
           "quoted_text_sha256": "2fc52521fc7ed1478bbd872684f905f52a64ed6d20d853743e17865cdff8de5a"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC6.monotone.penultimate.bound",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.lemmaC6_monotone_matching_penultimate_level_bound",
+          "semantic_claim": "For nondecreasing matching, Lemma C.6 bounds the penultimate optimal level below by 1 minus one over M minus one.",
+          "source_locator": "audit/cited publication:3130-3130",
+          "source_quote_sha256": "2fc52521fc7ed1478bbd872684f905f52a64ed6d20d853743e17865cdff8de5a"
+        }
+      ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:3131-3159; Supplement Appendix C; audit/cited publication:3130-3130",
       "statement": "Lemma C.6 claims that nondecreasing matching implies t_{M-2} >= 1-1/(M-1).",
@@ -1624,6 +1991,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Lemma C.7. With uniform matching (gi = 1), r2\n\n20\n\nN\n\n≥ 15 r2 .\n\n\f1",
           "quoted_text_sha256": "f780bcf9f7f9696604972ffa598e37c6c05349168e6f1a3391f665f484c5a49d"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC7.uniform.refinement.rate",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.lemmaC7_uniform_doubled_objective_rate_ge_one_fifth_old_objective",
+          "semantic_claim": "Lemma C.7 lower-bounds the optimal rate after uniform doubled refinement by one fifth of the previous optimal rate.",
+          "source_locator": "audit/cited publication:3160-3168",
+          "source_quote_sha256": "f780bcf9f7f9696604972ffa598e37c6c05349168e6f1a3391f665f484c5a49d"
         }
       ],
       "source_kind": "lemma",
@@ -1663,6 +2040,16 @@
           "quoted_text_sha256": "56f30bb8dd75d22d5c0f3335d1aeaed8735f58bad6558d35134526753a35dee7"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC8.uniform.first.level.bound",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_lemmaC8_uniform_first_level_polynomial_lower_bound",
+          "semantic_claim": "Under uniform matching, Lemma C.8 gives a polynomial lower bound on the first interior optimal level.",
+          "source_locator": "audit/cited publication:3233-3234",
+          "source_quote_sha256": "56f30bb8dd75d22d5c0f3335d1aeaed8735f58bad6558d35134526753a35dee7"
+        }
+      ],
       "source_kind": "lemma",
       "source_location": "audit/cited publication:3234-3267; Supplement Appendix C; audit/cited publication:3233-3234",
       "statement": "Lemma C.8 derives a polynomial lower bound on the first interior optimal level under uniform matching.",
@@ -1698,6 +2085,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Lemma C.9. The run-time of NestedBisection is O(M log2 1δ ), where δ is the bisection grid width\nand M is the number of intervals.",
           "quoted_text_sha256": "04bc2c6f0b063941f59584d1139a42651ca38aa8f17fb9c602615bd25ca451c7"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "lemmaC9.nested.bisection.runtime",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_lemmaC9_nested_bisection_runtime_log_squared",
+          "semantic_claim": "Lemma C.9 states that NestedBisection runs in O(M log-squared(1/delta)) time for grid width delta.",
+          "source_locator": "audit/cited publication:3274-3275",
+          "source_quote_sha256": "04bc2c6f0b063941f59584d1139a42651ca38aa8f17fb9c602615bd25ca451c7"
         }
       ],
       "source_kind": "lemma",
@@ -1744,15 +2141,10 @@
         "source_empirical_reputation_score"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_empirical_reputation_score"
+        "GJ19OptimalBinaryRatingSystems.sourceEmpiricalReputationScore"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_empirical_reputation_score",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_empirical_reputation_scoreSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 237,
@@ -1760,6 +2152,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Aggregating ratings and ranking sellers.\nThese ratings are aggregated into a reputation score,\nxk (θ), at each time k. The score is the fraction\nof positive ratings received up to time k: xk (θ) ,\nPnk (θ)\n1\n`=0 y` (θ) with x0 (θ) , 0 for all θ. Thus,\nnk (θ)\nxk (θ) ∼ nk1(θ) Binomial(β(θ), nk (θ)).\nSystem state. The state of the system is given by a\njoint distribution µk (Θ, X), which gives the mass of\nitems of quality θ ∈ Θ ⊂ [0, 1] with aggregate score\nxk (θ) ∈ X ⊂ [0, 1] at time k. Because our model is\na continuum, the evolution of the system state µk\nfollows a deterministic dynamical system.\nWe have described these dynamics at the level of individual items; however, such statements should be\ninterpreted as describing the evolution of the joint\ndistribution µk . The state update for µk is determined by the mass of items that match and the distributions of their ratings. A formal description of\nthe state evolution is in Appendix Section B.1.",
           "quoted_text_sha256": "16d8c91805a65787520dd33f4737942cb7e349be05b27bac9849217452fefc43"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "model.empirical.reputation.score",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.sourceEmpiricalReputationScore",
+          "semantic_claim": "The platform reputation is the empirical average of an item's binary ratings.",
+          "source_locator": "audit/cited publication:219-237",
+          "source_quote_sha256": "16d8c91805a65787520dd33f4737942cb7e349be05b27bac9849217452fefc43"
         }
       ],
       "source_kind": "definition",
@@ -1775,25 +2177,17 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "The platform reputation is the empirical average of an item's binary ratings.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_empirical_reputation_scoreSpec"
-      ]
+      "statement": "The platform reputation is the empirical average of an item's binary ratings."
     },
     "model_matching_counts": {
       "aliases": [
         "source_matching_count"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_matching_count"
+        "GJ19OptimalBinaryRatingSystems.sourceMatchingCount"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_matching_count",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_matching_countSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 218,
@@ -1805,25 +2199,17 @@
       ],
       "source_kind": "model",
       "source_location": "audit/cited publication:199-218; Main paper Section 2",
-      "statement": "An item of quality theta receives n_k(theta)=floor(k g(theta)) ratings.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_matching_countSpec"
-      ]
+      "statement": "An item of quality theta receives n_k(theta)=floor(k g(theta)) ratings."
     },
     "model_matching_function_conditions": {
       "aliases": [
         "source_matching_function"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_matching_function"
+        "GJ19OptimalBinaryRatingSystems.SourceMatchingFunction"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_matching_function",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_matching_functionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 218,
@@ -1835,25 +2221,17 @@
       ],
       "source_kind": "model",
       "source_location": "audit/cited publication:199-218; Main paper Section 2",
-      "statement": "The matching function g is nondecreasing, bounded above by one, and bounded strictly away from zero on [0,1].",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_matching_functionSpec"
-      ]
+      "statement": "The matching function g is nondecreasing, bounded above by one, and bounded strictly away from zero on [0,1]."
     },
     "model_quality_continuum": {
       "aliases": [
         "source_quality_domain"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_quality_domain"
+        "GJ19OptimalBinaryRatingSystems.sourceQualityDomain"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_quality_domain",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_quality_domainSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 204,
@@ -1865,25 +2243,18 @@
       ],
       "source_kind": "model",
       "source_location": "audit/cited publication:187-204; Main paper Section 2",
-      "statement": "Items have true quality theta in the normalized unit interval [0,1].",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_quality_domainSpec"
-      ]
+      "statement": "Items have true quality theta in the normalized unit interval [0,1]."
     },
     "model_state_measure": {
       "aliases": [
         "source_system_state"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_system_state"
+        "GJ19OptimalBinaryRatingSystems.SourceSystemState",
+        "GJ19OptimalBinaryRatingSystems.sourceSystemStateMass"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_system_state",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_system_stateSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 237,
@@ -1891,6 +2262,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "System state. The state of the system is given by a\njoint distribution µk (Θ, X), which gives the mass of\nitems of quality θ ∈ Θ ⊂ [0, 1] with aggregate score\nxk (θ) ∈ X ⊂ [0, 1] at time k. Because our model is\na continuum, the evolution of the system state µk\nfollows a deterministic dynamical system.\nWe have described these dynamics at the level of individual items; however, such statements should be\ninterpreted as describing the evolution of the joint\ndistribution µk . The state update for µk is determined by the mass of items that match and the distributions of their ratings. A formal description of\nthe state evolution is in Appendix Section B.1.",
           "quoted_text_sha256": "3da73bd7208a8d7849cfd4c7c768f0a516e06418ae66aba61e21eb08f1b45f7c"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "model.state.measure",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.SourceSystemState",
+          "semantic_claim": "mu_k(Theta,X) is the mass of items whose true qualities lie in Theta and whose reputation scores lie in X at time k.",
+          "source_locator": "audit/cited publication:228-237",
+          "source_quote_sha256": "3da73bd7208a8d7849cfd4c7c768f0a516e06418ae66aba61e21eb08f1b45f7c"
         }
       ],
       "source_kind": "definition",
@@ -1906,10 +2287,7 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "mu_k(Theta,X) is the mass of items whose true qualities lie in Theta and whose reputation scores lie in X at time k.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_system_stateSpec"
-      ]
+      "statement": "mu_k(Theta,X) is the mass of items whose true qualities lie in Theta and whose reputation scores lie in X at time k."
     },
     "model_uniform_quality_rank": {
       "aliases": [],
@@ -1932,15 +2310,9 @@
         "source_remarkC1_full_square_application_under_explicit_conditions"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_remarkC1_full_square_application_under_explicit_conditions"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_remarkC1_full_square_application_under_explicit_conditions",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_remarkC1_full_square_application_under_explicit_conditionsSpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "formalized_note_analytic_scope",
+      "scope_disposition_note": "Remark C.1 applies the Laplace-principle route only after explicit compact-domain, integrability, positivity, and uniform-convergence conditions. Its false literal full-square uniformity sentence is retained as a localized source-proof correction supporting Theorem C.1, not as an independently selected theorem result.",
       "source_anchor_evidence": [
         {
           "line_end": 2225,
@@ -1956,26 +2328,16 @@
       "source_kind": "remark",
       "source_location": "audit/cited publication:2224-2225; Supplement Appendix C",
       "source_note": "The source's later C.4 proof explicitly observes nonuniform convergence near the diagonal. Lean therefore proves the valid conditional full-square Laplace statement and derives the advertised piecewise-constant rate through separated cells instead.",
-      "source_status": "corrected_source_statement",
-      "statement": "Corrected Remark C.1: on the full quality square, the weighted Laplace conclusion follows only when Theorem C.1's integrability, essential-infimum, positive-weight-near-minimizer, and uniform-convergence conditions are explicit; the actual piecewise-constant application avoids the false diagonal-uniformity claim by using the finite separated-cell route in Lemma C.3.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_remarkC1_full_square_application_under_explicit_conditionsSpec"
-      ]
+      "statement": "Corrected Remark C.1: on the full quality square, the weighted Laplace conclusion follows only when Theorem C.1's integrability, essential-infimum, positive-weight-near-minimizer, and uniform-convergence conditions are explicit; the actual piecewise-constant application avoids the false diagonal-uniformity claim by using the finite separated-cell route in Lemma C.3."
     },
     "remarkC2_kl_convexity": {
       "aliases": [
         "source_remarkC2_weighted_kl_separation_monotonicity"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_remarkC2_weighted_kl_separation_monotonicity"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_remarkC2_weighted_kl_separation_monotonicity",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_remarkC2_weighted_kl_separation_monotonicitySpec"
-      },
+      "inventory_role": "proof_support",
+      "scope_disposition": "formalized_note_coordinatewise_separation",
+      "scope_disposition_note": "Remark C.2's literal joint strict-convexity wording is impossible on its diagonal of minima. The checked coordinatewise separation/monotonicity route supports the rate analysis, but the remark is not an independently selected theorem result.",
       "source_anchor_evidence": [
         {
           "line_end": 2409,
@@ -1990,10 +2352,7 @@
       ],
       "source_kind": "remark",
       "source_location": "audit/cited publication:2405-2409; Supplement Appendix C",
-      "statement": "Remark C.2 records continuity, diagonal minima, and strict coordinatewise separation of the weighted Bernoulli KL objective used in Lemma 3.1. Its phrase 'strictly convex in t_i,t_{i+1}, with minima at t_i=t_{i+1}' is interpreted through that exact used content, since literal joint strict convexity is incompatible with a whole diagonal of minima.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_remarkC2_weighted_kl_separation_monotonicitySpec"
-      ]
+      "statement": "Remark C.2 records continuity, diagonal minima, and strict coordinatewise separation of the weighted Bernoulli KL objective used in Lemma 3.1. Its phrase 'strictly convex in t_i,t_{i+1}, with minima at t_i=t_{i+1}' is interpreted through that exact used content, since literal joint strict convexity is incompatible with a whole diagonal of minima."
     },
     "section4_induced_binary_response": {
       "aliases": [
@@ -2001,10 +2360,10 @@
       ],
       "claim_bearing": true,
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_induced_binary_response"
+        "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_induced_binary_response_realizes_spec"
       ],
       "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_induced_binary_response",
+        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_induced_binary_response_realizes_spec",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
         "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_induced_binary_responseSpec"
@@ -2016,6 +2375,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Using known set Θ, the platform can run an experiment to create an estimate ψ̂(θ, y), ∀y ∈ Y, θ ∈ Θ.\nDesign heuristic. How can the platform build an\neffective rating system using these primitives and\nβ? We consider the following heuristic design: the\nplatform randomly shows a question y ∈ Y to each\nbuyer. The choice of the platform is a distribution\nH(y) over y ∈ Y; in other words, for the platform\nthe design of the system amounts to choosing the frequency with which each question is shown. At each\nrating opportunity, y is chosen from Y according to\nH, independently across opportunities.\nClearly, the probability that\nP an item θ receives a\npositive rating is: β̃(θ) , y∈Y ψ(θ, y)H(y).\nWe want a distribution H such that β̃(θ) = β(θ) for\nall θ ∈ [0, 1], i.e., that the positive rating probability\nfor each item is exactly the optimal value. However,\nthere may not exist any set of questions Y with associated ψ and choice of H such that β̃ = β.7",
           "quoted_text_sha256": "e9bd47cae12755b5fd111c03b7812a70eef503c4e2abb5a21a1f688d32d8f69f"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "section4.induced.binary.response",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_induced_binary_response_realizes_spec",
+          "semantic_claim": "The induced binary response is beta-tilde(theta)=integral psi(theta,y)dH(y).",
+          "source_locator": "audit/cited publication:652-668",
+          "source_quote_sha256": "e9bd47cae12755b5fd111c03b7812a70eef503c4e2abb5a21a1f688d32d8f69f"
         }
       ],
       "source_kind": "formula",
@@ -2031,10 +2400,10 @@
       ],
       "claim_bearing": true,
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_l1_design_objective"
+        "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_l1_design_objective_realizes_spec"
       ],
       "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_l1_design_objective",
+        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_l1_design_objective_realizes_spec",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
         "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_l1_design_objectiveSpec"
@@ -2046,6 +2415,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "We propose the following heuristic to address this\ndifficulty. Choose a probability distribution H to\nminimize the following L1 distance:\nX\nX\nmin\n|β(θ) −\nψ̂(θ, y)H(y)|\n(5)\nH:kHk1 =1\n\nθ∈Θ\n\ny∈Y\n\nThis heuristic uses the data available to the platform, ψ̂(θ, y) for a set of items θ ∈ Θ, and designs H\nso at least these items receive ratings close to their\noptimal ratings β(θi ). Then, as long as ψ is wellbehaved, and Θ is representative of the full set, one\ncan hope that β̃(θ) u β(θ), for all θ ∈ [0, 1].\nDiscussion. Real-world analogue & constraints. A\nspecial case of this system is already in place on\n7\n\nThere are special cases where an exact solution exists. For example, let Y = [0, 1], and ψ(θ, y) = I[θ ≥ y].\n\nmany platforms, where the same question is always\nshown. Static systems can be designed by restricting\nH to only have mass at one question y. More generally, constraints can be used in optimization (5).",
           "quoted_text_sha256": "e80ffce901bb135cf8ac069fc766e3420010ebacc4a35b785e27c5fc1de70ca7"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "section4.l1.design.eq5",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_l1_design_objective_realizes_spec",
+          "semantic_claim": "Equation (5) defines the finite representative-item L1 discrepancy between the response induced by H and the target optimal binary response beta.",
+          "source_locator": "audit/cited publication:669-696",
+          "source_quote_sha256": "e80ffce901bb135cf8ac069fc766e3420010ebacc4a35b785e27c5fc1de70ca7"
         }
       ],
       "source_kind": "formula",
@@ -2060,15 +2439,10 @@
         "section4_question_design_solution"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_question_design_solution"
+        "GJ19OptimalBinaryRatingSystems.SourceQuestionDesignSolution"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_question_design_solution",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_question_design_solutionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 696,
@@ -2078,27 +2452,29 @@
           "quoted_text_sha256": "e80ffce901bb135cf8ac069fc766e3420010ebacc4a35b785e27c5fc1de70ca7"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "section4.question.design.minimizer",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.SourceQuestionDesignSolution",
+          "semantic_claim": "The Section 4 design heuristic chooses a probability distribution H minimizing the equation-(5) L1 discrepancy.",
+          "source_locator": "audit/cited publication:669-696",
+          "source_quote_sha256": "e80ffce901bb135cf8ac069fc766e3420010ebacc4a35b785e27c5fc1de70ca7"
+        }
+      ],
       "source_kind": "algorithm",
       "source_location": "audit/cited publication:669-696; Main paper Section 4",
-      "statement": "The Section 4 design heuristic chooses a probability distribution H minimizing the equation-(5) L1 discrepancy.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_question_design_solutionSpec"
-      ]
+      "statement": "The Section 4 design heuristic chooses a probability distribution H minimizing the equation-(5) L1 discrepancy."
     },
     "section4_response_mixture": {
       "aliases": [
         "section4_question_distribution"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_question_distribution"
+        "GJ19OptimalBinaryRatingSystems.SourceQuestionDistribution"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_question_distribution",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_question_distributionSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 668,
@@ -2106,6 +2482,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Resources available to platform. We suppose\nthe platform has a set Y of possible binary questions that it could ask a buyer, e.g., “Are you satisfied with your experience” or “Is this experience\nyour best on our platform?”. Informally, at each\nrating opportunity (i.e., match made), the rater can\nbe shown a single question y ∈ Y. Let ψ(θ, y) be the\nprobability an item quality θ would receive a positive\nrating when the rater is asked question y ∈ Y.\nWe further suppose the platform has a set Θ of representative items for which it has access to item quality. Θ, then, is the granularity at which the platform\ncan collect data about historical performance, or\notherwise get expert labels. (We assume M \u001d |Θ|).\nUsing known set Θ, the platform can run an experiment to create an estimate ψ̂(θ, y), ∀y ∈ Y, θ ∈ Θ.\nDesign heuristic. How can the platform build an\neffective rating system using these primitives and\nβ? We consider the following heuristic design: the\nplatform randomly shows a question y ∈ Y to each\nbuyer. The choice of the platform is a distribution\nH(y) over y ∈ Y; in other words, for the platform\nthe design of the system amounts to choosing the frequency with which each question is shown. At each\nrating opportunity, y is chosen from Y according to\nH, independently across opportunities.\nClearly, the probability that\nP an item θ receives a\npositive rating is: β̃(θ) , y∈Y ψ(θ, y)H(y).\nWe want a distribution H such that β̃(θ) = β(θ) for\nall θ ∈ [0, 1], i.e., that the positive rating probability\nfor each item is exactly the optimal value. However,\nthere may not exist any set of questions Y with associated ψ and choice of H such that β̃ = β.7",
           "quoted_text_sha256": "a1c3c5655e75448f09090b920f312428648a066a6e8dfa2666ab2dea03dbee0d"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "section4.response.mixture",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.SourceQuestionDistribution",
+          "semantic_claim": "Section 4 uses a probability distribution H over the finite question set Y.",
+          "source_locator": "audit/cited publication:642-668",
+          "source_quote_sha256": "a1c3c5655e75448f09090b920f312428648a066a6e8dfa2666ab2dea03dbee0d"
         }
       ],
       "source_kind": "definition",
@@ -2121,10 +2507,7 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "Section 4 uses a probability distribution H over the finite question set Y.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.section4_question_distributionSpec"
-      ]
+      "statement": "Section 4 uses a probability distribution H over the finite question set Y."
     },
     "theorem31_adjacent_rate_eq3": {
       "aliases": [
@@ -2147,6 +2530,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "t = arg max r(t), where gi , inf θ∈Si g(θ) and\nIn other words, given a discrete set of M items\n1\n(equiv, given S ∗ ), calculating the optimal t is equivr(t) , − lim log(W − Wk )\n(3)\nalent to solving a maximin problem for the rates at\nk→∞ k\nwhich\neach type is distinguished from each of the\n= min inf {gi+1 KL(a||ti+1 ) + gi KL(a||ti )}\n0≤i≤M −2 a∈R\nothers. Thus, the algorithm below also solves the\ninverse bandits problem in which we wish to rank\nThe proof is in the Appendix. The main hurdle is\nthe M arms, and we can choose the structure of the\nshowing that the continuum of rates for Pk (θ1 , θ2 )\n(binary) observations at each arm.\nfor each pair θ1 , θ2 translates into a rate for Wk .",
           "quoted_text_sha256": "506da15b77f8271aa9f5d38cf412783cad4b53f830c5c02fb77fc343243c8bae"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem31.adjacent.rate.eq3",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_theorem31_adjacent_rate_eq3",
+          "semantic_claim": "Theorem 3.1 equation (3) identifies the overall exponent as the minimum over adjacent cells of inf_a {g_{i+1} KL(a||t_{i+1})+g_i KL(a||t_i)} with g_i=inf_{theta in S_i}g(theta).",
+          "source_locator": "audit/cited publication:501-518",
+          "source_quote_sha256": "506da15b77f8271aa9f5d38cf412783cad4b53f830c5c02fb77fc343243c8bae"
         }
       ],
       "source_kind": "theorem",
@@ -2179,6 +2572,16 @@
           "quoted_text_sha256": "506da15b77f8271aa9f5d38cf412783cad4b53f830c5c02fb77fc343243c8bae"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem31.cell.matching.rate.definition",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.theorem31_source_cell_matching_rate_eq_lower_cutpoint",
+          "semantic_claim": "For an ordered source cell S_i and nondecreasing matching function g, the cell sample-rate coefficient g_i is the infimum of g over S_i, attained at the cell's lower cutpoint.",
+          "source_locator": "audit/cited publication:501-518",
+          "source_quote_sha256": "506da15b77f8271aa9f5d38cf412783cad4b53f830c5c02fb77fc343243c8bae"
+        }
+      ],
       "source_kind": "formula",
       "source_location": "audit/cited publication:501-518; Main paper Theorem 3.1, equation (3)",
       "statement": "For an ordered source cell S_i and nondecreasing matching function g, the cell sample-rate coefficient g_i is the infimum of g over S_i, attained at the cell's lower cutpoint.",
@@ -2188,22 +2591,16 @@
     },
     "theorem31_discretization_value": {
       "aliases": [
-        "paper_theorem31_exists_cell_integral_volume_weighted_uniform_endpoint_two_stage_lexicographic_optimality_of_integrableOn_Icc",
         "paper_theorem31_kendall_constant_weight_equispaced_canonical_uniform_endpoint_lexicographic_optimality",
         "paper_theorem31_spearman_linear_weight_equispaced_canonical_uniform_endpoint_lexicographic_optimality",
         "theorem31_source_matching_function_value_argmax_certificate",
-        "theorem31_source_matching_function_unique_value_argmax_lexicographic"
+        "theorem31_source_matching_function_lexicographic_formula"
       ],
       "claim_bearing": true,
-      "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.theorem31_source_matching_function_unique_value_argmax_lexicographic"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.theorem31_source_matching_function_unique_value_argmax_lexicographic",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.theorem31_source_matching_function_unique_value_argmax_lexicographicSpec"
-      },
+      "coverage_status": "user_approved_scope_exclusion",
+      "inventory_role": "source_scope_exclusion",
+      "scope_disposition": "user_approved_scope_exclusion",
+      "scope_disposition_note": "Theorem 3.1 is uncredited as a complete source theorem: the proved optimization of its displayed finite-rate formula covers at least three levels. The two-level endpoint and identification with the actual ranking-quality exponent remain outside this theorem. The proved restricted optimization result is retained and described in the report; no source theorem is refuted.",
       "source_anchor_evidence": [
         {
           "line_end": 507,
@@ -2220,15 +2617,32 @@
           "quoted_text_sha256": "cc9b2867b085c8178aa8900d5c14cd639755254b9474e5ba737156902562cfe3"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem31.discretization.value",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.theorem31_source_matching_function_lexicographic_formula",
+          "semantic_claim": "Theorem 3.1 first chooses a discretization maximizing the weighted cross-cell value and then chooses levels maximizing the resulting minimum adjacent large-deviation rate.",
+          "source_locator": "audit/cited publication:488-534",
+          "source_quote_sha256": "cc9b2867b085c8178aa8900d5c14cd639755254b9474e5ba737156902562cfe3"
+        }
+      ],
       "source_defect_ids": [
         "GJ19-T31-GENERAL-G-CLOSURE-01"
       ],
       "source_kind": "theorem",
       "source_location": "audit/cited publication:488-507; Main paper Section 3; audit/cited publication:488-534",
       "statement": "Theorem 3.1 chooses ordered cells S* to maximize the limiting weighted cross-cell value and then chooses rate-optimal levels on that value-optimal discretization.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.theorem31_source_matching_function_unique_value_argmax_lexicographicSpec"
-      ]
+      "user_approved_scope_exclusion": {
+        "approval_kind": "explicit_user_instruction",
+        "approval_reference": "The underlying approval record is withheld from this public projection.",
+        "approved_at": "2026-09-06",
+        "reason": "Theorem 3.1 is uncredited as a complete source theorem: the proved optimization of its displayed finite-rate formula covers at least three levels. The two-level endpoint and identification with the actual ranking-quality exponent remain outside this theorem. The proved restricted optimization result is retained and described in the report; no source theorem is refuted.",
+        "schema": 1,
+        "source_anchor_quote_sha256": "6e148991e1af2a6a1c214a933f07b70faf50c1e58ad157ac7e56eceed0e2ff32",
+        "source_evidence": "Theorem 3.1 states the M-level value-then-rate optimization and adjacent-rate formula without excluding the two-level design. Its presently proved restricted optimization covers M at least three, as already recorded in the clarification memo; the source exponent connection is separately unproved.",
+        "source_locator": "audit/cited publication:488-507; Main paper Section 3; audit/cited publication:488-534"
+      }
     },
     "theorem31_limit_equations19_20": {
       "aliases": [],
@@ -2270,6 +2684,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Theorem 3.2. \u0001NestedBisection finds an \u000f-optimal t\nin O M log2 M\noperations, where \u000f-optimal means\n\u000f\nthat r(t) is within additive constant \u000f of optimal.\nThe proof is in the appendix. The main difficulty\nis finding a Lipschitz constant \u000f(δ) for how much\nthe rate changes with a shift δ in a level ti . This\nrequires lower bounding t1 as a function of M . In\npractice, the algorithm runs instantaneously on a\nmodern machine (e.g. for M = 200).",
           "quoted_text_sha256": "b80dba72ca65dfddc92df6cf4f973ea878a0241acccfbbe1722ad520de278fc4"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem32.approximation.runtime",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.theorem32_weighted_nested_bisection_loss_and_runtime",
+          "semantic_claim": "Theorem 3.2 claims NestedBisection returns an epsilon-optimal level vector in O(M log^2(M/epsilon)) operations.",
+          "source_locator": "audit/cited publication:588-598",
+          "source_quote_sha256": "b80dba72ca65dfddc92df6cf4f973ea878a0241acccfbbe1722ad520de278fc4"
         }
       ],
       "source_defect_ids": [
@@ -2324,7 +2748,7 @@
     "theoremB1_proof_restatement": {
       "aliases": [],
       "claim_bearing": false,
-      "inventory_role": "repeated_source_presentation",
+      "inventory_role": "source_presentation_alias",
       "source_anchor_evidence": [
         {
           "line_end": 3528,
@@ -2340,9 +2764,9 @@
         "canonical_source_item": "theoremB1_uniform_subsequence",
         "relation": "repeated_source_presentation",
         "schema": 1,
-        "semantic_basis": "The proof appendix restates the same visible Theorem B.1 before its proof; its hypotheses and conclusion are the canonical Theorem B.1 presentation, not an additional theorem.",
-        "validated_at": "2026-08-19T00:00:00Z",
-        "validator": "GJ19 v11 archive-surface presentation reconciliation"
+        "semantic_basis": "The Appendix C.7 proof explicitly repeats Theorem B.1's same uniform-matching hypothesis and geometric-subsequence conclusion before deriving it; the canonical Appendix B presentation already owns that theorem claim.",
+        "validated_at": "2026-08-18T00:00:00Z",
+        "validator": "v11 source-first review-surface preparation"
       },
       "source_url": "https://proceedings.mlr.press/v89/garg19a.html; https://proceedings.mlr.press/v89/garg19a/garg19a.pdf; https://proceedings.mlr.press/v89/garg19a/garg19a-supp.pdf",
       "statement": "The proof appendix restates the same visible Theorem B.1 before its proof; its hypotheses and conclusion are the canonical Theorem B.1 presentation, not an additional theorem."
@@ -2370,6 +2794,16 @@
           "quoted_text_sha256": "68e703ca2ca833a788222a1e71d250ddc428f47ca2ffe4e544c5644c7cf06d2f"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theoremB1.proof.selector.nesting",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_theoremB1_proof_selector_nesting",
+          "semantic_claim": "The Theorem B.1 proof uses the C.5 doubled-chain representation and uniform convergence of quantile maps to control the floor-selected optimal levels along geometric subsequences.",
+          "source_locator": "audit/cited publication:3467-3589",
+          "source_quote_sha256": "68e703ca2ca833a788222a1e71d250ddc428f47ca2ffe4e544c5644c7cf06d2f"
+        }
+      ],
       "source_kind": "equation",
       "source_location": "audit/cited publication:3467-3589; Supplement Appendix C",
       "statement": "The Theorem B.1 proof uses the C.5 doubled-chain representation and uniform convergence of quantile maps to control the floor-selected optimal levels along geometric subsequences.",
@@ -2382,15 +2816,10 @@
         "source_theoremB1_quantile_representation"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_theoremB1_quantile_representation"
+        "GJ19OptimalBinaryRatingSystems.ProofBridge.source_theoremB1_quantile_representation"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_theoremB1_quantile_representation",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_theoremB1_quantile_representationSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 1979,
@@ -2398,6 +2827,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "\nLimit of β as M → ∞\n\nw denote the optimal β with M intervals for weight function w, with intervals {S wM } =\nLet βM\ni\nwM\nwM . Let q\nwM , swM ), i.e. the quantile of\n{[si , swM\n)}\nand\nlevels\nt\n(θ)\n=\ni/M\nwhen\nθ\n∈\n[s\nwM\ni+1\ni\ni+1\ninterval item of type θ is in.\nThen, we have the following convergence result for βM .\n\nTheorem B.1. Let g be uniform. Suppose w such that qwM converges uniformly. Then, ∀C ∈",
           "quoted_text_sha256": "9bd460d942026e80a3d9ac3d777f6190dcd6b3329e6e858db821281cdc018f2a"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theoremB1.quantile.representation",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.ProofBridge.source_theoremB1_quantile_representation",
+          "semantic_claim": "Theorem B.1 uses q_M^w(theta), the normalized index of the optimal weighted partition cell containing theta, and represents beta_M^w by the corresponding optimal level.",
+          "source_locator": "audit/cited publication:1951-1979",
+          "source_quote_sha256": "9bd460d942026e80a3d9ac3d777f6190dcd6b3329e6e858db821281cdc018f2a"
         }
       ],
       "source_kind": "definition",
@@ -2413,10 +2852,7 @@
         "validator": "GJ19 v11 source-map prose-definition reconciliation pass",
         "validator_type": "agent"
       },
-      "statement": "Theorem B.1 uses q_M^w(theta), the normalized index of the optimal weighted partition cell containing theta, and represents beta_M^w by the corresponding optimal level.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.source_theoremB1_quantile_representationSpec"
-      ]
+      "statement": "Theorem B.1 uses q_M^w(theta), the normalized index of the optimal weighted partition cell containing theta, and represents beta_M^w by the corresponding optimal level."
     },
     "theoremB1_uniform_subsequence": {
       "aliases": [
@@ -2446,6 +2882,16 @@
           "publication_locator": "cited publication",
           "quoted_text": "Theorem B.1. Let g be uniform. Suppose w such that qwM converges uniformly. Then, ∀C ∈\nw\nw uniformly as N → ∞.\nN, ∃β w s.t. βC2\nN +1 → β\nThe proof is technical and is below. We leverage the fact that, for g uniform, the levels of β2M\ncan be analytically written as a function of the levels of βM . We believe (numerically observe)\nthat this theorem holds for the entire sequence as opposed to the each such subsequence, and for\ngeneral matching functions g. However, our proof technique does not carry over, and the proof\nwould leverage more global properties of the optimal βM .\nFurthermore, the condition on w is light. For example, it holds for Kendall’s τ , Spearman’s ρ,\nand all other examples mentioned in this work.\nThis convergence result suggests that the choice of M when calculating a asymptotic and rate\noptimal β is not consequential. As M increases, the limiting value of Wk increases to 1 (i.e. the\nasymptotic value increases), but the optimal rate decreases to 0. As discussed above, with strictly\nincreasing and continuous β, the asymptotic value is 1 but the large deviations rate does not exist,\ni.e. convergence is polynomial.\nThis result could potentially be strengthened as follows: first, show convergence on the entire\nsequence as opposed to these exponential subsequences, as conjectured; second, show desirable\nproperties of the limiting function itself. It is conceivable but not necessarily true that the limiting\n9\n\n\ffunction is “better” than other strictly continuous increasing functions in some rate sense, even\nthough the comparison through large deviations rate is degenerate.\n\nB.5\n\nLearning ψ(θ, y) through experiments\n\nNow, we show how a platform would run an experiment to decide to learn ψ(θ, y). In particular,\none potential issue is that the platform does not have any items with know quality that it can use\nas representative items in its optimization. In this case, we show that it can use ratings within the\nexperiment itself to identify these representative items. The results essentially follow from the law\nof large numbers.\nWe assume that |Θ| = L representative items i ∈ {1 . . . L} are in the experiment, and each are\nmatched N times. The experiment proceeds as follows: every time an item is matched, show the\nbuyer a random question from Y. For each word y ∈ Y, track the empirical ψ̂(i, y), the proportion\nof times a positive response was given to question y. Alternatively, if Y is totally ordered (i.e. a\npositive rating for a given y also implies positive ratings would be given to all “easier” y 0 ), and\ncan be phrased as a multiple choice question, data collection can be faster: e.g., as we do in our\nexperiments: Y consists of a set of totally ordered adjectives that can describe the item; the rater is\nasked to pick an adjective out of the set; this is interpreted as the item receiving a positive answer\nto the questions induced by the chosen answer and all worse adjectives, and a negative answer to\nall better adjectives.\nFirst, suppose the platform approximately knows the quality θi of each item i, and θi are evenly\ndistributed in [0, 1]. Suppose the items are ordered by index, i.e. θ1 < θ2 < · · · < θL . Then let\nψ̂(θ, y) = ψ̂(i, y) when θ ∈ [θi−1 , θi ]. Call this procedure KnownTypeExperiment.",
           "quoted_text_sha256": "f12106ceeee0b89699499f5e2ed3f113538ea6743723a7ec6dd9d767db67e7a8"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theoremB1.uniform.subsequence",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.paper_theoremB1_uniform_subsequence_principle_to_of_quantile_floor_tendstoUniformlyOn_geometric_mesh",
+          "semantic_claim": "For uniform matching and uniformly convergent q_M^w, the stated geometric subsequence of optimal binary response functions converges uniformly.",
+          "source_locator": "audit/cited publication:1979-2025",
+          "source_quote_sha256": "f12106ceeee0b89699499f5e2ed3f113538ea6743723a7ec6dd9d767db67e7a8"
         }
       ],
       "source_kind": "theorem",
@@ -2478,6 +2924,16 @@
           "quoted_text_sha256": "00f250c400e0e400605f791eea20d114c6c7e4388aa07a7aabe6bb8c308cd1d8"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "theoremC1.laplace.principle",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.PaperInterface.source_theoremC1_laplace_principle",
+          "semantic_claim": "Theorem C.1 says a nonnegative sequence of rate functions converging uniformly on a compact finite-measure space has log-integral exponent equal to the negative essential infimum.",
+          "source_locator": "audit/cited publication:2163-2223",
+          "source_quote_sha256": "00f250c400e0e400605f791eea20d114c6c7e4388aa07a7aabe6bb8c308cd1d8"
+        }
+      ],
       "source_kind": "theorem",
       "source_location": "audit/cited publication:2163-2223; Supplement Appendix C",
       "statement": "Theorem C.1 says a nonnegative sequence of rate functions converging uniformly on a compact finite-measure space has log-integral exponent equal to the negative essential infimum.",
@@ -2490,15 +2946,10 @@
         "appendixB5_unknown_type_experiment"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_unknown_type_experiment"
+        "GJ19OptimalBinaryRatingSystems.SourceUnknownTypeExperiment"
       ],
-      "semantic_contract": {
-        "evidence_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_unknown_type_experiment",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_unknown_type_experimentSpec"
-      },
       "source_anchor_evidence": [
         {
           "line_end": 2044,
@@ -2508,12 +2959,19 @@
           "quoted_text_sha256": "94546f575c4e1a2690ad68e521da37e898f30983d9a67302c1bc15467487d3d0"
         }
       ],
+      "source_claim_atoms": [
+        {
+          "id": "unknown.type.experiment.definition",
+          "identity_schema": 2,
+          "reviewed_lean_route": "GJ19OptimalBinaryRatingSystems.SourceUnknownTypeExperiment",
+          "semantic_claim": "The Appendix-B experiment record stores each item's latent true quality, empirical question responses, empirical average score, and the item selected at every empirical rank.",
+          "source_locator": "audit/cited publication:2032-2044",
+          "source_quote_sha256": "94546f575c4e1a2690ad68e521da37e898f30983d9a67302c1bc15467487d3d0"
+        }
+      ],
       "source_kind": "algorithm",
       "source_location": "audit/cited publication:2032-2044; Supplement Appendix B",
-      "statement": "UnknownTypeExperiment records unknown true qualities, empirical question responses and aggregate scores, and the item occupying each empirical rank.",
-      "support_lean_declarations": [
-        "GJ19OptimalBinaryRatingSystems.PaperInterface.appendixB5_unknown_type_experimentSpec"
-      ]
+      "statement": "UnknownTypeExperiment records unknown true qualities, empirical question responses and aggregate scores, and the item occupying each empirical rank."
     },
     "unknown_type_percentile_extension": {
       "aliases": [],
@@ -2533,24 +2991,100 @@
     }
   },
   "paper": "GJ19OptimalBinaryRatingSystems",
-  "publication_source_display_projection": {
-    "manifest": "audit/public_source_display_projection.json",
-    "raw_source_bytes_included": false,
-    "schema": 1
+  "paper_interface_namespace": "GJ19OptimalBinaryRatingSystems",
+  "paper_semantic_prerequisite_sources": {
+    "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_large_deviation_rate": "definition_large_deviation_rate",
+    "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_lexicographic_optimality": "definition_lexicographic_objective",
+    "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_pairwise_accuracy_eq1": "definition_pairwise_accuracy_eq1",
+    "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_step_rule_partition_levels": "definition_step_rule_partition_levels",
+    "GJ19OptimalBinaryRatingSystems.ProofBridge.source_definition_weighted_objective_eq2": "definition_weighted_objective_eq2",
+    "GJ19OptimalBinaryRatingSystems.ProofBridge.source_theoremB1_quantile_representation": "theoremB1_quantile_representation",
+    "GJ19OptimalBinaryRatingSystems.SourceKnownTypeExperiment": "known_type_experiment_definition",
+    "GJ19OptimalBinaryRatingSystems.SourceMatchingFunction": "model_matching_function_conditions",
+    "GJ19OptimalBinaryRatingSystems.SourceQuestionDesignSolution": "section4_question_design_minimizer",
+    "GJ19OptimalBinaryRatingSystems.SourceQuestionDistribution": "section4_response_mixture",
+    "GJ19OptimalBinaryRatingSystems.SourceRandomQuestionExperiment": "experiment_random_question_observations",
+    "GJ19OptimalBinaryRatingSystems.SourceSystemState": "model_state_measure",
+    "GJ19OptimalBinaryRatingSystems.SourceUnknownTypeExperiment": "unknown_type_experiment_definition",
+    "GJ19OptimalBinaryRatingSystems.binaryEndpointAwareAdjacentRate": "appendixC5_rate_notation_eq23",
+    "GJ19OptimalBinaryRatingSystems.kendallConstantWeightOrderedPairIntervalObjective": "definitionC1_kendall_spearman",
+    "GJ19OptimalBinaryRatingSystems.sourceAppendixBActiveSet": "appendixB1_active_set",
+    "GJ19OptimalBinaryRatingSystems.sourceAppendixBTransitionKernel": "appendixB1_transition_kernel",
+    "GJ19OptimalBinaryRatingSystems.sourceBernoulliKL": "definition_bernoulli_kl",
+    "GJ19OptimalBinaryRatingSystems.sourceEmpiricalReputationScore": "model_empirical_reputation_score",
+    "GJ19OptimalBinaryRatingSystems.sourceExperimentEmpiricalQuestionResponse": "experiment_empirical_question_response",
+    "GJ19OptimalBinaryRatingSystems.sourceMatchingCount": "model_matching_counts",
+    "GJ19OptimalBinaryRatingSystems.sourceQualityDomain": "model_quality_continuum",
+    "GJ19OptimalBinaryRatingSystems.sourceSystemStateMass": "model_state_measure",
+    "GJ19OptimalBinaryRatingSystems.spearmanLinearWeightOrderedPairIntervalObjective": "definitionC1_kendall_spearman",
+    "GJ19OptimalBinaryRatingSystems.theorem32WeightedNestedBisectionOutput": "algorithm1_high_level"
   },
   "schema": 1,
   "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
   "source_anchor_evidence_required": true,
   "source_artifact_sha256": "d0575ebda40cce734106cc22a7da0bd8c5eb4dd04925c82af8fc6d30dc85a870",
+  "source_claim_atoms_schema": 1,
   "source_coverage_mode": "named_theoretical_statements",
   "source_curated": true,
   "source_inventory_kind": "source_curated",
   "source_inventory_policy": "Source-first atomic inventory of mathematical model definitions, displayed formulas, algorithms, named results, proof-critical equations, and explicit extensions in the pinned PMLR main paper and supplement. Empirical material is separately identified as contextual in the paper-local audit; no item was inferred from a Lean declaration name. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
   "source_named_result_inventory_review": {
+    "candidate_presentations": [
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_001",
+        "presentation_label": "Remark C.1",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Remark C.1 is retained in the source inventory as a proof-support application of Theorem C.1. Its full-square sentence is subject to the existing localized analytic correction and does not state an independently selected theorem or definition.",
+        "source_anchor": {
+          "line_end": 2237,
+          "line_start": 2223,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark C.1. Let X = [0, 1] × [0, 1], ϕn (θ1 , θ2 ) = − n1 log P n (θ1 , θ2 ). Then, all the conditions for\nTheorem C.1 are met.\n\nC.3\n\nRate function for Wk\n\nOur next lemma shows that we can obtain a nontrivial large deviations rate for Wk when β is a\nstep-wise increasing\nR function.\nRecall Wk = θ1 >θ2 w(θ1 , θ2 )Pk (θ1 , θ2 |β)d(θ1 , θ2 ).\nLet P k (θ1 , θ2 ) = 1 − Pk (θ1 , θ2 ).\nR\nFurther, let W k = (limk Wk ) − Wk = θ1 >θ2 w(θ1 , θ2 )P k (θ1 , θ2 |β)d(θ1 , θ2 ). (recall we assumed\nw integrates to 1 without loss of generality).",
+          "quoted_text_sha256": "81ec25780384373b05acdb17001f3b2eb51ac3fbeb3dd46b10e8cfe711660c86"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_002",
+        "presentation_label": "Remark C.2",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Remark C.2 is retained as proof support for the rate analysis. The literal joint strict-convexity wording is already localized to the checked coordinatewise-separation use and is not an independently selected source result.",
+        "source_anchor": {
+          "line_end": 2409,
+          "line_start": 2404,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark C.2. The KL divergence for two Bernoulli random variables is continuous and strictly\nconvex, with minima at a = b, when a, b ∈ (0, 1). Note that inf a {gi KL(a||ti ) + g(i + 1)KL(a||ti+1 )},\nfor all feasible g, is also continuous and strictly convex in ti , ti+1 , with minima at ti = ti+1 .\nOne consequence of the above fact is that fixing either ti or ti+1 and moving the other farther\naway monotonically increases KL, while moving it closer decreases KL.\nC.4.1",
+          "quoted_text_sha256": "242f4661ebc53305112ac744a3c70981009a2ed105f4bb72a359147a9e06e13c"
+        },
+        "visible_kind": "remark"
+      },
+      {
+        "discovery_basis": "mechanical_labelled_heading",
+        "id": "candidate_003",
+        "presentation_label": "Remark C.3",
+        "schema": 1,
+        "scope_disposition": "deep_audit_material",
+        "semantic_basis": "Remark C.3 supplies the algebra for Equation (25) within the proof of canonical Lemma C.5. Its exact source span is already retained by the selected refinement-equations source item, and it introduces no separate named theorem or definition.",
+        "source_anchor": {
+          "line_end": 2938,
+          "line_start": 2900,
+          "publication_locator": "cited publication",
+          "quoted_text": "Remark C.3.\n\"s\u0012\n\nc\n1−\n1+c\n\nr\n\n\u0013\n(1 − ti ) +\n\n#2\n\ni\np\np\n1h\n1 + (1 − ti−1 )(1 − ti ) + ti−1 ti\n2\n\u00152\n\u0014√\n√\n1 − ti − 1 − ti−1\n√\nwhere c =\n√\nti−1 − ti\n\nc\nti\n1+c\n\n=\n\n√\n√\n√\n√",
+          "quoted_text_sha256": "07a4a5f32212b0757b660e75e27d03da96270e60500e754c5799f6f9b2459acd"
+        },
+        "visible_kind": "remark"
+      }
+    ],
     "complete": true,
+    "discovered_candidate_presentation_sha256": "d7caa023dc6821c42eac15b3cfa184078f15e90f2d5b76e4b4f3629820513c2e",
     "discovered_named_result_sha256": "cdc718d374ff7e0f284b53662439639f7a5216d13cd6fff9245723ca7b7f4cd0",
     "discovered_prose_definition_sha256": "07862f61f97c50601d88da49925f61d58af9f3fe9d0db097f9a0113969eb2bf6",
-    "method": "Independent source-only index over the exact byte-pinned archive surface before consulting any Lean route. It reconciles each visible theorem, lemma, corollary, and Definition C.1 by exact transcript span; six page-layout/proof-restatement presentations are retained as explicit aliases of their canonical source result. It independently indexes the fourteen retained prose definition clauses below.",
+    "method": "Read the complete pinned PMLR main-paper and supplement text projections, including Appendix B and Appendix C; classified every mechanically discovered labelled remark against the source inventory and current proof-support routes. No additional material mathematical presentation was found beyond the three candidates.",
     "prose_definition_presentations": [
       {
         "defined_entity_kind": "object",
@@ -2765,8 +3299,8 @@
     ],
     "schema": 1,
     "source_artifact_sha256": "d0575ebda40cce734106cc22a7da0bd8c5eb4dd04925c82af8fc6d30dc85a870",
-    "validated_at": "2026-08-19T00:00:00Z",
-    "validator": "GJ19 v11 source-only presentation extractor"
+    "validated_at": "2026-09-04T08:13:07Z",
+    "validator": "Codex GJ19 current source-inventory review"
   },
   "source_spec_correspondence_schema": 1,
   "source_url": "https://proceedings.mlr.press/v89/garg19a.html; https://proceedings.mlr.press/v89/garg19a/garg19a.pdf; https://proceedings.mlr.press/v89/garg19a/garg19a-supp.pdf",

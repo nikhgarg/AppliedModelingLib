@@ -13,7 +13,7 @@ man chooses.
 
 namespace Roth82StableMatching
 
-open EconCSLib.Matching
+open AppliedModelingLib.Matching
 
 section BatchedDeferredAcceptance
 

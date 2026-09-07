@@ -1,5 +1,5 @@
 import LBG24SpatialUnderreporting.CorrectedTheorem2Causal
-import EconCSLib.Foundations.Probability.NormalizedKernelDensity
+import AppliedModelingLib.Foundations.Probability.NormalizedKernelDensity
 
 /-!
 # Source densities for a finite causal endpoint policy
@@ -13,8 +13,8 @@ endpoint before the next report gap is observed.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section

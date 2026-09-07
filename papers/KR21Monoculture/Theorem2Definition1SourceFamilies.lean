@@ -19,8 +19,8 @@ source-to-named law transport is proved separately before these source
 differentiability results are used in the final endpoints.
 -/
 
-open EconCSLib Filter MeasureTheory
-open EconCSLib.SocialChoice.Ranking
+open AppliedModelingLib Filter MeasureTheory
+open AppliedModelingLib.SocialChoice.Ranking
 open scoped ENNReal Topology
 
 namespace KR21Monoculture

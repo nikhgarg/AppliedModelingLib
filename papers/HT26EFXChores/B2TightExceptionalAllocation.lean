@@ -14,7 +14,7 @@ Source: `EFXadditivechores.tex`, lines 2612--2676.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- The direct part of the tight exceptional configuration in source Case
 B.3.1.  The two type pools are disjoint, have cardinality three, and are

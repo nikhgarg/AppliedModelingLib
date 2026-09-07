@@ -72,6 +72,18 @@ _SOURCE_BUNDLE_RE = re.compile(
     re.IGNORECASE,
 )
 _ARCHIVE_SUFFIXES = frozenset({".zip", ".tar", ".tgz", ".gz", ".bz2", ".xz", ".7z", ".rar"})
+_LATEX_BUILD_SUFFIXES = frozenset(
+    {
+        ".aux",
+        ".fdb_latexmk",
+        ".fls",
+        ".log",
+        ".out",
+        ".synctex.gz",
+        ".toc",
+        ".xdv",
+    }
+)
 _TOKEN_SPLIT_RE = re.compile(r"[._-]+")
 _CONTRIBUTOR_TEMPLATE_PLANS = frozenset(
     {
@@ -233,7 +245,8 @@ def public_release_artifact_issues(
     """Return deterministic hygiene issues for candidate repository paths.
 
     ``current_audit_artifacts`` must contain exact paths obtained from the
-    candidate's paper status records.  It permits supplemental current receipts
+    candidate's paper status records, receipt-bound ledgers, or validated
+    corrected-target approval routes. It permits supplemental current artifacts
     with noncanonical names.  It cannot override source/cache, private-document,
     or historical/working-audit rules.
     """
@@ -252,6 +265,11 @@ def public_release_artifact_issues(
     normalized_inputs: list[tuple[str, str | None]] = [
         (str(raw_path), _normalize_repo_path(raw_path)) for raw_path in paths
     ]
+    normalized_paths = {
+        normalized
+        for _, normalized in normalized_inputs
+        if normalized is not None
+    }
     for raw_path, normalized in sorted(normalized_inputs, key=lambda item: item[0]):
         if normalized is None:
             add("unsafe-path", raw_path, "path is not a normalized relative POSIX path")
@@ -277,12 +295,31 @@ def public_release_artifact_issues(
                 normalized,
                 "only one exact validated official arXiv TeX path may appear beneath papers/<paper>/source",
             )
-        if path.suffix.lower() in _ARCHIVE_SUFFIXES:
+        if path.suffix.lower() in _ARCHIVE_SUFFIXES and not normalized.lower().endswith(
+            ".synctex.gz"
+        ):
             add(
                 "archive-artifact",
                 normalized,
                 "archive artifacts are not public release inputs",
             )
+        # Reject TeX compiler debris only when a same-stem TeX source exists in
+        # the candidate. This catches presentation build by-products without
+        # treating an unrelated, intentionally versioned `.log` or `.out` data
+        # file as a LaTeX artifact merely by extension.
+        lowered = normalized.lower()
+        latex_suffix = next(
+            (suffix for suffix in _LATEX_BUILD_SUFFIXES if lowered.endswith(suffix)),
+            None,
+        )
+        if latex_suffix is not None:
+            tex_peer = normalized[: -len(latex_suffix)] + ".tex"
+            if tex_peer in normalized_paths:
+                add(
+                    "latex-build-artifact",
+                    normalized,
+                    f"LaTeX build output must be regenerated locally from {tex_peer}",
+                )
         if _SOURCE_BUNDLE_RE.fullmatch(path.name) and normalized not in public_source_paths:
             add(
                 "private-source-bundle",

@@ -26,10 +26,15 @@ from typing import Any, Mapping
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.formalization_protocol import CURRENT_SOURCE_RECORD_PROMPT_VERSION
+
 SUPPLEMENT_BASENAME = "source_record_auxiliary_routing_supplement.json"
 SUPPLEMENT_SCHEMA = 1
 ROUTING_CLOSURE_MANIFEST_SCHEMA = 2
-SOURCE_RECORD_PROMPT_VERSION = "source-record-v10-semantic-conclusion-boundary-contract"
+SOURCE_RECORD_PROMPT_VERSION = CURRENT_SOURCE_RECORD_PROMPT_VERSION
 # This is intentionally distinct from the parser identity read from
 # ``source_record_audit.py`` below.  The parser controls lexical reachability;
 # this module also defines how a replay binds raw roots, status selection, and

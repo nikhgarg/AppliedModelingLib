@@ -10,7 +10,7 @@ Every endpoint below delegates to the proved paper route imported by
 `PaperInterface.lean`. This file is an auxiliary compile receipt, not the
 paper's review surface; the review surface is `PaperInterface.lean` itself.
 
-The pinned ignored scan is `cited publication`, SHA-256
+The pinned ignored scan is `source.pdf`, SHA-256
 `953a8123e8120a86b17ae3de92cb51abb5aed420fe11b97fe2a666a8e637d09b`.
 All printed pages 9--15 were inspected directly.  Normal coverage consists of
 the two displayed college definitions, the prose marriage-instability
@@ -22,7 +22,7 @@ prose consequences into normal named-theory targets.
 namespace GS62CollegeAdmissions
 namespace PostPaperAudit
 
-open EconCSLib.Matching
+open AppliedModelingLib.Matching
 open PaperInterface
 
 /-- Audit endpoint for Theorem 1. -/
@@ -64,7 +64,7 @@ theorem college_waiting_list_bridge
     (val_college : Colleges → Applicants → ℝ)
     (hdomain : strictCollegeAdmissionsDomain val_applicant val_college) :
     ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment
-        quota val_applicant val_college hdomain.2.1 =
+        quota val_applicant val_college hdomain.2.1 hdomain.1.1 =
       ManyToOneOptimality.refinedDeferredAcceptanceManyToOne
         quota val_applicant val_college hdomain.1.2 :=
   college_waiting_list_agrees_with_applicant_da
@@ -81,7 +81,7 @@ theorem theorem2
     (hdomain : strictCollegeAdmissionsDomain val_applicant val_college) :
     applicantOptimalCollegeAssignment quota val_applicant val_college
       (ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment
-        quota val_applicant val_college hdomain.2.1) :=
+        quota val_applicant val_college hdomain.2.1 hdomain.1.1) :=
   ExactCollegeBatchedProcedure.paper_gs62_source_waiting_list_assignment_applicant_optimal
     quota val_applicant val_college hdomain
 
@@ -116,13 +116,15 @@ theorem raw_literal_boundary_source_procedure_eq_preferred_assignment :
         gs62RawLiteralBoundaryQuota
         gs62RawLiteralBoundaryApplicantValue
         gs62RawLiteralBoundaryCollegeValue
-        (gs62RawLiteralBoundary_strictCollegeAdmissionsDomain.2.1) =
+        (gs62RawLiteralBoundary_strictCollegeAdmissionsDomain.2.1)
+        (gs62RawLiteralBoundary_strictCollegeAdmissionsDomain.1.1) =
       gs62RawLiteralBoundaryPreferredAssignment := by
   let mu := ExactCollegeBatchedProcedure.sourceWaitingListFinalAssignment
     gs62RawLiteralBoundaryQuota
     gs62RawLiteralBoundaryApplicantValue
     gs62RawLiteralBoundaryCollegeValue
     (gs62RawLiteralBoundary_strictCollegeAdmissionsDomain.2.1)
+    (gs62RawLiteralBoundary_strictCollegeAdmissionsDomain.1.1)
   have hstable : ManyToOne.IsStable
       gs62RawLiteralBoundaryApplicantValue
       gs62RawLiteralBoundaryCollegeValue
@@ -192,7 +194,8 @@ theorem raw_literal_boundary_source_procedure_not_literal_optimal :
         gs62RawLiteralBoundaryQuota
         gs62RawLiteralBoundaryApplicantValue
         gs62RawLiteralBoundaryCollegeValue
-        (gs62RawLiteralBoundary_strictCollegeAdmissionsDomain.2.1))) := by
+        (gs62RawLiteralBoundary_strictCollegeAdmissionsDomain.2.1)
+        (gs62RawLiteralBoundary_strictCollegeAdmissionsDomain.1.1))) := by
   rw [raw_literal_boundary_source_procedure_eq_preferred_assignment]
   exact gs62RawLiteralBoundaryPreferredAssignment_not_rawLiteralApplicantOptimal
 

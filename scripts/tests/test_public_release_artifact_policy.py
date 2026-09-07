@@ -140,13 +140,37 @@ class PublicReleaseArtifactPolicyTests(unittest.TestCase):
 
     def test_semantic_names_do_not_reject_mathematical_trace_code_or_citations(self) -> None:
         paths = [
-            "EconCSLib/Foundations/Probability/FiniteHorizonTrace.lean",
+            "AppliedModelingLib/Foundations/Probability/FiniteHorizonTrace.lean",
             "papers/Fixture/docs/citation_source.txt",
             "docs/SOURCE_FIDELITY.md",
             "papers/Fixture/PostFormalizationReport.md",
         ]
 
         self.assertEqual(public_release_artifact_issues(paths), [])
+
+    def test_latex_build_debris_is_rejected_only_next_to_its_tex_source(self) -> None:
+        paths = [
+            "papers/Fixture/docs/HUMAN_REVIEW_PACKET.tex",
+            "papers/Fixture/docs/HUMAN_REVIEW_PACKET.aux",
+            "papers/Fixture/docs/HUMAN_REVIEW_PACKET.fdb_latexmk",
+            "papers/Fixture/docs/HUMAN_REVIEW_PACKET.fls",
+            "papers/Fixture/docs/HUMAN_REVIEW_PACKET.log",
+            "papers/Fixture/docs/HUMAN_REVIEW_PACKET.out",
+            "papers/Fixture/docs/HUMAN_REVIEW_PACKET.synctex.gz",
+            "papers/Fixture/docs/HUMAN_REVIEW_PACKET.toc",
+            "papers/Fixture/docs/HUMAN_REVIEW_PACKET.xdv",
+            "examples/intentional.log",
+        ]
+
+        issues = public_release_artifact_issues(paths)
+
+        self.assertEqual(len(issues), 8)
+        self.assertTrue(
+            all("latex-build-artifact" in issue for issue in issues), issues
+        )
+        self.assertFalse(
+            any("examples/intentional.log" in issue for issue in issues), issues
+        )
 
     def test_paths_and_exceptions_must_be_normalized_repo_paths(self) -> None:
         issues = public_release_artifact_issues(

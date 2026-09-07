@@ -1,0 +1,88 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[
+  x=1cm,
+  y=1cm,
+  every node/.append style={outer sep=4pt, font=\sffamily\scriptsize},
+  mwwide/.style={text width=4.45cm, minimum height=1.45cm, align=center, inner sep=3pt}
+]
+
+\dagPaperMetadata{Optimal Incentive-Compatible Priority Pricing for the M/M/1 Queue}{Haim Mendelson and Seungjin Whang}{Operations Research 38(5), 870--883}{1990}{https://pubsonline.informs.org/doi/10.1287/opre.38.5.870}
+\dagPaperLegendRightOfMetadata{
+\node[dag_model, dag_template_legend] (legModel) at (0,0) {source model /\ assumption};
+\node[dag_lemma, right=0.35cm of legModel, dag_template_legend] (legDefinition) {source definition /\ formula};
+\node[dag_result, right=0.35cm of legDefinition, dag_template_legend] (legResult) {formalized\ result};
+}
+\daglegend{(legModel)(legDefinition)(legResult)}{Legend}
+
+\begin{dagPaperBody}
+\begin{scope}[xshift=0.8cm]
+
+% Economic-pricing column.
+\node[dag_model, mwwide] (EconomicModel) at (0,0)
+  {\textbf{Assumptions A2, A3, A5}\par value and delay-cost conditions; atomistic individual demand};
+\node[dag_lemma, mwwide] (ObjectiveDemand) at (0,-3.2)
+  {\textbf{Equations (4)--(5)}\par net-value objective and marginal-user demand equality};
+\node[dag_result, mwwide] (TheoremOne) at (0,-6.4)
+  {\textbf{Theorem 1}\par optimal price equals the marginal waiting-time externality};
+
+% Stationary queue and homogeneous-pricing column.
+\node[dag_model, mwwide] (QueueModel) at (7,-0.0)
+  {\textbf{Assumptions A1 and A4}\par stationary Poisson arrivals and a nonpreemptive multiclass M/M/1 queue};
+\node[dag_lemma, mwwide] (QueueDefinition) at (7,-3.2)
+  {\textbf{Appendix queueing-time definition}\par finite load, residual work, and class priority slacks};
+\node[dag_result, mwwide] (AppendixAOne) at (7,-6.4)
+  {\textbf{Appendix (A-1)}\par stationary mean queueing-time formula};
+\node[dag_lemma, mwwide] (HomogeneousFormulas) at (7,-9.6)
+  {\textbf{Equations (8)--(9)}\par homogeneous queueing time, population, and total sojourn time};
+\node[dag_lemma, mwwide] (PriorityPrice) at (7,-12.8)
+  {\textbf{Equations (10)--(13)}\par priority-dependent price and private expected cost};
+\node[dag_result, mwwide] (TheoremTwo) at (7,-16.0)
+  {\textbf{Theorem 2}\par strict self-selection at positive stable class flows};
+
+% Heterogeneous PTD-pricing column and its results.
+\node[dag_lemma, mwwide] (PTDCriterion) at (14,-6.4)
+  {\textbf{Equations (14)--(15)}\par optimal and incentive-compatible PTD equilibrium criterion};
+\node[dag_lemma, mwwide] (PTDSchedule) at (14,-9.6)
+  {\textbf{Equations (19)--(21)}\par quadratic priority-and-time-dependent price schedule};
+\node[dag_lemma, mwwide] (CheatingPenalty) at (14,-12.8)
+  {\textbf{Cheating-penalty definition}\par expected total-cost increase from a priority misreport};
+\node[dag_result, mwwide] (TheoremThree) at (20,-12.8)
+  {\textbf{Theorem 3}\par PTD pricing implements the stable welfare optimum and strict self-selection};
+\node[dag_result, mwwide] (TheoremFour) at (20,-16.0)
+  {\textbf{Theorem 4}\par zero at the assigned priority and strictly increasing away from it};
+
+\draw[dag_arrow] (EconomicModel) -- (ObjectiveDemand);
+\draw[dag_arrow] (ObjectiveDemand) -- (TheoremOne);
+
+\draw[dag_arrow] (QueueModel) -- (QueueDefinition);
+\draw[dag_arrow] (QueueDefinition) -- (AppendixAOne);
+\draw[dag_arrow] (AppendixAOne) -- (HomogeneousFormulas);
+\draw[dag_arrow] (HomogeneousFormulas) -- (PriorityPrice);
+\draw[dag_arrow] (PriorityPrice) -- (TheoremTwo);
+
+% Theorem 1 also determines the homogeneous externality price.  The route
+% stays in the empty corridor between the economic and queueing columns.
+\draw[dag_arrow] (TheoremOne.south) -- ++(0,-1.20) -- ++(3.25,0) |- (PriorityPrice.west);
+
+% The PTD equilibrium criterion uses the same objective and demand semantics.
+% Its route crosses only the empty edge corridor between queueing nodes.
+\draw[dag_arrow] (ObjectiveDemand.east) -- ++(0.65,0) -- ++(0,-1.55)
+  -| (PTDCriterion.west);
+
+% The PTD schedule uses both the externality calculation and the stationary
+% heterogeneous priority formula.
+\draw[dag_arrow] (TheoremOne.south) -- ++(0,-1.05) -- ++(11.15,0) |- (PTDSchedule.west);
+\draw[dag_arrow] (AppendixAOne.south east) -- (PTDSchedule.north west);
+
+\draw[dag_arrow] (PTDSchedule) -- (CheatingPenalty);
+\draw[dag_arrow] (PTDCriterion.east) -- ++(1.00,0) |- (TheoremThree.north);
+\draw[dag_arrow] (CheatingPenalty) -- (TheoremThree);
+\draw[dag_arrow] (TheoremThree) -- (TheoremFour);
+
+\end{scope}
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

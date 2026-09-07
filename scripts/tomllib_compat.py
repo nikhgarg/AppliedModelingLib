@@ -32,6 +32,10 @@ except ModuleNotFoundError:  # Python 3.10.
                     """Placeholder preserving the standard exception attribute."""
 
                 @staticmethod
+                def load(_stream: object) -> object:
+                    raise ModuleNotFoundError(_INSTALL_HINT)
+
+                @staticmethod
                 def loads(_source: str) -> object:
                     raise ModuleNotFoundError(_INSTALL_HINT)
 
@@ -42,6 +46,16 @@ except ModuleNotFoundError:  # Python 3.10.
             class _TomllibCompat:
                 TOMLDecodeError = _toml.TomlDecodeError
                 loads = staticmethod(_toml.loads)
+
+                @staticmethod
+                def load(stream: object) -> object:
+                    read = getattr(stream, "read", None)
+                    if not callable(read):
+                        raise TypeError("tomllib.load() requires a binary file object")
+                    source = read()
+                    if not isinstance(source, bytes):
+                        raise TypeError("tomllib.load() requires a binary file object")
+                    return _toml.loads(source.decode("utf-8"))
 
             tomllib = _TomllibCompat()  # type: ignore[assignment]
             _backend_problem = None

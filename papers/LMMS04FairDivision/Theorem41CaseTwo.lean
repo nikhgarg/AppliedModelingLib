@@ -2,7 +2,7 @@ import LMMS04FairDivision.Theorem41
 import LMMS04FairDivision.Theorem41Symmetric
 
 open scoped BigOperators
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 namespace Theorem41

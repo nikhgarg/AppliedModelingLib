@@ -145,12 +145,12 @@ theorem endpoint_path_lt_of_hasDerivAt_nonneg_on_Icc_of_exists_pos
     path left < path right := by
   obtain ⟨x, hx, hx_pos⟩ := hderivative_pos
   obtain ⟨epsilon, hepsilon_pos, hepsilon_lt, himprove⟩ :=
-    EconCSLib.Optimization.exists_pos_right_improvement_of_hasDerivAt_pos_lt
+    AppliedModelingLib.Optimization.exists_pos_right_improvement_of_hasDerivAt_pos_lt
       (hpath_derivative x hx) hx_pos (sub_pos.mpr hx.2)
   have hx_epsilon_right : x + epsilon < right := by
     linarith
   have hleft_le_x : path left <= path x := by
-    apply EconCSLib.Optimization.endpoint_path_le_of_hasDerivAt_nonneg_on_Icc
+    apply AppliedModelingLib.Optimization.endpoint_path_le_of_hasDerivAt_nonneg_on_Icc
       (le_of_lt hx.1)
     · exact hpath_continuous.mono (Set.Icc_subset_Icc_right (le_of_lt hx.2))
     · intro y hy
@@ -158,7 +158,7 @@ theorem endpoint_path_lt_of_hasDerivAt_nonneg_on_Icc_of_exists_pos
     · intro y hy
       exact hderivative_nonneg y ⟨hy.1, hy.2.trans hx.2⟩
   have hx_epsilon_le_right : path (x + epsilon) <= path right := by
-    apply EconCSLib.Optimization.endpoint_path_le_of_hasDerivAt_nonneg_on_Icc
+    apply AppliedModelingLib.Optimization.endpoint_path_le_of_hasDerivAt_nonneg_on_Icc
       (le_of_lt hx_epsilon_right)
     · apply hpath_continuous.mono
       intro y hy

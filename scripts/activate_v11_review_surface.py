@@ -11,12 +11,14 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Mapping
-
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-V11_PROMPT = "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2"
+V11_PROMPT = (
+    "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4"
+)
 
 
 class ActivationError(ValueError):
@@ -40,6 +42,7 @@ def v11_contract_specs(
     if not isinstance(raw_items, Mapping):
         raise ActivationError("source map has no items object")
     nested_prefix = namespace + ".PaperInterface."
+    proof_interface_prefix = namespace + ".ProofInterface."
     root_prefix = namespace + "."
     specs: list[str] = []
     proof_endpoints: dict[str, str] = {}
@@ -52,7 +55,6 @@ def v11_contract_specs(
         spec = str(contract.get("spec_declaration") or "").strip()
         if spec.startswith(nested_prefix):
             short_spec = spec[len(nested_prefix) :]
-            proof_prefix = nested_prefix
         elif spec.startswith(root_prefix):
             # Older paper modules sometimes place their review declarations
             # directly in the paper namespace rather than in a nested
@@ -60,7 +62,6 @@ def v11_contract_specs(
             # designated PaperInterface module; accept that layout without
             # forcing an unrelated theorem refactor.
             short_spec = spec[len(root_prefix) :]
-            proof_prefix = root_prefix
         else:
             raise ActivationError(
                 "every selected semantic contract must name a paper-interface `...Spec`: "
@@ -73,16 +74,34 @@ def v11_contract_specs(
             )
         evidence = str(contract.get("evidence_declaration") or "").strip()
         if evidence:
-            if not evidence.startswith(proof_prefix):
+            # The current architecture deliberately separates the expanded
+            # source-facing `Spec` from its exact theorem endpoint.  Prefer a
+            # nested ProofInterface endpoint, retain the pre-v11
+            # PaperInterface layout, and finally accept a legacy direct paper
+            # namespace endpoint.  The generated status mapping stores only
+            # the declaration's short navigation name.
+            endpoint_prefix = next(
+                (
+                    prefix
+                    for prefix in (
+                        proof_interface_prefix,
+                        nested_prefix,
+                        root_prefix,
+                    )
+                    if evidence.startswith(prefix)
+                ),
+                None,
+            )
+            if endpoint_prefix is None:
                 raise ActivationError(
-                    "every selected semantic contract must name a paper-interface proof "
-                    "endpoint: " + evidence
+                    "every selected semantic contract must name a direct "
+                    "ProofInterface or legacy PaperInterface proof endpoint: " + evidence
                 )
-            short_evidence = evidence[len(proof_prefix) :]
+            short_evidence = evidence[len(endpoint_prefix) :]
             if not short_evidence or "." in short_evidence:
                 raise ActivationError(
-                    "every selected semantic contract must name a direct paper-interface proof "
-                    "endpoint: " + evidence
+                    "every selected semantic contract must name a direct proof endpoint: "
+                    + evidence
                 )
         else:
             # Backward-compatible handling for a pre-v11 fixture; real v11
@@ -111,6 +130,40 @@ def activate(status: dict[str, Any], source_map: Mapping[str, Any], *, paper: st
     surface.pop("human_source_file", None)
     surface["include_names"] = specs
     surface["proposition_spec_proofs"] = proof_endpoints
+    raw_slices = surface.get("slices")
+    if isinstance(raw_slices, list):
+        selected = set(specs)
+        assigned: set[str] = set()
+        current_slices: list[dict[str, Any]] = []
+        for raw_slice in raw_slices:
+            if not isinstance(raw_slice, Mapping):
+                continue
+            names = raw_slice.get("names")
+            if not isinstance(names, list):
+                continue
+            current_names = [
+                name
+                for name in names
+                if isinstance(name, str)
+                and name in selected
+                and name not in assigned
+            ]
+            if not current_names:
+                continue
+            current_slice = dict(raw_slice)
+            current_slice["names"] = current_names
+            current_slices.append(current_slice)
+            assigned.update(current_names)
+        remaining = [name for name in specs if name not in assigned]
+        if remaining:
+            current_slices.append(
+                {
+                    "id": "additional_source_results",
+                    "title": "Additional source results",
+                    "names": remaining,
+                }
+            )
+        surface["slices"] = current_slices
     surface["require_v11_raw_source_spec_screening"] = True
     surface["require_source_spec_correspondence"] = True
     statement_review = dict(surface.get("llm_statement_review") or {})
@@ -138,6 +191,39 @@ def activate(status: dict[str, Any], source_map: Mapping[str, Any], *, paper: st
         "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
     }
     return result
+
+
+def status_route_projection_errors(
+    status: Mapping[str, Any],
+    source_map: Mapping[str, Any],
+    *,
+    paper: str,
+) -> tuple[str, ...]:
+    """Report stale human-surface navigation without treating it as evidence.
+
+    The schema-2 source map is the authority for claim routes.  ``status.json``
+    repeats their short names only for the dashboard, packet, and final
+    source-first review.  Keeping that projection exact is a cheap
+    pre-graph consistency check: it prevents a deleted wrapper or omitted
+    current Spec from confusing a human reviewer, while it cannot replace the
+    typed route or Lean graph as semantic/proof authority.
+    """
+
+    try:
+        expected = activate(dict(status), source_map, paper=paper)["review_surface"]
+    except (ActivationError, KeyError, TypeError) as error:
+        return (f"could not derive the v11 status review surface: {error}",)
+    observed = status.get("review_surface")
+    if not isinstance(observed, Mapping):
+        return ("status.json has no review_surface to project from the typed map",)
+    errors: list[str] = []
+    for field in ("include_names", "proposition_spec_proofs"):
+        if observed.get(field) != expected.get(field):
+            errors.append(
+                f"status.json review_surface.{field} is stale relative to the typed "
+                "source-map routes; run activate_v11_review_surface.py --write"
+            )
+    return tuple(errors)
 
 
 def main() -> int:

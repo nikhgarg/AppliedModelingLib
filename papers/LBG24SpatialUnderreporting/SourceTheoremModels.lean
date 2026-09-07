@@ -14,7 +14,7 @@ or law-of-large-numbers conclusion as a field.
 For Appendix Theorem 2, the main-text wording says that the endpoint is
 independent of the selected start conditional on the reports available at the
 endpoint, and the application calls the end rule a stopping-times assumption
-(`cited publication:254-258;1574-1579`, `cited publication:2086-2110`).  The finite model below is the
+(`source.txt:254-258;1574-1579`, `source.txt:2086-2110`).  The finite model below is the
 corresponding rate-free causal transition semantics.  A response kernel sees
 only the visible report prefix, then races a fresh next-report gap.  The
 canonical construction exposes one terminal endpoint after the observed
@@ -22,14 +22,14 @@ branch is selected.
 
 For Lemma 1, the source's steady-state argument states a latent Poisson birth
 process, independent reporting marks, and the resulting conditional binomial
-thinning law (`cited publication:1433-1542`).  The model below makes those primitive
+thinning law (`source.txt:1433-1542`).  The model below makes those primitive
 laws explicit and derives the observed Poisson process and unit-window LLN.
 -/
 
 namespace LBG24SpatialUnderreporting
 
 open Filter MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section
@@ -169,7 +169,7 @@ theorem conditionalLikelihood_factorizes_eq8
     (exposure_pos : 0 < T.window.exposure) :
     conditionalLikelihood T M D rate =
       rateFreeResidual T M D *
-        sourcePoissonPMF rate T.window.exposure T.count := by
+        sourcePoissonPMFOnSourceDomain rate T.window.exposure T.count := by
   simpa [conditionalLikelihood, rateFreeResidual] using
     (CollapsedFiniteStageEndpointModel.theorem2CausalConditionalLikelihood_factorizes_corrected_eq8
       T (EndpointDensityPresentation.toDensityModel M D) rate_pos exposure_pos)
@@ -177,6 +177,20 @@ theorem conditionalLikelihood_factorizes_eq8
 end AppendixTheorem2CausalStoppingSourceModel
 
 /-! ## Lemma 1 and Proposition 1 -/
+
+/-- The source's incident birth/death window: every logged report occurs while
+its incident is active, between the unobserved birth time and the death time
+`birthTime + duration`. -/
+structure IncidentBirthDeathSourceModel (Incident Report : Type*) where
+  birthTime : Incident → ℝ
+  duration : Incident → ℝ
+  duration_nonnegative : ∀ incident, 0 ≤ duration incident
+  reportIncident : Report → Incident
+  reportTime : Report → ℝ
+  report_during_active_window : ∀ report,
+    birthTime (reportIncident report) ≤ reportTime report ∧
+      reportTime report ≤
+        birthTime (reportIncident report) + duration (reportIncident report)
 
 /--
 The source's duration law is a probability density on nonnegative durations.
@@ -218,6 +232,82 @@ theorem firstReportProbability_le_one
 end ContinuousDurationDensitySourceCondition
 
 /--
+The source-domain conditions on the possibly age-varying reporting intensity
+in Lemma 1.  A reporting intensity is nonnegative, and is integrable on every
+finite nonnegative-duration interval.  The cumulative-intensity
+nonnegativity used below is derived from these primitives.
+-/
+structure Lemma1ReportingIntensitySourceCondition
+    (reportingIntensity : ℝ → ℝ) : Prop where
+  nonnegative : ∀ t : ℝ, 0 ≤ t → 0 ≤ reportingIntensity t
+  intervalIntegrable : ∀ t : ℝ, 0 ≤ t →
+    IntervalIntegrable reportingIntensity volume 0 t
+
+namespace Lemma1ReportingIntensitySourceCondition
+
+variable {reportingIntensity : ℝ → ℝ}
+
+/-- The integrated reporting intensity is nonnegative at every source-domain
+duration. -/
+theorem cumulativeIntensity_nonnegative
+    (H : Lemma1ReportingIntensitySourceCondition reportingIntensity)
+    {t : ℝ} (ht : 0 ≤ t) :
+    0 ≤ ∫ u in (0 : ℝ)..t, reportingIntensity u := by
+  exact intervalIntegral.integral_nonneg ht fun u hu =>
+    H.nonnegative u hu.1
+
+end Lemma1ReportingIntensitySourceCondition
+
+/-- The duration-mixture detection probability in source Lemma 1 is
+nonnegative.  This derives the probability bound from the nonnegative
+reporting intensity and duration density rather than accepting a numerical
+retention parameter or an equality to one as a model premise. -/
+theorem lemma1_cumulativeFirstReportProbability_nonnegative
+    (reportingIntensity durationDensity : ℝ → ℝ)
+    (reportingIntensity_source :
+      Lemma1ReportingIntensitySourceCondition reportingIntensity)
+    (durationDensity_source :
+      ContinuousDurationDensitySourceCondition durationDensity)
+    (noReport_integrable :
+      Integrable
+        (fun t => durationDensity t *
+          Real.exp (-∫ u in (0 : ℝ)..t, reportingIntensity u))
+        (volume.restrict (Set.Ici (0 : ℝ)))) :
+    0 ≤ continuousDurationFirstReportProbabilityOfCumulativeIntensity
+      (fun t => ∫ u in (0 : ℝ)..t, reportingIntensity u)
+      durationDensity := by
+  rw [continuousDurationFirstReportProbabilityOfCumulativeIntensity_eq_integral
+    (fun t => ∫ u in (0 : ℝ)..t, reportingIntensity u) durationDensity
+    durationDensity_source.integral_eq_one
+    durationDensity_source.integrable noReport_integrable]
+  apply MeasureTheory.integral_nonneg_of_ae
+  filter_upwards [durationDensity_source.nonnegative_ae,
+    MeasureTheory.ae_restrict_mem measurableSet_Ici] with t hDensity ht
+  refine mul_nonneg hDensity (sub_nonneg.mpr ?_)
+  rw [Real.exp_le_one_iff]
+  exact neg_nonpos.mpr
+    (reportingIntensity_source.cumulativeIntensity_nonnegative ht)
+
+/-- The same source-derived detection probability is at most one. -/
+theorem lemma1_cumulativeFirstReportProbability_le_one
+    (reportingIntensity durationDensity : ℝ → ℝ)
+    (durationDensity_source :
+      ContinuousDurationDensitySourceCondition durationDensity) :
+    continuousDurationFirstReportProbabilityOfCumulativeIntensity
+        (fun t => ∫ u in (0 : ℝ)..t, reportingIntensity u)
+        durationDensity ≤ 1 := by
+  have hNoReport :
+      0 ≤ ∫ t, durationDensity t *
+        Real.exp (-∫ u in (0 : ℝ)..t, reportingIntensity u)
+          ∂(volume.restrict (Set.Ici (0 : ℝ))) := by
+    apply MeasureTheory.integral_nonneg_of_ae
+    filter_upwards [durationDensity_source.nonnegative_ae] with t hDensity
+    exact mul_nonneg hDensity (Real.exp_pos _).le
+  dsimp [continuousDurationFirstReportProbabilityOfCumulativeIntensity,
+    continuousDurationNoReportProbabilityOfCumulativeIntensity]
+  exact sub_le_self 1 hNoReport
+
+/--
 The calendar-time source model for Lemma 1. Incidents are born on a stationary
 marked Poisson process. A mark is the first-report delay when the incident
 reports before its duration ends, so `calendarCount t` counts actual first
@@ -234,6 +324,9 @@ structure Lemma1CalendarTimeDurationSourceModel
     (Ω : Type*) [MeasurableSpace Ω] (P : Measure Ω) where
   /-- The source's (possibly age-varying) per-incident reporting intensity. -/
   reportingIntensity : ℝ → ℝ
+  /-- The reporting rate is a valid nonnegative, locally integrable intensity. -/
+  reportingIntensity_source :
+    Lemma1ReportingIntensitySourceCondition reportingIntensity
   durationDensity : ℝ → ℝ
   durationDensity_source : ContinuousDurationDensitySourceCondition durationDensity
   calendarFirstReports : CalendarFirstReportSourceModel Ω P
@@ -258,16 +351,13 @@ def observedIncidentRate
     (fun t => ∫ u in (0 : ℝ)..t, M.reportingIntensity u)
     M.durationDensity
 
-/-- The derived forward process of calendar-time first reports. -/
-def observedProcess
+/-- Its calendar-first-report intensity is exactly the source's
+duration-mixture observed rate. -/
+theorem calendarFirstReports_rate_eq_observedIncidentRate
     (M : Lemma1CalendarTimeDurationSourceModel Ω P) :
-    ForwardHomogeneousPoissonCountingProcessByLaw Ω P :=
-  M.calendarFirstReports.toForwardHomogeneousPoissonProcess
-
-/-- Its rate is exactly the source's duration-mixture observed rate. -/
-theorem observedProcess_rate
-    (M : Lemma1CalendarTimeDurationSourceModel Ω P) :
-    M.observedProcess.rate = M.observedIncidentRate := by
+    M.calendarFirstReports.incidentRate *
+        M.calendarFirstReports.retentionProbability =
+      M.observedIncidentRate := by
   change M.calendarFirstReports.incidentRate *
       M.calendarFirstReports.retentionProbability =
     continuousDurationObservedIncidentRateOfCumulativeIntensity
@@ -276,13 +366,6 @@ theorem observedProcess_rate
       M.durationDensity
   rw [M.preFirstReport_survival_retention_probability]
   rfl
-
-/-- Proposition 1's total count, represented as consecutive calendar-time
-first-report counts. -/
-def observedUniqueIncidentCount
-    (M : Lemma1CalendarTimeDurationSourceModel Ω P)
-    (n : ℕ) (ω : Ω) : ℕ :=
-  ∑ i ∈ Finset.range n, M.observedProcess.unitIntervalCount i ω
 
 /-- The calendar-time process gives the exact Lemma 1 interval law. -/
 theorem observed_calendar_process_properties
@@ -296,29 +379,204 @@ theorem observed_calendar_process_properties
           M.calendarFirstReports.calendarCount t ω -
             M.calendarFirstReports.calendarCount s ω = observedCount} =
           countLikelihood M.observedIncidentRate ((t : ℝ) - (s : ℝ)) observedCount := by
-  refine ⟨M.observedProcess.count_measurable,
-    M.observedProcess.count_zero_ae,
-    M.observedProcess.count_mono_ae,
-    M.observedProcess.hasIndepIncrements, ?_⟩
+  refine ⟨?_, M.calendarFirstReports.calendarCount_zero_ae,
+    Filter.Eventually.of_forall M.calendarFirstReports.calendarCount_mono,
+    M.calendarFirstReports.calendarCount_hasIndepIncrements, ?_⟩
+  · intro t
+    exact M.calendarFirstReports.markedBirths.measurable_finiteCount
+      (CalendarFirstReportSourceModel.firstReportSet 0 t)
   intro s t hst observedCount
-  have h := M.observedProcess.intervalCount_prob hst observedCount
-  rw [M.observedProcess_rate] at h
-  simpa [observedProcess,
-    ForwardHomogeneousPoissonCountingProcessByLaw.intervalCount] using h
-
-/-- The source's large-time conclusion follows for actual calendar-time first
-reports, not merely for a retained birth cohort. -/
-theorem observedUniqueIncidentCount_real_strongLaw
-    (M : Lemma1CalendarTimeDurationSourceModel Ω P) :
-    ∀ᵐ ω ∂P,
-      Tendsto (fun n : ℕ =>
-        (M.observedUniqueIncidentCount n ω : ℝ) / n)
-        atTop (nhds M.observedIncidentRate) := by
-  have h := M.observedProcess.unitIntervalCount_real_strongLaw
-  rw [M.observedProcess_rate] at h
-  simpa [observedUniqueIncidentCount] using h
+  rw [← M.calendarFirstReports_rate_eq_observedIncidentRate]
+  exact hasLaw_poissonMeasure_real_singleton_eq_countLikelihood
+    (mul_nonneg
+      (mul_nonneg M.calendarFirstReports.incidentRate_nonnegative
+        M.calendarFirstReports.retentionProbability_nonnegative)
+      (sub_nonneg.mpr (NNReal.coe_le_coe.mpr hst)))
+    (M.calendarFirstReports.calendarCount_increment_hasLaw hst) observedCount
 
 end Lemma1CalendarTimeDurationSourceModel
+
+/-!
+The source-facing Lemma 1 model below stays on the paper's time-indexed count
+domain.  The older marked-displacement construction above is useful proof
+infrastructure for a stronger point-process realization, but it is not needed
+to state the source's Poisson-incidence and independent-reporting model.
+-/
+
+/--
+The exact time-indexed source model used by Lemma 1.
+
+`incidentCount` is the paper's Poisson incident process and `observedCount` is
+the count of distinct incidents first reported in calendar time.  The joint
+interval law is the paper's conditional binomial thinning calculation, while
+independence of the interval pairs records that incidents report independently
+across disjoint Poisson-arrival intervals.  The incident rate may be zero, and
+the duration-mixture reporting probability is constrained only to the closed
+probability interval.
+-/
+structure Lemma1ExactSourceProcessModel
+    (Ω : Type*) [MeasurableSpace Ω] (P : Measure Ω) where
+  isProbability : IsProbabilityMeasure P
+  incidentRate : ℝ
+  incidentRate_nonnegative : 0 ≤ incidentRate
+  /-- The source's possibly age-varying per-incident reporting intensity. -/
+  reportingIntensity : ℝ → ℝ
+  reportingIntensity_source :
+    Lemma1ReportingIntensitySourceCondition reportingIntensity
+  /-- The source duration density on `[0,∞)`. -/
+  durationDensity : ℝ → ℝ
+  durationDensity_source :
+    ContinuousDurationDensitySourceCondition durationDensity
+  /-- The source probability that an incident reports before its duration. -/
+  reportingProbability_nonnegative :
+    0 ≤ continuousDurationFirstReportProbabilityOfCumulativeIntensity
+      (fun t ↦ ∫ u in (0 : ℝ)..t, reportingIntensity u) durationDensity
+  reportingProbability_le_one :
+    continuousDurationFirstReportProbabilityOfCumulativeIntensity
+      (fun t ↦ ∫ u in (0 : ℝ)..t, reportingIntensity u) durationDensity ≤ 1
+  /-- Calendar-time incident and first-report counts. -/
+  incidentCount : ℝ≥0 → Ω → ℕ
+  observedCount : ℝ≥0 → Ω → ℕ
+  incidentCount_measurable : ∀ t, Measurable (incidentCount t)
+  observedCount_measurable : ∀ t, Measurable (observedCount t)
+  incidentCount_zero_ae : ∀ᵐ ω ∂P, incidentCount 0 ω = 0
+  observedCount_zero_ae : ∀ᵐ ω ∂P, observedCount 0 ω = 0
+  incidentCount_mono_ae : ∀ᵐ ω ∂P, Monotone fun t ↦ incidentCount t ω
+  observedCount_mono_ae : ∀ᵐ ω ∂P, Monotone fun t ↦ observedCount t ω
+  /-- Disjoint interval pairs are independent under independent reporting. -/
+  intervalPairs_independent :
+    ∀ (n : ℕ) (t : Fin (n + 1) → ℝ≥0), Monotone t →
+      iIndepFun
+        (fun (i : Fin n) ω ↦
+          (incidentCount (t i.succ) ω - incidentCount (t i.castSucc) ω,
+            observedCount (t i.succ) ω - observedCount (t i.castSucc) ω)) P
+  /-- Poisson incident increments followed by the source's conditional
+  binomial reporting marks. -/
+  interval_joint_mass :
+    ∀ {s t : ℝ≥0}, s ≤ t → ∀ (incident observed : ℕ),
+      P.real
+          ({ω : Ω | incidentCount t ω - incidentCount s ω = incident} ∩
+            {ω : Ω | observedCount t ω - observedCount s ω = observed}) =
+        countLikelihood incidentRate ((t : ℝ) - (s : ℝ)) incident *
+          binomialThinningMass
+            (continuousDurationFirstReportProbabilityOfCumulativeIntensity
+              (fun u ↦ ∫ v in (0 : ℝ)..u, reportingIntensity v)
+              durationDensity)
+            incident observed
+
+namespace Lemma1ExactSourceProcessModel
+
+variable {Ω : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+
+/-- The duration-mixture observed rate displayed in Lemma 1. -/
+def observedIncidentRate (M : Lemma1ExactSourceProcessModel Ω P) : ℝ :=
+  continuousDurationObservedIncidentRateOfCumulativeIntensity
+    M.incidentRate (fun t ↦ ∫ u in (0 : ℝ)..t, M.reportingIntensity u)
+    M.durationDensity
+
+/-- Independent marked interval pairs give independent observed increments. -/
+theorem observedCount_hasIndepIncrements
+    (M : Lemma1ExactSourceProcessModel Ω P) :
+    HasIndepIncrements M.observedCount P := by
+  intro n t ht
+  have hPair := M.intervalPairs_independent n t ht
+  have hObserved := hPair.comp
+    (fun (_ : Fin n) (q : ℕ × ℕ) ↦ q.2)
+    (fun (_ : Fin n) ↦ measurable_snd)
+  simpa [Function.comp_def] using hObserved
+
+/-- Marginalizing the source's conditional binomial law gives the displayed
+Poisson interval mass, including the zero-rate endpoint. -/
+theorem observedIntervalCount_mass_eq_countLikelihood
+    (M : Lemma1ExactSourceProcessModel Ω P)
+    {s t : ℝ≥0} (hst : s ≤ t) (observed : ℕ) :
+    P.real { ω : Ω |
+        M.observedCount t ω - M.observedCount s ω = observed } =
+      countLikelihood M.observedIncidentRate ((t : ℝ) - (s : ℝ)) observed := by
+  letI : IsProbabilityMeasure P := M.isProbability
+  let L : Ω → ℕ := fun ω ↦ M.incidentCount t ω - M.incidentCount s ω
+  let O : Ω → ℕ := fun ω ↦ M.observedCount t ω - M.observedCount s ω
+  let A : ℕ → Set Ω := fun incident ↦ { ω | L ω = incident } ∩ { ω | O ω = observed }
+  have mL : Measurable L :=
+    (M.incidentCount_measurable t).sub (M.incidentCount_measurable s)
+  have mO : Measurable O :=
+    (M.observedCount_measurable t).sub (M.observedCount_measurable s)
+  have hAmeas : ∀ incident, MeasurableSet (A incident) := by
+    intro incident
+    exact (mL (measurableSet_singleton incident)).inter
+      (mO (measurableSet_singleton observed))
+  have hAdis : Pairwise (fun a b ↦ Disjoint (A a) (A b)) := by
+    intro a b hab
+    rw [Set.disjoint_left]
+    intro ω ha hb
+    exact hab (ha.1.symm.trans hb.1)
+  have hUnion : { ω | O ω = observed } = ⋃ incident : ℕ, A incident := by
+    ext ω
+    constructor
+    · intro hO
+      exact Set.mem_iUnion.mpr ⟨L ω, rfl, hO⟩
+    · intro h
+      rcases Set.mem_iUnion.mp h with ⟨incident, _hL, hO⟩
+      exact hO
+  change P.real { ω | O ω = observed } = _
+  rw [hUnion]
+  calc
+    P.real (⋃ incident : ℕ, A incident) =
+        ∑' incident : ℕ, P.real (A incident) := by
+      simp only [Measure.real, measure_iUnion hAdis hAmeas]
+      exact ENNReal.tsum_toReal_eq (fun incident ↦ measure_ne_top P (A incident))
+    _ = ∑' incident : ℕ,
+        countLikelihood M.incidentRate ((t : ℝ) - (s : ℝ)) incident *
+          binomialThinningMass
+            (continuousDurationFirstReportProbabilityOfCumulativeIntensity
+              (fun u ↦ ∫ v in (0 : ℝ)..u, M.reportingIntensity v)
+              M.durationDensity)
+            incident observed := by
+      apply tsum_congr
+      intro incident
+      exact M.interval_joint_mass hst incident observed
+    _ = countLikelihood 1
+          ((M.incidentRate * ((t : ℝ) - (s : ℝ))) *
+            continuousDurationFirstReportProbabilityOfCumulativeIntensity
+              (fun u ↦ ∫ v in (0 : ℝ)..u, M.reportingIntensity v)
+              M.durationDensity)
+          observed := by
+      rw [← tsum_countLikelihood_mul_binomialThinningMass]
+      congr 1
+      funext incident
+      congr 1
+      simp [countLikelihood]
+    _ = countLikelihood M.observedIncidentRate ((t : ℝ) - (s : ℝ)) observed := by
+      have hmean :
+          (M.incidentRate * ((t : ℝ) - (s : ℝ))) *
+              continuousDurationFirstReportProbabilityOfCumulativeIntensity
+                (fun u ↦ ∫ v in (0 : ℝ)..u, M.reportingIntensity v)
+                M.durationDensity =
+            (M.incidentRate *
+                continuousDurationFirstReportProbabilityOfCumulativeIntensity
+                  (fun u ↦ ∫ v in (0 : ℝ)..u, M.reportingIntensity v)
+                  M.durationDensity) * ((t : ℝ) - (s : ℝ)) := by
+        ring
+      simp only [observedIncidentRate,
+        continuousDurationObservedIncidentRateOfCumulativeIntensity,
+        countLikelihood, one_mul, hmean]
+
+/-- Lemma 1's complete time-indexed observed-process conclusion. -/
+theorem observed_calendar_process_properties
+    (M : Lemma1ExactSourceProcessModel Ω P) :
+    (∀ t : ℝ≥0, Measurable (M.observedCount t)) ∧
+      (∀ᵐ ω ∂P, M.observedCount 0 ω = 0) ∧
+      (∀ᵐ ω ∂P, Monotone fun t ↦ M.observedCount t ω) ∧
+      HasIndepIncrements M.observedCount P ∧
+      ∀ {s t : ℝ≥0}, s ≤ t → ∀ observed : ℕ,
+        P.real { ω : Ω |
+          M.observedCount t ω - M.observedCount s ω = observed } =
+            countLikelihood M.observedIncidentRate ((t : ℝ) - (s : ℝ)) observed := by
+  exact ⟨M.observedCount_measurable, M.observedCount_zero_ae,
+    M.observedCount_mono_ae, M.observedCount_hasIndepIncrements,
+    fun hst observed ↦ M.observedIntervalCount_mass_eq_countLikelihood hst observed⟩
+
+end Lemma1ExactSourceProcessModel
 
 /--
 The homogeneous specialization used by Proposition 1. It retains the same
@@ -328,7 +586,7 @@ parameter that Proposition 1 varies explicit.
 structure Proposition1CalendarTimeDurationSourceModel
     (Ω : Type*) [MeasurableSpace Ω] (P : Measure Ω) where
   reportingRate : ℝ
-  reportingRate_pos : 0 < reportingRate
+  reportingRate_nonnegative : 0 ≤ reportingRate
   durationDensity : ℝ → ℝ
   durationDensity_source : ContinuousDurationDensitySourceCondition durationDensity
   calendarFirstReports : CalendarFirstReportSourceModel Ω P
@@ -346,15 +604,49 @@ def observedIncidentRate
   continuousDurationObservedIncidentRate
     M.calendarFirstReports.incidentRate M.reportingRate M.durationDensity
 
+/-- A positive observed calendar-time rate forces both factors in the
+source-model rate identity to be positive.  Positivity is therefore derived
+only at the nondegenerate Proposition 1 branch that needs a Poisson-process
+package; it is not a global source-model premise. -/
+theorem incidentRate_pos_of_observedIncidentRate_pos
+    (M : Proposition1CalendarTimeDurationSourceModel Ω P)
+    (hObserved : 0 < M.observedIncidentRate) :
+    0 < M.calendarFirstReports.incidentRate := by
+  have hProduct : 0 < M.calendarFirstReports.incidentRate *
+      M.calendarFirstReports.retentionProbability := by
+    rw [M.preFirstReport_survival_retention_probability]
+    simpa [observedIncidentRate, continuousDurationObservedIncidentRate] using hObserved
+  nlinarith [M.calendarFirstReports.incidentRate_nonnegative,
+    M.calendarFirstReports.retentionProbability_nonnegative]
+
+/-- The companion positivity consequence for the retained first-report
+probability. -/
+theorem retentionProbability_pos_of_observedIncidentRate_pos
+    (M : Proposition1CalendarTimeDurationSourceModel Ω P)
+    (hObserved : 0 < M.observedIncidentRate) :
+    0 < M.calendarFirstReports.retentionProbability := by
+  have hProduct : 0 < M.calendarFirstReports.incidentRate *
+      M.calendarFirstReports.retentionProbability := by
+    rw [M.preFirstReport_survival_retention_probability]
+    simpa [observedIncidentRate, continuousDurationObservedIncidentRate] using hObserved
+  nlinarith [M.calendarFirstReports.incidentRate_nonnegative,
+    M.calendarFirstReports.retentionProbability_nonnegative]
+
 /-- The derived process of actual first reports in calendar time. -/
 def observedProcess
-    (M : Proposition1CalendarTimeDurationSourceModel Ω P) :
+    (M : Proposition1CalendarTimeDurationSourceModel Ω P)
+    (incidentRate_pos : 0 < M.calendarFirstReports.incidentRate)
+    (retentionProbability_pos : 0 < M.calendarFirstReports.retentionProbability) :
     ForwardHomogeneousPoissonCountingProcessByLaw Ω P :=
   M.calendarFirstReports.toForwardHomogeneousPoissonProcess
+    incidentRate_pos retentionProbability_pos
 
 theorem observedProcess_rate
-    (M : Proposition1CalendarTimeDurationSourceModel Ω P) :
-    M.observedProcess.rate = M.observedIncidentRate := by
+    (M : Proposition1CalendarTimeDurationSourceModel Ω P)
+    (incidentRate_pos : 0 < M.calendarFirstReports.incidentRate)
+    (retentionProbability_pos : 0 < M.calendarFirstReports.retentionProbability) :
+    (M.observedProcess incidentRate_pos retentionProbability_pos).rate =
+      M.observedIncidentRate := by
   change M.calendarFirstReports.incidentRate *
       M.calendarFirstReports.retentionProbability =
     continuousDurationObservedIncidentRate
@@ -366,16 +658,20 @@ theorem observedProcess_rate
 def observedUniqueIncidentCount
     (M : Proposition1CalendarTimeDurationSourceModel Ω P)
     (n : ℕ) (ω : Ω) : ℕ :=
-  ∑ i ∈ Finset.range n, M.observedProcess.unitIntervalCount i ω
+  ∑ i ∈ Finset.range n,
+    (M.calendarFirstReports.calendarCount (i + 1) ω -
+      M.calendarFirstReports.calendarCount i ω)
 
 theorem observedUniqueIncidentCount_real_strongLaw
-    (M : Proposition1CalendarTimeDurationSourceModel Ω P) :
+    (M : Proposition1CalendarTimeDurationSourceModel Ω P)
+    (incidentRate_pos : 0 < M.calendarFirstReports.incidentRate)
+    (retentionProbability_pos : 0 < M.calendarFirstReports.retentionProbability) :
     ∀ᵐ ω ∂P,
       Tendsto (fun n : ℕ =>
         (M.observedUniqueIncidentCount n ω : ℝ) / n)
         atTop (nhds M.observedIncidentRate) := by
-  have h := M.observedProcess.unitIntervalCount_real_strongLaw
-  rw [M.observedProcess_rate] at h
+  have h := (M.observedProcess incidentRate_pos retentionProbability_pos).unitIntervalCount_real_strongLaw
+  rw [M.observedProcess_rate incidentRate_pos retentionProbability_pos] at h
   simpa [observedUniqueIncidentCount] using h
 
 /-- Two homogeneous calendar-time source models with distinct reporting rates
@@ -386,6 +682,10 @@ theorem distinct_reporting_rates_same_observed_process_rate
     {P₁ : Measure Ω₁} {P₂ : Measure Ω₂}
     (M₁ : Proposition1CalendarTimeDurationSourceModel Ω₁ P₁)
     (M₂ : Proposition1CalendarTimeDurationSourceModel Ω₂ P₂)
+    (incidentRate₁_pos : 0 < M₁.calendarFirstReports.incidentRate)
+    (retentionProbability₁_pos : 0 < M₁.calendarFirstReports.retentionProbability)
+    (incidentRate₂_pos : 0 < M₂.calendarFirstReports.incidentRate)
+    (retentionProbability₂_pos : 0 < M₂.calendarFirstReports.retentionProbability)
     (reporting_rates_ne : M₁.reportingRate ≠ M₂.reportingRate)
     (observed_rates_eq : M₁.observedIncidentRate = M₂.observedIncidentRate) :
     M₁.reportingRate ≠ M₂.reportingRate ∧
@@ -394,8 +694,11 @@ theorem distinct_reporting_rates_same_observed_process_rate
           observedProcess₁.count = M₁.calendarFirstReports.calendarCount ∧
           observedProcess₂.count = M₂.calendarFirstReports.calendarCount ∧
           observedProcess₁.rate = observedProcess₂.rate := by
-  refine ⟨reporting_rates_ne, M₁.observedProcess, M₂.observedProcess, rfl, rfl, ?_⟩
-  rw [M₁.observedProcess_rate, M₂.observedProcess_rate, observed_rates_eq]
+  refine ⟨reporting_rates_ne,
+    M₁.observedProcess incidentRate₁_pos retentionProbability₁_pos,
+    M₂.observedProcess incidentRate₂_pos retentionProbability₂_pos, rfl, rfl, ?_⟩
+  rw [M₁.observedProcess_rate incidentRate₁_pos retentionProbability₁_pos,
+    M₂.observedProcess_rate incidentRate₂_pos retentionProbability₂_pos, observed_rates_eq]
 
 end Proposition1CalendarTimeDurationSourceModel
 
@@ -460,11 +763,12 @@ cumulative-intensity Lemma 1 rate, including the homogeneous case as a
 specialization.
 -/
 theorem observed_process_is_homogeneous_poisson
-    (M : Lemma1CumulativeIntensitySteadyStateDurationSourceModel Omega P) :
+    (M : Lemma1CumulativeIntensitySteadyStateDurationSourceModel Omega P)
+    (hdetection : 0 < M.markedProcess.detectionProbability) :
     ∃ observedProcess : ForwardHomogeneousPoissonCountingProcessByLaw Omega P,
       observedProcess.count = M.markedProcess.observedCount ∧
       observedProcess.rate = M.observedIncidentRate := by
-  rcases M.markedProcess.observed_process_is_homogeneous_poisson with
+  rcases M.markedProcess.observed_process_is_homogeneous_poisson hdetection with
     ⟨observedProcess, hcount, hrate⟩
   refine ⟨observedProcess, hcount, ?_⟩
   rw [hrate, M.latent_rate_eq_incidentRate,
@@ -476,7 +780,8 @@ def retainedBirthCohortCount
     (M : Lemma1CumulativeIntensitySteadyStateDurationSourceModel Omega P)
     (n : ℕ) (omega : Omega) : ℕ :=
   ∑ i ∈ Finset.range n,
-    M.markedProcess.toObservedForwardPoissonProcess.unitIntervalCount i omega
+    (M.markedProcess.observedCount ((i : ℝ≥0) + 1) omega -
+      M.markedProcess.observedCount (i : ℝ≥0) omega)
 
 /--
 The same cohort model yields the unit-window strong law at the full
@@ -484,12 +789,13 @@ cumulative-intensity retained-birth rate.  Proposition 1 only uses its
 homogeneous specialization.
 -/
 theorem retainedBirthCohortCount_real_strongLaw
-    (M : Lemma1CumulativeIntensitySteadyStateDurationSourceModel Omega P) :
+    (M : Lemma1CumulativeIntensitySteadyStateDurationSourceModel Omega P)
+    (hdetection : 0 < M.markedProcess.detectionProbability) :
     ∀ᵐ omega ∂P,
       Tendsto (fun n : ℕ =>
         (M.retainedBirthCohortCount n omega : ℝ) / n)
         atTop (nhds M.observedIncidentRate) := by
-  filter_upwards [M.markedProcess.observed_unitIntervalCount_real_strongLaw]
+  filter_upwards [M.markedProcess.observed_unitIntervalCount_real_strongLaw hdetection]
     with omega homega
   simpa [retainedBirthCohortCount, observedIncidentRate,
     continuousDurationObservedIncidentRateOfCumulativeIntensity,
@@ -536,11 +842,12 @@ def observedIncidentRate
 /-- The observed unique-incident process is derived from the latent process
 and independent marks, at exactly the source rate. -/
 theorem observed_process_is_homogeneous_poisson
-    (M : Lemma1SteadyStateDurationSourceModel Ω P) :
+    (M : Lemma1SteadyStateDurationSourceModel Ω P)
+    (hdetection : 0 < M.markedProcess.detectionProbability) :
     ∃ observedProcess : ForwardHomogeneousPoissonCountingProcessByLaw Ω P,
       observedProcess.count = M.markedProcess.observedCount ∧
       observedProcess.rate = M.observedIncidentRate := by
-  rcases M.markedProcess.observed_process_is_homogeneous_poisson with
+  rcases M.markedProcess.observed_process_is_homogeneous_poisson hdetection with
     ⟨observedProcess, hcount, hrate⟩
   refine ⟨observedProcess, hcount, ?_⟩
   rw [hrate, M.latent_rate_eq_incidentRate,
@@ -553,17 +860,19 @@ def observedUniqueIncidentCount
     (M : Lemma1SteadyStateDurationSourceModel Ω P)
     (n : ℕ) (omega : Ω) : ℕ :=
   ∑ i ∈ Finset.range n,
-    M.markedProcess.toObservedForwardPoissonProcess.unitIntervalCount i omega
+    (M.markedProcess.observedCount ((i : ℝ≥0) + 1) omega -
+      M.markedProcess.observedCount (i : ℝ≥0) omega)
 
 /-- Proposition 1's stated unit-window LLN follows from the derived observed
 Poisson process, with the source duration-law rate substituted. -/
 theorem observedUniqueIncidentCount_real_strongLaw
-    (M : Lemma1SteadyStateDurationSourceModel Ω P) :
+    (M : Lemma1SteadyStateDurationSourceModel Ω P)
+    (hdetection : 0 < M.markedProcess.detectionProbability) :
     ∀ᵐ omega ∂P,
       Tendsto (fun n : ℕ =>
         (M.observedUniqueIncidentCount n omega : ℝ) / n)
         atTop (nhds M.observedIncidentRate) := by
-  filter_upwards [M.markedProcess.observed_unitIntervalCount_real_strongLaw]
+  filter_upwards [M.markedProcess.observed_unitIntervalCount_real_strongLaw hdetection]
     with omega homega
   simpa [observedUniqueIncidentCount, observedIncidentRate,
     continuousDurationObservedIncidentRate,
@@ -578,6 +887,8 @@ theorem compensating_models_have_equal_observed_process_rates
     {P₁ : Measure Ω₁} {P₂ : Measure Ω₂}
     (M₁ : Lemma1SteadyStateDurationSourceModel Ω₁ P₁)
     (M₂ : Lemma1SteadyStateDurationSourceModel Ω₂ P₂)
+    (hdetection₁ : 0 < M₁.markedProcess.detectionProbability)
+    (hdetection₂ : 0 < M₂.markedProcess.detectionProbability)
     (reporting_rates_ne : M₁.reportingRate ≠ M₂.reportingRate)
     (observed_rates_eq : M₁.observedIncidentRate = M₂.observedIncidentRate) :
     M₁.reportingRate ≠ M₂.reportingRate ∧
@@ -586,9 +897,9 @@ theorem compensating_models_have_equal_observed_process_rates
           observedProcess₁.count = M₁.markedProcess.observedCount ∧
           observedProcess₂.count = M₂.markedProcess.observedCount ∧
           observedProcess₁.rate = observedProcess₂.rate := by
-  rcases M₁.observed_process_is_homogeneous_poisson with
+  rcases M₁.observed_process_is_homogeneous_poisson hdetection₁ with
     ⟨observedProcess₁, hcount₁, hrate₁⟩
-  rcases M₂.observed_process_is_homogeneous_poisson with
+  rcases M₂.observed_process_is_homogeneous_poisson hdetection₂ with
     ⟨observedProcess₂, hcount₂, hrate₂⟩
   refine ⟨reporting_rates_ne, observedProcess₁, observedProcess₂,
     hcount₁, hcount₂, ?_⟩
@@ -674,9 +985,17 @@ theorem exists_compensating_source_models
   have observed₂_rate : M₂.observedIncidentRate = observedRate := by
     change incidentRate₂ * retention₂ = observedRate
     exact div_mul_cancel₀ observedRate (ne_of_gt retention₂_pos)
-  rcases M₁.observed_process_is_homogeneous_poisson with
+  have marked₁_detection_pos : 0 < M₁.markedProcess.detectionProbability := by
+    change 0 < marked₁.detectionProbability
+    rw [marked₁_retention]
+    exact retention₁_pos
+  have marked₂_detection_pos : 0 < M₂.markedProcess.detectionProbability := by
+    change 0 < marked₂.detectionProbability
+    rw [marked₂_retention]
+    exact retention₂_pos
+  rcases M₁.observed_process_is_homogeneous_poisson marked₁_detection_pos with
     ⟨observedProcess₁, observed₁_count, observedProcess₁_rate⟩
-  rcases M₂.observed_process_is_homogeneous_poisson with
+  rcases M₂.observed_process_is_homogeneous_poisson marked₂_detection_pos with
     ⟨observedProcess₂, observed₂_count, observedProcess₂_rate⟩
   refine ⟨reporting_rates_ne, Ω₁, mΩ₁, P₁, M₁, Ω₂, mΩ₂, P₂, M₂,
     rfl, rfl, observed₁_rate, observed₂_rate,

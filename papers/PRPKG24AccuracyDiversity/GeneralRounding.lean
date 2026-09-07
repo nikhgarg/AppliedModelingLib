@@ -1,6 +1,6 @@
-import EconCSLib.Applications.RecommenderSystems.Allocation
-import EconCSLib.Foundations.Math.FiniteRounding
-import EconCSLib.Foundations.Math.FiniteSum
+import AppliedModelingLib.Applications.RecommenderSystems.Allocation
+import AppliedModelingLib.Foundations.Math.FiniteRounding
+import AppliedModelingLib.Foundations.Math.FiniteSum
 import Mathlib.Algebra.Order.Floor.Semiring
 import Mathlib.Analysis.Convex.Slope
 import Mathlib.Data.Real.Archimedean
@@ -117,7 +117,7 @@ theorem pair_unit_exchange_strict_of_strictConcave_maximizer
         linarith
       · simp [y, hi, hj, hx_nonneg i]
   have hy_sum : (∑ i : κ, y i) = N := by
-    have hsum := EconCSLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
+    have hsum := AppliedModelingLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
       (f := y) (g := x) hne (by
         intro i hih hil
         simp [y, hih, hil])
@@ -129,7 +129,7 @@ theorem pair_unit_exchange_strict_of_strictConcave_maximizer
     simp [y] at hhigh
   have hobj := objective_lt_of_ne_of_strictConcave_maximizer
     g N x y hconc hx_nonneg hx_sum hx_opt hy_nonneg hy_sum hy_ne
-  have hsum := EconCSLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
+  have hsum := AppliedModelingLib.FiniteSum.sum_eq_sum_add_sub_add_sub_of_eq_off
     (f := fun i => g i (y i)) (g := fun i => g i (x i)) hne (by
       intro i hih hil
       simp [y, hih, hil])
@@ -296,20 +296,20 @@ theorem noRoundingCrossingBetween_floor_ceil_of_strictConcave_maximizers
     (ha_opt : ∀ b : κ → ℕ, (∑ i : κ, b i) = N →
       objective g (fun i => (b i : ℝ)) ≤
         objective g (fun i => (a i : ℝ))) :
-    EconCSLib.FiniteRounding.NoRoundingCrossingBetween
+    AppliedModelingLib.FiniteRounding.NoRoundingCrossingBetween
       a (fun i => ⌊x i⌋₊) (fun i => ⌈x i⌉₊) := by
-  let A : EconCSLib.Allocation κ := ⟨a⟩
-  let lower : EconCSLib.Allocation κ := ⟨fun i => ⌊x i⌋₊⟩
-  let upper : EconCSLib.Allocation κ := ⟨fun i => ⌈x i⌉₊⟩
+  let A : AppliedModelingLib.Allocation κ := ⟨a⟩
+  let lower : AppliedModelingLib.Allocation κ := ⟨fun i => ⌊x i⌋₊⟩
+  let upper : AppliedModelingLib.Allocation κ := ⟨fun i => ⌈x i⌉₊⟩
   let weight : κ → ℝ := fun _ => 1
   let value : κ → ℕ → ℝ := fun i q => g i (q : ℝ)
-  have hoptA : EconCSLib.Allocation.IsOptimalAtTotal weight value N A := by
+  have hoptA : AppliedModelingLib.Allocation.IsOptimalAtTotal weight value N A := by
     constructor
     · exact ha_sum
     · intro b hb
-      simpa [EconCSLib.Allocation.objective, objective, A, weight, value] using
+      simpa [AppliedModelingLib.Allocation.objective, objective, A, weight, value] using
         ha_opt b.count hb
-  have hDR : EconCSLib.Allocation.HasDiminishingReturns value := by
+  have hDR : AppliedModelingLib.Allocation.HasDiminishingReturns value := by
     intro i q
     have h := unit_increment_antitone_of_concaveOn
       (g i) (hconc i).concaveOn
@@ -325,17 +325,17 @@ theorem noRoundingCrossingBetween_floor_ceil_of_strictConcave_maximizers
     intro i
     exact Nat.floor_le_ceil (x i)
   have hcert :
-      EconCSLib.Allocation.StrictRoundingExchangeCertificateBetween
+      AppliedModelingLib.Allocation.StrictRoundingExchangeCertificateBetween
         weight value lower upper := by
     intro high low hlow
     have h := strict_floor_ceil_exchange_of_strictConcave_maximizer
       g (N : ℝ) x hconc hx_nonneg hx_sum hx_opt high low hlow
-    simpa [EconCSLib.Allocation.weightedForwardMarginal,
-      EconCSLib.Allocation.weightedBackwardMarginal,
-      EconCSLib.Allocation.marginal, lower, upper, weight, value,
+    simpa [AppliedModelingLib.Allocation.weightedForwardMarginal,
+      AppliedModelingLib.Allocation.weightedBackwardMarginal,
+      AppliedModelingLib.Allocation.marginal, lower, upper, weight, value,
       ne_of_gt hlow] using h
   simpa [A, lower, upper] using
-    EconCSLib.Allocation.noRoundingCrossingBetween_of_strictExchangeCertificate
+    AppliedModelingLib.Allocation.noRoundingCrossingBetween_of_strictExchangeCertificate
       A lower upper weight value N hoptA hDR (fun _ => by positivity) horder hcert
 
 /--
@@ -403,7 +403,7 @@ theorem floor_count_close_of_strictConcave_maximizers
   · by_contra hnot
     have hlow : a t + Fintype.card κ ≤ ⌊x t⌋₊ := le_of_not_gt hnot
     obtain ⟨high, hhigh_lt⟩ :=
-      EconCSLib.FiniteRounding.NoRoundingCrossingBetween.exists_high_of_low
+      AppliedModelingLib.FiniteRounding.NoRoundingCrossingBetween.exists_high_of_low
         (a := a) (lower := fun i => ⌊x i⌋₊)
         (upper := fun i => ⌈x i⌉₊)
         (N := N) (U := ∑ i : κ, ⌈x i⌉₊)
@@ -415,7 +415,7 @@ theorem floor_count_close_of_strictConcave_maximizers
   · by_contra hnot
     have hhigh : ⌊x t⌋₊ + Fintype.card κ ≤ a t := le_of_not_gt hnot
     obtain ⟨low, hlow_lt⟩ :=
-      EconCSLib.FiniteRounding.NoRoundingCrossing.exists_low_of_high
+      AppliedModelingLib.FiniteRounding.NoRoundingCrossing.exists_low_of_high
         (a := a) (b := fun i => ⌊x i⌋₊)
         (N := N) (B := ∑ i : κ, ⌊x i⌋₊)
         (C := Fintype.card κ) t ha_sum rfl hsum_floor_lt hhigh

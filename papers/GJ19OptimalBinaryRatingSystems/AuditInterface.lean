@@ -3,7 +3,7 @@ import GJ19OptimalBinaryRatingSystems.AppendixB
 import GJ19OptimalBinaryRatingSystems.SourceDefinitions
 import GJ19OptimalBinaryRatingSystems.ExperimentTheorems
 import GJ19OptimalBinaryRatingSystems.ComparativeStatics
-import GJ19OptimalBinaryRatingSystems.SourceTheorem31
+import GJ19OptimalBinaryRatingSystems.PartitionTieSelection
 import GJ19OptimalBinaryRatingSystems.Assumptions
 
 /-!
@@ -20,7 +20,7 @@ namespace GJ19OptimalBinaryRatingSystems
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 open Filter Topology
 open MeasureTheory
 
@@ -275,7 +275,7 @@ theorem lemma31_one_interior_equalized_rates_exist_unique_strictMaximizerOn
     ∃! levels : Fin (1 + 2) → ℝ,
       BinaryEndpointLevelVector levels ∧
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsStrictMaximizerOn
+          AppliedModelingLib.Optimization.IsStrictMaximizerOn
             (BinaryEndpointLevelVector : (Fin (1 + 2) → ℝ) → Prop)
             (fun candidate : Fin (1 + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -568,7 +568,7 @@ theorem lemma31_two_interior_equalized_rates_exist_unique_strictMaximizerOn
     ∃! levels : Fin (2 + 2) → ℝ,
       BinaryEndpointLevelVector levels ∧
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsStrictMaximizerOn
+          AppliedModelingLib.Optimization.IsStrictMaximizerOn
             (BinaryEndpointLevelVector : (Fin (2 + 2) → ℝ) → Prop)
             (fun candidate : Fin (2 + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -676,7 +676,7 @@ theorem lemma31_forward_clipped_equalized_rates_exist_unique_strictMaximizerOn
     ∃! levels : Fin (m + 2) → ℝ,
       BinaryEndpointLevelVector levels ∧
         BinaryEndpointAwareAdjacentRatesEqualize levels sampleRate ∧
-          EconCSLib.Optimization.IsStrictMaximizerOn
+          AppliedModelingLib.Optimization.IsStrictMaximizerOn
             (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
             (fun candidate : Fin (m + 2) → ℝ =>
               binaryEndpointAwareAdjacentRateObjective candidate sampleRate)
@@ -998,7 +998,7 @@ theorem lemma31_endpoint_aware_equalized_rates_are_isMaximizerOn_of_positive_sam
       ∀ alt : Fin (m + 2) → ℝ, feasible alt →
         ∃ i : Fin (m + 1),
           binaryEndpointAwareAdjacentRate alt sampleRate i ≤ r) :
-    EconCSLib.Optimization.IsMaximizerOn feasible
+    AppliedModelingLib.Optimization.IsMaximizerOn feasible
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
       candidate :=
@@ -1038,7 +1038,7 @@ theorem lemma31_endpoint_aware_equalized_rates_are_isMaximizerOn_from_cascade
             alt (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))) →
           binaryEndpointAwareAdjacentRate alt sampleRate
             (lastAdjacentIndex : Fin (m + 1)) ≤ r) :
-    EconCSLib.Optimization.IsMaximizerOn feasible
+    AppliedModelingLib.Optimization.IsMaximizerOn feasible
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
       candidate :=
@@ -1070,7 +1070,7 @@ theorem lemma31_endpoint_aware_equalized_rates_are_isMaximizerOn_from_interior_c
           candidate (adjacentLowIndex i) < alt (adjacentLowIndex i) →
           r < binaryEndpointAwareAdjacentRate alt sampleRate i →
           candidate (adjacentHighIndex i) < alt (adjacentHighIndex i)) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -1103,7 +1103,7 @@ theorem lemma31_endpoint_aware_equalized_rates_are_isMaximizerOn_from_interior_m
           candidate (adjacentLowIndex i) < alt (adjacentLowIndex i) →
           alt (adjacentHighIndex i) ≤ candidate (adjacentHighIndex i) →
           binaryEndpointAwareAdjacentRate alt sampleRate i ≤ r) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -1150,7 +1150,7 @@ theorem lemma31_endpoint_aware_equalized_rates_are_isMaximizerOn_from_interior_b
               (sampleRate (adjacentLowIndex i))
               (alt (adjacentHighIndex i))
               (alt (adjacentLowIndex i))) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -1176,7 +1176,7 @@ theorem lemma31_endpoint_aware_equalized_rates_are_isMaximizerOn
     (heq :
       ∀ i : Fin (m + 1),
         binaryEndpointAwareAdjacentRate candidate sampleRate i = r) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -1199,7 +1199,7 @@ theorem lemma31_endpoint_aware_pairwise_equalized_rates_are_isMaximizerOn
     (hsample_low :
       ∀ i : Fin (m + 1), 0 < sampleRate (adjacentLowIndex i))
     (heq : BinaryEndpointAwareAdjacentRatesEqualize candidate sampleRate) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -1299,7 +1299,7 @@ theorem lemma31_endpoint_aware_equalized_rates_are_strictMaximizerOn
     (heq :
       ∀ i : Fin (m + 1),
         binaryEndpointAwareAdjacentRate candidate sampleRate i = r) :
-    EconCSLib.Optimization.IsStrictMaximizerOn
+    AppliedModelingLib.Optimization.IsStrictMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -1322,7 +1322,7 @@ theorem lemma31_endpoint_aware_pairwise_equalized_rates_are_strictMaximizerOn
     (hsample_low :
       ∀ i : Fin (m + 1), 0 < sampleRate (adjacentLowIndex i))
     (heq : BinaryEndpointAwareAdjacentRatesEqualize candidate sampleRate) :
-    EconCSLib.Optimization.IsStrictMaximizerOn
+    AppliedModelingLib.Optimization.IsStrictMaximizerOn
       (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
       (fun levels : Fin (m + 2) → ℝ =>
         binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -1352,7 +1352,7 @@ theorem lemma31_endpoint_aware_maximizer_iff_pairwise_equalized
       ∀ i : Fin (m + 1), 0 < sampleRate (adjacentLowIndex i))
     (heq_candidate :
       BinaryEndpointAwareAdjacentRatesEqualize candidate sampleRate) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun levels : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective levels sampleRate)
@@ -1846,12 +1846,12 @@ theorem paper_theorem31_two_stage_lexicographic_optimality
     {Design : Type*} (feasible : Design → Prop)
     (limitingValue rate : Design → ℝ) (candidate : Design)
     (hvalue :
-      EconCSLib.Optimization.IsMaximizerOn feasible limitingValue candidate)
+      AppliedModelingLib.Optimization.IsMaximizerOn feasible limitingValue candidate)
     (hrate :
       ∀ alternative, feasible alternative →
         limitingValue alternative = limitingValue candidate →
           rate alternative ≤ rate candidate) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       feasible limitingValue rate candidate :=
   GJ19OptimalBinaryRatingSystems.theorem31_two_stage_lexicographic_optimality
     feasible limitingValue rate candidate hvalue hrate
@@ -1865,14 +1865,14 @@ theorem paper_theorem31_two_stage_lexicographic_optimality_of_rate_maximizer_on_
     {Design : Type*} (feasible : Design → Prop)
     (limitingValue rate : Design → ℝ) (candidate : Design)
     (hvalue :
-      EconCSLib.Optimization.IsMaximizerOn feasible limitingValue candidate)
+      AppliedModelingLib.Optimization.IsMaximizerOn feasible limitingValue candidate)
     (hrate :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (fun alternative =>
           feasible alternative ∧
             limitingValue alternative = limitingValue candidate)
         rate candidate) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       feasible limitingValue rate candidate :=
   GJ19OptimalBinaryRatingSystems.theorem31_two_stage_lexicographic_optimality_of_rate_maximizer_on_value_fiber
     feasible limitingValue rate candidate hvalue hrate
@@ -1894,14 +1894,14 @@ theorem paper_theorem31_partition_endpoint_two_stage_lexicographic_optimality
     (rate : Partition → Endpoint → ℝ)
     (Sstar : Partition) (tstar : Endpoint)
     (hvalue :
-      EconCSLib.Optimization.IsMaximizerOn partitionFeasible limitingValue
+      AppliedModelingLib.Optimization.IsMaximizerOn partitionFeasible limitingValue
         Sstar)
     (htstar : endpointFeasible Sstar tstar)
     (hrate :
       ∀ S t, partitionFeasible S → endpointFeasible S t →
         limitingValue S = limitingValue Sstar →
           rate S t ≤ rate Sstar tstar) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : Partition × Endpoint =>
         partitionFeasible design.1 ∧ endpointFeasible design.1 design.2)
       (fun design : Partition × Endpoint => limitingValue design.1)
@@ -1995,7 +1995,7 @@ theorem paper_theorem31_exists_cutpoint_value_argmax_of_continuous_cutpointRange
     (finiteFunctional : (Fin (M + 1) → ℝ) → ℝ)
     (hcontinuous : Continuous finiteFunctional) :
     ∃ Sstar : ℕ → ℝ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (monotoneIntervalCutpointsEndpointFeasible M)
         (cutpointRangeFunctional M finiteFunctional) Sstar :=
   GJ19OptimalBinaryRatingSystems.theorem31_exists_cutpoint_value_argmax_of_continuous_cutpointRangeFunctional
@@ -2041,54 +2041,21 @@ finite proxy used in existing continuous finite-vector branches.
 abbrev paper_theorem31CellIntegralLimitingValueObjective_eq_support_integral :=
   @GJ19OptimalBinaryRatingSystems.theorem31CellIntegralLimitingValueObjective_eq_support_integral
 
-/--
-Theorem 3.1 exact equation-(20) finite-vector objective: the selected-cell
-integral objective is written directly as a continuous-cutpoint candidate
-functional over the displayed cutpoint vector.
+/-- Weight integral over ordered cell pairs excluding the bottom-to-top pair. This is the nontrivial-error component weight, not the full cross-cell primary value. -/
+abbrev paper_nontrivialCellWeightFiniteObjective :=
+  @GJ19OptimalBinaryRatingSystems.nontrivialCellWeightFiniteObjective
 
-Source status: formalized finite-vector source-objective interface.  The
-moving-cell continuity premise is discharged for Lebesgue weights integrable
-on the source unit square by
-`paper_continuousOn_theorem31CellIntegralFiniteObjective_volume_of_integrableOn_Icc`.
--/
-abbrev paper_theorem31CellIntegralFiniteObjective :=
-  @GJ19OptimalBinaryRatingSystems.theorem31CellIntegralFiniteObjective
+/-- For constant Lebesgue weight, the nontrivial-cell weight equals the sum of its rectangle areas. -/
+abbrev paper_nontrivialCellWeightFiniteObjective_volume_const_eq_gapProduct :=
+  @GJ19OptimalBinaryRatingSystems.nontrivialCellWeightFiniteObjective_volume_const_eq_gapProduct
 
-/--
-Theorem 3.1 exact equation-(20) objective, constant-weight Lebesgue branch:
-for the source's constant-weight/Kendall case, the moving-cell integrals
-reduce to products of interval lengths.
+/-- The constant-weight nontrivial-cell objective is continuous. -/
+abbrev paper_continuous_nontrivialCellWeightFiniteObjective_volume_const :=
+  @GJ19OptimalBinaryRatingSystems.continuous_nontrivialCellWeightFiniteObjective_volume_const
 
-Source status: formalized source-regularity instance; no continuity
-certificate is required for this constant-weight Lebesgue branch.
--/
-abbrev paper_theorem31CellIntegralFiniteObjective_volume_const_eq_gapProduct :=
-  @GJ19OptimalBinaryRatingSystems.theorem31CellIntegralFiniteObjective_volume_const_eq_gapProduct
-
-/--
-Theorem 3.1 moving-cell continuity, constant-weight Lebesgue branch: the exact
-equation-(20) finite-vector objective is continuous in the displayed cutpoints
-when the source measure is Lebesgue and the weight is constant.
-
-Source status: formalized analytic continuity theorem for the
-constant-weight/Kendall case.  The general weighted Lebesgue version is
-exposed below under the integrability-on-`[0,1]^2` hypothesis.
--/
-abbrev paper_continuous_theorem31CellIntegralFiniteObjective_volume_const :=
-  @GJ19OptimalBinaryRatingSystems.continuous_theorem31CellIntegralFiniteObjective_volume_const
-
-/--
-Theorem 3.1 moving-cell continuity, general integrable-weight Lebesgue
-branch: the exact equation-(20) selected-cell integral objective is continuous
-over the finite-gap simplex whenever the source weight is integrable on
-`[0,1]^2`.
-
-Source status: formalized analytic continuity theorem for the source's
-weighted moving-cell objective.  The proof uses dominated convergence and
-the zero-measure vertical/horizontal boundary lines of Lebesgue measure.
--/
-abbrev paper_continuousOn_theorem31CellIntegralFiniteObjective_volume_of_integrableOn_Icc :=
-  @GJ19OptimalBinaryRatingSystems.continuousOn_theorem31CellIntegralFiniteObjective_volume_of_integrableOn_Icc
+/-- An integrable weight gives a continuous nontrivial-cell objective on the finite-gap simplex. -/
+abbrev paper_continuousOn_nontrivialCellWeightFiniteObjective_volume_of_integrableOn_Icc :=
+  @GJ19OptimalBinaryRatingSystems.continuousOn_nontrivialCellWeightFiniteObjective_volume_of_integrableOn_Icc
 
 /--
 Theorem 3.1 exact equation-(20) objective, Spearman linear-weight cell
@@ -2102,145 +2069,53 @@ identity, not a midpoint approximation assumption.
 abbrev paper_spearmanLinearWeight_rectangleIntegral_eq_midpoint_area_of_le :=
   @GJ19OptimalBinaryRatingSystems.spearmanLinearWeight_rectangleIntegral_eq_midpoint_area_of_le
 
-/--
-Theorem 3.1 exact equation-(20) objective, Spearman linear-weight finite
-sum: for monotone displayed cutpoints, the exact selected-cell integral
-objective reduces componentwise to midpoint distance times cell area.
+/-- For ordered cells, the nontrivial-cell linear-weight integral equals its midpoint formula. -/
+abbrev paper_nontrivialCellWeightFiniteObjective_volume_spearman_eq_midpoint_sum_of_monotone :=
+  @GJ19OptimalBinaryRatingSystems.nontrivialCellWeightFiniteObjective_volume_spearman_eq_midpoint_sum_of_monotone
 
-Source status: formalized source-regularity instance for Spearman's rho.  The
-general weighted moving-cell continuity theorem is also formalized under the
-source-facing unit-square integrability hypothesis.
--/
-abbrev paper_theorem31CellIntegralFiniteObjective_volume_spearman_eq_midpoint_sum_of_monotone :=
-  @GJ19OptimalBinaryRatingSystems.theorem31CellIntegralFiniteObjective_volume_spearman_eq_midpoint_sum_of_monotone
+/-- Midpoint formula for linear weights on ordered cell pairs excluding the bottom-to-top pair. -/
+abbrev paper_nontrivialCellSpearmanMidpointFiniteObjective :=
+  @GJ19OptimalBinaryRatingSystems.nontrivialCellSpearmanMidpointFiniteObjective
 
-/--
-Theorem 3.1 Spearman selected-cell midpoint finite objective: the exact
-selected-cell Spearman integral objective is represented as a continuous
-finite-vector midpoint-area formula on monotone cutpoints.
+/-- The nontrivial-cell linear-weight midpoint formula is continuous. -/
+abbrev paper_continuous_nontrivialCellSpearmanMidpointFiniteObjective :=
+  @GJ19OptimalBinaryRatingSystems.continuous_nontrivialCellSpearmanMidpointFiniteObjective
 
-Source status: formalized finite-vector source-objective representation for
-the Spearman linear-weight example.
--/
-abbrev paper_theorem31SpearmanCellMidpointFiniteObjective :=
-  @GJ19OptimalBinaryRatingSystems.theorem31SpearmanCellMidpointFiniteObjective
+/-- The nontrivial-cell linear-weight objective is continuous on the finite-gap simplex. -/
+abbrev paper_continuousOn_nontrivialCellWeightFiniteObjective_volume_spearman_finiteGapCutpoint :=
+  @GJ19OptimalBinaryRatingSystems.continuousOn_nontrivialCellWeightFiniteObjective_volume_spearman_finiteGapCutpoint
 
-/--
-Theorem 3.1 Spearman selected-cell midpoint objective continuity: the
-finite-vector midpoint-area formula for Spearman's source objective is
-continuous.
+/-- The nontrivial-cell linear-weight objective attains a maximum. -/
+abbrev paper_exists_nontrivialCellWeight_volume_spearman_cutpoint_value_argmax :=
+  @GJ19OptimalBinaryRatingSystems.exists_nontrivialCellWeight_volume_spearman_cutpoint_value_argmax
 
-Source status: formalized analytic continuity theorem for the finite-vector
-Spearman source example.
--/
-abbrev paper_continuous_theorem31SpearmanCellMidpointFiniteObjective :=
-  @GJ19OptimalBinaryRatingSystems.continuous_theorem31SpearmanCellMidpointFiniteObjective
+/-- The nontrivial-cell integrable-weight objective attains a maximum. -/
+abbrev paper_exists_nontrivialCellWeight_volume_weighted_cutpoint_value_argmax_of_integrableOn_Icc :=
+  @GJ19OptimalBinaryRatingSystems.exists_nontrivialCellWeight_volume_weighted_cutpoint_value_argmax_of_integrableOn_Icc
 
-/--
-Theorem 3.1 exact Spearman selected-cell objective continuity on feasible
-cutpoints: the equation-(20) selected-cell integral objective is continuous
-over the finite-gap simplex.
+/-- Lexicographic optimization of nontrivial-cell linear weight and the uniform-matching adjacent-rate formula. -/
+abbrev paper_exists_nontrivialCellWeight_volume_spearman_uniform_endpoint_two_stage_lexicographic_optimality :=
+  @GJ19OptimalBinaryRatingSystems.exists_nontrivialCellWeight_volume_spearman_uniform_endpoint_two_stage_lexicographic_optimality
 
-Source status: formalized feasible-domain continuity for the Spearman
-linear-weight example.  This discharges the `S^*` continuity premise for that
-source example and is now a closed special case of the broader integrable
-weighted moving-cell continuity branch.
--/
-abbrev paper_continuousOn_theorem31CellIntegralFiniteObjective_volume_spearman_finiteGapCutpoint :=
-  @GJ19OptimalBinaryRatingSystems.continuousOn_theorem31CellIntegralFiniteObjective_volume_spearman_finiteGapCutpoint
+/-- Lexicographic optimization of nontrivial-cell integrable weight and the uniform-matching adjacent-rate formula. -/
+abbrev paper_exists_nontrivialCellWeight_volume_weighted_uniform_endpoint_two_stage_lexicographic_optimality_of_integrableOn_Icc :=
+  @GJ19OptimalBinaryRatingSystems.exists_nontrivialCellWeight_volume_weighted_uniform_endpoint_two_stage_lexicographic_optimality_of_integrableOn_Icc
 
-/--
-Theorem 3.1 exact cell-integral `S^*` bridge, Spearman linear-weight branch:
-Lean derives a maximizing cutpoint chain for the source-style selected-cell
-equation-(20) objective with no exposed continuity premise.
+/-- A continuous nontrivial-cell objective attains a maximum. -/
+abbrev paper_exists_nontrivialCellWeight_cutpoint_value_argmax_of_continuous :=
+  @GJ19OptimalBinaryRatingSystems.exists_nontrivialCellWeight_cutpoint_value_argmax_of_continuous
 
-Source status: formalized closed `S^*` argmax branch for the Spearman
-linear-weight example.
--/
-abbrev paper_theorem31_exists_cell_integral_volume_spearman_cutpoint_value_argmax :=
-  @GJ19OptimalBinaryRatingSystems.theorem31_exists_cell_integral_volume_spearman_cutpoint_value_argmax
+/-- The constant-weight nontrivial-cell objective attains a maximum. -/
+abbrev paper_exists_nontrivialCellWeight_volume_const_cutpoint_value_argmax :=
+  @GJ19OptimalBinaryRatingSystems.exists_nontrivialCellWeight_volume_const_cutpoint_value_argmax
 
-/--
-Theorem 3.1 exact cell-integral `S^*` bridge, general integrable-weight
-Lebesgue branch: Lean derives a maximizing cutpoint chain for the source-style
-selected-cell equation-(20) objective when the paper weight is integrable on
-`[0,1]^2`.
+/-- A continuous nontrivial-cell objective and the uniform-matching adjacent-rate formula admit a lexicographic optimizer. -/
+abbrev paper_exists_nontrivialCellWeight_uniform_endpoint_two_stage_lexicographic_optimality_of_continuous :=
+  @GJ19OptimalBinaryRatingSystems.exists_nontrivialCellWeight_uniform_endpoint_two_stage_lexicographic_optimality_of_continuous
 
-Source status: formalized closed `S^*` argmax branch under the source-facing
-unit-square integrability hypothesis.
--/
-abbrev paper_theorem31_exists_cell_integral_volume_weighted_cutpoint_value_argmax_of_integrableOn_Icc :=
-  @GJ19OptimalBinaryRatingSystems.theorem31_exists_cell_integral_volume_weighted_cutpoint_value_argmax_of_integrableOn_Icc
-
-/--
-Theorem 3.1 exact cell-integral two-stage bridge, Spearman linear-weight
-branch: the source-style selected-cell equation-(20) objective and the
-canonical endpoint-rate optimizer have a two-stage lexicographically optimal
-design with no exposed continuity premise.
-
-Source status: formalized closed two-stage branch for the Spearman
-linear-weight example.
--/
-abbrev paper_theorem31_exists_cell_integral_volume_spearman_uniform_endpoint_two_stage_lexicographic_optimality :=
-  @GJ19OptimalBinaryRatingSystems.theorem31_exists_cell_integral_volume_spearman_uniform_endpoint_two_stage_lexicographic_optimality
-
-/--
-Theorem 3.1 exact cell-integral two-stage bridge, general integrable-weight
-Lebesgue branch: the source-style selected-cell equation-(20) objective and
-the canonical endpoint-rate optimizer have a two-stage lexicographically
-optimal design when the paper weight is integrable on `[0,1]^2`.
-
-Source status: formalized closed two-stage branch under the source-facing
-unit-square integrability hypothesis.
--/
-abbrev paper_theorem31_exists_cell_integral_volume_weighted_uniform_endpoint_two_stage_lexicographic_optimality_of_integrableOn_Icc :=
-  @GJ19OptimalBinaryRatingSystems.theorem31_exists_cell_integral_volume_weighted_uniform_endpoint_two_stage_lexicographic_optimality_of_integrableOn_Icc
-
-/--
-Theorem 3.1 exact cell-integral `S*` bridge: once continuity of the
-finite-vector equation-(20) objective is supplied, Lean derives a maximizing
-cutpoint chain from the existing compact-simplex optimizer.
-
-Source status: formalized argmax plumbing for the exact source objective,
-conditional only on the moving-cell integral continuity premise.
--/
-abbrev paper_theorem31_exists_cell_integral_cutpoint_value_argmax_of_continuous :=
-  @GJ19OptimalBinaryRatingSystems.theorem31_exists_cell_integral_cutpoint_value_argmax_of_continuous
-
-/--
-Theorem 3.1 exact cell-integral `S*` bridge, constant-weight Lebesgue branch:
-Lean derives a maximizing cutpoint chain for the source-style
-constant-weight equation-(20) objective with no exposed continuity premise.
-
-Source status: formalized closed `S*` argmax branch for the
-constant-weight/Kendall case.
--/
-abbrev paper_theorem31_exists_cell_integral_volume_const_cutpoint_value_argmax :=
-  @GJ19OptimalBinaryRatingSystems.theorem31_exists_cell_integral_volume_const_cutpoint_value_argmax
-
-/--
-Theorem 3.1 exact cell-integral two-stage bridge: continuity of the
-finite-vector equation-(20) objective is enough to combine the source `S*`
-cutpoint optimizer with the canonical endpoint-rate optimizer under uniform
-matching.
-
-Source status: formalized two-stage optimizer plumbing for the exact source
-objective, conditional on moving-cell integral continuity.
--/
-abbrev paper_theorem31_exists_cell_integral_uniform_endpoint_two_stage_lexicographic_optimality_of_continuous :=
-  @GJ19OptimalBinaryRatingSystems.theorem31_exists_cell_integral_uniform_endpoint_two_stage_lexicographic_optimality_of_continuous
-
-/--
-Theorem 3.1 exact cell-integral two-stage bridge, constant-weight Lebesgue
-branch: the source-style constant-weight equation-(20) objective and the
-canonical endpoint-rate optimizer have a two-stage lexicographically optimal
-design with no exposed continuity premise.
-
-Source status: formalized closed two-stage branch for the
-constant-weight/Kendall case.
--/
-abbrev paper_theorem31_exists_cell_integral_volume_const_uniform_endpoint_two_stage_lexicographic_optimality :=
-  @GJ19OptimalBinaryRatingSystems.theorem31_exists_cell_integral_volume_const_uniform_endpoint_two_stage_lexicographic_optimality
+/-- Lexicographic optimization of constant nontrivial-cell weight and the uniform-matching adjacent-rate formula. -/
+abbrev paper_exists_nontrivialCellWeight_volume_const_uniform_endpoint_two_stage_lexicographic_optimality :=
+  @GJ19OptimalBinaryRatingSystems.exists_nontrivialCellWeight_volume_const_uniform_endpoint_two_stage_lexicographic_optimality
 
 /--
 Theorem 3.1 uniform-matching finite-dimensional `S*` bridge with source-shaped
@@ -2272,7 +2147,7 @@ theorem paper_theorem31_exists_cutpoint_uniform_endpoint_two_stage_lexicographic
     (finiteFunctional : (Fin ((m + 2) + 1) → ℝ) → ℝ)
     (hcontinuous : Continuous finiteFunctional) :
     ∃ design : (ℕ → ℝ) × (Fin (m + 2) → ℝ),
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -2297,32 +2172,6 @@ remains a separate strengthening.
 -/
 abbrev paper_theorem31_strict_cutpoint_value_argmax_forward_clipped_endpoint_source_certificate :=
   @GJ19OptimalBinaryRatingSystems.theorem31_strict_cutpoint_value_argmax_forward_clipped_endpoint_source_certificate
-
-/--
-Theorem 3.1 unique-`S*` staged source theorem: if the source discretization
-`S*` is the unique limiting-value maximizer, then the forward-clipped endpoint
-construction gives a full lexicographic optimum over cutpoint/endpoint designs
-and an exact source-defined `Wbar_k` rate certificate.
-
-Source status: formalized under the explicit unique-argmax convention for
-`S*`; nonunique value-tie cases use the separate two-stage optimality wrappers
-for the value-maximizing fiber.
--/
-abbrev paper_theorem31_strict_cutpoint_unique_value_argmax_forward_clipped_endpoint_lexicographic_certificate :=
-  @GJ19OptimalBinaryRatingSystems.theorem31_strict_cutpoint_unique_value_argmax_forward_clipped_endpoint_lexicographic_certificate
-
-/--
-Theorem 3.1 unique-`S*` source-model theorem: under the weighted finite-level
-source convention, a unique limiting-value maximizer `S*` plus the displayed
-secondary-rate identification gives a full lexicographic optimum and exact
-source-defined `Wbar_k` rate certificate.
-
-Source status: formalized under the explicit weighted finite-level and
-unique-argmax source conventions; the nonunique value-tie case remains a
-separate source strengthening.
--/
-abbrev paper_theorem31_appropriate_finite_levels_weighted_unique_value_argmax_lexicographic_certificate :=
-  @GJ19OptimalBinaryRatingSystems.theorem31_appropriate_finite_levels_weighted_unique_value_argmax_lexicographic_certificate
 
 /--
 Theorem 3.1 nonunique-`S*` source-model theorem: under the weighted
@@ -9060,7 +8909,7 @@ theorem lemmaC9_nested_bisection_operation_count_le_stepBound
     (houter : outerSteps ≤ L + 1)
     (hinner : innerSteps ≤ L) :
     nestedBisectionOperationCount M outerSteps innerSteps ≤
-      EconCSLib.Optimization.nestedBisectionStepBound M L :=
+      AppliedModelingLib.Optimization.nestedBisectionStepBound M L :=
   nestedBisectionOperationCount_le_stepBound houter hinner
 
 /--
@@ -9346,7 +9195,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_run
     binaryEndpointAwareAdjacentRateObjective optimal sampleRate -
         binaryEndpointAwareAdjacentRateObjective returned sampleRate ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L :=
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L :=
   binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_bisection_run
     optimal returned sampleRate hgLast_pos heps hfirstLower_pos hlastLower_pos
     hfirstLower hlastLower hdelta hoptimal hlast hgrid houter hinner
@@ -9397,7 +9246,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_width_minimal_run
     binaryEndpointAwareAdjacentRateObjective optimal sampleRate -
         binaryEndpointAwareAdjacentRateObjective returned sampleRate ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L :=
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L :=
   binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_bisection_width_minimal_run
     hm optimal returned sampleRate hgLast_pos heps hoptimal_levels
     hlast_width hfirstLower_pos hfirstLower hdelta hoptimal hlast hgrid
@@ -9498,7 +9347,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_equalized
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin (m + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L :=
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L :=
   binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_bisection_uniform_equalized_run
     hm optimal returned heps hoptimal_levels heq hfirstLower_pos hfirstLower
     hdelta hlast hgrid houter hinner
@@ -9614,7 +9463,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_equalized
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin (m + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L :=
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L :=
   binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_bisection_uniform_equalized_rate_lower_run
     hm optimal returned heps hrateLower_pos hrateLower_le_one
     hoptimal_levels heq htFirstStar hrateLower_le_last hdelta hlast hgrid
@@ -9729,7 +9578,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_equalized
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin (m + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L :=
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L :=
   binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_bisection_uniform_equalized_objective_rate_lower_run
     hm optimal returned heps hrateLower_pos hrateLower_le_one
     hoptimal_levels heq htFirstStar hrateLower_le_objective hdelta hlast
@@ -9854,7 +9703,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L :=
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L :=
   binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_bisection_uniform_doubled_closed_run
     hm oldLevels returned heps holdLevels holdEq
     (BinaryEndpointLevelVector_uniform_equalized_one_fifth_objective_le_one
@@ -9923,7 +9772,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   simpa [lemmaC5_uniform_doubled_endpoint_levels] using
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_bisection_uniform_doubled_closed_run_explicit_delta_auto_lower
       hm oldLevels returned heps holdLevels holdEq
@@ -9954,7 +9803,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -9988,7 +9837,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let run :=
     theorem32_run_certificate_of_last_bisection_bracket
       (m := m) (M := M) (L := L)
@@ -10035,8 +9884,8 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
                     (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (lemmaC5_uniform_doubled_endpoint_levels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -10078,8 +9927,8 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
           (2 : ℝ) ^ innerSteps)
     (hreturnedLow :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -10090,7 +9939,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   simpa [lemmaC5_uniform_doubled_endpoint_levels] using
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_outer_threshold_run_low_bisection_runs_from_source_lower_exact_roots_auto_first
       (m := m) (M := M) (L := L)
@@ -10130,8 +9979,8 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
                     (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (lemmaC5_uniform_doubled_endpoint_levels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -10173,8 +10022,8 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
           (2 : ℝ) ^ innerSteps)
     (hreturnedLow :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -10185,7 +10034,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   simpa [lemmaC5_uniform_doubled_endpoint_levels] using
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_outer_threshold_run_low_bisection_runs_from_source_lower_exact_roots_upper_one_auto_first
       (m := m) (M := M) (L := L)
@@ -10224,8 +10073,8 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
                     (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (lemmaC5_uniform_doubled_endpoint_levels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -10268,8 +10117,8 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -10280,7 +10129,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   simpa [lemmaC5_uniform_doubled_endpoint_levels] using
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_outer_threshold_run_feasible_low_bisection_runs_from_source_lower_upper_one
       (m := m) (M := M) (L := L)
@@ -10319,8 +10168,8 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
                     (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (lemmaC5_uniform_doubled_endpoint_levels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -10369,8 +10218,8 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -10381,7 +10230,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   simpa [lemmaC5_uniform_doubled_endpoint_levels] using
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_outer_threshold_run_low_bisection_runs_from_source_lower_inner_floor_rate_upper_one_of_first_ge
       (m := m) (M := M) (L := L)
@@ -10441,7 +10290,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
                     (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
           levelUpper0).2 =
@@ -10488,8 +10337,8 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -10500,7 +10349,7 @@ theorem theorem32_rate_loss_and_runtime_le_of_nested_bisection_uniform_doubled_c
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   simpa [lemmaC5_uniform_doubled_endpoint_levels] using
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_outer_level_run_low_bisection_runs_from_source_lower_inner_floor_rate
       (m := m) (M := M) (L := L)
@@ -11152,7 +11001,7 @@ Source status: exact finite source optimizer certificate for Lemma C.11.
 -/
 theorem paper_lemmaC11_kendall_constant_weight_ordered_pair_interval_objective_equispaced_isMaximizerOn
     {M : ℕ} [Nonempty (Fin M)] (hM : 0 < M) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (intervalCutpointsEndpointFeasible M)
       (fun s : ℕ → ℝ =>
         ∑ i : Fin M, ∑ j : Fin M,
@@ -11207,7 +11056,7 @@ Source status: exact finite source optimizer certificate for Lemma C.12.
 -/
 theorem paper_lemmaC12_spearman_linear_weight_ordered_pair_interval_objective_equispaced_isMaximizerOn
     {M : ℕ} [Nonempty (Fin M)] (hM : 0 < M) :
-    EconCSLib.Optimization.IsMaximizerOn
+    AppliedModelingLib.Optimization.IsMaximizerOn
       (monotoneIntervalCutpointsEndpointFeasible M)
       (spearmanLinearWeightOrderedPairIntervalObjective M)
       (equispacedIntervalCutpoint M) :=
@@ -11223,7 +11072,7 @@ Source status: formalized finite Kendall branch of the source example.
 -/
 theorem paper_theorem31_kendall_constant_weight_equispaced_canonical_uniform_endpoint_lexicographic_optimality
     {M : ℕ} [Nonempty (Fin M)] (hM : 0 < M) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : (ℕ → ℝ) × (Fin (M + 2) → ℝ) =>
         intervalCutpointsEndpointFeasible M design.1 ∧
           BinaryEndpointLevelVector design.2)
@@ -11246,7 +11095,7 @@ Source status: formalized finite Spearman branch of the source example.
 -/
 theorem paper_theorem31_spearman_linear_weight_equispaced_canonical_uniform_endpoint_lexicographic_optimality
     {M : ℕ} [Nonempty (Fin M)] (hM : 0 < M) :
-    EconCSLib.Optimization.IsLexicographicMaximizerOn
+    AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
       (fun design : (ℕ → ℝ) × (Fin (M + 2) → ℝ) =>
         monotoneIntervalCutpointsEndpointFeasible M design.1 ∧
           BinaryEndpointLevelVector design.2)
@@ -11282,7 +11131,7 @@ theorem paper_theorem31_kendall_constant_weight_equispaced_source_endpoint_lexic
           (canonicalUniformEqualizedEndpointLevels_levelVector m)
           (fun _ : ℝ × ℝ => (1 : ℝ)))
         c ∧
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           intervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -11318,7 +11167,7 @@ theorem paper_theorem31_spearman_linear_weight_equispaced_source_endpoint_lexico
           (canonicalUniformEqualizedEndpointLevels_levelVector m)
           (fun _ : ℝ × ℝ => (1 : ℝ)))
         c ∧
-      EconCSLib.Optimization.IsLexicographicMaximizerOn
+      AppliedModelingLib.Optimization.IsLexicographicMaximizerOn
         (fun design : (ℕ → ℝ) × (Fin (m + 2) → ℝ) =>
           monotoneIntervalCutpointsEndpointFeasible (m + 2) design.1 ∧
             BinaryEndpointLevelVector design.2)
@@ -12391,7 +12240,7 @@ theorem paper_corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optim
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -12426,7 +12275,7 @@ theorem paper_corollaryC4_equispaced_optimal_subsequence_exists_of_uniform_optim
       levels m
         (clampedFloorLevelIndex m (equispacedIntervalQuantile (m + 2) θ)))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -12574,13 +12423,6 @@ derived from primitive `g` and the source model.
 -/
 abbrev paper_theorem31_source_matching_function_weighted_value_argmax_certificate :=
   @theorem31_source_matching_function_weighted_value_argmax_certificate
-
-/--
-Theorem 3.1 full lexicographic source assembly under the explicit minor
-unique-`S*` convention that resolves otherwise unspecified first-stage ties.
--/
-abbrev paper_theorem31_source_matching_function_weighted_unique_value_argmax_lexicographic_certificate :=
-  @theorem31_source_matching_function_weighted_unique_value_argmax_lexicographic_certificate
 
 /-- Appendix B.3 Lemma B.1 two-optimizer matching-rate comparative statics. -/
 abbrev paper_lemmaB1_matching_rate_shift := @lemmaB1_matching_rate_shift

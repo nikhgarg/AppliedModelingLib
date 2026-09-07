@@ -11,10 +11,13 @@ surface and the compact file a reviewer reads to check the audited source
 definitions and named results. Keep it in source order and keep assumptions
 visible in theorem signatures.
 
-- Put proofs and internal helpers in `MainTheorems.lean` or lower modules.
-- Use `ProofInterface.lean` or `AuditInterface.lean` only when a compact proof-
-  support surface is genuinely useful. Those files are not alternative paper-
-  facing surfaces and must not carry source-coverage credit.
+- Put one complete transparent `Spec : Prop` per selected source claim here.
+- Put each distinct theorem/lemma endpoint proving its paired Spec in the
+  required `ProofInterface.lean`; put internal helpers in `MainTheorems.lean`
+  or lower modules. Proof endpoints are evidence, not duplicate review rows.
+- Use `AuditInterface.lean` only when an additional compact proof-support
+  surface is genuinely useful. It is not an alternative paper-facing surface
+  and must not carry source-coverage credit.
 - Do not create `PostPaperAudit.lean` or another competing paper-facing ledger.
 - Do not add placeholder propositions or trivial theorems. Generate exact
   source-shaped statement skeletons through the contribution workflow.

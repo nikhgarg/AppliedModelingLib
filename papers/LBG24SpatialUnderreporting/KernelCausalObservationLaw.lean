@@ -1,5 +1,5 @@
 import LBG24SpatialUnderreporting.CollapsedCausalObservationLaw
-import EconCSLib.Foundations.Probability.KernelCompProdDensity
+import AppliedModelingLib.Foundations.Probability.KernelCompProdDensity
 
 /-!
 # Kernel-valued finite causal endpoint observations
@@ -14,7 +14,7 @@ density on the report-gap coordinate.
 namespace LBG24SpatialUnderreporting
 
 open MeasureTheory ProbabilityTheory
-open EconCSLib.Probability.PoissonProcess
+open AppliedModelingLib.Probability.PoissonProcess
 open scoped ENNReal NNReal ProbabilityTheory
 
 noncomputable section

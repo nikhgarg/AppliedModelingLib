@@ -16,7 +16,7 @@ namespace GJ19OptimalBinaryRatingSystems
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 open Filter Topology
 open MeasureTheory
 
@@ -393,7 +393,7 @@ theorem theoremB1_uniform_subsequence_principle_to_of_quantile_floor_limit_dist_
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -428,7 +428,7 @@ theorem theoremB1_uniform_subsequence_principle_to_of_quantile_floor_variable_di
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -518,7 +518,7 @@ theorem theoremB1_uniform_subsequence_principle_to_of_quantile_floor_variable_di
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -598,7 +598,7 @@ theorem theoremB1_uniform_subsequence_principle_to_of_quantile_floor_variable_di
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -1032,10 +1032,10 @@ theorem assumption_theoremB1_quantile_floor_variable_dist_tracking_geometric_mes
         hmain_zero.add hinv_zero
       simpa using hsum
     have hcell_zero :
-        EconCSLib.Math.TendsToZero
+        AppliedModelingLib.Math.TendsToZero
           (fun M : ℕ => (BSeq C M : ℝ) / den M) := by
       refine
-        EconCSLib.Math.TendsToZero_of_eventually_abs_le_tendsto_zero
+        AppliedModelingLib.Math.TendsToZero_of_eventually_abs_le_tendsto_zero
           (fun M : ℕ => (BSeq C M : ℝ) / den M)
           (fun M : ℕ => errSeq C M * ratio M + (1 : ℝ) / den M)
           hbound_zero ?_
@@ -1066,7 +1066,7 @@ theorem assumption_theoremB1_quantile_floor_variable_dist_tracking_geometric_mes
         exact div_nonneg (by positivity) hden_nonneg
       rw [abs_of_nonneg hleft_nonneg]
       exact hquot_le.trans_eq htarget
-    simpa [EconCSLib.Math.TendsToZero, BSeq, endpointStart, mSeq, den] using
+    simpa [AppliedModelingLib.Math.TendsToZero, BSeq, endpointStart, mSeq, den] using
       hcell_zero
   · intro C hC
     let endpointStart : ℕ := 2 * C - 1
@@ -1132,7 +1132,7 @@ theorem assumption_theoremB1_quantile_floor_variable_dist_tracking_geometric_mes
             (by positivity)))
     simpa [threshold] using hspec n hn
   let errSeq : ℕ → ℕ → ℝ := fun C M : ℕ =>
-    EconCSLib.Math.reciprocalThresholdError threshold
+    AppliedModelingLib.Math.reciprocalThresholdError threshold
       (uniformDoubledEndpointIndexIterate (2 * C - 1) M + 2)
   have hlimit_range :
       ∀ θ : ℝ, θ ∈ Set.Icc (0 : ℝ) 1 →
@@ -1144,7 +1144,7 @@ theorem assumption_theoremB1_quantile_floor_variable_dist_tracking_geometric_mes
       quantileSeq quantileLimit errSeq hquantile_range hlimit_range ?_ ?_ ?_
   · intro C M
     dsimp [errSeq]
-    exact EconCSLib.Math.reciprocalThresholdError_nonneg threshold _
+    exact AppliedModelingLib.Math.reciprocalThresholdError_nonneg threshold _
   · intro C hC
     let endpointStart : ℕ := 2 * C - 1
     have hendpointStart_pos : 0 < endpointStart := by
@@ -1162,12 +1162,12 @@ theorem assumption_theoremB1_quantile_floor_variable_dist_tracking_geometric_mes
           atTop atTop :=
       (tendsto_add_atTop_nat 2).comp hiter
     have hbase :
-        EconCSLib.Math.TendsToZero
-          (EconCSLib.Math.reciprocalThresholdError threshold) :=
-      EconCSLib.Math.reciprocalThresholdError_tendsToZero threshold
+        AppliedModelingLib.Math.TendsToZero
+          (AppliedModelingLib.Math.reciprocalThresholdError threshold) :=
+      AppliedModelingLib.Math.reciprocalThresholdError_tendsToZero threshold
     change Tendsto (errSeq C) atTop (nhds 0)
     change
-      Tendsto (EconCSLib.Math.reciprocalThresholdError threshold)
+      Tendsto (AppliedModelingLib.Math.reciprocalThresholdError threshold)
         atTop (nhds 0) at hbase
     simpa [errSeq, endpointStart] using hbase.comp hidx
   · intro C hC
@@ -1244,7 +1244,7 @@ theorem theoremB1_uniform_subsequence_principle_to_of_quantile_floor_tendstoUnif
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -1287,7 +1287,7 @@ theorem theoremB1_uniform_subsequence_principle_to_of_quantile_floor_variable_me
     (hrepr : ∀ m θ, betaSeq (m + 2) θ =
       levels m (levelIndex m θ))
     (hoptimal : ∀ m : ℕ,
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun xs : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective xs
@@ -1706,7 +1706,7 @@ def assumption_lemmaC4_selected_integral_pointwise_realization
             theorem31SelectedSourceKernel μ (m := S.m) S.cut S.hmono
               S.sampleRate levels hlevels k
               (theorem31SelectedSourceCoordinateMap q)) ∧
-      (∀ k q, q ∈ EconCSLib.strictUpperPairSet →
+      (∀ k q, q ∈ AppliedModelingLib.strictUpperPairSet →
         theorem31SelectedSourceCoordinateMap q ∉
           theorem31SelectedSourceSupport μ (m := S.m) S.cut S.hmono →
         R.weight q *

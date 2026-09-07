@@ -90,15 +90,15 @@ theorem gn21RawMarkedPairStream_hasLaw
     exact gn21AcceptanceProbability_le_one M sigma
   let clockMeasure : Measure (Fin 4 -> Nat -> Real) :=
     Measure.infinitePi fun c : Fin 4 =>
-      EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI c)
   let markMeasure : Measure (Fin 2 -> Nat -> TripLength) :=
     Measure.infinitePi fun s : Fin 2 =>
       Measure.infinitePi fun _ : Nat => gn21CycleMarkLaw muI muJ s
   letI : forall c : Fin 4, IsProbabilityMeasure
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
         (gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI c)) := fun c =>
-    EconCSLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
+    AppliedModelingLib.Probability.PoissonProcess.isProbabilityMeasure_exponentialInterarrivalMeasure
       (gn21CycleClockRate_pos arrivalI arrivalJ switchIJ switchJI
         harrivalI harrivalJ hswitchIJ hswitchJI c)
   letI : IsProbabilityMeasure clockMeasure := by
@@ -128,15 +128,15 @@ theorem gn21RawMarkedPairStream_hasLaw
   have hrawMark_meas : Measurable rawMarkStream := by
     exact measurable_pi_apply state
   have hclock : HasLaw clockStream
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate)
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate)
       clockMeasure := by
     change HasLaw (Function.eval clock)
-      (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate)
+      (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate)
       clockMeasure
     simpa [clockMeasure, rate] using
       (measurePreserving_eval_infinitePi
         (fun c : Fin 4 =>
-          EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
+          AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure
             (gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI c)) clock).hasLaw
   have hrawMark : HasLaw rawMarkStream
       (Measure.infinitePi fun _ : Nat => M) markMeasure := by
@@ -162,7 +162,7 @@ theorem gn21RawMarkedPairStream_hasLaw
     hclassify_meas.comp hrawMark_meas
   have hfactor : HasLaw
       (Prod.map clockStream (classify ∘ rawMarkStream))
-      ((EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate).prod
+      ((AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate).prod
         (IIDStream.measure B))
       (clockMeasure.prod markMeasure) := by
     refine ⟨((hclock_meas.comp measurable_fst).prodMk
@@ -175,16 +175,16 @@ theorem gn21RawMarkedPairStream_hasLaw
         symm
         exact Measure.map_prod_map clockMeasure markMeasure
           hclock_meas hmarked_meas
-      _ = (EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate).prod
+      _ = (AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure rate).prod
           (IIDStream.measure B) := by
         rw [hclock.map_eq, hmarked.map_eq]
   have hzip := IIDStream.zip_hasLaw (ProbabilityTheory.expMeasure rate) B
   have hpaired : HasLaw
-      (IIDStream.zip (alpha := Real) (beta := Bool) ∘
+      (IIDStream.zip (α := Real) (β := Bool) ∘
         Prod.map clockStream (classify ∘ rawMarkStream))
       (IIDStream.measure ((ProbabilityTheory.expMeasure rate).prod B))
       (clockMeasure.prod markMeasure) := by
-    simpa [EconCSLib.Probability.PoissonProcess.exponentialInterarrivalMeasure,
+    simpa [AppliedModelingLib.Probability.PoissonProcess.exponentialInterarrivalMeasure,
       IIDStream.measure] using hzip.comp hfactor
   have hB : B = (PMF.bernoulli p hp).toMeasure := by
     dsimp [B, p]
@@ -242,6 +242,53 @@ theorem gn21Raw_postFirstSuccessBlock_hasLaw
   change HasLaw
     (postFirstSuccessBlock q ∘ gn21RawMarkedPairStream clock state sigma)
     (Measure.pi fun _ : Fin q => stepLaw rate p hp)
+    (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI)
+  simpa [Function.comp_def, rate, M, p] using hrestart.comp hraw
+
+/-- A positive source policy mass also regenerates the complete literal raw
+gap-and-acceptance-pair stream after its first accepted mark.  Unlike the
+finite-block result, this is an all-time source-path restart law and can be
+iterated in the larger renewal-cycle construction. -/
+theorem gn21Raw_postFirstSuccessTail_hasLaw
+    (muI muJ : Measure TripLength)
+    (arrivalI arrivalJ switchIJ switchJI : Real)
+    [IsProbabilityMeasure muI] [IsProbabilityMeasure muJ]
+    (harrivalI : 0 < arrivalI) (harrivalJ : 0 < arrivalJ)
+    (hswitchIJ : 0 < switchIJ) (hswitchJI : 0 < switchJI)
+    (clock : Fin 4) (state : Fin 2) (sigma : TripPolicy)
+    (hsigma : MeasurableSet sigma)
+    (hmass : 0 < singleStateTripMass (gn21CycleMarkLaw muI muJ state) sigma) :
+    HasLaw
+      (postFirstSuccessTail ∘ gn21RawMarkedPairStream clock state sigma)
+      (streamMeasure
+        (gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI clock)
+        (gn21AcceptanceProbability (gn21CycleMarkLaw muI muJ state) sigma)
+        (gn21AcceptanceProbability_le_one_state muI muJ state sigma))
+      (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI) := by
+  let rate := gn21CycleClockRate arrivalI arrivalJ switchIJ switchJI clock
+  let M := gn21CycleMarkLaw muI muJ state
+  let p := gn21AcceptanceProbability M sigma
+  have hrate : 0 < rate := by
+    exact gn21CycleClockRate_pos arrivalI arrivalJ switchIJ switchJI
+      harrivalI harrivalJ hswitchIJ hswitchJI clock
+  have hM_prob : IsProbabilityMeasure M := by
+    dsimp [M, gn21CycleMarkLaw]
+    fin_cases state <;> infer_instance
+  letI : IsProbabilityMeasure M := hM_prob
+  have hp : p <= 1 := by
+    dsimp [p]
+    exact gn21AcceptanceProbability_le_one M sigma
+  have hM_mass : 0 < M sigma := by
+    exact measure_pos_of_singleStateTripMass_pos M sigma (by simpa [M] using hmass)
+  have hpos : 0 < p := by
+    dsimp [p, gn21AcceptanceProbability]
+    exact ENNReal.toNNReal_pos (ne_of_gt hM_mass) (measure_ne_top M sigma)
+  have hraw := gn21RawMarkedPairStream_hasLaw muI muJ arrivalI arrivalJ
+    switchIJ switchJI harrivalI harrivalJ hswitchIJ hswitchJI clock state sigma hsigma
+  have hrestart := postFirstSuccessTail_hasLaw hrate p hp hpos
+  change HasLaw
+    (postFirstSuccessTail ∘ gn21RawMarkedPairStream clock state sigma)
+    (streamMeasure rate p hp)
     (gn21RawCycleSeedMeasure muI muJ arrivalI arrivalJ switchIJ switchJI)
   simpa [Function.comp_def, rate, M, p] using hrestart.comp hraw
 

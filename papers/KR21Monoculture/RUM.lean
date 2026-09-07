@@ -1,12 +1,12 @@
 import KR21Monoculture.Theorem1
-import EconCSLib.Foundations.Math.MonotoneContinuity
-import EconCSLib.Foundations.Optimization.Endpoint
-import EconCSLib.Foundations.Probability.BivariateGaussian
-import EconCSLib.Foundations.Probability.MeasureInequalities
-import EconCSLib.Foundations.Probability.RandomUtility
-import EconCSLib.Foundations.Probability.RandomUtilityDensity
-import EconCSLib.SocialChoice.Ranking.Probability
-import EconCSLib.SocialChoice.Ranking.Score
+import AppliedModelingLib.Foundations.Math.MonotoneContinuity
+import AppliedModelingLib.Foundations.Optimization.Endpoint
+import AppliedModelingLib.Foundations.Probability.BivariateGaussian
+import AppliedModelingLib.Foundations.Probability.MeasureInequalities
+import AppliedModelingLib.Foundations.Probability.RandomUtility
+import AppliedModelingLib.Foundations.Probability.RandomUtilityDensity
+import AppliedModelingLib.SocialChoice.Ranking.Probability
+import AppliedModelingLib.SocialChoice.Ranking.Score
 import Mathlib.Analysis.Complex.Exponential
 import Mathlib.Analysis.Calculus.Deriv.Inv
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
@@ -26,7 +26,7 @@ import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
 
-open EconCSLib MeasureTheory
+open AppliedModelingLib MeasureTheory
 open scoped ENNReal NNReal
 
 namespace KR21Monoculture
@@ -44,46 +44,46 @@ Paper Definition 4, strict form.
 For `a > b` and `c > d`, assigning the larger realized value to the larger true
 value is strictly more likely than the crossed assignment.
 -/
-def StrictlyWellOrderedNoise (f : ℝ → ℝ) : Prop := EconCSLib.Probability.StrictlyWellOrderedNoise f
+def StrictlyWellOrderedNoise (f : ℝ → ℝ) : Prop := AppliedModelingLib.Probability.StrictlyWellOrderedNoise f
 
 /--
 Weak version of Definition 4.  This is useful for Laplacian kernels, where the
 strict paper inequality can be an equality when the two ordered intervals are
 separated on the real line.
 -/
-def WeaklyWellOrderedNoise (f : ℝ → ℝ) : Prop := EconCSLib.Probability.WeaklyWellOrderedNoise f
+def WeaklyWellOrderedNoise (f : ℝ → ℝ) : Prop := AppliedModelingLib.Probability.WeaklyWellOrderedNoise f
 
 /-- The strict paper condition immediately gives the weak comparison. -/
 theorem StrictlyWellOrderedNoise.weak {f : ℝ → ℝ}
     (hf : StrictlyWellOrderedNoise f) :
-    WeaklyWellOrderedNoise f :=  EconCSLib.Probability.StrictlyWellOrderedNoise.weak hf
+    WeaklyWellOrderedNoise f :=  AppliedModelingLib.Probability.StrictlyWellOrderedNoise.weak hf
 
 /-- Positive density normalization preserves strict well-ordering. -/
 theorem StrictlyWellOrderedNoise.const_mul_pos {f : ℝ → ℝ} {c : ℝ}
     (hf : StrictlyWellOrderedNoise f) (hc : 0 < c) :
     StrictlyWellOrderedNoise (fun z => c * f z) :=
-  EconCSLib.Probability.StrictlyWellOrderedNoise.const_mul_pos hf hc
+  AppliedModelingLib.Probability.StrictlyWellOrderedNoise.const_mul_pos hf hc
 
 /-- Nonnegative density normalization preserves weak well-ordering. -/
 theorem WeaklyWellOrderedNoise.const_mul_nonneg {f : ℝ → ℝ} {c : ℝ}
     (hf : WeaklyWellOrderedNoise f) (hc : 0 ≤ c) :
     WeaklyWellOrderedNoise (fun z => c * f z) :=
-  EconCSLib.Probability.WeaklyWellOrderedNoise.const_mul_nonneg hf hc
+  AppliedModelingLib.Probability.WeaklyWellOrderedNoise.const_mul_nonneg hf hc
 
 /-- Gaussian density kernel, omitting the positive normalizing constant. -/
-noncomputable def gaussianNoiseKernel (κ : ℝ) (x : ℝ) : ℝ := EconCSLib.Probability.gaussianNoiseKernel κ x
+noncomputable def gaussianNoiseKernel (κ : ℝ) (x : ℝ) : ℝ := AppliedModelingLib.Probability.gaussianNoiseKernel κ x
 
 /-- Laplacian density kernel, omitting the positive normalizing constant. -/
-noncomputable def laplacianNoiseKernel (lam : ℝ) (x : ℝ) : ℝ := EconCSLib.Probability.laplacianNoiseKernel lam x
+noncomputable def laplacianNoiseKernel (lam : ℝ) (x : ℝ) : ℝ := AppliedModelingLib.Probability.laplacianNoiseKernel lam x
 
 theorem gaussianNoiseKernel_pos (κ x : ℝ) :
-    0 < gaussianNoiseKernel κ x :=  EconCSLib.Probability.gaussianNoiseKernel_pos κ x
+    0 < gaussianNoiseKernel κ x :=  AppliedModelingLib.Probability.gaussianNoiseKernel_pos κ x
 
 theorem gaussianNoiseKernel_nonneg (κ x : ℝ) :
     0 ≤ gaussianNoiseKernel κ x := le_of_lt (gaussianNoiseKernel_pos κ x)
 
 theorem laplacianNoiseKernel_pos (lam x : ℝ) :
-    0 < laplacianNoiseKernel lam x :=  EconCSLib.Probability.laplacianNoiseKernel_pos lam x
+    0 < laplacianNoiseKernel lam x :=  AppliedModelingLib.Probability.laplacianNoiseKernel_pos lam x
 
 theorem laplacianNoiseKernel_nonneg (lam x : ℝ) :
     0 ≤ laplacianNoiseKernel lam x := le_of_lt (laplacianNoiseKernel_pos lam x)
@@ -96,19 +96,19 @@ negative squared-error exponent by `2κ(a-b)(c-d)`.
 theorem gaussian_exponent_cross_lt_ordered
     {κ a b c d : ℝ} (hκ : 0 < κ) (hab : b < a) (hcd : d < c) :
     -κ * (a - d) ^ 2 + -κ * (b - c) ^ 2 <
-      -κ * (a - c) ^ 2 + -κ * (b - d) ^ 2 :=  EconCSLib.Probability.gaussian_exponent_cross_lt_ordered hκ hab hcd
+      -κ * (a - c) ^ 2 + -κ * (b - d) ^ 2 :=  AppliedModelingLib.Probability.gaussian_exponent_cross_lt_ordered hκ hab hcd
 
 /-- Gaussian kernels satisfy the paper's strict well-ordering condition. -/
 theorem gaussianNoiseKernel_strictlyWellOrdered
     {κ : ℝ} (hκ : 0 < κ) :
     StrictlyWellOrderedNoise (gaussianNoiseKernel κ) := by
   simpa [StrictlyWellOrderedNoise, gaussianNoiseKernel] using
-    EconCSLib.Probability.gaussianNoiseKernel_strictlyWellOrdered hκ
+    AppliedModelingLib.Probability.gaussianNoiseKernel_strictlyWellOrdered hκ
 
 /-- Four-point rearrangement inequality for absolute distance on the line. -/
 theorem abs_ordered_cross_le_ordered
     {a b c d : ℝ} (hab : b ≤ a) (hcd : d ≤ c) :
-    |a - c| + |b - d| ≤ |a - d| + |b - c| :=  EconCSLib.Probability.abs_ordered_cross_le_ordered hab hcd
+    |a - c| + |b - d| ≤ |a - d| + |b - c| :=  AppliedModelingLib.Probability.abs_ordered_cross_le_ordered hab hcd
 
 /--
 Strict four-point rearrangement for absolute distance when the two ordered
@@ -117,7 +117,7 @@ intervals overlap (`b < c` and `d < a`).
 theorem abs_ordered_cross_lt_ordered_of_overlap
     {a b c d : ℝ} (hab : b < a) (hcd : d < c) (hbc : b < c) (hda : d < a) :
     |a - c| + |b - d| < |a - d| + |b - c| :=
-   EconCSLib.Probability.abs_ordered_cross_lt_ordered_of_overlap
+   AppliedModelingLib.Probability.abs_ordered_cross_lt_ordered_of_overlap
     hab hcd hbc hda
 
 /-- Laplacian kernels satisfy the weak well-ordering inequality. -/
@@ -125,7 +125,7 @@ theorem laplacianNoiseKernel_weaklyWellOrdered
     {lam : ℝ} (hlam : 0 ≤ lam) :
     WeaklyWellOrderedNoise (laplacianNoiseKernel lam) := by
   simpa [WeaklyWellOrderedNoise, laplacianNoiseKernel] using
-    EconCSLib.Probability.laplacianNoiseKernel_weaklyWellOrdered hlam
+    AppliedModelingLib.Probability.laplacianNoiseKernel_weaklyWellOrdered hlam
 
 /--
 The paper's strict Definition 4 is not satisfied by the Laplacian kernel as
@@ -135,7 +135,7 @@ absolute deviation.
 theorem laplacianNoiseKernel_not_strictlyWellOrdered (lam : ℝ) :
     ¬ StrictlyWellOrderedNoise (laplacianNoiseKernel lam) := by
   simpa [StrictlyWellOrderedNoise, laplacianNoiseKernel] using
-    EconCSLib.Probability.laplacianNoiseKernel_not_strictlyWellOrdered lam
+    AppliedModelingLib.Probability.laplacianNoiseKernel_not_strictlyWellOrdered lam
 
 /--
 Laplacian kernels satisfy the strict paper inequality on the overlap region.
@@ -149,7 +149,7 @@ theorem laplacianNoiseKernel_strictlyWellOrdered_of_overlap
     laplacianNoiseKernel lam (a - c) * laplacianNoiseKernel lam (b - d) >
       laplacianNoiseKernel lam (a - d) * laplacianNoiseKernel lam (b - c) := by
   simpa [laplacianNoiseKernel] using
-    EconCSLib.Probability.laplacianNoiseKernel_strictlyWellOrdered_of_overlap
+    AppliedModelingLib.Probability.laplacianNoiseKernel_strictlyWellOrdered_of_overlap
       hlam hab hcd hbc hda
 
 /-! ## Appendix C, Theorem 7 scalar Laplacian derivative inequalities -/
@@ -786,7 +786,7 @@ theorem theorem7LaplacianCase2ConditionalProb_mono
     have hdG : HasDerivAt G d u := by simpa [G] using hd
     rw [hdG.deriv]
     exact le_of_lt hdpos
-  exact EconCSLib.Optimization.endpoint_path_le_of_hasDerivAt_nonneg_on_Icc
+  exact AppliedModelingLib.Optimization.endpoint_path_le_of_hasDerivAt_nonneg_on_Icc
     (f := G) (f' := deriv G) hab hcont hderiv hnonneg
 
 /--
@@ -1225,7 +1225,7 @@ theorem theorem7LaplacePDF_zero_eq_const_mul_laplacianNoiseKernel
     theorem7LaplacePDF lam 0 x =
       (lam / 2) * laplacianNoiseKernel lam x := by
   unfold theorem7LaplacePDF laplacianNoiseKernel
-    EconCSLib.Probability.laplacianNoiseKernel
+    AppliedModelingLib.Probability.laplacianNoiseKernel
   ring_nf
 
 /--
@@ -5865,7 +5865,7 @@ the unnormalized Gaussian kernel used in Lemma 1. -/
 theorem theorem8GaussianPDF_zero_eq_const_mul_gaussianNoiseKernel (x : ℝ) :
     theorem8GaussianPDF 0 x =
       (1 / Real.sqrt Real.pi) * gaussianNoiseKernel 1 x := by
-  unfold theorem8GaussianPDF gaussianNoiseKernel EconCSLib.Probability.gaussianNoiseKernel
+  unfold theorem8GaussianPDF gaussianNoiseKernel AppliedModelingLib.Probability.gaussianNoiseKernel
   ring_nf
 
 /-- The normalized zero-mean Gaussian density used in Theorem 8 is strictly
@@ -5951,7 +5951,7 @@ theorem theorem8GaussianCDF_pos (μ a : ℝ) :
       0 <
         ProbabilityTheory.gaussianReal μ (1 / 2 : ℝ≥0)
           (Set.Ioc (a - 1) a) :=
-    EconCSLib.Probability.gaussianReal_Ioc_pos μ hvar (by linarith)
+    AppliedModelingLib.Probability.gaussianReal_Ioc_pos μ hvar (by linarith)
   have hmono :
       ProbabilityTheory.gaussianReal μ (1 / 2 : ℝ≥0)
           (Set.Ioc (a - 1) a) ≤
@@ -8984,14 +8984,14 @@ theorem theorem7LaplacianDefinition2_event2_score_inter_lt_mul
 Appendix C, Theorem 8: encode an arbitrary Gaussian standard deviation as the
 variance parameter used by Mathlib's `gaussianReal`.
 -/
-def theorem8GaussianVarianceFromStd (σ : ℝ) : ℝ≥0 := EconCSLib.Probability.gaussianVarianceFromStd σ
+def theorem8GaussianVarianceFromStd (σ : ℝ) : ℝ≥0 := AppliedModelingLib.Probability.gaussianVarianceFromStd σ
 
 theorem theorem8GaussianVarianceFromStd_mul_left (t σ : ℝ) :
     NNReal.mk (t ^ 2) (sq_nonneg t) * theorem8GaussianVarianceFromStd σ =
       theorem8GaussianVarianceFromStd (t * σ) := by
   ext
   simp [theorem8GaussianVarianceFromStd,
-    EconCSLib.Probability.gaussianVarianceFromStd]
+    AppliedModelingLib.Probability.gaussianVarianceFromStd]
   ring
 
 theorem theorem8GaussianVarianceFromStd_ne_zero {σ : ℝ} (hσ : σ ≠ 0) :
@@ -9002,18 +9002,18 @@ theorem theorem8GaussianVarianceFromStd_ne_zero {σ : ℝ} (hσ : σ ≠ 0) :
     rfl
   have hsq : σ ^ 2 = 0 := by
     simpa [theorem8GaussianVarianceFromStd,
-      EconCSLib.Probability.gaussianVarianceFromStd] using hcoe
+      AppliedModelingLib.Probability.gaussianVarianceFromStd] using hcoe
   exact hσ (sq_eq_zero_iff.mp hsq)
 
 /--
 Appendix C, Theorem 8: the positive scale that sends standard deviation `σ` to
 the paper's canonical standard deviation `1 / sqrt 2`.
 -/
-noncomputable def theorem8GaussianCanonicalScale (σ : ℝ) : ℝ := EconCSLib.Probability.canonicalHalfVarianceScale σ
+noncomputable def theorem8GaussianCanonicalScale (σ : ℝ) : ℝ := AppliedModelingLib.Probability.canonicalHalfVarianceScale σ
 
 /-- Appendix C, Theorem 8: the canonical Gaussian scale is positive. -/
 theorem theorem8GaussianCanonicalScale_pos {σ : ℝ} (hσ : 0 < σ) :
-    0 < theorem8GaussianCanonicalScale σ :=  EconCSLib.Probability.canonicalHalfVarianceScale_pos hσ
+    0 < theorem8GaussianCanonicalScale σ :=  AppliedModelingLib.Probability.canonicalHalfVarianceScale_pos hσ
 
 /-- Appendix C, Theorem 8: the canonical Gaussian scale is nonzero. -/
 theorem theorem8GaussianCanonicalScale_ne_zero {σ : ℝ} (hσ : 0 < σ) :
@@ -9036,7 +9036,7 @@ theorem theorem8GaussianCanonicalScale_one_div_tendsto_atTop :
   refine hlinear.congr' ?_
   filter_upwards [Filter.eventually_gt_atTop (0 : ℝ)] with θ hθ
   unfold theorem8GaussianCanonicalScale
-  simp [EconCSLib.Probability.canonicalHalfVarianceScale,
+  simp [AppliedModelingLib.Probability.canonicalHalfVarianceScale,
     one_div]
   ring
 
@@ -9051,7 +9051,7 @@ theorem theorem8GaussianCanonicalScale_sq_mul_variance
       theorem8GaussianVarianceFromStd σ =
         (1 / 2 : ℝ≥0) := by
   simpa [theorem8GaussianCanonicalScale, theorem8GaussianVarianceFromStd] using
-    EconCSLib.Probability.canonicalHalfVarianceScale_sq_mul_gaussianVarianceFromStd hσ
+    AppliedModelingLib.Probability.canonicalHalfVarianceScale_sq_mul_gaussianVarianceFromStd hσ
 
 /--
 Appendix C, Theorem 8: Mathlib's one-dimensional Gaussian scaling theorem,
@@ -9065,7 +9065,7 @@ theorem theorem8GaussianReal_map_canonicalScale
       ProbabilityTheory.gaussianReal
         (theorem8GaussianCanonicalScale σ * μ) (1 / 2 : ℝ≥0) := by
   simpa [theorem8GaussianCanonicalScale, theorem8GaussianVarianceFromStd] using
-    EconCSLib.Probability.gaussianReal_map_canonicalHalfVarianceScale
+    AppliedModelingLib.Probability.gaussianReal_map_canonicalHalfVarianceScale
       (σ := σ) (μ := μ) hσ
 
 /--
@@ -9253,19 +9253,19 @@ Appendix C, Theorem 8: product measure for independent Gaussians with arbitrary
 positive standard deviation `σ`.
 -/
 noncomputable def theorem8GaussianPairMeasureStd
-    (σ xi xj : ℝ) : Measure (ℝ × ℝ) := EconCSLib.Probability.independentGaussianPairMeasureWithStd σ xi xj
+    (σ xi xj : ℝ) : Measure (ℝ × ℝ) := AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd σ xi xj
 
 /--
 Appendix C, Theorem 8: scale both coordinates of the Gaussian product space.
 -/
 noncomputable def theorem8GaussianPairCanonicalScaleMap
-    (σ : ℝ) : ℝ × ℝ → ℝ × ℝ := EconCSLib.Probability.pairCanonicalHalfVarianceScaleMap σ
+    (σ : ℝ) : ℝ × ℝ → ℝ × ℝ := AppliedModelingLib.Probability.pairCanonicalHalfVarianceScaleMap σ
 
 theorem theorem8GaussianPairCanonicalScaleMap_measurable
     (σ : ℝ) :
     Measurable (theorem8GaussianPairCanonicalScaleMap σ) := by
   unfold theorem8GaussianPairCanonicalScaleMap
-    EconCSLib.Probability.pairCanonicalHalfVarianceScaleMap
+    AppliedModelingLib.Probability.pairCanonicalHalfVarianceScaleMap
   fun_prop
 
 /--
@@ -9282,10 +9282,10 @@ theorem theorem8GaussianPairMeasureStd_map_canonicalScale
   simpa [theorem8GaussianPairMeasureStd, theorem8GaussianPairCanonicalScaleMap,
     theorem8GaussianPairMeasure, theorem8GaussianCanonicalScale,
     theorem8GaussianVarianceFromStd,
-    EconCSLib.Probability.independentGaussianPairMeasureWithStd,
-    EconCSLib.Probability.pairCanonicalHalfVarianceScaleMap,
-    EconCSLib.Probability.independentGaussianPairMeasureHalf] using
-      EconCSLib.Probability.independentGaussianPairMeasureWithStd_map_canonicalHalfVarianceScale
+    AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd,
+    AppliedModelingLib.Probability.pairCanonicalHalfVarianceScaleMap,
+    AppliedModelingLib.Probability.independentGaussianPairMeasureHalf] using
+      AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd_map_canonicalHalfVarianceScale
         (σ := σ) (xi := xi) (xj := xj) hσ
 
 /-- Independent three-score Gaussian source law with arbitrary standard deviation. -/
@@ -9300,9 +9300,9 @@ instance theorem8GaussianDefinition2ScoreMeasureStd_isProbabilityMeasure
       (theorem8GaussianDefinition2ScoreMeasureStd σ x1 x2 x3) := by
   dsimp [theorem8GaussianDefinition2ScoreMeasureStd,
     theorem8GaussianPairMeasureStd,
-    EconCSLib.Probability.independentGaussianPairMeasureWithStd,
+    AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd,
     theorem8GaussianVarianceFromStd,
-    EconCSLib.Probability.gaussianVarianceFromStd]
+    AppliedModelingLib.Probability.gaussianVarianceFromStd]
   infer_instance
 
 /-- The first coordinate marginal of the arbitrary-variance Gaussian source law. -/
@@ -9600,7 +9600,7 @@ theorem theorem8GaussianDefinition2CanonicalScaleMap_measurable
     Measurable (theorem8GaussianDefinition2CanonicalScaleMap σ) := by
   unfold theorem8GaussianDefinition2CanonicalScaleMap
     theorem8GaussianPairCanonicalScaleMap
-    EconCSLib.Probability.pairCanonicalHalfVarianceScaleMap
+    AppliedModelingLib.Probability.pairCanonicalHalfVarianceScaleMap
   fun_prop
 
 @[simp] theorem theorem8GaussianDefinition2CanonicalScaleMap_score1
@@ -9640,9 +9640,9 @@ theorem theorem8GaussianDefinition2ScoreMeasureStd_map_canonicalScale
   let μ23 := theorem8GaussianPairMeasureStd σ x2 x3
   haveI : SFinite μ23 := by
     dsimp [μ23, theorem8GaussianPairMeasureStd,
-      EconCSLib.Probability.independentGaussianPairMeasureWithStd,
+      AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd,
       theorem8GaussianVarianceFromStd,
-      EconCSLib.Probability.gaussianVarianceFromStd]
+      AppliedModelingLib.Probability.gaussianVarianceFromStd]
     infer_instance
   unfold theorem8GaussianDefinition2ScoreMeasureStd
     theorem8GaussianDefinition2CanonicalScaleMap theorem8GaussianDefinition2ScoreMeasure
@@ -9686,9 +9686,9 @@ theorem theorem8GaussianPairCanonicalScaleMap_preimage_strict_numerator
         theorem8GaussianPairStrictNumeratorEvent a := by
   simpa [theorem8GaussianPairCanonicalScaleMap,
     theorem8GaussianPairStrictNumeratorEvent, theorem8GaussianCanonicalScale,
-    EconCSLib.Probability.pairCanonicalHalfVarianceScaleMap,
-    EconCSLib.Probability.pairStrictWinnerBelowEvent] using
-      EconCSLib.Probability.pairCanonicalHalfVarianceScaleMap_preimage_strictWinnerBelow
+    AppliedModelingLib.Probability.pairCanonicalHalfVarianceScaleMap,
+    AppliedModelingLib.Probability.pairStrictWinnerBelowEvent] using
+      AppliedModelingLib.Probability.pairCanonicalHalfVarianceScaleMap_preimage_strictWinnerBelow
         (σ := σ) (a := a) hσ
 
 /--
@@ -9704,9 +9704,9 @@ theorem theorem8GaussianPairCanonicalScaleMap_preimage_strict_denominator
         theorem8GaussianPairStrictDenominatorEvent a := by
   simpa [theorem8GaussianPairCanonicalScaleMap,
     theorem8GaussianPairStrictDenominatorEvent, theorem8GaussianCanonicalScale,
-    EconCSLib.Probability.pairCanonicalHalfVarianceScaleMap,
-    EconCSLib.Probability.pairStrictBothBelowEvent] using
-      EconCSLib.Probability.pairCanonicalHalfVarianceScaleMap_preimage_strictBothBelow
+    AppliedModelingLib.Probability.pairCanonicalHalfVarianceScaleMap,
+    AppliedModelingLib.Probability.pairStrictBothBelowEvent] using
+      AppliedModelingLib.Probability.pairCanonicalHalfVarianceScaleMap_preimage_strictBothBelow
         (σ := σ) (a := a) hσ
 
 /--
@@ -9725,10 +9725,10 @@ theorem theorem8GaussianPairMeasureStd_strict_numerator_eq_scaled
   simpa [theorem8GaussianPairMeasureStd,
     theorem8GaussianPairStrictNumeratorEvent, theorem8GaussianPairMeasure,
     theorem8GaussianCanonicalScale, theorem8GaussianVarianceFromStd,
-    EconCSLib.Probability.independentGaussianPairMeasureWithStd,
-    EconCSLib.Probability.independentGaussianPairMeasureHalf,
-    EconCSLib.Probability.pairStrictWinnerBelowEvent] using
-      EconCSLib.Probability.independentGaussianPairMeasureWithStd_strictWinnerBelow_eq_scaled
+    AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd,
+    AppliedModelingLib.Probability.independentGaussianPairMeasureHalf,
+    AppliedModelingLib.Probability.pairStrictWinnerBelowEvent] using
+      AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd_strictWinnerBelow_eq_scaled
         (σ := σ) (xi := xi) (xj := xj) (a := a) hσ
 
 /--
@@ -9747,10 +9747,10 @@ theorem theorem8GaussianPairMeasureStd_strict_denominator_eq_scaled
   simpa [theorem8GaussianPairMeasureStd,
     theorem8GaussianPairStrictDenominatorEvent, theorem8GaussianPairMeasure,
     theorem8GaussianCanonicalScale, theorem8GaussianVarianceFromStd,
-    EconCSLib.Probability.independentGaussianPairMeasureWithStd,
-    EconCSLib.Probability.independentGaussianPairMeasureHalf,
-    EconCSLib.Probability.pairStrictBothBelowEvent] using
-      EconCSLib.Probability.independentGaussianPairMeasureWithStd_strictBothBelow_eq_scaled
+    AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd,
+    AppliedModelingLib.Probability.independentGaussianPairMeasureHalf,
+    AppliedModelingLib.Probability.pairStrictBothBelowEvent] using
+      AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd_strictBothBelow_eq_scaled
         (σ := σ) (xi := xi) (xj := xj) (a := a) hσ
 
 /--
@@ -9781,13 +9781,13 @@ theorem theorem8GaussianProductStrictConditionalRatioAtStd_eq_scaled
     theorem8GaussianPairStrictNumeratorEvent,
     theorem8GaussianPairStrictDenominatorEvent,
     theorem8GaussianCanonicalScale, theorem8GaussianVarianceFromStd,
-    EconCSLib.Probability.independentGaussianStrictConditionalWinnerRatioWithStd,
-    EconCSLib.Probability.independentGaussianStrictConditionalWinnerRatioHalf,
-    EconCSLib.Probability.independentGaussianPairMeasureWithStd,
-    EconCSLib.Probability.independentGaussianPairMeasureHalf,
-    EconCSLib.Probability.pairStrictWinnerBelowEvent,
-    EconCSLib.Probability.pairStrictBothBelowEvent] using
-      EconCSLib.Probability.independentGaussianStrictConditionalWinnerRatioWithStd_eq_scaled
+    AppliedModelingLib.Probability.independentGaussianStrictConditionalWinnerRatioWithStd,
+    AppliedModelingLib.Probability.independentGaussianStrictConditionalWinnerRatioHalf,
+    AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd,
+    AppliedModelingLib.Probability.independentGaussianPairMeasureHalf,
+    AppliedModelingLib.Probability.pairStrictWinnerBelowEvent,
+    AppliedModelingLib.Probability.pairStrictBothBelowEvent] using
+      AppliedModelingLib.Probability.independentGaussianStrictConditionalWinnerRatioWithStd_eq_scaled
         (σ := σ) (xi := xi) (xj := xj) (a := a) hσ
 
 /--
@@ -9869,10 +9869,10 @@ The paper's contraction map on one coordinate:
 `r' = x + t * (r - x)`, where `x` is the candidate's true value and
 `0 ≤ t ≤ 1` corresponds to `θH / θA`.
 -/
-noncomputable def rumContractScore (t x r : ℝ) : ℝ := EconCSLib.Probability.rumContractScore t x r
+noncomputable def rumContractScore (t x r : ℝ) : ℝ := AppliedModelingLib.Probability.rumContractScore t x r
 
 theorem rumContractScore_eq_affine (t x r : ℝ) :
-    rumContractScore t x r = (1 - t) * x + t * r :=  EconCSLib.Probability.rumContractScore_eq_affine t x r
+    rumContractScore t x r = (1 - t) * x + t * r :=  AppliedModelingLib.Probability.rumContractScore_eq_affine t x r
 
 /-- Contraction commutes with positive or negative scalar multiplication of the
 score and its center. -/
@@ -10062,7 +10062,7 @@ theorem theorem8GaussianPairMeasureStd_map_contract
     dsimp [μ3]
     infer_instance
   unfold theorem8GaussianPairMeasureStd
-    EconCSLib.Probability.independentGaussianPairMeasureWithStd
+    AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd
   change (μ2.prod μ3).map
         (Prod.map (fun r2 => rumContractScore t x2 r2)
           (fun r3 => rumContractScore t x3 r3)) =
@@ -10088,7 +10088,7 @@ theorem theorem8GaussianDefinition2ScoreMeasureStd_map_contract
     infer_instance
   haveI : SFinite μ23 := by
     dsimp [μ23, theorem8GaussianPairMeasureStd,
-      EconCSLib.Probability.independentGaussianPairMeasureWithStd]
+      AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd]
     infer_instance
   unfold theorem8GaussianDefinition2ScoreMeasureStd
     theorem8GaussianDefinition2ContractMap
@@ -10218,16 +10218,16 @@ theorem theorem7LaplacianDefinition2ContractMap_measurePreserving
 theorem rumContractScore_sub
     (t xi xj ri rj : ℝ) :
     rumContractScore t xi ri - rumContractScore t xj rj =
-      (1 - t) * (xi - xj) + t * (ri - rj) :=  EconCSLib.Probability.rumContractScore_sub t xi xj ri rj
+      (1 - t) * (xi - xj) + t * (ri - rj) :=  AppliedModelingLib.Probability.rumContractScore_sub t xi xj ri rj
 
 /-- Candidate `x₁` is weakly first among three realized scores. -/
-def rum3TopFirstByScores (s1 s2 s3 : ℝ) : Prop := EconCSLib.SocialChoice.Ranking.rum3TopFirstByScores s1 s2 s3
+def rum3TopFirstByScores (s1 s2 s3 : ℝ) : Prop := AppliedModelingLib.SocialChoice.Ranking.rum3TopFirstByScores s1 s2 s3
 
 /-- Candidate `x₂` strictly beats `x₁` and weakly beats `x₃`. -/
-def rum3MiddleBeatsTopByScores (s1 s2 s3 : ℝ) : Prop := EconCSLib.SocialChoice.Ranking.rum3MiddleBeatsTopByScores s1 s2 s3
+def rum3MiddleBeatsTopByScores (s1 s2 s3 : ℝ) : Prop := AppliedModelingLib.SocialChoice.Ranking.rum3MiddleBeatsTopByScores s1 s2 s3
 
 /-- Candidate `x₃` is weakly first among three realized scores. -/
-def rum3BottomFirstByScores (s1 s2 s3 : ℝ) : Prop := EconCSLib.SocialChoice.Ranking.rum3BottomFirstByScores s1 s2 s3
+def rum3BottomFirstByScores (s1 s2 s3 : ℝ) : Prop := AppliedModelingLib.SocialChoice.Ranking.rum3BottomFirstByScores s1 s2 s3
 
 /--
 Contraction cannot reverse an already-correct weak order between two candidates.
@@ -10237,7 +10237,7 @@ theorem rumContractScore_preserves_weak_order
     (ht0 : 0 ≤ t) (ht1 : t ≤ 1)
     (hx : xj ≤ xi) (hr : rj ≤ ri) :
     rumContractScore t xj rj ≤ rumContractScore t xi ri :=
-   EconCSLib.Probability.rumContractScore_preserves_weak_order
+   AppliedModelingLib.Probability.rumContractScore_preserves_weak_order
     ht0 ht1 hx hr
 
 /--
@@ -10250,7 +10250,7 @@ theorem rumContractScore_preserves_strict_order
     (ht0 : 0 ≤ t) (ht1 : t ≤ 1)
     (hx : xj < xi) (hr : rj < ri) :
     rumContractScore t xj rj < rumContractScore t xi ri :=
-   EconCSLib.Probability.rumContractScore_preserves_strict_order
+   AppliedModelingLib.Probability.rumContractScore_preserves_strict_order
     ht0 ht1 hx hr
 
 /--
@@ -10263,7 +10263,7 @@ theorem rumContractScore_value_le_of_raw_le_and_contract_ge
     (hr : ri ≤ rj)
     (hc : rumContractScore t xj rj ≤ rumContractScore t xi ri) :
     xj ≤ xi :=
-  EconCSLib.Probability.rumContractScore_value_le_of_raw_le_and_contract_ge
+  AppliedModelingLib.Probability.rumContractScore_value_le_of_raw_le_and_contract_ge
     ht0 htlt1 hr hc
 
 /--
@@ -10280,7 +10280,7 @@ theorem rumContractScore_value_le_of_raw_max_and_contract_max
       rumContractScore t (value i) (raw i) ≤
         rumContractScore t (value contractBest) (raw contractBest)) :
     value rawBest ≤ value contractBest :=
-  EconCSLib.Probability.rumContractScore_value_le_of_raw_max_and_contract_max
+  AppliedModelingLib.Probability.rumContractScore_value_le_of_raw_max_and_contract_max
     ht0 htlt1 hrawMax hcontractMax
 
 /--
@@ -10297,7 +10297,7 @@ theorem rumContractScore_value_le_of_raw_max_on_and_contract_max_on
       rumContractScore t (value i) (raw i) ≤
         rumContractScore t (value contractBest) (raw contractBest)) :
     value rawBest ≤ value contractBest :=
-  EconCSLib.Probability.rumContractScore_value_le_of_raw_max_on_and_contract_max_on
+  AppliedModelingLib.Probability.rumContractScore_value_le_of_raw_max_on_and_contract_max_on
     ht0 htlt1 hrawMem hcontractMem hrawMax hcontractMax
 
 /--
@@ -10311,7 +10311,7 @@ theorem rum3_contract_top_first_of_original_top_first
     (hr12 : r2 ≤ r1) (hr13 : r3 ≤ r1) :
     rumContractScore t x2 r2 ≤ rumContractScore t x1 r1 ∧
       rumContractScore t x3 r3 ≤ rumContractScore t x1 r1 :=
-  EconCSLib.Probability.rum3_contract_top_first_of_original_top_first
+  AppliedModelingLib.Probability.rum3_contract_top_first_of_original_top_first
     ht0 ht1 hx12 hx13 hr12 hr13
 
 /--
@@ -10325,7 +10325,7 @@ theorem rum3_contract_bottom_first_imp_original_bottom_first
     (hc31 : rumContractScore t x1 r1 ≤ rumContractScore t x3 r3)
     (hc32 : rumContractScore t x2 r2 ≤ rumContractScore t x3 r3) :
     r1 ≤ r3 ∧ r2 ≤ r3 :=
-   EconCSLib.Probability.rum3_contract_bottom_first_imp_original_bottom_first
+   AppliedModelingLib.Probability.rum3_contract_bottom_first_imp_original_bottom_first
     ht0 ht1 hx31 hx32 hc31 hc32
 
 /--
@@ -10343,82 +10343,82 @@ theorem rum3_contract_bottom_first_imp_original_bottom_first_strict_of_t_lt_one
     (hc31 : rumContractScore t x1 r1 ≤ rumContractScore t x3 r3)
     (hc32 : rumContractScore t x2 r2 ≤ rumContractScore t x3 r3) :
     r1 < r3 ∧ r2 < r3 :=
-   EconCSLib.Probability.rum3_contract_bottom_first_imp_original_bottom_first_strict_of_t_lt_one
+   AppliedModelingLib.Probability.rum3_contract_bottom_first_imp_original_bottom_first_strict_of_t_lt_one
     ht0 htlt1 hx31 hx32 hc31 hc32
 
 /-! ## Concrete three-score rankings -/
 
 /-- The concrete ranking `[x₁, x₂, x₃]`. -/
-def rum3Ranking012 : Ranking 1 := EconCSLib.SocialChoice.Ranking.rum3Ranking012
+def rum3Ranking012 : Ranking 1 := AppliedModelingLib.SocialChoice.Ranking.rum3Ranking012
 
 /-- The concrete ranking `[x₁, x₃, x₂]`. -/
-def rum3Ranking021 : Ranking 1 := EconCSLib.SocialChoice.Ranking.rum3Ranking021
+def rum3Ranking021 : Ranking 1 := AppliedModelingLib.SocialChoice.Ranking.rum3Ranking021
 
 /-- The concrete ranking `[x₂, x₁, x₃]`. -/
-def rum3Ranking102 : Ranking 1 := EconCSLib.SocialChoice.Ranking.rum3Ranking102
+def rum3Ranking102 : Ranking 1 := AppliedModelingLib.SocialChoice.Ranking.rum3Ranking102
 
 /-- The concrete ranking `[x₂, x₃, x₁]`. -/
-def rum3Ranking120 : Ranking 1 := EconCSLib.SocialChoice.Ranking.rum3Ranking120
+def rum3Ranking120 : Ranking 1 := AppliedModelingLib.SocialChoice.Ranking.rum3Ranking120
 
 /-- The concrete ranking `[x₃, x₁, x₂]`. -/
-def rum3Ranking201 : Ranking 1 := EconCSLib.SocialChoice.Ranking.rum3Ranking201
+def rum3Ranking201 : Ranking 1 := AppliedModelingLib.SocialChoice.Ranking.rum3Ranking201
 
 /-- The concrete ranking `[x₃, x₂, x₁]`. -/
-def rum3Ranking210 : Ranking 1 := EconCSLib.SocialChoice.Ranking.rum3Ranking210
+def rum3Ranking210 : Ranking 1 := AppliedModelingLib.SocialChoice.Ranking.rum3Ranking210
 
 @[simp] theorem rum3Ranking012_apply_zero :
-    rum3Ranking012 (0 : Candidate 1) = (0 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking012_apply_zero
+    rum3Ranking012 (0 : Candidate 1) = (0 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking012_apply_zero
 
 @[simp] theorem rum3Ranking012_apply_one :
-    rum3Ranking012 (1 : Candidate 1) = (1 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking012_apply_one
+    rum3Ranking012 (1 : Candidate 1) = (1 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking012_apply_one
 
 @[simp] theorem rum3Ranking012_apply_two :
-    rum3Ranking012 (2 : Candidate 1) = (2 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking012_apply_two
+    rum3Ranking012 (2 : Candidate 1) = (2 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking012_apply_two
 
 @[simp] theorem rum3Ranking021_apply_zero :
-    rum3Ranking021 (0 : Candidate 1) = (0 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking021_apply_zero
+    rum3Ranking021 (0 : Candidate 1) = (0 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking021_apply_zero
 
 @[simp] theorem rum3Ranking021_apply_one :
-    rum3Ranking021 (1 : Candidate 1) = (2 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking021_apply_one
+    rum3Ranking021 (1 : Candidate 1) = (2 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking021_apply_one
 
 @[simp] theorem rum3Ranking021_apply_two :
-    rum3Ranking021 (2 : Candidate 1) = (1 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking021_apply_two
+    rum3Ranking021 (2 : Candidate 1) = (1 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking021_apply_two
 
 @[simp] theorem rum3Ranking102_apply_zero :
-    rum3Ranking102 (0 : Candidate 1) = (1 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking102_apply_zero
+    rum3Ranking102 (0 : Candidate 1) = (1 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking102_apply_zero
 
 @[simp] theorem rum3Ranking102_apply_one :
-    rum3Ranking102 (1 : Candidate 1) = (0 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking102_apply_one
+    rum3Ranking102 (1 : Candidate 1) = (0 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking102_apply_one
 
 @[simp] theorem rum3Ranking102_apply_two :
-    rum3Ranking102 (2 : Candidate 1) = (2 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking102_apply_two
+    rum3Ranking102 (2 : Candidate 1) = (2 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking102_apply_two
 
 @[simp] theorem rum3Ranking120_apply_zero :
-    rum3Ranking120 (0 : Candidate 1) = (1 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking120_apply_zero
+    rum3Ranking120 (0 : Candidate 1) = (1 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking120_apply_zero
 
 @[simp] theorem rum3Ranking120_apply_one :
-    rum3Ranking120 (1 : Candidate 1) = (2 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking120_apply_one
+    rum3Ranking120 (1 : Candidate 1) = (2 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking120_apply_one
 
 @[simp] theorem rum3Ranking120_apply_two :
-    rum3Ranking120 (2 : Candidate 1) = (0 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking120_apply_two
+    rum3Ranking120 (2 : Candidate 1) = (0 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking120_apply_two
 
 @[simp] theorem rum3Ranking201_apply_zero :
-    rum3Ranking201 (0 : Candidate 1) = (2 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking201_apply_zero
+    rum3Ranking201 (0 : Candidate 1) = (2 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking201_apply_zero
 
 @[simp] theorem rum3Ranking201_apply_one :
-    rum3Ranking201 (1 : Candidate 1) = (0 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking201_apply_one
+    rum3Ranking201 (1 : Candidate 1) = (0 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking201_apply_one
 
 @[simp] theorem rum3Ranking201_apply_two :
-    rum3Ranking201 (2 : Candidate 1) = (1 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking201_apply_two
+    rum3Ranking201 (2 : Candidate 1) = (1 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking201_apply_two
 
 @[simp] theorem rum3Ranking210_apply_zero :
-    rum3Ranking210 (0 : Candidate 1) = (2 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking210_apply_zero
+    rum3Ranking210 (0 : Candidate 1) = (2 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking210_apply_zero
 
 @[simp] theorem rum3Ranking210_apply_one :
-    rum3Ranking210 (1 : Candidate 1) = (1 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking210_apply_one
+    rum3Ranking210 (1 : Candidate 1) = (1 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking210_apply_one
 
 @[simp] theorem rum3Ranking210_apply_two :
-    rum3Ranking210 (2 : Candidate 1) = (0 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3Ranking210_apply_two
+    rum3Ranking210 (2 : Candidate 1) = (0 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3Ranking210_apply_two
 
 /--
 Ranking induced by three realized scores, ordered descending by score and
@@ -10426,10 +10426,10 @@ breaking ties in favor of the lower-indexed candidate.  The paper's continuous
 RUM has zero tie probability for ordinary densities, but this deterministic
 tie convention makes the score-to-ranking map total.
 -/
-noncomputable def rum3RankByScores (s1 s2 s3 : ℝ) : Ranking 1 := EconCSLib.SocialChoice.Ranking.rum3RankByScores s1 s2 s3
+noncomputable def rum3RankByScores (s1 s2 s3 : ℝ) : Ranking 1 := AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores s1 s2 s3
 
 /-- Realized scores have no pairwise ties. -/
-def rum3NoTiesByScores (s1 s2 s3 : ℝ) : Prop := EconCSLib.SocialChoice.Ranking.rum3NoTiesByScores s1 s2 s3
+def rum3NoTiesByScores (s1 s2 s3 : ℝ) : Prop := AppliedModelingLib.SocialChoice.Ranking.rum3NoTiesByScores s1 s2 s3
 
 /-- Ranking map induced by three score-coordinate functions. -/
 noncomputable def rum3RankByScoreFns {Ω : Type*}
@@ -10438,37 +10438,37 @@ noncomputable def rum3RankByScoreFns {Ω : Type*}
 theorem rum3RankByScores_eq012_of_adjacent_order
     {s1 s2 s3 : ℝ} (h21 : s2 ≤ s1) (h32 : s3 ≤ s2) :
     rum3RankByScores s1 s2 s3 = rum3Ranking012 :=
-  EconCSLib.SocialChoice.Ranking.rum3RankByScores_eq012_of_adjacent_order
+  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_eq012_of_adjacent_order
     h21 h32
 
 theorem rum3RankByScores_eq102_of_order
     {s1 s2 s3 : ℝ} (h12 : s1 < s2) (h31 : s3 ≤ s1) :
     rum3RankByScores s1 s2 s3 = rum3Ranking102 :=
-  EconCSLib.SocialChoice.Ranking.rum3RankByScores_eq102_of_order h12 h31
+  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_eq102_of_order h12 h31
 
 theorem rum3RankByScores_pos_mul
     {c s1 s2 s3 : ℝ} (hc : 0 < c) :
     rum3RankByScores (c * s1) (c * s2) (c * s3) =
       rum3RankByScores s1 s2 s3 :=
-  EconCSLib.SocialChoice.Ranking.rum3RankByScores_pos_mul hc
+  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_pos_mul hc
 
 theorem rum3RankByScores_ne012_imp_adjacent_inversion
     {s1 s2 s3 : ℝ}
     (h : rum3RankByScores s1 s2 s3 ≠ rum3Ranking012) :
     s1 < s2 ∨ s2 < s3 :=
-  EconCSLib.SocialChoice.Ranking.rum3RankByScores_ne012_imp_adjacent_inversion h
+  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_ne012_imp_adjacent_inversion h
 
 theorem rum3RankByScoreFns_ne012_imp_adjacent_inversion
     {Ω : Type*} {r1 r2 r3 : Ω → ℝ} {ω : Ω}
     (h : rum3RankByScoreFns r1 r2 r3 ω ≠ rum3Ranking012) :
     r1 ω < r2 ω ∨ r2 ω < r3 ω :=
-  EconCSLib.SocialChoice.Ranking.rum3RankByScoreFns_ne012_imp_adjacent_inversion h
+  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScoreFns_ne012_imp_adjacent_inversion h
 
 /-- Positive rescaling of all three scores does not change the induced ranking. -/
 theorem rum3RankByScores_mul_pos {c : ℝ} (hc : 0 < c) (s1 s2 s3 : ℝ) :
     rum3RankByScores (c * s1) (c * s2) (c * s3) =
       rum3RankByScores s1 s2 s3 := by
-  unfold rum3RankByScores EconCSLib.SocialChoice.Ranking.rum3RankByScores
+  unfold rum3RankByScores AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores
   simp [mul_le_mul_iff_right₀ hc, mul_lt_mul_iff_right₀ hc]
 
 /-- Positive rescaling of all score-coordinate functions does not change rankings. -/
@@ -10500,7 +10500,7 @@ theorem rum3RankByScoreFns_measurable
     (hr1 : Measurable r1) (hr2 : Measurable r2) (hr3 : Measurable r3) :
     Measurable (rum3RankByScoreFns r1 r2 r3) := by
   unfold rum3RankByScoreFns rum3RankByScores
-    EconCSLib.SocialChoice.Ranking.rum3RankByScores
+    AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores
   refine Measurable.ite
     ((measurableSet_le hr2 hr1).inter (measurableSet_le hr3 hr1)) ?_ ?_
   · exact Measurable.ite (measurableSet_le hr3 hr2) measurable_const measurable_const
@@ -10526,7 +10526,7 @@ theorem rumContractScore_pair_le_eventually_at_one
   let d : ℝ → ℝ := fun t =>
     rumContractScore t xi ri - rumContractScore t xj rj
   have hd_cont : ContinuousAt d 1 := by
-    dsimp [d, rumContractScore, EconCSLib.Probability.rumContractScore]
+    dsimp [d, rumContractScore, AppliedModelingLib.Probability.rumContractScore]
     fun_prop
   have hd_one : d 1 = ri - rj := by
     dsimp [d]
@@ -10591,14 +10591,14 @@ theorem rum3ContractRankByScoreFns_eventually_eq_rankByScoreFns_at_one
       (xi := x2) (xj := x3) (ri := r2 ω) (rj := r3 ω) h23
   filter_upwards [h21, h31, h12lt, h32] with t ht21 ht31 ht12lt ht32
   unfold rum3ContractRankByScoreFns rum3RankByScoreFns rum3RankByScores
-    EconCSLib.SocialChoice.Ranking.rum3RankByScores
+    AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores
   simp [ht21, ht31, ht12lt, ht32]
 
 @[simp] theorem firstChoice_rum3RankByScores (s1 s2 s3 : ℝ) :
     firstChoice (rum3RankByScores s1 s2 s3) =
       if s2 ≤ s1 ∧ s3 ≤ s1 then (0 : Candidate 1)
       else if s1 < s2 ∧ s3 ≤ s2 then (1 : Candidate 1)
-      else (2 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.firstChoice_rum3RankByScores s1 s2 s3
+      else (2 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.firstChoice_rum3RankByScores s1 s2 s3
 
 @[simp] theorem secondChoice_rum3RankByScores (s1 s2 s3 : ℝ) :
     secondChoice (rum3RankByScores s1 s2 s3) =
@@ -10607,13 +10607,13 @@ theorem rum3ContractRankByScoreFns_eventually_eq_rankByScoreFns_at_one
       else if s1 < s2 ∧ s3 ≤ s2 then
         if s3 ≤ s1 then (0 : Candidate 1) else (2 : Candidate 1)
       else
-        if s2 ≤ s1 then (0 : Candidate 1) else (1 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.secondChoice_rum3RankByScores s1 s2 s3
+        if s2 ≤ s1 then (0 : Candidate 1) else (1 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.secondChoice_rum3RankByScores s1 s2 s3
 
 @[simp] theorem rum3RankByScores_apply_zero (s1 s2 s3 : ℝ) :
     rum3RankByScores s1 s2 s3 (0 : Candidate 1) =
       if s2 ≤ s1 ∧ s3 ≤ s1 then (0 : Candidate 1)
       else if s1 < s2 ∧ s3 ≤ s2 then (1 : Candidate 1)
-      else (2 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_apply_zero s1 s2 s3
+      else (2 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_apply_zero s1 s2 s3
 
 @[simp] theorem rum3RankByScores_apply_one (s1 s2 s3 : ℝ) :
     rum3RankByScores s1 s2 s3 (1 : Candidate 1) =
@@ -10622,116 +10622,116 @@ theorem rum3ContractRankByScoreFns_eventually_eq_rankByScoreFns_at_one
       else if s1 < s2 ∧ s3 ≤ s2 then
         if s3 ≤ s1 then (0 : Candidate 1) else (2 : Candidate 1)
       else
-        if s2 ≤ s1 then (0 : Candidate 1) else (1 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_apply_one s1 s2 s3
+        if s2 ≤ s1 then (0 : Candidate 1) else (1 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_apply_one s1 s2 s3
 
 @[simp] theorem bestRemainingAfter_rum3RankByScores_remove0
     (s1 s2 s3 : ℝ) :
     bestRemainingAfter (rum3RankByScores s1 s2 s3) (0 : Candidate 1) =
       if s3 ≤ s2 then (1 : Candidate 1) else (2 : Candidate 1) :=
-   EconCSLib.SocialChoice.Ranking.bestRemainingAfter_rum3RankByScores_remove0
+   AppliedModelingLib.SocialChoice.Ranking.bestRemainingAfter_rum3RankByScores_remove0
     s1 s2 s3
 
 @[simp] theorem bestRemainingAfter_rum3RankByScores_remove1
     (s1 s2 s3 : ℝ) :
     bestRemainingAfter (rum3RankByScores s1 s2 s3) (1 : Candidate 1) =
       if s3 ≤ s1 then (0 : Candidate 1) else (2 : Candidate 1) :=
-   EconCSLib.SocialChoice.Ranking.bestRemainingAfter_rum3RankByScores_remove1
+   AppliedModelingLib.SocialChoice.Ranking.bestRemainingAfter_rum3RankByScores_remove1
     s1 s2 s3
 
 @[simp] theorem bestRemainingAfter_rum3RankByScores_remove2
     (s1 s2 s3 : ℝ) :
     bestRemainingAfter (rum3RankByScores s1 s2 s3) (2 : Candidate 1) =
       if s2 ≤ s1 then (0 : Candidate 1) else (1 : Candidate 1) :=
-   EconCSLib.SocialChoice.Ranking.bestRemainingAfter_rum3RankByScores_remove2
+   AppliedModelingLib.SocialChoice.Ranking.bestRemainingAfter_rum3RankByScores_remove2
     s1 s2 s3
 
 theorem rum3RankByScores_firstChoice_of_top_scores
     {s1 s2 s3 : ℝ}
     (h : rum3TopFirstByScores s1 s2 s3) :
-    firstChoice (rum3RankByScores s1 s2 s3) = (0 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_firstChoice_of_top_scores h
+    firstChoice (rum3RankByScores s1 s2 s3) = (0 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_firstChoice_of_top_scores h
 
 theorem rum3RankByScores_top_scores_of_firstChoice
     {s1 s2 s3 : ℝ}
     (h : firstChoice (rum3RankByScores s1 s2 s3) = (0 : Candidate 1)) :
-    rum3TopFirstByScores s1 s2 s3 :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_top_scores_of_firstChoice h
+    rum3TopFirstByScores s1 s2 s3 :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_top_scores_of_firstChoice h
 
 theorem rum3RankByScores_bottom_scores_of_firstChoice
     {s1 s2 s3 : ℝ}
     (h : firstChoice (rum3RankByScores s1 s2 s3) = (2 : Candidate 1)) :
-    rum3BottomFirstByScores s1 s2 s3 :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_bottom_scores_of_firstChoice h
+    rum3BottomFirstByScores s1 s2 s3 :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_bottom_scores_of_firstChoice h
 
 theorem rum3RankByScores_firstChoice_of_bottom_scores_of_noTies
     {s1 s2 s3 : ℝ}
     (hnt : rum3NoTiesByScores s1 s2 s3)
     (h : rum3BottomFirstByScores s1 s2 s3) :
     firstChoice (rum3RankByScores s1 s2 s3) = (2 : Candidate 1) :=
-   EconCSLib.SocialChoice.Ranking.rum3RankByScores_firstChoice_of_bottom_scores_of_noTies
+   AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_firstChoice_of_bottom_scores_of_noTies
     hnt h
 
 theorem rum3RankByScores_firstChoice_of_strict_bottom_scores
     {s1 s2 s3 : ℝ}
     (h13 : s1 < s3) (h23 : s2 < s3) :
     firstChoice (rum3RankByScores s1 s2 s3) = (2 : Candidate 1) :=
-   EconCSLib.SocialChoice.Ranking.rum3RankByScores_firstChoice_of_strict_bottom_scores
+   AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_firstChoice_of_strict_bottom_scores
     h13 h23
 
 theorem rum3RankByScores_strict_bottom_scores_of_firstChoice
     {s1 s2 s3 : ℝ}
     (h : firstChoice (rum3RankByScores s1 s2 s3) = (2 : Candidate 1)) :
-    s1 < s3 ∧ s2 < s3 :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_strict_bottom_scores_of_firstChoice h
+    s1 < s3 ∧ s2 < s3 :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_strict_bottom_scores_of_firstChoice h
 
 theorem rum3RankByScores_middle_scores_of_firstChoice
     {s1 s2 s3 : ℝ}
     (h : firstChoice (rum3RankByScores s1 s2 s3) = (1 : Candidate 1)) :
-    rum3MiddleBeatsTopByScores s1 s2 s3 :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_middle_scores_of_firstChoice h
+    rum3MiddleBeatsTopByScores s1 s2 s3 :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_middle_scores_of_firstChoice h
 
 theorem rum3RankByScores_remove0_eq1_imp_score23
     {s1 s2 s3 : ℝ}
     (h :
       bestRemainingAfter (rum3RankByScores s1 s2 s3) (0 : Candidate 1) =
         (1 : Candidate 1)) :
-    s3 ≤ s2 :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_remove0_eq1_imp_score23 h
+    s3 ≤ s2 :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_remove0_eq1_imp_score23 h
 
 theorem rum3RankByScores_remove1_ne0_imp_score13
     {s1 s2 s3 : ℝ}
     (h :
       ¬ bestRemainingAfter (rum3RankByScores s1 s2 s3) (1 : Candidate 1) =
         (0 : Candidate 1)) :
-    s1 < s3 :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_remove1_ne0_imp_score13 h
+    s1 < s3 :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_remove1_ne0_imp_score13 h
 
 theorem rum3RankByScores_remove1_eq0_of_score31
     {s1 s2 s3 : ℝ} (h31 : s3 ≤ s1) :
     bestRemainingAfter (rum3RankByScores s1 s2 s3) (1 : Candidate 1) =
-      (0 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_remove1_eq0_of_score31 h31
+      (0 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_remove1_eq0_of_score31 h31
 
 theorem rum3RankByScores_remove0_ne1_of_score23_lt
     {s1 s2 s3 : ℝ} (h23 : s2 < s3) :
     ¬ bestRemainingAfter (rum3RankByScores s1 s2 s3) (0 : Candidate 1) =
-      (1 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_remove0_ne1_of_score23_lt h23
+      (1 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_remove0_ne1_of_score23_lt h23
 
 theorem rum3RankByScores_remove0_eq2_imp_score23_lt
     {s1 s2 s3 : ℝ}
     (h :
       bestRemainingAfter (rum3RankByScores s1 s2 s3) (0 : Candidate 1) =
         (2 : Candidate 1)) :
-    s2 < s3 :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_remove0_eq2_imp_score23_lt h
+    s2 < s3 :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_remove0_eq2_imp_score23_lt h
 
 theorem rum3RankByScores_remove0_eq1_of_score32
     {s1 s2 s3 : ℝ} (h32 : s3 ≤ s2) :
     bestRemainingAfter (rum3RankByScores s1 s2 s3) (0 : Candidate 1) =
-      (1 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_remove0_eq1_of_score32 h32
+      (1 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_remove0_eq1_of_score32 h32
 
 theorem rum3RankByScores_remove2_eq1_imp_score12_lt
     {s1 s2 s3 : ℝ}
     (h :
       bestRemainingAfter (rum3RankByScores s1 s2 s3) (2 : Candidate 1) =
         (1 : Candidate 1)) :
-    s1 < s2 :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_remove2_eq1_imp_score12_lt h
+    s1 < s2 :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_remove2_eq1_imp_score12_lt h
 
 theorem rum3RankByScores_remove2_eq0_of_score21
     {s1 s2 s3 : ℝ} (h21 : s2 ≤ s1) :
     bestRemainingAfter (rum3RankByScores s1 s2 s3) (2 : Candidate 1) =
-      (0 : Candidate 1) :=  EconCSLib.SocialChoice.Ranking.rum3RankByScores_remove2_eq0_of_score21 h21
+      (0 : Candidate 1) :=  AppliedModelingLib.SocialChoice.Ranking.rum3RankByScores_remove2_eq0_of_score21 h21
 
 /--
 For a concrete three-score RUM realization, after removing `x₁`, the best
@@ -10900,7 +10900,7 @@ theorem rum3_swap_middle_transition_geometry
     r2 ≤ r3 ∧ r1 ≤ r3 ∧
       rumContractScore t x2 r1 ≤ rumContractScore t x1 r2 ∧
       rumContractScore t x3 r3 ≤ rumContractScore t x1 r2 :=
-   EconCSLib.Probability.rum3_swap_middle_transition_geometry
+   AppliedModelingLib.Probability.rum3_swap_middle_transition_geometry
     ht0 ht1 hx12 hr13 hr23 hc12 hc32
 
 /--
@@ -10915,21 +10915,21 @@ theorem rum3_swap_middle_base_score_lt
       rumContractScore t x1 r1 <
         rumContractScore t x2 r2) :
     r1 < r2 :=
-   EconCSLib.Probability.rum3_swap_middle_base_score_lt
+   AppliedModelingLib.Probability.rum3_swap_middle_base_score_lt
     ht0 ht1 hx12 hc12
 
 theorem weaklyWellOrderedNoise_swap_middle_density_le
     {f : ℝ → ℝ} (hf : WeaklyWellOrderedNoise f)
     {x1 x2 r1 r2 : ℝ} (hx12 : x2 < x1) (hr12 : r1 < r2) :
     f (r1 - x1) * f (r2 - x2) ≤ f (r2 - x1) * f (r1 - x2) :=
-   EconCSLib.Probability.weaklyWellOrderedNoise_swap_middle_density_le
+   AppliedModelingLib.Probability.weaklyWellOrderedNoise_swap_middle_density_le
     hf hx12 hr12
 
 theorem strictlyWellOrderedNoise_swap_middle_density_lt
     {f : ℝ → ℝ} (hf : StrictlyWellOrderedNoise f)
     {x1 x2 r1 r2 : ℝ} (hx12 : x2 < x1) (hr12 : r1 < r2) :
     f (r1 - x1) * f (r2 - x2) < f (r2 - x1) * f (r1 - x2) :=
-   EconCSLib.Probability.strictlyWellOrderedNoise_swap_middle_density_lt
+   AppliedModelingLib.Probability.strictlyWellOrderedNoise_swap_middle_density_lt
     hf hx12 hr12
 
 /--
@@ -10943,7 +10943,7 @@ theorem weaklyWellOrderedNoise_swap12_density3_le
     (hx12 : x2 < x1) (hr12 : r1 < r2) :
     f (r1 - x1) * f (r2 - x2) * f (r3 - x3) ≤
       f (r2 - x1) * f (r1 - x2) * f (r3 - x3) :=
-   EconCSLib.Probability.weaklyWellOrderedNoise_swap12_density3_le
+   AppliedModelingLib.Probability.weaklyWellOrderedNoise_swap12_density3_le
     hf hctx hx12 hr12
 
 /--
@@ -10957,7 +10957,7 @@ theorem strictlyWellOrderedNoise_swap12_density3_lt
     (hx12 : x2 < x1) (hr12 : r1 < r2) :
     f (r1 - x1) * f (r2 - x2) * f (r3 - x3) <
       f (r2 - x1) * f (r1 - x2) * f (r3 - x3) :=
-   EconCSLib.Probability.strictlyWellOrderedNoise_swap12_density3_lt
+   AppliedModelingLib.Probability.strictlyWellOrderedNoise_swap12_density3_lt
     hf hctx hx12 hr12
 
 /--
@@ -10971,7 +10971,7 @@ theorem weaklyWellOrderedNoise_swap23_density3_le
     (hx23 : x3 < x2) (hr23 : r2 < r3) :
     f (r1 - x1) * f (r2 - x2) * f (r3 - x3) ≤
       f (r1 - x1) * f (r3 - x2) * f (r2 - x3) :=
-   EconCSLib.Probability.weaklyWellOrderedNoise_swap23_density3_le
+   AppliedModelingLib.Probability.weaklyWellOrderedNoise_swap23_density3_le
     hf hctx hx23 hr23
 
 /--
@@ -10985,7 +10985,7 @@ theorem strictlyWellOrderedNoise_swap23_density3_lt
     (hx23 : x3 < x2) (hr23 : r2 < r3) :
     f (r1 - x1) * f (r2 - x2) * f (r3 - x3) <
       f (r1 - x1) * f (r3 - x2) * f (r2 - x3) :=
-   EconCSLib.Probability.strictlyWellOrderedNoise_swap23_density3_lt
+   AppliedModelingLib.Probability.strictlyWellOrderedNoise_swap23_density3_lt
     hf hctx hx23 hr23
 
 /--
@@ -10995,7 +10995,7 @@ This is the continuous analogue of the finite density-product formula used by
 the sample-space endpoints.
 -/
 noncomputable def rum3ScoreDensityENN {Ω : Type*} (f : ℝ → ℝ)
-    (x1 x2 x3 : ℝ) (r1 r2 r3 : Ω → ℝ) : Ω → ENNReal := EconCSLib.Probability.rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3
+    (x1 x2 x3 : ℝ) (r1 r2 r3 : Ω → ℝ) : Ω → ENNReal := AppliedModelingLib.Probability.rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3
 
 /-- Measurability of the three-coordinate score density. -/
 theorem rum3ScoreDensityENN_measurable
@@ -11004,7 +11004,7 @@ theorem rum3ScoreDensityENN_measurable
     (x1 x2 x3 : ℝ) {r1 r2 r3 : Ω → ℝ}
     (hr1 : Measurable r1) (hr2 : Measurable r2) (hr3 : Measurable r3) :
     Measurable (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) :=
-   EconCSLib.Probability.rum3ScoreDensityENN_measurable
+   AppliedModelingLib.Probability.rum3ScoreDensityENN_measurable
     hf x1 x2 x3 hr1 hr2 hr3
 
 /-- Positive noise density makes the three-coordinate score density nonzero. -/
@@ -11013,7 +11013,7 @@ theorem rum3ScoreDensityENN_ne_zero_of_noise_pos
     (x1 x2 x3 : ℝ) (r1 r2 r3 : Ω → ℝ)
     (hpos : ∀ z : ℝ, 0 < f z) (ω : Ω) :
     rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3 ω ≠ 0 :=
-   EconCSLib.Probability.rum3ScoreDensityENN_ne_zero_of_noise_pos
+   AppliedModelingLib.Probability.rum3ScoreDensityENN_ne_zero_of_noise_pos
     x1 x2 x3 r1 r2 r3 hpos ω
 
 /--
@@ -11028,7 +11028,7 @@ theorem rum3ScoreDensity_withDensity_measure_ne_zero_of_base_measure_ne_zero
     (hpos : ∀ z : ℝ, 0 < f z)
     {s : Set Ω} (hs : MeasurableSet s) (hbase : base s ≠ 0) :
     base.withDensity (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) s ≠ 0 :=
-  EconCSLib.Probability.rum3ScoreDensity_withDensity_measure_ne_zero_of_base_measure_ne_zero
+  AppliedModelingLib.Probability.rum3ScoreDensity_withDensity_measure_ne_zero_of_base_measure_ne_zero
     base x1 x2 x3 r1 r2 r3 hD hpos hs hbase
 
 /-- Normalization criterion for the three-coordinate score density. -/
@@ -11040,7 +11040,7 @@ theorem rum3ScoreDensity_isProbabilityMeasure_of_lintegral_eq_one
       ∫⁻ ω, (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) ω ∂base = 1) :
     IsProbabilityMeasure
       (base.withDensity (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3)) :=
-  EconCSLib.Probability.rum3ScoreDensity_isProbabilityMeasure_of_lintegral_eq_one
+  AppliedModelingLib.Probability.rum3ScoreDensity_isProbabilityMeasure_of_lintegral_eq_one
     base f x1 x2 x3 r1 r2 r3 hD
 
 /--
@@ -11055,7 +11055,7 @@ theorem rum3ScoreDensity_setLIntegral_ne_top_of_lintegral_eq_one
       ∫⁻ ω, (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) ω ∂base = 1)
     (s : Set Ω) :
     (∫⁻ ω in s, (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) ω ∂base) ≠ ∞ :=
-  EconCSLib.Probability.rum3ScoreDensity_setLIntegral_ne_top_of_lintegral_eq_one
+  AppliedModelingLib.Probability.rum3ScoreDensity_setLIntegral_ne_top_of_lintegral_eq_one
     base f x1 x2 x3 r1 r2 r3 hD s
 
 /--
@@ -11145,7 +11145,7 @@ theorem rum3ScoreDensityENN_gaussian_zero_eq_prod
       ENNReal.ofReal (theorem8GaussianPDF x1 (rum3Score1 ω)) *
         ENNReal.ofReal (theorem8GaussianPDF x2 (rum3Score2 ω)) *
           ENNReal.ofReal (theorem8GaussianPDF x3 (rum3Score3 ω)) := by
-  unfold rum3ScoreDensityENN EconCSLib.Probability.rum3ScoreDensityENN
+  unfold rum3ScoreDensityENN AppliedModelingLib.Probability.rum3ScoreDensityENN
   rw [theorem8GaussianPDF_zero_sub_eq x1 (rum3Score1 ω),
     theorem8GaussianPDF_zero_sub_eq x2 (rum3Score2 ω),
     theorem8GaussianPDF_zero_sub_eq x3 (rum3Score3 ω)]
@@ -11325,7 +11325,7 @@ theorem rum3ScoreDensityENN_laplace_zero_eq_prod
       ENNReal.ofReal (theorem7LaplacePDF lam x1 (rum3Score1 ω)) *
         ENNReal.ofReal (theorem7LaplacePDF lam x2 (rum3Score2 ω)) *
           ENNReal.ofReal (theorem7LaplacePDF lam x3 (rum3Score3 ω)) := by
-  unfold rum3ScoreDensityENN EconCSLib.Probability.rum3ScoreDensityENN
+  unfold rum3ScoreDensityENN AppliedModelingLib.Probability.rum3ScoreDensityENN
   rw [theorem7LaplacePDF_zero_sub_eq lam x1 (rum3Score1 ω),
     theorem7LaplacePDF_zero_sub_eq lam x2 (rum3Score2 ω),
     theorem7LaplacePDF_zero_sub_eq lam x3 (rum3Score3 ω)]
@@ -12233,7 +12233,7 @@ theorem rum3_withDensity_swap12_measure_le_of_density_formula
     (hscore : ∀ ω, p ω → r1 ω < r2 ω) :
     base.withDensity (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) {ω | p ω} ≤
       base.withDensity (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) {ω | q ω} :=
-   EconCSLib.Probability.rum3_withDensity_swap12_measure_le_of_density_formula
+   AppliedModelingLib.Probability.rum3_withDensity_swap12_measure_le_of_density_formula
     base f x1 x2 x3 r1 r2 r3 swap p q hp hq hmp hmap hf
     hswap1 hswap2 hswap3 hctx hx12 hscore
 
@@ -12257,7 +12257,7 @@ theorem rum3_withDensity_swap23_measure_le_of_density_formula
     (hscore : ∀ ω, p ω → r2 ω < r3 ω) :
     base.withDensity (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) {ω | p ω} ≤
       base.withDensity (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) {ω | q ω} :=
-   EconCSLib.Probability.rum3_withDensity_swap23_measure_le_of_density_formula
+   AppliedModelingLib.Probability.rum3_withDensity_swap23_measure_le_of_density_formula
     base f x1 x2 x3 r1 r2 r3 swap p q hp hq hmp hmap hf
     hswap1 hswap2 hswap3 hctx hx23 hscore
 
@@ -12448,7 +12448,7 @@ theorem rum3_withDensity_swap12_measure_lt_of_density_formula
     (hsource_pos : base {ω | p ω} ≠ 0) :
     base.withDensity (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) {ω | p ω} <
       base.withDensity (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) {ω | q ω} :=
-   EconCSLib.Probability.rum3_withDensity_swap12_measure_lt_of_density_formula
+   AppliedModelingLib.Probability.rum3_withDensity_swap12_measure_lt_of_density_formula
     base f x1 x2 x3 r1 r2 r3 swap p q hp hq hmp hD hmap hf hpos
     hswap1 hswap2 hswap3 hx12 hscore hfi hsource_pos
 
@@ -12478,7 +12478,7 @@ theorem rum3_withDensity_swap23_measure_lt_of_density_formula
     (hsource_pos : base {ω | p ω} ≠ 0) :
     base.withDensity (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) {ω | p ω} <
       base.withDensity (rum3ScoreDensityENN f x1 x2 x3 r1 r2 r3) {ω | q ω} :=
-   EconCSLib.Probability.rum3_withDensity_swap23_measure_lt_of_density_formula
+   AppliedModelingLib.Probability.rum3_withDensity_swap23_measure_lt_of_density_formula
     base f x1 x2 x3 r1 r2 r3 swap p q hp hq hmp hD hmap hf hpos
     hswap1 hswap2 hswap3 hx23 hscore hfi hsource_pos
 
@@ -12500,7 +12500,7 @@ theorem rum3_swap12_mass_le_of_density_formula
     (hx12 : x2 < x1)
     (hscore : ∀ ω, p ω → r1 ω < r2 ω) :
     ∀ ω, p ω → (ν ω).toReal ≤ (ν (swap ω)).toReal :=
-   EconCSLib.Probability.rum3_swap12_mass_le_of_density_formula
+   AppliedModelingLib.Probability.rum3_swap12_mass_le_of_density_formula
     ν f x1 x2 x3 r1 r2 r3 swap p hf hdens
     hswap1 hswap2 hswap3 hctx hx12 hscore
 
@@ -12522,7 +12522,7 @@ theorem rum3_swap12_mass_lt_of_density_formula
     (hx12 : x2 < x1)
     (hscore : ∀ ω, p ω → r1 ω < r2 ω) :
     ∀ ω, p ω → (ν ω).toReal < (ν (swap ω)).toReal :=
-   EconCSLib.Probability.rum3_swap12_mass_lt_of_density_formula
+   AppliedModelingLib.Probability.rum3_swap12_mass_lt_of_density_formula
     ν f x1 x2 x3 r1 r2 r3 swap p hf hdens
     hswap1 hswap2 hswap3 hctx hx12 hscore
 
@@ -12665,7 +12665,7 @@ theorem rum3_swap23_mass_le_of_density_formula
     (hx23 : x3 < x2)
     (hscore : ∀ ω, p ω → r2 ω < r3 ω) :
     ∀ ω, p ω → (ν ω).toReal ≤ (ν (swap ω)).toReal :=
-   EconCSLib.Probability.rum3_swap23_mass_le_of_density_formula
+   AppliedModelingLib.Probability.rum3_swap23_mass_le_of_density_formula
     ν f x1 x2 x3 r1 r2 r3 swap p hf hdens
     hswap1 hswap2 hswap3 hctx hx23 hscore
 
@@ -12687,7 +12687,7 @@ theorem rum3_swap23_mass_lt_of_density_formula
     (hx23 : x3 < x2)
     (hscore : ∀ ω, p ω → r2 ω < r3 ω) :
     ∀ ω, p ω → (ν ω).toReal < (ν (swap ω)).toReal :=
-   EconCSLib.Probability.rum3_swap23_mass_lt_of_density_formula
+   AppliedModelingLib.Probability.rum3_swap23_mass_lt_of_density_formula
     ν f x1 x2 x3 r1 r2 r3 swap p hf hdens
     hswap1 hswap2 hswap3 hctx hx23 hscore
 
@@ -12722,7 +12722,7 @@ noncomputable def rumRankingPMFOfMeasure
     {Ω : Type*} [MeasurableSpace Ω]
     (μ : Measure Ω) [IsProbabilityMeasure μ]
     (rank : Ω → Ranking 1) (hrank : Measurable rank) : PMF (Ranking 1) :=
-  EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure μ rank hrank
+  AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure μ rank hrank
 
 /--
 Event probabilities for the induced ranking PMF are source-measure preimage
@@ -12735,7 +12735,7 @@ theorem rumRankingPMFOfMeasure_eventProb
     (p : Ranking 1 → Prop) [DecidablePred p] :
     pmfProb (rumRankingPMFOfMeasure μ rank hrank) p =
       measureProb μ (fun ω => p (rank ω)) :=
-   EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eventProb
+   AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eventProb
     μ rank hrank p
 
 /--
@@ -12964,7 +12964,7 @@ theorem theorem8GaussianDefinition2ScoreMeasureStd_no_score_ties_ae
   have hties := prod_prod_real_no_score_ties_ae μ1 μ2 μ3
   simpa [theorem8GaussianDefinition2ScoreMeasureStd,
     theorem8GaussianPairMeasureStd,
-    EconCSLib.Probability.independentGaussianPairMeasureWithStd,
+    AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd,
     theorem8GaussianDefinition2Score1,
     theorem8GaussianDefinition2Score2,
     theorem8GaussianDefinition2Score3,
@@ -13261,7 +13261,7 @@ theorem theorem8GaussianDefinition2RankingPMFStd_contract_eq
           theorem8GaussianDefinition2Score2_measurable
           theorem8GaussianDefinition2Score3_measurable) := by
   refine
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
       (theorem8GaussianDefinition2ScoreMeasureStd σ x1 x2 x3)
       (theorem8GaussianDefinition2ScoreMeasureStd (t * σ) x1 x2 x3)
       (theorem8GaussianDefinition2ContractMap t x1 x2 x3)
@@ -13322,7 +13322,7 @@ theorem theorem8GaussianDefinition2RankingPMFStd_canonical_eq
   let c := theorem8GaussianCanonicalScale σ
   have hc : 0 < c := theorem8GaussianCanonicalScale_pos hσ
   refine
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
       (theorem8GaussianDefinition2ScoreMeasureStd σ x1 x2 x3)
       (theorem8GaussianDefinition2ScoreMeasure
         (c * x1) (c * x2) (c * x3))
@@ -13399,7 +13399,7 @@ theorem theorem8GaussianDefinition2ContractRankingPMFStd_canonical_eq
   let c := theorem8GaussianCanonicalScale σ
   have hc : 0 < c := theorem8GaussianCanonicalScale_pos hσ
   refine
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
       (theorem8GaussianDefinition2ScoreMeasureStd σ x1 x2 x3)
       (theorem8GaussianDefinition2ScoreMeasure
         (c * x1) (c * x2) (c * x3))
@@ -14241,7 +14241,7 @@ theorem theorem7LaplacianDefinition2RankingPMF_contract_eq
   dsimp [theorem7LaplacianDefinition2ContractRankingPMF,
     theorem7LaplacianDefinition2RankingPMF]
   refine
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
       (theorem7LaplacianDefinition2ScoreMeasure lam x1 x2 x3)
       (theorem7LaplacianDefinition2ScoreMeasure (lam / t) x1 x2 x3)
       (theorem7LaplacianDefinition2ContractMap t x1 x2 x3)
@@ -14301,7 +14301,7 @@ theorem theorem8GaussianDefinition2RankingPMFStd_contract_atom_continuousAt_one
 
 theorem theorem8GaussianDefinition2RankingPMFStd_atom_epsilonContinuousAt
     {θ x1 x2 x3 : ℝ} (hθ : 0 < θ) (π : Ranking 1) :
-    EconCSLib.EpsilonContinuousAt
+    AppliedModelingLib.EpsilonContinuousAt
       (fun θ' : ℝ =>
         ((rumRankingPMFOfMeasure
           (theorem8GaussianDefinition2ScoreMeasureStd (1 / θ') x1 x2 x3)
@@ -14366,7 +14366,7 @@ theorem theorem8GaussianDefinition2RankingPMFStd_atom_epsilonContinuousAt
       · simp [hθ']
       · field_simp [hθ.ne', hθ']
     rw [hstd]
-  exact EconCSLib.epsilonContinuousAt_of_continuousAt (by simpa [heq] using hcomp)
+  exact AppliedModelingLib.epsilonContinuousAt_of_continuousAt (by simpa [heq] using hcomp)
 
 theorem theorem7LaplacianDefinition2ContractRankingPMF_atom_continuousAt_one
     {lam x1 x2 x3 : ℝ} (hlam : 0 < lam) (π : Ranking 1) :
@@ -14394,7 +14394,7 @@ theorem theorem7LaplacianDefinition2ContractRankingPMF_atom_continuousAt_one
 
 theorem theorem7LaplacianDefinition2RankingPMF_canonical_atom_epsilonContinuousAt
     {θ x1 x2 x3 : ℝ} (hθ : 0 < θ) (π : Ranking 1) :
-    EconCSLib.EpsilonContinuousAt
+    AppliedModelingLib.EpsilonContinuousAt
       (fun θ' : ℝ =>
         if hθ' : 0 < θ' then
           ((theorem7LaplacianDefinition2RankingPMF θ' x1 x2 x3 hθ') π).toReal
@@ -14414,9 +14414,9 @@ theorem theorem7LaplacianDefinition2RankingPMF_canonical_atom_epsilonContinuousA
   have hG_at : ContinuousAt G (θ / θ) := by
     simpa [div_self hθ.ne'] using hG
   have hsource :
-      EconCSLib.EpsilonContinuousAt (fun θ' : ℝ => G (θ / θ')) θ :=
-    EconCSLib.epsilonContinuousAt_of_continuousAt (hG_at.comp hmap)
-  refine EconCSLib.epsilonContinuousAt_congr_eventually hsource ?_ ?_
+      AppliedModelingLib.EpsilonContinuousAt (fun θ' : ℝ => G (θ / θ')) θ :=
+    AppliedModelingLib.epsilonContinuousAt_of_continuousAt (hG_at.comp hmap)
+  refine AppliedModelingLib.epsilonContinuousAt_congr_eventually hsource ?_ ?_
   · filter_upwards [Ioi_mem_nhds hθ] with θ' hθ'_mem
     have hθ' : 0 < θ' := hθ'_mem
     dsimp [G]
@@ -14826,9 +14826,9 @@ theorem theorem8GaussianDefinition2Std_negativeCorrelationCertificate
   haveI : IsProbabilityMeasure ν := by
     dsimp [ν, theorem8GaussianDefinition2ScoreMeasureStd,
       theorem8GaussianPairMeasureStd,
-      EconCSLib.Probability.independentGaussianPairMeasureWithStd,
+      AppliedModelingLib.Probability.independentGaussianPairMeasureWithStd,
       theorem8GaussianVarianceFromStd,
-      EconCSLib.Probability.gaussianVarianceFromStd]
+      AppliedModelingLib.Probability.gaussianVarianceFromStd]
     infer_instance
   have h0 :
       measureProb ν
@@ -15001,7 +15001,7 @@ theorem rum3_expectedFirstMoverUtility_strict_of_deltaCertificate
     (delta : RUM3DeltaCertificate μBetter μWorse) :
     expectedFirstMoverUtility μWorse value <
       expectedFirstMoverUtility μBetter value :=
-  EconCSLib.SocialChoice.Ranking.expectedFirstMoverUtility_lt_of_fin3_top_gain_bottom_nongain
+  AppliedModelingLib.SocialChoice.Ranking.expectedFirstMoverUtility_lt_of_fin3_top_gain_bottom_nongain
       μBetter μWorse value hvalue1 hvalue2 hvalue3 hx12 hx23
       delta.delta_top_pos delta.delta_bottom_nonpos
 
@@ -18368,7 +18368,7 @@ theorem rum3_prefersWeakerCompetition_of_payoff_algebra
     rw [Fin.sum_univ_three]
     simp [d1, d2, d3, hbest1, hbest2, hbest3]
   unfold Model.PrefersWeakerCompetition
-    EconCSLib.SocialChoice.Ranking.PrefersWeakerCompetition
+    AppliedModelingLib.SocialChoice.Ranking.PrefersWeakerCompetition
   have hsub : expectedSecondMoverIndependent μWorse μBetter value -
       expectedSecondMoverIndependent μWorse μWorse value < 0 := by
     rw [hdiff]

@@ -17,8 +17,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory
-open EconCSLib.Probability
+open AppliedModelingLib MeasureTheory ProbabilityTheory
+open AppliedModelingLib.Probability
 open scoped ENNReal NNReal ProbabilityTheory
 
 /-- The Proposition 4.2 observed-score model obtained from the same Gaussian
@@ -30,17 +30,18 @@ def lg21P42ObservedScoreModelOfD6Source
     (noAccessEstimateKernel : Kernel Base ℝ)
     [IsMarkovKernel noAccessEstimateKernel] :
     LG21P42ObservedScoreGaussianPBOModel Base where
+  basePosteriorMean := S.posteriorBaseMean
+  basePosteriorMean_measurable := S.posteriorBaseMean_measurable
+  basePosteriorVariance := S.posteriorBaseVariance
+  basePosteriorVariance_pos := S.posteriorBaseVariance_pos
+  latentSkillGivenBaseLaw := fun base =>
+    gaussianReal (S.posteriorBaseMean base) S.posteriorBaseVariance
+  latentSkillGivenBaseLaw_eq_gaussian := fun _ => rfl
   testNoiseVariance := S.testNoiseVariance
   testNoiseVariance_pos := S.testNoiseVariance_pos
-  pboIntercept := fun base =>
-    gaussianSignalPriorWeight (S.posteriorBaseVariance : ℝ)
-      (S.testNoiseVariance : ℝ) * S.posteriorBaseMean base
-  pboIntercept_measurable :=
-    measurable_const.mul S.posteriorBaseMean_measurable
-  pboSlope := fun _ => lg21D6PosteriorTestWeight S
-  pboSlope_measurable := measurable_const
-  pboSlope_pos := fun _ =>
-    div_pos S.posteriorBaseVariance_pos (lg21D6PosteriorVarianceSum_pos S)
+  testScoreGivenSkillLaw := fun skill =>
+    gaussianReal skill S.testNoiseVariance
+  testScoreGivenSkillLaw_eq_gaussian := fun _ => rfl
   noAccessEstimateKernel := noAccessEstimateKernel
   noAccessEstimateKernel_isMarkov := inferInstance
 
@@ -57,8 +58,10 @@ theorem lg21P42ObservedScoreModelOfD6Source_estimate_eq_d6
         base score =
       lg21D6GaussianPBOEstimate S (base, score) := by
   unfold lg21P42GaussianPBOEstimate lg21P42ObservedScoreModelOfD6Source
+    LG21P42ObservedScoreGaussianPBOModel.pboIntercept
+    LG21P42ObservedScoreGaussianPBOModel.pboSlope
     lg21D6GaussianPBOEstimate lg21D6PosteriorTestWeight
-    gaussianSignalPriorWeight
+    gaussianSignalPriorWeight gaussianSignalWeight
   have hsum : (S.posteriorBaseVariance : ℝ) +
       (S.testNoiseVariance : ℝ) ≠ 0 :=
     ne_of_gt (lg21D6PosteriorVarianceSum_pos S)

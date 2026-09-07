@@ -20,6 +20,8 @@ for import_root in (ROOT, ROOT / "scripts"):
 
 import audit_repository  # noqa: E402
 import review_dashboard  # noqa: E402
+from scripts import lean_signature_manifest  # noqa: E402
+from scripts import semantic_obligation_review  # noqa: E402
 
 
 def valid_manifest() -> dict[str, object]:
@@ -47,7 +49,7 @@ def valid_manifest() -> dict[str, object]:
             },
         ],
     }
-    manifest["sha256"] = review_dashboard.signature_manifest_digest(manifest)
+    manifest["sha256"] = lean_signature_manifest.signature_manifest_digest(manifest)
     return manifest
 
 
@@ -197,7 +199,7 @@ def valid_fidelity_risk_review(*, algorithmic: bool) -> dict[str, object]:
             ),
         }
     return {
-        "schema_version": review_dashboard.FIDELITY_RISK_REVIEW_VERSION,
+        "schema_version": semantic_obligation_review.FIDELITY_RISK_REVIEW_VERSION,
         "dimensions": dimensions,
     }
 
@@ -256,7 +258,7 @@ def classify_operator_free(
 def valid_ledger() -> dict[str, object]:
     manifest = valid_manifest()
     atom_digests = {
-        atom["ref"]: review_dashboard.signature_manifest_atom_digest(atom)
+        atom["ref"]: semantic_obligation_review.signature_manifest_atom_digest(atom)
         for atom in manifest["atoms"]
     }
     return {
@@ -408,7 +410,7 @@ def valid_source_definition_semantics_review() -> dict[str, object]:
 def ledger_error(
     ledger: dict[str, object], manifest: dict[str, object] | None = None
 ) -> str:
-    return review_dashboard.semantic_obligation_ledger_error(
+    return semantic_obligation_review.semantic_obligation_ledger_error(
         ledger, manifest or valid_manifest()
     )
 
@@ -416,14 +418,14 @@ def ledger_error(
 def refresh_manifest_digest(
     ledger: dict[str, object], manifest: dict[str, object]
 ) -> None:
-    manifest["sha256"] = review_dashboard.signature_manifest_digest(manifest)
+    manifest["sha256"] = lean_signature_manifest.signature_manifest_digest(manifest)
     ledger["lean_signature_sha256"] = manifest["sha256"]
     atoms = {atom["ref"]: atom for atom in manifest["atoms"]}
     for obligation in ledger["lean_obligations"]:
         ref = obligation.get("signature_ref")
         if ref in atoms:
             obligation["signature_atom_sha256"] = (
-                review_dashboard.signature_manifest_atom_digest(atoms[ref])
+                semantic_obligation_review.signature_manifest_atom_digest(atoms[ref])
             )
 
 
@@ -502,7 +504,7 @@ def valid_operational_complexity_review() -> dict[str, object]:
         ),
     }
     return {
-        "schema_version": review_dashboard.OPERATIONAL_COMPLEXITY_REVIEW_VERSION,
+        "schema_version": semantic_obligation_review.OPERATIONAL_COMPLEXITY_REVIEW_VERSION,
         "executor_semantics": (
             "The audited executor recursively consumes one state and its materialized successor data."
         ),
@@ -618,13 +620,13 @@ class StatementObligationLedgerTests(unittest.TestCase):
             review_dashboard._normalize_llm_match_resolution(
                 "visible-premise boundary"
             ),
-            review_dashboard.CONDITIONAL_BOUNDARY_RESOLUTION,
+            semantic_obligation_review.CONDITIONAL_BOUNDARY_RESOLUTION,
         )
         self.assertEqual(
             review_dashboard._normalize_paper_coverage_judgment(
                 "visible_premise_boundary"
             ),
-            review_dashboard.CONDITIONAL_BOUNDARY_RESOLUTION,
+            semantic_obligation_review.CONDITIONAL_BOUNDARY_RESOLUTION,
         )
 
     def test_complete_semantic_ledger_is_accepted(self) -> None:
@@ -636,7 +638,7 @@ class StatementObligationLedgerTests(unittest.TestCase):
         ledger = valid_ledger()
         self.assertIn(
             "source-expression route lacks",
-            review_dashboard.semantic_obligation_ledger_error(
+            semantic_obligation_review.semantic_obligation_ledger_error(
                 ledger,
                 valid_manifest(),
                 require_source_definition_semantics_review=True,
@@ -646,7 +648,7 @@ class StatementObligationLedgerTests(unittest.TestCase):
             "source_definition_semantics_review"
         ] = valid_source_definition_semantics_review()
         self.assertEqual(
-            review_dashboard.semantic_obligation_ledger_error(
+            semantic_obligation_review.semantic_obligation_ledger_error(
                 ledger,
                 valid_manifest(),
                 require_source_definition_semantics_review=True,
@@ -663,7 +665,7 @@ class StatementObligationLedgerTests(unittest.TestCase):
         ] = review
         self.assertIn(
             "non-equivalent source-definition outside-domain/totalization behavior",
-            review_dashboard.semantic_obligation_ledger_error(
+            semantic_obligation_review.semantic_obligation_ledger_error(
                 ledger,
                 valid_manifest(),
                 require_source_definition_semantics_review=True,
@@ -682,7 +684,7 @@ class StatementObligationLedgerTests(unittest.TestCase):
         ] = review
         self.assertIn(
             "requires at least one advertised property",
-            review_dashboard.semantic_obligation_ledger_error(
+            semantic_obligation_review.semantic_obligation_ledger_error(
                 ledger,
                 valid_manifest(),
                 require_source_definition_semantics_review=True,
@@ -712,7 +714,7 @@ class StatementObligationLedgerTests(unittest.TestCase):
         ]
         self.assertIn(
             "without Lean evidence",
-            review_dashboard.semantic_obligation_ledger_error(
+            semantic_obligation_review.semantic_obligation_ledger_error(
                 ledger,
                 valid_manifest(),
                 require_source_definition_semantics_review=True,
@@ -728,7 +730,7 @@ class StatementObligationLedgerTests(unittest.TestCase):
             }
         )
         self.assertEqual(
-            review_dashboard.semantic_obligation_ledger_error(
+            semantic_obligation_review.semantic_obligation_ledger_error(
                 ledger,
                 valid_manifest(),
                 require_source_definition_semantics_review=True,
@@ -1113,7 +1115,12 @@ class StatementObligationLedgerTests(unittest.TestCase):
         )
         self.assertEqual(source_input_error, "")
         ledger = valid_ledger()
-        ledger["paper_statement_sha256"] = source_input_identity
+        # The paper target is the literal raw source text, whereas the v11
+        # source-input identity also commits to its anchor/provenance bundle.
+        # Those are intentionally different digests.
+        ledger["paper_statement_sha256"] = review_dashboard.statement_digest(
+            source_quote
+        )
         ledger["tex_statement_sha256"] = review_dashboard.statement_digest("P x")
         ledger["source_input_protocol"] = "verbatim_source_anchor_bundle_v1"
         ledger["source_input_bundle_sha256"] = source_input_identity
@@ -1961,10 +1968,10 @@ class StatementObligationLedgerTests(unittest.TestCase):
         review = executable_semantic_scope_review()
         fidelity_review = review["fidelity_risk_review"]
         fidelity_review["schema_version"] = (
-            review_dashboard.LEGACY_FIDELITY_RISK_REVIEW_VERSION
+            semantic_obligation_review.LEGACY_FIDELITY_RISK_REVIEW_VERSION
         )
         scope = fidelity_review["dimensions"]["execution_claim_scope"]
-        for field, _ in review_dashboard.FIDELITY_EXECUTION_SCOPE_FIELDS:
+        for field, _ in semantic_obligation_review.FIDELITY_EXECUTION_SCOPE_FIELDS:
             if field != "global_claim_bridge_basis":
                 del scope[field]
         scope.update(
@@ -2529,7 +2536,7 @@ class StatementObligationLedgerTests(unittest.TestCase):
         self.assertIn("bound to the complexity conclusion", ledger_error(ledger))
 
     def test_operational_work_accounting_must_cover_every_category(self) -> None:
-        for category in review_dashboard.OPERATIONAL_WORK_CATEGORIES:
+        for category in semantic_obligation_review.OPERATIONAL_WORK_CATEGORIES:
             with self.subTest(category=category):
                 ledger = valid_polynomial_ledger()
                 work = ledger["operational_complexity_review"]["work_accounting"]
@@ -2971,7 +2978,9 @@ class StatementObligationLedgerTests(unittest.TestCase):
     def test_signature_manifest_is_required(self) -> None:
         self.assertIn(
             "manifest is unavailable",
-            review_dashboard.semantic_obligation_ledger_error(valid_ledger(), None),
+            semantic_obligation_review.semantic_obligation_ledger_error(
+                valid_ledger(), None
+            ),
         )
 
     def test_signature_manifest_digest_is_authoritative(self) -> None:
@@ -3413,6 +3422,56 @@ class StatementObligationLedgerTests(unittest.TestCase):
         self.assertEqual(summary["stale_judgment_count"], 1)
         self.assertEqual(summary["stale_judgment"], ["row"])
 
+    def test_statement_summary_accepts_current_bound_v11_spec_judgment(self) -> None:
+        paper_statement = "Verbatim source theorem"
+        item = review_dashboard.ReviewItem(
+            name="sourceTheoremSpec",
+            full_name="Fixture.PaperInterface.sourceTheoremSpec",
+            kind="def",
+            lean_statement="def sourceTheoremSpec : Prop := True",
+            paper_statement=paper_statement,
+            agent_statement="True",
+            lean_signature_sha256="1" * 64,
+            source_input_bundle_sha256="2" * 64,
+            llm_match_judgment="matches",
+            llm_match_stale=False,
+            llm_match_source="v11_raw_source_spec_screening.json",
+            llm_match_validator="fixture-reviewer",
+            llm_match_validator_type="llm_as_judge",
+            llm_match_validated_at="2026-08-23T00:00:00Z",
+            llm_match_lean_statement_sha256="3" * 64,
+            llm_match_paper_statement_sha256=(
+                review_dashboard.statement_digest(paper_statement)
+            ),
+        )
+        with tempfile.TemporaryDirectory() as temp_dir, mock.patch.object(
+            review_dashboard,
+            "library_semantic_review_summary",
+            return_value={"needs_attention": False},
+        ):
+            summary = review_dashboard.statement_translation_audit_summary(
+                Path(temp_dir), [item]
+            )
+
+        self.assertEqual(summary["row_count"], 1)
+        self.assertEqual(summary["judgment_count"], 1)
+        self.assertEqual(summary["semantic_current_judgment_count"], 1)
+        self.assertEqual(summary["matches"], 1)
+        self.assertEqual(summary["missing_judgment"], [])
+        self.assertFalse(summary["needs_attention"])
+
+        item.llm_match_paper_statement_sha256 = "4" * 64
+        with tempfile.TemporaryDirectory() as temp_dir, mock.patch.object(
+            review_dashboard,
+            "library_semantic_review_summary",
+            return_value={"needs_attention": False},
+        ):
+            stale = review_dashboard.statement_translation_audit_summary(
+                Path(temp_dir), [item]
+            )
+        self.assertEqual(stale["missing_judgment"], ["sourceTheoremSpec"])
+        self.assertTrue(stale["needs_attention"])
+
     def test_stale_translation_reuse_requires_unique_current_semantic_pins(self) -> None:
         manifest = valid_manifest()
         paper_statement = "Paper statement"
@@ -3445,8 +3504,6 @@ class StatementObligationLedgerTests(unittest.TestCase):
                 "semantic_target_declaration": "Test.current_rowSpec",
             }
         )
-        ledger["paper_statement_sha256"] = "b" * 64
-
         with tempfile.TemporaryDirectory() as temp_dir:
             folder = Path(temp_dir)
             audit = folder / "audit"
@@ -4210,7 +4267,7 @@ class StatementObligationLedgerTests(unittest.TestCase):
                 ),
             ):
                 names, comments = audit_repository.paper_reviewed_semantic_bridge_names(
-                    folder
+                    folder, include_legacy_comment_hygiene=True
                 )
             self.assertIn("arbitrary_bridge_name", names)
             self.assertIn("Source status:", comments["arbitrary_bridge_name"])

@@ -28,8 +28,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 open MeasureTheory
 open ProbabilityTheory
 
@@ -71,7 +71,7 @@ theorem lg21_binaryMixturePMF_toMeasure
         ((1 - p : NNReal) : ENNReal) • unselected.toMeasure := by
   ext target htarget
   rw [Measure.add_apply]
-  simp [lg21BinaryMixturePMF, EconCSLib.binaryMixturePMF,
+  simp [lg21BinaryMixturePMF, AppliedModelingLib.binaryMixturePMF,
     PMF.toMeasure_bind_apply, PMF.bernoulli_apply, htarget,
     tsum_fintype, Measure.smul_apply]
 
@@ -481,11 +481,11 @@ theorem lg21GaussianRandomizedKernelEstimationConsistent_holds
     rw [lg21GaussianRandomizedScoreEstimatorKernel_apply]
     by_cases hscore : 0 ≤ score
     · simp only [if_pos hscore]
-      exact EconCSLib.pmfExp_eq_integral_toMeasure _ _
+      exact AppliedModelingLib.pmfExp_eq_integral_toMeasure _ _
     · simp only [if_neg hscore]
-      exact EconCSLib.pmfExp_eq_integral_toMeasure _ _
+      exact AppliedModelingLib.pmfExp_eq_integral_toMeasure _ _
   · exact
-      EconCSLib.pmfExp_eq_integral_toMeasure
+      AppliedModelingLib.pmfExp_eq_integral_toMeasure
         (lg21GaussianRandomizedGlobalReporterAggregate
           priorMean priorVariance noiseVariance E)
         lg21RandomizedCounterexampleEstimateValue

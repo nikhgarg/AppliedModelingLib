@@ -1,0 +1,1723 @@
+% Generated human-review packet template.  Source records, Lean statements,
+% and raw-source-to-Spec screening fields are substituted by
+% scripts/review_dashboard_packet.py.
+% Do not hand-edit generated packets; annotate the PDF or reconcile notes into
+% the paper-local human-review log.
+\documentclass[10pt]{article}
+\usepackage[margin=0.43in,footskip=0.2in]{geometry}
+\usepackage{fontspec}
+% Use a Unicode-complete main face as well as a Unicode-complete code face.
+% Reviewer reasons and source labels can contain exact Greek symbols outside
+% verbatim blocks; silently dropping one would corrupt the review packet.
+\setmainfont{DejaVu Serif}
+% The broad DejaVu Sans Unicode coverage preserves Lean's mathematical glyphs
+% (including U+2216 set difference and superscript identifiers) in verbatim
+% review blocks.  Its proportional metrics are preferable to silently missing
+% exact semantic text from a narrower monospace font.
+\setmonofont{DejaVu Sans}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{fvextra}
+\usepackage{enumitem}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.15em}
+\linespread{0.92}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,breaklinks=true}
+\DefineVerbatimEnvironment{ReviewVerbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\scriptsize}
+\newcommand{\reviewerbox}{%
+  \par\noindent\fbox{\parbox{0.96\linewidth}{\rule{0pt}{0.38in}}}\par
+}
+\newcommand{\reviewmatch}[1]{%
+  \par\noindent\textbf{Reviewer check:} $\square$\; #1\par
+  \noindent\emph{If left unchecked, explain the discrepancy or uncertainty below.}\par
+}
+
+\begin{document}
+\fontsize{9}{10}\selectfont
+
+\begin{center}
+{\LARGE Human review packet: NoothigattuEtAl2020PairwiseComparisons}\\[0.35em]
+\small Generated from byte-pinned source excerpts, the expanded PaperInterface
+specifications, and hash-bound raw-source-to-Spec screening records.
+\end{center}
+
+\noindent\textbf{Paper:} NoothigattuEtAl2020PairwiseComparisons\\
+\textbf{Paper id:} \texttt{NoothigattuEtAl2020PairwiseComparisons}\\
+\textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright NeurIPS 2020 published conference paper and official supplement}\\
+\textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
+\textbf{Rows:} 10\\
+\textbf{Generated:} 2026-09-06\\
+\textbf{Source URL:} \href{https://proceedings.neurips.cc/paper_files/paper/2020/hash/cdaa9b682e10c291d3bbadca4c96f5de-Abstract.html}{official source}
+
+
+
+
+
+\section*{How to use this packet}
+For each source claim, compare the exact source excerpts with the expanded
+PaperInterface specification. Mark up this PDF or fill the blank reviewer box in the TeX source;
+return the annotated file for reconciliation into the paper-local human-review
+log.
+
+\section*{Open the interactive dashboard}
+The interactive dashboard is an optional alternative to using this PDF; it
+presents the same review surface rather than an additional review requirement.
+After forking and cloning (or pulling) AppliedModelingLib, run the following from the
+repository root. The cache command is needed only the first time in a new clone.
+\begin{ReviewVerbatim}
+cd <your-repository-checkout>
+lake exe cache get
+python3 scripts/review_dashboard.py --paper NoothigattuEtAl2020PairwiseComparisons --serve
+\end{ReviewVerbatim}
+Open \url{http://127.0.0.1:8765/} in a browser and keep that terminal running
+while reviewing. The dashboard records saved annotations in this paper's local
+reviewer-owned review record.
+
+\section*{Contents}
+\begin{itemize}[leftmargin=1.2em]
+\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (27; supporting context)}
+\item \hyperlink{paper-prerequisite-section-5ef5ef0364b6939c}{Paper-specific semantic prerequisites (4; not paper claims)}
+\begin{itemize}[leftmargin=1.2em]
+\item \hyperlink{paper-prerequisite-07405caa9661e20f}{Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition3\_\allowbreak{}1\_\allowbreak{}pareto\_\allowbreak{}efficiency}
+\item \hyperlink{paper-prerequisite-01e3b5f8d1238d2d}{Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition4\_\allowbreak{}1\_\allowbreak{}monotonicity\allowbreak{}Spec}
+\item \hyperlink{paper-prerequisite-0eba3734667d4efb}{Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition5\_\allowbreak{}1\_\allowbreak{}pairwise\_\allowbreak{}majority\_\allowbreak{}consistency\allowbreak{}Spec}
+\item \hyperlink{paper-prerequisite-eddfe1e162a942bc}{Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition6\_\allowbreak{}1\_\allowbreak{}separability\allowbreak{}Spec}
+\end{itemize}
+\item \hyperlink{source-section-f10b5f68e4acf3dc}{Source claims (10)}
+\begin{itemize}[leftmargin=1.2em]
+\item \hyperlink{source-claim-a399fdd5be732a4d}{lemma2\_\allowbreak{}1\_\allowbreak{}mle\_\allowbreak{}exists\allowbreak{}Spec}
+\item \hyperlink{source-claim-54fc19f0aa38d1c6}{lemma2\_\allowbreak{}2\_\allowbreak{}one\_\allowbreak{}neighbor\_\allowbreak{}perfect\_\allowbreak{}fit\allowbreak{}Spec}
+\item \hyperlink{source-claim-f4e00b752a4932aa}{lemma2\_\allowbreak{}3\_\allowbreak{}mle\_\allowbreak{}sup\allowbreak{}Norm\_\allowbreak{}bound\allowbreak{}Spec}
+\item \hyperlink{source-claim-45a27951c21eefad}{lemma2\_\allowbreak{}4\_\allowbreak{}strict\allowbreak{}Concavity\_\allowbreak{}and\_\allowbreak{}unique\_\allowbreak{}mle\allowbreak{}Spec}
+\item \hyperlink{source-claim-c8913dc4eae41fb3}{theorem3\_\allowbreak{}2\_\allowbreak{}mle\_\allowbreak{}satisfies\_\allowbreak{}pareto\_\allowbreak{}efficiency\allowbreak{}Spec}
+\item \hyperlink{source-claim-edf2d1637af168b9}{theorem4\_\allowbreak{}2\_\allowbreak{}mle\_\allowbreak{}satisfies\_\allowbreak{}monotonicity\allowbreak{}Spec}
+\item \hyperlink{source-claim-ce5587b5543267f3}{theorem5\_\allowbreak{}3\_\allowbreak{}mle\_\allowbreak{}violates\_\allowbreak{}pairwise\_\allowbreak{}majority\_\allowbreak{}consistency\allowbreak{}Spec}
+\item \hyperlink{source-claim-04287088841a1f1c}{theorem6\_\allowbreak{}3\_\allowbreak{}mle\_\allowbreak{}violates\_\allowbreak{}separability\allowbreak{}Spec}
+\item \hyperlink{source-claim-2bd981124fb9e230}{claim\allowbreak{}A1\_\allowbreak{}coin\_\allowbreak{}flip\_\allowbreak{}likelihood\allowbreak{}Spec}
+\item \hyperlink{source-claim-dacf685bcf1289ee}{claim\allowbreak{}C1\_\allowbreak{}strict\_\allowbreak{}crossed\_\allowbreak{}product\allowbreak{}Spec}
+\end{itemize}
+\end{itemize}
+
+\clearpage
+\hypertarget{governing-declaration-section-5ef5ef0364b6939c}{}
+\section*{Governing Lean declarations}
+These exact graph-bound declaration bodies are retained by the displayed specifications or reviewed prerequisites. They are supporting context and do not add source-result rows or semantic judgments.
+\hypertarget{governing-declaration-2ba23f394a8d08a2}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+field count:
+{Alternative : Type u_1} →
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative → Alternative → Alternative → ℕ
+
+field diagonal_zero:
+∀ {Alternative : Type u_1} (self : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+  (alternative : Alternative), self.count alternative alternative = 0
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-3449f3559185d0fd}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+field toFun:
+AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink → ℝ → ℝ
+
+field nonneg:
+∀ (self : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) (gap : ℝ),
+  0 ≤ self.toFun gap
+
+field le_one:
+∀ (self : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) (gap : ℝ),
+  self.toFun gap ≤ 1
+
+field monotone:
+∀ (self : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink), Monotone self.toFun
+
+field complementary:
+∀ (self : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) (gap : ℝ),
+  self.toFun (-gap) + self.toFun gap = 1
+
+field tendsto_atBot_zero:
+∀ (self : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink),
+  Filter.Tendsto self.toFun Filter.atBot (nhds 0)
+
+field tendsto_atTop_one:
+∀ (self : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink),
+  Filter.Tendsto self.toFun Filter.atTop (nhds 1)
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-87eda978eb1b0c9d}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+Type u_1 → Type u_1
+
+value:
+fun (Alternative : Type u_1) => Alternative → ℝ
+\end{ReviewVerbatim}
+
+
+\hypertarget{governing-declaration-8e968e7f0a8d2e37}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}add}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative →
+    AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative →
+      AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative
+
+value:
+fun {Alternative : Type u_1}
+    (firstDataset secondDataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative) =>
+  { count := fun (first second : Alternative) => firstDataset.count first second + secondDataset.count first second,
+    diagonal_zero :=
+      AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.add._proof_1 firstDataset secondDataset }
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\end{itemize}
+\hypertarget{governing-declaration-976a9b5d43dbf5d6}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}edge}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative → Alternative → Alternative → Prop
+
+value:
+fun {Alternative : Type u_1} (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (first second : Alternative) =>
+  0 < dataset.count first second
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\end{itemize}
+\hypertarget{governing-declaration-f8f6dfc4205b6973}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}adjacent}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative → Alternative → Alternative → Prop
+
+value:
+fun {Alternative : Type u_1} (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (first second : Alternative) =>
+  dataset.edge first second ∨ dataset.edge second first
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-976a9b5d43dbf5d6}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}edge}
+\end{itemize}
+\hypertarget{governing-declaration-a8baf17f23049501}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}connected\allowbreak{}To}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative → Alternative → Alternative → Prop
+
+value:
+fun {Alternative : Type u_1} (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (first second : Alternative) =>
+  Relation.ReflTransGen dataset.adjacent first second
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-f8f6dfc4205b6973}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}adjacent}
+\end{itemize}
+\hypertarget{governing-declaration-a631e734cd0a8407}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}has\allowbreak{}Only\allowbreak{}Neighbor}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative → Alternative → Alternative → Prop
+
+value:
+fun {Alternative : Type u_1} (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (first second : Alternative) =>
+  first ≠ second ∧
+    0 < dataset.count first second + dataset.count second first ∧
+      ∀ (other : Alternative),
+        other ≠ first → other ≠ second → dataset.count first other = 0 ∧ dataset.count other first = 0
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\end{itemize}
+\hypertarget{governing-declaration-3309f8938b804aae}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}has\allowbreak{}Pairwise\allowbreak{}Majority\allowbreak{}Ranking}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  [inst : Fintype Alternative] →
+    AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative →
+      Alternative ≃ Fin (Fintype.card Alternative) → Prop
+
+value:
+fun {Alternative : Type u_1} [Fintype Alternative]
+    (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (ranking : Alternative ≃ Fin (Fintype.card Alternative)) =>
+  ∀ (first second : Alternative),
+    ranking first < ranking second → dataset.count second first < dataset.count first second
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\end{itemize}
+\hypertarget{governing-declaration-daebbc3b47540730}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}has\allowbreak{}Pareto\allowbreak{}Count\allowbreak{}Dominance}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative → Alternative → Alternative → Prop
+
+value:
+fun {Alternative : Type u_1} (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (first second : Alternative) =>
+  dataset.count second first < dataset.count first second ∧
+    ∀ (other : Alternative),
+      other ≠ first →
+        other ≠ second →
+          dataset.count second other < dataset.count first other ∧
+            dataset.count other first < dataset.count other second
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\end{itemize}
+\hypertarget{governing-declaration-f6fceb0ae917c8af}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}has\allowbreak{}Single\allowbreak{}Pair\allowbreak{}Count\allowbreak{}Increase}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative →
+    AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative → Alternative → Alternative → Prop
+
+value:
+fun {Alternative : Type u_1}
+    (baseline updated : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (winner loser : Alternative) =>
+  baseline.count winner loser < updated.count winner loser ∧
+    ∀ (first second : Alternative),
+      (first, second) ≠ (winner, loser) → updated.count first second = baseline.count first second
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\end{itemize}
+\hypertarget{governing-declaration-f509b3a8b33a7436}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Connected}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} → AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative → Prop
+
+value:
+fun {Alternative : Type u_1} (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative) =>
+  ∀ (first second : Alternative), dataset.connectedTo first second
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-a8baf17f23049501}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}connected\allowbreak{}To}
+\end{itemize}
+\hypertarget{governing-declaration-183c779b24cebcca}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Reference\allowbreak{}Normalized}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  Alternative → AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative → Prop
+
+value:
+fun {Alternative : Type u_1} (reference : Alternative)
+    (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative) =>
+  score reference = 0
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\end{itemize}
+\hypertarget{governing-declaration-a3d0c2e8b7d182fd}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}perfect\allowbreak{}Fit\allowbreak{}Distance}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative →
+    (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) →
+      Continuous link.toFun → Alternative → Alternative → ℝ
+
+value:
+fun {Alternative : Type u_1} (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink)
+    (hcontinuous : Continuous link.toFun) (first second : Alternative) =>
+  if hpositive : 0 < dataset.count first second ∧ 0 < dataset.count second first then
+    Classical.choose
+      (AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.perfectFitDistance._proof_1 dataset link
+        hcontinuous first second hpositive)
+  else 0
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\end{itemize}
+\hypertarget{governing-declaration-c351cbfc85b673f3}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}max\allowbreak{}Perfect\allowbreak{}Fit\allowbreak{}Distance}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  [Fintype Alternative] →
+    [DecidableEq Alternative] →
+      AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative →
+        (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) →
+          Continuous link.toFun → Alternative → ℝ
+
+value:
+fun {Alternative : Type u_1} [Fintype Alternative] [DecidableEq Alternative]
+    (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink)
+    (hcontinuous : Continuous link.toFun) (reference : Alternative) =>
+  let values : Finset ℝ :=
+    Finset.image (fun (pair : Alternative × Alternative) => dataset.perfectFitDistance link hcontinuous pair.1 pair.2)
+      (Finset.univ ×ˢ Finset.univ);
+  values.max'
+    (AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.maxPerfectFitDistance._proof_1 dataset link
+      hcontinuous reference)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{governing-declaration-a3d0c2e8b7d182fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}perfect\allowbreak{}Fit\allowbreak{}Distance}
+\end{itemize}
+\hypertarget{governing-declaration-4f800616f542ca3c}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}random\allowbreak{}Utility\allowbreak{}Win\allowbreak{}Probability}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  (ℝ → ℝ) →
+    AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative →
+      Alternative → Alternative → ℝ
+
+value:
+fun {Alternative : Type u_1} (link : ℝ → ℝ)
+    (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative)
+    (first second : Alternative) =>
+  link (score first - score second)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\end{itemize}
+\hypertarget{governing-declaration-10adb9e7c1ff9f4c}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}pairwise\allowbreak{}Log\allowbreak{}Likelihood}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  [Fintype Alternative] →
+    [DecidableEq Alternative] →
+      AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative →
+        (ℝ → ℝ) → AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative → ℝ
+
+value:
+fun {Alternative : Type u_1} [Fintype Alternative] [DecidableEq Alternative]
+    (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative) (link : ℝ → ℝ)
+    (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative) =>
+  ∑ pair ∈ Finset.univ.offDiag,
+    ↑(dataset.count pair.1 pair.2) *
+      Real.log
+        (AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.randomUtilityWinProbability link score pair.1
+          pair.2)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\item \hyperlink{governing-declaration-4f800616f542ca3c}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}random\allowbreak{}Utility\allowbreak{}Win\allowbreak{}Probability}
+\end{itemize}
+\hypertarget{governing-declaration-cba21d23e0e5aa10}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Pairwise\allowbreak{}MLE}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  [Fintype Alternative] →
+    [DecidableEq Alternative] →
+      AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative →
+        (ℝ → ℝ) →
+          Alternative → AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative → Prop
+
+value:
+fun {Alternative : Type u_1} [Fintype Alternative] [DecidableEq Alternative]
+    (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative) (link : ℝ → ℝ)
+    (reference : Alternative)
+    (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative) =>
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.isReferenceNormalized reference score ∧
+    IsMaxOn (dataset.pairwiseLogLikelihood link)
+      {candidate : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative |
+        AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.isReferenceNormalized reference candidate}
+      score
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\item \hyperlink{governing-declaration-183c779b24cebcca}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Reference\allowbreak{}Normalized}
+\item \hyperlink{governing-declaration-10adb9e7c1ff9f4c}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}pairwise\allowbreak{}Log\allowbreak{}Likelihood}
+\end{itemize}
+\hypertarget{governing-declaration-46fcdbad89cd0719}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}has\allowbreak{}Unique\allowbreak{}Pairwise\allowbreak{}MLE}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  [Fintype Alternative] →
+    [DecidableEq Alternative] →
+      AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative → (ℝ → ℝ) → Alternative → Prop
+
+value:
+fun {Alternative : Type u_1} [Fintype Alternative] [DecidableEq Alternative]
+    (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative) (link : ℝ → ℝ)
+    (reference : Alternative) =>
+  ∃ (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative),
+    dataset.isPairwiseMLE link reference score ∧
+      ∀ (other : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative),
+        dataset.isPairwiseMLE link reference other → other = score
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\item \hyperlink{governing-declaration-cba21d23e0e5aa10}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Pairwise\allowbreak{}MLE}
+\end{itemize}
+\hypertarget{governing-declaration-1e123d0abe44df57}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}pairwise\allowbreak{}MLE\allowbreak{}Monotonicity}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} → [Fintype Alternative] → [DecidableEq Alternative] → (ℝ → ℝ) → Prop
+
+value:
+fun {Alternative : Type u_1} [Fintype Alternative] [DecidableEq Alternative] (link : ℝ → ℝ) =>
+  ∀ (baseline updated : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (reference winner loser : Alternative),
+    baseline.hasSinglePairCountIncrease updated winner loser →
+      baseline.hasUniquePairwiseMLE link reference →
+        updated.hasUniquePairwiseMLE link reference →
+          ∀
+            (baselineScore updatedScore :
+              AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative),
+            baseline.isPairwiseMLE link reference baselineScore →
+              updated.isPairwiseMLE link reference updatedScore →
+                ∀ (other : Alternative),
+                  baselineScore winner - baselineScore other ≤ updatedScore winner - updatedScore other ∧
+                    updatedScore loser - updatedScore other ≤ baselineScore loser - baselineScore other
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\item \hyperlink{governing-declaration-f6fceb0ae917c8af}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}has\allowbreak{}Single\allowbreak{}Pair\allowbreak{}Count\allowbreak{}Increase}
+\item \hyperlink{governing-declaration-46fcdbad89cd0719}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}has\allowbreak{}Unique\allowbreak{}Pairwise\allowbreak{}MLE}
+\item \hyperlink{governing-declaration-cba21d23e0e5aa10}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Pairwise\allowbreak{}MLE}
+\end{itemize}
+\hypertarget{governing-declaration-96ca4c86e46da1ec}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}pairwise\allowbreak{}MLE\allowbreak{}Separable}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+(ℝ → ℝ) → Prop
+
+value:
+fun (link : ℝ → ℝ) =>
+  ∀ {Alternative : Type u_1} [inst : Fintype Alternative] [inst_1 : DecidableEq Alternative]
+    (firstDataset secondDataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (firstReference : Alternative)
+    (firstScore : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative)
+    (secondReference : Alternative)
+    (secondScore : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative)
+    (first second : Alternative),
+    firstDataset.isPairwiseMLE link firstReference firstScore →
+      secondDataset.isPairwiseMLE link secondReference secondScore →
+        firstScore second < firstScore first →
+          secondScore second < secondScore first →
+            ∀ (pooledReference : Alternative)
+              (pooledScore : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative),
+              (firstDataset.add secondDataset).isPairwiseMLE link pooledReference pooledScore →
+                pooledScore second < pooledScore first
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\item \hyperlink{governing-declaration-8e968e7f0a8d2e37}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}add}
+\item \hyperlink{governing-declaration-cba21d23e0e5aa10}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Pairwise\allowbreak{}MLE}
+\end{itemize}
+\hypertarget{governing-declaration-7834058159301fab}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}reaches}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative → Alternative → Alternative → Prop
+
+value:
+fun {Alternative : Type u_1} (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (first second : Alternative) =>
+  Relation.ReflTransGen dataset.edge first second
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-976a9b5d43dbf5d6}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}edge}
+\end{itemize}
+\hypertarget{governing-declaration-79dcfb666ba94992}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}every\allowbreak{}Component\allowbreak{}Strongly\allowbreak{}Connected}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} → AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative → Prop
+
+value:
+fun {Alternative : Type u_1} (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative) =>
+  ∀ (first second : Alternative), dataset.connectedTo first second → dataset.reaches first second
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-a8baf17f23049501}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}connected\allowbreak{}To}
+\item \hyperlink{governing-declaration-7834058159301fab}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}reaches}
+\end{itemize}
+\hypertarget{governing-declaration-a81547df0ed6d41d}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}score\allowbreak{}Respects\allowbreak{}Pairwise\allowbreak{}Majority\allowbreak{}Ranking}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  [inst : Fintype Alternative] →
+    AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative →
+      Alternative ≃ Fin (Fintype.card Alternative) → Prop
+
+value:
+fun {Alternative : Type u_1} [Fintype Alternative]
+    (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative)
+    (ranking : Alternative ≃ Fin (Fintype.card Alternative)) =>
+  ∀ (first second : Alternative), ranking first < ranking second → score second ≤ score first
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\end{itemize}
+\hypertarget{governing-declaration-65fca57a0eff76f4}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}pairwise\allowbreak{}MLE\allowbreak{}Pairwise\allowbreak{}Majority\allowbreak{}Consistent}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+(ℝ → ℝ) → Prop
+
+value:
+fun (link : ℝ → ℝ) =>
+  ∀ {Alternative : Type u_1} [inst : Fintype Alternative] [inst_1 : DecidableEq Alternative]
+    (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative) (reference : Alternative)
+    (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative)
+    (ranking : Alternative ≃ Fin (Fintype.card Alternative)),
+    dataset.isPairwiseMLE link reference score →
+      dataset.hasPairwiseMajorityRanking ranking →
+        AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.scoreRespectsPairwiseMajorityRanking score
+          ranking
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\item \hyperlink{governing-declaration-3309f8938b804aae}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}has\allowbreak{}Pairwise\allowbreak{}Majority\allowbreak{}Ranking}
+\item \hyperlink{governing-declaration-cba21d23e0e5aa10}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Pairwise\allowbreak{}MLE}
+\item \hyperlink{governing-declaration-a81547df0ed6d41d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}score\allowbreak{}Respects\allowbreak{}Pairwise\allowbreak{}Majority\allowbreak{}Ranking}
+\end{itemize}
+\hypertarget{governing-declaration-a7b530c7a57307cd}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}score\allowbreak{}Sup\allowbreak{}Norm}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{Alternative : Type u_1} →
+  [Fintype Alternative] →
+    [DecidableEq Alternative] →
+      Alternative → AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative → ℝ
+
+value:
+fun {Alternative : Type u_1} [Fintype Alternative] [DecidableEq Alternative] (reference : Alternative)
+    (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative) =>
+  let values : Finset ℝ := Finset.image (fun (alternative : Alternative) => |score alternative|) Finset.univ;
+  values.max' (AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.scoreSupNorm._proof_1 reference score)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\end{itemize}
+\hypertarget{governing-declaration-8938e760612a101c}{}
+\subsection*{\small\ttfamily\raggedright Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}coin\allowbreak{}Flip\allowbreak{}Log\allowbreak{}Likelihood}
+\textbf{Declaration location:} reusable library
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℝ → ℝ → ℝ → ℝ
+
+value:
+fun (heads tails probability : ℝ) => heads * Real.log probability + tails * Real.log (1 - probability)
+\end{ReviewVerbatim}
+
+
+\clearpage
+\hypertarget{paper-prerequisite-section-5ef5ef0364b6939c}{}
+\section*{Paper-specific semantic prerequisites}
+\hypertarget{paper-prerequisite-07405caa9661e20f}{}
+\subsection*{\small\ttfamily\raggedright Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition3\_\allowbreak{}1\_\allowbreak{}pareto\_\allowbreak{}efficiency}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition3\_\allowbreak{}1\_\allowbreak{}pareto\_\allowbreak{}efficiency\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 256-\allowbreak{}265\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Definition 3.1 (Pareto efficiency). Suppose a, b 2 X satisfy #{a          b} > #{b      a}, and are such
+that for every other alternative x 2 X \ {a, b}, we have
+                     #{a        x} > #{b    x}    and     #{x    a} < #{x         b}.
+
+Then, for every MLE ˆ, Pareto efficiency requires that ˆa       ˆb .
+
+To see that this definition captures the desired behavior in the multi-agent case, note that if ai > bi ,
+then the dataset #i satisfies the condition of Definition 3.1 with high probability as weP     grow the
+number of comparisons in #i , and similarly the condition holds for the pooled dataset # = i2R #i .
+This version of Pareto efficiency is feasible; in fact, it is satisfied by most random utility models.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink → Prop
+
+value:
+fun (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) =>
+  ∀ {Alternative : Type} [inst : Fintype Alternative]
+    (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative) (reference : Alternative)
+    (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative)
+    {first second : Alternative},
+    have x : DecidableEq Alternative := Classical.decEq Alternative;
+    dataset.isPairwiseMLE link.toFun reference score →
+      dataset.hasParetoCountDominance first second → score second ≤ score first
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\item \hyperlink{governing-declaration-daebbc3b47540730}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}has\allowbreak{}Pareto\allowbreak{}Count\allowbreak{}Dominance}
+\item \hyperlink{governing-declaration-cba21d23e0e5aa10}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Pairwise\allowbreak{}MLE}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} At `cited publication:\allowbreak{}256-\allowbreak{}265`, Definition 3.\allowbreak{}1 requires every MLE of the fixed random-\allowbreak{}utility rule to rank `a` at least as high as `b` under the displayed strict direct, outgoing, and incoming count comparisons.\allowbreak{} The expanded Lean target takes the fixed `link :\allowbreak{} CDFLikePairwiseLink` as its property parameter, universally quantifies the finite dataset, normalized MLE score, and alternatives, expands `hasParetoCountDominance` to exactly those three families of strict count inequalities, and concludes `score second ≤ score first`.\allowbreak{} Through `isPairwiseMLE`, `pairwiseLogLikelihood`, and `randomUtilityWinProbability`, the same fixed `link.\allowbreak{}toFun` governs the MLE.\allowbreak{} This matches the source property.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-01e3b5f8d1238d2d}{}
+\subsection*{\small\ttfamily\raggedright Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition4\_\allowbreak{}1\_\allowbreak{}monotonicity\allowbreak{}Spec}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition4\_\allowbreak{}1\_\allowbreak{}monotonicity\allowbreak{}Spec\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 280-\allowbreak{}308\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Definition 4.1 (Monotonicity). Suppose that # and #̃ are two datasets with unique MLEs ˆ and ˜.
+Suppose that #̃{x y} = #{x y} for all x, y 2 X except that #̃{a                   b} > #{a     b}. Then,
+monotonicity requires that for all x 2 X ,
+                           ˜a     ˜x   ˆa    ˆx    and    ˜b    ˜x [U+F8FF private-use glyph] ˆb    ˆx .
+
+Equivalently, monotonicity requires that if #{a b} decreases, then a becomes weaker relative to
+other alternatives, and b becomes stronger. We can interpret monotonicity as guaranteeing a kind of
+participation incentive: If we ask an agent to compare a to b, the agent is assured that the answer can
+only influence our inferred utilities in the desired direction.
+
+
+                                                    5
+
+[form-feed in source extraction]
+ [U+0001 control character][U+0002 control character][U+0006 control character]
+                                                      d     [U+0001 control character][U+0002 control character][U+0007 control character]                                                  d     [U+0001 control character][U+0002 control character][U+0006 control character]
+ [U+0001 control character][U+0002 control character][U+0003 control character]
+                                                            [U+0001 control character][U+0002 control character][U+0001 control character]                                                  a     [U+0001 control character][U+0002 control character][U+0001 control character]                                                   a
+ [U+0001 control character][U+0002 control character][U+0004 control character]
+                                                           -[U+0001 control character][U+0002 control character][U+0007 control character]                                                       -[U+0001 control character][U+0002 control character][U+0006 control character]                                                   c#
+ [U+0001 control character][U+0002 control character][U+0005 control character]
+                                                           -[U+0001 control character][U+0002 control character][U+0006 control character]                                                  b"                                                          b"
+ [U+0001 control character][U+0002 control character][U+0001 control character]                                                  a    -[U+0001 control character][U+0002 control character][U+0005 control character]
+                                                                                                                      -[U+0001 control character][U+0002 control character][U+0005 control character]
+                                                                                                                                                                             d
+-[U+0001 control character][U+0002 control character][U+0005 control character]
+                                                      b"   -[U+0001 control character][U+0002 control character][U+0004 control character]                                                  c#   -[U+0001 control character][U+0002 control character][U+0004 control character]
+-[U+0001 control character][U+0002 control character][U+0004 control character]
+                                                           -[U+0001 control character][U+0002 control character][U+0003 control character]                                                       -[U+0001 control character][U+0002 control character][U+0003 control character]
+-[U+0001 control character][U+0002 control character][U+0003 control character]                                                  c#
+       (17, 86, 38, 56, , 4, 19, 89, 1, 67, 83, 34)               (95, 74, 36, 53, , 39, 62, 48, 1, 30, 77, 8)               (63, 54, 12, 19, , 54, 57, 80, 49, 7, 50, 20)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink → Prop
+
+value:
+fun (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) =>
+  ∀ {Alternative : Type} [inst : Fintype Alternative],
+    have x : DecidableEq Alternative := Classical.decEq Alternative;
+    AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.pairwiseMLEMonotonicity link.toFun
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{governing-declaration-1e123d0abe44df57}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}pairwise\allowbreak{}MLE\allowbreak{}Monotonicity}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} At `cited publication:\allowbreak{}280-\allowbreak{}308`, Definition 4.\allowbreak{}1 fixes one MLE rule, assumes two datasets with unique MLEs that differ only by a strict increase in the directed `a`-\allowbreak{}over-\allowbreak{}`b` count, and requires the winner's relative score to weakly increase and the loser's to weakly decrease against every alternative.\allowbreak{} The expanded Lean target takes the fixed `link` as its property parameter and expands `pairwiseMLEMonotonicity` using `hasSinglePairCountIncrease`, `hasUniquePairwiseMLE`, and `isPairwiseMLE` with that same `link.\allowbreak{}toFun`;\allowbreak{} its two concluding difference inequalities have exactly the source directions.\allowbreak{} This matches the source property, including uniqueness and all-\allowbreak{}other-\allowbreak{}count equality.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-0eba3734667d4efb}{}
+\subsection*{\small\ttfamily\raggedright Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition5\_\allowbreak{}1\_\allowbreak{}pairwise\_\allowbreak{}majority\_\allowbreak{}consistency\allowbreak{}Spec}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition5\_\allowbreak{}1\_\allowbreak{}pairwise\_\allowbreak{}majority\_\allowbreak{}consistency\allowbreak{}Spec\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 380-\allowbreak{}387\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Definition 5.1. Suppose it is possible to label alternatives as X = {x1 , . . . , xm } such that whenever
+i < j, it holds that #{xi       xj } > #{xj        xi }. Then, pairwise majority consistency (PMC)
+                              ˆ
+requires that for every MLE , it holds that xiˆ       ˆx for all i < j.
+                                                        j
+
+
+In contrast to our previous properties, PMC is violated by random utility models.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink → Prop
+
+value:
+fun (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) =>
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.pairwiseMLEPairwiseMajorityConsistent link.toFun
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{governing-declaration-65fca57a0eff76f4}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}pairwise\allowbreak{}MLE\allowbreak{}Pairwise\allowbreak{}Majority\allowbreak{}Consistent}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Definition 5.\allowbreak{}1 requires every MLE to weakly respect any complete labeling whose lower-\allowbreak{}index alternative has a strict direct-\allowbreak{}count majority over every higher-\allowbreak{}index alternative.\allowbreak{} The expanded target applies pairwiseMLEPairwiseMajorityConsistent to the source-\allowbreak{}class link.\allowbreak{} Its displayed prerequisites universally quantify finite alternatives, an enumeration by Fin, a dataset, reference-\allowbreak{}normalized MLE score, and ranking;\allowbreak{} encode the premise ranking(first) < ranking(second) as count(second, first) < count(first, second);\allowbreak{} and conclude score(second) <= score(first).\allowbreak{} Reference normalization selects a representative of the shift-\allowbreak{}equivalent MLE scores and leaves all required score comparisons unchanged.\allowbreak{} The displayed Theorem 5.\allowbreak{}3 use negates this same complete predicate under its stated link hypotheses, so it does not narrow or alter Definition 5.\allowbreak{}1.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-eddfe1e162a942bc}{}
+\subsection*{\small\ttfamily\raggedright Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition6\_\allowbreak{}1\_\allowbreak{}separability\allowbreak{}Spec}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition6\_\allowbreak{}1\_\allowbreak{}separability\allowbreak{}Spec\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 459-\allowbreak{}467\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+Definition 6.1. Consider two datasets #1 and #2 , and let ˆ1 and ˆ2 be MLEs. Suppose there exist
+two alternatives a, b 2 X such that ˆa1 > ˆb1 and ˆa2 > ˆb2 . Separability requires that for every
+MLE ˆ for the pooled dataset # = #1 + #2 , it also holds that ˆa > ˆb .
+
+Separability is also called consistency, and seems particularly desirable in cases where we combine
+pairwise comparisons from different sources. While perhaps on first glance innocuous, separability is
+an extremely strong requirement, and few rules satisfy it; one can prove in general that separability
+constrains rules to be linear [Myerson, 1995]. Since likelihood maximization is not linear, it is no
+surprise that MLEs for random utility models fail separability.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink → Prop
+
+value:
+fun (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) =>
+  AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.pairwiseMLESeparable link.toFun
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{governing-declaration-96ca4c86e46da1ec}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}pairwise\allowbreak{}MLE\allowbreak{}Separable}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} At `cited publication:\allowbreak{}459-\allowbreak{}467`, Definition 6.\allowbreak{}1 fixes one MLE rule, selects MLEs for two datasets that both rank `a` strictly above `b`, and requires every MLE of their pooled dataset to preserve that strict ranking.\allowbreak{} The expanded Lean target takes the fixed `link` as its property parameter and expands `pairwiseMLESeparable` so the component and pooled `isPairwiseMLE` predicates all use that same `link.\allowbreak{}toFun`;\allowbreak{} `add` is pointwise count addition, the component inequalities are strict, and the pooled score is universally quantified with the same strict conclusion.\allowbreak{} This matches the source separability property.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+
+\clearpage
+\hypertarget{source-claim-a399fdd5be732a4d}{}
+\hypertarget{source-section-f10b5f68e4acf3dc}{}
+\section*{Source claims}
+\subsection*{Review row 1}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 207-\allowbreak{}216\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+Lemma 2.1 (MLE exists). Suppose F is strictly monotonic and continuous. Then the MLE exists if
+and only if every connected component of the comparison graph G# is strongly connected.
+For alternative x, y 2 X , we define the perfect-fit distance between x and y as
+                                            ✓                           ◆
+                                                       #{x y}
+                             (x, y) := F 1                                .
+                                              #{x y} + #{y x}
+This is the difference in utilities of x and y required for the model to exactly match the observed
+frequencies of #{x y} and #{y x} in the data. We can check that the MLE will respect this
+perfect-fit distance when an alternative has only a single neighbor in the comparison graph.
+
+[Next verbatim source excerpt]
+
+2       Model
+
+Let X be a finite set of alternatives. For notational simplicity, we let X 2 = {(x, y) : x, y 2 X , x 6= y}
+denote the set of distinct pairs of alternatives. Let # : X 2 ! N be a dataset of pairwise comparisons
+between alternatives: For x, y 2 X , #{x y} is the number of times x beat y in the dataset.
+The (pairwise) comparison graph G# = (X , E) with respect to dataset # is the directed graph with
+the alternatives X as the vertices, and edges E such that there exists a directed edge (u, v) 2 E iff
+#{u      v} > 0. We say that G# is connected if its undirected form is connected, and we call it
+strongly connected if for all (x, y) 2 X 2 , there is a directed path from x to y in G# .
+Given a dataset, our goal is to learn a random utility model (RUM). A random utility model specifies,
+for any two distinct alternatives x, y 2 X , the probability that when asking the decision maker to
+compare x and y, the answer will be x > y. (Due to noise, when repeatedly querying the same
+pair, we may see different answers.) For us, a random utility model is parameterized by a vector
+  2 RX , where x is an unknown utility value for x 2 X . When we ask for a comparison between
+two alternatives x, y 2 X , we model the decision maker as sampling noisy utilities u(x) and u(y)
+from distributions parameterized by (and typically centered at) x and y . Then, the decision maker
+reports the comparison x > y iff u(x) > u(y).
+In this paper, we focus on random utility models with i.i.d. noise, so that u(x) = x + ⇣(x), where
+⇣(x) ⇠ P is i.i.d. across all alternatives. Let F be the CDF of a random variable which is the
+difference between two independent random variables with distribution P. Then the probability that
+alternative x beats y when they are compared is2
+
+              Pr(x     y) = Pr(u(x) > u(y)) = Pr(⇣(y)           ⇣(x) <    x      y) = F ( x        y ).   (1)
+
+We derived Equation (1) from a specific noise model, but it makes sense for any function F : R !
+[0, 1] with CDF-like properties, even if it does not correspond to a noise distribution P. Indeed, we
+can take any F which is non-decreasing, satisfies F ( u) + F (        u) = 1 for all u 2 R, and is
+such that lim u! 1 F ( u) = 0 and lim u!1 F ( u) = 1. We adopt Equation (1) as the general
+definition of a random utility model for our technical results.
+Two of the most common random utility models are
+
+    • the Thurstone–Mosteller (TM) model: We sample utility as u(x) = x + ⇣(x), with i.i.d. noise
+      ⇣(x) ⇠ N (0, 1/2). This is equivalent to Equation (1) with F as the Gaussian CDF .
+    • the Bradley–Terry model (equivalent to the Plackett–Luce model restricted to pairwise compar-
+                                    eu(x)
+      isons), where Pr(x y) = eu(x)   +eu(y)
+                                             . This is Equation (1) with F as the logistic function.
+
+We usually assume that F is strictly log-concave, and that it is strictly monotonic and continuous,3 so
+that F has an inverse on (0, 1). These conditions hold for Thurstone–Mosteller and Bradley–Terry.
+
+    2
+        We assume P to be a continuous distribution, and so we do not have to worry about ties.
+    3
+        Continuity of F is guaranteed when the corresponding noise distribution P is continuous.
+
+
+                                                         3
+
+[form-feed in source extraction]
+For a random utility model, given a dataset #, our goal is to find parameters ( x )x2X that best fit #.
+We find these parameters by maximum likelihood estimation. The log-likelihood is given by
+                                      X
+                           L( ) =            #{x y} log F ( x          y ).
+                                     (x,y)2X 2
+
+When the dataset # is clear from the context, we write ˆ 2 RX for a parameter vector that maximizes
+log-likelihood, and say that ˆ is the MLE. Note that if c 2 R is a scalar, then L( ) = L( + c) for
+all 2 RX (since Pr(x y) depends only on the difference x              y ), so the MLE is only defined
+up to an additive shift. For concreteness, we pick some r 2 X , call it the reference alternative, and
+fix r = 0; then, we maximize L over D = { 2 RX : r = 0}.
+A random utility model is particularly appropriate when the dataset # consists of pairwise com-
+parisons which are all reported by a single decision maker. However, in many cases the dataset is
+obtained by pooling reports from many agents, for instance to minimize the labeling effort of each
+individual agent, or if we have the explicit aim to aggregate preferencesP from different agents. Some
+of the axioms we study are explicitly motivated by cases where # = i2R #i , i.e., the dataset is
+obtained by pooling individual datasets, where R is the set of agents. It then seems natural to assume
+that each agent behaves in accordance with some random utility model with unknown parameters i
+and unknown CDF-like function Fi . Then the dataset #i is generated by repeatedly querying the
+agent’s random utility model for a comparison.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {Alternative : Type u_1} [inst : Fintype Alternative]
+  (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+  (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) (reference : Alternative),
+  have x : DecidableEq Alternative := Classical.decEq Alternative;
+  Continuous link.toFun →
+    StrictMono link.toFun →
+      ((∃ (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative),
+          dataset.isPairwiseMLE link.toFun reference score) ↔
+        dataset.everyComponentStronglyConnected)
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\item \hyperlink{governing-declaration-79dcfb666ba94992}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}every\allowbreak{}Component\allowbreak{}Strongly\allowbreak{}Connected}
+\item \hyperlink{governing-declaration-cba21d23e0e5aa10}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Pairwise\allowbreak{}MLE}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Fintype Alternative
+3. parameter: AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative
+4. parameter: AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink
+5. parameter: Alternative
+6. conclusion: Continuous link.toFun →
+  StrictMono link.toFun →
+    ((∃ (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative),
+        dataset.isPairwiseMLE link.toFun reference score) ↔
+      dataset.everyComponentStronglyConnected)
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+NoothigattuEtAl2020PairwiseComparisons.lemma2_1_mle_exists_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Source item lemma2\_\allowbreak{}1 at cited publication:\allowbreak{}207-\allowbreak{}216 states, in the included finite-\allowbreak{}alternative, CDF-\allowbreak{}like-\allowbreak{}link, fixed-\allowbreak{}reference MLE context, that for continuous strictly monotone F an MLE exists iff every undirected comparison component is directed strongly connected.\allowbreak{} The expanded Lean target quantifies a finite Alternative type, dataset, CDF-\allowbreak{}like link, and reference, assumes Continuous and StrictMono, and asserts exactly the equivalence between existence of a reference-\allowbreak{}normalized pairwise MLE score and everyComponentStronglyConnected.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-54fc19f0aa38d1c6}{}
+\section*{Review row 2}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 217-\allowbreak{}223\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+Lemma 2.2. Let F be strictly monotonic and continuous. Suppose that for alternative a there is
+exactly one alternative b for which #{a         b} + #{b      a} > 0. If both #{a       b} > 0 and
+                                  ˆ
+#{b a} > 0, then any MLE satisfies a        ˆ     ˆb = (a, b).
+
+We can use this result to provide a stronger bound on the MLE than the one from Lemma 2.1, which
+holds under slightly stronger conditions.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {Alternative : Type u_1} [inst : Fintype Alternative]
+  (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+  (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) (reference : Alternative)
+  (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative)
+  {first second : Alternative},
+  have x : DecidableEq Alternative := Classical.decEq Alternative;
+  dataset.isPairwiseMLE link.toFun reference score →
+    dataset.hasOnlyNeighbor first second →
+      0 < dataset.count first second →
+        0 < dataset.count second first →
+          Continuous link.toFun →
+            StrictMono link.toFun →
+              ∃! delta : ℝ,
+                link.toFun delta =
+                    ↑(dataset.count first second) / (↑(dataset.count first second) + ↑(dataset.count second first)) ∧
+                  score first - score second = delta
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\item \hyperlink{governing-declaration-a631e734cd0a8407}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}has\allowbreak{}Only\allowbreak{}Neighbor}
+\item \hyperlink{governing-declaration-cba21d23e0e5aa10}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Pairwise\allowbreak{}MLE}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Fintype Alternative
+3. parameter: AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative
+4. parameter: AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink
+5. parameter: Alternative
+6. parameter: AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative
+7. parameter: Alternative
+8. parameter: Alternative
+9. conclusion: dataset.isPairwiseMLE link.toFun reference score →
+  dataset.hasOnlyNeighbor first second →
+    0 < dataset.count first second →
+      0 < dataset.count second first →
+        Continuous link.toFun →
+          StrictMono link.toFun →
+            ∃! delta : ℝ,
+              link.toFun delta =
+                  ↑(dataset.count first second) / (↑(dataset.count first second) + ↑(dataset.count second first)) ∧
+                score first - score second = delta
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+NoothigattuEtAl2020PairwiseComparisons.lemma2_2_one_neighbor_perfect_fit_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Source item lemma2\_\allowbreak{}2 at cited publication:\allowbreak{}217-\allowbreak{}223 assumes continuous strictly monotone F, that a has exactly one comparison neighbor b, and positive counts in both directions, and says every MLE has score difference equal to the perfect-\allowbreak{}fit inverse value.\allowbreak{} The expanded Lean target has the same MLE, one-\allowbreak{}neighbor, two-\allowbreak{}positive-\allowbreak{}count, continuity, and strict-\allowbreak{}monotonicity premises and asserts a unique delta with F(delta) equal to the observed win fraction and score(first)-\allowbreak{}score(second)=delta;\allowbreak{} under the stated strict monotonicity this is precisely the source's F-\allowbreak{}inverse formulation.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-f4e00b752a4932aa}{}
+\section*{Review row 3}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 224-\allowbreak{}227\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+Lemma 2.3. Suppose that #{x            y} > 0 and #{y      x} > 0 for all x and y, and that F is
+continuous and strictly monotonic. Then for every MLE ˆ we have the bound
+                                   k ˆk1 [U+F8FF private-use glyph] |X | · max (x, y).
+                                                   (x,y)2X 2
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {Alternative : Type u_1} [inst : Fintype Alternative],
+  have x : DecidableEq Alternative := Classical.decEq Alternative;
+  ∀ (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+    (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink)
+    (reference : Alternative)
+    (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative),
+    dataset.isPairwiseMLE link.toFun reference score →
+      (∀ (first second : Alternative), first ≠ second → 0 < dataset.count first second) →
+        ∀ (hcontinuous : Continuous link.toFun),
+          StrictMono link.toFun →
+            AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.scoreSupNorm reference score ≤
+              ↑(Fintype.card Alternative) * dataset.maxPerfectFitDistance link hcontinuous reference
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\item \hyperlink{governing-declaration-cba21d23e0e5aa10}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Pairwise\allowbreak{}MLE}
+\item \hyperlink{governing-declaration-c351cbfc85b673f3}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}max\allowbreak{}Perfect\allowbreak{}Fit\allowbreak{}Distance}
+\item \hyperlink{governing-declaration-a7b530c7a57307cd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}score\allowbreak{}Sup\allowbreak{}Norm}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Fintype Alternative
+3. conclusion: ∀ (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+  (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) (reference : Alternative)
+  (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative),
+  dataset.isPairwiseMLE link.toFun reference score →
+    (∀ (first second : Alternative), first ≠ second → 0 < dataset.count first second) →
+      ∀ (hcontinuous : Continuous link.toFun),
+        StrictMono link.toFun →
+          AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.scoreSupNorm reference score ≤
+            ↑(Fintype.card Alternative) * dataset.maxPerfectFitDistance link hcontinuous reference
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+NoothigattuEtAl2020PairwiseComparisons.lemma2_3_mle_supNorm_bound_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Source item lemma2\_\allowbreak{}3 at cited publication:\allowbreak{}224-\allowbreak{}227 gives, for positive counts in both directions on every pair in X\textasciicircum{}2 and continuous strictly monotone F, the bound ||score||\_\allowbreak{}infinity <= |X| times the maximum perfect-\allowbreak{}fit distance.\allowbreak{} The queue's model context defines X\textasciicircum{}2 as distinct ordered pairs, and the expanded Lean target accordingly assumes positive count for every distinct ordered pair, quantifies every MLE, uses scoreSupNorm, and concludes the same card(Alternative) times maxPerfectFitDistance bound with the same continuity and strict-\allowbreak{}monotonicity hypotheses.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-45a27951c21eefad}{}
+\section*{Review row 4}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 239-\allowbreak{}240\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+Lemma 2.4. Suppose that F is strictly log-concave. Then L( ) is strictly concave and the MLE is
+unique (assuming it exists), if and only if the comparison graph G# is connected.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {Alternative : Type u_1} [inst : Fintype Alternative]
+  (dataset : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative)
+  (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink) (reference : Alternative),
+  (StrictConcaveOn ℝ Set.univ fun (gap : ℝ) => Real.log (link.toFun gap)) →
+    have x : DecidableEq Alternative := Classical.decEq Alternative;
+    (StrictConcaveOn ℝ
+          {score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative |
+            AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.isReferenceNormalized reference score}
+          (dataset.pairwiseLogLikelihood link.toFun) ∧
+        ∀ (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative),
+          dataset.isPairwiseMLE link.toFun reference score →
+            ∀ (other : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative),
+              dataset.isPairwiseMLE link.toFun reference other → other = score) ↔
+      dataset.isConnected
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-2ba23f394a8d08a2}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset}
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{governing-declaration-87eda978eb1b0c9d}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}Score\allowbreak{}Vector}
+\item \hyperlink{governing-declaration-f509b3a8b33a7436}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Connected}
+\item \hyperlink{governing-declaration-cba21d23e0e5aa10}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Pairwise\allowbreak{}MLE}
+\item \hyperlink{governing-declaration-183c779b24cebcca}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}is\allowbreak{}Reference\allowbreak{}Normalized}
+\item \hyperlink{governing-declaration-10adb9e7c1ff9f4c}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}pairwise\allowbreak{}Log\allowbreak{}Likelihood}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: Type u_1
+2. parameter: Fintype Alternative
+3. parameter: AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset Alternative
+4. parameter: AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink
+5. parameter: Alternative
+6. assumption: StrictConcaveOn ℝ Set.univ fun (gap : ℝ) => Real.log (link.toFun gap)
+7. conclusion: (StrictConcaveOn ℝ
+      {score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative |
+        AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.isReferenceNormalized reference score}
+      (dataset.pairwiseLogLikelihood link.toFun) ∧
+    ∀ (score : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative),
+      dataset.isPairwiseMLE link.toFun reference score →
+        ∀ (other : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.ScoreVector Alternative),
+          dataset.isPairwiseMLE link.toFun reference other → other = score) ↔
+  dataset.isConnected
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+NoothigattuEtAl2020PairwiseComparisons.lemma2_4_strictConcavity_and_unique_mle_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Source item lemma2\_\allowbreak{}4 at cited publication:\allowbreak{}239-\allowbreak{}240 says that under strict log-\allowbreak{}concavity, likelihood strict concavity together with uniqueness of any existing MLE holds iff the comparison graph is connected.\allowbreak{} The expanded Lean target assumes StrictConcaveOn of log F, places likelihood strict concavity on the fixed-\allowbreak{}reference score domain from the source model, expresses 'unique assuming it exists' as equality of any two MLEs without adding existence, and makes exactly that conjunction equivalent to dataset.\allowbreak{}isConnected.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-c8913dc4eae41fb3}{}
+\section*{Review row 5}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 266-\allowbreak{}271\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+Theorem 3.2. Maximum likelihood estimation satisfies Pareto efficiency if F is strictly monotonic.
+
+The key idea behind the proof (given in Appendix C) is that if a, b 2 X satisfy the condition of
+Definition 3.1 but some MLE ˆ puts ˆa < ˆb , then the parameter vector equal to ˆ except that
+      ˆ             ˆ
+ a = b and b = a has strictly higher log-likelihood.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink),
+  StrictMono link.toFun → NoothigattuEtAl2020PairwiseComparisons.definition3_1_pareto_efficiency link
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{paper-prerequisite-07405caa9661e20f}{Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition3\_\allowbreak{}1\_\allowbreak{}pareto\_\allowbreak{}efficiency}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink
+2. assumption: StrictMono link.toFun
+3. conclusion: NoothigattuEtAl2020PairwiseComparisons.definition3_1_pareto_efficiency link
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+NoothigattuEtAl2020PairwiseComparisons.theorem3_2_mle_satisfies_pareto_efficiency_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Source item theorem3\_\allowbreak{}2 at cited publication:\allowbreak{}266-\allowbreak{}271 says that for a strictly monotone CDF-\allowbreak{}like F, maximum likelihood estimation satisfies Definition 3.\allowbreak{}1.\allowbreak{} The expanded theorem target universally fixes the CDF-\allowbreak{}like link, assumes exactly StrictMono link.\allowbreak{}toFun, and concludes the graph-\allowbreak{}bound definition3\_\allowbreak{}1\_\allowbreak{}pareto\_\allowbreak{}efficiency for that same link.\allowbreak{} Its supporting declaration quantifies every finite dataset, fixed-\allowbreak{}reference MLE score, and alternative pair and, under the exact source count conditions (strict direct majority plus strictly better outgoing and incoming counts against every other alternative), concludes score(second) <= score(first), matching Definition 3.\allowbreak{}1 and the source proof synopsis that rules out score(first) < score(second).\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-edf2d1637af168b9}{}
+\section*{Review row 6}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 324-\allowbreak{}371\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+Theorem 4.2. Maximum likelihood estimation satisfies monotonicity if F is strictly monotonic,
+log-concave, and differentiable.
+The proof, given in Appendix D, is relatively unwieldy. For intuition, let us provide an outline of
+a proof for the special case of three alternatives a, b, c. Let # and #̃ be datasets that are identical
+except that #{a b} < #̃{a b}, and let ˆ and ˜ be the respective MLEs, which are unique by
+Lemma 2.4. We take a as reference, so ˆa = ˜a = 0. It is easy to see that ˆb       ˜b , since otherwise
+ ˆ would have greater log-likelihood than ˜ for the dataset #̃, as ˆ performs better on the a vs b
+comparisons, and performs no worse on other comparisons by optimality for #. To see that also
+ ˆc    ˜c , consider first the dataset # and associated log-likelihood L( b , c ) (with a fixed to 0).
+Now, for x 2 R, let (x) denote the value of c that maximizes L(x, c ), i.e., maximizes likelihood
+among parameters with a = 0 and b = x. One can show that, since F is strictly log-concave,
+  (x) is increasing in x.5 Notice that the number of comparisons between a and b in a dataset does
+not influence the optimum position of c , once a and b are fixed. Hence, the function is the same
+whether defined for # or for #̃, since they only differ in a vs b comparisons. We have already seen
+that ˜b [U+F8FF private-use glyph] ˆb . Since is increasing, we have ˜c = ( ˜b ) [U+F8FF private-use glyph] ( ˆb ) = ˆc , proving monotonicity.
+To visualize monotonicity, consider the three examples in Figure 1. For four alternatives, we generated
+random datasets by choosing #{x y} uniformly at random between 1 and 100, and picked three
+examples. In each case, we let #{b           c} vary from 0 to 100 (going horizontally from left to
+right), and show how the MLE of the Thurstone–Mosteller model changes as the number of b c
+comparisons grows; we fix ˆa = 0 as reference. As predicted by Theorem 4.2, the orange line of ˆb
+is increasing, while the green line of ˆc is decreasing. Note that the change in #{b c} can affect
+other alternatives; in the middle figure, the relative positions of a and d swap.
+                            P
+In the pooled setting # = i2R #i of Section 2, where each agent i 2 R is described by a random
+utility model with parameters i that generates #i , a natural notion of monotonicity is this: Suppose
+we calculate the MLE ˆ for # and suppose we increase the utility ai for some agent i and some
+alternative a while keeping all other parameters fixed. Then the updated MLE ˜ should satisfy
+ ˜a ˜x       ˆa ˆx for all x 2 X : the learned utility of a increases relative to other alternatives.
+    4
+      For the Bradley–Terry model, monotonicity is easier to check, since the first-order conditions of likelihood
+maximization in that model are well-behaved [González-Díaz et al., 2014, Prop. 6.3]; that proof does not
+generalize to other models.
+    5
+      Assume that F is twice differentiable. Since log F is strictly concave, its second derivative is strictly
+negative. A straightforward calculation shows that then @ 2 L/@ c @ c < 0 and that @ 2 L/@ c @ b > 0. By
+definition of , for each x, (@L/@ c )(x, (x)) = 0. Since @ 2 L/@ c @ b > 0, the function @L/@ c is
+increasing in its first argument, and so (@L/@ c )(x + , (x)) > 0 for all > 0. Since @ 2 L/@ c @ c < 0,
+the function @L/@ c is decreasing in its second argument, and hence (x + ) > (x), as desired.
+
+
+                                                                                        6
+
+[form-feed in source extraction]
+Theorem 4.2 implies that random utility models (subject to the theorem’s conditions) satisfy this
+pooled monotonicity notion with high probability, when #i consists of many samples and when the
+number of comparisons is uniform across pairs. The reason is this: with high probability, the increase
+of ai increases the number of a x comparisons in #i for all x. Assuming for now that no other
+dataset #j and no other pairs in #i are affected, then successively invoking Theorem 4.2 on a x
+pairs yields the result. Now, with some probability, other parts will be affected, but not too much.
+Since the MLE is continuous in # (see Appendix E), this noise will not invalidate monotonicity.
+
+[Next verbatim source excerpt]
+
+Definition 4.1 (Monotonicity). Suppose that # and #̃ are two datasets with unique MLEs ˆ and ˜.
+Suppose that #̃{x y} = #{x y} for all x, y 2 X except that #̃{a                   b} > #{a     b}. Then,
+monotonicity requires that for all x 2 X ,
+                           ˜a     ˜x   ˆa    ˆx    and    ˜b    ˜x [U+F8FF private-use glyph] ˆb    ˆx .
+
+Equivalently, monotonicity requires that if #{a b} decreases, then a becomes weaker relative to
+other alternatives, and b becomes stronger. We can interpret monotonicity as guaranteeing a kind of
+participation incentive: If we ask an agent to compare a to b, the agent is assured that the answer can
+only influence our inferred utilities in the desired direction.
+
+
+                                                    5
+
+[form-feed in source extraction]
+ [U+0001 control character][U+0002 control character][U+0006 control character]
+                                                      d     [U+0001 control character][U+0002 control character][U+0007 control character]                                                  d     [U+0001 control character][U+0002 control character][U+0006 control character]
+ [U+0001 control character][U+0002 control character][U+0003 control character]
+                                                            [U+0001 control character][U+0002 control character][U+0001 control character]                                                  a     [U+0001 control character][U+0002 control character][U+0001 control character]                                                   a
+ [U+0001 control character][U+0002 control character][U+0004 control character]
+                                                           -[U+0001 control character][U+0002 control character][U+0007 control character]                                                       -[U+0001 control character][U+0002 control character][U+0006 control character]                                                   c#
+ [U+0001 control character][U+0002 control character][U+0005 control character]
+                                                           -[U+0001 control character][U+0002 control character][U+0006 control character]                                                  b"                                                          b"
+ [U+0001 control character][U+0002 control character][U+0001 control character]                                                  a    -[U+0001 control character][U+0002 control character][U+0005 control character]
+                                                                                                                      -[U+0001 control character][U+0002 control character][U+0005 control character]
+                                                                                                                                                                             d
+-[U+0001 control character][U+0002 control character][U+0005 control character]
+                                                      b"   -[U+0001 control character][U+0002 control character][U+0004 control character]                                                  c#   -[U+0001 control character][U+0002 control character][U+0004 control character]
+-[U+0001 control character][U+0002 control character][U+0004 control character]
+                                                           -[U+0001 control character][U+0002 control character][U+0003 control character]                                                       -[U+0001 control character][U+0002 control character][U+0003 control character]
+-[U+0001 control character][U+0002 control character][U+0003 control character]                                                  c#
+       (17, 86, 38, 56, , 4, 19, 89, 1, 67, 83, 34)               (95, 74, 36, 53, , 39, 62, 48, 1, 30, 77, 8)               (63, 54, 12, 19, , 54, 57, 80, 49, 7, 50, 20)
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink),
+  StrictMono link.toFun →
+    (ConcaveOn ℝ Set.univ fun (gap : ℝ) => Real.log (link.toFun gap)) →
+      Differentiable ℝ link.toFun → NoothigattuEtAl2020PairwiseComparisons.definition4_1_monotonicitySpec link
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{paper-prerequisite-01e3b5f8d1238d2d}{Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition4\_\allowbreak{}1\_\allowbreak{}monotonicity\allowbreak{}Spec}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink
+2. assumption: StrictMono link.toFun
+3. assumption: ConcaveOn ℝ Set.univ fun (gap : ℝ) => Real.log (link.toFun gap)
+4. assumption: Differentiable ℝ link.toFun
+5. conclusion: NoothigattuEtAl2020PairwiseComparisons.definition4_1_monotonicitySpec link
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+NoothigattuEtAl2020PairwiseComparisons.theorem4_2_mle_satisfies_monotonicity_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Source item theorem4\_\allowbreak{}2 at cited publication:\allowbreak{}324-\allowbreak{}371 says that MLE for a strictly monotone, log-\allowbreak{}concave, differentiable CDF-\allowbreak{}like F satisfies Definition 4.\allowbreak{}1.\allowbreak{} The expanded theorem target has exactly StrictMono link.\allowbreak{}toFun, non-\allowbreak{}strict ConcaveOn of log(link.\allowbreak{}toFun), and Differentiable link.\allowbreak{}toFun, then concludes the graph-\allowbreak{}bound definition4\_\allowbreak{}1\_\allowbreak{}monotonicitySpec for the same fixed link.\allowbreak{} That supporting property quantifies finite alternatives and expands through pairwiseMLEMonotonicity:\allowbreak{} the updated dataset changes only the directed winner-\allowbreak{}loser count and increases it strictly, both datasets have unique fixed-\allowbreak{}reference MLEs, and their MLE scores satisfy the source's weak winner-\allowbreak{}up and loser-\allowbreak{}down difference inequalities relative to every alternative.\allowbreak{} Thus the dependency and theorem preserve the full source scope without adding uniqueness as an external theorem hypothesis.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-ce5587b5543267f3}{}
+\section*{Review row 7}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 406-\allowbreak{}416\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+Theorem 5.3. Maximum likelihood estimation violates pairwise majority consistency whenever F is
+strictly monotonic, strictly log-concave, and differentiable.
+
+How frequent are PMC violations? Write %{x y} = #{x y}/(#{x y} + #{y x}) for
+the fraction of x vs y comparisons that x wins. For X = {a, b, c}, let T be the space of datasets with
+                            0.5 < %{a       b}, %{a     c}, %{b    c} [U+F8FF private-use glyph] 1.
+
+For all datasets in T , PMC requires that ˆa > ˆb > ˆc . In Figure 2, we draw the cube T and show
+the regions where the MLE for Thurstone–Mosteller fails PMC. Example 5.2, suitably normalized,
+falls in the upper orange region. Sampling uniformly over T , we find that Thurstone–Mosteller fails
+PMC in 17.8% of datasets, while Bradley–Terry fails in 16.6% of datasets.
+
+[Next verbatim source excerpt]
+
+Definition 5.1. Suppose it is possible to label alternatives as X = {x1 , . . . , xm } such that whenever
+i < j, it holds that #{xi       xj } > #{xj        xi }. Then, pairwise majority consistency (PMC)
+                              ˆ
+requires that for every MLE , it holds that xiˆ       ˆx for all i < j.
+                                                        j
+
+
+In contrast to our previous properties, PMC is violated by random utility models.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink),
+  StrictMono link.toFun →
+    (StrictConcaveOn ℝ Set.univ fun (gap : ℝ) => Real.log (link.toFun gap)) →
+      Differentiable ℝ link.toFun →
+        ¬NoothigattuEtAl2020PairwiseComparisons.definition5_1_pairwise_majority_consistencySpec link
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{paper-prerequisite-0eba3734667d4efb}{Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition5\_\allowbreak{}1\_\allowbreak{}pairwise\_\allowbreak{}majority\_\allowbreak{}consistency\allowbreak{}Spec}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink
+2. assumption: StrictMono link.toFun
+3. assumption: StrictConcaveOn ℝ Set.univ fun (gap : ℝ) => Real.log (link.toFun gap)
+4. assumption: Differentiable ℝ link.toFun
+5. conclusion: ¬NoothigattuEtAl2020PairwiseComparisons.definition5_1_pairwise_majority_consistencySpec link
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+NoothigattuEtAl2020PairwiseComparisons.theorem5_3_mle_violates_pairwise_majority_consistency_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Theorem 5.\allowbreak{}3 states that maximum-\allowbreak{}likelihood estimation violates pairwise majority consistency whenever the source link F is strictly monotonic, strictly log-\allowbreak{}concave, and differentiable.\allowbreak{} The expanded Lean target universally quantifies a CDFLikePairwiseLink, assumes StrictMono for F, StrictConcaveOn all real gaps for log composed with F, and differentiability of F, then concludes the negation of definition5\_\allowbreak{}1\_\allowbreak{}pairwise\_\allowbreak{}majority\_\allowbreak{}consistencySpec.\allowbreak{} The displayed link structure supplies the governing random-\allowbreak{}utility CDF conditions.\allowbreak{} The displayed Definition 5.\allowbreak{}1 closure universally quantifies finite alternatives, datasets, reference-\allowbreak{}normalized MLE scores, and complete labelings with strict direct-\allowbreak{}count majorities, and requires the corresponding weak score order.\allowbreak{} Its negation therefore says exactly that this MLE rule has a counterexample to PMC under the theorem's link conditions.\allowbreak{} Reference normalization only fixes the additive score representative and does not change majority or score ordering.\allowbreak{} No source premise, quantifier, or conclusion is added, omitted, or narrowed.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-04287088841a1f1c}{}
+\section*{Review row 8}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 485-\allowbreak{}496\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+Theorem 6.3. Maximum likelihood estimation violates separability whenever F is strictly monotonic,
+strictly log-concave, and differentiable.
+
+Like for PMC, we can again ask on what percentage of (pairs of) datasets the MLE fails separately.
+Since we sample over pairs, we might guess the answer to be of lower order than in the case of PMC,
+and this is borne out by the data. For m = 3 alternatives, sampling uniformly over the space of
+datasets for which each pair of distinct alternatives is compared equally often, we find that on about
+1.5% of dataset pairs, Thurstone–Mosteller fails separability. This fraction increases as m increases,
+since there are more pairs of alternatives for which separability can be violated.
+
+
+                                                                    8
+
+[Next verbatim source excerpt]
+
+Definition 6.1. Consider two datasets #1 and #2 , and let ˆ1 and ˆ2 be MLEs. Suppose there exist
+two alternatives a, b 2 X such that ˆa1 > ˆb1 and ˆa2 > ˆb2 . Separability requires that for every
+MLE ˆ for the pooled dataset # = #1 + #2 , it also holds that ˆa > ˆb .
+
+Separability is also called consistency, and seems particularly desirable in cases where we combine
+pairwise comparisons from different sources. While perhaps on first glance innocuous, separability is
+an extremely strong requirement, and few rules satisfy it; one can prove in general that separability
+constrains rules to be linear [Myerson, 1995]. Since likelihood maximization is not linear, it is no
+surprise that MLEs for random utility models fail separability.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ (link : AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink),
+  StrictMono link.toFun →
+    (StrictConcaveOn ℝ Set.univ fun (gap : ℝ) => Real.log (link.toFun gap)) →
+      Differentiable ℝ link.toFun → ¬NoothigattuEtAl2020PairwiseComparisons.definition6_1_separabilitySpec link
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-3449f3559185d0fd}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}Learning.\allowbreak{}Human\allowbreak{}Feedback.\allowbreak{}Pairwise\allowbreak{}Count\allowbreak{}Dataset.\allowbreak{}CDF\allowbreak{}Like\allowbreak{}Pairwise\allowbreak{}Link}
+\item \hyperlink{paper-prerequisite-eddfe1e162a942bc}{Noothigattu\allowbreak{}Et\allowbreak{}Al2020\allowbreak{}Pairwise\allowbreak{}Comparisons.\allowbreak{}definition6\_\allowbreak{}1\_\allowbreak{}separability\allowbreak{}Spec}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.CDFLikePairwiseLink
+2. assumption: StrictMono link.toFun
+3. assumption: StrictConcaveOn ℝ Set.univ fun (gap : ℝ) => Real.log (link.toFun gap)
+4. assumption: Differentiable ℝ link.toFun
+5. conclusion: ¬NoothigattuEtAl2020PairwiseComparisons.definition6_1_separabilitySpec link
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+NoothigattuEtAl2020PairwiseComparisons.theorem6_3_mle_violates_separability_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Source item theorem6\_\allowbreak{}3 at cited publication:\allowbreak{}485-\allowbreak{}496 says that every strictly monotone, strictly log-\allowbreak{}concave, differentiable CDF-\allowbreak{}like F yields an MLE-\allowbreak{}rule violation of Definition 6.\allowbreak{}1 separability.\allowbreak{} The expanded theorem target universally fixes that link, assumes exactly StrictMono link.\allowbreak{}toFun, StrictConcaveOn of log(link.\allowbreak{}toFun), and Differentiable link.\allowbreak{}toFun, and negates the graph-\allowbreak{}bound definition6\_\allowbreak{}1\_\allowbreak{}separabilitySpec for the same link.\allowbreak{} The supporting property expands through pairwiseMLESeparable to two datasets and their MLEs under that link, assumes both strictly rank the same pair, pointwise-\allowbreak{}pools their counts, and requires every pooled-\allowbreak{}data MLE to preserve the strict ordering.\allowbreak{} This is precisely the source definition, so its negation matches the stated theorem violation.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-2bd981124fb9e230}{}
+\section*{Review row 9}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 780-\allowbreak{}784\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+Claim A.1 (Coin flip likelihood). For h, t > 0 and p 2 (0, 1), the function f (p) = h · log(p) + t ·
+log(1 p) is strictly concave with the maximum uniquely attained at
+                                                                  h
+                                                          p̂ =
+                                                                 h+t
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {heads tails : ℝ},
+  0 < heads →
+    0 < tails →
+      StrictConcaveOn ℝ (Set.Ioo 0 1) (AppliedModelingLib.coinFlipLogLikelihood heads tails) ∧
+        (heads / (heads + tails) ∈ Set.Ioo 0 1 ∧
+            IsMaxOn (AppliedModelingLib.coinFlipLogLikelihood heads tails) (Set.Ioo 0 1) (heads / (heads + tails))) ∧
+          ∀ maximizer ∈ Set.Ioo 0 1,
+            IsMaxOn (AppliedModelingLib.coinFlipLogLikelihood heads tails) (Set.Ioo 0 1) maximizer →
+              maximizer = heads / (heads + tails)
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-8938e760612a101c}{Applied\allowbreak{}Modeling\allowbreak{}Lib.\allowbreak{}coin\allowbreak{}Flip\allowbreak{}Log\allowbreak{}Likelihood}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: ℝ
+2. parameter: ℝ
+3. assumption: 0 < heads
+4. assumption: 0 < tails
+5. conclusion: StrictConcaveOn ℝ (Set.Ioo 0 1) (AppliedModelingLib.coinFlipLogLikelihood heads tails) ∧
+  (heads / (heads + tails) ∈ Set.Ioo 0 1 ∧
+      IsMaxOn (AppliedModelingLib.coinFlipLogLikelihood heads tails) (Set.Ioo 0 1) (heads / (heads + tails))) ∧
+    ∀ maximizer ∈ Set.Ioo 0 1,
+      IsMaxOn (AppliedModelingLib.coinFlipLogLikelihood heads tails) (Set.Ioo 0 1) maximizer →
+        maximizer = heads / (heads + tails)
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+NoothigattuEtAl2020PairwiseComparisons.claimA1_coin_flip_likelihood_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Source item claimA\_\allowbreak{}1 at cited publication:\allowbreak{}780-\allowbreak{}784 states that for positive real h and t, the displayed coin-\allowbreak{}flip log-\allowbreak{}likelihood is strictly concave on p in (0,1) and has its unique maximum at h/\allowbreak{}(h+t).\allowbreak{} The expanded Lean target has exactly the two positivity assumptions, StrictConcaveOn on Set.\allowbreak{}Ioo 0 1, membership and IsMaxOn at heads/\allowbreak{}(heads+tails), and equality of every other in-\allowbreak{}domain maximizer to that point, so its scope and conclusion coincide with the source item.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-dacf685bcf1289ee}{}
+\section*{Review row 10}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 1055-\allowbreak{}1055\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+Claim C.1. Let c, d, e, f > 0 such that c > d and e > f . Then ce + df > cf + de.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∀ {c d e f : ℝ}, 0 < c → 0 < d → 0 < e → 0 < f → d < c → f < e → c * e + d * f > c * f + d * e
+\end{ReviewVerbatim}
+
+
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. parameter: ℝ
+2. parameter: ℝ
+3. parameter: ℝ
+4. parameter: ℝ
+5. assumption: 0 < c
+6. assumption: 0 < d
+7. assumption: 0 < e
+8. assumption: 0 < f
+9. assumption: d < c
+10. assumption: f < e
+11. conclusion: c * e + d * f > c * f + d * e
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+NoothigattuEtAl2020PairwiseComparisons.claimC1_strict_crossed_product_proof
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Source item claimC\_\allowbreak{}1 at cited publication:\allowbreak{}1055-\allowbreak{}1055 quantifies positive real c,d,e,f, assumes c>d and e>f, and concludes ce+df>cf+de.\allowbreak{} The expanded Lean target quantifies the same four reals, lists the same six positivity/\allowbreak{}order assumptions as 0<c, 0<d, 0<e, 0<f, d<c, f<e, and has the identical strict crossed-\allowbreak{}product conclusion.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+
+\end{document}

@@ -1,8 +1,8 @@
-import EconCSLib.Algorithms.Complexity.Classes
-import EconCSLib.SocialChoice.FairDivision.IndivisibleGoods
-import EconCSLib.SocialChoice.FairDivision.BoundedEnvyAlgorithm
-import EconCSLib.SocialChoice.FairDivision.Mechanisms
-import EconCSLib.Foundations.Optimization.FiniteSearch
+import AppliedModelingLib.Algorithms.Complexity.Classes
+import AppliedModelingLib.SocialChoice.FairDivision.IndivisibleGoods
+import AppliedModelingLib.SocialChoice.FairDivision.BoundedEnvyAlgorithm
+import AppliedModelingLib.SocialChoice.FairDivision.Mechanisms
+import AppliedModelingLib.Foundations.Optimization.FiniteSearch
 import LMMS04FairDivision.Lemma24MeasurePartition
 import LMMS04FairDivision.Theorem31Counting
 import LMMS04FairDivision.Theorem31QueryLowerBound
@@ -24,7 +24,7 @@ import LMMS04FairDivision.Theorem42Concentration
 
 open MeasureTheory
 open Filter
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 namespace LMMS04FairDivision
 
@@ -285,7 +285,7 @@ theorem paper_lmms_theorem_2_3_real_interval_supported_atom_bound
     (haggregate_support :
       (aggregateMeasure mu).real ((Set.Ioc a b)ᶜ) = 0) :
     ∃ H : Finset ℝ,
-      ∃ P : EconCSLib.Probability.RealIntervalPartition
+      ∃ P : AppliedModelingLib.Probability.RealIntervalPartition
         ((aggregateMeasure mu).restrict (H : Set ℝ)ᶜ) alpha a b,
         letI := P.instFintype
         letI := P.instDecidableEq
@@ -825,7 +825,7 @@ theorem paper_lmms_theorem_3_1_eventually_minimum_envy_lower_bound_from_twoBit_a
       ∀ n, Theorem31.QueryTranscript (Bool × Bool) (q n) →
         Allocation Theorem31.LMMS31Agent (SourceItem n))
     (hquery_ratio :
-      EconCSLib.Math.TendsToZero fun n =>
+      AppliedModelingLib.Math.TendsToZero fun n =>
         (((2 * q n : ℕ) : ℝ) / (Fintype.card (C n).Pair : ℝ)))
     (hpair_pos :
       ∀ᶠ n in atTop, 0 < Fintype.card (C n).Pair) :
@@ -861,7 +861,7 @@ theorem paper_lmms_theorem_3_1_eventually_minimum_envy_ratio_lower_bound_from_tw
       ∀ n, Theorem31.QueryTranscript (Bool × Bool) (q n) →
         Allocation Theorem31.LMMS31Agent (SourceItem n))
     (hquery_ratio :
-      EconCSLib.Math.TendsToZero fun n =>
+      AppliedModelingLib.Math.TendsToZero fun n =>
         (((2 * q n : ℕ) : ℝ) / (Fintype.card (C n).Pair : ℝ)))
     (hpair_pos :
       ∀ᶠ n in atTop, 0 < Fintype.card (C n).Pair) :
@@ -14132,7 +14132,7 @@ theorem paper_lmms_claim_3_4_exists_bounded_optimal_on_exact_nonempty_positive_g
   have hfeasible' : ∃ A : Allocation SourceAgent SourceItem, feasible A := by
     simpa [feasible] using hfeasible
   obtain ⟨A₀, hA₀_min⟩ :=
-    EconCSLib.Optimization.exists_isMinimizerOn_of_finite
+    AppliedModelingLib.Optimization.exists_isMinimizerOn_of_finite
       feasible ratioOf hfeasible'
   rcases hA₀_min.1 with ⟨hA₀_alloc, hA₀_nonempty⟩
   exact
@@ -26539,7 +26539,7 @@ theorem paper_lmms_theorem_3_3_external_source_auto_cap_ip_solver_obligation_con
         Feasible solver → complexityConsequence) :
     complexityConsequence := by
   let externalConsequence :
-      EconCSLib.Complexity.ExternalSolverConsequence Solver := {
+      AppliedModelingLib.Complexity.ExternalSolverConsequence Solver := {
     Solves := Solves
     Feasible := Feasible
     Consequence := complexityConsequence
@@ -39409,7 +39409,7 @@ def theorem33ExternalSolverSelectedPairFullSummarySourceOutputPackage
     (highGoods lowGoods : Finset SourceItem)
     (sourceValue : SourceItem → ℝ)
     (externalConsequence :
-      EconCSLib.Complexity.ExternalSolverConsequence Solver) : Prop :=
+      AppliedModelingLib.Complexity.ExternalSolverConsequence Solver) : Prop :=
   theorem33SolverAutoCapSelectedPairFullSummarySourceOutputPackage
       M L LR epsilon lambda optimalAlloc optimal cert highGoods lowGoods
       sourceValue ∧
@@ -39433,7 +39433,7 @@ theorem theorem33ExternalSolverSelectedPairFullSummarySourceOutputPayload
     {highGoods lowGoods : Finset SourceItem}
     {sourceValue : SourceItem → ℝ}
     {externalConsequence :
-      EconCSLib.Complexity.ExternalSolverConsequence Solver}
+      AppliedModelingLib.Complexity.ExternalSolverConsequence Solver}
     (hpackage :
       theorem33ExternalSolverSelectedPairFullSummarySourceOutputPackage
         M L LR epsilon lambda optimalAlloc optimal cert highGoods lowGoods
@@ -39461,7 +39461,7 @@ theorem theorem33ExternalSolverSelectedPairFullSummarySourceOutputConsequence
     {highGoods lowGoods : Finset SourceItem}
     {sourceValue : SourceItem → ℝ}
     {externalConsequence :
-      EconCSLib.Complexity.ExternalSolverConsequence Solver}
+      AppliedModelingLib.Complexity.ExternalSolverConsequence Solver}
     (hpackage :
       theorem33ExternalSolverSelectedPairFullSummarySourceOutputPackage
         M L LR epsilon lambda optimalAlloc optimal cert highGoods lowGoods
@@ -41678,7 +41678,7 @@ theorem paper_lmms_theorem_3_3_external_solver_consequence_and_selected_pair_ful
             (Theorem34.maxCommonLoad sourceValue A))
         (fun A i => A i) optimal)
     (externalConsequence :
-      EconCSLib.Complexity.ExternalSolverConsequence Solver)
+      AppliedModelingLib.Complexity.ExternalSolverConsequence Solver)
     (externalSolver : Solver)
     (hsolves : externalConsequence.Solves externalSolver)
     (hfeasible : externalConsequence.Feasible externalSolver)
@@ -41773,7 +41773,7 @@ theorem paper_lmms_theorem_3_3_external_solver_consequence_and_selected_pair_ful
             (Theorem34.maxCommonLoad sourceValue A))
         (fun A i => A i) optimal)
     (externalConsequence :
-      EconCSLib.Complexity.ExternalSolverConsequence Solver)
+      AppliedModelingLib.Complexity.ExternalSolverConsequence Solver)
     (externalSolver : Solver)
     (hsolves : externalConsequence.Solves externalSolver)
     (hfeasible : externalConsequence.Feasible externalSolver)
@@ -60644,7 +60644,7 @@ theorem paper_lmms_theorem_4_2_uniform_random_max_envy_probability_bound
     (hsum : ∀ p : Agent, ∑ g : Item, w p g = 1)
     (hbound : ∀ p : Agent, ∀ g : Item, w p g ≤ alpha) :
     1 - 2 * alpha * (Fintype.card Agent : ℝ) / t ^ 2 ≤
-      EconCSLib.pmfProb (Theorem42.lmms42UniformAssignmentLaw Agent Item)
+      AppliedModelingLib.pmfProb (Theorem42.lmms42UniformAssignmentLaw Agent Item)
         (fun assign : Item → Agent =>
           maxReportEnvy (Theorem42.lmms42AdditiveReport w)
             (Theorem42.lmms42AllocationOfAssignment assign) ≤ t) := by

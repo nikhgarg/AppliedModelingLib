@@ -23,17 +23,17 @@
 \node[dag_result, text width=4.0cm] (Thm1ii) at (7,-2.7)
   {\textbf{Theorem 1(ii)}\\perfect classifier has zero prior and aggregate-reference bias};
 \node[dag_result, text width=4.0cm] (Thm1iii) at (12.4,-2.7)
-  {\textbf{Theorem 1(iii)}\\argmax bias is bounded by MAE, tightly};
+  {\textbf{Theorem 1(iii)}\\MAE bound under standard event calibration; tightness witness proved};
 
 \node[dag_model, text width=5.4cm] (Objective) at (7,-6.2)
   {\textbf{Theorem 2 Setup}\\Equations (1)--(3), Bayes identity, and dataset-indexed $P_N^q$};
 
 \node[dag_result, text width=4.0cm] (Thm2i) at (1.6,-8.9)
-  {\textbf{Theorem 2(i)}\\joint rule optimizes $O_N^\gamma$};
+  {\textbf{Theorem 2(i)}\\joint rule optimizes $O_N^\gamma$ for $K\ge2$};
 \node[dag_result, text width=4.0cm] (Thm2ii) at (7,-8.9)
-  {\textbf{Theorem 2(ii)}\\argmax maximizes expected accuracy};
+  {\textbf{Theorem 2(ii)}\\argmax maximizes expected accuracy for $K\ge2$};
 \node[dag_result, text width=4.0cm] (Thm2iii) at (12.4,-8.9)
-  {\textbf{Theorem 2(iii)}\\exact $P_N^q$ expected-policy necessity endpoints};
+  {\textbf{Theorem 2(iii)}\\Pareto or weighted optimality ($0\le\gamma<1$) requires argmax agreement};
 
 \begin{scope}[on background layer]
 \node[draw=orange!70!black, fill=orange!5, rounded corners, inner sep=0.35cm,
@@ -58,10 +58,10 @@
 \draw[dag_arrow] (Objective.south) -- (Thm2iii.north);
 
 \node[dag_template_note, text width=14.2cm] (AuditNote) at (7,-12.1)
-  {\textbf{Audit note.} Plain formalized status, with no caveat. Lean closes Theorem 1(ii) from
-  positive joint support and lifts Theorem 2(iii) through the dataset-dependent $P_N^q$ reference.
-  The source phrase ``unless $\gamma=1$'' is recorded as overbroad wording; the Appendix-supported
-  and formalized clause is that a maximizer with $0\leq\gamma<1$ agrees with argmax almost surely.};
+  {\textbf{Scope.} Theorem 1(iii) uses the standard score-event calibration reading intended by its proof.
+  Theorem 2(i)--(ii) retain the source model's $K\ge2$ premise.
+  Theorem 2(iii)'s domination and weighted-objective comparisons are proved separately;
+  no generic equivalence between nondominance and weighted optimality is credited.};
 
 \end{scope}
 \end{dagPaperBody}

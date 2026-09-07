@@ -20,7 +20,7 @@ endpoint-complete source-form optimizer once an optimizer exists.
 No theorem in this file uses endpoint derivatives of arbitrary policy unions.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped ENNReal
 

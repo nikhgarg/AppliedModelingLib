@@ -2,7 +2,7 @@ import KR21Monoculture.MallowsSupport
 import KR21Monoculture.FiberSigns
 
 open scoped BigOperators
-open EconCSLib
+open AppliedModelingLib
 
 namespace KR21Monoculture
 
@@ -343,7 +343,7 @@ theorem candidateSumCertificate_of_centerPositiveCertificate
     {value : Candidate n → ℝ} (cert : C.CenterPositiveCertificate value) :
     C.CandidateSumCertificate value := by
   constructor
-  · apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  · apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
       (f := fun c : Candidate n =>
         firstChoiceMissProb C.algorithm.law c *
           firstChoiceGapMass C.algorithm.law value c)
@@ -352,7 +352,7 @@ theorem candidateSumCertificate_of_centerPositiveCertificate
         (C.algorithm_centerGapMass_pos_of_strictlyCenterOrdered cert.strictly_center_ordered)
     · intro c
       exact cert.algorithm_nonneg c
-  · apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  · apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
       (f := fun c : Candidate n =>
         firstChoiceMissProb C.human.law c *
           firstChoiceGapMass C.human.law value c)
@@ -361,7 +361,7 @@ theorem candidateSumCertificate_of_centerPositiveCertificate
         (C.human_centerGapMass_pos_of_strictlyCenterOrdered cert.strictly_center_ordered)
     · intro c
       exact cert.human_nonneg c
-  · apply EconCSLib.sum_univ_pos_of_pos_of_nonneg
+  · apply AppliedModelingLib.sum_univ_pos_of_pos_of_nonneg
       (f := fun c : Candidate n =>
         firstChoiceCollisionDiff C.algorithm.law C.human.law c *
           firstChoiceGapMass C.human.law value c)

@@ -15,13 +15,11 @@ from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[2]
-for import_root in (ROOT, ROOT / "scripts"):
-    import_root_text = str(import_root)
-    if import_root_text not in sys.path:
-        sys.path.insert(0, import_root_text)
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-import review_dashboard  # noqa: E402
-import seed_paper_coverage as seed  # noqa: E402
+from scripts import review_dashboard  # noqa: E402
+from scripts import seed_paper_coverage as seed  # noqa: E402
 
 
 class SeedPaperCoverageTests(unittest.TestCase):
@@ -225,6 +223,35 @@ class SeedPaperCoverageTests(unittest.TestCase):
                 )
             )
         self.assertIn("Source-map preflight blockers", stdout.getvalue())
+
+    def test_source_inventory_precheck_catches_raw_producer_context_shape(self) -> None:
+        map_path = self.paper / "audit" / "paper_statement_map.json"
+        payload = json.loads(map_path.read_text(encoding="utf-8"))
+        payload["items"]["sourceResult"]["semantic_context_requirements"] = [
+            {
+                "semantic_role": "model",
+                "source_location": "source.txt:1",
+                "source_anchor_evidence": [
+                    {
+                        "path": "source.txt",
+                        "line_start": 1,
+                        "line_end": 1,
+                        "quoted_text": "Theorem 1. A source result.",
+                        "quoted_text_sha256": hashlib.sha256(
+                            b"Theorem 1. A source result."
+                        ).hexdigest(),
+                    }
+                ],
+            }
+        ]
+        map_path.write_text(json.dumps(payload), encoding="utf-8")
+
+        errors = review_dashboard.paper_source_map_structural_errors(self.paper)
+
+        self.assertTrue(any(".kind must be" in error for error in errors))
+        self.assertTrue(any(".explanation must be" in error for error in errors))
+        summary = review_dashboard.source_inventory_precheck_summary(self.paper)
+        self.assertTrue(summary["pre_manifest_blocked"])
 
 
 if __name__ == "__main__":

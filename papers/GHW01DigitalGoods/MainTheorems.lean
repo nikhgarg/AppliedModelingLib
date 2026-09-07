@@ -11,12 +11,12 @@ Lean statements mostly live in the reusable auction library; this file
 re-exports the paper-facing definitions and final endpoints under the
 citation-specific namespace. The Theorem 9.3 source models are paper-local
 under `GHW01DigitalGoods.Theorem93`. Lower-level proof adapters remain in
-`EconCSLib.Auction`.
+`AppliedModelingLib.Auction`.
 -/
 
 namespace GHW01DigitalGoods
 
-export EconCSLib.Auction (
+export AppliedModelingLib.Auction (
   paper_digital_goods_revenue
   paper_digital_goods_revenue_eq
   paper_digital_goods_truthful

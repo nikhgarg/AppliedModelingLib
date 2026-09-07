@@ -12,7 +12,7 @@
 \dagPaperLegendRightOfMetadata{
 \node[dag_result, dag_template_legend] (legRes) at (0,0) {formalized\\result};
 \node[dag_lemma, dag_template_legend] (legLem) at (3.4,0) {formalized\\lemma};
-\node[dag_model, dag_template_legend] (legModel) at (6.8,0) {definition /\\model};
+\node[dag_model, right=0.35cm of legLem, dag_template_legend] (legModel) {definition /\\model};
 }
 \daglegend{(legRes)(legLem)(legModel)}{Legend}
 
@@ -38,7 +38,8 @@
 };
 \node[dag_result, text width=4.9cm] (Thm1) at (24.8,-1.0) {
   \textbf{Theorem 1}\\
-  Source-facing outer-$D$ payoff route
+  Strictly dominant shared algorithm;\\
+  all-human evaluation has higher welfare
 };
 
 \coordinate (DLayerBus) at (15.5,-3.45);
@@ -69,7 +70,8 @@
 };
 \node[dag_result, text width=4.9cm] (Thm2) at (24.8,-5.7) {
   \textbf{Theorem 2}\\
-  Three-candidate Gaussian/Laplace outer-$D$ target
+  Three-candidate Gaussian/Laplace outer-$D$ target\\
+  ordered support and defined payoff expectations
 };
 
 \draw[dag_arrow] (Thm5) -- (Def1);

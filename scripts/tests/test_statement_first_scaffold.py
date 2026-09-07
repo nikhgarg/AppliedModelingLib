@@ -14,8 +14,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from scripts import audit_evidence_integrity as AUDIT_EVIDENCE
-
+from scripts.current_closeout.protocol_selection import current_v11_protocol_selected
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location(
@@ -163,11 +162,12 @@ class StatementFirstScaffoldTests(unittest.TestCase):
             source_map["semantic_contract_policy"]["activation"],
         )
         activation = source_map["semantic_contract_policy"]["activation"]
-        self.assertIn("source_spec_correspondence_schema: 1", activation)
+        self.assertNotIn("source_spec_correspondence_schema: 1", activation)
+        self.assertIn("builder-issued Lean graph owns", activation)
         self.assertIn("proof and instance arguments", activation)
-        self.assertIn("Legacy v10 evidence remains readable", activation)
+        self.assertIn("current accepted obligation graph", activation)
 
-    def test_v11_requirement_is_pending_for_fresh_scaffold_and_blocks_closeout(
+    def test_v11_requirement_selects_graph_lane_without_legacy_correspondence(
         self,
     ) -> None:
         args = argparse.Namespace(
@@ -178,38 +178,17 @@ class StatementFirstScaffoldTests(unittest.TestCase):
         status = json.loads(NEW_PAPER.status_text(args, "EX00Example"))
         self.assertEqual(status["status"], "not started")
         self.assertEqual(status["repository_visibility"], "private_only")
-        self.assertIs(status["intake_freeze_required"], True)
-        self.assertTrue(status["review_surface"]["require_source_spec_correspondence"])
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            paper = Path(temp_dir) / "EX00Example"
-            audit = paper / "audit"
-            audit.mkdir(parents=True)
-            (paper / "status.json").write_text(json.dumps(status), encoding="utf-8")
-            (audit / "paper_statement_map.json").write_text(
-                json.dumps({"schema": 1, "items": {}}), encoding="utf-8"
-            )
-
-            self.assertEqual(
-                AUDIT_EVIDENCE.source_spec_correspondence_inventory_findings(
-                    paper, "not started"
-                ),
-                [],
-            )
-
-            status["status"] = "formalized"
-            (paper / "status.json").write_text(json.dumps(status), encoding="utf-8")
-            findings = AUDIT_EVIDENCE.source_spec_correspondence_inventory_findings(
-                paper, "formalized"
-            )
-            self.assertTrue(
-                any(
-                    "require_source_spec_correspondence: true requires "
-                    "source_spec_correspondence_schema" in finding.message
-                    for finding in findings
-                ),
-                findings,
-            )
+        self.assertIs(status["source_inventory_review_required"], True)
+        self.assertNotIn("intake_freeze_required", status)
+        self.assertTrue(
+            status["review_surface"]["require_v11_raw_source_spec_screening"]
+        )
+        self.assertNotIn(
+            "require_source_spec_correspondence", status["review_surface"]
+        )
+        source_map = {"schema": 1, "items": {}}
+        self.assertTrue(current_v11_protocol_selected(status, source_map))
+        self.assertNotIn("source_spec_correspondence_schema", source_map)
 
     def test_main_copies_verified_artifact_to_stable_paper_local_path(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -219,12 +198,6 @@ class StatementFirstScaffoldTests(unittest.TestCase):
             papers.mkdir()
             template_dir = papers / "TEMPLATE"
             template_dir.mkdir()
-            (template_dir / "FINAL_VALIDATION_REPORT.md").write_text(
-                (ROOT / "papers" / "TEMPLATE" / "FINAL_VALIDATION_REPORT.md").read_text(
-                    encoding="utf-8"
-                ),
-                encoding="utf-8",
-            )
             spec_path, artifact_bytes = self.write_spec(root)
             args = argparse.Namespace(
                 url="https://example.test/paper.pdf",
@@ -264,18 +237,28 @@ class StatementFirstScaffoldTests(unittest.TestCase):
                 source_map["source_artifact_path"],
                 "papers/EX00Example/source-audited.txt",
             )
-            intake = json.loads(
-                (paper / "audit" / "intake_freeze.json").read_text(encoding="utf-8")
+            review_config = json.loads(
+                (
+                    paper / "audit" / "v11_source_map_preparation_config.json"
+                ).read_text(encoding="utf-8")
             )
-            self.assertEqual(intake["state"], "draft")
-            self.assertFalse(intake["inventory_complete"])
+            self.assertFalse(
+                review_config["source_named_result_inventory_review"]["complete"]
+            )
             self.assertEqual(
-                intake["source_artifact_path"],
-                "papers/EX00Example/source-audited.txt",
+                review_config["include_specs"], ["theorem2_reflexiveSpec"]
             )
-            self.assertEqual(intake["items"][0]["owner"], "unassigned")
-            self.assertEqual(intake["items"][0]["source_atoms"], [])
-            self.assertIsNone(intake["source_text_artifact"])
+            self.assertEqual(
+                review_config["source_item_for_spec"],
+                {"theorem2_reflexiveSpec": "theorem2_reflexive"},
+            )
+            self.assertEqual(
+                review_config["source_named_result_inventory_review"][
+                    "candidate_presentations"
+                ],
+                [],
+            )
+            self.assertFalse((paper / "audit" / "intake_freeze.json").exists())
             proof_fidelity = json.loads(
                 (paper / "audit" / "source_proof_fidelity.json").read_text(
                     encoding="utf-8"
@@ -321,16 +304,25 @@ class StatementFirstScaffoldTests(unittest.TestCase):
                 status["review_surface"]["proposition_spec_proofs"],
                 {"theorem2_reflexiveSpec": "theorem2_reflexive"},
             )
+            self.assertEqual(
+                status["review_surface"]["proof_module"],
+                "EX00Example.ProofInterface",
+            )
+            self.assertEqual(
+                status["review_surface"]["proof_file"],
+                "papers/EX00Example/ProofInterface.lean",
+            )
             review = status["review_surface"]["source_proof_fidelity_review"]
             self.assertEqual(
                 review["ledger_file"],
                 "papers/EX00Example/audit/source_proof_fidelity.json",
             )
             self.assertEqual(
-                status["review_surface"]["llm_paper_coverage_review"][
-                    "defect_support_judgment_file"
-                ],
+                status["artifacts"]["defect_support_match"],
                 "papers/EX00Example/audit/defect_support_match_llm.json",
+            )
+            self.assertNotIn(
+                "llm_paper_coverage_review", status["review_surface"]
             )
             self.assertTrue(
                 status["review_surface"]["llm_statement_review"][
@@ -344,7 +336,7 @@ class StatementFirstScaffoldTests(unittest.TestCase):
                 "v1",
             )
             self.assertTrue(
-                status["review_surface"]["require_source_spec_correspondence"]
+                status["review_surface"]["require_v11_raw_source_spec_screening"]
             )
             route_policy = status["review_surface"]["llm_statement_review"]["policy"]
             self.assertIn("exact equivalent paper-facing endpoint", route_policy)
@@ -359,6 +351,22 @@ class StatementFirstScaffoldTests(unittest.TestCase):
                 set(model_review["required_dimensions"]),
                 set(NEW_PAPER.SEMANTIC_MODEL_DIMENSION_ORDER),
             )
+            self.assertNotIn("llm_source_record_review", status["review_surface"])
+            self.assertNotIn(
+                "lean_to_tex_file",
+                status["review_surface"]["llm_statement_review"],
+            )
+            self.assertNotIn(
+                "match_judgment_file",
+                status["review_surface"]["llm_statement_review"],
+            )
+            self.assertFalse((paper / "audit" / "lean_to_tex_llm.json").exists())
+            self.assertFalse((paper / "audit" / "statement_match_llm.json").exists())
+            self.assertFalse((paper / "audit" / "review_surface_llm.json").exists())
+            self.assertFalse((paper / "audit" / "paper_coverage_llm.json").exists())
+            self.assertFalse(
+                (paper / "audit" / "source_record_match_llm.json").exists()
+            )
             self.assertFalse((paper / "source.pdf").exists())
             readme = (paper / "README.md").read_text(encoding="utf-8")
             self.assertTrue(
@@ -367,6 +375,15 @@ class StatementFirstScaffoldTests(unittest.TestCase):
             notes = paper / "docs" / "FORMALIZATION_NOTES.md"
             self.assertTrue(notes.is_file())
             self.assertIn("## Paper-Facing Ledger", notes.read_text(encoding="utf-8"))
+            working_memo = paper / "docs" / "FORMALIZATION_WORKING_MEMO.md"
+            self.assertTrue(working_memo.is_file())
+            self.assertIn(
+                "working lead log, not audit evidence",
+                working_memo.read_text(encoding="utf-8"),
+            )
+            self.assertFalse((paper / "FINAL_VALIDATION_REPORT.md").exists())
+            self.assertFalse((paper / "docs" / "DependencyDAG.tex").exists())
+            self.assertFalse((paper / "docs" / "DependencyDAG.pdf").exists())
             status_check = subprocess.run(
                 [
                     sys.executable,
@@ -388,7 +405,7 @@ class StatementFirstScaffoldTests(unittest.TestCase):
                 status_check.stderr or status_check.stdout,
             )
 
-    def test_main_records_pdf_text_receipt_before_writing_intake_freeze(self) -> None:
+    def test_main_keeps_pdf_extraction_outside_the_intake_authority(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             self.install_status_sync_fixture(root)
@@ -396,12 +413,6 @@ class StatementFirstScaffoldTests(unittest.TestCase):
             papers.mkdir()
             template_dir = papers / "TEMPLATE"
             template_dir.mkdir()
-            (template_dir / "FINAL_VALIDATION_REPORT.md").write_text(
-                (ROOT / "papers" / "TEMPLATE" / "FINAL_VALIDATION_REPORT.md").read_text(
-                    encoding="utf-8"
-                ),
-                encoding="utf-8",
-            )
             pdf_bytes = b"%PDF-1.7 fixture"
             spec_path, _ = self.write_spec(
                 root,
@@ -438,53 +449,18 @@ class StatementFirstScaffoldTests(unittest.TestCase):
                 self.assertEqual(NEW_PAPER.main(), 0)
 
             paper = papers / "EX00Example"
-            intake = json.loads(
-                (paper / "audit" / "intake_freeze.json").read_text(encoding="utf-8")
-            )
-            receipt = intake["source_text_artifact"]
-            normalized = b"Theorem 2.\nFor every n, n equals itself.\n"
-            self.assertEqual((paper / "source.txt").read_bytes(), normalized)
-            self.assertEqual(receipt["sha256"], hashlib.sha256(normalized).hexdigest())
-            self.assertEqual(
-                receipt["extraction"]["source_artifact_path"],
-                "papers/EX00Example/source-audited.pdf",
+            review_config = json.loads(
+                (
+                    paper / "audit" / "v11_source_map_preparation_config.json"
+                ).read_text(encoding="utf-8")
             )
             self.assertEqual(
-                receipt["extraction"]["source_artifact_sha256"],
-                hashlib.sha256(pdf_bytes).hexdigest(),
+                (paper / "source.txt").read_bytes(),
+                b"Theorem 2.\r\nFor every n, n equals itself.\r",
             )
-
-    def test_pdf_text_receipt_is_normalized_and_bound_to_exact_source(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            root = Path(temp_dir)
-            paper = root / "papers" / "EX00Example"
-            paper.mkdir(parents=True)
-            source_text = paper / "source.txt"
-            source_text.write_bytes(b"first\r\nsecond\rlast\n")
-            source_digest = "a" * 64
-            with mock.patch.object(NEW_PAPER, "ROOT", root):
-                receipt = NEW_PAPER.normalized_source_text_receipt(
-                    source_text,
-                    source_artifact_path="papers/EX00Example/source-audited.pdf",
-                    source_artifact_sha256=source_digest,
-                )
-
-            self.assertIsNotNone(receipt)
-            assert receipt is not None
-            normalized = b"first\nsecond\nlast\n"
-            self.assertEqual(source_text.read_bytes(), normalized)
-            self.assertEqual(receipt["path"], "papers/EX00Example/source.txt")
-            self.assertEqual(receipt["sha256"], hashlib.sha256(normalized).hexdigest())
-            self.assertEqual(receipt["normalization"], "utf8-lf-v1")
-            self.assertEqual(
-                receipt["extraction"],
-                {
-                    "schema": 1,
-                    "source_artifact_path": ("papers/EX00Example/source-audited.pdf"),
-                    "source_artifact_sha256": source_digest,
-                    "tool": "pdftotext",
-                    "options": [],
-                },
+            self.assertFalse((paper / "audit" / "intake_freeze.json").exists())
+            self.assertFalse(
+                review_config["source_named_result_inventory_review"]["complete"]
             )
 
     def test_spec_rejects_hash_mismatch_vague_locator_and_definition_kind(self) -> None:
@@ -591,7 +567,7 @@ class StatementFirstScaffoldTests(unittest.TestCase):
             source_statement="Every position environment equals itself.",
             lean_name="theorem3_environment_reflexive",
             lean_type=(
-                "(environment : EconCSLib.Auction.PositionEnvironment Unit) -> "
+                "(environment : AppliedModelingLib.Auction.PositionEnvironment Unit) -> "
                 "environment = environment"
             ),
         )
@@ -603,6 +579,9 @@ class StatementFirstScaffoldTests(unittest.TestCase):
         )
         NEW_PAPER.validate_rendered_statement_interface(
             "EX00Example", [target], rendered
+        )
+        NEW_PAPER.validate_rendered_proof_interface(
+            "EX00Example", [target], proof_rendered
         )
 
     def test_statement_first_pair_preserves_lemma_kind(self) -> None:
@@ -636,31 +615,36 @@ class StatementFirstScaffoldTests(unittest.TestCase):
             "EX00Example", [target], proof_rendered
         )
 
-    def test_plan_records_manifest_freeze_and_v10_fidelity_review(self) -> None:
+    def test_plan_records_current_semantic_identity_and_planner_owned_closeout(
+        self,
+    ) -> None:
         plan = NEW_PAPER.formalization_plan_text("Example", "EX00Example")
         self.assertIn("## Audited Statement Skeleton", plan)
-        self.assertIn("v10 declaration-manifest SHA-256", plan)
+        self.assertIn("Lean semantic identity", plan)
         self.assertIn("numeric and discrete obligation partitions", plan)
         self.assertNotIn("v7 statement", plan)
         self.assertIn("`by sorry`", plan)
         self.assertIn("`<name>Spec : Prop`", plan)
         self.assertIn("`semantic_contract_template`", plan)
-        self.assertIn("v11 source-to-Spec correspondence", plan)
+        self.assertIn("current source-to-Spec correspondence", plan)
         self.assertIn("proof and instance arguments", plan)
-        self.assertIn("Legacy v10 evidence remains", plan)
+        self.assertIn("current accepted obligation graph", plan)
+        self.assertNotIn("Legacy v10 evidence", plan)
         self.assertIn(
             "Signature changes after a `matches` verdict invalidate the row", plan
         )
         self.assertIn("source_model_convention", plan)
         self.assertIn("defect_or_remark_support", plan)
         self.assertIn("proof_support", plan)
-        self.assertIn("## Intake Freeze Boundary", plan)
-        self.assertIn("--bootstrap-current", plan)
+        self.assertIn("## Reviewed Source Inventory Boundary", plan)
+        self.assertNotIn("--bootstrap-current", plan)
+        self.assertIn("single `closeout_review_policy`", plan)
+        self.assertIn("source_region_partition", plan)
         self.assertIn("run_paper_closeout.py", plan)
         self.assertIn("Do not invoke", plan)
         self.assertLess(
-            plan.index("Freeze closeout presentation inputs"),
             plan.index("Closeout readiness:"),
+            plan.index("terminal closeout documents"),
         )
         self.assertIn("exact current compiled cache skips a redundant", plan)
         self.assertIn("--source-inventory-check", plan)
@@ -671,106 +655,27 @@ class StatementFirstScaffoldTests(unittest.TestCase):
             plan,
         )
         future_intake = json.loads(
-            NEW_PAPER.intake_freeze_text("EX00Example", None, "")
+            NEW_PAPER.source_inventory_review_config_text(
+                "EX00Example", None, "EX00Example"
+            )
         )
-        self.assertEqual(future_intake["state"], "draft")
-        self.assertEqual(future_intake["items"], [])
-        sidecar = json.loads(NEW_PAPER.statement_match_llm_text("EX00Example"))
+        self.assertFalse(
+            future_intake["source_named_result_inventory_review"]["complete"]
+        )
+        self.assertEqual(future_intake["include_specs"], [])
         self.assertEqual(
-            sidecar["prompt_version"],
-            "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
-        )
-        summary = "\n".join(sidecar["prompt_summary"])
-        self.assertIn("self_characterizing", summary)
-        self.assertIn("semantic worlds", summary)
-        self.assertIn("polynomial time", summary)
-        self.assertIn("Natural floor division", summary)
-        self.assertIn("immediate list successor", summary.lower())
-        self.assertIn("source output arity/shape", summary)
-        self.assertIn("nonvacuity", summary)
-        self.assertIn("coherent realization", summary)
-        self.assertIn("nonempty realized fibers", summary)
-        self.assertIn("input domains, state transitions, termination", summary)
-        self.assertIn("numeric representation", summary)
-        self.assertIn("advertised global claim", summary)
-        self.assertIn("source_definition_semantics_review", summary)
-        self.assertIn("outside the source domain", summary)
-        self.assertNotIn("turnout-dependent quota", summary)
-        schema = sidecar["semantic_scope_review_schema"]
-        self.assertIn("fixed_profile", schema["profile_quantification_values"])
-        self.assertIn("all_profiles", schema["profile_quantification_values"])
-        self.assertIn("noncomputable_existence", schema["lean_claim_level_values"])
-        self.assertIn("preserves_result", schema["world_bridge_relation_values"])
-        self.assertIn("numeric_semantics_review", schema["required"])
-        self.assertIn("discrete_semantics_review", schema["required"])
-        self.assertIn("fidelity_risk_review", schema["required"])
-        self.assertIn(
-            "source_definition_semantics_review_required_when",
-            schema,
-        )
-        self.assertIn(
-            "source_outside_domain_behavior",
-            schema["source_definition_semantics_review_required"],
-        )
-        self.assertIn(
-            "properties_reviewed",
-            schema["source_definition_advertised_property_status_values"],
-        )
-        self.assertIn(
-            "recursive_expansion_complete",
-            schema["named_definition_item_required"],
-        )
-        self.assertIn(
-            "lean_obligation_ids",
-            schema["named_definition_item_required"],
-        )
-        self.assertIn(
-            "witness_specific_equivalent",
-            schema["numeric_semantics_relation_values"],
-        )
-        self.assertIn(
-            "source_zero_denominator",
-            schema["numeric_semantics_item_required"],
-        )
-        self.assertIn(
-            "source_order_sensitivity",
-            schema["discrete_semantics_item_required"],
-        )
-        risk_schema = sidecar["fidelity_risk_review_schema"]
-        self.assertEqual(
-            risk_schema["version"],
-            NEW_PAPER.FIDELITY_RISK_REVIEW_VERSION,
+            future_intake["closeout_review_policy"]["source_scope"],
+            "all_named_theory",
         )
         self.assertEqual(
-            set(risk_schema["required_dimensions"]),
-            NEW_PAPER.FIDELITY_RISK_DIMENSIONS,
+            future_intake["closeout_review_policy"]["repeat_final_scope"],
+            "main_primary",
         )
-        self.assertIn("surjectivity", risk_schema["surjectivity_rule"])
-        self.assertIn("local transition", risk_schema["algorithmic_rule"])
-        self.assertIn("global bridge", risk_schema["algorithmic_rule"])
-        self.assertIn(
-            "source_termination_scope",
-            risk_schema["execution_claim_scope_fields"],
+        self.assertFalse(
+            future_intake["source_named_result_inventory_review"][
+                "source_region_partition"
+            ]["complete"]
         )
-        self.assertIn(
-            "source_state_transition_scope",
-            risk_schema["execution_claim_scope_fields"],
-        )
-        self.assertNotIn(
-            "source_seat_termination_scope",
-            risk_schema["execution_claim_scope_fields"],
-        )
-        self.assertIn(
-            "v2 records remain valid", risk_schema["legacy_compatibility_rule"]
-        )
-        self.assertIn("function names", risk_schema["name_independence_rule"])
-        self.assertIn("exact equivalent paper-facing endpoint", summary)
-        self.assertIn("source_model_convention", summary)
-        self.assertIn("defect_or_remark_support", summary)
-        self.assertIn("proof_support", summary)
-        self.assertIn("corrected_source_statement", summary)
-        self.assertIn("approved_corrected_target", summary)
-        self.assertIn("archival_equivalence_claimed=false", summary)
 
     def test_rendered_scaffold_includes_resumable_workflow_guidance(
         self,
@@ -807,85 +712,13 @@ class StatementFirstScaffoldTests(unittest.TestCase):
         self.assertIn("private draft", rendered["paper interface"])
         self.assertIn("handoff", rendered["working notes"])
         self.assertIn(".review_traces", rendered["planning document"])
-        self.assertIn("Legacy v10 evidence", rendered["planning document"])
-
-    def test_source_record_scaffold_uses_semantic_result_component_prompt(self) -> None:
-        sidecar = json.loads(NEW_PAPER.source_record_match_llm_text("EX00Example"))
-        self.assertEqual(
-            sidecar["prompt_version"],
-            "source-record-v10-semantic-conclusion-boundary-contract",
-        )
-        self.assertEqual(
-            sidecar["source_record_policy_version"],
-            NEW_PAPER.SOURCE_RECORD_PROMPT_VERSION,
-        )
-        summary = "\n".join(sidecar["prompt_summary"])
-        self.assertIn("literal legal action space", summary)
-        self.assertIn("noncomputable finite selector", summary)
-        self.assertIn("logically composing the advertised feasibility", summary)
-        self.assertIn("conclusion-bearing proof debt", summary)
-        self.assertIn("self-characterizing", summary)
-        self.assertIn("distinct semantic worlds", summary)
-        self.assertIn("fixed-profile", summary)
-        self.assertIn("source output arity/shape", summary)
-        self.assertIn("duplicate interactions", summary)
-        self.assertIn("one coherent witness", summary)
-        self.assertIn("nonempty realized fibers", summary)
-        self.assertIn("source/Lean input scope", summary)
-        self.assertIn("state transitions, termination", summary)
-        self.assertIn("local-to-global bridge basis", summary)
-        self.assertNotIn("fixed-quota/mismatched-seat-stopping/one-round", summary)
-        self.assertIn("semantic_model_comparison", summary)
-        self.assertIn("semantic_model_dimensions", summary)
-        self.assertIn("endpoint-support", summary)
-        self.assertIn("iid/product", summary)
-        self.assertIn("WithTop", summary)
-
-    def test_coverage_scaffold_requires_proof_declarations_and_defect_quarantine(
-        self,
-    ) -> None:
-        sidecar = json.loads(
-            NEW_PAPER.paper_coverage_llm_text(
-                "EX00Example",
-                source_artifact_path="papers/EX00Example/source-audited.txt",
-                source_artifact_sha256="a" * 64,
-            )
-        )
-        self.assertEqual(
-            sidecar["prompt_version"],
-            "paper-coverage-v6-verbatim-source-anchor-proof-row-signature-pins",
-        )
-        self.assertEqual(
-            sidecar["source_artifact_path"],
-            "papers/EX00Example/source-audited.txt",
-        )
-        self.assertEqual(sidecar["source_artifact_sha256"], "a" * 64)
-        summary = "\n".join(sidecar["prompt_summary"])
-        self.assertIn("def/abbrev", summary)
-        self.assertIn("quarantined_source_defect", summary)
-        self.assertIn("counterexample or refutation", summary)
-        self.assertIn("defect_support_match_llm.json", summary)
-        self.assertIn("review_row_signature_sha256", summary)
         self.assertIn(
-            "review_row_signature_sha256",
-            sidecar["item_schema"]["direct_coverage_required"],
+            "current accepted obligation graph", rendered["planning document"]
         )
-        self.assertIn("corrected_source_statement", summary)
-        self.assertIn("covered_corrected_target", summary)
-        self.assertIn("approved_corrected_target", summary)
-        self.assertIn("archival_equivalence_claimed=false", summary)
-
-        defect_sidecar = json.loads(
-            NEW_PAPER.defect_support_match_llm_text("EX00Example")
+        self.assertIn(
+            "FINAL_ADVERSARIAL_REVIEW_PANEL.json", rendered["README"]
         )
-        self.assertEqual(
-            defect_sidecar["prompt_version"],
-            "defect-support-v1-exact-source-defect-to-lean-semantic",
-        )
-        self.assertIn("source_defect_sha256", defect_sidecar["item_schema"]["required"])
-        defect_prompt = "\n".join(defect_sidecar["prompt_summary"])
-        self.assertIn("every elaborated signature atom", defect_prompt)
-        self.assertIn("Reject True", defect_prompt)
+        self.assertNotIn("Legacy v10 evidence", rendered["planning document"])
 
     def test_no_spec_cli_rejects_path_namespace_and_comment_injection(self) -> None:
         base = {

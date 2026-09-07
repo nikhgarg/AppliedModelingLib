@@ -17,7 +17,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib EconCSLib.Probability MeasureTheory ProbabilityTheory
+open AppliedModelingLib AppliedModelingLib.Probability MeasureTheory ProbabilityTheory
 
 /-- If literal access and no-access outputs satisfy their respective PBO
 semantics, the PBO policy is neither observably fair (outside null base

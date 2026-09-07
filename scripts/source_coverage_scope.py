@@ -22,6 +22,7 @@ try:
         SOURCE_PRESENTATION_RECONCILIATION_FIELD,
         extract_named_result_presentations,
         reconcile_named_result_presentations,
+        reviewed_source_presentation_inventory,
         source_text_uses_conditional_antecedent_subpart_selection,
     )
 except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
@@ -29,6 +30,7 @@ except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
         SOURCE_PRESENTATION_RECONCILIATION_FIELD,
         extract_named_result_presentations,
         reconcile_named_result_presentations,
+        reviewed_source_presentation_inventory,
         source_text_uses_conditional_antecedent_subpart_selection,
     )
 
@@ -55,6 +57,17 @@ except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
         formalization_protocol_digest,
     )
 
+try:
+    from corrected_target_identity import (
+        corrected_target_historical_record_projection,
+        corrected_target_record_projection,
+    )
+except ModuleNotFoundError:  # pragma: no cover - supports module-style imports.
+    from scripts.corrected_target_identity import (
+        corrected_target_historical_record_projection,
+        corrected_target_record_projection,
+    )
+
 
 _COVERAGE_PROTOCOL = coverage_protocol()
 _NORMAL_COVERAGE_PROTOCOL = _COVERAGE_PROTOCOL["normal_mode"]
@@ -62,13 +75,19 @@ _DEEP_COVERAGE_PROTOCOL = _COVERAGE_PROTOCOL["deep_mode"]
 NAMED_THEORETICAL_STATEMENTS = _NORMAL_COVERAGE_PROTOCOL["id"]
 DEEP_PAPER_WITH_ALL_PROSE_CLAIMS = _DEEP_COVERAGE_PROTOCOL["id"]
 DEFAULT_SOURCE_COVERAGE_MODE = _COVERAGE_PROTOCOL["default_mode"]
-# Schema 5 removes the direct source-map bookkeeping field ``source_status``
-# from a per-item semantic identity.  Keep the predecessor explicit: an
-# administrative-projection receipt may prove a one-time schema-4 -> schema-5
-# transport, but ordinary freshness never treats the two schemas as equal.
-SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA = 5
+# Schema 6 removes direct ``source_defect_ids`` cross-references from the
+# source-to-Lean coverage identity.  The dedicated source-proof-fidelity gate
+# owns those links and still validates every repaired defect against its exact
+# Lean-checked semantic contract.  Schema 5 remains directly readable because
+# this is one canonical identity-schema transition, not an engine-pair bridge.
+SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA = 6
+PREVIOUS_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA = 5
 LEGACY_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA = 4
-SOURCE_MAP_CACHE_SEMANTIC_DIGEST_SCHEMA = 2
+# The aggregate raw-cache projection makes the same ownership correction.
+# Existing raw receipts remain reviewable through the current semantic graph;
+# this cache digest is only a fast path and is never acceptance authority.
+SOURCE_MAP_CACHE_SEMANTIC_DIGEST_SCHEMA = 3
+PREVIOUS_SOURCE_MAP_CACHE_SEMANTIC_DIGEST_SCHEMA = 2
 LEGACY_SOURCE_MAP_CACHE_SEMANTIC_DIGEST_SCHEMA = 1
 # The strict source-to-Spec lane owns these receipt fields.  They are refreshed
 # from Lean only after it has revalidated the already-reviewed atom bindings
@@ -98,6 +117,60 @@ CORRECTED_SOURCE_STATEMENT_STATUS = "corrected_source_statement"
 USER_APPROVED_SCOPE_EXCLUSION_KEY = "user_approved_scope_exclusion"
 SOURCE_PRESENTATION_ALIAS_FIELD = "source_presentation_alias"
 SOURCE_PRESENTATION_ALIAS_SCHEMA = 1
+
+
+def explicit_raw_source_spec_screening_requested(
+    status_payload: object,
+    source_map_payload: object | None = None,
+) -> bool:
+    """Recognize every explicit spelling of the strict v11 review lane.
+
+    Source-to-Spec correspondence, direct raw-source screening, and the
+    predecessor theorem-realization switch all select the same semantic
+    protocol. Consumers must not key their behavior to only one spelling or a
+    paper can pass the accepting gate while its planner, packet, or report
+    falls back to legacy work.
+    """
+
+    if isinstance(source_map_payload, Mapping):
+        schema = source_map_payload.get("source_spec_correspondence_schema")
+        if (
+            isinstance(schema, int)
+            and not isinstance(schema, bool)
+            and schema == _SOURCE_RECORD_CORRESPONDENCE_SCHEMA
+        ):
+            return True
+    if not isinstance(status_payload, Mapping):
+        return False
+    review_surface = status_payload.get("review_surface")
+    if not isinstance(review_surface, Mapping):
+        return False
+    if (
+        review_surface.get("require_source_spec_correspondence") is True
+        or review_surface.get("require_v11_raw_source_spec_screening") is True
+    ):
+        return True
+    statement_review = review_surface.get("llm_statement_review")
+    if not isinstance(statement_review, Mapping):
+        return False
+    # This historical explicit opt-in selects the current lane; it does not
+    # authorize reuse of a judgment issued under the older prompt contract.
+    if str(statement_review.get("required_prompt_version") or "").strip() == (
+        "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-"
+        "claim-atoms-v3"
+    ):
+        return True
+    realization_schema = statement_review.get(
+        "require_theorem_realization_contract_schema"
+    )
+    return bool(
+        statement_review.get("require_theorem_realization_contract") is True
+        or (
+            isinstance(realization_schema, int)
+            and not isinstance(realization_schema, bool)
+            and realization_schema == 1
+        )
+    )
 SOURCE_PRESENTATION_ALIAS_RELATION = "repeated_source_presentation"
 SOURCE_PRESENTATION_ALIAS_LABEL_RELATION_FIELD = "label_relation"
 SOURCE_PRESENTATION_ALIAS_SAME_VISIBLE_LABEL = "same_visible_label"
@@ -158,6 +231,9 @@ VALID_SOURCE_PRESENTATION_ALIAS_LABEL_RELATIONS = frozenset(
 )
 SOURCE_DECLARED_OPEN_NONRESULT_OBSERVATION = (
     "source_declared_open_nonresult_observation"
+)
+SOURCE_RESOLVED_WITHIN_PAPER_OBSERVATION = (
+    "source_resolved_within_paper_observation"
 )
 VALID_SOURCE_COVERAGE_MODES = frozenset(
     {NAMED_THEORETICAL_STATEMENTS, DEEP_PAPER_WITH_ALL_PROSE_CLAIMS}
@@ -258,6 +334,13 @@ DEEP_ONLY_SOURCE_KINDS = frozenset(
         "empirical_observation",
         "computational_observation",
         "implementation_measurement",
+        # Unnumbered source-model exposition and an explicitly constructed
+        # model carrier may support selected claims without themselves being
+        # a separate named paper result.  A selected mathematical use must be
+        # represented by a typed source-to-Lean route, not inferred from these
+        # inventory labels.
+        "model_context",
+        "model_construction",
     }
 )
 NAMED_OPEN_SOURCE_KINDS = frozenset({"open_problem"})
@@ -371,6 +454,10 @@ _SOURCE_ITEM_NAVIGATION_ONLY_FIELDS = frozenset(
         "start_line",
         "end_line",
         "source_item",
+        # Dashboard normalization carries the map key for navigation. The key
+        # is not source content and must not make an otherwise identical source
+        # claim receive a new semantic identity after a rename.
+        "source_item_key",
         # A component's parent map key is a lookup handle. The component's
         # clause, exact source anchors, and structural partition pins carry
         # its semantic identity across a parent-key rename.
@@ -404,6 +491,13 @@ _SOURCE_ITEM_ADMINISTRATIVE_METADATA_FIELDS = frozenset(
         "source_kind_human_approved",
         "source_kind_human_reviewer",
         "source_kind_human_reviewed_at",
+        # Source-proof fidelity owns these cross-references and validates that
+        # every repaired defect reaches an exact Lean-checked semantic
+        # contract. Adding or renaming that bookkeeping link does not change
+        # the source presentation or its source-to-Lean coverage judgment.
+        # Corrected targets retain their governing defect identities inside
+        # the separately preserved `corrected_target` payload.
+        "source_defect_ids",
         # A byte-validated reconciliation core controls only the named-result
         # closeout consumer. It is not a source statement, premise, route, or
         # source-record semantic input; its dedicated validator remains
@@ -421,7 +515,13 @@ _SOURCE_NAMED_RESULT_INVENTORY_REVIEW_AUDIT_ONLY_FIELDS = frozenset(
         "validated_at",
         "source_artifact_sha256",
         "discovered_named_result_sha256",
+        "discovered_candidate_presentation_sha256",
         SOURCE_PROSE_DEFINITION_PRESENTATIONS_SHA256_FIELD,
+        # The policy-aware closeout owner binds this complete partition in
+        # source assurance and terminal review material. It classifies review
+        # intensity but does not change an exact source item's mathematical
+        # source-to-Lean judgment.
+        "source_region_partition",
     }
 )
 SOURCE_STATUS_POLICY_SCHEMA = 1
@@ -526,8 +626,37 @@ def source_item_effective_route_policy(
         source_status == QUARANTINED_SOURCE_DEFECT_STATUS
     )
     is_support_only = source_status == SUPPORT_ONLY_SOURCE_STATUS
+    is_source_declared_open_nonresult = bool(
+        source_kind == "open_problem"
+        and source_item.get("claim_bearing") is False
+        and str(source_item.get("source_scope_classification") or "")
+        .strip()
+        .lower()
+        == SOURCE_DECLARED_OPEN_NONRESULT_OBSERVATION
+        and str(source_item.get("coverage_status") or "").strip().lower()
+        == "source_declared_open"
+        and str(source_item.get("protocol_role") or "").strip().lower()
+        == "source_declared_open"
+    )
+    is_source_resolved_within_paper = bool(
+        source_kind == "open_problem"
+        and source_item.get("claim_bearing") is False
+        and str(source_item.get("source_scope_classification") or "")
+        .strip()
+        .lower()
+        == SOURCE_RESOLVED_WITHIN_PAPER_OBSERVATION
+        and str(source_item.get("coverage_status") or "").strip().lower()
+        == "subsumed_by_selected_result"
+        and str(source_item.get("protocol_role") or "").strip().lower()
+        == "subsumed_by_selected_result"
+        and bool(str(source_item.get("subsumed_by_source_item") or "").strip())
+    )
     blocks_ordinary_result_route = (
-        is_model_convention or is_quarantined_source_defect or is_support_only
+        is_model_convention
+        or is_quarantined_source_defect
+        or is_support_only
+        or is_source_declared_open_nonresult
+        or is_source_resolved_within_paper
     )
     external_support_only_vocabulary = (
         is_support_only
@@ -543,7 +672,11 @@ def source_item_effective_route_policy(
         "allows_source_component_route": not blocks_ordinary_result_route,
         "allows_source_model_convention_route": is_model_convention,
         "allows_defect_or_remark_support_route": (
-            is_quarantined_source_defect or is_support_only or source_kind == "remark"
+            is_quarantined_source_defect
+            or is_support_only
+            or is_source_declared_open_nonresult
+            or is_source_resolved_within_paper
+            or source_kind == "remark"
         ),
         "direct_source_endpoint_required": (
             source_kind in SOURCE_DIRECT_ENDPOINT_KINDS
@@ -552,6 +685,8 @@ def source_item_effective_route_policy(
         "is_model_convention": is_model_convention,
         "is_quarantined_source_defect": is_quarantined_source_defect,
         "is_support_only": is_support_only,
+        "is_source_declared_open_nonresult": is_source_declared_open_nonresult,
+        "is_source_resolved_within_paper": is_source_resolved_within_paper,
         "external_support_only_vocabulary": external_support_only_vocabulary,
     }
 
@@ -708,15 +843,14 @@ def _source_standard_term_interpretation_semantic_projection(
 
 
 def _source_record_refreshable_correspondence(value: object) -> bool:
-    """Return whether one exact correspondence has refresh-only receipts.
+    """Return whether one exact correspondence belongs to the strict lane.
 
     The raw source-record lane is not allowed to interpret a source-to-Spec
-    mapping.  It can omit the five receipt fields written by
-    ``refresh_source_spec_correspondence.py`` only when the enclosing object
-    has the exact current schema shape.  Any malformed object, unknown field,
-    or non-literal lookalike stays in the identity and therefore fails closed.
-    The strict correspondence lane independently validates the retained
-    bindings and dispositions against Lean's live closure.
+    mapping. It can omit a correspondence only when the enclosing object has
+    the exact current schema shape. Any malformed object, unknown field, or
+    non-literal lookalike stays in the identity and therefore fails closed.
+    The strict correspondence lane independently validates every binding and
+    disposition against Lean's live closure.
     """
 
     if not isinstance(value, Mapping) or set(value) != _SOURCE_RECORD_CORRESPONDENCE_REQUIRED_FIELDS:
@@ -741,11 +875,11 @@ def source_record_source_item_projection(item: object) -> object:
     """Project one map item for raw source-record identity only.
 
     This is intentionally narrower than the general source-statement
-    projection.  Source-record generation never consumes the source-to-Spec
-    closure receipt itself; strict closeout owns that evidence separately.
-    Preserve all correspondence meaning and every unrecognized field, while
-    omitting only the five Lean-derived fingerprints when their exact current
-    schema proves that they are refreshable machine receipts.
+    projection. Source-record generation never consumes source-to-Spec
+    correspondence; strict closeout owns that evidence separately. Omit the
+    complete field only when its exact current schema identifies it as
+    strict-lane evidence. Preserve every malformed, future-shaped, or
+    lookalike field so schema drift fails closed.
     """
 
     if not isinstance(item, Mapping):
@@ -754,12 +888,7 @@ def source_record_source_item_projection(item: object) -> object:
     correspondence = item.get(_SOURCE_RECORD_CORRESPONDENCE_FIELD)
     if not _source_record_refreshable_correspondence(correspondence):
         return projected
-    assert isinstance(correspondence, Mapping)
-    projected[_SOURCE_RECORD_CORRESPONDENCE_FIELD] = {
-        str(key): value
-        for key, value in correspondence.items()
-        if str(key) not in SOURCE_RECORD_DERIVED_CORRESPONDENCE_RECEIPT_FIELDS
-    }
+    projected.pop(_SOURCE_RECORD_CORRESPONDENCE_FIELD, None)
     return projected
 
 
@@ -819,11 +948,121 @@ def source_record_source_item_semantic_sha256(item: object, mode: str) -> str:
     return source_item_coverage_sha256(dict(projected), mode)
 
 
+def source_record_source_item_supported_identity_sha256s(
+    item: object, mode: str
+) -> frozenset[tuple[str, str]]:
+    """Return equivalent canonical encodings of one raw source-item identity.
+
+    Current raw receipts omit a complete recognized correspondence because the
+    raw generator does not consume it. Earlier receipts retained its semantic
+    fields, either literally or with an exact whole-Spec carrier normalized to
+    a sentinel. Reconstruct those encodings from the current correspondence so
+    unchanged raw review can migrate without an engine-pair bridge. The strict
+    lane must still validate the current correspondence independently.
+
+    This is an encoding-normalization rule, not an engine-version bridge: the
+    accepted identities are derived directly from the current item, and the
+    caller must still validate the current source-to-Spec correspondence lane.
+    """
+
+    canonical_record = source_record_source_item_record_sha256(item)
+    canonical_semantic = source_record_source_item_semantic_sha256(item, mode)
+    identities = {(canonical_record, canonical_semantic)}
+    if not isinstance(item, Mapping):
+        return frozenset(identities)
+    correspondence = item.get(_SOURCE_RECORD_CORRESPONDENCE_FIELD)
+    if not _source_record_refreshable_correspondence(correspondence):
+        return frozenset(identities)
+    assert isinstance(correspondence, Mapping)
+    literal_projection: dict[str, object] = {
+        str(key): value for key, value in item.items()
+    }
+    prior_correspondence = {
+        str(key): value
+        for key, value in correspondence.items()
+        if str(key) not in SOURCE_RECORD_DERIVED_CORRESPONDENCE_RECEIPT_FIELDS
+    }
+    literal_projection[_SOURCE_RECORD_CORRESPONDENCE_FIELD] = prior_correspondence
+    literal_encoded = json.dumps(
+        _source_record_identity_canonical_payload(literal_projection),
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    identities.add(
+        (
+            hashlib.sha256(literal_encoded).hexdigest(),
+            source_item_coverage_sha256(literal_projection, mode),
+        )
+    )
+
+    root_surface = str(correspondence.get("spec_surface_sha256") or "").strip().lower()
+    normalized_projection = dict(literal_projection)
+    normalized_correspondence = dict(prior_correspondence)
+    normalized_bindings: list[object] = []
+    for raw_binding in correspondence.get("source_atom_bindings", []):
+        if not isinstance(raw_binding, Mapping):
+            normalized_bindings.append(raw_binding)
+            continue
+        binding = {str(key): value for key, value in raw_binding.items()}
+        raw_components = raw_binding.get("spec_component_sha256s")
+        components = (
+            [str(value).strip().lower() for value in raw_components]
+            if isinstance(raw_components, list)
+            else []
+        )
+        if components == [root_surface]:
+            binding["spec_component_sha256s"] = ["complete_spec_surface_v1"]
+        normalized_bindings.append(binding)
+    normalized_correspondence["source_atom_bindings"] = normalized_bindings
+    normalized_projection[_SOURCE_RECORD_CORRESPONDENCE_FIELD] = normalized_correspondence
+    normalized_encoded = json.dumps(
+        _source_record_identity_canonical_payload(normalized_projection),
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    identities.add(
+        (
+            hashlib.sha256(normalized_encoded).hexdigest(),
+            source_item_coverage_sha256(normalized_projection, mode),
+        )
+    )
+    return frozenset(identities)
+
+
+def source_record_human_review_semantic_sha256(item: object, mode: str) -> str:
+    """Return the source meaning owned by the raw human-review lane.
+
+    ``source_spec_correspondence`` is independently authenticated by the
+    strict source-to-Spec lane.  A refresh of that complete, recognized
+    receipt must therefore neither manufacture nor invalidate a judgment
+    about the source premise itself.  Keep malformed or future-shaped values
+    in the digest so an unrecognized correspondence evolution still fails
+    closed instead of being silently projected away.
+
+    This identity is for cross-receipt human-response transport only.  The raw
+    receipt continues to authenticate its exact map record and its own stored
+    semantic identity before this narrower comparison is used.
+    """
+
+    if not isinstance(item, Mapping):
+        return ""
+    projected: dict[str, object] = {
+        str(key): value for key, value in item.items()
+    }
+    correspondence = item.get(_SOURCE_RECORD_CORRESPONDENCE_FIELD)
+    if _source_record_refreshable_correspondence(correspondence):
+        projected.pop(_SOURCE_RECORD_CORRESPONDENCE_FIELD, None)
+    return source_item_coverage_sha256(projected, mode)
+
+
 def _source_semantic_projection(
     value: object,
     *,
     direct_source_item: bool = False,
     retain_direct_administrative_metadata: bool = False,
+    project_corrected_target_authority: bool = True,
 ) -> object:
     """Drop navigation-only routes and source locators from a semantic digest.
 
@@ -831,7 +1070,9 @@ def _source_semantic_projection(
     A source map may retain routes for validation and navigation, but a route
     rename with the same checked proposition must not change the source-side
     content identity.  Unknown non-route fields remain in the digest so a new
-    semantic source annotation fails closed by default.
+    semantic source annotation fails closed by default. Historical readers can
+    disable the corrected-target authority projection to replay the literal
+    target representation their frozen digest generation used.
     """
 
     if isinstance(value, dict):
@@ -864,6 +1105,19 @@ def _source_semantic_projection(
                 # relation as JSON null.  Both mean this is the canonical
                 # presentation.  A real alias object remains semantic and is
                 # retained below.
+                continue
+            if (
+                direct_source_item
+                and project_corrected_target_authority
+                and key == "corrected_target"
+            ):
+                # This literal source-item field has its own schema authority.
+                # Its projection omits only derived correction digests and the
+                # paper-local locator for the recognized excerpt protocol;
+                # unknown target or approval fields remain semantic inputs.
+                projected[key] = _source_semantic_projection(
+                    corrected_target_record_projection(raw_value)
+                )
                 continue
             if normalized == "source_anchor_evidence":
                 projected[key] = _source_anchor_semantic_projection(raw_value)
@@ -1004,6 +1258,12 @@ def source_map_cache_semantic_projection(value: object) -> object:
     projected: dict[str, object] = {}
     for raw_key, raw_value in value.items():
         key = str(raw_key)
+        # Source/repeat scope, panel cardinality, and model preferences are
+        # independently validated and bound by closeout source assurance.
+        # Selected item fields and the explicit coverage mode already determine
+        # this raw audit surface.
+        if key == "closeout_review_policy":
+            continue
         # The parser treats a missing mode as exactly this documented default.
         # Canonicalize only the exact spelling here, so adding the required
         # explicit closeout declaration does not rerun an otherwise identical
@@ -2521,6 +2781,17 @@ def _source_index_presentation_kinds(
     return review.get("environment_kinds"), review.get("heading_kinds")
 
 
+def _source_index_candidate_dispositions(
+    map_payload: Mapping[str, object],
+) -> object | None:
+    """Return the reviewed candidate ledger, or ``None`` for legacy intake."""
+
+    review = map_payload.get("source_named_result_inventory_review")
+    if not isinstance(review, Mapping) or "candidate_presentations" not in review:
+        return None
+    return review.get("candidate_presentations")
+
+
 def _current_canonical_text_source(
     folder: Path,
     map_payload: Mapping[str, object],
@@ -2602,6 +2873,29 @@ def _current_canonical_text_source(
         return None
     source_format = "tex" if artifact_path.suffix.lower() == ".tex" else "text"
     return source_text, declared_path, source_format
+
+
+def current_canonical_text_source(
+    folder: Path,
+    map_payload: Mapping[str, object],
+    *,
+    repository_root: Path | None = None,
+    file_bytes_override: Mapping[Path, bytes | None] | None = None,
+) -> tuple[str, str, str] | None:
+    """Return the canonical source text through the shared strict resolver.
+
+    Writer-side intake preparation and reader-side evidence validation must not
+    implement different artifact/path rules.  This narrow public wrapper lets
+    both consume the existing companion/archive-aware resolver without
+    exposing map-row, Lean-route, or audit-gate behavior.
+    """
+
+    return _current_canonical_text_source(
+        folder,
+        map_payload,
+        repository_root=repository_root,
+        file_bytes_override=file_bytes_override,
+    )
 
 
 def _normalized_exact_source_path(value: object) -> str:
@@ -3007,6 +3301,12 @@ def _source_prose_definition_reconciliation(
         item_id = str(raw_item_id).strip()
         if not item_id or not isinstance(raw_item, dict):
             continue
+        # A source-presentation alias has already been reconciled to its
+        # canonical definition/result.  It is provenance for a repeated
+        # visible presentation, not an independently prose-defined
+        # vocabulary item, so it must not enter this one-to-one binding lane.
+        if raw_item.get(SOURCE_PRESENTATION_ALIAS_FIELD) is not None:
+            continue
         source_kind = str(raw_item.get("source_kind") or "").strip().lower()
         if source_kind not in SOURCE_VOCABULARY_KINDS:
             continue
@@ -3046,6 +3346,67 @@ def source_prose_definition_inventory_errors(
         file_bytes_override=file_bytes_override,
     )
     return errors
+
+
+def source_prose_definition_alias_pairs(
+    folder: Path,
+    map_payload: object,
+    *,
+    repository_root: Path | None = None,
+    file_bytes_override: Mapping[Path, bytes | None] | None = None,
+) -> dict[str, str]:
+    """Bind repeated prose aliases through the current source-only inventory.
+
+    Prose definitions need no numbered heading.  A map alias is supported only
+    when its exact source span belongs to an independently reviewed repetition
+    whose canonical presentation owns the named map target's normal binding.
+    This recognizes source provenance, not a Lean semantic judgment.
+    """
+
+    if not isinstance(map_payload, Mapping):
+        return {}
+    if source_prose_definition_inventory_errors(
+        folder, map_payload, repository_root=repository_root,
+        file_bytes_override=file_bytes_override,
+    ):
+        return {}
+    aliases, errors = source_presentation_aliases(map_payload.get("items"))
+    if errors or not aliases:
+        return {}
+    current_source = _current_canonical_text_source(
+        folder, map_payload, repository_root=repository_root,
+        file_bytes_override=file_bytes_override,
+    )
+    if current_source is None:
+        return {}
+    source_text, source_path, _source_format = current_source
+    review = map_payload.get(_SOURCE_NAMED_RESULT_INVENTORY_REVIEW_FIELD)
+    if not isinstance(review, Mapping):
+        return {}
+    records = review.get(SOURCE_PROSE_DEFINITION_PRESENTATIONS_FIELD, [])
+    items = map_payload["items"]
+    supported: dict[str, str] = {}
+    for alias, canonical in aliases.items():
+        binding = items[canonical].get(SOURCE_PROSE_DEFINITION_RECONCILIATION_FIELD)
+        if not isinstance(binding, Mapping):
+            continue
+        matches = []
+        for record in records:
+            if record.get("scope_disposition") != SOURCE_PROSE_DEFINITION_REPEATED_SCOPE:
+                continue
+            if record.get("canonical_presentation_sha256") != binding.get("presentation_sha256"):
+                continue
+            span = _current_source_anchor_span(
+                record.get("source_anchor"), source_text=source_text,
+                source_path=source_path,
+            )
+            if span is not None and _item_has_current_anchor_containing_span(
+                items[alias], span, source_text=source_text, source_path=source_path,
+            ):
+                matches.append(record)
+        if len(matches) == 1:
+            supported[alias] = canonical
+    return supported
 
 
 def source_vocabulary_definition_binding_item_ids(
@@ -3190,13 +3551,16 @@ def source_index_byte_pinned_anchor_item_ids(
     source_text, source_path, source_format = current_source
     environment_kinds, heading_kinds = _source_index_presentation_kinds(map_payload)
     try:
-        presentations = extract_named_result_presentations(
+        presentation_inventory = reviewed_source_presentation_inventory(
             source_text,
+            source_path=source_path,
             source_format=source_format,
             environment_kinds=environment_kinds,
             heading_kinds=heading_kinds,
+            candidate_dispositions=_source_index_candidate_dispositions(map_payload),
         )
-    except ValueError:
+        presentations = list(presentation_inventory.classified)
+    except (TypeError, ValueError):
         return set()
     # Preserve the legacy named-presentation path unless a paper deliberately
     # supplies the source-only component ledger.  That ledger is an opt-in
@@ -3294,6 +3658,64 @@ def source_index_byte_pinned_anchor_item_ids(
     return selected_item_ids
 
 
+_SOURCE_RESULT_PRESENTATION_KINDS = frozenset(
+    {"theorem", "proposition", "lemma", "corollary", "claim", "runtime_claim"}
+)
+
+
+def _is_explicit_nonclaim_semantic_prerequisite(
+    item: object,
+    *,
+    declared_environment_kinds: Mapping[str, str] | None = None,
+) -> bool:
+    """Recognize a typed model/definition route without hiding a result.
+
+    A source definition, model, algorithm, assumption, or condition may be a
+    material prerequisite for a selected result without being a second human
+    source-claim card.  The source map records that deliberately with a
+    role-typed declaration route and ``claim_bearing: false``.  This is not a
+    curator escape hatch for a theorem: a directly presented result heading
+    still stays on the ordinary result surface and fails closed if marked
+    nonclaim.
+    """
+
+    if not isinstance(item, Mapping):
+        return False
+    if item.get("claim_bearing") is not False:
+        return False
+    if str(item.get("inventory_role") or "").strip() != "source_semantic_declaration":
+        return False
+    roots = item.get("lean_declarations")
+    if (
+        not isinstance(roots, list)
+        or not roots
+        or any(not isinstance(root, str) or not root.strip() for root in roots)
+    ):
+        return False
+    source_text = _source_item_direct_presentation_text(item)
+    if not source_text:
+        return False
+    # A curator cannot relabel a directly printed theorem as a model merely by
+    # changing source_kind. This source-only guard recognizes the result
+    # presentation before the prerequisite route can exclude it.
+    if _source_item_opens_ordinary_named_presentation(
+        dict(item), declared_environment_kinds
+    ):
+        return False
+    try:
+        presentations = extract_named_result_presentations(
+            source_text,
+            source_format="auto",
+            environment_kinds=declared_environment_kinds,
+        )
+    except ValueError:
+        return False
+    return not any(
+        presentation.kind in _SOURCE_RESULT_PRESENTATION_KINDS
+        for presentation in presentations
+    )
+
+
 def source_item_is_named_theoretical_statement(
     item: object,
     *,
@@ -3319,6 +3741,15 @@ def source_item_is_named_theoretical_statement(
     # a claim count.
     if item.get(SOURCE_PRESENTATION_ALIAS_FIELD) is not None:
         return False
+    # The typed direct route makes this source definition/model/algorithm a
+    # reviewable prerequisite.  It is not another theorem denominator row.
+    # `_is_explicit_nonclaim_semantic_prerequisite` independently rejects a
+    # theorem-like presentation, so this cannot suppress a named result.
+    if _is_explicit_nonclaim_semantic_prerequisite(
+        item,
+        declared_environment_kinds=declared_environment_kinds,
+    ):
+        return False
     # A prose definition that has passed the source-only reconciliation is a
     # visible source presentation even when the text extractor has no literal
     # ``Definition n`` heading.  Treating it as context solely because its
@@ -3332,6 +3763,13 @@ def source_item_is_named_theoretical_statement(
     ):
         return True
     source_kind = str(item.get("source_kind") or "").strip().lower()
+    # A named conjecture/open question is source-visible but is not an
+    # ordinary theorem-proof obligation.  Its dedicated source-inventory lane
+    # requires claim_bearing: false plus an explicit source-declared-open
+    # disposition.  Reclassifying the same heading here as ordinary theory
+    # would make those two validators contradictory.
+    if source_kind in NAMED_OPEN_SOURCE_KINDS:
+        return False
     if source_kind and not source_named_presentation_in_coverage_scope(
         source_kind, NAMED_THEORETICAL_STATEMENTS
     ):
@@ -3683,9 +4121,10 @@ def filter_source_map_items_for_proof_obligations(
     targets remain explicit proof obligations.  A user-approved exclusion,
     by contrast, remains visible to its dedicated approval/source validators
     but does not become a proof target merely because the full inventory keeps
-    it.  A contradictory item that is both corrected and excluded fails
-    closed on the corrected obligation, while its dedicated exclusion
-    validators remain independently due.
+    it.  An excluded item may retain corrected-target provenance without
+    receiving proof credit.  Its dedicated exclusion and correction validators
+    still verify the approval, source pins, retained target, and absence of
+    active proof routes.
 
     Repeated-presentation aliases are intentionally left to the consumer.
     Ordinary selection already omits them, while deep-mode and v11 consumers
@@ -3709,11 +4148,10 @@ def filter_source_map_items_for_proof_obligations(
         key = str(raw_key).strip()
         if not key or not isinstance(raw_item, dict):
             continue
-        corrected = source_item_has_explicit_corrected_obligation(raw_item)
-        if corrected:
-            selected[key] = raw_item
-        elif raw_item.get(USER_APPROVED_SCOPE_EXCLUSION_KEY) is not None:
+        if raw_item.get(USER_APPROVED_SCOPE_EXCLUSION_KEY) is not None:
             selected.pop(key, None)
+        elif source_item_has_explicit_corrected_obligation(raw_item):
+            selected[key] = raw_item
     return selected
 
 
@@ -3754,6 +4192,157 @@ def source_item_coverage_sha256(item: object, mode: str) -> str:
     return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
 
 
+def _historical_source_item_semantic_projection(
+    item: object,
+    *,
+    retain_direct_administrative_metadata: bool = False,
+) -> tuple[dict[str, object] | None, str]:
+    """Reconstruct a literal historical corrected-target item representation.
+
+    This helper is used only by the real schema-4/5/6 historical digest
+    readers below and in the final holistic assurance reader. The current
+    source identity continues to use ``corrected_target_record_projection``.
+    """
+
+    if not isinstance(item, dict):
+        return None, "source item must be an object"
+    candidate = dict(item)
+    if "corrected_target" in item:
+        historical_target, error = corrected_target_historical_record_projection(
+            item["corrected_target"]
+        )
+        if error:
+            return None, error
+        candidate["corrected_target"] = historical_target
+    projected = _source_semantic_projection(
+        candidate,
+        direct_source_item=True,
+        retain_direct_administrative_metadata=retain_direct_administrative_metadata,
+        project_corrected_target_authority=False,
+    )
+    if not isinstance(projected, dict):  # pragma: no cover - fixed by input check.
+        return None, "historical source-item projection is malformed"
+    return projected, ""
+
+
+def legacy_source_item_coverage_sha256_before_defect_cross_reference_exclusion(
+    item: object, mode: str
+) -> str:
+    """Reproduce schema 5 while the proof-defect links were duplicated here.
+
+    Every other current projection rule remains exact.  In particular, source
+    text, corrected targets, route-changing status policy, and unknown metadata
+    still change this identity.  The separate fidelity validator must approve
+    the current cross-references before a paper can close.
+    """
+
+    if not isinstance(item, dict):
+        return ""
+    source_fields, historical_error = _historical_source_item_semantic_projection(
+        item
+    )
+    if historical_error or source_fields is None:
+        return ""
+    if "source_defect_ids" in item:
+        source_fields["source_defect_ids"] = _source_semantic_projection(
+            item["source_defect_ids"]
+        )
+    del mode
+    payload: dict[str, object] = {
+        "schema": PREVIOUS_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
+        "source_item": source_fields,
+    }
+    status_policy = source_item_direct_status_policy_projection(item)
+    if status_policy is not None:
+        payload["direct_source_status_policy"] = status_policy
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
+    return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def legacy_source_item_coverage_sha256_before_navigation_key_exclusion(
+    item: object, mode: str
+) -> str:
+    """Reproduce the key-bearing variant of the preceding schema 5 identity.
+
+    Schema 5 accidentally retained dashboard ``source_item_key`` navigation in
+    normalized inventory rows even though its contract excluded map keys. A
+    current schema-5 judgment may migrate only when this exact historical
+    digest matches the current source item under its still-current key. Once
+    rewritten by current tooling, schema 5 is key-free and arbitrary future
+    renames need no bridge.
+    """
+
+    if not isinstance(item, dict):
+        return ""
+    source_fields, historical_error = _historical_source_item_semantic_projection(
+        item
+    )
+    if historical_error or source_fields is None:
+        return ""
+    if "source_defect_ids" in item:
+        source_fields["source_defect_ids"] = _source_semantic_projection(
+            item["source_defect_ids"]
+        )
+    if isinstance(source_fields, dict) and "source_item_key" in item:
+        source_fields["source_item_key"] = _source_semantic_projection(
+            item["source_item_key"]
+        )
+    del mode
+    payload: dict[str, object] = {
+        "schema": PREVIOUS_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
+        "source_item": source_fields,
+    }
+    status_policy = source_item_direct_status_policy_projection(item)
+    if status_policy is not None:
+        payload["direct_source_status_policy"] = status_policy
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
+    return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def source_item_coverage_receipt_matches(
+    item: object,
+    mode: str,
+    *,
+    digest_schema: object,
+    digest: object,
+    legacy_navigation_key: str | None = None,
+) -> bool:
+    """Validate a current or exactly migratable per-item coverage identity."""
+
+    recorded = str(digest or "").strip().lower()
+    if not _SHA256_RE.fullmatch(recorded) or not isinstance(item, dict):
+        return False
+    if digest_schema == SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA:
+        return recorded == source_item_coverage_sha256(item, mode)
+    if digest_schema != PREVIOUS_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA:
+        return False
+    if recorded == legacy_source_item_coverage_sha256_before_defect_cross_reference_exclusion(
+        item, mode
+    ):
+        return True
+    candidate = dict(item)
+    if legacy_navigation_key is not None:
+        candidate["source_item_key"] = legacy_navigation_key
+    return recorded == legacy_source_item_coverage_sha256_before_navigation_key_exclusion(
+        candidate, mode
+    )
+
+
+def source_item_coverage_receipt_shape_is_reusable(
+    *, digest_schema: object, digest: object
+) -> bool:
+    """Recognize a supported per-item receipt shape without granting credit."""
+
+    return (
+        digest_schema
+        in {
+            SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
+            PREVIOUS_SOURCE_ITEM_COVERAGE_DIGEST_SCHEMA,
+        }
+        and _SHA256_RE.fullmatch(str(digest or "").strip().lower()) is not None
+    )
+
+
 def legacy_source_item_coverage_sha256_before_direct_source_status_exclusion(
     item: object, mode: str
 ) -> str:
@@ -3769,11 +4358,12 @@ def legacy_source_item_coverage_sha256_before_direct_source_status_exclusion(
 
     if not isinstance(item, dict):
         return ""
-    source_fields = _source_semantic_projection(
+    source_fields, historical_error = _historical_source_item_semantic_projection(
         item,
-        direct_source_item=True,
         retain_direct_administrative_metadata=True,
     )
+    if historical_error or source_fields is None:
+        return ""
     del mode
     encoded = json.dumps(
         {
@@ -3801,7 +4391,11 @@ def legacy_source_item_coverage_sha256_schema4_direct_source_status_excluded(
 
     if not isinstance(item, dict):
         return ""
-    source_fields = _source_semantic_projection(item, direct_source_item=True)
+    source_fields, historical_error = _historical_source_item_semantic_projection(
+        item
+    )
+    if historical_error or source_fields is None:
+        return ""
     del mode
     encoded = json.dumps(
         {

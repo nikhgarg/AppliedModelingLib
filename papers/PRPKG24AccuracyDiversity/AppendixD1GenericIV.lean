@@ -1,6 +1,6 @@
 import PRPKG24AccuracyDiversity.AppendixD1GenericPower
-import EconCSLib.Foundations.Math.Asymptotics
-import EconCSLib.Applications.RecommenderSystems.AllocationSequence
+import AppliedModelingLib.Foundations.Math.Asymptotics
+import AppliedModelingLib.Applications.RecommenderSystems.AllocationSequence
 
 /-!
 # Corrected generic Appendix D.1(iv)
@@ -28,7 +28,7 @@ open scoped BigOperators
 namespace PRPKG24AccuracyDiversity
 namespace AppendixD1GenericIV
 
-open EconCSLib
+open AppliedModelingLib
 open AppendixD1GenericPower
 
 /-- The source's discrete forward increment. -/
@@ -64,7 +64,7 @@ theorem strictMono_of_monotone_strictDiscreteConcave
     {h : ℕ → ℝ} (hmono : Monotone h) (hconc : StrictDiscreteConcave h) :
     StrictMono h := by
   intro a b hab
-  exact EconCSLib.lt_of_adjacent_lt_chain h hab (fun k _ _ => by
+  exact AppliedModelingLib.lt_of_adjacent_lt_chain h hab (fun k _ _ => by
     exact sub_pos.mp
       (forwardIncrement_pos_of_monotone_strictDiscreteConcave hmono hconc k))
 
@@ -76,7 +76,7 @@ noncomputable def powerTailQuotient
 /-- The literal finite objective in the source's D.1(iv) allocation problem. -/
 noncomputable def rawPowerTailObjective
     {m : ℕ} (p : Fin m → ℝ) (h : ℕ → ℝ)
-    (a : EconCSLib.Allocation (Fin m)) : ℝ :=
+    (a : AppliedModelingLib.Allocation (Fin m)) : ℝ :=
   ∑ i : Fin m, p i * h (a.count i)
 
 /-- The corrected D.1(iv) target weights in the source's `p_i` notation. -/
@@ -190,7 +190,7 @@ theorem forwardIncrement_pos_of_strictDiscreteConcave_of_tendsto_atTop
   have hdecrease : h n < h (a + 1) := by
     have hneg_chain :
         -h (a + 1) < -h n :=
-      EconCSLib.lt_of_adjacent_lt_chain (fun k : ℕ => -h k) hn_gt (by
+      AppliedModelingLib.lt_of_adjacent_lt_chain (fun k : ℕ => -h k) hn_gt (by
         intro k hk hkn
         have hak : a < k := lt_of_lt_of_le (Nat.lt_succ_self a) hk
         have hinc_lt : forwardIncrement h k < forwardIncrement h a :=
@@ -211,7 +211,7 @@ theorem strictMono_of_strictDiscreteConcave_of_power_tail
     StrictMono h := by
   have hunbounded := tendsto_value_atTop_of_power_tail hB_pos hsigma_pos htail
   intro a b hab
-  exact EconCSLib.lt_of_adjacent_lt_chain h hab (fun k _ _ => by
+  exact AppliedModelingLib.lt_of_adjacent_lt_chain h hab (fun k _ _ => by
     exact sub_pos.mp
       (forwardIncrement_pos_of_strictDiscreteConcave_of_tendsto_atTop
         hconc hunbounded k))
@@ -343,7 +343,7 @@ theorem forwardIncrement_le_average_of_strictDiscreteConcave
               (Nat.le_of_lt_succ (Finset.mem_range.mp hk))
   have htel :
       (∑ k ∈ Finset.range (a + 1), forwardIncrement h k) = h (a + 1) - h 0 := by
-    simpa [forwardIncrement] using EconCSLib.sum_range_adjacent_sub h (a + 1)
+    simpa [forwardIncrement] using AppliedModelingLib.sum_range_adjacent_sub h (a + 1)
   have hden_pos : 0 < ((a + 1 : ℕ) : ℝ) := by positivity
   rw [htel] at hsum
   calc
@@ -396,7 +396,7 @@ there is no assumed interiority, FOC certificate, or optimizer limit.
 theorem tendsto_optimalAllocation_count_atTop_of_power_tail
     {m : ℕ} [NeZero m] {B sigma : ℝ} {h : ℕ → ℝ}
     (p : Fin m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : Fin m => h))
     (hp_pos : ∀ i, 0 < p i)
     (hB_pos : 0 < B) (hsigma_pos : 0 < sigma) (hsigma_lt_one : sigma < 1)
@@ -433,10 +433,10 @@ theorem tendsto_optimalAllocation_count_atTop_of_power_tail
   by_contra hnot
   have hcount_t_lt : (seq.allocation N).count t < K :=
     Nat.lt_of_not_ge hnot
-  have htotal : EconCSLib.Allocation.total (seq.allocation N) = N :=
+  have htotal : AppliedModelingLib.Allocation.total (seq.allocation N) = N :=
     (seq.optimal N).1
   obtain ⟨j, hj_large⟩ :=
-    EconCSLib.Allocation.exists_count_gt_of_card_mul_lt_total
+    AppliedModelingLib.Allocation.exists_count_gt_of_card_mul_lt_total
       (seq.allocation N) (by
         simpa [Fintype.card_fin, M, htotal] using hNlarge)
   have hj_ne_t : j ≠ t := by
@@ -487,16 +487,16 @@ theorem tendsto_optimalAllocation_count_atTop_of_power_tail
         dsimp [eps]
         field_simp [ne_of_gt hW_pos]
   have hopt_exchange :=
-    EconCSLib.Allocation.weightedForwardMarginal_le_weightedBackwardMarginal_of_optimum
+    AppliedModelingLib.Allocation.weightedForwardMarginal_le_weightedBackwardMarginal_of_optimum
       (a := seq.allocation N) (weight := p)
       (valueOfCount := fun _ : Fin m => h) (N := N)
       (seq.optimal N) hj_ne_t hj_pos
   have hopt_exchange' :
       p t * forwardIncrement h ((seq.allocation N).count t) ≤
         p j * forwardIncrement h ((seq.allocation N).count j - 1) := by
-    unfold EconCSLib.Allocation.weightedForwardMarginal
-      EconCSLib.Allocation.weightedBackwardMarginal
-      EconCSLib.Allocation.marginal at hopt_exchange
+    unfold AppliedModelingLib.Allocation.weightedForwardMarginal
+      AppliedModelingLib.Allocation.weightedBackwardMarginal
+      AppliedModelingLib.Allocation.marginal at hopt_exchange
     rw [dif_neg (ne_of_gt hj_pos)] at hopt_exchange
     change
       p t * (h ((seq.allocation N).count t + 1) - h ((seq.allocation N).count t)) ≤
@@ -549,7 +549,7 @@ the raw tail/count facts proved above.
 -/
 theorem tendsto_normalized_rawPowerTailObjective_of_power_tail
     {m : ℕ} [NeZero m] {B sigma : ℝ} {h : ℕ → ℝ}
-    (p : Fin m → ℝ) (a : ℕ → EconCSLib.Allocation (Fin m)) (r : Fin m → ℝ)
+    (p : Fin m → ℝ) (a : ℕ → AppliedModelingLib.Allocation (Fin m)) (r : Fin m → ℝ)
     (hB_pos : 0 < B) (hsigma_pos : 0 < sigma)
     (htail : Tendsto (powerTailQuotient h B sigma) atTop (nhds 1))
     (ha_atTop : ∀ i, Tendsto (fun N : ℕ => (a N).count i) atTop atTop)
@@ -664,28 +664,28 @@ not from a rounding or asymptotic certificate.
 -/
 noncomputable def powerBenchmarkAllocation
     {m : ℕ} [NeZero m] (p : Fin m → ℝ) (sigma : ℝ) (N : ℕ) :
-    EconCSLib.Allocation (Fin m) :=
+    AppliedModelingLib.Allocation (Fin m) :=
   Classical.choose
-    (EconCSLib.Allocation.exists_isOptimalAtTotal
+    (AppliedModelingLib.Allocation.exists_isOptimalAtTotal
       p (fun _ : Fin m => fun q : ℕ => (q : ℝ) ^ sigma) N)
 
 theorem powerBenchmarkAllocation_total
     {m : ℕ} [NeZero m] (p : Fin m → ℝ) (sigma : ℝ) (N : ℕ) :
-    EconCSLib.Allocation.total (powerBenchmarkAllocation p sigma N) = N := by
+    AppliedModelingLib.Allocation.total (powerBenchmarkAllocation p sigma N) = N := by
   exact (Classical.choose_spec
-    (EconCSLib.Allocation.exists_isOptimalAtTotal
+    (AppliedModelingLib.Allocation.exists_isOptimalAtTotal
       p (fun _ : Fin m => fun q : ℕ => (q : ℝ) ^ sigma) N)).1
 
 theorem powerBenchmarkAllocation_optimal
     {m : ℕ} [NeZero m] (p : Fin m → ℝ) (sigma : ℝ) (N : ℕ) :
-    ∀ b : EconCSLib.Allocation (Fin m),
-      EconCSLib.Allocation.total b = N ->
-        EconCSLib.Allocation.objective b p
+    ∀ b : AppliedModelingLib.Allocation (Fin m),
+      AppliedModelingLib.Allocation.total b = N ->
+        AppliedModelingLib.Allocation.objective b p
           (fun _ : Fin m => fun q : ℕ => (q : ℝ) ^ sigma) ≤
-          EconCSLib.Allocation.objective (powerBenchmarkAllocation p sigma N) p
+          AppliedModelingLib.Allocation.objective (powerBenchmarkAllocation p sigma N) p
             (fun _ : Fin m => fun q : ℕ => (q : ℝ) ^ sigma) := by
   exact (Classical.choose_spec
-    (EconCSLib.Allocation.exists_isOptimalAtTotal
+    (AppliedModelingLib.Allocation.exists_isOptimalAtTotal
       p (fun _ : Fin m => fun q : ℕ => (q : ℝ) ^ sigma) N)).2
 
 /-- The canonical benchmark lies in the checked finite rounding window. -/
@@ -700,18 +700,18 @@ theorem powerBenchmarkAllocation_rounding_window
           ⌊(N : ℝ) * targetShare p sigma t⌋₊ + m := by
   have hsum :
       (∑ i : Fin m, (powerBenchmarkAllocation p sigma N).count i) = N := by
-    simpa [EconCSLib.Allocation.total] using
+    simpa [AppliedModelingLib.Allocation.total] using
       powerBenchmarkAllocation_total p sigma N
   have hopt : ∀ b : Fin m → ℕ, (∑ i : Fin m, b i) = N ->
       sourcePowerObjective p sigma (fun i => (b i : ℝ)) ≤
         sourcePowerObjective p sigma
           (fun i => ((powerBenchmarkAllocation p sigma N).count i : ℝ)) := by
     intro b hb
-    let bAlloc : EconCSLib.Allocation (Fin m) := ⟨b⟩
-    have hbtotal : EconCSLib.Allocation.total bAlloc = N := by
-      simpa [bAlloc, EconCSLib.Allocation.total] using hb
+    let bAlloc : AppliedModelingLib.Allocation (Fin m) := ⟨b⟩
+    have hbtotal : AppliedModelingLib.Allocation.total bAlloc = N := by
+      simpa [bAlloc, AppliedModelingLib.Allocation.total] using hb
     have h := powerBenchmarkAllocation_optimal p sigma N bAlloc hbtotal
-    simpa [bAlloc, EconCSLib.Allocation.objective, sourcePowerObjective] using h
+    simpa [bAlloc, AppliedModelingLib.Allocation.objective, sourcePowerObjective] using h
   simpa [targetShare, Fintype.card_fin] using
     lemmaD1_iv_exactPower_integer_maximizer_rounding_window
       p hsigma_pos hsigma_lt_one hp_pos N
@@ -729,7 +729,7 @@ theorem tendsto_powerBenchmarkAllocation_count_atTop
   have hfloor : Tendsto
       (fun N : ℕ => ⌊(N : ℝ) * targetShare p sigma t⌋₊)
       atTop atTop :=
-    EconCSLib.Math.tendsto_nat_floor_mul_const_atTop hq_pos
+    AppliedModelingLib.Math.tendsto_nat_floor_mul_const_atTop hq_pos
   refine Filter.tendsto_atTop.2 ?_
   intro K
   have hfloor_large : ∀ᶠ N : ℕ in atTop,
@@ -758,7 +758,7 @@ theorem tendsto_powerBenchmarkAllocation_count_div_targetShare
     exact (targetShare_pos p hsigma_lt_one hp_pos t).le
   have hfloor : Tendsto (fun N : ℕ => (f N : ℝ) / (N : ℝ))
       atTop (nhds q) := by
-    simpa [f] using EconCSLib.Math.tendsto_nat_floor_mul_const_div_nat hq_nonneg
+    simpa [f] using AppliedModelingLib.Math.tendsto_nat_floor_mul_const_div_nat hq_nonneg
   have hcard : Tendsto (fun N : ℕ => (m : ℝ) / (N : ℝ))
       atTop (nhds 0) :=
     tendsto_const_div_atTop_nhds_zero_nat (m : ℝ)
@@ -810,7 +810,7 @@ objective bound or a profile-convergence certificate.
 theorem eventually_normalized_rawPowerTailObjective_le_sourcePowerObjective_add
     {m : ℕ} [NeZero m] {B sigma : ℝ} {h : ℕ → ℝ}
     (p : Fin m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : Fin m => h))
     (hp_pos : ∀ i, 0 < p i)
     (hB_pos : 0 < B) (hsigma_pos : 0 < sigma) (hsigma_lt_one : sigma < 1)
@@ -821,7 +821,7 @@ theorem eventually_normalized_rawPowerTailObjective_le_sourcePowerObjective_add
       rawPowerTailObjective p h (seq.allocation N) /
           (B * (N : ℝ) ^ sigma) ≤
         sourcePowerObjective p sigma
-            (fun i => EconCSLib.Allocation.share (seq.allocation N) i) +
+            (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i) +
           delta * ∑ i : Fin m, p i := by
   have hcounts_atTop : ∀ i,
       Tendsto (fun N : ℕ => (seq.allocation N).count i) atTop atTop := by
@@ -842,22 +842,22 @@ theorem eventually_normalized_rawPowerTailObjective_le_sourcePowerObjective_add
   filter_upwards [eventually_gt_atTop 0, hcount_pos, hquotient_lt] with
       N hN hcountN hquotientN
   have hN_real_pos : 0 < (N : ℝ) := by exact_mod_cast hN
-  have htotal : EconCSLib.Allocation.total (seq.allocation N) = N :=
+  have htotal : AppliedModelingLib.Allocation.total (seq.allocation N) = N :=
     (seq.optimal N).1
-  have htotal_ne : EconCSLib.Allocation.total (seq.allocation N) ≠ 0 := by
+  have htotal_ne : AppliedModelingLib.Allocation.total (seq.allocation N) ≠ 0 := by
     rw [htotal]
     exact Nat.ne_of_gt hN
   have hshare_nonneg : ∀ i : Fin m,
-      0 ≤ EconCSLib.Allocation.share (seq.allocation N) i := by
+      0 ≤ AppliedModelingLib.Allocation.share (seq.allocation N) i := by
     intro i
-    exact EconCSLib.Allocation.share_nonneg (seq.allocation N) i
+    exact AppliedModelingLib.Allocation.share_nonneg (seq.allocation N) i
   have hshare_le_one : ∀ i : Fin m,
-      EconCSLib.Allocation.share (seq.allocation N) i ≤ 1 := by
+      AppliedModelingLib.Allocation.share (seq.allocation N) i ≤ 1 := by
     intro i
-    rw [EconCSLib.Allocation.share_eq_div_of_total_ne_zero
+    rw [AppliedModelingLib.Allocation.share_eq_div_of_total_ne_zero
       (a := seq.allocation N) (k := i) htotal_ne, htotal]
     apply (div_le_one hN_real_pos).mpr
-    have hcount_le_total := EconCSLib.Allocation.count_le_total
+    have hcount_le_total := AppliedModelingLib.Allocation.count_le_total
       (seq.allocation N) i
     exact_mod_cast (by simpa [htotal] using hcount_le_total :
       (seq.allocation N).count i ≤ N)
@@ -866,15 +866,15 @@ theorem eventually_normalized_rawPowerTailObjective_le_sourcePowerObjective_add
           (B * (N : ℝ) ^ sigma) =
         ∑ i : Fin m, p i *
           (powerTailQuotient h B sigma ((seq.allocation N).count i) *
-            (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma) := by
+            (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma) := by
     unfold rawPowerTailObjective
     rw [Finset.sum_div]
     refine Finset.sum_congr rfl ?_
     intro i _
     have hshare_eq :
-        EconCSLib.Allocation.share (seq.allocation N) i =
+        AppliedModelingLib.Allocation.share (seq.allocation N) i =
           ((seq.allocation N).count i : ℝ) / (N : ℝ) := by
-      rw [EconCSLib.Allocation.share_eq_div_of_total_ne_zero
+      rw [AppliedModelingLib.Allocation.share_eq_div_of_total_ne_zero
         (a := seq.allocation N) (k := i) htotal_ne, htotal]
     have htail_eq := powerTailQuotient_mul_scaled_rpow
       (h := h) (sigma := sigma) (ne_of_gt hB_pos) (hcountN i) hN
@@ -891,58 +891,58 @@ theorem eventually_normalized_rawPowerTailObjective_le_sourcePowerObjective_add
   calc
     ∑ i : Fin m, p i *
         (powerTailQuotient h B sigma ((seq.allocation N).count i) *
-          (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma) ≤
+          (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma) ≤
         ∑ i : Fin m,
-          (p i * (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma +
+          (p i * (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma +
             p i * delta) := by
       refine Finset.sum_le_sum ?_
       intro i _
       have hpow_nonneg : 0 ≤
-          (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma :=
+          (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma :=
         Real.rpow_nonneg (hshare_nonneg i) sigma
       have hpow_le_one :
-          (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma ≤ 1 :=
+          (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma ≤ 1 :=
         Real.rpow_le_one (hshare_nonneg i) (hshare_le_one i) hsigma_pos.le
       have hbase :
           powerTailQuotient h B sigma ((seq.allocation N).count i) *
-              (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma ≤
-            (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma + delta := by
+              (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma ≤
+            (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma + delta := by
         calc
           powerTailQuotient h B sigma ((seq.allocation N).count i) *
-              (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma ≤
+              (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma ≤
               (1 + delta) *
-                (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma :=
+                (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma :=
             mul_le_mul_of_nonneg_right (hquotientN i).le hpow_nonneg
-          _ = (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma +
-                delta * (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma := by
+          _ = (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma +
+                delta * (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma := by
                 ring
-          _ ≤ (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma +
+          _ ≤ (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma +
                 delta * 1 := by
                 have hdelta_mul :
-                    delta * (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma ≤
+                    delta * (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma ≤
                       delta * 1 :=
                   mul_le_mul_of_nonneg_left hpow_le_one hdelta_pos.le
                 calc
-                  (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma +
-                      delta * (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma =
-                      delta * (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma +
-                        (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma := by
+                  (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma +
+                      delta * (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma =
+                      delta * (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma +
+                        (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma := by
                         ring
                   _ ≤ delta * 1 +
-                        (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma :=
+                        (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma :=
                       by
                         simpa [add_comm] using
                           (add_le_add_left hdelta_mul
-                            ((EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma))
-                  _ = (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma +
+                            ((AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma))
+                  _ = (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma +
                         delta * 1 := by
                         ring
-          _ = (EconCSLib.Allocation.share (seq.allocation N) i) ^ sigma + delta := by
+          _ = (AppliedModelingLib.Allocation.share (seq.allocation N) i) ^ sigma + delta := by
                 ring
       have hmul := mul_le_mul_of_nonneg_left hbase (hp_pos i).le
       simpa [mul_add] using hmul
     _ = sourcePowerObjective p sigma
-          (fun i => EconCSLib.Allocation.share (seq.allocation N) i) +
+          (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i) +
         delta * ∑ i : Fin m, p i := by
       unfold sourcePowerObjective
       rw [Finset.sum_add_distrib, ← Finset.sum_mul]
@@ -957,7 +957,7 @@ constructed from the literal model in this theorem.
 theorem eventually_sourcePowerObjective_target_sub_lt_optimal
     {m : ℕ} [NeZero m] {B sigma : ℝ} {h : ℕ → ℝ}
     (p : Fin m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : Fin m => h))
     (hp_pos : ∀ i, 0 < p i)
     (hB_pos : 0 < B) (hsigma_pos : 0 < sigma) (hsigma_lt_one : sigma < 1)
@@ -967,7 +967,7 @@ theorem eventually_sourcePowerObjective_target_sub_lt_optimal
     ∀ᶠ N : ℕ in atTop,
       sourcePowerObjective p sigma (targetShare p sigma) - epsilon <
         sourcePowerObjective p sigma
-          (fun i => EconCSLib.Allocation.share (seq.allocation N) i) := by
+          (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i) := by
   let totalWeight : ℝ := ∑ i : Fin m, p i
   have htotalWeight_pos : 0 < totalWeight := by
     dsimp [totalWeight]
@@ -1020,7 +1020,7 @@ theorem eventually_sourcePowerObjective_target_sub_lt_optimal
   have hraw_opt' :
       rawPowerTailObjective p h (powerBenchmarkAllocation p sigma N) ≤
         rawPowerTailObjective p h (seq.allocation N) := by
-    simpa [rawPowerTailObjective, EconCSLib.Allocation.objective] using hraw_opt
+    simpa [rawPowerTailObjective, AppliedModelingLib.Allocation.objective] using hraw_opt
   have hnormalized_opt :
       rawPowerTailObjective p h (powerBenchmarkAllocation p sigma N) /
           (B * (N : ℝ) ^ sigma) ≤
@@ -1039,7 +1039,7 @@ uses finite optimality only for the literal objective comparison.
 theorem limitProfile_eq_targetShare_of_rawPowerTail_optimality
     {m : ℕ} [NeZero m] {B sigma : ℝ} {h : ℕ → ℝ}
     (p : Fin m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : Fin m => h))
     (hp_pos : ∀ i, 0 < p i)
     (hB_pos : 0 < B) (hsigma_pos : 0 < sigma) (hsigma_lt_one : sigma < 1)
@@ -1066,10 +1066,10 @@ theorem limitProfile_eq_targetShare_of_rawPowerTail_optimality
           fun _ : ℕ => (1 : ℝ) := by
     filter_upwards [eventually_gt_atTop 0] with N hN
     rw [← Finset.sum_div]
-    have htotal : EconCSLib.Allocation.total (seq.allocation N) = N :=
+    have htotal : AppliedModelingLib.Allocation.total (seq.allocation N) = N :=
       (seq.optimal N).1
     change ((∑ i : Fin m, ((seq.allocation N).count i : ℝ)) / (N : ℝ)) = 1
-    rw [← Nat.cast_sum, ← EconCSLib.Allocation.total, htotal]
+    rw [← Nat.cast_sum, ← AppliedModelingLib.Allocation.total, htotal]
     field_simp [ne_of_gt (by exact_mod_cast hN : (0 : ℝ) < (N : ℝ))]
   have hr_sum : (∑ i : Fin m, r i) = 1 := by
     have hconst : Tendsto
@@ -1117,7 +1117,7 @@ theorem limitProfile_eq_targetShare_of_rawPowerTail_optimality
     have hraw :
         rawPowerTailObjective p h (powerBenchmarkAllocation p sigma N) ≤
           rawPowerTailObjective p h (seq.allocation N) := by
-      simpa [rawPowerTailObjective, EconCSLib.Allocation.objective] using hopt
+      simpa [rawPowerTailObjective, AppliedModelingLib.Allocation.objective] using hopt
     exact (div_le_div_iff_of_pos_right hden_pos).2 hraw
   have htarget_le_r :
       sourcePowerObjective p sigma (targetShare p sigma) ≤
@@ -1149,7 +1149,7 @@ internally; it accepts no limiting-objective, FOC, or convergence certificate.
 theorem corrected_lemmaD1_iv_powerTail_optimizer_shares
     {m : ℕ} [NeZero m] {B sigma : ℝ} {h : ℕ → ℝ}
     (p : Fin m → ℝ)
-    (seq : EconCSLib.Allocation.OptimalSequence
+    (seq : AppliedModelingLib.Allocation.OptimalSequence
       (fun _ : ℕ => p) (fun _ : ℕ => fun _ : Fin m => h))
     (hp_pos : ∀ i, 0 < p i)
     (hB_pos : 0 < B) (hsigma_pos : 0 < sigma) (hsigma_lt_one : sigma < 1)
@@ -1173,7 +1173,7 @@ theorem corrected_lemmaD1_iv_powerTail_optimizer_shares
       p hsigma_pos hsigma_lt_one hp_pos x hx.1 hx.2 hx_ne
   intro t
   change Tendsto
-    (fun N : ℕ => EconCSLib.Allocation.share (seq.allocation N) t)
+    (fun N : ℕ => AppliedModelingLib.Allocation.share (seq.allocation N) t)
     atTop (nhds (targetShare p sigma t))
   rw [Metric.tendsto_nhds]
   intro epsilon hepsilon_pos
@@ -1182,40 +1182,40 @@ theorem corrected_lemmaD1_iv_powerTail_optimizer_shares
     dsimp [epsilonHalf]
     linarith
   obtain ⟨eta, heta_pos, hseparate⟩ :=
-    EconCSLib.Allocation.exists_gap_on_stdSimplex_of_strict_unique_max
+    AppliedModelingLib.Allocation.exists_gap_on_stdSimplex_of_strict_unique_max
       (sourcePowerObjective p sigma) (targetShare p sigma)
       htarget_simplex hcontinuous hstrict epsilonHalf hepsilonHalf_pos
   have hobjective_lower : ∀ᶠ N : ℕ in atTop,
       sourcePowerObjective p sigma (targetShare p sigma) - eta <
         sourcePowerObjective p sigma
-          (fun i => EconCSLib.Allocation.share (seq.allocation N) i) :=
+          (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i) :=
     eventually_sourcePowerObjective_target_sub_lt_optimal
       p seq hp_pos hB_pos hsigma_pos hsigma_lt_one hconc htail heta_pos
   filter_upwards [eventually_gt_atTop 0, hobjective_lower] with N hN hobjectiveN
-  have htotal_ne : EconCSLib.Allocation.total (seq.allocation N) ≠ 0 := by
+  have htotal_ne : AppliedModelingLib.Allocation.total (seq.allocation N) ≠ 0 := by
     rw [(seq.optimal N).1]
     exact Nat.ne_of_gt hN
   have hactual_simplex :
-      (fun i => EconCSLib.Allocation.share (seq.allocation N) i) ∈
+      (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i) ∈
         stdSimplex ℝ (Fin m) := by
     constructor
     · intro i
-      exact EconCSLib.Allocation.share_nonneg (seq.allocation N) i
-    · exact EconCSLib.Allocation.sum_share_eq_one_of_total_ne_zero
+      exact AppliedModelingLib.Allocation.share_nonneg (seq.allocation N) i
+    · exact AppliedModelingLib.Allocation.sum_share_eq_one_of_total_ne_zero
         (seq.allocation N) htotal_ne
   have hnot_far : ¬ epsilonHalf <
-      |EconCSLib.Allocation.share (seq.allocation N) t - targetShare p sigma t| := by
+      |AppliedModelingLib.Allocation.share (seq.allocation N) t - targetShare p sigma t| := by
     intro hfar
     have hgapN := hseparate
-      (fun i => EconCSLib.Allocation.share (seq.allocation N) i)
+      (fun i => AppliedModelingLib.Allocation.share (seq.allocation N) i)
       hactual_simplex ⟨t, hfar⟩
     exact (not_lt_of_ge hgapN) hobjectiveN
   have habs_le :
-      |EconCSLib.Allocation.share (seq.allocation N) t - targetShare p sigma t| ≤
+      |AppliedModelingLib.Allocation.share (seq.allocation N) t - targetShare p sigma t| ≤
         epsilonHalf :=
     le_of_not_gt hnot_far
   have habs_lt :
-      |EconCSLib.Allocation.share (seq.allocation N) t - targetShare p sigma t| <
+      |AppliedModelingLib.Allocation.share (seq.allocation N) t - targetShare p sigma t| <
         epsilon :=
     lt_of_le_of_lt habs_le (by
       dsimp [epsilonHalf]

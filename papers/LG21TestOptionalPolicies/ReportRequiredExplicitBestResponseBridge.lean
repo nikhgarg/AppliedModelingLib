@@ -12,7 +12,7 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
 open scoped ProbabilityTheory
 
 /-- The full-public taking set is upward closed when the literal taking

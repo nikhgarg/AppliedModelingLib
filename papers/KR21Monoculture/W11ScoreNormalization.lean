@@ -1,6 +1,6 @@
 import KR21Monoculture.W11RankingCells
 
-open EconCSLib MeasureTheory Filter
+open AppliedModelingLib MeasureTheory Filter
 open scoped Topology ENNReal
 
 namespace KR21Monoculture

@@ -39,6 +39,23 @@ NAMED_RESULT_KINDS = frozenset(
 
 OPEN_NAMED_PRESENTATION_KIND = "open_problem"
 UNCLASSIFIED_NAMED_PRESENTATION_KIND = "unclassified"
+REVIEW_CANDIDATE_PRESENTATION_KIND_PREFIX = "review_candidate_"
+REVIEW_CANDIDATE_NORMAL_DISPOSITION = "material_named_claim"
+REVIEW_CANDIDATE_DEEP_DISPOSITION = "deep_audit_material"
+REVIEW_CANDIDATE_MECHANICAL_DISCOVERY = "mechanical_labelled_heading"
+REVIEW_CANDIDATE_HOLISTIC_DISCOVERY = "holistic_full_text_review"
+REVIEW_CANDIDATE_DISCOVERY_BASES = frozenset(
+    {
+        REVIEW_CANDIDATE_MECHANICAL_DISCOVERY,
+        REVIEW_CANDIDATE_HOLISTIC_DISCOVERY,
+    }
+)
+REVIEW_CANDIDATE_DISPOSITIONS = frozenset(
+    {
+        REVIEW_CANDIDATE_NORMAL_DISPOSITION,
+        REVIEW_CANDIDATE_DEEP_DISPOSITION,
+    }
+)
 
 # A PDF/text extraction can conservatively retain explanatory prose or a proof
 # after a visible theorem heading.  A source map may therefore attach a
@@ -51,7 +68,11 @@ SOURCE_PRESENTATION_RECONCILIATION_SCHEMA = 1
 SOURCE_PRESENTATION_RECONCILIATION_RELATION = "conservative_text_span_core"
 SOURCE_PRESENTATION_RECONCILIATION_CORE_ANCHOR_FIELD = "core_anchor"
 SOURCE_PRESENTATION_RECONCILIATION_BOUNDARY_REASONS = frozenset(
-    {"completed_statement_then_explanation"}
+    {
+        "completed_statement_then_explanation",
+        "complete_indexed_presentation",
+        "interleaved_parallel_columns",
+    }
 )
 
 # These are visible source titles, not source-map keys or Lean identifiers.
@@ -97,6 +118,12 @@ _NON_THEORETICAL_TITLE_WORDS = frozenset(
         "discussion",
     }
 )
+_REVIEW_CANDIDATE_TITLE_WORDS = frozenset(
+    {*_NON_THEORETICAL_TITLE_WORDS, "observation"}
+)
+_REVIEW_CANDIDATE_VISIBLE_KINDS = frozenset(
+    {*_REVIEW_CANDIDATE_TITLE_WORDS, "holistic"}
+)
 _TEXT_TITLE_PATTERN = "|".join(
     [
         r"open\s+(?:question|problem)",
@@ -105,6 +132,7 @@ _TEXT_TITLE_PATTERN = "|".join(
         r"eq(?:uation)?\.?",
         *sorted(_STANDARD_NAMED_TITLE_WORDS, key=len, reverse=True),
         *sorted(_UNCLASSIFIED_NAMED_TITLE_WORDS, key=len, reverse=True),
+        *sorted(_NON_THEORETICAL_TITLE_WORDS, key=len, reverse=True),
     ]
 )
 _TEX_ENV_RE = re.compile(
@@ -137,6 +165,36 @@ _TEX_LEADING_COMMAND_RE = re.compile(
     re.IGNORECASE,
 )
 _TEX_INLINE_STYLE_RE = re.compile(r"\\(?:textbf|textit|emph)\s*\{")
+_TEXT_OCR_SPACED_TITLE_RE = re.compile(
+    r"\b(?:T\s+HEOREM|P\s+ROPOSITION|L\s+EMMA|C\s+OROLLARY|"
+    r"C\s+LAIM|C\s+ONJECTURE|D\s+EFINITION|A\s+LGORITHM|A\s+SSUMPTION)\b",
+    re.IGNORECASE,
+)
+_TEXT_OCR_SPACED_TITLE_CANONICAL = {
+    "theorem": "Theorem",
+    "proposition": "Proposition",
+    "lemma": "Lemma",
+    "corollary": "Corollary",
+    "claim": "Claim",
+    "conjecture": "Conjecture",
+    "definition": "Definition",
+    "algorithm": "Algorithm",
+    "assumption": "Assumption",
+}
+_TEXT_OCR_SPACED_HEADING_RE = re.compile(
+    r"""
+    \b(?P<title>
+        T\s+HEOREM|P\s+ROPOSITION|L\s+EMMA|C\s+OROLLARY|
+        C\s+LAIM|C\s+ONJECTURE|D\s+EFINITION|A\s+LGORITHM|A\s+SSUMPTION
+    )\s+
+    (?P<label>
+        (?:[A-Za-z]+\.)?\d+(?:\.\d+)*|[A-Za-z]+(?:\.\d+)*
+    )
+    (?!\.\d)
+    (?=\s*(?:[.:)\]\-\N{EN DASH}\N{EM DASH}]|\s+(?-i:[A-Z])))
+    """,
+    re.IGNORECASE | re.VERBOSE,
+)
 _TEXT_HEADING_RE = re.compile(
     rf"""
     ^\s*
@@ -180,6 +238,11 @@ _TEXT_EMBEDDED_DECIMAL_HEADING_RE = re.compile(
     (?P<title>{_TEXT_TITLE_PATTERN})\s+
     (?P<label>(?:(?:[A-Za-z]+\.)?\d+\.\d+(?:\.\d+)*))
     (?!\.\d)
+    # A visible source subtitle may intervene between the decimal label and
+    # the first sentence, e.g. ``Theorem 1.2 (Informal). If ...``.  Keep the
+    # subtitle bounded and on the same line so this remains a conservative
+    # two-column heading rule rather than a general prose-reference parser.
+    (?:\s*\([^()\n]{{1,80}}\)\s*[.:]?)?
     (?=\s+(?-i:[A-Z]))
     """,
     re.IGNORECASE | re.VERBOSE,
@@ -243,7 +306,9 @@ _TEXT_PRIOR_NAMED_REFERENCE_LEAD_RE = re.compile(
             appl(?:y|ies|ied)|illustrat(?:e|es|ed)|summari[sz](?:e|es|ed)|
             confirm(?:s|ed)?|support(?:s|ed)?)
       | \b(?:according\s+to|as\s+(?:shown|stated|proved)\s+in|
-            follow(?:s|ed)?\s+from)
+            follow(?:s|ed)?\s+from|
+            (?:defined|described|introduced)\s+(?:above|earlier|before))
+      | \b(?:in|from|by)
     )\s*$
     """,
     re.IGNORECASE | re.VERBOSE,
@@ -283,6 +348,12 @@ _SOURCE_STATEMENT_TERMINAL_RE = re.compile(r"[.!?](?:[\]\)}\"']*)\s*$")
 _SOURCE_STATEMENT_CONTINUATION_RE = re.compile(
     r"^\s*(?:then|and|or|where|provided(?:\s+that)?|if|for\s+(?:every|all))\b",
     re.IGNORECASE,
+)
+_SOURCE_HEADING_SEPARATOR_RE = re.compile(
+    r"^[\s.:)\]\-\N{EN DASH}\N{EM DASH}]+"
+)
+_SOURCE_PARENTHETICAL_TITLE_ONLY_RE = re.compile(
+    r"^\([^()]*\)[.!?]?(?:[\]\)}\"']*)\s*$"
 )
 
 # These are standard AMS/LaTeX display environments.  Their ordinary rendered
@@ -342,6 +413,23 @@ class NamedResultReconciliation:
     @property
     def covered(self) -> bool:
         return bool(self.matches)
+
+
+@dataclass(frozen=True)
+class ReviewedSourcePresentationInventory:
+    """One source-only discovery and reviewed-classification projection."""
+
+    discovered: tuple[NamedResultPresentation, ...]
+    candidates: tuple[NamedResultPresentation, ...]
+    classified: tuple[NamedResultPresentation, ...]
+
+    @property
+    def candidate_sha256(self) -> str:
+        return named_result_presentations_sha256(self.candidates)
+
+    @property
+    def classified_sha256(self) -> str:
+        return named_result_presentations_sha256(self.classified)
 
 
 def _normalized_source_text(source_text: str) -> str:
@@ -515,6 +603,26 @@ def _visible_title_is_non_theoretical(title: str) -> bool:
     normalized = _normalized_visible_title(title)
     words = normalized.split()
     return bool(words and words[0] in _NON_THEORETICAL_TITLE_WORDS)
+
+
+def _review_candidate_kind(title: str) -> str:
+    """Return a stable source-only kind for a labelled review candidate."""
+
+    normalized = _normalized_visible_title(title)
+    words = normalized.split()
+    if not words or words[0] not in _REVIEW_CANDIDATE_TITLE_WORDS:
+        return ""
+    return REVIEW_CANDIDATE_PRESENTATION_KIND_PREFIX + words[0]
+
+
+def review_candidate_visible_kind(presentation_kind: object) -> str:
+    """Return the visible title kind encoded by a review-candidate kind."""
+
+    kind = str(presentation_kind or "").strip().lower()
+    if not kind.startswith(REVIEW_CANDIDATE_PRESENTATION_KIND_PREFIX):
+        return ""
+    visible = kind.removeprefix(REVIEW_CANDIDATE_PRESENTATION_KIND_PREFIX)
+    return visible if visible in _REVIEW_CANDIDATE_VISIBLE_KINDS else ""
 
 
 def _declared_tex_environment_titles(source_text: str) -> dict[str, str]:
@@ -740,7 +848,10 @@ def _simple_multiline_equation_rows(
 
 
 def extract_tex_named_result_presentations(
-    source_text: str, *, environment_kinds: Mapping[str, str] | None = None
+    source_text: str,
+    *,
+    environment_kinds: Mapping[str, str] | None = None,
+    include_review_candidates: bool = False,
 ) -> list[NamedResultPresentation]:
     """Extract standard named TeX environments with inclusive source spans.
 
@@ -827,19 +938,31 @@ def extract_tex_named_result_presentations(
                         semantic_environment
                     )
                     if declared_title is None:
-                        if not is_restatable or _visible_title_is_non_theoretical(
+                        candidate_kind = _review_candidate_kind(semantic_environment)
+                        if candidate_kind and include_review_candidates:
+                            kind = candidate_kind
+                            display_kind = _normalized_visible_title(
+                                semantic_environment
+                            )
+                        elif not is_restatable or _visible_title_is_non_theoretical(
                             semantic_environment
                         ):
                             continue
-                        # A restatable wrapper visibly contains a named result,
-                        # but its inner source title has no generic meaning.
-                        # Preserve it as a source-first closeout blocker rather
-                        # than guessing from the inner local environment name.
-                        kind = UNCLASSIFIED_NAMED_PRESENTATION_KIND
-                        display_kind = (
-                            _normalized_visible_title(semantic_environment)
-                            or semantic_environment
-                        )
+                        else:
+                            # A restatable wrapper visibly contains a named result,
+                            # but its inner source title has no generic meaning.
+                            # Preserve it as a source-first closeout blocker rather
+                            # than guessing from the inner local environment name.
+                            kind = UNCLASSIFIED_NAMED_PRESENTATION_KIND
+                            display_kind = (
+                                _normalized_visible_title(semantic_environment)
+                                or semantic_environment
+                            )
+                    elif (
+                        candidate_kind := _review_candidate_kind(declared_title)
+                    ) and include_review_candidates:
+                        kind = candidate_kind
+                        display_kind = _normalized_visible_title(declared_title)
                     elif _visible_title_is_non_theoretical(declared_title):
                         continue
                     else:
@@ -956,7 +1079,13 @@ def extract_tex_named_result_presentations(
 def _clean_text_heading_line(line: str) -> str:
     cleaned = _TEX_LEADING_COMMAND_RE.sub("", _strip_tex_comment(line))
     cleaned = _TEX_INLINE_STYLE_RE.sub("", cleaned)
-    return cleaned.replace("}", "")
+    cleaned = cleaned.replace("}", "")
+
+    def canonical_title(match: re.Match[str]) -> str:
+        collapsed = re.sub(r"\s+", "", match.group(0)).lower()
+        return _TEXT_OCR_SPACED_TITLE_CANONICAL[collapsed]
+
+    return _TEXT_OCR_SPACED_TITLE_RE.sub(canonical_title, cleaned)
 
 
 def _unclassified_heading_has_formal_label(title: str, label: str) -> bool:
@@ -973,7 +1102,9 @@ def _unclassified_heading_has_formal_label(title: str, label: str) -> bool:
     if _visible_title_result_kind(title):
         return True
     normalized_title = _normalized_visible_title(title)
-    if normalized_title not in _UNCLASSIFIED_NAMED_TITLE_WORDS:
+    if normalized_title not in (
+        _UNCLASSIFIED_NAMED_TITLE_WORDS | _REVIEW_CANDIDATE_TITLE_WORDS
+    ):
         return True
     normalized_label = label.strip()
     if re.fullmatch(
@@ -996,6 +1127,40 @@ def _text_heading_is_sentence_continuation(line: str, match: re.Match[str]) -> b
     return bool(_TEXT_REFERENCE_CONTINUATION_RE.match(line[match.end() :]))
 
 
+def _text_heading_is_parallel_layout_header(
+    line: str, match: re.Match[str]
+) -> bool:
+    """Reject two or more widely separated table-column labels on one line.
+
+    Layout-preserving PDF extraction can render a table header such as
+    ``Model A                 Model B`` at the start of a line.  The first
+    column otherwise has exactly the grammar of a labelled source setup.  A
+    second complete heading after a multi-space column gap is source-only
+    evidence that the line is parallel table structure, not a declaration of
+    the first model.  Ordinary prose such as ``Model A and Model B`` and an
+    actual ``Model A: ...`` declaration do not satisfy this rule.
+    """
+
+    title = match.group("title").strip()
+    if _normalized_visible_title(title) not in _UNCLASSIFIED_NAMED_TITLE_WORDS:
+        return False
+    suffix = line[match.end() :]
+    column_gap = re.match(r"\s{2,}", suffix)
+    if column_gap is None:
+        return False
+    parallel = _TEXT_HEADING_RE.match(suffix[column_gap.end() :])
+    if parallel is None:
+        return False
+    parallel_title = parallel.group("title").strip()
+    return (
+        _normalized_visible_title(parallel_title)
+        in _UNCLASSIFIED_NAMED_TITLE_WORDS
+        and _unclassified_heading_has_formal_label(
+            parallel_title, parallel.group("label")
+        )
+    )
+
+
 def _text_heading_continues_prior_reference(
     lines: list[str], line_number: int
 ) -> bool:
@@ -1003,10 +1168,23 @@ def _text_heading_continues_prior_reference(
 
     if line_number <= 1:
         return False
-    prior = _clean_text_heading_line(lines[line_number - 2]).strip()
-    if not prior or _SOURCE_STATEMENT_TERMINAL_RE.search(prior):
-        return False
-    return bool(_TEXT_PRIOR_NAMED_REFERENCE_LEAD_RE.search(prior))
+    current_raw = _clean_text_heading_line(lines[line_number - 1])
+    current_indent = len(current_raw) - len(current_raw.lstrip())
+    # A layout-preserving PDF transcript can interleave the right column
+    # between two consecutive left-column lines.  Look through at most two
+    # such far-indented lines, but never cross a blank/source boundary.
+    for offset in range(1, 4):
+        prior_raw = _clean_text_heading_line(lines[line_number - 1 - offset])
+        if not prior_raw.strip():
+            return False
+        prior_indent = len(prior_raw) - len(prior_raw.lstrip())
+        if current_indent <= 16 and prior_indent >= current_indent + 24:
+            continue
+        prior = prior_raw.strip()
+        if _SOURCE_STATEMENT_TERMINAL_RE.search(prior):
+            return False
+        return bool(_TEXT_PRIOR_NAMED_REFERENCE_LEAD_RE.search(prior))
+    return False
 
 
 def _text_two_line_section_boundary(lines: list[str], line_number: int) -> bool:
@@ -1024,7 +1202,10 @@ def _text_two_line_section_boundary(lines: list[str], line_number: int) -> bool:
 
 
 def _text_heading_matches(
-    lines: list[str], heading_kinds: Mapping[str, str] | None
+    lines: list[str],
+    heading_kinds: Mapping[str, str] | None,
+    *,
+    include_review_candidates: bool = False,
 ) -> list[tuple[int, str, str, str]]:
     configured_heading_kinds = _validated_kind_mapping(
         heading_kinds, field_name="heading_kinds"
@@ -1037,6 +1218,8 @@ def _text_heading_matches(
             continue
         if _text_heading_is_sentence_continuation(cleaned, match):
             continue
+        if _text_heading_is_parallel_layout_header(cleaned, match):
+            continue
         if _text_heading_continues_prior_reference(lines, line_number):
             continue
         title = match.group("title").strip()
@@ -1048,13 +1231,36 @@ def _text_heading_matches(
                 "heading_kinds cannot override unambiguous source presentation "
                 f"`{title}` ({visible_kind}) as `{configured_kind}`"
             )
-        kind = visible_kind or configured_kind or UNCLASSIFIED_NAMED_PRESENTATION_KIND
+        candidate_kind = _review_candidate_kind(title)
+        if candidate_kind and not include_review_candidates:
+            if title_key not in _UNCLASSIFIED_NAMED_TITLE_WORDS:
+                continue
+            candidate_kind = ""
+        kind = visible_kind or candidate_kind or configured_kind or UNCLASSIFIED_NAMED_PRESENTATION_KIND
         label = match.group("label").strip()
         if not _unclassified_heading_has_formal_label(title, label):
             continue
         if kind == "algorithm" and not _is_numbered_algorithm_label(label):
             continue
         headings.append((line_number, kind, label, title))
+    # Layout-preserving PDF text often renders small-caps headings with a gap
+    # after the first letter (``T HEOREM``, ``L EMMA``).  That visible OCR form
+    # is strong source-only evidence even when a two-column transcript embeds
+    # it after unrelated left-column prose.  Parse it before the ordinary
+    # normalized embedded-heading rule so punctuation after the label is kept.
+    for line_number, raw_line in enumerate(lines, start=1):
+        for match in _TEXT_OCR_SPACED_HEADING_RE.finditer(
+            _strip_tex_comment(raw_line)
+        ):
+            collapsed = re.sub(r"\s+", "", match.group("title")).lower()
+            title = _TEXT_OCR_SPACED_TITLE_CANONICAL[collapsed]
+            kind = _visible_title_result_kind(title)
+            if kind is None:
+                continue
+            label = match.group("label").strip()
+            if kind == "algorithm" and not _is_numbered_algorithm_label(label):
+                continue
+            headings.append((line_number, kind, label, title))
     for line_number, raw_line in enumerate(lines, start=1):
         cleaned = _clean_text_heading_line(raw_line)
         for match in _TEXT_EMBEDDED_DECIMAL_HEADING_RE.finditer(cleaned):
@@ -1072,7 +1278,12 @@ def _text_heading_matches(
                     "heading_kinds cannot override unambiguous source presentation "
                     f"`{title}` ({visible_kind}) as `{configured_kind}`"
                 )
-            kind = visible_kind or configured_kind or UNCLASSIFIED_NAMED_PRESENTATION_KIND
+            candidate_kind = _review_candidate_kind(title)
+            if candidate_kind and not include_review_candidates:
+                if title_key not in _UNCLASSIFIED_NAMED_TITLE_WORDS:
+                    continue
+                candidate_kind = ""
+            kind = visible_kind or candidate_kind or configured_kind or UNCLASSIFIED_NAMED_PRESENTATION_KIND
             label = match.group("label").strip()
             if not _unclassified_heading_has_formal_label(title, label):
                 continue
@@ -1091,6 +1302,80 @@ def _text_heading_matches(
             continue
         headings.append((line_number, "definition", f"@{line_number}", "definition"))
     return sorted(set(headings))
+
+
+def _text_heading_column(
+    raw_line: str, *, title: str, label: str
+) -> int:
+    """Return the visible starting column of one already-detected heading.
+
+    The source-only heading extractor accepts both ordinary line-leading
+    headings and decimal/OCR headings embedded in a second PDF-text column.
+    Presentation-boundary discovery needs the same distinction: a heading in
+    the other rendered column must not truncate the current presentation.
+    This helper only relocates a heading that the existing grammar has already
+    accepted; it does not discover or classify any new source result.
+    """
+
+    cleaned = _clean_text_heading_line(raw_line)
+    normalized_title = _normalized_visible_title(title)
+    candidates: list[tuple[int, str, str]] = []
+    ordinary = _TEXT_HEADING_RE.match(cleaned)
+    if ordinary is not None:
+        candidates.append(
+            (ordinary.start("title"), ordinary.group("title"), ordinary.group("label"))
+        )
+    for match in _TEXT_EMBEDDED_DECIMAL_HEADING_RE.finditer(cleaned):
+        candidates.append((match.start("title"), match.group("title"), match.group("label")))
+    for match in _TEXT_OCR_SPACED_HEADING_RE.finditer(_strip_tex_comment(raw_line)):
+        collapsed = re.sub(r"\s+", "", match.group("title")).lower()
+        candidates.append(
+            (
+                match.start("title"),
+                _TEXT_OCR_SPACED_TITLE_CANONICAL.get(collapsed, match.group("title")),
+                match.group("label"),
+            )
+        )
+    for column, candidate_title, candidate_label in candidates:
+        if (
+            _normalized_visible_title(candidate_title) == normalized_title
+            and candidate_label.strip() == label.strip()
+        ):
+            return column
+    return len(cleaned) - len(cleaned.lstrip())
+
+
+def _visible_label_column(raw_line: str, label: str) -> int | None:
+    """Locate a visible result label without interpreting its semantics."""
+
+    words = [re.escape(word) for word in label.split() if word]
+    if not words:
+        return None
+    match = re.search(r"\s+".join(words), raw_line, re.IGNORECASE)
+    return match.start() if match is not None else None
+
+
+def _text_heading_boundary_is_same_column(
+    lines: list[str],
+    current_heading: tuple[int, str, str, str],
+    boundary_headings: list[tuple[int, str, str, str]],
+) -> bool:
+    """Whether a later detected heading occupies the current PDF-text column."""
+
+    current_line, _current_kind, current_label, current_title = current_heading
+    current_column = _text_heading_column(
+        lines[current_line - 1], title=current_title, label=current_label
+    )
+    # A 24-space gap is already the extractor's conservative evidence for a
+    # parallel rendered column. Treat the transcript as two lanes only when
+    # one heading is line-leading and the other is beyond that same gap.
+    current_lane = 0 if current_column < 24 else 1
+    return any(
+        (0 if _text_heading_column(
+            lines[line_start - 1], title=title, label=label
+        ) < 24 else 1) == current_lane
+        for line_start, _kind, label, title in boundary_headings
+    )
 
 
 def _text_unnumbered_definition_sentence_end(
@@ -1268,7 +1553,10 @@ def source_text_uses_conditional_antecedent_subpart_selection(
 
 
 def extract_text_named_result_presentations(
-    source_text: str, *, heading_kinds: Mapping[str, str] | None = None
+    source_text: str,
+    *,
+    heading_kinds: Mapping[str, str] | None = None,
+    include_review_candidates: bool = False,
 ) -> list[NamedResultPresentation]:
     """Extract visible text/PDF-transcript heading presentations by line.
 
@@ -1278,8 +1566,15 @@ def extract_text_named_result_presentations(
     """
 
     lines = _source_lines(source_text)
-    headings = _text_heading_matches(lines, heading_kinds)
+    headings = _text_heading_matches(
+        lines,
+        heading_kinds,
+        include_review_candidates=include_review_candidates,
+    )
     starts = {line_number for line_number, _kind, _label, _title in headings}
+    headings_by_line: dict[int, list[tuple[int, str, str, str]]] = {}
+    for heading in headings:
+        headings_by_line.setdefault(heading[0], []).append(heading)
     unnumbered_definition_ends = {
         line_start: _text_unnumbered_definition_sentence_end(lines, line_start)
         for line_start, _kind, label, _title in headings
@@ -1287,7 +1582,8 @@ def extract_text_named_result_presentations(
     }
     subparts_by_heading = _text_subpart_markers(lines, headings)
     presentations: list[NamedResultPresentation] = []
-    for line_start, kind, label, title in headings:
+    for current_heading in headings:
+        line_start, kind, label, title = current_heading
         unnumbered_definition_end = unnumbered_definition_ends.get(line_start)
         if unnumbered_definition_end is not None:
             presentations.append(
@@ -1316,7 +1612,14 @@ def extract_text_named_result_presentations(
                 for line_number in range(subpart_start + 1, next_subpart_start):
                     candidate = lines[line_number - 1]
                     if (
-                        line_number in starts
+                        (
+                            line_number in starts
+                            and _text_heading_boundary_is_same_column(
+                                lines,
+                                current_heading,
+                                headings_by_line[line_number],
+                            )
+                        )
                         or _PROOF_START_RE.match(candidate)
                         or _TEXT_PROOF_NARRATIVE_RE.match(candidate)
                         or _TEXT_SECTION_BOUNDARY_RE.match(candidate)
@@ -1341,7 +1644,14 @@ def extract_text_named_result_presentations(
             continue
         line_end = line_start
         for line_number in range(line_start + 1, len(lines) + 1):
-            if line_number in starts:
+            if (
+                line_number in starts
+                and _text_heading_boundary_is_same_column(
+                    lines,
+                    current_heading,
+                    headings_by_line[line_number],
+                )
+            ):
                 break
             candidate = lines[line_number - 1]
             if (
@@ -1413,6 +1723,7 @@ def extract_named_result_presentations(
     source_format: str = "auto",
     environment_kinds: Mapping[str, str] | None = None,
     heading_kinds: Mapping[str, str] | None = None,
+    include_review_candidates: bool = False,
 ) -> list[NamedResultPresentation]:
     """Extract named source results from canonical text or TeX source.
 
@@ -1428,17 +1739,296 @@ def extract_named_result_presentations(
         raise ValueError("source_format must be one of: auto, text, tex")
     if source_format == "text":
         return extract_text_named_result_presentations(
-            source_text, heading_kinds=heading_kinds
+            source_text,
+            heading_kinds=heading_kinds,
+            include_review_candidates=include_review_candidates,
         )
     return _deduplicate_presentations(
         [
             *extract_tex_named_result_presentations(
-                source_text, environment_kinds=environment_kinds
+                source_text,
+                environment_kinds=environment_kinds,
+                include_review_candidates=include_review_candidates,
             ),
             *extract_text_named_result_presentations(
-                source_text, heading_kinds=heading_kinds
+                source_text,
+                heading_kinds=heading_kinds,
+                include_review_candidates=include_review_candidates,
             ),
         ]
+    )
+
+
+def review_candidate_presentations(
+    presentations: Iterable[NamedResultPresentation],
+) -> list[NamedResultPresentation]:
+    """Return only labelled source headings requiring a reviewed disposition."""
+
+    return [
+        presentation
+        for presentation in presentations
+        if review_candidate_visible_kind(presentation.kind)
+    ]
+
+
+def add_holistic_review_candidate_presentations(
+    presentations: Iterable[NamedResultPresentation],
+    disposition_records: object,
+) -> list[NamedResultPresentation]:
+    """Reconstruct source-only candidates found by the holistic full-text pass."""
+
+    current = list(presentations)
+    if not isinstance(disposition_records, list):
+        raise TypeError("candidate_presentations must be an explicit list")
+    for record_index, raw_record in enumerate(disposition_records):
+        if not isinstance(raw_record, Mapping):
+            raise TypeError(f"candidate_presentations[{record_index}] must be an object")
+        if raw_record.get("discovery_basis") != REVIEW_CANDIDATE_HOLISTIC_DISCOVERY:
+            continue
+        anchor = raw_record.get("source_anchor")
+        if not isinstance(anchor, Mapping):
+            raise ValueError(
+                f"candidate_presentations[{record_index}].source_anchor is required"
+            )
+        line_start = anchor.get("line_start")
+        line_end = anchor.get("line_end")
+        if (
+            not isinstance(line_start, int)
+            or isinstance(line_start, bool)
+            or not isinstance(line_end, int)
+            or isinstance(line_end, bool)
+            or line_start < 1
+            or line_end < line_start
+        ):
+            raise ValueError(
+                f"candidate_presentations[{record_index}].source_anchor has an invalid line span"
+            )
+        presentation_label = str(
+            raw_record.get("presentation_label") or ""
+        ).strip()
+        if not presentation_label:
+            raise ValueError(
+                f"candidate_presentations[{record_index}].presentation_label is required"
+            )
+        current.append(
+            NamedResultPresentation(
+                kind=REVIEW_CANDIDATE_PRESENTATION_KIND_PREFIX + "holistic",
+                label=presentation_label,
+                line_start=line_start,
+                line_end=line_end,
+                presentation=REVIEW_CANDIDATE_HOLISTIC_DISCOVERY,
+            )
+        )
+    return sorted(
+        current,
+        key=lambda item: (
+            item.line_start,
+            item.line_end,
+            item.kind,
+            item.label,
+            item.presentation,
+        ),
+    )
+
+
+def classify_review_candidate_presentations(
+    presentations: Iterable[NamedResultPresentation],
+    disposition_records: object,
+    *,
+    source_text: str,
+    source_path: str,
+) -> list[NamedResultPresentation]:
+    """Apply one exact reviewed disposition to every discovered candidate.
+
+    Material candidates become ordinary ``claim`` presentations. Deep-only
+    candidates remain present in the candidate receipt but do not enter the
+    named-theory denominator. The selector is exact source path and span;
+    labels, map keys, and Lean declarations never choose a candidate.
+    """
+
+    current = list(presentations)
+    candidates = review_candidate_presentations(current)
+    if not isinstance(disposition_records, list):
+        raise ValueError("candidate_presentations must be an explicit list")
+    matched_candidates: set[int] = set()
+    seen_ids: set[str] = set()
+    promoted: list[NamedResultPresentation] = []
+    for record_index, raw_record in enumerate(disposition_records):
+        label = f"candidate_presentations[{record_index}]"
+        if not isinstance(raw_record, Mapping):
+            raise TypeError(f"{label} must be an object")
+        allowed_fields = {
+            "schema",
+            "id",
+            "presentation_label",
+            "visible_kind",
+            "scope_disposition",
+            "semantic_basis",
+            "discovery_basis",
+            "source_anchor",
+        }
+        unexpected = sorted(str(field) for field in raw_record if field not in allowed_fields)
+        if unexpected:
+            raise ValueError(
+                f"{label} has unsupported field(s): " + ", ".join(unexpected)
+            )
+        if raw_record.get("schema") != 1 or isinstance(raw_record.get("schema"), bool):
+            raise ValueError(f"{label}.schema must be 1")
+        record_id = str(raw_record.get("id") or "").strip()
+        if not record_id or record_id in seen_ids:
+            raise ValueError(f"{label}.id must be nonempty and unique")
+        seen_ids.add(record_id)
+        disposition = str(raw_record.get("scope_disposition") or "").strip()
+        if disposition not in REVIEW_CANDIDATE_DISPOSITIONS:
+            raise ValueError(
+                f"{label}.scope_disposition must be one of: "
+                + ", ".join(sorted(REVIEW_CANDIDATE_DISPOSITIONS))
+            )
+        if not str(raw_record.get("semantic_basis") or "").strip():
+            raise ValueError(f"{label}.semantic_basis is required")
+        discovery_basis = str(raw_record.get("discovery_basis") or "").strip()
+        if discovery_basis not in REVIEW_CANDIDATE_DISCOVERY_BASES:
+            raise ValueError(
+                f"{label}.discovery_basis must be one of: "
+                + ", ".join(sorted(REVIEW_CANDIDATE_DISCOVERY_BASES))
+            )
+        anchor = raw_record.get("source_anchor")
+        matches = [
+            candidate_index
+            for candidate_index, candidate in enumerate(candidates)
+            if candidate_index not in matched_candidates
+            and isinstance(anchor, Mapping)
+            and source_paths_match(anchor.get("path"), source_path)
+            and anchor.get("line_start") == candidate.line_start
+            and anchor.get("line_end") == candidate.line_end
+            and byte_pinned_anchor_covers_presentation(
+                anchor,
+                candidate,
+                source_text=source_text,
+                source_path=source_path,
+            )
+        ]
+        if len(matches) != 1:
+            raise ValueError(
+                f"{label}.source_anchor must identify exactly one current review candidate"
+            )
+        candidate_index = matches[0]
+        candidate = candidates[candidate_index]
+        if raw_record.get("presentation_label") != candidate.label:
+            raise ValueError(f"{label}.presentation_label is stale")
+        if raw_record.get("visible_kind") != review_candidate_visible_kind(
+            candidate.kind
+        ):
+            raise ValueError(f"{label}.visible_kind is stale")
+        matched_candidates.add(candidate_index)
+        if disposition == REVIEW_CANDIDATE_NORMAL_DISPOSITION:
+            promoted.append(
+                NamedResultPresentation(
+                    kind="claim",
+                    label=candidate.label,
+                    line_start=candidate.line_start,
+                    line_end=candidate.line_end,
+                    presentation=candidate.presentation,
+                )
+            )
+    if len(matched_candidates) != len(candidates):
+        missing = ", ".join(
+            f"{candidate.label}@{candidate.line_start}-{candidate.line_end}"
+            for candidate_index, candidate in enumerate(candidates)
+            if candidate_index not in matched_candidates
+        )
+        raise ValueError(
+            "source inventory leaves review candidate(s) without a disposition: "
+            + missing
+        )
+    ordinary = [
+        presentation
+        for presentation in current
+        if not review_candidate_visible_kind(presentation.kind)
+    ]
+    return sorted(
+        [*ordinary, *promoted],
+        key=lambda item: (
+            item.line_start,
+            item.line_end,
+            item.kind,
+            item.label,
+            item.presentation,
+        ),
+    )
+
+
+def review_candidate_presentations_sha256(
+    presentations: Iterable[NamedResultPresentation],
+) -> str:
+    """Return a source-only identity for all discovered review candidates."""
+
+    return named_result_presentations_sha256(
+        review_candidate_presentations(presentations)
+    )
+
+
+def classify_source_presentation_inventory(
+    presentations: Iterable[NamedResultPresentation],
+    *,
+    source_text: str,
+    source_path: str,
+    candidate_dispositions: object | None,
+) -> ReviewedSourcePresentationInventory:
+    """Apply the one candidate ledger to an already discovered source surface."""
+
+    discovered = tuple(presentations)
+    if candidate_dispositions is None:
+        return ReviewedSourcePresentationInventory(
+            discovered=discovered,
+            candidates=(),
+            classified=discovered,
+        )
+    augmented = add_holistic_review_candidate_presentations(
+        discovered,
+        candidate_dispositions,
+    )
+    classified = classify_review_candidate_presentations(
+        augmented,
+        candidate_dispositions,
+        source_text=source_text,
+        source_path=source_path,
+    )
+    return ReviewedSourcePresentationInventory(
+        discovered=tuple(augmented),
+        candidates=tuple(review_candidate_presentations(augmented)),
+        classified=tuple(classified),
+    )
+
+
+def reviewed_source_presentation_inventory(
+    source_text: str,
+    *,
+    source_path: str,
+    source_format: str = "auto",
+    environment_kinds: Mapping[str, str] | None = None,
+    heading_kinds: Mapping[str, str] | None = None,
+    candidate_dispositions: object | None = None,
+) -> ReviewedSourcePresentationInventory:
+    """Build the one classified source presentation set used by all consumers.
+
+    A missing candidate ledger preserves the recorded legacy parser surface.
+    An explicit ledger, including an empty list, activates labelled-candidate
+    discovery and any exact source spans added by the holistic full-text pass.
+    """
+
+    discovered = extract_named_result_presentations(
+        source_text,
+        source_format=source_format,
+        environment_kinds=environment_kinds,
+        heading_kinds=heading_kinds,
+        include_review_candidates=candidate_dispositions is not None,
+    )
+    return classify_source_presentation_inventory(
+        discovered,
+        source_text=source_text,
+        source_path=source_path,
+        candidate_dispositions=candidate_dispositions,
     )
 
 
@@ -1468,11 +2058,29 @@ def _normalized_path(path: str) -> str:
 
 
 def source_paths_match(declared_path: object, source_path: object) -> bool:
-    """Compare canonical source paths without basename fallback."""
+    """Compare canonical paths, including the paper-local anchor convention.
+
+    A paper's canonical source artifact may be repository-relative, for
+    example ``papers/Example/source.txt``, while its row-level byte-pinned
+    anchors conventionally name the same file relative to that paper,
+    ``source.txt``.  That one conversion is safe because this function is
+    called only after the enclosing paper has selected its one pinned source.
+    It is not a general basename fallback: paths in any other directory remain
+    distinct.
+    """
 
     declared = _normalized_path(str(declared_path or ""))
     expected = _normalized_path(str(source_path or ""))
-    return bool(declared and expected and declared == expected)
+    if not declared or not expected:
+        return False
+    if declared == expected:
+        return True
+    expected_parts = expected.split("/")
+    return (
+        len(expected_parts) >= 3
+        and expected_parts[0] == "papers"
+        and declared == "/".join(expected_parts[2:])
+    )
 
 
 def _span_contains_presentation(
@@ -1568,6 +2176,39 @@ def byte_pinned_anchor_covers_presentation(
     return span is not None and _span_contains_presentation(*span, presentation)
 
 
+def _single_line_heading_has_complete_statement(
+    line: str,
+    *,
+    kind: str,
+    label: str,
+) -> bool:
+    """Recognize a complete statement printed beside its visible heading.
+
+    This is deliberately narrower than general source extraction.  It accepts
+    only an ordinary start-of-line heading whose independently visible kind
+    and label match the reconciliation record.  Text after the heading must
+    contain more than punctuation or a parenthesized subtitle, and the line
+    must end at a source-statement terminal.  A following visible continuation
+    is checked separately by the caller.
+    """
+
+    cleaned = _clean_text_heading_line(line)
+    match = _TEXT_HEADING_RE.match(cleaned)
+    if match is None:
+        return False
+    title = match.group("title").strip()
+    visible_kind = _visible_title_result_kind(title)
+    visible_label = _text_heading_presentation_label(
+        title, match.group("label").strip()
+    )
+    if visible_kind != kind or visible_label != label:
+        return False
+    tail = _SOURCE_HEADING_SEPARATOR_RE.sub("", cleaned[match.end() :], count=1)
+    if not tail.strip() or _SOURCE_PARENTHETICAL_TITLE_ONLY_RE.fullmatch(tail.strip()):
+        return False
+    return _SOURCE_STATEMENT_TERMINAL_RE.search(cleaned) is not None
+
+
 def source_presentation_reconciliation_errors(
     item: object,
     presentations: Iterable[NamedResultPresentation],
@@ -1581,9 +2222,19 @@ def source_presentation_reconciliation_errors(
     it cannot establish where a displayed statement ends.  This opt-in record
     permits a curator to pin a shorter complete statement core, but only when
     the core starts at an independently extracted visible heading, has the
-    same visible kind and label, is contained in the item's pre-existing exact
-    source evidence, and contains at least one nonblank continuation line.
-    It never reads an item key, map summary, or Lean route.
+    same visible kind and label, and contains either a complete same-line
+    statement or at least one nonblank continuation line.  The core itself is
+    independently byte-pinned against the source inventory text, so it may
+    differ from the item's semantic-review anchor when a damaged PDF extraction
+    requires a separately authenticated visual transcription. A
+    ``complete_indexed_presentation`` instead pins the exact complete span
+    selected by the independent source index when a displayed formula or
+    structured layout has no sentence-terminal line. A two-column transcript may place
+    a second independently indexed presentation inside that line span.  The
+    reconciliation remains exclusive to its declared presentation, while the
+    ordinary coverage gate still requires the interleaved presentation to be
+    matched independently.  It never reads an item key, map summary, or Lean
+    route.
     """
 
     if not isinstance(item, Mapping):
@@ -1661,24 +2312,6 @@ def source_presentation_reconciliation_errors(
         return tuple(errors)
     core_start, core_end = core_span
     lines = _source_lines(source_text)
-    if core_end <= core_start or not any(
-        line.strip() for line in lines[core_start:core_end]
-    ):
-        errors.append(
-            f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.core_anchor must include a nonblank continuation beyond the heading line"
-        )
-    elif not _SOURCE_STATEMENT_TERMINAL_RE.search(lines[core_end - 1]):
-        errors.append(
-            f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.core_anchor must end at a complete source-statement terminal"
-        )
-    elif (
-        core_end < len(lines)
-        and _SOURCE_STATEMENT_CONTINUATION_RE.match(lines[core_end])
-    ):
-        errors.append(
-            f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.core_anchor stops before a visible statement continuation"
-        )
-
     current_presentations = tuple(presentations)
     candidates = [
         presentation
@@ -1687,6 +2320,7 @@ def source_presentation_reconciliation_errors(
         and presentation.kind == str(kind or "").strip()
         and presentation.label == str(label or "").strip()
     ]
+    candidate: NamedResultPresentation | None = None
     if len(candidates) != 1:
         errors.append(
             f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.core_anchor must begin at exactly one independently extracted presentation with the declared kind and label"
@@ -1697,33 +2331,75 @@ def source_presentation_reconciliation_errors(
             errors.append(
                 f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.core_anchor must remain inside the independently extracted presentation span"
             )
-        nested = [
-            presentation
-            for presentation in current_presentations
-            if presentation != candidate
-            and core_start <= presentation.line_start <= core_end
-        ]
-        if nested:
-            errors.append(
-                f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.core_anchor spans another independently extracted presentation"
+        if boundary_reason == "interleaved_parallel_columns":
+            candidate_column = _visible_label_column(
+                lines[candidate.line_start - 1], candidate.label
             )
+            overlapping_other_column = any(
+                other is not candidate
+                and max(candidate.line_start, other.line_start)
+                <= min(candidate.line_end, other.line_end)
+                and candidate_column is not None
+                and (
+                    other_column := _visible_label_column(
+                        lines[other.line_start - 1], other.label
+                    )
+                )
+                is not None
+                and (candidate_column < 24) != (other_column < 24)
+                for other in current_presentations
+            )
+            if (core_start, core_end) != (
+                candidate.line_start,
+                candidate.line_end,
+            ):
+                errors.append(
+                    f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.core_anchor must equal the complete conservative presentation span for interleaved parallel columns"
+                )
+            if not overlapping_other_column:
+                errors.append(
+                    f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.interleaved_parallel_columns requires an independently extracted overlapping presentation in the other visible text column"
+                )
 
-    anchors = item.get("source_anchor_evidence")
-    if not isinstance(anchors, list) or not anchors:
-        errors.append(
-            f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD} requires this item's pre-existing source_anchor_evidence"
+    if boundary_reason == "complete_indexed_presentation":
+        if candidate is None or (core_start, core_end) != (
+            candidate.line_start,
+            candidate.line_end,
+        ):
+            errors.append(
+                f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.complete_indexed_presentation "
+                "must equal the complete independently extracted presentation span"
+            )
+    elif boundary_reason == "completed_statement_then_explanation":
+        same_line_complete = (
+            core_end == core_start
+            and isinstance(kind, str)
+            and isinstance(label, str)
+            and _single_line_heading_has_complete_statement(
+                lines[core_start - 1], kind=kind.strip(), label=label.strip()
+            )
         )
-    elif not any(
-        (span := _byte_pinned_anchor_line_span(
-            anchor, source_text=source_text, source_path=source_path
-        )) is not None
-        and span[0] <= core_start
-        and core_end <= span[1]
-        for anchor in anchors
-    ):
-        errors.append(
-            f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.core_anchor must be contained in an exact current source_anchor_evidence span on the same item"
-        )
+        if (
+            core_end < core_start
+            or (
+                not same_line_complete
+                and not any(line.strip() for line in lines[core_start:core_end])
+            )
+        ):
+            errors.append(
+                f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.core_anchor must include a complete same-line statement or a nonblank continuation beyond the heading line"
+            )
+        elif not _SOURCE_STATEMENT_TERMINAL_RE.search(lines[core_end - 1]):
+            errors.append(
+                f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.core_anchor must end at a complete source-statement terminal"
+            )
+        elif (
+            core_end < len(lines)
+            and _SOURCE_STATEMENT_CONTINUATION_RE.match(lines[core_end])
+        ):
+            errors.append(
+                f"{SOURCE_PRESENTATION_RECONCILIATION_FIELD}.core_anchor stops before a visible statement continuation"
+            )
     return tuple(errors)
 
 
@@ -1904,6 +2580,13 @@ def named_result_presentations_sha256(
 __all__ = [
     "NAMED_RESULT_KINDS",
     "OPEN_NAMED_PRESENTATION_KIND",
+    "REVIEW_CANDIDATE_DISCOVERY_BASES",
+    "REVIEW_CANDIDATE_DEEP_DISPOSITION",
+    "REVIEW_CANDIDATE_DISPOSITIONS",
+    "REVIEW_CANDIDATE_HOLISTIC_DISCOVERY",
+    "REVIEW_CANDIDATE_MECHANICAL_DISCOVERY",
+    "REVIEW_CANDIDATE_NORMAL_DISPOSITION",
+    "REVIEW_CANDIDATE_PRESENTATION_KIND_PREFIX",
     "SOURCE_PRESENTATION_RECONCILIATION_BOUNDARY_REASONS",
     "SOURCE_PRESENTATION_RECONCILIATION_CORE_ANCHOR_FIELD",
     "SOURCE_PRESENTATION_RECONCILIATION_FIELD",
@@ -1913,14 +2596,22 @@ __all__ = [
     "NamedResultCoverageMatch",
     "NamedResultPresentation",
     "NamedResultReconciliation",
+    "ReviewedSourcePresentationInventory",
     "SourceLineSpan",
     "byte_pinned_anchor_covers_presentation",
+    "add_holistic_review_candidate_presentations",
+    "classify_review_candidate_presentations",
+    "classify_source_presentation_inventory",
     "extract_named_result_presentations",
     "extract_tex_named_result_presentations",
     "extract_text_named_result_presentations",
     "map_item_coverage_match",
     "named_result_presentations_sha256",
     "reconcile_named_result_presentations",
+    "review_candidate_presentations",
+    "review_candidate_presentations_sha256",
+    "review_candidate_visible_kind",
+    "reviewed_source_presentation_inventory",
     "source_presentation_reconciliation_covers_presentation",
     "source_presentation_reconciliation_errors",
     "source_line_spans",

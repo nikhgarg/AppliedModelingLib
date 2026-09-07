@@ -1,4 +1,4 @@
-import EconCSLib.SocialChoice.FairDivision.Chores
+import AppliedModelingLib.SocialChoice.FairDivision.Chores
 
 /-!
 # Binary additive chores
@@ -17,7 +17,7 @@ Lemma 3.3 (arXiv:2308.12177).
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- A binary additive chore-cost profile has only the individual costs zero
 and one.  The positive `{0,q}` branch is reduced to this profile by positive

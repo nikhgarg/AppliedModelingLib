@@ -6,7 +6,7 @@ namespace GJ19OptimalBinaryRatingSystems
 
 noncomputable section
 
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 open Filter Topology
 open MeasureTheory
 
@@ -18,18 +18,18 @@ for the initial upper endpoint.
 theorem theorem32_realBisectionStep_upper_true_of_upper_true
     (above : ℝ → Bool) {lower upper : ℝ}
     (hupper : above upper = true) :
-    above (EconCSLib.Optimization.realBisectionStep above lower upper).2 =
+    above (AppliedModelingLib.Optimization.realBisectionStep above lower upper).2 =
       true := by
   by_cases hmid :
-      above (EconCSLib.Optimization.realBisectionMidpoint lower upper) = true
-  · simpa [EconCSLib.Optimization.realBisectionStep, hmid]
+      above (AppliedModelingLib.Optimization.realBisectionMidpoint lower upper) = true
+  · simpa [AppliedModelingLib.Optimization.realBisectionStep, hmid]
   · have hmid_false :
-        above (EconCSLib.Optimization.realBisectionMidpoint lower upper) =
+        above (AppliedModelingLib.Optimization.realBisectionMidpoint lower upper) =
           false := by
       cases h :
-          above (EconCSLib.Optimization.realBisectionMidpoint lower upper) <;>
+          above (AppliedModelingLib.Optimization.realBisectionMidpoint lower upper) <;>
         simp [h] at hmid ⊢
-    simpa [EconCSLib.Optimization.realBisectionStep, hmid_false] using hupper
+    simpa [AppliedModelingLib.Optimization.realBisectionStep, hmid_false] using hupper
 
 /--
 Finite bisection preserves the invariant that the upper endpoint satisfies the
@@ -38,14 +38,14 @@ Boolean `above` predicate.
 theorem theorem32_realBisectionRun_upper_true_of_upper_true
     (above : ℝ → Bool) {n : ℕ} {lower upper : ℝ}
     (hupper : above upper = true) :
-    above (EconCSLib.Optimization.realBisectionRun above n lower upper).2 =
+    above (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).2 =
       true := by
   induction n with
   | zero =>
-      simpa [EconCSLib.Optimization.realBisectionRun] using hupper
+      simpa [AppliedModelingLib.Optimization.realBisectionRun] using hupper
   | succ n ih =>
-      simpa [EconCSLib.Optimization.realBisectionRun,
-        EconCSLib.Optimization.realBisectionStepFn,
+      simpa [AppliedModelingLib.Optimization.realBisectionRun,
+        AppliedModelingLib.Optimization.realBisectionStepFn,
         Function.iterate_succ_apply'] using
         theorem32_realBisectionStep_upper_true_of_upper_true above ih
 
@@ -55,41 +55,41 @@ lower endpoint or is a point at which the classifier returned false.
 -/
 theorem theorem32_realBisectionRun_lower_eq_initial_or_lower_false
     (above : ℝ → Bool) {n : ℕ} {lower upper : ℝ} :
-    (EconCSLib.Optimization.realBisectionRun above n lower upper).1 = lower ∨
-      above (EconCSLib.Optimization.realBisectionRun above n lower upper).1 =
+    (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1 = lower ∨
+      above (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1 =
         false := by
   induction n with
   | zero =>
       left
-      simp [EconCSLib.Optimization.realBisectionRun]
+      simp [AppliedModelingLib.Optimization.realBisectionRun]
   | succ n ih =>
       let current :=
-        EconCSLib.Optimization.realBisectionRun above n lower upper
+        AppliedModelingLib.Optimization.realBisectionRun above n lower upper
       change current.1 = lower ∨ above current.1 = false at ih
       have hsucc :
-          EconCSLib.Optimization.realBisectionRun above (n + 1) lower upper =
-            EconCSLib.Optimization.realBisectionStep
+          AppliedModelingLib.Optimization.realBisectionRun above (n + 1) lower upper =
+            AppliedModelingLib.Optimization.realBisectionStep
               above current.1 current.2 := by
-        simp [EconCSLib.Optimization.realBisectionRun,
-          EconCSLib.Optimization.realBisectionStepFn,
+        simp [AppliedModelingLib.Optimization.realBisectionRun,
+          AppliedModelingLib.Optimization.realBisectionStepFn,
           Function.iterate_succ_apply', current]
       rw [hsucc]
       by_cases hmid :
           above
-            (EconCSLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionMidpoint
               current.1 current.2) = true
-      · simpa [EconCSLib.Optimization.realBisectionStep, hmid] using ih
+      · simpa [AppliedModelingLib.Optimization.realBisectionStep, hmid] using ih
       · have hmid_false :
             above
-                (EconCSLib.Optimization.realBisectionMidpoint
+                (AppliedModelingLib.Optimization.realBisectionMidpoint
                   current.1 current.2) = false := by
           cases h :
               above
-                (EconCSLib.Optimization.realBisectionMidpoint
+                (AppliedModelingLib.Optimization.realBisectionMidpoint
                   current.1 current.2) <;>
             simp [h] at hmid ⊢
         right
-        simpa [EconCSLib.Optimization.realBisectionStep, hmid_false] using
+        simpa [AppliedModelingLib.Optimization.realBisectionStep, hmid_false] using
           hmid_false
 
 /--
@@ -100,52 +100,52 @@ to be presented in increasing order.
 theorem theorem32_realBisectionRun_upper_le_of_endpoints_le
     (above : ℝ → Bool) {n : ℕ} {lower upper bound : ℝ}
     (hlower : lower ≤ bound) (hupper : upper ≤ bound) :
-    (EconCSLib.Optimization.realBisectionRun above n lower upper).2 ≤
+    (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).2 ≤
       bound := by
   have hpair :
       ∀ k : ℕ,
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
             above k lower upper).1 ≤ bound ∧
-          (EconCSLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionRun
             above k lower upper).2 ≤ bound := by
     intro k
     induction k with
     | zero =>
-        simpa [EconCSLib.Optimization.realBisectionRun] using
+        simpa [AppliedModelingLib.Optimization.realBisectionRun] using
           And.intro hlower hupper
     | succ k ih =>
         let current :=
-          EconCSLib.Optimization.realBisectionRun above k lower upper
+          AppliedModelingLib.Optimization.realBisectionRun above k lower upper
         change current.1 ≤ bound ∧ current.2 ≤ bound at ih
         have hsucc :
-            EconCSLib.Optimization.realBisectionRun above (k + 1) lower upper =
-              EconCSLib.Optimization.realBisectionStep
+            AppliedModelingLib.Optimization.realBisectionRun above (k + 1) lower upper =
+              AppliedModelingLib.Optimization.realBisectionStep
                 above current.1 current.2 := by
-          simp [EconCSLib.Optimization.realBisectionRun,
-            EconCSLib.Optimization.realBisectionStepFn,
+          simp [AppliedModelingLib.Optimization.realBisectionRun,
+            AppliedModelingLib.Optimization.realBisectionStepFn,
             Function.iterate_succ_apply', current]
         rw [hsucc]
         have hmid_bound :
-            EconCSLib.Optimization.realBisectionMidpoint
+            AppliedModelingLib.Optimization.realBisectionMidpoint
                 current.1 current.2 ≤ bound := by
-          dsimp [EconCSLib.Optimization.realBisectionMidpoint]
+          dsimp [AppliedModelingLib.Optimization.realBisectionMidpoint]
           linarith [ih.1, ih.2]
         by_cases hmid :
             above
-                (EconCSLib.Optimization.realBisectionMidpoint
+                (AppliedModelingLib.Optimization.realBisectionMidpoint
                   current.1 current.2) = true
-        · simpa [EconCSLib.Optimization.realBisectionStep, hmid] using
+        · simpa [AppliedModelingLib.Optimization.realBisectionStep, hmid] using
             And.intro ih.1 hmid_bound
         · have hmid_false :
               above
-                  (EconCSLib.Optimization.realBisectionMidpoint
+                  (AppliedModelingLib.Optimization.realBisectionMidpoint
                     current.1 current.2) = false := by
             cases h :
                 above
-                  (EconCSLib.Optimization.realBisectionMidpoint
+                  (AppliedModelingLib.Optimization.realBisectionMidpoint
                     current.1 current.2) <;>
               simp [h] at hmid ⊢
-          simpa [EconCSLib.Optimization.realBisectionStep, hmid_false] using
+          simpa [AppliedModelingLib.Optimization.realBisectionStep, hmid_false] using
             And.intro hmid_bound ih.2
   exact (hpair n).2
 
@@ -156,12 +156,12 @@ forces the initial upper endpoint to be positive.
 theorem theorem32_realBisectionRun_initial_upper_pos_of_returned_upper_pos
     (above : ℝ → Bool) {n : ℕ} {upper : ℝ}
     (hreturned :
-      0 < (EconCSLib.Optimization.realBisectionRun above n 0 upper).2) :
+      0 < (AppliedModelingLib.Optimization.realBisectionRun above n 0 upper).2) :
     0 < upper := by
   by_contra hnot
   have hupper : upper ≤ 0 := le_of_not_gt hnot
   have hrun :
-      (EconCSLib.Optimization.realBisectionRun above n 0 upper).2 ≤ 0 :=
+      (AppliedModelingLib.Optimization.realBisectionRun above n 0 upper).2 ≤ 0 :=
     theorem32_realBisectionRun_upper_le_of_endpoints_le
       above le_rfl hupper
   linarith
@@ -170,46 +170,46 @@ theorem theorem32_realBisectionRun_initial_upper_pos_of_returned_upper_pos
 theorem theorem32_realBisectionStep_initial_lower_le_lower
     (above : ℝ → Bool) {lower upper : ℝ}
     (hlowerUpper : lower ≤ upper) :
-    lower ≤ (EconCSLib.Optimization.realBisectionStep above lower upper).1 := by
+    lower ≤ (AppliedModelingLib.Optimization.realBisectionStep above lower upper).1 := by
   by_cases hmid :
-      above (EconCSLib.Optimization.realBisectionMidpoint lower upper) = true
-  · simp [EconCSLib.Optimization.realBisectionStep, hmid]
+      above (AppliedModelingLib.Optimization.realBisectionMidpoint lower upper) = true
+  · simp [AppliedModelingLib.Optimization.realBisectionStep, hmid]
   · have hmid_false :
-        above (EconCSLib.Optimization.realBisectionMidpoint lower upper) =
+        above (AppliedModelingLib.Optimization.realBisectionMidpoint lower upper) =
           false := by
       cases h :
-          above (EconCSLib.Optimization.realBisectionMidpoint lower upper) <;>
+          above (AppliedModelingLib.Optimization.realBisectionMidpoint lower upper) <;>
         simp [h] at hmid ⊢
-    simpa [EconCSLib.Optimization.realBisectionStep, hmid_false] using
-      EconCSLib.Optimization.realBisectionMidpoint_lower_le hlowerUpper
+    simpa [AppliedModelingLib.Optimization.realBisectionStep, hmid_false] using
+      AppliedModelingLib.Optimization.realBisectionMidpoint_lower_le hlowerUpper
 
 /-- A finite bisection run never lowers its initial lower endpoint. -/
 theorem theorem32_realBisectionRun_initial_lower_le_lower
     (above : ℝ → Bool) {n : ℕ} {lower upper : ℝ}
     (hlowerUpper : lower ≤ upper) :
     lower ≤
-      (EconCSLib.Optimization.realBisectionRun above n lower upper).1 := by
+      (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1 := by
   induction n with
   | zero =>
-      simp [EconCSLib.Optimization.realBisectionRun]
+      simp [AppliedModelingLib.Optimization.realBisectionRun]
   | succ n ih =>
       have hrun :
-          (EconCSLib.Optimization.realBisectionRun above n lower upper).1 ≤
-            (EconCSLib.Optimization.realBisectionRun above n lower upper).2 :=
-        EconCSLib.Optimization.realBisectionRun_lower_le_upper
+          (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1 ≤
+            (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).2 :=
+        AppliedModelingLib.Optimization.realBisectionRun_lower_le_upper
           above hlowerUpper
       have hstep :
-          (EconCSLib.Optimization.realBisectionRun above n lower upper).1 ≤
-            (EconCSLib.Optimization.realBisectionStep above
-              (EconCSLib.Optimization.realBisectionRun above n lower upper).1
-              (EconCSLib.Optimization.realBisectionRun above n lower upper).2).1 :=
+          (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1 ≤
+            (AppliedModelingLib.Optimization.realBisectionStep above
+              (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1
+              (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).2).1 :=
         theorem32_realBisectionStep_initial_lower_le_lower above hrun
       have hsucc :
-          (EconCSLib.Optimization.realBisectionRun above n lower upper).1 ≤
-            (EconCSLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1 ≤
+            (AppliedModelingLib.Optimization.realBisectionRun
               above (n + 1) lower upper).1 := by
-        simpa [EconCSLib.Optimization.realBisectionRun,
-          EconCSLib.Optimization.realBisectionStepFn,
+        simpa [AppliedModelingLib.Optimization.realBisectionRun,
+          AppliedModelingLib.Optimization.realBisectionStepFn,
           Function.iterate_succ_apply'] using hstep
       exact ih.trans hsucc
 
@@ -217,10 +217,10 @@ theorem theorem32_realBisectionRun_initial_lower_le_lower
 theorem theorem32_realBisectionRun_lower_lt_upper_of_initial_lt
     (above : ℝ → Bool) {n : ℕ} {lower upper : ℝ}
     (hlowerUpper : lower < upper) :
-    (EconCSLib.Optimization.realBisectionRun above n lower upper).1 <
-      (EconCSLib.Optimization.realBisectionRun above n lower upper).2 := by
+    (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1 <
+      (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).2 := by
   have hwidth :=
-    EconCSLib.Optimization.realBisectionRun_width_eq
+    AppliedModelingLib.Optimization.realBisectionRun_width_eq
       (n := n) above hlowerUpper.le
   have hpow_pos : 0 < (2 : ℝ) ^ n := pow_pos (by norm_num) n
   have hquot_pos : 0 < (upper - lower) / (2 : ℝ) ^ n :=
@@ -237,17 +237,17 @@ theorem theorem32_realBisectionRun_eq_of_eq_on_pos_le_upper
     (above above' : ℝ → Bool) {n : ℕ} {upper : ℝ}
     (hupper : 0 < upper)
     (heq : ∀ x, 0 < x → x ≤ upper → above x = above' x) :
-    EconCSLib.Optimization.realBisectionRun above n 0 upper =
-      EconCSLib.Optimization.realBisectionRun above' n 0 upper := by
+    AppliedModelingLib.Optimization.realBisectionRun above n 0 upper =
+      AppliedModelingLib.Optimization.realBisectionRun above' n 0 upper := by
   induction n with
   | zero =>
-      simp [EconCSLib.Optimization.realBisectionRun]
+      simp [AppliedModelingLib.Optimization.realBisectionRun]
   | succ n ih =>
       let current :=
-        EconCSLib.Optimization.realBisectionRun above n 0 upper
+        AppliedModelingLib.Optimization.realBisectionRun above n 0 upper
       have hcurrent_nonempty : current.1 ≤ current.2 := by
         exact
-          EconCSLib.Optimization.realBisectionRun_lower_le_upper
+          AppliedModelingLib.Optimization.realBisectionRun_lower_le_upper
             above hupper.le
       have hcurrent_strict : current.1 < current.2 := by
         exact
@@ -259,45 +259,45 @@ theorem theorem32_realBisectionRun_eq_of_eq_on_pos_le_upper
             (n := n) above hupper.le
       have hcurrent_upper_le : current.2 ≤ upper := by
         exact
-          EconCSLib.Optimization.realBisectionRun_upper_le_initial
+          AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
             (n := n) above hupper.le
       have hmid_pos :
-          0 < EconCSLib.Optimization.realBisectionMidpoint current.1 current.2 := by
-        unfold EconCSLib.Optimization.realBisectionMidpoint
+          0 < AppliedModelingLib.Optimization.realBisectionMidpoint current.1 current.2 := by
+        unfold AppliedModelingLib.Optimization.realBisectionMidpoint
         nlinarith
       have hmid_le :
-          EconCSLib.Optimization.realBisectionMidpoint current.1 current.2 ≤
+          AppliedModelingLib.Optimization.realBisectionMidpoint current.1 current.2 ≤
             upper :=
-        (EconCSLib.Optimization.realBisectionMidpoint_le_upper
+        (AppliedModelingLib.Optimization.realBisectionMidpoint_le_upper
           hcurrent_nonempty).trans hcurrent_upper_le
       have hclass :
           above
-              (EconCSLib.Optimization.realBisectionMidpoint
+              (AppliedModelingLib.Optimization.realBisectionMidpoint
                 current.1 current.2) =
             above'
-              (EconCSLib.Optimization.realBisectionMidpoint
+              (AppliedModelingLib.Optimization.realBisectionMidpoint
                 current.1 current.2) :=
         heq _ hmid_pos hmid_le
       have hstep :
-          EconCSLib.Optimization.realBisectionStep above current.1 current.2 =
-            EconCSLib.Optimization.realBisectionStep
+          AppliedModelingLib.Optimization.realBisectionStep above current.1 current.2 =
+            AppliedModelingLib.Optimization.realBisectionStep
               above' current.1 current.2 := by
-        simp only [EconCSLib.Optimization.realBisectionStep]
+        simp only [AppliedModelingLib.Optimization.realBisectionStep]
         rw [hclass]
       calc
-        EconCSLib.Optimization.realBisectionRun above (n + 1) 0 upper =
-            EconCSLib.Optimization.realBisectionStep above current.1 current.2 := by
-          simp [EconCSLib.Optimization.realBisectionRun,
-            EconCSLib.Optimization.realBisectionStepFn,
+        AppliedModelingLib.Optimization.realBisectionRun above (n + 1) 0 upper =
+            AppliedModelingLib.Optimization.realBisectionStep above current.1 current.2 := by
+          simp [AppliedModelingLib.Optimization.realBisectionRun,
+            AppliedModelingLib.Optimization.realBisectionStepFn,
             Function.iterate_succ_apply', current]
-        _ = EconCSLib.Optimization.realBisectionStep
+        _ = AppliedModelingLib.Optimization.realBisectionStep
               above' current.1 current.2 := hstep
-        _ = EconCSLib.Optimization.realBisectionRun above' (n + 1) 0 upper := by
+        _ = AppliedModelingLib.Optimization.realBisectionRun above' (n + 1) 0 upper := by
           rw [show current =
-              EconCSLib.Optimization.realBisectionRun above' n 0 upper by
+              AppliedModelingLib.Optimization.realBisectionRun above' n 0 upper by
             simpa [current] using ih]
-          simp [EconCSLib.Optimization.realBisectionRun,
-            EconCSLib.Optimization.realBisectionStepFn,
+          simp [AppliedModelingLib.Optimization.realBisectionRun,
+            AppliedModelingLib.Optimization.realBisectionStepFn,
             Function.iterate_succ_apply']
 
 /--
@@ -310,19 +310,19 @@ theorem theorem32_realBisectionStep_lower_le_target_of_false_sound
     (above : ℝ → Bool) {target lower upper : ℝ}
     (hlower : lower ≤ target)
     (hfalse : ∀ x, above x = false → x ≤ target) :
-    (EconCSLib.Optimization.realBisectionStep above lower upper).1 ≤
+    (AppliedModelingLib.Optimization.realBisectionStep above lower upper).1 ≤
       target := by
   by_cases hmid :
-      above (EconCSLib.Optimization.realBisectionMidpoint lower upper) = true
-  · simpa [EconCSLib.Optimization.realBisectionStep, hmid] using hlower
+      above (AppliedModelingLib.Optimization.realBisectionMidpoint lower upper) = true
+  · simpa [AppliedModelingLib.Optimization.realBisectionStep, hmid] using hlower
   · have hmid_false :
-        above (EconCSLib.Optimization.realBisectionMidpoint lower upper) =
+        above (AppliedModelingLib.Optimization.realBisectionMidpoint lower upper) =
           false := by
       cases h :
-          above (EconCSLib.Optimization.realBisectionMidpoint lower upper) <;>
+          above (AppliedModelingLib.Optimization.realBisectionMidpoint lower upper) <;>
         simp [h] at hmid ⊢
-    simpa [EconCSLib.Optimization.realBisectionStep, hmid_false] using
-      hfalse (EconCSLib.Optimization.realBisectionMidpoint lower upper)
+    simpa [AppliedModelingLib.Optimization.realBisectionStep, hmid_false] using
+      hfalse (AppliedModelingLib.Optimization.realBisectionMidpoint lower upper)
         hmid_false
 
 /-- Finite bisection preserves the one-sided lower-target invariant. -/
@@ -330,14 +330,14 @@ theorem theorem32_realBisectionRun_lower_le_target_of_false_sound
     (above : ℝ → Bool) {target lower upper : ℝ} {n : ℕ}
     (hlower : lower ≤ target)
     (hfalse : ∀ x, above x = false → x ≤ target) :
-    (EconCSLib.Optimization.realBisectionRun above n lower upper).1 ≤
+    (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1 ≤
       target := by
   induction n with
   | zero =>
-      simpa [EconCSLib.Optimization.realBisectionRun] using hlower
+      simpa [AppliedModelingLib.Optimization.realBisectionRun] using hlower
   | succ n ih =>
-      simpa [EconCSLib.Optimization.realBisectionRun,
-        EconCSLib.Optimization.realBisectionStepFn,
+      simpa [AppliedModelingLib.Optimization.realBisectionRun,
+        AppliedModelingLib.Optimization.realBisectionStepFn,
         Function.iterate_succ_apply'] using
         theorem32_realBisectionStep_lower_le_target_of_false_sound
           above ih hfalse
@@ -352,64 +352,64 @@ theorem theorem32_realBisectionRun_lower_le_target_of_false_sound_on_Icc
     (hlowerTarget : lower ≤ target)
     (hfalse :
       ∀ x, lower ≤ x → x ≤ upper → above x = false → x ≤ target) :
-    (EconCSLib.Optimization.realBisectionRun above n lower upper).1 ≤
+    (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1 ≤
       target := by
   induction n with
   | zero =>
-      simpa [EconCSLib.Optimization.realBisectionRun] using hlowerTarget
+      simpa [AppliedModelingLib.Optimization.realBisectionRun] using hlowerTarget
   | succ n ih =>
       let current :=
-        EconCSLib.Optimization.realBisectionRun above n lower upper
+        AppliedModelingLib.Optimization.realBisectionRun above n lower upper
       change current.1 ≤ target at ih
       have hsucc :
-          EconCSLib.Optimization.realBisectionRun above (n + 1) lower upper =
-            EconCSLib.Optimization.realBisectionStep
+          AppliedModelingLib.Optimization.realBisectionRun above (n + 1) lower upper =
+            AppliedModelingLib.Optimization.realBisectionStep
               above current.1 current.2 := by
-        simp [EconCSLib.Optimization.realBisectionRun,
-          EconCSLib.Optimization.realBisectionStepFn,
+        simp [AppliedModelingLib.Optimization.realBisectionRun,
+          AppliedModelingLib.Optimization.realBisectionStepFn,
           Function.iterate_succ_apply', current]
       rw [hsucc]
       have hcurrent_nonempty : current.1 ≤ current.2 :=
-        EconCSLib.Optimization.realBisectionRun_lower_le_upper
+        AppliedModelingLib.Optimization.realBisectionRun_lower_le_upper
           above hlowerUpper
       have hlower_current : lower ≤ current.1 :=
         theorem32_realBisectionRun_initial_lower_le_lower
           (n := n) above hlowerUpper
       have hcurrent_upper : current.2 ≤ upper :=
-        EconCSLib.Optimization.realBisectionRun_upper_le_initial
+        AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
           (n := n) above hlowerUpper
       by_cases hmid :
           above
-            (EconCSLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionMidpoint
               current.1 current.2) = true
-      · simpa [EconCSLib.Optimization.realBisectionStep, hmid] using ih
+      · simpa [AppliedModelingLib.Optimization.realBisectionStep, hmid] using ih
       · have hmid_false :
             above
-                (EconCSLib.Optimization.realBisectionMidpoint
+                (AppliedModelingLib.Optimization.realBisectionMidpoint
                   current.1 current.2) = false := by
           cases h :
               above
-                (EconCSLib.Optimization.realBisectionMidpoint
+                (AppliedModelingLib.Optimization.realBisectionMidpoint
                   current.1 current.2) <;>
             simp [h] at hmid ⊢
         have hlower_mid :
             lower ≤
-              EconCSLib.Optimization.realBisectionMidpoint
+              AppliedModelingLib.Optimization.realBisectionMidpoint
                 current.1 current.2 :=
           hlower_current.trans
-            (EconCSLib.Optimization.realBisectionMidpoint_lower_le
+            (AppliedModelingLib.Optimization.realBisectionMidpoint_lower_le
               hcurrent_nonempty)
         have hmid_upper :
-            EconCSLib.Optimization.realBisectionMidpoint
+            AppliedModelingLib.Optimization.realBisectionMidpoint
                 current.1 current.2 ≤ upper :=
-          (EconCSLib.Optimization.realBisectionMidpoint_le_upper
+          (AppliedModelingLib.Optimization.realBisectionMidpoint_le_upper
             hcurrent_nonempty).trans hcurrent_upper
         have hmid_target :=
           hfalse
-            (EconCSLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionMidpoint
               current.1 current.2)
             hlower_mid hmid_upper hmid_false
-        simpa [EconCSLib.Optimization.realBisectionStep, hmid_false] using
+        simpa [AppliedModelingLib.Optimization.realBisectionStep, hmid_false] using
           hmid_target
 
 /-- Interval-local form of the one-sided outer bisection error bound. -/
@@ -420,18 +420,18 @@ theorem theorem32_realBisectionRun_upper_le_target_add_delta_of_false_sound_on_I
     (hfalse :
       ∀ x, lower ≤ x → x ≤ upper → above x = false → x ≤ target)
     (hwidth : (upper - lower) / (2 : ℝ) ^ n ≤ delta) :
-    (EconCSLib.Optimization.realBisectionRun above n lower upper).2 ≤
+    (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).2 ≤
       target + delta := by
   have hlowerRun :
-      (EconCSLib.Optimization.realBisectionRun above n lower upper).1 ≤
+      (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1 ≤
         target :=
     theorem32_realBisectionRun_lower_le_target_of_false_sound_on_Icc
       above hlowerUpper hlowerTarget hfalse
   have hrunWidth :
-      (EconCSLib.Optimization.realBisectionRun above n lower upper).2 -
-          (EconCSLib.Optimization.realBisectionRun above n lower upper).1 =
+      (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).2 -
+          (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1 =
         (upper - lower) / (2 : ℝ) ^ n :=
-    EconCSLib.Optimization.realBisectionRun_width_eq
+    AppliedModelingLib.Optimization.realBisectionRun_width_eq
       (n := n) above hlowerUpper
   linarith
 
@@ -447,20 +447,20 @@ theorem theorem32_realBisectionRun_upper_le_target_add_delta_of_false_sound
     (hlowerTarget : lower ≤ target)
     (hfalse : ∀ x, above x = false → x ≤ target)
     (hwidth : (upper - lower) / (2 : ℝ) ^ n ≤ delta) :
-    (EconCSLib.Optimization.realBisectionRun above n lower upper).2 ≤
+    (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).2 ≤
       target + delta := by
   have hlowerRun :
-      (EconCSLib.Optimization.realBisectionRun above n lower upper).1 ≤
+      (AppliedModelingLib.Optimization.realBisectionRun above n lower upper).1 ≤
         target :=
     theorem32_realBisectionRun_lower_le_target_of_false_sound
       above hlowerTarget hfalse
   have hrunWidth :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           above n lower upper).2 -
-          (EconCSLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionRun
             above n lower upper).1 =
         (upper - lower) / (2 : ℝ) ^ n :=
-    EconCSLib.Optimization.realBisectionRun_width_eq
+    AppliedModelingLib.Optimization.realBisectionRun_width_eq
       (n := n) above hlowerUpper
   linarith
 
@@ -691,12 +691,12 @@ theorem theorem32_inner_weighted_rate_le_target_iff_threshold_classifier_true
         gHi gLo floor pHi target)
     (hfloor_le_x : floor ≤ x)
     (hx_le_hi : x ≤ pHi) :
-    EconCSLib.Optimization.realBisectionAboveTarget
+    AppliedModelingLib.Optimization.realBisectionAboveTarget
         (weightedBernoulliLowEndpointOfRateOrFloor
           gHi gLo floor pHi target) x = true ↔
       weightedBernoulliClosedThresholdRate
         gHi gLo pHi x ≤ target := by
-  rw [EconCSLib.Optimization.realBisectionAboveTarget_eq_true_iff]
+  rw [AppliedModelingLib.Optimization.realBisectionAboveTarget_eq_true_iff]
   exact
     weightedBernoulliLowEndpointOfRateOrFloor_le_iff_rate_le_target_of_feasible
       hfeasible hfloor_le_x hx_le_hi
@@ -713,13 +713,13 @@ theorem theorem32_inner_weighted_target_lt_rate_iff_threshold_classifier_false
         gHi gLo floor pHi target)
     (hfloor_le_x : floor ≤ x)
     (hx_le_hi : x ≤ pHi) :
-    EconCSLib.Optimization.realBisectionAboveTarget
+    AppliedModelingLib.Optimization.realBisectionAboveTarget
         (weightedBernoulliLowEndpointOfRateOrFloor
           gHi gLo floor pHi target) x = false ↔
       target <
         weightedBernoulliClosedThresholdRate
           gHi gLo pHi x := by
-  rw [EconCSLib.Optimization.realBisectionAboveTarget_eq_false_iff]
+  rw [AppliedModelingLib.Optimization.realBisectionAboveTarget_eq_false_iff]
   have hiff :
       weightedBernoulliLowEndpointOfRateOrFloor
           gHi gLo floor pHi target ≤ x ↔
@@ -788,7 +788,7 @@ theorem theorem32InnerSourceWeightedRateAbove_eq_threshold_classifier
         gHi gLo floor pHi target)
     (hfloor_le_x : floor ≤ x) (hx_le_hi : x ≤ pHi) :
     theorem32InnerSourceWeightedRateAbove gHi gLo pHi target x =
-      EconCSLib.Optimization.realBisectionAboveTarget
+      AppliedModelingLib.Optimization.realBisectionAboveTarget
         (weightedBernoulliLowEndpointOfRateOrFloor
           gHi gLo floor pHi target) x := by
   apply Bool.eq_iff_iff.mpr
@@ -810,7 +810,7 @@ theorem theorem32InnerSourceWeightedRateAbove_eq_threshold_classifier_of_pos
         gHi gLo floor pHi target)
     (hx_pos : 0 < x) (hx_le_hi : x ≤ pHi) :
     theorem32InnerSourceWeightedRateAbove gHi gLo pHi target x =
-      EconCSLib.Optimization.realBisectionAboveTarget
+      AppliedModelingLib.Optimization.realBisectionAboveTarget
         (weightedBernoulliLowEndpointOfRateOrFloor
           gHi gLo floor pHi target) x := by
   by_cases hfloor_le_x : floor ≤ x
@@ -843,10 +843,10 @@ theorem theorem32InnerSourceWeightedRateAbove_eq_threshold_classifier_of_pos
             gHi gLo floor pHi target :=
       floor_le_weightedBernoulliLowEndpointOfRateOrFloor_unconditional
     have hthreshold :
-        EconCSLib.Optimization.realBisectionAboveTarget
+        AppliedModelingLib.Optimization.realBisectionAboveTarget
             (weightedBernoulliLowEndpointOfRateOrFloor
               gHi gLo floor pHi target) x = false :=
-      EconCSLib.Optimization.realBisectionAboveTarget_eq_false_iff.mpr
+      AppliedModelingLib.Optimization.realBisectionAboveTarget_eq_false_iff.mpr
         (hx_lt_floor.trans_le hfloor_le_root)
     rw [hdirect, hthreshold]
 
@@ -867,7 +867,7 @@ theorem theorem32InnerSourceWeightedRateAbove_eq_threshold_classifier_of_weak_fl
         weightedBernoulliClosedThresholdRate gHi gLo pHi floor)
     (hx_pos : 0 < x) (hx_le_hi : x ≤ pHi) :
     theorem32InnerSourceWeightedRateAbove gHi gLo pHi target x =
-      EconCSLib.Optimization.realBisectionAboveTarget
+      AppliedModelingLib.Optimization.realBisectionAboveTarget
         (weightedBernoulliLowEndpointOfRateOrFloor
           gHi gLo floor pHi target) x := by
   by_cases htarget_lt_floor_rate :
@@ -901,7 +901,7 @@ theorem theorem32InnerSourceWeightedRateAbove_eq_threshold_classifier_of_weak_fl
         hnot_feasible
     apply Bool.eq_iff_iff.mpr
     rw [theorem32InnerSourceWeightedRateAbove_eq_true_iff,
-      EconCSLib.Optimization.realBisectionAboveTarget_eq_true_iff, hroot_eq]
+      AppliedModelingLib.Optimization.realBisectionAboveTarget_eq_true_iff, hroot_eq]
     constructor
     · intro hrate_le
       by_contra hnot
@@ -938,11 +938,11 @@ theorem theorem32InnerSourceWeightedRateRun_eq_threshold_run
       WeightedBernoulliLowEndpointTargetFeasible
         gHi gLo floor pHi target)
     (hupper_pos : 0 < upper) (hupper_le_hi : upper ≤ pHi) :
-    EconCSLib.Optimization.realBisectionRun
+    AppliedModelingLib.Optimization.realBisectionRun
         (theorem32InnerSourceWeightedRateAbove gHi gLo pHi target)
         innerSteps 0 upper =
-      EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget
+      AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget
           (weightedBernoulliLowEndpointOfRateOrFloor
             gHi gLo floor pHi target))
         innerSteps 0 upper := by
@@ -967,11 +967,11 @@ theorem theorem32InnerSourceWeightedRateRun_eq_threshold_run_of_weak_floor_rate
       target ≤
         weightedBernoulliClosedThresholdRate gHi gLo pHi floor)
     (hupper_pos : 0 < upper) (hupper_le_hi : upper ≤ pHi) :
-    EconCSLib.Optimization.realBisectionRun
+    AppliedModelingLib.Optimization.realBisectionRun
         (theorem32InnerSourceWeightedRateAbove gHi gLo pHi target)
         innerSteps 0 upper =
-      EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget
+      AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget
           (weightedBernoulliLowEndpointOfRateOrFloor
             gHi gLo floor pHi target))
         innerSteps 0 upper := by
@@ -1007,7 +1007,7 @@ theorem theorem32InnerSourceWeightedRateRun_comparison_le_returned_upper
     (hupper_rate_le_target :
       weightedBernoulliClosedThresholdRate gHi gLo pHi upper ≤ target) :
     comparison ≤
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
         (theorem32InnerSourceWeightedRateAbove gHi gLo pHi target)
         innerSteps 0 upper).2 := by
   let root :=
@@ -1039,17 +1039,17 @@ theorem theorem32InnerSourceWeightedRateRun_comparison_le_returned_upper
       floor_le_weightedBernoulliLowEndpointOfRateOrFloor_unconditional
   have hthreshold_upper :
       root ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget root)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
           innerSteps 0 upper).2 :=
-    EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+    AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
       hroot_nonneg hroot_le_upper
   have hruns :
-      EconCSLib.Optimization.realBisectionRun
+      AppliedModelingLib.Optimization.realBisectionRun
           (theorem32InnerSourceWeightedRateAbove gHi gLo pHi target)
           innerSteps 0 upper =
-        EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget root)
+        AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
           innerSteps 0 upper := by
     simpa [root] using
       theorem32InnerSourceWeightedRateRun_eq_threshold_run_of_weak_floor_rate
@@ -1059,11 +1059,11 @@ theorem theorem32InnerSourceWeightedRateRun_comparison_le_returned_upper
   calc
     comparison ≤ root := hcomparison_le_root
     _ ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget root)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
           innerSteps 0 upper).2 := hthreshold_upper
     _ =
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (theorem32InnerSourceWeightedRateAbove gHi gLo pHi target)
           innerSteps 0 upper).2 := by rw [hruns]
 
@@ -1118,12 +1118,12 @@ theorem theorem32_inner_rate_le_target_iff_threshold_classifier_true
         (1 : ℝ) (1 : ℝ) floor pHi target)
     (hfloor_le_x : floor ≤ x)
     (hx_le_hi : x ≤ pHi) :
-    EconCSLib.Optimization.realBisectionAboveTarget
+    AppliedModelingLib.Optimization.realBisectionAboveTarget
         (weightedBernoulliLowEndpointOfRateOrFloor
           (1 : ℝ) (1 : ℝ) floor pHi target) x = true ↔
       weightedBernoulliClosedThresholdRate
         (1 : ℝ) (1 : ℝ) pHi x ≤ target := by
-  rw [EconCSLib.Optimization.realBisectionAboveTarget_eq_true_iff]
+  rw [AppliedModelingLib.Optimization.realBisectionAboveTarget_eq_true_iff]
   exact
     weightedBernoulliLowEndpointOfRateOrFloor_le_iff_rate_le_target_of_feasible
       hfeasible hfloor_le_x hx_le_hi
@@ -1139,13 +1139,13 @@ theorem theorem32_inner_target_lt_rate_iff_threshold_classifier_false
         (1 : ℝ) (1 : ℝ) floor pHi target)
     (hfloor_le_x : floor ≤ x)
     (hx_le_hi : x ≤ pHi) :
-    EconCSLib.Optimization.realBisectionAboveTarget
+    AppliedModelingLib.Optimization.realBisectionAboveTarget
         (weightedBernoulliLowEndpointOfRateOrFloor
           (1 : ℝ) (1 : ℝ) floor pHi target) x = false ↔
       target <
         weightedBernoulliClosedThresholdRate
           (1 : ℝ) (1 : ℝ) pHi x := by
-  rw [EconCSLib.Optimization.realBisectionAboveTarget_eq_false_iff]
+  rw [AppliedModelingLib.Optimization.realBisectionAboveTarget_eq_false_iff]
   have hiff :
       weightedBernoulliLowEndpointOfRateOrFloor
           (1 : ℝ) (1 : ℝ) floor pHi target ≤ x ↔
@@ -1484,7 +1484,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_le_of_all_rates_ge
       rStar - eps ≤
         binaryEndpointAwareAdjacentRateObjective returned sampleRate := by
     unfold binaryEndpointAwareAdjacentRateObjective
-    exact EconCSLib.le_finiteMin
+    exact AppliedModelingLib.le_finiteMin
       (binaryEndpointAwareAdjacentRate returned sampleRate)
       hreturned
   linarith
@@ -1545,7 +1545,7 @@ theorem binaryEndpointAwareAdjacentRate_uniform_last_ge_of_bisection_bracket
     {lower delta : ℝ}
     (hoptimalLevels : BinaryEndpointLevelVector optimal)
     (B :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))))
         lower
         (returned (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))))
@@ -1638,7 +1638,7 @@ theorem binaryEndpointAwareAdjacentRate_last_ge_of_bisection_bracket
     (hgLast :
       sampleRate (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))) = gLast)
     (B :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))))
         lower
         (returned (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))))
@@ -1859,7 +1859,7 @@ theorem binaryEndpointAwareLastRateShift_log_loss_le_linear
     (hdelta : 0 ≤ delta) :
     g * Real.log ((tStar + delta) / tStar) ≤
       g * (delta / tStar) :=
-  EconCSLib.Math.mul_log_add_div_self_le_mul_div hg htStar hdelta
+  AppliedModelingLib.Math.mul_log_add_div_self_le_mul_div hg htStar hdelta
 
 /--
 Theorem 3.2 source-shaped logarithmic certificate.  If the final returned
@@ -1983,7 +1983,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_shift_linear_loss_le_of_delta_c
   have hbudget_eq :
       gLast * (delta * lastLower⁻¹) +
           gLast * (delta * firstLower⁻¹) = eps :=
-    EconCSLib.Math.mul_delta_split_budget_eq_of_delta_eq_div_mul_add
+    AppliedModelingLib.Math.mul_delta_split_budget_eq_of_delta_eq_div_mul_add
       hgLast_pos.ne' hsum_pos.ne' hdelta
   have hbudget :
       gLast * (delta / lastLower) +
@@ -2140,9 +2140,9 @@ theorem nestedBisectionOperationCount_le_stepBound
     (houter : outerSteps ≤ L + 1)
     (hinner : innerSteps ≤ L) :
     nestedBisectionOperationCount M outerSteps innerSteps ≤
-      EconCSLib.Optimization.nestedBisectionStepBound M L := by
+      AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   simpa [nestedBisectionOperationCount] using
-    EconCSLib.Optimization.nestedBisection_operation_count_le
+    AppliedModelingLib.Optimization.nestedBisection_operation_count_le
       (M := M) (L := L) houter hinner
 
 /--
@@ -2159,7 +2159,7 @@ theorem nestedBisectionOperationCount_le_mul_succ_sq
       M * (L + 1) ^ 2 :=
   (nestedBisectionOperationCount_le_stepBound
     (M := M) (L := L) houter hinner).trans
-    (EconCSLib.Optimization.nestedBisectionStepBound_le_mul_succ_sq hM)
+    (AppliedModelingLib.Optimization.nestedBisectionStepBound_le_mul_succ_sq hM)
 
 /--
 Theorem 3.2 Algorithm-1 run certificate.  A run that supplies the source's
@@ -2199,7 +2199,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
     binaryEndpointAwareAdjacentRateObjective optimal sampleRate -
         binaryEndpointAwareAdjacentRateObjective returned sampleRate ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   constructor
   · exact
       binaryEndpointAwareAdjacentRateObjective_loss_le_of_nested_bisection_certificates
@@ -2253,7 +2253,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
     binaryEndpointAwareAdjacentRateObjective optimal sampleRate -
         binaryEndpointAwareAdjacentRateObjective returned sampleRate ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   constructor
   · exact
       binaryEndpointAwareAdjacentRateObjective_loss_le_of_nested_bisection_width_minimal
@@ -2319,7 +2319,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
     binaryEndpointAwareAdjacentRateObjective optimal sampleRate -
         binaryEndpointAwareAdjacentRateObjective returned sampleRate ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let firstLower : ℝ := ((1 / ((m + 1 : ℕ) : ℝ)) ^ 2) / 2
   have hfirstLower_pos : 0 < firstLower := by
     dsimp [firstLower]
@@ -2387,7 +2387,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
         binaryEndpointAwareAdjacentRate returned sampleRate
           (firstAdjacentIndex : Fin (m + 1)))
     (hlastBracket :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))))
         lastBracketLower
         (returned (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))))
@@ -2409,14 +2409,14 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
             (lastAdjacentIndex : Fin (m + 1)))
     (hbracket :
       ∀ i : Fin (m + 1), i.val ≠ 0 → i.val ≠ m →
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (root i) (lower i) (returned (adjacentLowIndex i)) delta)
     (houter : outerSteps ≤ L + 1)
     (hinner : innerSteps ≤ L) :
     binaryEndpointAwareAdjacentRateObjective optimal sampleRate -
         binaryEndpointAwareAdjacentRateObjective returned sampleRate ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hfirstHigh_pos :
       0 <
         optimal
@@ -2636,13 +2636,13 @@ theorem theorem32_monotone_last_low_bracket_of_weighted_outer_run
       optimal (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))) ≤ upper0)
     (hwidth : (upper0 - lower0) / (2 : ℝ) ^ outerSteps ≤ delta)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove (candidate x) sampleRate)
           outerSteps lower0 upper0).2 =
         returned (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1)))) :
-    EconCSLib.Optimization.RealBisectionBracket
+    AppliedModelingLib.Optimization.RealBisectionBracket
       (optimal (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))))
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove (candidate x) sampleRate)
           outerSteps lower0 upper0).1
       (returned (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))))
@@ -2652,11 +2652,11 @@ theorem theorem32_monotone_last_low_bracket_of_weighted_outer_run
   let above : ℝ → Bool := fun x =>
     theorem32OuterSourceWeightedRateAbove (candidate x) sampleRate
   have B :
-      EconCSLib.Optimization.RealBisectionBracket target
-        (EconCSLib.Optimization.realBisectionRun above outerSteps lower0 upper0).1
-        (EconCSLib.Optimization.realBisectionRun above outerSteps lower0 upper0).2
+      AppliedModelingLib.Optimization.RealBisectionBracket target
+        (AppliedModelingLib.Optimization.realBisectionRun above outerSteps lower0 upper0).1
+        (AppliedModelingLib.Optimization.realBisectionRun above outerSteps lower0 upper0).2
         delta :=
-    EconCSLib.Optimization.realBisectionRun_bracket_of_width_le
+    AppliedModelingLib.Optimization.realBisectionRun_bracket_of_width_le
       (above := above) (n := outerSteps)
       (target := target) (lower := lower0) (upper := upper0)
       (delta := delta)
@@ -2688,30 +2688,30 @@ theorem theorem32_monotone_inner_low_bisection_brackets_of_runs
         (upper0 i - lower0 i) / (2 : ℝ) ^ innerSteps ≤ delta)
     (hreturnedLow :
       ∀ i : Fin (m + 1), i.val ≠ 0 → i.val ≠ m →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lower0 i) (upper0 i)).2 =
           returned (adjacentLowIndex i)) :
     ∀ i : Fin (m + 1), i.val ≠ 0 → i.val ≠ m →
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (root i)
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lower0 i) (upper0 i)).1
         (returned (adjacentLowIndex i))
         delta := by
   intro i hi_first hi_last
   have B :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (root i)
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lower0 i) (upper0 i)).1
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lower0 i) (upper0 i)).2
         delta :=
-    EconCSLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
+    AppliedModelingLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
       (n := innerSteps)
       (lower := lower0 i) (upper := upper0 i) (target := root i)
       (delta := delta)
@@ -2906,8 +2906,8 @@ noncomputable def theorem32WeightedBackwardLowBisectionFromTop
           (sampleRate (adjacentHighIndex adj))
           (sampleRate (adjacentLowIndex adj))
           tFirst high target
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget root)
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
         innerSteps 0 high).2
 
 /--
@@ -3006,8 +3006,8 @@ theorem theorem32WeightedBackwardLowBisectionLevels_returnedLow
         (sampleRate (adjacentLowIndex j))
         tFirst
         (returned (adjacentHighIndex j)) target
-    (EconCSLib.Optimization.realBisectionRun
-      (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+    (AppliedModelingLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
       innerSteps 0 (returned (adjacentHighIndex i))).2 =
       returned (adjacentLowIndex i) := by
   dsimp
@@ -3052,8 +3052,8 @@ theorem theorem32WeightedBackwardLowBisectionLevels_returnedLow_last_rate
         (returned (adjacentHighIndex j))
         (binaryEndpointAwareAdjacentRate returned sampleRate
           (lastAdjacentIndex : Fin (n + 1)))
-    (EconCSLib.Optimization.realBisectionRun
-      (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+    (AppliedModelingLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
       innerSteps 0 (returned (adjacentHighIndex i))).2 =
       returned (adjacentLowIndex i) := by
   let target : ℝ :=
@@ -3070,8 +3070,8 @@ theorem theorem32WeightedBackwardLowBisectionLevels_returnedLow_last_rate
       theorem32WeightedBackwardLowBisectionLevels_last_rate
         (n := n) (innerSteps := innerSteps) hn sampleRate tFirst target lastLow
   change
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget
           (weightedBernoulliLowEndpointOfRateOrFloor
             (sampleRate (adjacentHighIndex i))
             (sampleRate (adjacentLowIndex i))
@@ -3144,8 +3144,8 @@ theorem theorem32WeightedBackwardLowBisectionLevels_interior_adjacent_strict_of_
   have hroot_le_high : root i ≤ returned (adjacentHighIndex i) :=
     le_of_lt hmem.2
   have hreturnedLow :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i))).2 =
         returned (adjacentLowIndex i) := by
     simpa [returned, root] using
@@ -3153,12 +3153,12 @@ theorem theorem32WeightedBackwardLowBisectionLevels_interior_adjacent_strict_of_
         (n := n) (innerSteps := innerSteps)
         sampleRate tFirst target lastLow i hfirst hlast
   have hstrict :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i))).2 <
         returned (adjacentHighIndex i) := by
     exact
-      EconCSLib.Optimization.realBisectionRun_aboveTarget_upper_lt_initial_upper_of_width_lt_gap
+      AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_upper_lt_initial_upper_of_width_lt_gap
         (n := innerSteps) (lower := 0)
         (target := root i) (upper := returned (adjacentHighIndex i))
         hroot_nonneg hroot_le_high
@@ -3213,16 +3213,16 @@ theorem theorem32WeightedBackwardLowBisectionLevels_first_high_pos_of_feasible
     le_of_lt hmem.2
   have hupper_ge_root :
       root i ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 :=
-    EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+    AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
       (n := innerSteps) (lower := 0)
       (target := root i) (upper := returned (adjacentHighIndex i))
       hroot_nonneg hroot_le_high
   have hreturnedLow :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i))).2 =
         returned (adjacentLowIndex i) := by
     simpa [returned, root] using
@@ -3424,7 +3424,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
       optimal (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))) ≤ upper0)
     (houterWidth : (upper0 - lower0) / (2 : ℝ) ^ outerSteps ≤ delta)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove (candidate x) sampleRate)
           outerSteps lower0 upper0).2 =
         returned (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))))
@@ -3459,8 +3459,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
         (upperInner i - lowerInner i) / (2 : ℝ) ^ innerSteps ≤ delta)
     (hreturnedLow :
       ∀ i : Fin (m + 1), i.val ≠ 0 → i.val ≠ m →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lowerInner i) (upperInner i)).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -3468,11 +3468,11 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
     binaryEndpointAwareAdjacentRateObjective optimal sampleRate -
         binaryEndpointAwareAdjacentRateObjective returned sampleRate ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hlastBracket :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))))
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove (candidate x) sampleRate)
           outerSteps lower0 upper0).1
         (returned (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))))
@@ -3491,10 +3491,10 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
       root hroot_def hfeasible
   have hbracket :
       ∀ i : Fin (m + 1), i.val ≠ 0 → i.val ≠ m →
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (root i)
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
             innerSteps (lowerInner i) (upperInner i)).1
           (returned (adjacentLowIndex i))
           delta :=
@@ -3509,15 +3509,15 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
       (rStar := rStar) (gLast := gLast)
       (delta := delta) (eps := eps)
       (lastBracketLower :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove (candidate x) sampleRate)
           outerSteps lower0 upper0).1)
       hgLast_pos heps hoptimal_levels hreturned_levels heq hsample_pos
       hsample_mono hfirst_sample hgLast hlast_width hdelta hoptimal
       hfirstRate hlastBracket root
       (fun i =>
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lowerInner i) (upperInner i)).1)
       hrootFacts.1 hrootFacts.2.1 hrootFacts.2.2 hbracket houter hinner
 
@@ -3595,7 +3595,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
       optimal (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))) ≤ upper0)
     (houterWidth : (upper0 - lower0) / (2 : ℝ) ^ outerSteps ≤ delta)
     (houterRunLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove (candidate x) sampleRate)
           outerSteps lower0 upper0).2 = lastLow)
     (hfeasible :
@@ -3640,7 +3640,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
     binaryEndpointAwareAdjacentRateObjective optimal sampleRate -
         binaryEndpointAwareAdjacentRateObjective returned sampleRate ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     optimal (adjacentHighIndex (firstAdjacentIndex : Fin (m + 1)))
   let target : ℝ :=
@@ -3658,7 +3658,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
       (binaryEndpointAwareAdjacentRate returned sampleRate
         (lastAdjacentIndex : Fin (m + 1)))
   have hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove (candidate x) sampleRate)
           outerSteps lower0 upper0).2 =
         returned (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))) := by
@@ -3706,8 +3706,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
     exact le_of_lt hmem.2
   have hreturnedLow :
       ∀ i : Fin (m + 1), i.val ≠ 0 → i.val ≠ m →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps ((fun _ : Fin (m + 1) => (0 : ℝ)) i)
             ((fun i : Fin (m + 1) => returned (adjacentHighIndex i)) i)).2 =
           returned (adjacentLowIndex i) := by
@@ -3766,7 +3766,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
             (-Real.log x))
           x
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove
             (candidate x) sampleRate)
           outerSteps lower0 upper0).2
@@ -3856,7 +3856,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
             (-Real.log x))
           x
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove
             (candidate x) sampleRate)
           outerSteps lower0 upper0).2
@@ -3878,7 +3878,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
             (-Real.log x))
           x
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove
             (candidate x) sampleRate)
           outerSteps lower0 upper0).2
@@ -3908,7 +3908,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
           (-Real.log x))
         x
     let lastLow : ℝ :=
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
         (fun x => theorem32OuterSourceWeightedRateAbove
           (candidate x) sampleRate)
         outerSteps lower0 upper0).2
@@ -3921,7 +3921,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
     binaryEndpointAwareAdjacentRateObjective optimal sampleRate -
         binaryEndpointAwareAdjacentRateObjective returned sampleRate ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     optimal (adjacentHighIndex (firstAdjacentIndex : Fin (m + 1)))
   let candidate : ℝ → Fin (m + 2) → ℝ := fun x =>
@@ -3933,7 +3933,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
   let above : ℝ → Bool := fun x =>
     theorem32OuterSourceWeightedRateAbove (candidate x) sampleRate
   let lastLow : ℝ :=
-    (EconCSLib.Optimization.realBisectionRun
+    (AppliedModelingLib.Optimization.realBisectionRun
       above outerSteps lower0 upper0).2
   let target : ℝ :=
     sampleRate (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))) *
@@ -3953,7 +3953,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
       simpa [above, candidate, tFirst] using hupperAbove
     have hrunAbove :
         above
-            (EconCSLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionRun
               above outerSteps lower0 upper0).2 = true :=
       theorem32_realBisectionRun_upper_true_of_upper_true
         above hupperAbove'
@@ -4124,7 +4124,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
             (-Real.log x))
           x
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove
             (candidate x) sampleRate)
           outerSteps lower0 upper0).2
@@ -4145,7 +4145,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
             (-Real.log x))
           x
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove
             (candidate x) sampleRate)
           outerSteps lower0 upper0).2
@@ -4160,7 +4160,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
             (-Real.log x))
           x
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove
             (candidate x) sampleRate)
           outerSteps lower0 upper0).2
@@ -4175,7 +4175,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
             (-Real.log x))
           x
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove
             (candidate x) sampleRate)
           outerSteps lower0 upper0).2
@@ -4197,7 +4197,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
             (-Real.log x))
           x
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove
             (candidate x) sampleRate)
           outerSteps lower0 upper0).2
@@ -4219,7 +4219,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
             (-Real.log x))
           x
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove
             (candidate x) sampleRate)
           outerSteps lower0 upper0).2
@@ -4245,7 +4245,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
             (-Real.log x))
           x
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceWeightedRateAbove
             (candidate x) sampleRate)
           outerSteps lower0 upper0).2
@@ -4278,7 +4278,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
           (-Real.log x))
         x
     let lastLow : ℝ :=
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
         (fun x => theorem32OuterSourceWeightedRateAbove
           (candidate x) sampleRate)
         outerSteps lower0 upper0).2
@@ -4291,7 +4291,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
     binaryEndpointAwareAdjacentRateObjective optimal sampleRate -
         binaryEndpointAwareAdjacentRateObjective returned sampleRate ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     optimal (adjacentHighIndex (firstAdjacentIndex : Fin (m + 1)))
   let candidate : ℝ → Fin (m + 2) → ℝ := fun x =>
@@ -4303,7 +4303,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
   let above : ℝ → Bool := fun x =>
     theorem32OuterSourceWeightedRateAbove (candidate x) sampleRate
   let lastLow : ℝ :=
-    (EconCSLib.Optimization.realBisectionRun
+    (AppliedModelingLib.Optimization.realBisectionRun
       above outerSteps lower0 upper0).2
   let target : ℝ :=
     sampleRate (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))) *
@@ -4556,7 +4556,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin (m + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   constructor
   · exact
       binaryEndpointAwareAdjacentRateObjective_loss_le_of_nested_bisection_uniform_equalized
@@ -4683,7 +4683,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin (m + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   constructor
   · exact
       binaryEndpointAwareAdjacentRateObjective_loss_le_of_nested_bisection_uniform_equalized_rate_lower
@@ -4931,7 +4931,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   constructor
   · exact
       binaryEndpointAwareAdjacentRateObjective_loss_le_of_nested_bisection_uniform_doubled_closed
@@ -5006,7 +5006,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   exact
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_bisection_uniform_doubled_closed_run
       hm oldLevels returned heps holdLevels holdEq hlower_le_one
@@ -5073,7 +5073,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   exact
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_bisection_uniform_doubled_closed_run_explicit_delta
       hm oldLevels returned heps holdLevels holdEq
@@ -5161,7 +5161,7 @@ noncomputable def theorem32WeightedBackwardGridRateBisectionFromTop
         theorem32WeightedBackwardGridRateBisectionFromTop
           n innerSteps sampleRate grid target lastLow (d + 1)
       let adj : Fin (n + 1) := ⟨n - d - 1, by omega⟩
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
         (theorem32InnerSourceWeightedRateAbove
           (sampleRate (adjacentHighIndex adj))
           (sampleRate (adjacentLowIndex adj)) high target)
@@ -5243,7 +5243,7 @@ theorem theorem32WeightedBackwardGridRateBisectionLevels_returnedLow
     let returned :=
       theorem32WeightedBackwardGridRateBisectionLevels
         n innerSteps sampleRate grid target lastLow
-    (EconCSLib.Optimization.realBisectionRun
+    (AppliedModelingLib.Optimization.realBisectionRun
       (theorem32InnerSourceWeightedRateAbove
         (sampleRate (adjacentHighIndex i))
         (sampleRate (adjacentLowIndex i))
@@ -5300,7 +5300,7 @@ theorem theorem32WeightedBackwardGridRateBisectionFromTop_le_lastLow
                   (sampleRate (adjacentHighIndex adj))
                   (sampleRate (adjacentLowIndex adj)) high target
               have hrun :
-                  (EconCSLib.Optimization.realBisectionRun
+                  (AppliedModelingLib.Optimization.realBisectionRun
                     above innerSteps 0 (high - grid)).2 ≤ lastLow :=
                 theorem32_realBisectionRun_upper_le_of_endpoints_le
                   above hlastLow (by dsimp [high]; linarith)
@@ -5357,7 +5357,7 @@ theorem theorem32WeightedBackwardGridRateBisectionLevels_interior_strict_of_low_
       sampleRate grid target lastLow i hi_first hi_last
   have hrun_pos :
       0 <
-        (EconCSLib.Optimization.realBisectionRun above innerSteps 0
+        (AppliedModelingLib.Optimization.realBisectionRun above innerSteps 0
           (returned (adjacentHighIndex i) - grid)).2 := by
     simpa [above, returned, hreturnedLow] using hlow_pos
   have hupper_pos :
@@ -5365,10 +5365,10 @@ theorem theorem32WeightedBackwardGridRateBisectionLevels_interior_strict_of_low_
     theorem32_realBisectionRun_initial_upper_pos_of_returned_upper_pos
       above hrun_pos
   have hrun_le :
-      (EconCSLib.Optimization.realBisectionRun above innerSteps 0
+      (AppliedModelingLib.Optimization.realBisectionRun above innerSteps 0
           (returned (adjacentHighIndex i) - grid)).2 ≤
         returned (adjacentHighIndex i) - grid :=
-    EconCSLib.Optimization.realBisectionRun_upper_le_initial
+    AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
       above hupper_pos.le
   have hlow_le :
       returned (adjacentLowIndex i) ≤
@@ -5527,7 +5527,7 @@ theorem theorem32WeightedBackwardGridRateBisectionLevels_interior_rate_le_target
       (by simpa [returned] using hgrid_upper_rate_le_target)
   have hrun_true :
       above
-          (EconCSLib.Optimization.realBisectionRun above innerSteps 0
+          (AppliedModelingLib.Optimization.realBisectionRun above innerSteps 0
             (returned (adjacentHighIndex i) - grid)).2 = true :=
     theorem32_realBisectionRun_upper_true_of_upper_true above hinitial_true
   have hreturnedLow :=
@@ -5597,8 +5597,8 @@ theorem theorem32WeightedBackwardGridRateBisectionLevels_inner_bracket_of_feasib
         (sampleRate (adjacentHighIndex i))
         (sampleRate (adjacentLowIndex i)) floor
         (returned (adjacentHighIndex i)) target
-    EconCSLib.Optimization.RealBisectionBracket root
-      (EconCSLib.Optimization.realBisectionRun
+    AppliedModelingLib.Optimization.RealBisectionBracket root
+      (AppliedModelingLib.Optimization.realBisectionRun
         (theorem32InnerSourceWeightedRateAbove
           (sampleRate (adjacentHighIndex i))
           (sampleRate (adjacentLowIndex i))
@@ -5631,28 +5631,28 @@ theorem theorem32WeightedBackwardGridRateBisectionLevels_inner_bracket_of_feasib
     hfeasible.hfloor0.trans_le
       (by simpa [returned] using hfloor_le_grid_upper)
   have hruns :
-      EconCSLib.Optimization.realBisectionRun
+      AppliedModelingLib.Optimization.realBisectionRun
           (theorem32InnerSourceWeightedRateAbove
             (sampleRate (adjacentHighIndex i))
             (sampleRate (adjacentLowIndex i))
             (returned (adjacentHighIndex i)) target)
           innerSteps 0 (returned (adjacentHighIndex i) - grid) =
-        EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget root)
+        AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
           innerSteps 0 (returned (adjacentHighIndex i) - grid) := by
     simpa [root, returned] using
       theorem32InnerSourceWeightedRateRun_eq_threshold_run
         (innerSteps := innerSteps) hfeasible hsource_upper_pos (by linarith)
   have hthreshold_bracket :
-      EconCSLib.Optimization.RealBisectionBracket root
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget root)
+      AppliedModelingLib.Optimization.RealBisectionBracket root
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
           innerSteps 0 (returned (adjacentHighIndex i) - grid)).1
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget root)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
           innerSteps 0 (returned (adjacentHighIndex i) - grid)).2
         grid :=
-    EconCSLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
+    AppliedModelingLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
       hroot_nonneg hroot_le_grid_upper (by simpa [returned] using hwidth)
   have hreturnedLow :=
     theorem32WeightedBackwardGridRateBisectionLevels_returnedLow
@@ -5950,14 +5950,14 @@ theorem theorem32WeightedBackwardGridRateBisectionLevels_comparison_domination_o
       simpa [returned, target, gLast] using hrun_dom.trans_eq hreturnedLow
     have hlow_le_last : returned (adjacentLowIndex i) ≤ lastLow := by
       have hrun_upper :
-          (EconCSLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionRun
             (theorem32InnerSourceWeightedRateAbove
               (sampleRate (adjacentHighIndex i))
               (sampleRate (adjacentLowIndex i))
               (returned (adjacentHighIndex i)) target)
             innerSteps 0 (returned (adjacentHighIndex i) - grid)).2 ≤
             returned (adjacentHighIndex i) - grid :=
-        EconCSLib.Optimization.realBisectionRun_upper_le_initial
+        AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
           (theorem32InnerSourceWeightedRateAbove
             (sampleRate (adjacentHighIndex i))
             (sampleRate (adjacentLowIndex i))
@@ -6193,7 +6193,7 @@ noncomputable def theorem32WeightedNestedBisectionOutput
   let above : ℝ → Bool := fun lastLow =>
     theorem32OuterSourceWeightedRateAbove (candidate lastLow) sampleRate
   let lastLow : ℝ :=
-    (EconCSLib.Optimization.realBisectionRun above outerSteps
+    (AppliedModelingLib.Optimization.realBisectionRun above outerSteps
       (1 - 1 / ((m + 1 : ℕ) : ℝ)) (1 - grid)).2
   candidate lastLow
 
@@ -6209,7 +6209,7 @@ theorem theorem32WeightedNestedBisectionOutput_last_low
     let above : ℝ → Bool := fun lastLow =>
       theorem32OuterSourceWeightedRateAbove (candidate lastLow) sampleRate
     let lastLow : ℝ :=
-      (EconCSLib.Optimization.realBisectionRun above outerSteps
+      (AppliedModelingLib.Optimization.realBisectionRun above outerSteps
         (1 - 1 / ((m + 1 : ℕ) : ℝ)) (1 - grid)).2
     theorem32WeightedNestedBisectionOutput
         m outerSteps innerSteps sampleRate grid
@@ -6222,7 +6222,7 @@ theorem theorem32WeightedNestedBisectionOutput_last_low
       (sampleRate
           (adjacentLowIndex (lastAdjacentIndex : Fin (m + 1))) *
         (-Real.log
-          (EconCSLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionRun
             (fun lastLow =>
               theorem32OuterSourceWeightedRateAbove
                 (theorem32WeightedBackwardGridRateBisectionLevels
@@ -6234,7 +6234,7 @@ theorem theorem32WeightedNestedBisectionOutput_last_low
                   lastLow)
                 sampleRate)
             outerSteps (1 - 1 / ((m + 1 : ℕ) : ℝ)) (1 - grid)).2))
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
         (fun lastLow =>
           theorem32OuterSourceWeightedRateAbove
             (theorem32WeightedBackwardGridRateBisectionLevels
@@ -6358,7 +6358,7 @@ theorem theorem32WeightedNestedBisectionOutput_last_low_le_optimal_add_grid
         hgrid_fits x hx_pos hx_le_one_sub_grid
         (by simpa [above, candidate, gLast] using hx_false)
   have hrun_upper :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
         above outerSteps lower upper).2 ≤ optimalLast + grid :=
     theorem32_realBisectionRun_upper_le_target_add_delta_of_false_sound_on_Icc
       above hlower_upper hlower_optimal hfalse
@@ -6409,7 +6409,7 @@ theorem theorem32WeightedNestedBisectionOutput_last_rate_le_first_rate
   let above : ℝ → Bool := fun x =>
     theorem32OuterSourceWeightedRateAbove (candidate x) sampleRate
   let lastLow : ℝ :=
-    (EconCSLib.Optimization.realBisectionRun
+    (AppliedModelingLib.Optimization.realBisectionRun
       above outerSteps lower upper).2
   have hoptimal_last_pos :
       0 < optimal
@@ -6494,7 +6494,7 @@ theorem theorem32WeightedNestedBisectionOutput_isEndpointLevelVector
   let above : ℝ → Bool := fun x =>
     theorem32OuterSourceWeightedRateAbove (candidate x) sampleRate
   let lastLow : ℝ :=
-    (EconCSLib.Optimization.realBisectionRun
+    (AppliedModelingLib.Optimization.realBisectionRun
       above outerSteps lower upper).2
   let target : ℝ := gLast * (-Real.log lastLow)
   have hm_pos : 0 < m := Nat.lt_of_succ_lt hm
@@ -6511,20 +6511,20 @@ theorem theorem32WeightedNestedBisectionOutput_isEndpointLevelVector
   have hlower_le_run : lower ≤ lastLow := by
     have hlower_le_lower :
         lower ≤
-          (EconCSLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionRun
             above outerSteps lower upper).1 :=
       theorem32_realBisectionRun_initial_lower_le_lower above hlower_upper
     have hlower_runupper :
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
             above outerSteps lower upper).1 ≤
-          (EconCSLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionRun
             above outerSteps lower upper).2 :=
-      EconCSLib.Optimization.realBisectionRun_lower_le_upper
+      AppliedModelingLib.Optimization.realBisectionRun_lower_le_upper
         above hlower_upper
     exact hlower_le_lower.trans hlower_runupper
   have hlastLow_pos : 0 < lastLow := hlower_pos.trans_le hlower_le_run
   have hlastLow_le_upper : lastLow ≤ upper :=
-    EconCSLib.Optimization.realBisectionRun_upper_le_initial
+    AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
       above hlower_upper
   have hlastLow_lt_one : lastLow < 1 := by
     have hupper_lt_one : upper < 1 := by dsimp [upper]; linarith
@@ -6694,9 +6694,9 @@ theorem theorem32WeightedNestedBisectionOutput_first_high_ge_optimal
       hlower_optimal.trans
         (by simpa [upperOuter, last] using hoptimal_last_low_le_upper)
     have hrun_upper :
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           above outerSteps lowerOuter upperOuter).2 ≤ upperOuter :=
-      EconCSLib.Optimization.realBisectionRun_upper_le_initial
+      AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
         above hlower_upper
     have houtputLast :=
       theorem32WeightedNestedBisectionOutput_last_low
@@ -6886,7 +6886,7 @@ theorem theorem32WeightedNestedBisectionOutput_inner_rate_ge_last_sub_log
           (sampleRate (adjacentHighIndex i))
           (sampleRate (adjacentLowIndex i)) high target
       let run :=
-        EconCSLib.Optimization.realBisectionRun
+        AppliedModelingLib.Optimization.realBisectionRun
           above innerSteps 0 (high - grid)
       let runLower : ℝ := run.1
       have hfirst_to_low : returned (adjacentHighIndex first) ≤ low := by
@@ -6919,7 +6919,7 @@ theorem theorem32WeightedNestedBisectionOutput_inner_rate_ge_last_sub_log
         have hwidth_eq :
             run.2 - run.1 = (high - grid) / (2 : ℝ) ^ innerSteps := by
           simpa [run, above] using
-            EconCSLib.Optimization.realBisectionRun_width_eq
+            AppliedModelingLib.Optimization.realBisectionRun_width_eq
               above hgrid_upper_nonneg
         have hhigh_le_one : high ≤ 1 := hhigh_lt_one.le
         have hpow_nonneg : 0 ≤ (2 : ℝ) ^ innerSteps :=
@@ -6954,7 +6954,7 @@ theorem theorem32WeightedNestedBisectionOutput_inner_rate_ge_last_sub_log
           (by simpa [above] using hrunLower_false)
       have hrunLower_le_low : runLower ≤ low := by
         have hrun_order : run.1 ≤ run.2 :=
-          EconCSLib.Optimization.realBisectionRun_lower_le_upper
+          AppliedModelingLib.Optimization.realBisectionRun_lower_le_upper
             above hgrid_upper_nonneg
         simpa [runLower, hreturnedLow] using hrun_order
       have hlow_le_add : low ≤ runLower + grid := by
@@ -7034,7 +7034,7 @@ theorem theorem32WeightedNestedBisectionOutput_inner_rate_ge_last_sub_log
 /-- Minimum adjacent gap of a finite source-optimal endpoint vector. -/
 noncomputable def theorem32WeightedSourceGapMin {m : ℕ}
     (optimal : Fin (m + 2) → ℝ) : ℝ :=
-  EconCSLib.finiteMin (fun i : Fin (m + 1) =>
+  AppliedModelingLib.finiteMin (fun i : Fin (m + 1) =>
     optimal (adjacentHighIndex i) - optimal (adjacentLowIndex i))
 
 /-- A finite strict endpoint vector has a strictly positive minimum gap. -/
@@ -7043,7 +7043,7 @@ theorem theorem32WeightedSourceGapMin_pos {m : ℕ}
     (hoptimalLevels : BinaryEndpointLevelVector optimal) :
     0 < theorem32WeightedSourceGapMin optimal := by
   unfold theorem32WeightedSourceGapMin
-  exact EconCSLib.finiteMin_pos _ (fun i => sub_pos.mpr (hoptimalLevels.2.2 i))
+  exact AppliedModelingLib.finiteMin_pos _ (fun i => sub_pos.mpr (hoptimalLevels.2.2 i))
 
 /--
 The source equalization and monotone matching hypotheses give a polynomial
@@ -7088,7 +7088,7 @@ theorem theorem32WeightedSourceGapMin_ge_polynomial
       BinaryEndpointLevelVector_first_high_lt_one hm_pos hoptimalLevels
   have hfirst_log : sourceFirstLower ≤ -Real.log (1 - tFirst) :=
     htFirst_lower.trans
-      (EconCSLib.Math.le_neg_log_one_sub htFirst_nonneg htFirst_lt_one)
+      (AppliedModelingLib.Math.le_neg_log_one_sub htFirst_nonneg htFirst_lt_one)
   have hfirst_formula :
       binaryEndpointAwareAdjacentRate optimal sampleRate first =
         -Real.log (1 - tFirst) := by
@@ -7131,7 +7131,7 @@ theorem theorem32WeightedSourceGapMin_ge_polynomial
     linarith
   have hlast_log : -Real.log tLast ≤ gap / tLast := by
     simpa [gap] using
-      EconCSLib.Math.neg_log_one_sub_le_div_self hgap_nonneg hgap_lt_one
+      AppliedModelingLib.Math.neg_log_one_sub_le_div_self hgap_nonneg hgap_lt_one
   have hsource_gap_div : sourceFirstLower ≤ gLast * (gap / tLast) :=
     hsource_rate.trans (mul_le_mul_of_nonneg_left hlast_log hgLast.le)
   have hsource_half_le_mul : sourceFirstLower / 2 ≤ gLast * gap := by
@@ -7145,7 +7145,7 @@ theorem theorem32WeightedSourceGapMin_ge_polynomial
     rw [div_le_iff₀ (mul_pos (by norm_num) hgLast)]
     nlinarith
   unfold theorem32WeightedSourceGapMin
-  apply EconCSLib.le_finiteMin
+  apply AppliedModelingLib.le_finiteMin
   intro i
   have hlast_width :
       1 - tLast ≤
@@ -7305,7 +7305,7 @@ theorem theorem32WeightedNestedBisectionOutput_exists_source_depth_of_eps_pos
                 (theorem32WeightedNestedBisectionOutput
                   m (L + 1) L sampleRate grid) sampleRate ≤ eps ∧
             nestedBisectionOperationCount (m + 2) (L + 1) L ≤
-              EconCSLib.Optimization.nestedBisectionStepBound (m + 2) L ∧
+              AppliedModelingLib.Optimization.nestedBisectionStepBound (m + 2) L ∧
             ((nestedBisectionOperationCount
                 (m + 2) (L + 1) L : ℕ) : ℝ) ≤
               ((m + 2 : ℕ) : ℝ) * runtimeLog ^ 2 := by
@@ -7344,7 +7344,7 @@ theorem theorem32WeightedNestedBisectionOutput_exists_source_depth_of_eps_pos
           optimal (adjacentHighIndex i) - optimal (adjacentLowIndex i) := by
     intro i
     simpa [gapMin, theorem32WeightedSourceGapMin] using
-      (EconCSLib.finiteMin_le
+      (AppliedModelingLib.finiteMin_le
         (fun j : Fin (m + 1) =>
           optimal (adjacentHighIndex j) - optimal (adjacentLowIndex j)) i)
   have hgrid_fits :
@@ -7377,13 +7377,13 @@ theorem theorem32WeightedNestedBisectionOutput_exists_source_depth_of_eps_pos
         max (outerWidth / 2) 1 ≤ grid * (2 : ℝ) ^ L ∧
           ((L + 1 : ℕ) : ℝ) ≤ runtimeLog := by
     simpa [sourceDepthBudget, runtimeLog, outerWidth] using
-      (EconCSLib.Optimization.exists_nat_le_delta_mul_pow_two_and_succ_le_logb_max
+      (AppliedModelingLib.Optimization.exists_nat_le_delta_mul_pow_two_and_succ_le_logb_max
         (budget := sourceDepthBudget) (delta := grid) hgrid_pos)
   rcases hdepth_budget with ⟨L, hdepth, hdepth_log⟩
   have hpaired :
       max (outerWidth / (2 : ℝ) ^ (L + 1))
           (1 / (2 : ℝ) ^ L) ≤ grid :=
-    EconCSLib.Optimization.max_outer_half_inner_width_div_pow_two_le_of_le_delta_mul_pow_two
+    AppliedModelingLib.Optimization.max_outer_half_inner_width_div_pow_two_le_of_le_delta_mul_pow_two
       hdepth
   have houter_width :
       ((1 - grid) - (1 - 1 / ((m + 1 : ℕ) : ℝ))) /
@@ -7520,14 +7520,14 @@ theorem theorem32WeightedNestedBisectionOutput_exists_source_depth_of_eps_pos
         hoptimal_rates hlastLoss hgrid' hlinear
   have hruntime_step :
       nestedBisectionOperationCount (m + 2) (L + 1) L ≤
-        EconCSLib.Optimization.nestedBisectionStepBound (m + 2) L :=
+        AppliedModelingLib.Optimization.nestedBisectionStepBound (m + 2) L :=
     nestedBisectionOperationCount_le_stepBound
       (Nat.le_refl (L + 1)) (Nat.le_refl L)
   have hruntime_log :
       ((nestedBisectionOperationCount (m + 2) (L + 1) L : ℕ) : ℝ) ≤
         ((m + 2 : ℕ) : ℝ) * runtimeLog ^ 2 := by
     simpa [nestedBisectionOperationCount, Nat.mul_add, Nat.mul_one] using
-      EconCSLib.Optimization.nestedBisection_operation_count_real_le_mul_sq_of_depth_le
+      AppliedModelingLib.Optimization.nestedBisection_operation_count_real_le_mul_sq_of_depth_le
         (M := m + 2) (L := L) (outerSteps := L + 1) (innerSteps := L)
         (R := runtimeLog) (by omega) hdepth_log
         (Nat.le_refl (L + 1)) (Nat.le_refl L)
@@ -7620,7 +7620,7 @@ theorem theorem32WeightedNestedBisectionOutput_loss_and_runtime_le_of_source_gri
     binaryEndpointAwareAdjacentRateObjective optimal sampleRate -
         binaryEndpointAwareAdjacentRateObjective returned sampleRate ≤ eps ∧
       nestedBisectionOperationCount (m + 2) outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound (m + 2) L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound (m + 2) L := by
   let returned :=
     theorem32WeightedNestedBisectionOutput
       m outerSteps innerSteps sampleRate grid
@@ -7638,7 +7638,7 @@ theorem theorem32WeightedNestedBisectionOutput_loss_and_runtime_le_of_source_gri
       (sampleRate (adjacentLowIndex i)) tFirst
       (returned (adjacentHighIndex i)) target
   let lower : Fin (m + 1) → ℝ := fun i =>
-    (EconCSLib.Optimization.realBisectionRun
+    (AppliedModelingLib.Optimization.realBisectionRun
       (theorem32InnerSourceWeightedRateAbove
         (sampleRate (adjacentHighIndex i))
         (sampleRate (adjacentLowIndex i))
@@ -7720,9 +7720,9 @@ theorem theorem32WeightedNestedBisectionOutput_loss_and_runtime_le_of_source_gri
       hlower_optimal.trans
         (by simpa [upperOuter, last] using hoptimal_last_low_le_upper)
     have hrun_upper :
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           above outerSteps lowerOuter upperOuter).2 ≤ upperOuter :=
-      EconCSLib.Optimization.realBisectionRun_upper_le_initial
+      AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
         above hlower_upper
     have houtputLast :=
       theorem32WeightedNestedBisectionOutput_last_low
@@ -7823,7 +7823,7 @@ theorem theorem32WeightedNestedBisectionOutput_loss_and_runtime_le_of_source_gri
         hlastRate.symm
   have hbracket :
       ∀ i : Fin (m + 1), i.val ≠ 0 → i.val ≠ m →
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (root i) (lower i) (returned (adjacentLowIndex i)) grid := by
     intro i hi_first hi_last
     dsimp [root, lower]
@@ -7978,8 +7978,8 @@ noncomputable def theorem32BackwardLowBisectionFromTop
       let root :=
         weightedBernoulliLowEndpointOfRateOrFloor
           (1 : ℝ) (1 : ℝ) tFirst high target
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget root)
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
         innerSteps 0 high).2
 
 /--
@@ -8027,8 +8027,8 @@ theorem theorem32BackwardLowBisectionLevels_returnedLow
       weightedBernoulliLowEndpointOfRateOrFloor
         (1 : ℝ) (1 : ℝ) tFirst
         (returned (adjacentHighIndex j)) target
-    (EconCSLib.Optimization.realBisectionRun
-      (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+    (AppliedModelingLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
       innerSteps 0 (returned (adjacentHighIndex i))).2 =
       returned (adjacentLowIndex i) := by
   dsimp
@@ -8094,8 +8094,8 @@ theorem theorem32BackwardLowBisectionLevels_interior_adjacent_strict_of_feasible
   have hroot_le_high : root i ≤ returned (adjacentHighIndex i) :=
     le_of_lt hmem.2
   have hreturnedLow :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i))).2 =
         returned (adjacentLowIndex i) := by
     simpa [returned, root] using
@@ -8103,12 +8103,12 @@ theorem theorem32BackwardLowBisectionLevels_interior_adjacent_strict_of_feasible
         (n := n) (innerSteps := innerSteps)
         tFirst target lastLow i hfirst hlast
   have hstrict :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i))).2 <
         returned (adjacentHighIndex i) := by
     exact
-      EconCSLib.Optimization.realBisectionRun_aboveTarget_upper_lt_initial_upper_of_width_lt_gap
+      AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_upper_lt_initial_upper_of_width_lt_gap
         (n := innerSteps) (lower := 0)
         (target := root i) (upper := returned (adjacentHighIndex i))
         hroot_nonneg hroot_le_high
@@ -8157,16 +8157,16 @@ theorem theorem32BackwardLowBisectionLevels_first_high_pos_of_feasible
     le_of_lt hmem.2
   have hupper_ge_root :
       root i ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 :=
-    EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+    AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
       (n := innerSteps) (lower := 0)
       (target := root i) (upper := returned (adjacentHighIndex i))
       hroot_nonneg hroot_le_high
   have hreturnedLow :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i))).2 =
         returned (adjacentLowIndex i) := by
     simpa [returned, root] using
@@ -8310,8 +8310,8 @@ noncomputable def theorem32BackwardGridLowBisectionFromTop
       let root :=
         weightedBernoulliLowEndpointOfRateOrFloor
           (1 : ℝ) (1 : ℝ) tFirst high target
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget root)
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
         innerSteps 0 (high - grid)).2
 
 /--
@@ -8365,8 +8365,8 @@ noncomputable def theorem32UniformDoubledNestedBisectionOutput
       (adjacentLowIndex
         (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
   let lastLow : ℝ :=
-    (EconCSLib.Optimization.realBisectionRun
-      (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+    (AppliedModelingLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       (L + 1)
       (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
       (1 - grid)).2
@@ -8394,8 +8394,8 @@ theorem theorem32BackwardGridLowBisectionLevels_returnedLow
       weightedBernoulliLowEndpointOfRateOrFloor
         (1 : ℝ) (1 : ℝ) tFirst
         (returned (adjacentHighIndex j)) target
-    (EconCSLib.Optimization.realBisectionRun
-      (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+    (AppliedModelingLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
       innerSteps 0 (returned (adjacentHighIndex i) - grid)).2 =
       returned (adjacentLowIndex i) := by
   dsimp
@@ -8464,16 +8464,16 @@ theorem theorem32BackwardGridLowBisectionLevels_interior_adjacent_strict_of_feas
   have hupper_nonneg : 0 ≤ returned (adjacentHighIndex i) - grid :=
     hroot_nonneg.trans hroot_le_upper
   have hrun_le :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i) - grid)).2 ≤
         returned (adjacentHighIndex i) - grid :=
-    EconCSLib.Optimization.realBisectionRun_upper_le_initial
-      (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+    AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
       hupper_nonneg
   have hreturnedLow :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i) - grid)).2 =
         returned (adjacentLowIndex i) := by
     simpa [returned, root] using
@@ -8540,17 +8540,17 @@ theorem theorem32BackwardGridLowBisectionLevels_first_high_pos_of_feasible_grid
       hroot_le_grid_upper i hi_first hi_last
   have hupper_ge_root :
       root i ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i) - grid)).2 :=
-    EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+    AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
       (n := innerSteps) (lower := 0)
       (target := root i)
       (upper := returned (adjacentHighIndex i) - grid)
       hroot_nonneg hroot_le_upper
   have hreturnedLow :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i) - grid)).2 =
         returned (adjacentLowIndex i) := by
     simpa [returned, root] using
@@ -8730,16 +8730,16 @@ theorem theorem32BackwardGridLowBisectionLevels_interior_adjacent_strict_of_root
   have hupper_nonneg : 0 ≤ returned (adjacentHighIndex i) - grid :=
     hroot_nonneg.trans hroot_le_upper
   have hrun_le :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i) - grid)).2 ≤
         returned (adjacentHighIndex i) - grid :=
-    EconCSLib.Optimization.realBisectionRun_upper_le_initial
-      (above := EconCSLib.Optimization.realBisectionAboveTarget (root i))
+    AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
+      (above := AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
       (n := innerSteps) hupper_nonneg
   have hreturnedLow :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i) - grid)).2 =
         returned (adjacentLowIndex i) := by
     simpa [returned, root] using
@@ -8796,16 +8796,16 @@ theorem theorem32BackwardGridLowBisectionLevels_first_high_pos_of_root_le_grid_u
     simpa [returned, root] using hroot_le_grid_upper i hi_first hi_last
   have hupper_ge_root :
       root i ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i) - grid)).2 :=
-    EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+    AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
       (n := innerSteps) (lower := 0)
       (target := root i) (upper := returned (adjacentHighIndex i) - grid)
       hroot_pos.le hroot_le_upper
   have hreturnedLow :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i) - grid)).2 =
         returned (adjacentLowIndex i) := by
     simpa [returned, root] using
@@ -8861,16 +8861,16 @@ theorem theorem32BackwardGridLowBisectionLevels_first_high_ge_floor_of_root_le_g
     simpa [returned, root] using hroot_le_grid_upper i hi_first hi_last
   have hupper_ge_root :
       root i ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i) - grid)).2 :=
-    EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+    AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
       (n := innerSteps) (lower := 0)
       (target := root i) (upper := returned (adjacentHighIndex i) - grid)
       hroot_pos.le hroot_le_upper
   have hreturnedLow :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
         innerSteps 0 (returned (adjacentHighIndex i) - grid)).2 =
         returned (adjacentLowIndex i) := by
     simpa [returned, root] using
@@ -9292,16 +9292,16 @@ theorem theorem32BackwardGridLowBisectionLevels_comparison_high_le_returned_high
           (hcomparison_low_le_root j hj_first hj_last)
     have hroot_le_upper :
         root j ≤
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
             innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 := by
       exact
-        EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+        AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
           (n := innerSteps) hroot_nonneg
           (hroot_le_grid_upper j hj_first hj_last)
     have hreturnedLow :
-        (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+        (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
             innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 =
           returned (adjacentLowIndex j) := by
       simpa [returned, root] using
@@ -9313,8 +9313,8 @@ theorem theorem32BackwardGridLowBisectionLevels_comparison_high_le_returned_high
           comparison (adjacentLowIndex j) := hcomparison_high_eq_low
       _ ≤ root j := hcomparison_low_le_root j hj_first hj_last
       _ ≤
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
             innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 :=
         hroot_le_upper
       _ = returned (adjacentLowIndex j) := hreturnedLow
@@ -9863,18 +9863,18 @@ theorem theorem32BackwardGridLowBisectionLevels_comparison_low_le_root_of_nested
           exact (le_of_lt htFirst_pos).trans hfloor_le_root
         have hroot_le_upper :
             root j ≤
-              (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+              (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
                 innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 := by
           exact
-            EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+            AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
               (n := innerSteps) hroot_nonneg
               (by
                 simpa [returned, root] using
                   hroot_le_grid_upper j hj_first hj_last)
         have hreturnedLow :
-            (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+            (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
                 innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 =
               returned (adjacentLowIndex j) := by
           simpa [returned, root] using
@@ -9886,8 +9886,8 @@ theorem theorem32BackwardGridLowBisectionLevels_comparison_low_le_root_of_nested
               comparison (adjacentLowIndex j) := hcomparison_high_eq_low
           _ ≤ root j := hprev.2
           _ ≤
-              (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+              (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
                 innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 :=
             hroot_le_upper
           _ = returned (adjacentLowIndex j) := hreturnedLow
@@ -10054,18 +10054,18 @@ theorem theorem32BackwardGridLowBisectionLevels_comparison_low_le_root_of_nested
           exact (le_of_lt htFirst_pos).trans hfloor_le_root
         have hroot_le_upper :
             root j ≤
-              (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+              (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
                 innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 := by
           exact
-            EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+            AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
               (n := innerSteps) hroot_nonneg
               (by
                 simpa [returned, root] using
                   hroot_le_grid_upper j hj_first hj_last)
         have hreturnedLow :
-            (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+            (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
                 innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 =
               returned (adjacentLowIndex j) := by
           simpa [returned, root] using
@@ -10077,8 +10077,8 @@ theorem theorem32BackwardGridLowBisectionLevels_comparison_low_le_root_of_nested
               comparison (adjacentLowIndex j) := hcomparison_high_eq_low
           _ ≤ root j := hprev.2
           _ ≤
-              (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+              (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
                 innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 :=
             hroot_le_upper
           _ = returned (adjacentLowIndex j) := hreturnedLow
@@ -10243,15 +10243,15 @@ theorem theorem32BackwardGridLowBisectionLevels_root_le_grid_upper_of_nested_com
           exact (le_of_lt htFirst_pos).trans hfloor_le_root
         have hroot_le_upper :
             root j ≤
-              (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+              (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
                 innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 := by
           exact
-            EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+            AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
               (n := innerSteps) hroot_nonneg hprev.2.2.2
         have hreturnedLow :
-            (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+            (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
                 innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 =
               returned (adjacentLowIndex j) := by
           simpa [returned, root, target] using
@@ -10263,8 +10263,8 @@ theorem theorem32BackwardGridLowBisectionLevels_root_le_grid_upper_of_nested_com
               comparison (adjacentLowIndex j) := hcomparison_high_eq_low
           _ ≤ root j := hprev.2.2.1
           _ ≤
-              (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+              (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
                 innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 :=
             hroot_le_upper
           _ = returned (adjacentLowIndex j) := hreturnedLow
@@ -10314,16 +10314,16 @@ theorem theorem32BackwardGridLowBisectionLevels_root_le_grid_upper_of_nested_com
         have hupper_nonneg : 0 ≤ returned (adjacentHighIndex j) - grid :=
           hroot_nonneg.trans hprev.2.2.2
         have hrun_le :
-            (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+            (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
                 innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 ≤
               returned (adjacentHighIndex j) - grid :=
-          EconCSLib.Optimization.realBisectionRun_upper_le_initial
-            (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+          AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
             hupper_nonneg
         have hreturnedLow :
-            (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget (root j))
+            (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget (root j))
                 innerSteps 0 (returned (adjacentHighIndex j) - grid)).2 =
               returned (adjacentLowIndex j) := by
           simpa [returned, root, target] using
@@ -10480,8 +10480,8 @@ theorem theorem32BackwardGridLowBisectionFromTop_lt_one_of_grid_upper_pos
                   tFirst target lastLow (d + 1) - grid := by
             exact le_of_lt (hgrid_upper_pos (d + 1) (by omega) (by omega))
           have hrun_le :
-              (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget
+              (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget
                   (weightedBernoulliLowEndpointOfRateOrFloor
                     (1 : ℝ) (1 : ℝ) tFirst
                     (theorem32BackwardGridLowBisectionFromTop innerSteps grid
@@ -10491,8 +10491,8 @@ theorem theorem32BackwardGridLowBisectionFromTop_lt_one_of_grid_upper_pos
                   tFirst target lastLow (d + 1) - grid)).2 ≤
                 theorem32BackwardGridLowBisectionFromTop innerSteps grid
                   tFirst target lastLow (d + 1) - grid :=
-            EconCSLib.Optimization.realBisectionRun_upper_le_initial
-              (EconCSLib.Optimization.realBisectionAboveTarget
+            AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget
                 (weightedBernoulliLowEndpointOfRateOrFloor
                   (1 : ℝ) (1 : ℝ) tFirst
                   (theorem32BackwardGridLowBisectionFromTop innerSteps grid
@@ -10796,17 +10796,17 @@ theorem theorem32BackwardGridLowBisectionLevels_floor_lt_high_of_lastLow_gt_floo
                   hfeasible hx0 (by linarith) hgrid_rate
             have hupper_ge_root :
                 root ≤
-                  (EconCSLib.Optimization.realBisectionRun
-                    (EconCSLib.Optimization.realBisectionAboveTarget root)
+                  (AppliedModelingLib.Optimization.realBisectionRun
+                    (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
                     innerSteps 0 (seq (d + 1) - grid)).2 :=
-              EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+              AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
                 (n := innerSteps) (lower := 0) (target := root)
                 (upper := seq (d + 1) - grid)
                 hroot_pos.le hroot_le_grid_upper
             have hseq_eq :
                 seq (d + 2) =
-                  (EconCSLib.Optimization.realBisectionRun
-                    (EconCSLib.Optimization.realBisectionAboveTarget root)
+                  (AppliedModelingLib.Optimization.realBisectionRun
+                    (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
                     innerSteps 0 (seq (d + 1) - grid)).2 := by
               simp [seq, theorem32BackwardGridLowBisectionFromTop, root]
             rw [hseq_eq]
@@ -10961,25 +10961,25 @@ theorem theorem32BackwardGridLowBisectionLevels_floor_lt_high_and_grid_upper_pos
                 hfeasible hupper_pos (by linarith) hgrid_rate
             have hupper_ge_root :
                 root ≤
-                  (EconCSLib.Optimization.realBisectionRun
-                    (EconCSLib.Optimization.realBisectionAboveTarget root)
+                  (AppliedModelingLib.Optimization.realBisectionRun
+                    (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
                     innerSteps 0 (seq (d + 1) - grid)).2 :=
-              EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+              AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
                 (n := innerSteps) (lower := 0) (target := root)
                 (upper := seq (d + 1) - grid)
                 hroot_pos.le hroot_le_grid_upper
             have hupper_le_initial :
-                (EconCSLib.Optimization.realBisectionRun
-                    (EconCSLib.Optimization.realBisectionAboveTarget root)
+                (AppliedModelingLib.Optimization.realBisectionRun
+                    (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
                     innerSteps 0 (seq (d + 1) - grid)).2 ≤
                   seq (d + 1) - grid :=
-              EconCSLib.Optimization.realBisectionRun_upper_le_initial
-                (EconCSLib.Optimization.realBisectionAboveTarget root)
+              AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
                 (le_of_lt hupper_pos)
             have hseq_eq :
                 seq (d + 2) =
-                  (EconCSLib.Optimization.realBisectionRun
-                    (EconCSLib.Optimization.realBisectionAboveTarget root)
+                  (AppliedModelingLib.Optimization.realBisectionRun
+                    (AppliedModelingLib.Optimization.realBisectionAboveTarget root)
                     innerSteps 0 (seq (d + 1) - grid)).2 := by
               simp [seq, theorem32BackwardGridLowBisectionFromTop, root]
             rw [hseq_eq]
@@ -11227,7 +11227,7 @@ theorem theorem32_uniform_inner_grid_of_low_bisection_brackets
             (lastAdjacentIndex : Fin (m + 1)))
     (hbracket :
       ∀ i : Fin (m + 1), i.val ≠ 0 → i.val ≠ m →
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (root i) (lower i) (returned (adjacentLowIndex i)) delta) :
     ∀ i : Fin (m + 1),
       binaryEndpointAwareAdjacentRate returned
@@ -11343,7 +11343,7 @@ theorem theorem32_monotone_inner_grid_of_low_bisection_brackets
             (lastAdjacentIndex : Fin (m + 1)))
     (hbracket :
       ∀ i : Fin (m + 1), i.val ≠ 0 → i.val ≠ m →
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (root i) (lower i) (returned (adjacentLowIndex i)) delta) :
     ∀ i : Fin (m + 1),
       binaryEndpointAwareAdjacentRate returned sampleRate
@@ -11464,7 +11464,7 @@ def theorem32_run_certificate_of_last_bisection_bracket
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -11557,7 +11557,7 @@ def theorem32_run_certificate_of_outer_level_and_inner_rate_brackets
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -11577,7 +11577,7 @@ def theorem32_run_certificate_of_outer_level_and_inner_rate_brackets
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
       ∀ i : Fin ((2 * m + 1) + 1),
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (binaryEndpointAwareAdjacentRate returned
             (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ))
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -11641,7 +11641,7 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_rat
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -11690,7 +11690,7 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_rat
           Real.log ((tFirstStar + delta) / tFirstStar))
     (hreturnedRate :
       ∀ i : Fin ((2 * m + 1) + 1),
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (rateAbove i) innerSteps (rateLower0 i) (rateUpper0 i)).1 =
           binaryEndpointAwareAdjacentRate returned
             (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) i)
@@ -11708,11 +11708,11 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_rat
             binaryEndpointAwareAdjacentRateObjective oldLevels
               (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
   let gridUpper : Fin ((2 * m + 1) + 1) → ℝ := fun i =>
-    (EconCSLib.Optimization.realBisectionRun
+    (AppliedModelingLib.Optimization.realBisectionRun
       (rateAbove i) innerSteps (rateLower0 i) (rateUpper0 i)).2
   have hgridBrackets :
       ∀ i : Fin ((2 * m + 1) + 1),
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (binaryEndpointAwareAdjacentRate returned
             (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ))
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -11722,17 +11722,17 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_rat
           (Real.log ((tFirstStar + delta) / tFirstStar)) := by
     intro i
     have Bi :
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (binaryEndpointAwareAdjacentRate returned
             (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ))
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
-          (EconCSLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionRun
             (rateAbove i) innerSteps (rateLower0 i) (rateUpper0 i)).1
-          (EconCSLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionRun
             (rateAbove i) innerSteps (rateLower0 i) (rateUpper0 i)).2
           (Real.log ((tFirstStar + delta) / tFirstStar)) := by
       exact
-        EconCSLib.Optimization.realBisectionRun_bracket_of_width_le
+        AppliedModelingLib.Optimization.realBisectionRun_bracket_of_width_le
           (above := rateAbove i) (n := innerSteps)
           (target :=
             binaryEndpointAwareAdjacentRate returned
@@ -11797,7 +11797,7 @@ noncomputable def theorem32_run_certificate_of_last_bisection_run
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           above outerSteps lower0 upper0).2 =
         returned
           (adjacentLowIndex
@@ -11834,14 +11834,14 @@ noncomputable def theorem32_run_certificate_of_last_bisection_run
             binaryEndpointAwareAdjacentRateObjective oldLevels
               (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
   have B :
-      EconCSLib.Optimization.RealBisectionBracket target
-        (EconCSLib.Optimization.realBisectionRun
+      AppliedModelingLib.Optimization.RealBisectionBracket target
+        (AppliedModelingLib.Optimization.realBisectionRun
           above outerSteps lower0 upper0).1
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           above outerSteps lower0 upper0).2
         delta := by
     exact
-      EconCSLib.Optimization.realBisectionRun_bracket_of_width_le
+      AppliedModelingLib.Optimization.realBisectionRun_bracket_of_width_le
         (above := above) (n := outerSteps)
         (target := target) (lower := lower0) (upper := upper0)
         (delta := delta)
@@ -11856,7 +11856,7 @@ noncomputable def theorem32_run_certificate_of_last_bisection_run
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned
       (lastBracketLower :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           above outerSteps lower0 upper0).1)
       holdLevels
       (by
@@ -11908,7 +11908,7 @@ noncomputable def theorem32_run_certificate_of_outer_level_run_and_inner_rate_ru
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps lower0 upper0).2 =
         returned
           (adjacentLowIndex
@@ -11953,7 +11953,7 @@ noncomputable def theorem32_run_certificate_of_outer_level_run_and_inner_rate_ru
           Real.log ((tFirstStar + delta) / tFirstStar))
     (hreturnedRate :
       ∀ i : Fin ((2 * m + 1) + 1),
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           (rateAbove i) innerSteps (rateLower0 i) (rateUpper0 i)).1 =
           binaryEndpointAwareAdjacentRate returned
             (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) i)
@@ -11972,20 +11972,20 @@ noncomputable def theorem32_run_certificate_of_outer_level_run_and_inner_rate_ru
             binaryEndpointAwareAdjacentRateObjective oldLevels
               (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
   let levelRun : ℝ × ℝ :=
-    EconCSLib.Optimization.realBisectionRun
+    AppliedModelingLib.Optimization.realBisectionRun
       levelAbove outerSteps lower0 upper0
   have hlastBracket :
-      EconCSLib.Optimization.RealBisectionBracket target
+      AppliedModelingLib.Optimization.RealBisectionBracket target
         levelRun.1
         (returned
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
         delta := by
     have B :
-        EconCSLib.Optimization.RealBisectionBracket target
+        AppliedModelingLib.Optimization.RealBisectionBracket target
           levelRun.1 levelRun.2 delta := by
       exact
-        EconCSLib.Optimization.realBisectionRun_bracket_of_width_le
+        AppliedModelingLib.Optimization.realBisectionRun_bracket_of_width_le
           (above := levelAbove) (n := outerSteps)
           (target := target) (lower := lower0) (upper := upper0)
           (delta := delta)
@@ -12036,8 +12036,8 @@ noncomputable def theorem32_run_certificate_of_outer_level_threshold_run_and_inn
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -12072,8 +12072,8 @@ noncomputable def theorem32_run_certificate_of_outer_level_threshold_run_and_inn
           Real.log ((tFirstStar + delta) / tFirstStar))
     (hreturnedRate :
       ∀ i : Fin ((2 * m + 1) + 1),
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (binaryEndpointAwareAdjacentRate returned
               (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ))
               (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -12097,26 +12097,26 @@ noncomputable def theorem32_run_certificate_of_outer_level_threshold_run_and_inn
       (m := m) (M := M) (L := L)
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned
-      (levelAbove := EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (levelAbove := AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       (rateAbove := fun _ =>
-        EconCSLib.Optimization.realBisectionAboveTarget rateTarget)
+        AppliedModelingLib.Optimization.realBisectionAboveTarget rateTarget)
       (rateLower0 := rateLower0) (rateUpper0 := rateUpper0)
       holdLevels
       (fun x hx =>
-        EconCSLib.Optimization.realBisectionAboveTarget_true
+        AppliedModelingLib.Optimization.realBisectionAboveTarget_true
           (target := levelTarget) (x := x) hx)
       (fun x hx =>
-        EconCSLib.Optimization.realBisectionAboveTarget_false
+        AppliedModelingLib.Optimization.realBisectionAboveTarget_false
           (target := levelTarget) (x := x) hx)
       (by simpa [levelTarget] using hlevelLower0)
       (by simpa [levelTarget] using hlevelUpper0)
       hlevelWidth
       (by simpa [levelTarget] using hreturnedLast)
       (fun i x hx =>
-        EconCSLib.Optimization.realBisectionAboveTarget_true
+        AppliedModelingLib.Optimization.realBisectionAboveTarget_true
           (target := rateTarget) (x := x) hx)
       (fun i x hx =>
-        EconCSLib.Optimization.realBisectionAboveTarget_false
+        AppliedModelingLib.Optimization.realBisectionAboveTarget_false
           (target := rateTarget) (x := x) hx)
       (by simpa [rateTarget] using hinnerLower0)
       (by simpa [rateTarget] using hinnerUpper0)
@@ -12147,7 +12147,7 @@ theorem theorem32_uniform_doubled_explicit_delta_nonneg
           (fun _ : Fin (m + 2) => (1 : ℝ)) := by
     unfold binaryEndpointAwareAdjacentRateObjective
     exact
-      EconCSLib.finiteMin_pos
+      AppliedModelingLib.finiteMin_pos
         (binaryEndpointAwareAdjacentRate oldLevels
           (fun _ : Fin (m + 2) => (1 : ℝ)))
         (fun i =>
@@ -12192,7 +12192,7 @@ theorem theorem32_uniform_doubled_explicit_delta_pos
           (fun _ : Fin (m + 2) => (1 : ℝ)) := by
     unfold binaryEndpointAwareAdjacentRateObjective
     exact
-      EconCSLib.finiteMin_pos
+      AppliedModelingLib.finiteMin_pos
         (binaryEndpointAwareAdjacentRate oldLevels
           (fun _ : Fin (m + 2) => (1 : ℝ)))
         (fun i =>
@@ -12239,7 +12239,7 @@ def theorem32_run_certificate_of_outer_level_bracket_and_inner_low_bisection_bra
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -12274,7 +12274,7 @@ def theorem32_run_certificate_of_outer_level_bracket_and_inner_low_bisection_bra
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
     (hbracket :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (root i) (lower i) (returned (adjacentLowIndex i))
           (eps /
             ((1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))⁻¹ +
@@ -12359,7 +12359,7 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_low
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -12408,8 +12408,8 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_low
                     (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLow :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lower0 i) (upper0 i)).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -12424,25 +12424,25 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_low
               (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
   have hbracket :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (root i)
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
             innerSteps (lower0 i) (upper0 i)).1
           (returned (adjacentLowIndex i))
           delta := by
     intro i hi_first hi_last
     have B :
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (root i)
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
             innerSteps (lower0 i) (upper0 i)).1
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
             innerSteps (lower0 i) (upper0 i)).2
           delta :=
-      EconCSLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
+      AppliedModelingLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
         (n := innerSteps)
         (lower := lower0 i) (upper := upper0 i) (target := root i)
         (delta := delta)
@@ -12457,8 +12457,8 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_low
       hm oldLevels returned heps holdLevels hreturnedLevels hlastBracket
       hfirstRate root
       (fun i =>
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lower0 i) (upper0 i)).1)
       hroot0 htFirst_le_root hroot_rate
       (by simpa [delta] using hbracket)
@@ -12489,7 +12489,7 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_low
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -12567,8 +12567,8 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_low
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lower0 i) (upper0 i)).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -12654,7 +12654,7 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_low
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -12731,8 +12731,8 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_low
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lower0 i) (upper0 i)).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -12783,7 +12783,7 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_low
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -12864,8 +12864,8 @@ noncomputable def theorem32_run_certificate_of_outer_level_bracket_and_inner_low
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lower0 i) (upper0 i)).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -12951,7 +12951,7 @@ noncomputable def theorem32_run_certificate_of_outer_level_run_and_inner_low_bis
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps levelLower0 levelUpper0).2 =
         returned
           (adjacentLowIndex
@@ -13027,8 +13027,8 @@ noncomputable def theorem32_run_certificate_of_outer_level_run_and_inner_low_bis
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (innerLower0 i) (innerUpper0 i)).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -13046,23 +13046,23 @@ noncomputable def theorem32_run_certificate_of_outer_level_run_and_inner_low_bis
             binaryEndpointAwareAdjacentRateObjective oldLevels
               (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
   have hlastBracket :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         levelTarget
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps levelLower0 levelUpper0).1
         (returned
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
         delta := by
     have B :
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           levelTarget
-          (EconCSLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionRun
             levelAbove outerSteps levelLower0 levelUpper0).1
-          (EconCSLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionRun
             levelAbove outerSteps levelLower0 levelUpper0).2
           delta :=
-      EconCSLib.Optimization.realBisectionRun_bracket_of_width_le
+      AppliedModelingLib.Optimization.realBisectionRun_bracket_of_width_le
         (above := levelAbove) (n := outerSteps)
         (target := levelTarget) (lower := levelLower0) (upper := levelUpper0)
         (delta := delta)
@@ -13078,7 +13078,7 @@ noncomputable def theorem32_run_certificate_of_outer_level_run_and_inner_low_bis
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned heps holdLevels holdEq hreturnedLevels
       (lastBracketLower :=
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps levelLower0 levelUpper0).1)
       (by simpa [levelTarget, delta] using hlastBracket)
       hfirst_ge hlast_ge innerLower0 innerUpper0
@@ -13246,7 +13246,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M run.outerSteps run.innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   exact
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_bisection_uniform_doubled_closed_run_explicit_delta_auto_lower
       hm oldLevels returned heps holdLevels holdEq
@@ -13278,7 +13278,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -13313,7 +13313,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
     (hbracket :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (root i) (lower i) (returned (adjacentLowIndex i))
           (eps /
             ((1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))⁻¹ +
@@ -13328,7 +13328,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let run :=
     theorem32_run_certificate_of_outer_level_bracket_and_inner_low_bisection_brackets
       (m := m) (M := M) (L := L)
@@ -13368,7 +13368,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -13417,8 +13417,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                     (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLow :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lower0 i) (upper0 i)).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -13429,7 +13429,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let run :=
     theorem32_run_certificate_of_outer_level_bracket_and_inner_low_bisection_runs
       (m := m) (M := M) (L := L)
@@ -13467,7 +13467,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -13545,8 +13545,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (lower0 i) (upper0 i)).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -13557,7 +13557,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let run :=
     theorem32_run_certificate_of_outer_level_bracket_and_inner_low_bisection_runs_from_feasible_floor
       (m := m) (M := M) (L := L)
@@ -13619,7 +13619,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps levelLower0 levelUpper0).2 =
         returned
           (adjacentLowIndex
@@ -13695,8 +13695,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (innerLower0 i) (innerUpper0 i)).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -13707,7 +13707,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let run :=
     theorem32_run_certificate_of_outer_level_run_and_inner_low_bisection_runs_from_feasible_floor_and_endpoint_ge
       (m := m) (M := M) (L := L)
@@ -13770,7 +13770,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps levelLower0 levelUpper0).2 =
         returned
           (adjacentLowIndex
@@ -13818,8 +13818,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -13830,7 +13830,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -13926,7 +13926,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps levelLower0 levelUpper0).2 =
         returned
           (adjacentLowIndex
@@ -13969,8 +13969,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -13981,7 +13981,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let levelTarget : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentLowIndex
@@ -13993,14 +13993,14 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             binaryEndpointAwareAdjacentRateObjective oldLevels
               (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
   have B :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         levelTarget
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps levelLower0 levelUpper0).1
-        (EconCSLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps levelLower0 levelUpper0).2
         delta :=
-    EconCSLib.Optimization.realBisectionRun_bracket_of_width_le
+    AppliedModelingLib.Optimization.realBisectionRun_bracket_of_width_le
       (above := levelAbove) (n := outerSteps)
       (target := levelTarget) (lower := levelLower0) (upper := levelUpper0)
       (delta := delta)
@@ -14072,7 +14072,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps levelLower0 levelUpper0).2 =
         returned
           (adjacentLowIndex
@@ -14110,8 +14110,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -14122,7 +14122,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -14153,18 +14153,18 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             binaryEndpointAwareAdjacentRateObjective oldLevels
               (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
   have B :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (root firstInterior)
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (root firstInterior))
           innerSteps 0 (returned (adjacentHighIndex firstInterior))).1
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (root firstInterior))
           innerSteps 0 (returned (adjacentHighIndex firstInterior))).2
         delta :=
-    EconCSLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
+    AppliedModelingLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
       (n := innerSteps) (lower := 0)
       (upper := returned (adjacentHighIndex firstInterior))
       (target := root firstInterior) (delta := delta)
@@ -14183,8 +14183,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
     have hroot_le_returned :
         root firstInterior ≤ returned (adjacentLowIndex firstInterior) := by
       have hret :
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget
               (root firstInterior))
             innerSteps 0 (returned (adjacentHighIndex firstInterior))).2 =
             returned (adjacentLowIndex firstInterior) := by
@@ -14259,7 +14259,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
           levelUpper0).2 =
@@ -14299,8 +14299,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -14311,7 +14311,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hoptimalLevels :
       BinaryEndpointLevelVector (uniformDoubledEndpointLevels oldLevels) := by
     simpa using uniformDoubledEndpointLevels_isEndpointLevelVector hm holdLevels
@@ -14334,11 +14334,11 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned levelAbove heps holdLevels holdEq
       hreturnedLevels hlevelAbove hlevelBelow hlevelLower0 hlevelUpper0
-      (EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+      (AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
         hlevelWidth)
       hreturnedLast hfeasible
       (fun i hi_first hi_last =>
-        EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+        AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
           (by
             have hhigh_le_one :
                 returned (adjacentHighIndex i) ≤ 1 :=
@@ -14403,7 +14403,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           (fun x => theorem32OuterSourceRateAbove (candidate x))
           outerSteps
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
@@ -14444,8 +14444,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -14456,7 +14456,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   exact
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_outer_level_run_feasible_low_bisection_runs_from_source_lower_global_width
       (m := m) (M := M) (L := L)
@@ -14510,8 +14510,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -14554,8 +14554,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -14566,7 +14566,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let levelTarget : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentLowIndex
@@ -14583,16 +14583,16 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (m := m) (M := M) (L := L)
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned
-      (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       heps holdLevels holdEq hreturnedLevels
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_true hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_true hx)
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_false hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_false hx)
       (by simpa [levelTarget] using hlevelUpper0)
       hlevelWidth
       (by simpa [levelTarget] using hreturnedLast)
@@ -14630,8 +14630,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -14674,8 +14674,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -14686,7 +14686,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let levelTarget : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentLowIndex
@@ -14696,16 +14696,16 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (m := m) (M := M) (L := L)
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned
-      (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       heps holdLevels holdEq hreturnedLevels
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_true hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_true hx)
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_false hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_false hx)
       (by simpa [levelTarget] using hlevelUpper0)
       (by simpa [levelTarget] using hlevelWidth)
       (by simpa [levelTarget] using hreturnedLast)
@@ -14743,8 +14743,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -14789,8 +14789,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -14801,7 +14801,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -14886,7 +14886,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
           levelUpper0).2 =
@@ -14930,8 +14930,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (2 : ℝ) ^ innerSteps)
     (hreturnedLow :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -14942,7 +14942,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let levelLower0 : ℝ :=
     1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ))
   let delta : ℝ :=
@@ -14952,7 +14952,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             binaryEndpointAwareAdjacentRateObjective oldLevels
               (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
   let levelRun : ℝ × ℝ :=
-    EconCSLib.Optimization.realBisectionRun
+    AppliedModelingLib.Optimization.realBisectionRun
       levelAbove outerSteps levelLower0 levelUpper0
   have hoptimalLevels :
       BinaryEndpointLevelVector (uniformDoubledEndpointLevels oldLevels) := by
@@ -14971,7 +14971,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       BinaryEndpointLevelVector_uniform_equalized_last_low_ge_one_sub_inv
         (m := 2 * m + 1) (by omega) hoptimalLevels hoptimalEq
   have hlastBracket :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (uniformDoubledEndpointLevels oldLevels
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -14981,13 +14981,13 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
         delta := by
     have B :
-        EconCSLib.Optimization.RealBisectionBracket
+        AppliedModelingLib.Optimization.RealBisectionBracket
           (uniformDoubledEndpointLevels oldLevels
             (adjacentLowIndex
               (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
           levelRun.1 levelRun.2 delta := by
       exact
-        EconCSLib.Optimization.realBisectionRun_bracket_of_width_le
+        AppliedModelingLib.Optimization.realBisectionRun_bracket_of_width_le
           (above := levelAbove) (n := outerSteps)
           (target :=
             uniformDoubledEndpointLevels oldLevels
@@ -14997,7 +14997,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           hlevelAbove hlevelBelow hlevelLower0 hlevelUpper0
           (by
             simpa [levelLower0, delta] using
-              EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+              AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
                 hlevelWidth)
     have hupper :
         levelRun.2 =
@@ -15020,7 +15020,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (fun i hi_first hi_last => (hroot0 i hi_first hi_last).le)
       hroot_le_high
       (fun i _hi_first _hi_last =>
-        EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+        AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
           (by
             have hhigh_le_one :
                 returned (adjacentHighIndex i) ≤ 1 :=
@@ -15075,7 +15075,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
           levelUpper0).2 =
@@ -15112,8 +15112,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (2 : ℝ) ^ innerSteps)
     (hreturnedLow :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -15124,7 +15124,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let levelLower0 : ℝ :=
     1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ))
   let delta : ℝ :=
@@ -15134,7 +15134,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             binaryEndpointAwareAdjacentRateObjective oldLevels
               (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
   let levelRun : ℝ × ℝ :=
-    EconCSLib.Optimization.realBisectionRun
+    AppliedModelingLib.Optimization.realBisectionRun
       levelAbove outerSteps levelLower0 levelUpper0
   have hoptimalLevels :
       BinaryEndpointLevelVector (uniformDoubledEndpointLevels oldLevels) := by
@@ -15153,13 +15153,13 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       BinaryEndpointLevelVector_uniform_equalized_last_low_ge_one_sub_inv
         (m := 2 * m + 1) (by omega) hoptimalLevels hoptimalEq
   have Blast :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (uniformDoubledEndpointLevels oldLevels
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
         levelRun.1 levelRun.2 delta := by
     exact
-      EconCSLib.Optimization.realBisectionRun_bracket_of_width_le
+      AppliedModelingLib.Optimization.realBisectionRun_bracket_of_width_le
         (above := levelAbove) (n := outerSteps)
         (target :=
           uniformDoubledEndpointLevels oldLevels
@@ -15169,7 +15169,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         hlevelAbove hlevelBelow hlevelLower0 hlevelUpper0
         (by
           simpa [levelLower0, delta] using
-            EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+            AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
               hlevelWidth)
   have hlast_ge :
       uniformDoubledEndpointLevels oldLevels
@@ -15190,18 +15190,18 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
     simp [firstInterior]
     omega
   have Bfirst :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (root firstInterior)
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (root firstInterior))
           innerSteps 0 (returned (adjacentHighIndex firstInterior))).1
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (root firstInterior))
           innerSteps 0 (returned (adjacentHighIndex firstInterior))).2
         delta :=
-    EconCSLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
+    AppliedModelingLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
       (n := innerSteps) (lower := 0)
       (upper := returned (adjacentHighIndex firstInterior))
       (target := root firstInterior) (delta := delta)
@@ -15210,7 +15210,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         hfirstInterior_not_last)
       (by
         simpa [delta] using
-          EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+          AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
             (by
               have hhigh_le_one :
                   returned (adjacentHighIndex firstInterior) ≤ 1 :=
@@ -15227,8 +15227,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
     have hroot_le_returned :
         root firstInterior ≤ returned (adjacentLowIndex firstInterior) := by
       have hret :
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget
               (root firstInterior))
             innerSteps 0 (returned (adjacentHighIndex firstInterior))).2 =
             returned (adjacentLowIndex firstInterior) := by
@@ -15314,8 +15314,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -15355,8 +15355,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (2 : ℝ) ^ innerSteps)
     (hreturnedLow :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -15367,7 +15367,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let levelTarget : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentLowIndex
@@ -15377,16 +15377,16 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (m := m) (M := M) (L := L)
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned
-      (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       heps holdLevels holdEq hreturnedLevels
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_true hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_true hx)
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_false hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_false hx)
       hlevelUpper0 hlevelWidth
       (by simpa [levelTarget] using hreturnedLast)
       root hroot0 htFirst_le_root hroot_le_high hroot_rate
@@ -15419,8 +15419,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -15460,8 +15460,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (2 : ℝ) ^ innerSteps)
     (hreturnedLow :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -15472,7 +15472,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hoptimalLevels :
       BinaryEndpointLevelVector (uniformDoubledEndpointLevels oldLevels) := by
     simpa using uniformDoubledEndpointLevels_isEndpointLevelVector hm holdLevels
@@ -15525,8 +15525,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -15568,7 +15568,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -15610,8 +15610,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           hfirst_last hlast_last
     rw [hlast_formula, hlastLow_eq]
   have hreturnedLast' :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -15653,8 +15653,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst'
           (returned (adjacentHighIndex i)) target'
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i) := by
     dsimp
@@ -15700,8 +15700,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -15759,7 +15759,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -15808,8 +15808,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -15873,7 +15873,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -15956,11 +15956,11 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
   have hlevelWidth' :
       (1 - levelLower0) / (2 : ℝ) ^ outerSteps ≤ delta := by
     simpa [levelLower0, delta] using
-      EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+      AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
         hlevelWidth
   have hreturnedLast' :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).2 =
         returned
           (adjacentLowIndex
@@ -15968,16 +15968,16 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
     rw [hlastLow_eq]
     simpa [levelTarget, levelLower0] using hreturnedLast
   have hlastBracket :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         levelTarget
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).1
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).2
         delta :=
-    EconCSLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
+    AppliedModelingLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
       (n := outerSteps) (lower := levelLower0) (upper := 1)
       (target := levelTarget) (delta := delta)
       hlevelLower0 hlevelUpper0 hlevelWidth'
@@ -16013,19 +16013,19 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         hfirstInterior_not_last
   have hfirst_run_target_le :
       root firstInterior ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (root firstInterior))
           innerSteps 0
           (returned (adjacentHighIndex firstInterior) - grid)).2 :=
-    EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+    AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
       (n := innerSteps) (lower := 0)
       (target := root firstInterior)
       (upper := returned (adjacentHighIndex firstInterior) - grid)
       hfirst_root_pos.le hfirst_root_le_grid_upper
   have hfirst_returned_low :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget
           (root firstInterior))
         innerSteps 0 (returned (adjacentHighIndex firstInterior) - grid)).2 =
         returned (adjacentLowIndex firstInterior) := by
@@ -16057,7 +16057,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (m := m) (M := M) (L := L)
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned
-      (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       (fun _ : Fin ((2 * m + 1) + 1) => (0 : ℝ))
       (fun i : Fin ((2 * m + 1) + 1) =>
         returned (adjacentHighIndex i) - grid)
@@ -16065,11 +16065,11 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_true hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_true hx)
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_false hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_false hx)
       hlevelLower0 hlevelUpper0
       (by simpa [levelLower0, delta] using hlevelWidth')
       (by simpa [levelLower0, levelTarget] using hreturnedLast')
@@ -16137,8 +16137,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -16194,7 +16194,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -16287,11 +16287,11 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
   have hlevelWidth' :
       (1 - levelLower0) / (2 : ℝ) ^ outerSteps ≤ delta := by
     simpa [levelLower0, delta] using
-      EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+      AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
         hlevelWidth
   have hreturnedLast' :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).2 =
         returned
           (adjacentLowIndex
@@ -16299,16 +16299,16 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
     rw [hlastLow_eq]
     simpa [levelTarget, levelLower0] using hreturnedLast
   have hlastBracket :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         levelTarget
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).1
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).2
         delta :=
-    EconCSLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
+    AppliedModelingLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
       (n := outerSteps) (lower := levelLower0) (upper := 1)
       (target := levelTarget) (delta := delta)
       hlevelLower0 hlevelUpper0 hlevelWidth'
@@ -16372,12 +16372,12 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         hfirstInterior_not_last
   have hfirst_run_target_le :
       root firstInterior ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (root firstInterior))
           innerSteps 0
           (returned (adjacentHighIndex firstInterior) - grid)).2 :=
-    EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+    AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
       (n := innerSteps) (lower := 0)
       (target := root firstInterior)
       (upper := returned (adjacentHighIndex firstInterior) - grid)
@@ -16385,8 +16385,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         hfirstInterior_not_last).le
       hfirst_root_le_grid_upper
   have hfirst_returned_low :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget
           (root firstInterior))
         innerSteps 0 (returned (adjacentHighIndex firstInterior) - grid)).2 =
         returned (adjacentLowIndex firstInterior) := by
@@ -16497,13 +16497,13 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
     have hunit_le_delta :
         (1 : ℝ) / (2 : ℝ) ^ innerSteps ≤ delta := by
       simpa [delta] using
-        EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+        AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
           hinnerWidth
     exact hlocal_le_unit.trans hunit_le_delta
   have hreturnedLow :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (0 : ℝ) (returned (adjacentHighIndex i) - grid)).2 =
           returned (adjacentLowIndex i) := by
     intro i hi_first hi_last
@@ -16517,8 +16517,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned
       (lastBracketLower :=
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).1)
       heps holdLevels holdEq hreturnedLevels
       (by
@@ -16570,7 +16570,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         (optimal
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -16628,7 +16628,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -16766,12 +16766,12 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         hfirstInterior_not_last
   have hfirst_run_target_le :
       root firstInterior ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (root firstInterior))
           innerSteps 0
           (returned (adjacentHighIndex firstInterior) - grid)).2 :=
-    EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+    AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
       (n := innerSteps) (lower := 0)
       (target := root firstInterior)
       (upper := returned (adjacentHighIndex firstInterior) - grid)
@@ -16779,8 +16779,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         hfirstInterior_not_last).le
       hfirst_root_le_grid_upper
   have hfirst_returned_low :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget
           (root firstInterior))
         innerSteps 0 (returned (adjacentHighIndex firstInterior) - grid)).2 =
         returned (adjacentLowIndex firstInterior) := by
@@ -16891,13 +16891,13 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
     have hunit_le_delta :
         (1 : ℝ) / (2 : ℝ) ^ innerSteps ≤ delta := by
       simpa [delta] using
-        EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+        AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
           hinnerWidth
     exact hlocal_le_unit.trans hunit_le_delta
   have hreturnedLow :
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps (0 : ℝ) (returned (adjacentHighIndex i) - grid)).2 =
           returned (adjacentLowIndex i) := by
     intro i hi_first hi_last
@@ -16959,8 +16959,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -17016,7 +17016,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -17053,7 +17053,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
   have hlevelWidth' :
       ((1 - grid) - levelLower0) / (2 : ℝ) ^ outerSteps ≤ delta := by
     simpa [levelLower0, delta] using
-      EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+      AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
         hlevelWidth
   have hlastLow_eq :
       returned
@@ -17064,25 +17064,25 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         (n := 2 * m + 1) (innerSteps := innerSteps) (by omega)
         grid tFirst target lastLow
   have hreturnedLast' :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).2 =
         returned
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))) := by
     rw [hreturnedLast, hlastLow_eq]
   have hlastBracket :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         levelTarget
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).1
         (returned
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
         delta := by
     have hbracket :=
-      EconCSLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
+      AppliedModelingLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
         (n := outerSteps) (lower := levelLower0) (upper := 1 - grid)
         (target := levelTarget) (delta := delta)
         hlevelLower0 hlevelTarget_le hlevelWidth'
@@ -17093,18 +17093,18 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       (lastLow := lastLow)
       (lastBracketLower :=
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).1)
       hm oldLevels heps holdLevels holdEq hgrid_pos
       (by
         have hrun_upper :
-            (EconCSLib.Optimization.realBisectionRun
-                (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+            (AppliedModelingLib.Optimization.realBisectionRun
+                (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
                 outerSteps levelLower0 (1 - grid)).2 ≤
               1 - grid :=
-          EconCSLib.Optimization.realBisectionRun_upper_le_initial
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             (hlevelLower0.trans hlevelTarget_le)
         rw [hreturnedLast] at hrun_upper
         linarith)
@@ -17147,8 +17147,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -17199,7 +17199,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let comparison : Fin ((2 * m + 1) + 2) → ℝ :=
     uniformDoubledEndpointLevels oldLevels
   let tFirst : ℝ :=
@@ -17229,26 +17229,26 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
   have hlevelTarget_le : levelTarget ≤ 1 - grid := by
     simpa [levelTarget, comparison] using hlevelTarget_le_one_sub_grid
   have hreturnedLast_run :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
         outerSteps levelLower0 (1 - grid)).2 = lastLow := by
     simpa [levelTarget, levelLower0, comparison] using hreturnedLast
   have hlevelTarget_le_lastLow : levelTarget ≤ lastLow := by
     have hrun :
         levelTarget ≤
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             outerSteps levelLower0 (1 - grid)).2 :=
-      EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+      AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
         (n := outerSteps) hlevelLower0 hlevelTarget_le
     rwa [hreturnedLast_run] at hrun
   have hlastLow_le_one_sub_grid : lastLow ≤ 1 - grid := by
     have hrun_upper :
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).2 ≤ 1 - grid :=
-      EconCSLib.Optimization.realBisectionRun_upper_le_initial
-        (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
         (hlevelLower0.trans hlevelTarget_le)
     rwa [hreturnedLast_run] at hrun_upper
   have hlevelTarget_pos : 0 < levelTarget := by
@@ -17432,8 +17432,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -17497,7 +17497,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -17576,11 +17576,11 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
   have hlevelWidth' :
       (levelUpper0 - levelLower0) / (2 : ℝ) ^ outerSteps ≤ delta := by
     simpa [levelLower0, delta] using
-      EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+      AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
         hlevelWidth
   have hreturnedLast' :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 levelUpper0).2 =
         returned
           (adjacentLowIndex
@@ -17588,16 +17588,16 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
     rw [hlastLow_eq]
     simpa [levelTarget, levelLower0] using hreturnedLast
   have hlastBracket :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         levelTarget
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 levelUpper0).1
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 levelUpper0).2
         delta :=
-    EconCSLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
+    AppliedModelingLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
       (n := outerSteps) (lower := levelLower0) (upper := levelUpper0)
       (target := levelTarget) (delta := delta)
       hlevelLower0 (by simpa [levelTarget] using hlevelUpper0) hlevelWidth'
@@ -17633,19 +17633,19 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         hfirstInterior_not_last
   have hfirst_run_target_le :
       root firstInterior ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (root firstInterior))
           innerSteps 0
           (returned (adjacentHighIndex firstInterior) - grid)).2 :=
-    EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+    AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
       (n := innerSteps) (lower := 0)
       (target := root firstInterior)
       (upper := returned (adjacentHighIndex firstInterior) - grid)
       hfirst_root_pos.le hfirst_root_le_grid_upper
   have hfirst_returned_low :
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget
           (root firstInterior))
         innerSteps 0 (returned (adjacentHighIndex firstInterior) - grid)).2 =
         returned (adjacentLowIndex firstInterior) := by
@@ -17677,7 +17677,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (m := m) (M := M) (L := L)
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned
-      (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       (fun _ : Fin ((2 * m + 1) + 1) => (0 : ℝ))
       (fun i : Fin ((2 * m + 1) + 1) =>
         returned (adjacentHighIndex i) - grid)
@@ -17685,11 +17685,11 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_true hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_true hx)
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_false hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_false hx)
       hlevelLower0 (by simpa [levelTarget] using hlevelUpper0)
       (by simpa [levelLower0, delta] using hlevelWidth')
       (by simpa [levelLower0, levelTarget] using hreturnedLast')
@@ -17764,8 +17764,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -17814,7 +17814,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -17850,27 +17850,27 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       levelTarget ≤ 1 - grid := by
     simpa [levelTarget, optimal] using hlevelTarget_le_one_sub_grid
   have hreturnedLast' :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).2 = lastLow := by
     simpa [levelTarget, levelLower0, optimal] using hreturnedLast
   have hlastLow_le_one_sub_grid : lastLow ≤ 1 - grid := by
     have hrun_upper :
-        (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             outerSteps levelLower0 (1 - grid)).2 ≤
           1 - grid :=
-      EconCSLib.Optimization.realBisectionRun_upper_le_initial
-        (above := EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
+        (above := AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
         (n := outerSteps) (hlevelLower0.trans hlevelTarget_le)
     rwa [hreturnedLast'] at hrun_upper
   have hlevelTarget_le_lastLow : levelTarget ≤ lastLow := by
     have hrun :
         levelTarget ≤
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             outerSteps levelLower0 (1 - grid)).2 :=
-      EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+      AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
         (n := outerSteps) hlevelLower0 hlevelTarget_le
     rwa [hreturnedLast'] at hrun
   have hlevelTarget_pos : 0 < levelTarget := by
@@ -18102,8 +18102,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -18159,7 +18159,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -18230,8 +18230,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -18297,7 +18297,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -18362,8 +18362,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -18419,7 +18419,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -18469,24 +18469,24 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
   have hlevelWidth' :
       (1 - levelLower0) / (2 : ℝ) ^ outerSteps ≤ delta := by
     simpa [levelLower0, delta] using
-      EconCSLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
+      AppliedModelingLib.Optimization.width_div_pow_two_le_of_le_delta_mul_pow_two
         hlevelWidth
   have hreturnedLast' :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).2 = lastLow := by
     simpa [levelTarget, levelLower0] using hreturnedLast
   have hlastBracket :
-      EconCSLib.Optimization.RealBisectionBracket
+      AppliedModelingLib.Optimization.RealBisectionBracket
         levelTarget
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).1
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).2
         delta :=
-    EconCSLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
+    AppliedModelingLib.Optimization.realBisectionRun_bracket_aboveTarget_of_width_le
       (n := outerSteps) (lower := levelLower0) (upper := 1)
       (target := levelTarget) (delta := delta)
       hlevelLower0 hlevelUpper0 hlevelWidth'
@@ -18565,8 +18565,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -18632,7 +18632,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -18682,8 +18682,8 @@ theorem theorem32_calculated_grid_lastLow_pos_of_outer_return
       BinaryEndpointAwareAdjacentRatesEqualize oldLevels
         (fun _ : Fin (m + 2) => (1 : ℝ)))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -18716,14 +18716,14 @@ theorem theorem32_calculated_grid_lastLow_pos_of_outer_return
   have hlevelTarget_le_lastLow : levelTarget ≤ lastLow := by
     have hrun :
         levelTarget ≤
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             outerSteps levelLower0 1).2 :=
-      EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+      AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
         (n := outerSteps) hlevelLower0 hlevelUpper0
     have hreturnedLast' :
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).2 = lastLow := by
       simpa [levelTarget, levelLower0, optimal] using hreturnedLast
     rw [hreturnedLast'] at hrun
@@ -18755,8 +18755,8 @@ theorem theorem32_calculated_grid_tFirst_lt_lastLow_of_outer_return
       BinaryEndpointAwareAdjacentRatesEqualize oldLevels
         (fun _ : Fin (m + 2) => (1 : ℝ)))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -18829,14 +18829,14 @@ theorem theorem32_calculated_grid_tFirst_lt_lastLow_of_outer_return
   have hlevelTarget_le_lastLow : levelTarget ≤ lastLow := by
     have hrun :
         levelTarget ≤
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             outerSteps levelLower0 1).2 :=
-      EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+      AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
         (n := outerSteps) hlevelLower0 hlevelUpper0
     have hreturnedLast' :
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).2 = lastLow := by
       simpa [levelTarget, levelLower0, optimal] using hreturnedLast
     rw [hreturnedLast'] at hrun
@@ -18860,8 +18860,8 @@ theorem theorem32_calculated_grid_target_pos_of_outer_return
         (fun _ : Fin (m + 2) => (1 : ℝ)))
     (hlastLow_lt_one : lastLow < 1)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -18901,14 +18901,14 @@ theorem theorem32_calculated_grid_target_pos_of_outer_return
   have hlevelTarget_le_lastLow : levelTarget ≤ lastLow := by
     have hrun :
         levelTarget ≤
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             outerSteps levelLower0 1).2 :=
-      EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+      AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
         (n := outerSteps) hlevelLower0 hlevelUpper0
     have hreturnedLast' :
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 1).2 = lastLow := by
       simpa [levelTarget, levelLower0, optimal] using hreturnedLast
     rw [hreturnedLast'] at hrun
@@ -18951,8 +18951,8 @@ theorem theorem32_calculated_grid_lastLow_le_one_sub_grid_of_source_outer_return
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))) ≤
         1 - grid)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -18983,16 +18983,16 @@ theorem theorem32_calculated_grid_lastLow_le_one_sub_grid_of_source_outer_return
       levelTarget ≤ 1 - grid := by
     simpa [levelTarget, optimal] using hlevelTarget_le_one_sub_grid
   have hrun_upper :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).2 ≤
         1 - grid :=
-    EconCSLib.Optimization.realBisectionRun_upper_le_initial
-      (above := EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+    AppliedModelingLib.Optimization.realBisectionRun_upper_le_initial
+      (above := AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       (n := outerSteps) (hlevelLower0.trans hlevelTarget_le)
   have hreturnedLast' :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).2 = lastLow := by
     simpa [levelTarget, levelLower0, optimal] using hreturnedLast
   rwa [hreturnedLast'] at hrun_upper
@@ -19018,8 +19018,8 @@ theorem theorem32_calculated_grid_lastLow_pos_of_source_outer_return
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))) ≤
         1 - grid)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -19051,14 +19051,14 @@ theorem theorem32_calculated_grid_lastLow_pos_of_source_outer_return
     simpa [levelTarget, optimal] using hlevelTarget_le_one_sub_grid
   have htarget_le_run :
       levelTarget ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).2 :=
-    EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+    AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
       (n := outerSteps) hlevelLower0 hlevelTarget_le
   have hreturnedLast' :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).2 = lastLow := by
     simpa [levelTarget, levelLower0, optimal] using hreturnedLast
   have hlevelTarget_pos : 0 < levelTarget := by
@@ -19244,16 +19244,16 @@ theorem theorem32_calculated_grid_levelTarget_lt_lastLow_of_source_outer_return_
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       ∀ k : ℕ, k < outerSteps →
         levelTarget ≠
-          EconCSLib.Optimization.realBisectionMidpoint
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          AppliedModelingLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).1
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).2)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -19288,17 +19288,17 @@ theorem theorem32_calculated_grid_levelTarget_lt_lastLow_of_source_outer_return_
     simpa [levelTarget, optimal] using hlevelTarget_lt_one_sub_grid
   have hrun :
       levelTarget <
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).2 := by
     exact
-      EconCSLib.Optimization.realBisectionRun_aboveTarget_target_lt_upper_of_no_exact_midpoint
+      AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_lt_upper_of_no_exact_midpoint
         (n := outerSteps) hlevelLower0 htarget_lt_upper
         (by
           simpa [optimal, levelLower0, levelTarget] using hnoExact)
   have hreturnedLast' :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).2 = lastLow := by
     simpa [levelTarget, levelLower0, optimal] using hreturnedLast
   rwa [hreturnedLast'] at hrun
@@ -19324,8 +19324,8 @@ theorem theorem32_calculated_grid_levelTarget_eq_lastLow_or_lt_lastLow_of_source
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))) <
         1 - grid)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -19361,12 +19361,12 @@ theorem theorem32_calculated_grid_levelTarget_eq_lastLow_or_lt_lastLow_of_source
   have htarget_lt_upper : levelTarget < 1 - grid := by
     simpa [levelTarget, optimal] using hlevelTarget_lt_one_sub_grid
   have hreturnedLast' :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).2 = lastLow := by
     simpa [levelTarget, levelLower0, optimal] using hreturnedLast
   rcases
-      EconCSLib.Optimization.realBisectionRun_aboveTarget_upper_eq_or_target_lt_upper
+      AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_upper_eq_or_target_lt_upper
         (n := outerSteps) hlevelLower0 htarget_lt_upper
       with hhit | hstrict
   · left
@@ -19397,8 +19397,8 @@ theorem theorem32_calculated_grid_tFirst_lt_lastLow_of_source_outer_return
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1))) ≤
         1 - grid)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -19470,14 +19470,14 @@ theorem theorem32_calculated_grid_tFirst_lt_lastLow_of_source_outer_return
     simpa [levelTarget, optimal] using hlevelTarget_le_one_sub_grid
   have htarget_le_run :
       levelTarget ≤
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).2 :=
-    EconCSLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
+    AppliedModelingLib.Optimization.realBisectionRun_aboveTarget_target_le_upper
       (n := outerSteps) hlevelLower0 hlevelTarget_le
   have hreturnedLast' :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           outerSteps levelLower0 (1 - grid)).2 = lastLow := by
     simpa [levelTarget, levelLower0, optimal] using hreturnedLast
   change tFirst < lastLow
@@ -19518,8 +19518,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -19566,7 +19566,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -19721,8 +19721,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -19791,7 +19791,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let comparison : Fin ((2 * m + 1) + 2) → ℝ :=
     uniformDoubledEndpointLevels oldLevels
   let tFirst : ℝ :=
@@ -19887,8 +19887,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -19947,7 +19947,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have htarget_lt_comparison_rate :
       let comparison : Fin ((2 * m + 1) + 2) → ℝ :=
         uniformDoubledEndpointLevels oldLevels
@@ -20010,8 +20010,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -20078,7 +20078,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let comparison : Fin ((2 * m + 1) + 2) → ℝ :=
     uniformDoubledEndpointLevels oldLevels
   let tFirst : ℝ :=
@@ -20211,8 +20211,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -20263,7 +20263,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let comparison : Fin ((2 * m + 1) + 2) → ℝ :=
     uniformDoubledEndpointLevels oldLevels
   let tFirst : ℝ :=
@@ -20420,8 +20420,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -20456,7 +20456,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let comparison : Fin ((2 * m + 1) + 2) → ℝ :=
     uniformDoubledEndpointLevels oldLevels
   let tFirst : ℝ :=
@@ -20575,8 +20575,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_run
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -20617,7 +20617,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_run
           binaryEndpointAwareAdjacentRateObjective returned
             (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
         nestedBisectionOperationCount M outerSteps innerSteps ≤
-          EconCSLib.Optimization.nestedBisectionStepBound M L := by
+          AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let optimal : Fin ((2 * m + 1) + 2) → ℝ :=
     uniformDoubledEndpointLevels oldLevels
   let levelTarget : ℝ :=
@@ -20690,8 +20690,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -20733,7 +20733,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let optimal : Fin ((2 * m + 1) + 2) → ℝ :=
     uniformDoubledEndpointLevels oldLevels
   let levelTarget : ℝ :=
@@ -20768,7 +20768,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                 binaryEndpointAwareAdjacentRateObjective gridReturned
                   (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ))) ∧
             nestedBisectionOperationCount M outerSteps innerSteps ≤
-              EconCSLib.Optimization.nestedBisectionStepBound M L) := by
+              AppliedModelingLib.Optimization.nestedBisectionStepBound M L) := by
       simpa [optimal, levelTarget, tFirst, target, gridReturned] using
         binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_runtime_le_of_theorem32_calculated_grid_low_bisection_upper_one_sub_grid_source_grid
           (m := m) (M := M) (L := L)
@@ -20825,12 +20825,12 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       ∀ k : ℕ, k < outerSteps →
         levelTarget ≠
-          EconCSLib.Optimization.realBisectionMidpoint
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          AppliedModelingLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).1
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).2)
     (hlevelWidth :
       (1 - grid) -
@@ -20842,8 +20842,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -20878,7 +20878,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hlevelTarget_le_one_sub_grid :
       let optimal : Fin ((2 * m + 1) + 2) → ℝ :=
         uniformDoubledEndpointLevels oldLevels
@@ -20939,12 +20939,12 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       ∀ k : ℕ, k < outerSteps →
         levelTarget ≠
-          EconCSLib.Optimization.realBisectionMidpoint
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          AppliedModelingLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).1
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).2)
     (hlevelWidth :
       (1 - grid) -
@@ -20956,8 +20956,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -20987,7 +20987,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hgrid_lt_tFirst :
       let tFirst : ℝ :=
         uniformDoubledEndpointLevels oldLevels
@@ -21037,12 +21037,12 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       ∀ k : ℕ, k < L + 1 →
         levelTarget ≠
-          EconCSLib.Optimization.realBisectionMidpoint
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          AppliedModelingLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).1
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).2)
     (hlevelWidth :
       (1 - grid) -
@@ -21054,8 +21054,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ (L + 1))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -21083,7 +21083,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M (L + 1) L ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   simpa using
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_calculated_grid_low_bisection_upper_one_sub_grid_of_no_exact_outer_return_source_upper_bound
       (m := m) (M := M) (L := L)
@@ -21125,12 +21125,12 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       ∀ k : ℕ, k < L + 1 →
         levelTarget ≠
-          EconCSLib.Optimization.realBisectionMidpoint
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          AppliedModelingLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).1
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).2)
     (hlevelWidthDiv :
       ((1 - grid) -
@@ -21142,8 +21142,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -21170,7 +21170,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M (L + 1) L ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hlevelWidth :
       (1 - grid) -
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ))) ≤
@@ -21181,7 +21181,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ (L + 1) := by
     exact
-      EconCSLib.Optimization.le_delta_mul_pow_two_of_width_div_pow_two_le
+      AppliedModelingLib.Optimization.le_delta_mul_pow_two_of_width_div_pow_two_le
         (n := L + 1) hlevelWidthDiv
   have hinnerWidth :
       1 ≤
@@ -21192,7 +21192,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ L := by
     exact
-      EconCSLib.Optimization.le_delta_mul_pow_two_of_width_div_pow_two_le
+      AppliedModelingLib.Optimization.le_delta_mul_pow_two_of_width_div_pow_two_le
         (n := L) hinnerWidthDiv
   exact
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_calculated_grid_low_bisection_upper_one_sub_grid_of_no_exact_outer_return_source_upper_bound_fixed_depths
@@ -21236,12 +21236,12 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       ∀ k : ℕ, k < L + 1 →
         levelTarget ≠
-          EconCSLib.Optimization.realBisectionMidpoint
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          AppliedModelingLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).1
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).2)
     (hlevelWidthDiv :
       ((1 - grid) -
@@ -21260,8 +21260,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹)) :
     let lastLow : ℝ :=
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget
           (uniformDoubledEndpointLevels oldLevels
             (adjacentLowIndex
               (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -21281,10 +21281,10 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M (L + 1) L ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let lastLow : ℝ :=
-    (EconCSLib.Optimization.realBisectionRun
-      (EconCSLib.Optimization.realBisectionAboveTarget
+    (AppliedModelingLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget
         (uniformDoubledEndpointLevels oldLevels
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -21292,8 +21292,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
       (1 - grid)).2
   have hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -21355,8 +21355,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_run
         (adjacentLowIndex
           (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
     let lastLow : ℝ :=
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
         (L + 1)
         (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
         (1 - grid)).2
@@ -21373,7 +21373,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_run
           binaryEndpointAwareAdjacentRateObjective returned
             (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
         nestedBisectionOperationCount M (L + 1) L ≤
-          EconCSLib.Optimization.nestedBisectionStepBound M L := by
+          AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let optimal : Fin ((2 * m + 1) + 2) → ℝ :=
     uniformDoubledEndpointLevels oldLevels
   let levelTarget : ℝ :=
@@ -21381,14 +21381,14 @@ theorem binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_run
       (adjacentLowIndex
         (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
   let lastLow : ℝ :=
-    (EconCSLib.Optimization.realBisectionRun
-      (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+    (AppliedModelingLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       (L + 1)
       (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
       (1 - grid)).2
   have hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -21414,7 +21414,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_run
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ (L + 1) := by
     exact
-      EconCSLib.Optimization.le_delta_mul_pow_two_of_width_div_pow_two_le
+      AppliedModelingLib.Optimization.le_delta_mul_pow_two_of_width_div_pow_two_le
         (n := L + 1) hlevelWidthDiv
   have hinnerWidth :
       1 ≤
@@ -21425,7 +21425,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_run
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ L := by
     exact
-      EconCSLib.Optimization.le_delta_mul_pow_two_of_width_div_pow_two_le
+      AppliedModelingLib.Optimization.le_delta_mul_pow_two_of_width_div_pow_two_le
         (n := L) hinnerWidthDiv
   simpa [optimal, levelTarget, lastLow] using
     binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_runtime_le_of_theorem32_calculated_grid_low_bisection_upper_one_sub_grid_source_grid
@@ -21475,8 +21475,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_run
         (adjacentLowIndex
           (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
     let lastLow : ℝ :=
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
         (L + 1)
         (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
         (1 - grid)).2
@@ -21493,7 +21493,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_run
           binaryEndpointAwareAdjacentRateObjective returned
             (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
         nestedBisectionOperationCount M (L + 1) L ≤
-          EconCSLib.Optimization.nestedBisectionStepBound M L := by
+          AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hlevelWidthDiv :
       ((1 - grid) -
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))) /
@@ -21567,8 +21567,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_run
         (adjacentLowIndex
           (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
     let lastLow : ℝ :=
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
         (L + 1)
         (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
         (1 - grid)).2
@@ -21585,7 +21585,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_run
           binaryEndpointAwareAdjacentRateObjective returned
             (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
         nestedBisectionOperationCount M (L + 1) L ≤
-          EconCSLib.Optimization.nestedBisectionStepBound M L := by
+          AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hwidthBudget :
       max
           (((1 - grid) -
@@ -21597,7 +21597,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exact_outer_hit_or_loss_and_run
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) :=
-    EconCSLib.Optimization.max_outer_half_inner_width_div_pow_two_le_of_le_delta_mul_pow_two
+    AppliedModelingLib.Optimization.max_outer_half_inner_width_div_pow_two_le_of_le_delta_mul_pow_two
       (outerWidth :=
         (1 - grid) -
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ))))
@@ -21654,8 +21654,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         (adjacentLowIndex
           (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
     let lastLow : ℝ :=
-      (EconCSLib.Optimization.realBisectionRun
-        (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionRun
+        (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
         (L + 1)
         (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
         (1 - grid)).2
@@ -21673,7 +21673,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M (L + 1) L ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let optimal : Fin ((2 * m + 1) + 2) → ℝ :=
     uniformDoubledEndpointLevels oldLevels
   let levelTarget : ℝ :=
@@ -21681,8 +21681,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (adjacentLowIndex
         (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
   let lastLow : ℝ :=
-    (EconCSLib.Optimization.realBisectionRun
-      (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+    (AppliedModelingLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       (L + 1)
       (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
       (1 - grid)).2
@@ -21697,7 +21697,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (((1 / 5 : ℝ) *
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) :=
-    EconCSLib.Optimization.max_outer_half_inner_width_div_pow_two_le_of_le_delta_mul_pow_two
+    AppliedModelingLib.Optimization.max_outer_half_inner_width_div_pow_two_le_of_le_delta_mul_pow_two
       (outerWidth :=
         (1 - grid) -
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ))))
@@ -21744,7 +21744,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ (L + 1) :=
-    EconCSLib.Optimization.le_delta_mul_pow_two_of_width_div_pow_two_le
+    AppliedModelingLib.Optimization.le_delta_mul_pow_two_of_width_div_pow_two_le
       (n := L + 1) hlevelWidthDiv
   have hinnerWidth :
       1 ≤
@@ -21754,11 +21754,11 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ L :=
-    EconCSLib.Optimization.le_delta_mul_pow_two_of_width_div_pow_two_le
+    AppliedModelingLib.Optimization.le_delta_mul_pow_two_of_width_div_pow_two_le
       (n := L) hinnerWidthDiv
   have hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -21820,8 +21820,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_depth_exact_outer_hit_or
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           (L + 1)
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
           (1 - grid)).2
@@ -21838,9 +21838,9 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_depth_exact_outer_hit_or
             binaryEndpointAwareAdjacentRateObjective returned
               (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
           nestedBisectionOperationCount M (L + 1) L ≤
-            EconCSLib.Optimization.nestedBisectionStepBound M L := by
+            AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   rcases
-      EconCSLib.Optimization.exists_nat_le_delta_mul_pow_two
+      AppliedModelingLib.Optimization.exists_nat_le_delta_mul_pow_two
         (budget :=
           max
             (((1 - grid) -
@@ -21890,8 +21890,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_depth_exact_outer_hit_or
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           (L + 1)
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
           (1 - grid)).2
@@ -21908,7 +21908,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_depth_exact_outer_hit_or
             binaryEndpointAwareAdjacentRateObjective returned
               (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
           nestedBisectionOperationCount M (L + 1) L ≤
-            EconCSLib.Optimization.nestedBisectionStepBound M L := by
+            AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   exact
     binaryEndpointAwareAdjacentRateObjective_exists_depth_exact_outer_hit_or_loss_and_runtime_le_of_theorem32_calculated_grid_low_bisection_upper_one_sub_grid_source_upper_bound
       (m := m) (M := M) hm oldLevels heps.le holdLevels holdEq
@@ -21945,8 +21945,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_depth_exact_outer_hit_or
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           (L + 1)
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
           (1 - grid)).2
@@ -21963,7 +21963,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_depth_exact_outer_hit_or
             binaryEndpointAwareAdjacentRateObjective returned
               (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
           nestedBisectionOperationCount M (L + 1) L ≤
-            EconCSLib.Optimization.nestedBisectionStepBound M L := by
+            AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hgrid_lt_tFirst :
       let tFirst : ℝ :=
         uniformDoubledEndpointLevels oldLevels
@@ -22019,8 +22019,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_exact_outer_h
             (adjacentLowIndex
               (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
         let lastLow : ℝ :=
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             (L + 1)
             (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
             (1 - grid)).2
@@ -22037,7 +22037,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_exact_outer_h
               binaryEndpointAwareAdjacentRateObjective returned
                 (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
             nestedBisectionOperationCount M (L + 1) L ≤
-              EconCSLib.Optimization.nestedBisectionStepBound M L := by
+              AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let bound : ℝ :=
     ((1 / 5 : ℝ) *
         binaryEndpointAwareAdjacentRateObjective oldLevels
@@ -22048,7 +22048,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_exact_outer_h
           (fun _ : Fin (m + 2) => (1 : ℝ)) := by
     unfold binaryEndpointAwareAdjacentRateObjective
     exact
-      EconCSLib.finiteMin_pos
+      AppliedModelingLib.finiteMin_pos
         (binaryEndpointAwareAdjacentRate oldLevels
           (fun _ : Fin (m + 2) => (1 : ℝ)))
         (fun i =>
@@ -22072,8 +22072,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_exact_outer_h
             (adjacentLowIndex
               (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
         let lastLow : ℝ :=
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             (L + 1)
             (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
             (1 - grid)).2
@@ -22090,7 +22090,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_exact_outer_h
               binaryEndpointAwareAdjacentRateObjective returned
                 (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
             nestedBisectionOperationCount M (L + 1) L ≤
-              EconCSLib.Optimization.nestedBisectionStepBound M L := by
+              AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
     exact
       binaryEndpointAwareAdjacentRateObjective_exists_depth_exact_outer_hit_or_loss_and_runtime_le_of_theorem32_calculated_grid_low_bisection_upper_one_sub_grid_objective_grid_of_eps_pos
         (m := m) (M := M) hm oldLevels heps holdLevels holdEq
@@ -22127,8 +22127,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
             (adjacentLowIndex
               (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
         let lastLow : ℝ :=
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             (L + 1)
             (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
             (1 - grid)).2
@@ -22146,7 +22146,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
             binaryEndpointAwareAdjacentRateObjective returned
               (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
           nestedBisectionOperationCount M (L + 1) L ≤
-            EconCSLib.Optimization.nestedBisectionStepBound M L := by
+            AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let bound : ℝ :=
     ((1 / 5 : ℝ) *
         binaryEndpointAwareAdjacentRateObjective oldLevels
@@ -22157,7 +22157,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
           (fun _ : Fin (m + 2) => (1 : ℝ)) := by
     unfold binaryEndpointAwareAdjacentRateObjective
     exact
-      EconCSLib.finiteMin_pos
+      AppliedModelingLib.finiteMin_pos
         (binaryEndpointAwareAdjacentRate oldLevels
           (fun _ : Fin (m + 2) => (1 : ℝ)))
         (fun i =>
@@ -22203,7 +22203,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
     theorem32_uniform_doubled_explicit_delta_pos
       (m := m) hm (oldLevels := oldLevels) (eps := eps) heps holdLevels
   rcases
-      EconCSLib.Optimization.exists_nat_le_delta_mul_pow_two
+      AppliedModelingLib.Optimization.exists_nat_le_delta_mul_pow_two
         (budget :=
           max
             (((1 - grid) -
@@ -22225,8 +22225,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           (L + 1)
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
           (1 - grid)).2
@@ -22244,7 +22244,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
           binaryEndpointAwareAdjacentRateObjective returned
             (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
         nestedBisectionOperationCount M (L + 1) L ≤
-          EconCSLib.Optimization.nestedBisectionStepBound M L := by
+          AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
     exact
       binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_calculated_grid_low_bisection_upper_one_sub_grid_source_upper_bound_source_depth_fixed_depths_auto_lastLow_early_exact_return
         (m := m) (M := M) (L := L) hm oldLevels heps.le holdLevels holdEq
@@ -22280,8 +22280,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
             (adjacentLowIndex
               (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
         let lastLow : ℝ :=
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             (L + 1)
             (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
             (1 - grid)).2
@@ -22308,7 +22308,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
   exact
     ⟨hcert.1,
       hcert.2.trans
-        (EconCSLib.Optimization.nestedBisectionStepBound_le_mul_succ_sq
+        (AppliedModelingLib.Optimization.nestedBisectionStepBound_le_mul_succ_sq
           (M := M) (L := L) hM)⟩
 
 /--
@@ -22351,8 +22351,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_log_depth_loss_and_
             (adjacentLowIndex
               (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
         let lastLow : ℝ :=
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             (L + 1)
             (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
             (1 - grid)).2
@@ -22382,7 +22382,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_log_depth_loss_and_
           (fun _ : Fin (m + 2) => (1 : ℝ)) := by
     unfold binaryEndpointAwareAdjacentRateObjective
     exact
-      EconCSLib.finiteMin_pos
+      AppliedModelingLib.finiteMin_pos
         (binaryEndpointAwareAdjacentRate oldLevels
           (fun _ : Fin (m + 2) => (1 : ℝ)))
         (fun i =>
@@ -22428,7 +22428,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_log_depth_loss_and_
     theorem32_uniform_doubled_explicit_delta_pos
       (m := m) hm (oldLevels := oldLevels) (eps := eps) heps holdLevels
   rcases
-      EconCSLib.Optimization.exists_nat_le_delta_mul_pow_two_and_succ_le_logb_max
+      AppliedModelingLib.Optimization.exists_nat_le_delta_mul_pow_two_and_succ_le_logb_max
         (budget :=
           max
             (((1 - grid) -
@@ -22450,8 +22450,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_log_depth_loss_and_
           (adjacentLowIndex
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       let lastLow : ℝ :=
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
           (L + 1)
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
           (1 - grid)).2
@@ -22469,7 +22469,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_log_depth_loss_and_
           binaryEndpointAwareAdjacentRateObjective returned
             (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
         nestedBisectionOperationCount M (L + 1) L ≤
-          EconCSLib.Optimization.nestedBisectionStepBound M L := by
+          AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
     exact
       binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_calculated_grid_low_bisection_upper_one_sub_grid_source_upper_bound_source_depth_fixed_depths_auto_lastLow_early_exact_return
         (m := m) (M := M) (L := L) hm oldLevels heps.le holdLevels holdEq
@@ -22479,7 +22479,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_log_depth_loss_and_
   exact
     ⟨hLlog, hcert.1,
       hcert.2.trans
-        (EconCSLib.Optimization.nestedBisectionStepBound_le_mul_succ_sq
+        (AppliedModelingLib.Optimization.nestedBisectionStepBound_le_mul_succ_sq
           (M := M) (L := L) hM)⟩
 
 /--
@@ -22524,8 +22524,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_log_depth_loss_and_
             (adjacentLowIndex
               (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
         let lastLow : ℝ :=
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             (L + 1)
             (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
             (1 - grid)).2
@@ -22553,7 +22553,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_log_depth_loss_and_
   dsimp at hcert ⊢
   refine ⟨hcert.1, hcert.2.1, ?_⟩
   simpa [nestedBisectionOperationCount, Nat.mul_add, Nat.mul_one] using
-    EconCSLib.Optimization.nestedBisection_operation_count_real_le_mul_sq_of_depth_le
+    AppliedModelingLib.Optimization.nestedBisection_operation_count_real_le_mul_sq_of_depth_le
       (M := M) (L := L) (outerSteps := L + 1) (innerSteps := L)
       (R :=
         Real.logb 2
@@ -22597,7 +22597,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
               (theorem32UniformDoubledNestedBisectionOutput m L oldLevels grid)
               (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
           nestedBisectionOperationCount M (L + 1) L ≤
-            EconCSLib.Optimization.nestedBisectionStepBound M L := by
+            AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   rcases
     binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runtime_le_of_theorem32_calculated_grid_low_bisection_upper_one_sub_grid_early_exact_return_of_eps_pos
       (m := m) (M := M) hm oldLevels heps holdLevels holdEq with
@@ -22635,7 +22635,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_multiplicativ
               (theorem32UniformDoubledNestedBisectionOutput m L oldLevels grid)
               (fun _ : Fin ((2 * m + 1) + 2) ↦ (1 : ℝ)) ∧
           nestedBisectionOperationCount M (L + 1) L ≤
-            EconCSLib.Optimization.nestedBisectionStepBound M L := by
+            AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let optimal : Fin ((2 * m + 1) + 2) → ℝ :=
     uniformDoubledEndpointLevels oldLevels
   let uniform : Fin ((2 * m + 1) + 2) → ℝ := fun _ ↦ (1 : ℝ)
@@ -22646,7 +22646,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_multiplicativ
       uniformDoubledEndpointLevels_isEndpointLevelVector hm holdLevels
   have hrStar_pos : 0 < rStar := by
     unfold rStar binaryEndpointAwareAdjacentRateObjective
-    apply EconCSLib.finiteMin_pos
+    apply AppliedModelingLib.finiteMin_pos
     intro i
     exact
       binaryEndpointAwareAdjacentRate_pos
@@ -22743,7 +22743,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
     {eps : ℝ}
     (heps : 0 < eps)
     (hoptimal :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun levels : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective levels
@@ -22763,8 +22763,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
             (adjacentLowIndex
               (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
         let lastLow : ℝ :=
-          (EconCSLib.Optimization.realBisectionRun
-            (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          (AppliedModelingLib.Optimization.realBisectionRun
+            (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
             (L + 1)
             (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
             (1 - grid)).2
@@ -22782,7 +22782,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
             binaryEndpointAwareAdjacentRateObjective returned
             (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
           nestedBisectionOperationCount M (L + 1) L ≤
-            EconCSLib.Optimization.nestedBisectionStepBound M L := by
+            AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have holdLevels : BinaryEndpointLevelVector oldLevels := hoptimal.1
   have holdEq :
       BinaryEndpointAwareAdjacentRatesEqualize oldLevels
@@ -22803,7 +22803,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
     {eps : ℝ}
     (heps : 0 < eps)
     (hoptimal :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun levels : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective levels
@@ -22823,7 +22823,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runt
               (theorem32UniformDoubledNestedBisectionOutput m L oldLevels grid)
               (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
           nestedBisectionOperationCount M (L + 1) L ≤
-            EconCSLib.Optimization.nestedBisectionStepBound M L := by
+            AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   rcases
     binaryEndpointAwareAdjacentRateObjective_exists_grid_depth_loss_and_runtime_le_of_theorem32_calculated_grid_low_bisection_upper_one_sub_grid_early_exact_return_of_optimal_of_eps_pos
       (m := m) (M := M) hm oldLevels heps hoptimal with
@@ -22845,7 +22845,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_exists_grid_log_depth_loss_and_
     {eps : ℝ}
     (heps : 0 < eps)
     (hoptimal :
-      EconCSLib.Optimization.IsMaximizerOn
+      AppliedModelingLib.Optimization.IsMaximizerOn
         (BinaryEndpointLevelVector : (Fin (m + 2) → ℝ) → Prop)
         (fun levels : Fin (m + 2) → ℝ =>
           binaryEndpointAwareAdjacentRateObjective levels
@@ -22902,7 +22902,7 @@ theorem theorem32_runtime_isBigO_of_eventually_runtime_real_log_quadratic_le
       ∀ᶠ t in l, runtime t ≤ (M : ℝ) * runtimeLog t ^ 2) :
     Asymptotics.IsBigO l runtime
       (fun t : α => (M : ℝ) * runtimeLog t ^ 2) :=
-  EconCSLib.Math.isBigO_of_eventually_le_mul_sq
+  AppliedModelingLib.Math.isBigO_of_eventually_le_mul_sq
     (C := (M : ℝ)) (by positivity) hruntime_nonneg hruntime_le
 
 /--
@@ -22933,12 +22933,12 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       ∀ k : ℕ, k < outerSteps →
         levelTarget ≠
-          EconCSLib.Optimization.realBisectionMidpoint
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          AppliedModelingLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).1
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).2)
     (hlevelWidth :
       (1 - grid) -
@@ -22950,8 +22950,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -22986,7 +22986,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hlevelTarget_lt_one_sub_grid :
       let optimal : Fin ((2 * m + 1) + 2) → ℝ :=
         uniformDoubledEndpointLevels oldLevels
@@ -23031,12 +23031,12 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       ∀ k : ℕ, k < L + 1 →
         levelTarget ≠
-          EconCSLib.Optimization.realBisectionMidpoint
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          AppliedModelingLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).1
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).2)
     (hlevelWidth :
       (1 - grid) -
@@ -23048,8 +23048,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ (L + 1))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -23082,7 +23082,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M (L + 1) L ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   simpa using
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_calculated_grid_low_bisection_upper_one_sub_grid_of_no_exact_outer_return_small_grid
       (m := m) (M := M) (L := L)
@@ -23126,12 +23126,12 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       ∀ k : ℕ, k < L + 1 →
         levelTarget ≠
-          EconCSLib.Optimization.realBisectionMidpoint
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          AppliedModelingLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).1
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).2)
     (hlevelWidth :
       (1 - grid) -
@@ -23143,8 +23143,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ (L + 1))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -23172,7 +23172,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M (L + 1) L ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hgrid_lt_tFirst :
       let tFirst : ℝ :=
         uniformDoubledEndpointLevels oldLevels
@@ -23219,12 +23219,12 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
             (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))
       ∀ k : ℕ, k < L + 1 →
         levelTarget ≠
-          EconCSLib.Optimization.realBisectionMidpoint
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+          AppliedModelingLib.Optimization.realBisectionMidpoint
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).1
-            (EconCSLib.Optimization.realBisectionRun
-              (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+            (AppliedModelingLib.Optimization.realBisectionRun
+              (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
               k levelLower0 (1 - grid)).2)
     (hlevelWidth :
       (1 - grid) -
@@ -23236,8 +23236,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ (L + 1))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -23265,7 +23265,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M (L + 1) L ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   exact
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_calculated_grid_low_bisection_upper_one_sub_grid_of_no_exact_outer_return_objective_grid_fixed_depths
       (m := m) (M := M) (L := L)
@@ -23305,8 +23305,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -23382,7 +23382,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -23468,8 +23468,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -23545,7 +23545,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have htarget_pos :
       let tFirst : ℝ :=
         uniformDoubledEndpointLevels oldLevels
@@ -23598,8 +23598,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -23661,7 +23661,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -23729,8 +23729,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -23787,7 +23787,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -23866,8 +23866,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -23919,7 +23919,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -24023,8 +24023,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -24071,7 +24071,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have htFirst_lt_lastLow :
       let tFirst : ℝ :=
         uniformDoubledEndpointLevels oldLevels
@@ -24115,8 +24115,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -24163,7 +24163,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hlastLow_lt_one : lastLow < 1 := by
     linarith
   exact
@@ -24201,8 +24201,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -24251,7 +24251,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let tFirst : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentHighIndex (firstAdjacentIndex : Fin ((2 * m + 1) + 1)))
@@ -24465,7 +24465,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
+      (AppliedModelingLib.Optimization.realBisectionRun
           levelAbove outerSteps
           (1 - 1 / ((((2 * m + 1) + 1 : ℕ) : ℝ)))
           levelUpper0).2 =
@@ -24512,8 +24512,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -24524,7 +24524,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   have hfeasible :
       let tFirst : ℝ :=
         uniformDoubledEndpointLevels oldLevels
@@ -24575,8 +24575,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -24625,8 +24625,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -24637,7 +24637,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let levelTarget : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentLowIndex
@@ -24654,16 +24654,16 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (m := m) (M := M) (L := L)
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned
-      (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       heps holdLevels holdEq hreturnedLevels
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_true hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_true hx)
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_false hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_false hx)
       (by simpa [levelTarget] using hlevelUpper0)
       hlevelWidth (by simpa [levelTarget] using hreturnedLast)
       (theorem32_floor_lt_high_of_first_ge
@@ -24697,8 +24697,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹) *
           (2 : ℝ) ^ outerSteps)
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -24748,8 +24748,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -24760,7 +24760,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let levelTarget : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentLowIndex
@@ -24777,16 +24777,16 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (m := m) (M := M) (L := L)
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned
-      (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       heps holdLevels holdEq hreturnedLevels
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_true hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_true hx)
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_false hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_false hx)
       (by simpa [levelTarget] using hlevelUpper0)
       hlevelWidth
       (by simpa [levelTarget] using hreturnedLast)
@@ -24828,8 +24828,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -24880,8 +24880,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           (1 : ℝ) (1 : ℝ) tFirst
           (returned (adjacentHighIndex i)) target
       ∀ i : Fin ((2 * m + 1) + 1), i.val ≠ 0 → i.val ≠ 2 * m + 1 →
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget (root i))
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget (root i))
           innerSteps 0 (returned (adjacentHighIndex i))).2 =
           returned (adjacentLowIndex i))
     (houter : outerSteps ≤ L + 1)
@@ -24892,7 +24892,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let levelTarget : ℝ :=
     uniformDoubledEndpointLevels oldLevels
       (adjacentLowIndex
@@ -24902,16 +24902,16 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
       (m := m) (M := M) (L := L)
       (outerSteps := outerSteps) (innerSteps := innerSteps)
       hm oldLevels returned
-      (EconCSLib.Optimization.realBisectionAboveTarget levelTarget)
+      (AppliedModelingLib.Optimization.realBisectionAboveTarget levelTarget)
       heps holdLevels holdEq hreturnedLevels
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_true hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_true hx)
       (by
         intro x hx
         simpa [levelTarget] using
-          EconCSLib.Optimization.realBisectionAboveTarget_false hx)
+          AppliedModelingLib.Optimization.realBisectionAboveTarget_false hx)
       hlevelLower0 hlevelUpper0 hlevelWidth
       (by simpa [levelTarget] using hreturnedLast)
       hfirst_ge hlast_ge hfeasible hinnerWidth hreturnedLow
@@ -24921,7 +24921,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
 Theorem 3.2 finite loss/runtime endpoint from canonical executable bisection
 runs.  Compared with the raw certificate theorem, this discharges the
 outer/inner midpoint-classifier soundness by using the reusable threshold
-classifier from `EconCSLib.Foundations.Optimization.Bisection`.
+classifier from `AppliedModelingLib.Foundations.Optimization.Bisection`.
 -/
 theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_threshold_runs
     {m M L outerSteps innerSteps : ℕ} (hm : 0 < m)
@@ -24951,8 +24951,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
                 binaryEndpointAwareAdjacentRateObjective oldLevels
                   (fun _ : Fin (m + 2) => (1 : ℝ))) / 2)⁻¹))
     (hreturnedLast :
-      (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+      (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (uniformDoubledEndpointLevels oldLevels
               (adjacentLowIndex
                 (lastAdjacentIndex : Fin ((2 * m + 1) + 1)))))
@@ -24987,8 +24987,8 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
           Real.log ((tFirstStar + delta) / tFirstStar))
     (hreturnedRate :
       ∀ i : Fin ((2 * m + 1) + 1),
-        (EconCSLib.Optimization.realBisectionRun
-          (EconCSLib.Optimization.realBisectionAboveTarget
+        (AppliedModelingLib.Optimization.realBisectionRun
+          (AppliedModelingLib.Optimization.realBisectionAboveTarget
             (binaryEndpointAwareAdjacentRate returned
               (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ))
               (lastAdjacentIndex : Fin ((2 * m + 1) + 1))))
@@ -25003,7 +25003,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem3
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   let run :=
     theorem32_run_certificate_of_outer_level_threshold_run_and_inner_rate_threshold_runs
       (m := m) (M := M) (L := L)
@@ -25038,7 +25038,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_uniform_
           (uniformDoubledEndpointLevels oldLevels)
           (fun _ : Fin ((2 * m + 1) + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M 0 0 ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   simpa [theorem32_uniform_doubled_exact_run_certificate] using
     binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_theorem32_run_certificate
       (m := m) (M := M) (L := L) hm oldLevels
@@ -25098,7 +25098,7 @@ theorem binaryEndpointAwareAdjacentRateObjective_loss_and_runtime_le_of_nested_b
         binaryEndpointAwareAdjacentRateObjective returned
           (fun _ : Fin (m + 2) => (1 : ℝ)) ≤ eps ∧
       nestedBisectionOperationCount M outerSteps innerSteps ≤
-        EconCSLib.Optimization.nestedBisectionStepBound M L := by
+        AppliedModelingLib.Optimization.nestedBisectionStepBound M L := by
   constructor
   · exact
       binaryEndpointAwareAdjacentRateObjective_loss_le_of_nested_bisection_uniform_equalized_objective_rate_lower

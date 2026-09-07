@@ -9,12 +9,12 @@ concrete order-statistic mean agrees with the gamma-ratio sequence on a tail.
 -/
 theorem lemmaD4_pareto_iid_fixed_rank_value_asymptoticEquivalent
     {alpha : ℝ} (halpha : 1 < alpha) (r : ℕ) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun q : ℕ =>
         expectedOrderStatisticMeanSeq (paretoIidSampleMeasure alpha) (q - r) q)
       (fun q : ℕ =>
         paretoRankValueCoeff alpha r * ((q : ℝ) ^ (1 / alpha))) := by
-  refine EconCSLib.Math.AsymptoticEquivalent.congr_left_eventually ?_
+  refine AppliedModelingLib.Math.AsymptoticEquivalent.congr_left_eventually ?_
     (paretoRankGammaRatioMean_value_asymptoticEquivalent halpha r)
   filter_upwards [Filter.eventually_atTop.2 ⟨r + 1, fun q hq => hq⟩] with q hq
   have hrq : r < q := by omega

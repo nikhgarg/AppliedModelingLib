@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import sys
 import unittest
@@ -20,6 +21,7 @@ from scripts import audit_evidence_integrity as EVIDENCE  # noqa: E402
 from scripts.source_coverage_scope import (  # noqa: E402
     source_record_source_item_record_sha256,
     source_record_source_item_semantic_sha256,
+    source_record_source_item_supported_identity_sha256s,
 )
 
 
@@ -86,6 +88,7 @@ def sealed_artifact(
         ),
         "paper_statement_map_sha256": raw["paper_statement_map_sha256"],
         "transparent_spec_pair_witnesses": witnesses,
+        "source_declared_open_nonresult_witnesses": [],
     }
     artifact[REVALIDATION.SOURCE_RECORD_SEMANTIC_CONTRACT_REVALIDATION_RECEIPT_FIELD] = (
         REVALIDATION._canonical_json_sha256(artifact)
@@ -217,7 +220,9 @@ def group_fixture(*, malformed_member: bool = False) -> tuple[
     return raw, raw_bytes, statement_map, statement_map_bytes, artifact, artifact_bytes
 
 
-def pair_map_item(evidence: str, spec: str) -> dict[str, object]:
+def pair_map_item(
+    evidence: str, spec: str, *, evidence_mode: str = "proves"
+) -> dict[str, object]:
     return {
         "statement": "Fixture theorem",
         "source_location": "source.txt:1-2",
@@ -227,10 +232,121 @@ def pair_map_item(evidence: str, spec: str) -> dict[str, object]:
         "semantic_contract": {
             "evidence_declaration": evidence,
             "spec_declaration": spec,
-            "evidence_mode": "proves",
+            "evidence_mode": evidence_mode,
             "semantic_shape": "plain",
         },
     }
+
+
+def typed_route_fixture() -> tuple[
+    dict[str, object],
+    bytes,
+    dict[str, object],
+    bytes,
+    dict[str, object],
+    bytes,
+    dict[str, object],
+    bytes,
+    dict[str, object],
+    bytes,
+]:
+    evidence = f"{PAPER}.result"
+    spec = f"{PAPER}.resultSpec"
+    quote = "Theorem: fixture result."
+    quote_sha256 = hashlib.sha256(quote.encode("utf-8")).hexdigest()
+    source_sha256 = digest("a")
+    statement_map: dict[str, object] = {
+        "schema": 1,
+        "paper": PAPER,
+        "source_artifact_sha256": source_sha256,
+        "semantic_contract_schema": 1,
+        "semantic_route_schema": 2,
+        "paper_interface_namespace": PAPER,
+        "items": {
+            "result": {
+                "statement": quote,
+                "source_location": "source.txt:1",
+                "source_kind": "theorem",
+                "coverage_status": "covered",
+                "claim_bearing": True,
+                "source_anchor_evidence": [
+                    {
+                        "path": "source.txt",
+                        "line_start": 1,
+                        "line_end": 1,
+                        "quoted_text": quote,
+                        "quoted_text_sha256": quote_sha256,
+                    }
+                ],
+                "source_claim_atoms": [
+                    {
+                        "id": "result.claim",
+                        "source_locator": "source.txt:1",
+                        "semantic_claim": quote,
+                        "reviewed_lean_route": evidence,
+                        "source_quote_sha256": quote_sha256,
+                        "identity_schema": 2,
+                    }
+                ],
+                "semantic_contract": {
+                    "spec_declaration": spec,
+                    "evidence_declaration": evidence,
+                    "evidence_mode": "proves",
+                    "semantic_shape": "plain",
+                },
+                "lean_declarations": [evidence],
+                "support_lean_declarations": [spec],
+            }
+        },
+    }
+    direct_error = (
+        "current v10 direct source-map route for fully-qualified declaration "
+        f"`{spec}` has no generated semantic-contract member identity"
+    )
+    atom_error = (
+        "source atom `result:result.claim` route `FixturePaper.GuessedSpec_proof` "
+        "is not an exact configured review declaration"
+    )
+    coverage_error = (
+        "selected source-coverage item 'result' atom contract companion requires "
+        "every source-claim atom to route to its one exact evidence declaration"
+    )
+    raw: dict[str, object] = {
+        "paper": PAPER,
+        "source_record_input_fingerprint": {
+            "source_artifact_identities": [
+                {"path": "source.txt", "sha256": source_sha256, "status": "present"}
+            ]
+        },
+        "source_contract_association_errors": [
+            direct_error,
+            atom_error,
+            "unrelated semantic association failure",
+        ],
+        "source_coverage_route_errors": [
+            coverage_error,
+            "unrelated source coverage failure",
+        ],
+    }
+    paper_prerequisites: dict[str, object] = {"schema": 1, "items": {}}
+    library_review: dict[str, object] = {"schema": 1, "items": {}}
+    status: dict[str, object] = {
+        "review_surface": {
+            "proposition_spec_proofs": {"resultSpec": "result"}
+        }
+    }
+    return (
+        raw,
+        encoded(raw),
+        statement_map,
+        encoded(statement_map),
+        paper_prerequisites,
+        encoded(paper_prerequisites),
+        library_review,
+        encoded(library_review),
+        status,
+        encoded(status),
+    )
 
 
 def semantic_association(
@@ -364,7 +480,7 @@ def authority_for(
     return authority
 
 
-def pair_fixture() -> tuple[
+def pair_fixture(*, evidence_mode: str = "proves") -> tuple[
     dict[str, object],
     bytes,
     dict[str, object],
@@ -383,7 +499,7 @@ def pair_fixture() -> tuple[
     spec_signature = signature(spec, digest("5"), digest("6"))
     direct_signature_association = association_signature(evidence, digest("3"))
     spec_signature_association = association_signature(spec, digest("5"))
-    map_item = pair_map_item(evidence, spec)
+    map_item = pair_map_item(evidence, spec, evidence_mode=evidence_mode)
     statement_map = {"items": {"fixture_source": map_item}}
     source_identity: dict[str, object] = {
         "source_key": "fixture_source",
@@ -394,11 +510,30 @@ def pair_fixture() -> tuple[
         "semantic_contract": copy.deepcopy(map_item["semantic_contract"]),
     }
     shared_root = digest("7")
-    direct_graph = graph(
-        result_kind="transparent_wrapper",
-        result_sha=digest("8"),
-        expanded_sha=shared_root,
-    )
+    if evidence_mode == "definitionally_realizes":
+        direct_graph = {
+            "complete": True,
+            "nodes": [
+                {"path": "result", "kind": "iff", "semantic_sha256": digest("8")},
+                {"path": "result/left", "kind": "transparent_wrapper", "semantic_sha256": digest("1")},
+                {"path": "result/left/expanded_body", "kind": "exists", "semantic_sha256": shared_root},
+                {"path": "result/right", "kind": "transparent_wrapper", "semantic_sha256": digest("2")},
+                {"path": "result/right/expanded_body", "kind": "exists", "semantic_sha256": shared_root},
+            ],
+            "edges": [
+                {"source": "result", "target": "result/left", "role": "left"},
+                {"source": "result", "target": "result/right", "role": "right"},
+                {"source": "result/left", "target": "result/left/expanded_body", "role": "expanded_body"},
+                {"source": "result/right", "target": "result/right/expanded_body", "role": "expanded_body"},
+            ],
+            "failures": [],
+        }
+    else:
+        direct_graph = graph(
+            result_kind="transparent_wrapper",
+            result_sha=digest("8"),
+            expanded_sha=shared_root,
+        )
     spec_proposition_graph = graph(result_kind="exists", result_sha=digest("9"))
     spec_transparent_graph = graph(result_kind="exists", result_sha=shared_root)
     direct_manifest = manifest(
@@ -489,6 +624,7 @@ def pair_fixture() -> tuple[
     witness = {
         "evidence_declaration": evidence,
         "spec_declaration": spec,
+        "evidence_mode": evidence_mode,
         "evidence_manifest": direct_manifest,
         "spec_manifest": spec_manifest,
     }
@@ -521,6 +657,9 @@ class SemanticContractRevalidationTests(unittest.TestCase):
         artifact: dict[str, object] | None,
         artifact_bytes: bytes | None,
         authority: dict[str, object] | None = None,
+        paper_prerequisites: dict[str, object] | None = None,
+        library_semantic_review: dict[str, object] | None = None,
+        status: dict[str, object] | None = None,
     ) -> tuple[REVALIDATION.SemanticContractRevalidationProjection, str]:
         return REVALIDATION.semantic_contract_revalidation_projection(
             paper_dir=ROOT / "papers" / PAPER,
@@ -529,10 +668,309 @@ class SemanticContractRevalidationTests(unittest.TestCase):
             raw_audit_raw_bytes=raw_bytes,
             statement_map_payload=statement_map,
             statement_map_raw_bytes=statement_map_bytes,
+            paper_prerequisites_payload=paper_prerequisites,
+            paper_prerequisites_raw_bytes=(
+                encoded(paper_prerequisites)
+                if paper_prerequisites is not None
+                else None
+            ),
+            library_semantic_review_payload=library_semantic_review,
+            library_semantic_review_raw_bytes=(
+                encoded(library_semantic_review)
+                if library_semantic_review is not None
+                else None
+            ),
+            status_payload=status,
+            status_raw_bytes=encoded(status) if status is not None else None,
             artifact_payload=artifact,
             artifact_raw_bytes=artifact_bytes,
             authority_payload=authority,
             authority_raw_bytes=encoded(authority) if authority is not None else None,
+        )
+
+    def test_typed_route_graph_replaces_only_obsolete_v10_route_errors(self) -> None:
+        (
+            raw,
+            raw_bytes,
+            statement_map,
+            map_bytes,
+            paper_prerequisites,
+            _paper_prerequisites_bytes,
+            library_review,
+            _library_review_bytes,
+            status,
+            _status_bytes,
+        ) = typed_route_fixture()
+        projection, error = self.projection(
+            raw,
+            raw_bytes,
+            statement_map,
+            map_bytes,
+            None,
+            None,
+            paper_prerequisites=paper_prerequisites,
+            library_semantic_review=library_review,
+            status=status,
+        )
+        self.assertEqual(error, "")
+        effective = REVALIDATION.effective_source_record_semantic_errors(
+            raw, projection
+        )
+        self.assertEqual(
+            effective["source_contract_association_errors"],
+            ["unrelated semantic association failure"],
+        )
+        self.assertEqual(
+            effective["source_coverage_route_errors"],
+            ["unrelated source coverage failure"],
+        )
+
+    def test_typed_route_graph_grants_no_credit_when_atom_misses_endpoint(self) -> None:
+        (
+            raw,
+            raw_bytes,
+            statement_map,
+            _map_bytes,
+            paper_prerequisites,
+            _paper_prerequisites_bytes,
+            library_review,
+            _library_review_bytes,
+            status,
+            _status_bytes,
+        ) = typed_route_fixture()
+        statement_map["items"]["result"]["source_claim_atoms"][0][
+            "reviewed_lean_route"
+        ] = f"{PAPER}.GuessedSpec_proof"
+        projection, error = self.projection(
+            raw,
+            raw_bytes,
+            statement_map,
+            encoded(statement_map),
+            None,
+            None,
+            paper_prerequisites=paper_prerequisites,
+            library_semantic_review=library_review,
+            status=status,
+        )
+        self.assertIn("typed route reconciliation preflight failed", error)
+        self.assertFalse(projection.suppressed_source_contract_association_errors)
+
+    def test_typed_route_graph_supersedes_exact_obsolete_companion_witness(self) -> None:
+        (
+            raw,
+            _raw_bytes,
+            statement_map,
+            map_bytes,
+            paper_prerequisites,
+            _paper_prerequisites_bytes,
+            library_review,
+            _library_review_bytes,
+            status,
+            _status_bytes,
+        ) = typed_route_fixture()
+        companion_error = REVALIDATION._companion_error(
+            f"{PAPER}.result", f"{PAPER}.resultSpec"
+        )
+        raw["source_contract_association_errors"] = [companion_error]
+        raw["source_coverage_route_errors"] = [companion_error]
+        projection, error = self.projection(
+            raw,
+            encoded(raw),
+            statement_map,
+            map_bytes,
+            {"stale": True},
+            encoded({"stale": True}),
+            paper_prerequisites=paper_prerequisites,
+            library_semantic_review=library_review,
+            status=status,
+        )
+        self.assertEqual(error, "")
+        self.assertEqual(
+            REVALIDATION.effective_source_record_semantic_errors(raw, projection),
+            {
+                "source_contract_association_errors": [],
+                "source_coverage_route_errors": [],
+            },
+        )
+
+    def test_typed_route_graph_does_not_suppress_cross_pair_companion_error(self) -> None:
+        (
+            raw,
+            _raw_bytes,
+            statement_map,
+            map_bytes,
+            paper_prerequisites,
+            _paper_prerequisites_bytes,
+            library_review,
+            _library_review_bytes,
+            status,
+            _status_bytes,
+        ) = typed_route_fixture()
+        companion_error = REVALIDATION._companion_error(
+            f"{PAPER}.result", f"{PAPER}.OtherSpec"
+        )
+        raw["source_contract_association_errors"] = [companion_error]
+        raw["source_coverage_route_errors"] = [companion_error]
+        projection, error = self.projection(
+            raw,
+            encoded(raw),
+            statement_map,
+            map_bytes,
+            {"stale": True},
+            encoded({"stale": True}),
+            paper_prerequisites=paper_prerequisites,
+            library_semantic_review=library_review,
+            status=status,
+        )
+        self.assertNotEqual(error, "")
+        self.assertFalse(projection.suppressed_source_contract_association_errors)
+
+    def test_typed_route_graph_rebinds_only_map_and_status_coordinates(self) -> None:
+        (
+            raw,
+            raw_bytes,
+            statement_map,
+            map_bytes,
+            paper_prerequisites,
+            _paper_prerequisites_bytes,
+            library_review,
+            _library_review_bytes,
+            status,
+            _status_bytes,
+        ) = typed_route_fixture()
+        projection, error = self.projection(
+            raw,
+            raw_bytes,
+            statement_map,
+            map_bytes,
+            None,
+            None,
+            paper_prerequisites=paper_prerequisites,
+            library_semantic_review=library_review,
+            status=status,
+        )
+        self.assertEqual(error, "")
+        self.assertRegex(projection.typed_route_reconciliation_sha256, r"^[0-9a-f]{64}$")
+        stored = {
+            "schema": 10,
+            "paper": PAPER,
+            "paper_statement_map_semantic_sha256": digest("1"),
+            "relevant_status_sha256": digest("2"),
+            "source_artifact_identities": [
+                {"path": "source.txt", "sha256": digest("a"), "status": "present"}
+            ],
+            "raw_producer_code_identity_schema": 1,
+            "raw_producer_code_identities": [
+                {"path": "producer.py", "sha256": digest("3"), "status": "present"}
+            ],
+        }
+        current = copy.deepcopy(stored)
+        current["paper_statement_map_semantic_sha256"] = digest("4")
+        current["relevant_status_sha256"] = digest("5")
+        current["raw_producer_code_identities"][0]["sha256"] = digest("6")
+        with patch.object(
+            EVIDENCE, "validate_runtime_engine_registration", return_value=None
+        ):
+            self.assertTrue(
+                EVIDENCE._source_record_typed_route_fingerprint_rebind_matches(
+                    stored, current, projection
+                )
+            )
+            fidelity_relabel = copy.deepcopy(current)
+            fidelity_relabel["source_proof_fidelity_sha256"] = digest("9")
+            stored_with_fidelity = copy.deepcopy(stored)
+            stored_with_fidelity["source_proof_fidelity_sha256"] = digest("7")
+            self.assertFalse(
+                EVIDENCE._source_record_typed_route_fingerprint_rebind_matches(
+                    stored_with_fidelity, fidelity_relabel, projection
+                )
+            )
+            self.assertTrue(
+                EVIDENCE._source_record_typed_route_fingerprint_rebind_matches(
+                    stored_with_fidelity,
+                    fidelity_relabel,
+                    projection,
+                    source_proof_fidelity_semantically_unchanged=True,
+                )
+            )
+            status_only = copy.deepcopy(stored)
+            status_only["relevant_status_sha256"] = digest("8")
+            status_only["raw_producer_code_identities"][0]["sha256"] = digest("6")
+            self.assertTrue(
+                EVIDENCE._source_record_typed_route_fingerprint_rebind_matches(
+                    stored,
+                    status_only,
+                    projection,
+                    raw_status="formalized with caveat",
+                    current_status="formalized with caveat",
+                )
+            )
+            self.assertFalse(
+                EVIDENCE._source_record_typed_route_fingerprint_rebind_matches(
+                    stored,
+                    status_only,
+                    projection,
+                    raw_status="partially formalized",
+                    current_status="formalized",
+                )
+            )
+            changed_source = copy.deepcopy(current)
+            changed_source["source_artifact_identities"][0]["sha256"] = digest("7")
+            self.assertFalse(
+                EVIDENCE._source_record_typed_route_fingerprint_rebind_matches(
+                    stored, changed_source, projection
+                )
+            )
+            forged = REVALIDATION.SemanticContractRevalidationProjection(
+                projection.suppressed_source_contract_association_errors,
+                projection.suppressed_source_coverage_route_errors,
+                projection.suppressed_expected_input_keys,
+                projection.typed_route_reconciliation_sha256,
+            )
+            self.assertFalse(
+                EVIDENCE._source_record_typed_route_fingerprint_rebind_matches(
+                    stored, current, forged
+                )
+            )
+
+    def test_source_proof_fidelity_projection_normalizes_schema_labels_only(self) -> None:
+        recorded = {
+            "schema": 2,
+            "paper": PAPER,
+            "reviewed_proof_scopes": [
+                {
+                    "source_locator": "source.txt:1-2",
+                    "semantic_scope": "The complete proof of the source endpoint.",
+                    "outcome": "proof_defect_repaired_same_endpoint",
+                }
+            ],
+            "model_conventions": None,
+            "checked_proof_steps": None,
+            "defects": [
+                {
+                    "id": "defect-1",
+                    "defect_kind": "legacy_label",
+                    "source_claim": "claim",
+                    "resolution": "corrected_source_statement",
+                    "status_impact": "formalized_with_caveat",
+                }
+            ],
+        }
+        relabeled = copy.deepcopy(recorded)
+        relabeled["defects"][0]["defect_kind"] = "model_semantics"
+        relabeled["reviewed_proof_scopes"][0]["outcome"] = "defect_recorded"
+        relabeled.pop("model_conventions")
+        relabeled.pop("checked_proof_steps")
+        self.assertTrue(
+            EVIDENCE._source_proof_fidelity_semantically_unchanged(
+                recorded, relabeled
+            )
+        )
+        relabeled["defects"][0]["source_claim"] = "different claim"
+        self.assertFalse(
+            EVIDENCE._source_proof_fidelity_semantically_unchanged(
+                recorded, relabeled
+            )
         )
 
     def test_missing_artifact_grants_no_group_credit(self) -> None:
@@ -802,7 +1240,7 @@ class SemanticContractRevalidationTests(unittest.TestCase):
             artifact,
             artifact_bytes,
         )
-        self.assertIn("does not bind the supplied paper-statement-map bytes", map_error)
+        self.assertIn("stale paper-statement-map bytes", map_error)
 
     def test_transparent_pair_root_mutation_is_rejected(self) -> None:
         (
@@ -876,6 +1314,281 @@ class SemanticContractRevalidationTests(unittest.TestCase):
             )
 
         self.assertIn("invalid or duplicate pair witness", rejected_error)
+        self.assertFalse(rejected.suppressed_source_contract_association_errors)
+
+    def test_definitionally_realized_pair_is_authenticated_structurally(self) -> None:
+        (
+            raw,
+            raw_bytes,
+            statement_map,
+            map_bytes,
+            artifact,
+            artifact_bytes,
+            authority,
+        ) = pair_fixture(evidence_mode="definitionally_realizes")
+
+        with patch.object(
+            REVALIDATION,
+            "signature_manifest_digest",
+            side_effect=lambda manifest: str(manifest.get("sha256") or ""),
+        ):
+            projection, error = self.projection(
+                raw,
+                raw_bytes,
+                statement_map,
+                map_bytes,
+                artifact,
+                artifact_bytes,
+                authority,
+            )
+
+        self.assertEqual(error, "")
+        self.assertTrue(projection.suppressed_source_contract_association_errors)
+        self.assertTrue(projection.suppressed_source_coverage_route_errors)
+
+    def test_pair_accepts_prior_whole_spec_source_identity_encoding(self) -> None:
+        """Lane separation must not reopen an unchanged prior root receipt."""
+
+        (
+            raw,
+            _raw_bytes,
+            statement_map,
+            _map_bytes,
+            artifact,
+            _artifact_bytes,
+            authority,
+        ) = pair_fixture()
+        items = statement_map["items"]
+        self.assertIsInstance(items, dict)
+        map_item = items["fixture_source"]
+        self.assertIsInstance(map_item, dict)
+        map_item["source_spec_correspondence"] = {
+            "schema": 1,
+            "source_atoms_sha256": digest("1"),
+            "spec_closure_sha256": digest("2"),
+            "spec_surface_sha256": digest("3"),
+            "closure_environment_sha256": digest("4"),
+            "item_identity_sha256": digest("5"),
+            "source_atom_bindings": [
+                {
+                    "source_atom_sha256": digest("6"),
+                    "spec_component_sha256s": [digest("3")],
+                    "semantic_bridge": "The whole Spec is the source endpoint.",
+                }
+            ],
+            "closure_node_dispositions": [],
+        }
+        canonical = (
+            source_record_source_item_record_sha256(map_item),
+            source_record_source_item_semantic_sha256(map_item, "named_theory"),
+        )
+        supported = source_record_source_item_supported_identity_sha256s(
+            map_item, "named_theory"
+        )
+        self.assertEqual(len(supported), 3)
+        literal = next(identity for identity in supported if identity != canonical)
+
+        semantic_items = raw["semantic_model_items"]
+        self.assertIsInstance(semantic_items, list)
+        for semantic_item in semantic_items:
+            self.assertIsInstance(semantic_item, dict)
+            association = semantic_item["semantic_contract_source_association"]
+            self.assertIsInstance(association, dict)
+            source_identities = association["source_item_identities"]
+            self.assertIsInstance(source_identities, list)
+            source_identity = source_identities[0]
+            self.assertIsInstance(source_identity, dict)
+            source_identity["source_map_item_sha256"] = literal[0]
+            source_identity["source_semantic_sha256"] = literal[1]
+            association["semantic_association_sha256"] = (
+                REVALIDATION.semantic_association_record_digest(
+                    [literal[1]],
+                    association["reviewed_elaborated_signature_identity"],
+                )
+            )
+
+        map_bytes = encoded(statement_map)
+        raw["paper_statement_map_sha256"] = REVALIDATION._bytes_sha256(map_bytes)
+        raw_bytes = encoded(raw)
+        witnesses = artifact["transparent_spec_pair_witnesses"]
+        self.assertIsInstance(witnesses, list)
+        artifact, artifact_bytes = sealed_artifact(
+            raw, raw_bytes, map_bytes, witnesses=witnesses
+        )
+        with patch.object(
+            REVALIDATION,
+            "signature_manifest_digest",
+            side_effect=lambda manifest: str(manifest.get("sha256") or ""),
+        ):
+            projection, error = self.projection(
+                raw,
+                raw_bytes,
+                statement_map,
+                map_bytes,
+                artifact,
+                artifact_bytes,
+                authority,
+            )
+
+        self.assertEqual(error, "")
+        self.assertTrue(projection.suppressed_source_contract_association_errors)
+        self.assertTrue(projection.suppressed_source_coverage_route_errors)
+
+    def test_source_declared_open_nonresult_clears_only_its_false_route_error(self) -> None:
+        quote = "Conjecture 1. For each fixed k, the stated limit is zero."
+        source_item: dict[str, object] = {
+            "source_kind": "open_problem",
+            "claim_bearing": False,
+            "source_scope_classification": (
+                "source_declared_open_nonresult_observation"
+            ),
+            "coverage_status": "source_declared_open",
+            "protocol_role": "source_declared_open",
+            "source_anchor_evidence": [
+                {
+                    "path": "source.txt",
+                    "line_start": 1,
+                    "line_end": 1,
+                    "quoted_text": quote,
+                    "quoted_text_sha256": REVALIDATION.hashlib.sha256(
+                        quote.encode("utf-8")
+                    ).hexdigest(),
+                }
+            ],
+        }
+        source_key = "source_conjecture"
+        statement_map = {"items": {source_key: source_item}}
+        map_bytes = encoded(statement_map)
+        route_error = (
+            REVALIDATION._SOURCE_DECLARED_OPEN_NONRESULT_ERROR_PREFIX + source_key
+        )
+        raw: dict[str, object] = {
+            "paper": PAPER,
+            "source_record_audit_sha256": digest("7"),
+            "source_record_audit_integrity_sha256": digest("8"),
+            "paper_statement_map_sha256": REVALIDATION._bytes_sha256(map_bytes),
+            "source_contract_association_errors": [route_error],
+            "source_coverage_route_errors": [],
+            "source_coverage_selected_source_items": [source_key],
+            "source_coverage_unrouted_source_items": [source_key],
+            "semantic_model_items": [],
+            "theorem_facing_input_items": [],
+            "type_valued_certificate_result_items": [],
+            "boundary_input_items": [],
+            "conclusion_dependency_items": [],
+        }
+        raw_bytes = encoded(raw)
+        artifact, _artifact_bytes = sealed_artifact(
+            raw, raw_bytes, map_bytes, witnesses=[]
+        )
+        artifact["source_declared_open_nonresult_witnesses"] = [
+            {
+                "source_item": source_key,
+                "source_item_record_sha256": (
+                    source_record_source_item_record_sha256(source_item)
+                ),
+            }
+        ]
+        artifact[
+            REVALIDATION.SOURCE_RECORD_SEMANTIC_CONTRACT_REVALIDATION_RECEIPT_FIELD
+        ] = REVALIDATION._canonical_json_sha256(
+            {
+                key: value
+                for key, value in artifact.items()
+                if key
+                != REVALIDATION.SOURCE_RECORD_SEMANTIC_CONTRACT_REVALIDATION_RECEIPT_FIELD
+            }
+        )
+
+        projection, error = self.projection(
+            raw,
+            raw_bytes,
+            statement_map,
+            map_bytes,
+            artifact,
+            encoded(artifact),
+        )
+
+        self.assertEqual(error, "")
+        self.assertEqual(
+            projection.suppressed_source_contract_association_errors,
+            frozenset({route_error}),
+        )
+        self.assertEqual(
+            REVALIDATION.effective_source_record_semantic_errors(raw, projection)[
+                "source_contract_association_errors"
+            ],
+            [],
+        )
+        stored_fingerprint = {
+            "schema": 10,
+            "paper": PAPER,
+            "paper_statement_map_semantic_sha256": digest("a"),
+            "raw_producer_code_identity_schema": 1,
+            "raw_producer_code_identities": [
+                {"path": "producer.py", "sha256": digest("b"), "status": "present"}
+            ],
+        }
+        current_fingerprint = copy.deepcopy(stored_fingerprint)
+        current_fingerprint["paper_statement_map_semantic_sha256"] = digest("c")
+        current_fingerprint["raw_producer_code_identities"][0]["sha256"] = digest(
+            "d"
+        )
+        with patch.object(
+            EVIDENCE, "validate_runtime_engine_registration", return_value=None
+        ):
+            self.assertTrue(
+                EVIDENCE._source_record_open_nonresult_fingerprint_rebind_matches(
+                    stored_fingerprint,
+                    current_fingerprint,
+                    projection,
+                )
+            )
+            changed_source = copy.deepcopy(current_fingerprint)
+            changed_source["source_artifact_sha256"] = digest("e")
+            self.assertFalse(
+                EVIDENCE._source_record_open_nonresult_fingerprint_rebind_matches(
+                    stored_fingerprint,
+                    changed_source,
+                    projection,
+                )
+            )
+            forged_projection = REVALIDATION.SemanticContractRevalidationProjection(
+                projection.suppressed_source_contract_association_errors,
+                projection.suppressed_source_coverage_route_errors,
+                projection.suppressed_expected_input_keys,
+            )
+            self.assertFalse(
+                EVIDENCE._source_record_open_nonresult_fingerprint_rebind_matches(
+                    stored_fingerprint,
+                    current_fingerprint,
+                    forged_projection,
+                )
+            )
+
+        forged = copy.deepcopy(artifact)
+        forged_witnesses = forged["source_declared_open_nonresult_witnesses"]
+        self.assertIsInstance(forged_witnesses, list)
+        forged_witnesses[0]["source_item_record_sha256"] = digest("f")
+        forged[
+            REVALIDATION.SOURCE_RECORD_SEMANTIC_CONTRACT_REVALIDATION_RECEIPT_FIELD
+        ] = REVALIDATION._canonical_json_sha256(
+            {
+                key: value
+                for key, value in forged.items()
+                if key
+                != REVALIDATION.SOURCE_RECORD_SEMANTIC_CONTRACT_REVALIDATION_RECEIPT_FIELD
+            }
+        )
+        rejected, rejected_error = self.projection(
+            raw,
+            raw_bytes,
+            statement_map,
+            map_bytes,
+            forged,
+            encoded(forged),
+        )
+        self.assertIn("invalid open-nonresult witness", rejected_error)
         self.assertFalse(rejected.suppressed_source_contract_association_errors)
 
 

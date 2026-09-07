@@ -11,7 +11,7 @@ half of the mass is uniform on `[0.99, 1.01]` and half is uniform on
 existing reward algebra applies without changing its numerical margins.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open MeasureTheory
 open scoped Function ProbabilityTheory Topology ENNReal
 

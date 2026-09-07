@@ -1,0 +1,305 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "MendelsonWhang1990PriorityPricing",
+  "private_source_map_sha256": "1967991c6cd010d970e355809366300b05409a2557592116c4213f254371506d",
+  "public_manifest_path": "papers/MendelsonWhang1990PriorityPricing/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "5cd393d3fd632f0514e027d1b4e9d2c76b95d21576ba6cb68a70481b31cd7ced",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "appendix_priority_queueing_time",
+    "arrival_process_condition",
+    "cheating_penalty_definition",
+    "delay_cost_condition",
+    "homogeneous_price_formula",
+    "homogeneous_queue_formulas",
+    "individual_decision_condition",
+    "net_value_objective",
+    "priority_queueing_time_formula",
+    "priority_time_dependent_price_formula",
+    "ptd_optimality_and_incentive_compatibility_definition",
+    "service_process_condition",
+    "theorem_1",
+    "theorem_2",
+    "theorem_3",
+    "theorem_4",
+    "value_function_condition"
+  ],
+  "selected_source_items": {
+    "appendix_priority_queueing_time": {
+      "source_anchors": [
+        {
+          "line_end": 1130,
+          "line_start": 1123,
+          "publication_locator": "cited publication",
+          "quoted_text": "For the M/M/1 queue with nonpreemptive priority                         KREPS, D. 1990. A Course in Microeconomic Theory.\ndiscipline (Heyman and Sobel 1982, p. 435)                                 Princeton University Press, Princeton, N.J.\n                                                                        MARCHAND, M. 1974. Priority Pricing. Mgmt. Sci. 20,\n   _ i( L1()\n W1CX)  = W1 Wqc1+ -+\n                   Ci AR   (A-)\n                      cj. (-                                                  1131-1140.\n                Xi        i-,           i",
+          "quoted_text_sha256": "c9f50b706497240ebc59641d1b7e8f7b2250d5d4e7d505f42e22da7d0e730712"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "arrival_process_condition": {
+      "semantic_context": [
+        {
+          "semantic_role": "scope",
+          "source_anchors": [
+            {
+              "line_end": 1121,
+              "line_start": 1116,
+              "publication_locator": "cited publication",
+              "quoted_text": " Lq *)= The mean number of class-i jobs in the                          KLEINROCK, L. 1967. Optimum Bribing for Queue Posi-\n         queue in steady state;                                              tion. Opns. Res. 15, 304-318.\nWi(.) = The expected waiting time of a class-i job                      KLEINROCK, L. 1976. Queueing System, Vols. I and II.\n         in the queue in steady state;                                       John Wiley, New York.\n Wi ( )= The expected sojourn time of a class-i job                     KNUDSEN, N. C. 1972. Individual and Social Optimiza-\n         in the system in steady state.                                      tion in a Multi-Server Queue With a General Cost-",
+              "quoted_text_sha256": "885941659f193e072e228815f4e0f9d284a2b2597c8a9ee0379ea16fff9658e7"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 242,
+          "line_start": 227,
+          "publication_locator": "cited publication",
+          "quoted_text": "giving rise to X = A (p) or V'(X) = 4-'(X/A) = p.                     Al. Arrival Processes\n\n  Consider the case where the delay cost v is positive.               The arrival process of class-i jobs to the system, which\nHere, the cost faced by an individual user consists of                reflects the aggregation of infinitesimal users' job flow,\ntwo components: a direct payment of p per job, and                    follows a stationary Poisson process with a price-\n\n\n\n\n                                                 This content downloaded from\n                               108.30.55.84 on Mon, 24 Aug 2026 10:55:53 UTC\n                                         All use subject to https://about.jstor.org/terms\n\f                                                                                Priority Pricingfor the MIMI1 Queue / 873\n\ndependent arrival rate Xi. The R arrival processes are                 by the system (per unit of time) to the organization,\nstochastically independent.                                            where we assume for now that the system administra-",
+          "quoted_text_sha256": "8c4f3fa3ff332865c66b530bd5d47052099a25e60f8e628e81e40f0b79403549"
+        }
+      ],
+      "source_kind": "assumption"
+    },
+    "cheating_penalty_definition": {
+      "source_anchors": [
+        {
+          "line_end": 937,
+          "line_start": 921,
+          "publication_locator": "cited publication",
+          "quoted_text": "arrive during the service time of the tagged job totals                 where ll'(k) = vi(Wk - W') + ci(Ak- Ai). The term\nv1 Xt2/2. The impact of this delayed startup of the                     Ili(k) can be regarded as the cheating penalty incurred\nclass-I busy period propagates to all class-I jobs that                 when a class-i user chooses priority-class k. Theorem\narrive by the end of the busy period, and the total                     3 demonstrates that II'(k), as a discrete function of k,\nexternality cost inflicted on class- I jobs is given by                 has a unique minimum value of zero at k = i. Hence,\n                                                                        any class-i user choosing a different priority class will\n    = 2 (Xlt + CIX2t + C2X3t + . v.X-t2                                 incur a strictly positive penalty. Another desirable\n              2         2                                               property of the cheating penalty fl'(k), given by the\n                                                                        following theorem, is that for all user classes i,\nThe externality Ek on class (k ? 1) by the tagged job\n                                                                        the cheating penalty II'(k) increases as the selected\ncan be computed in a similar way, but each service\n                                                                        priority-class, k, gets farther away from the correct\nperiod must now be extended by a factor of /lk-l\n                                               user class, i, in either direction. That is, the cheating\nbecause the service process is subject to interruptions\n                                                                        penalty increases with the degree of the cheating.",
+          "quoted_text_sha256": "033aa13d91925578825db23f96fbe0219cf2b89a485e01c06b5d8b6dadb72d31"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "delay_cost_condition": {
+      "source_anchors": [
+        {
+          "line_end": 262,
+          "line_start": 259,
+          "publication_locator": "cited publication",
+          "quoted_text": "A3. Delay Cost Structure\n                                                                       R-dimensional price vector p = (PI, P2, P3, .., PR),\nEach class-i job is characterized by a delay cost of vi                where pi is the price charged to a class-i job. Then, the\nper unit time.                                                         class-i demand relationship is given by",
+          "quoted_text_sha256": "40329b9d67181228db66868ff488ce7155faf1cdd4306999b1f9d69d55a43884"
+        }
+      ],
+      "source_kind": "assumption"
+    },
+    "homogeneous_price_formula": {
+      "source_anchors": [
+        {
+          "line_end": 460,
+          "line_start": 448,
+          "publication_locator": "cited publication",
+          "quoted_text": "  Using Theorem 1, the optimal prices are given by\n                                                                         In this section, we consider the family of priority-\n       R Xk*Vk                                                        dependent (PD) pricing schemes, where each job is\n      k=l I k * k-I                                                   charged only on the basis of the priority class selected.\n                                                                      A PD pricing scheme is specified by a price vector\n          RXk Vk Wk + Xk+1 Vk+l Wkq+ (                                P = (PI, P2, .. ., PR); for a given p, the arrival-rate\n                      + E - - O ~~~~~~(0)                             vector and priority assignment (?X (p), r(p)) constitute\n          k=i         Ok\n\n                                                                      an (symmetric Nash) equilibrium if each class-i user's\nwhere we define XA+I = VR+I = WR = 0.\n                                                                       action maximizes the expected net value, taking all\n  Equation (10) clearly demonstrates the delay cost-",
+          "quoted_text_sha256": "6bc24cf2fedb7c005714f7b407d1e022b409407d8fe51576605d6d9537cbae9f"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "homogeneous_queue_formulas": {
+      "source_anchors": [
+        {
+          "line_end": 438,
+          "line_start": 387,
+          "publication_locator": "cited publication",
+          "quoted_text": "                                                                       Consider a system with R job classes that satisfy\nand assigning the highest priority (= priority 1) to                   assumptions A1-A5 of Section 2, and assume in ad-\nclass 1, the second-highest priority to class 2, and so                dition that their service requirements are homogene-\non, down to class R. In the special case of equal service              ous across job classes, i.e., c, = C2 = ... = CR = 1,\nrequirements, c, = C2 = ... = CR, and priorities are                   where the last equality can be assumed without loss\ndetermined by the ranking of delay costs. This policy\n                                                                       of generality. In this case, jobs are characterized by\nis known to be optimal in the case of fixed arrival                    their delay cost parameters, and the optimal non-\nrates with the objective of minimizing the expected\n                                                                       preemptive priority scheme orders jobs by decreasing\noverall system delay cost. We claim that the same\n                                                                       delay costs (i.e., vu > V2 > ... > VR), assigning a higher\nscheduling policy is optimal in the current model,                     priority to job classes i with a higher delay cost vi.\nwhere the arrival-rate and priority decisions are jointly              Under this scheme, the expected number of class-i\nmade to maximize the expected net value. To see this,\n                                                                       jobs and the expected waiting time in the system for\nnote that any priority assignment can be expressed as\n                                                                       a class-i job at X are, respectively, given by equation\na permutation r of {1, 2, . . ., R }. Let 9Q denote the                (A- 1) in the Appendix, namely\nset of permutations of 1, 2, . . ., R}, and ro be the\npermutation of (1, 2, ..., R) which corresponds to                                   XiSR\n\nthe c-A rule. The net value maximization problem                                     S/-i=\n                                                                                     Ni-l *Si S S+ Xi (8)\n\n\n\n\n                                                  This content downloaded from\n                                108.30.55.84 on Mon, 24 Aug 2026 10:55:53 UTC\n                                          All use subject to https://about.jstor.org/terms\n\f                                                                                  PriorityPricingfortheMIM/1 Queue / 875\n\nand                                                                   attempt to maximize the objective function of the\n                                                                      organization as a whole. Specifically, a user whose job\n Wi(S ) = - _+ Wi (X ) + 1 (9)                                        belongs to class i may find it in his self-interest to\n           Si- I .S\n                                                                       classify a job into a different priority class, j, either in\n                         order\n where SO = 0, Si = EL Xk,  Si to gain\n                                  = 1  priority\n                                           - Si and reduce\n                                                     for   the all\n                                                               expected\n                                                                     i delay\n                                                                        = 1,\n2, 3,... , R and Wiq denotes cost\n                              the   when  j < i, or to reduce\n                                       expected               the service charge\n                                                            waiting          timewhen\n                             j > i. This would result in a divergence between users'\nof a class-i job in the queue. Also, using (9)",
+          "quoted_text_sha256": "9c28cc5678d14fae021f1a61f43d3d20c51956752a7d3297db711899d59351a0"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "individual_decision_condition": {
+      "source_anchors": [
+        {
+          "line_end": 268,
+          "line_start": 258,
+          "publication_locator": "cited publication",
+          "quoted_text": "                                                                       relationship (1). Let the system administrator set the\nA3. Delay Cost Structure\n                                                                       R-dimensional price vector p = (PI, P2, P3, .., PR),\nEach class-i job is characterized by a delay cost of vi                where pi is the price charged to a class-i job. Then, the\nper unit time.                                                         class-i demand relationship is given by\n\nA4. Service Process                                                      Vi'(Xi) = pi + vi Wi (5)\nThe processor is modeled as an M/M/1 queueing                          where (5) is analogous to (1) with total expected class-\nsystem with nonpreemptive priority among job                           i user cost consisting of two components: a direct\nclasses. The processing requirement Hi(-) of a class-i                 payment of pi per job, and the expected class-i delay\njob, ri, follows an exponential distribution with finite cost, given by vi * Wi(X).",
+          "quoted_text_sha256": "45b7207a890b47c104abdc95b4f35c0f08464255597350e3a101a7fa0e3fcff5"
+        },
+        {
+          "line_end": 279,
+          "line_start": 273,
+          "publication_locator": "cited publication",
+          "quoted_text": "A5. Decision Structure\n                                                                      price per class-i job is given by\nWe assume the individual decision structure: users do\nnot collude, and each maximizes his expected net\n                                                                                 R aow.\n                                                                        Pi =, vjXi, for i = 1, 2, ..., R (6)\nbenefit.",
+          "quoted_text_sha256": "e6417245c9b7c0c9f643880479e4d57d2296731726911caa724d85af321c1198"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "net_value_objective": {
+      "source_anchors": [
+        {
+          "line_end": 200,
+          "line_start": 195,
+          "publication_locator": "cited publication",
+          "quoted_text": "  Two alternative decision structures may be envi-                   p, represented by the demand relationship (1), we turn\nsioned in this setting. Either users set the aggregate                to the problem of maximizing the expected net value\narrival rate collusively, acting in effect as a single                of the system as a whole. The net value of the system\ndecision maker; or users make individual decisions on                 at arrival rate X is given by V(X) - v * X * W(X),\nwhether or not to join the system, and the overall                    where the first term represents its expected gross value,\narrival rate is determined by aggregating the results ofand the second represents the expected delay cost.",
+          "quoted_text_sha256": "7b96184c567b31c0596051cb1711e42142b0b6c9aaa4fa72d602b2778974ba39"
+        },
+        {
+          "line_end": 256,
+          "line_start": 245,
+          "publication_locator": "cited publication",
+          "quoted_text": "                                                                       belongs. Under a given prionity scheme, this problem\nThe value function of the class-i job stream can be                    can be formulated as\nexpressed as Vi (Xi), and the total value is given by the                        F       R\nsum of Vi(Xi) over all classes, that is, the expected                   max V(X) - E viLi(X)J (4)\n(gross) value function is given by                                          X        i=l\n\n\n           R                                                           where Li is the mean number of class-i jobs in the\nV(X)= E V1(Xi)                                                         system in steady state, viLi is the expected delay cost\n           i=l1\n                                                                       incurred by class-i jobs per unit of time, and V(2X) =\nwhere Vi(Xi) are differentiable, nondecreasing and                     E 1 Vi(Xi) is the total gross value per unit of time.",
+          "quoted_text_sha256": "523dbdaa2822e30ee79adc09d7e5c041e288343641dceff7f6fd0568dde0f14a"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "priority_queueing_time_formula": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 271,
+              "line_start": 264,
+              "publication_locator": "cited publication",
+              "quoted_text": "A4. Service Process                                                      Vi'(Xi) = pi + vi Wi (5)\nThe processor is modeled as an M/M/1 queueing                          where (5) is analogous to (1) with total expected class-\nsystem with nonpreemptive priority among job                           i user cost consisting of two components: a direct\nclasses. The processing requirement Hi(-) of a class-i                 payment of pi per job, and the expected class-i delay\njob, ri, follows an exponential distribution with finite cost, given by vi * Wi(X).\nmean ci. Processing requirements are independent           The following theorem generalizes the net value\nacross jobs and identically distributed within job       maximizing pricing scheme, (3), to the multiclass case.\nclasses.",
+              "quoted_text_sha256": "9725ec8e4ca0b7224c0f911c1c0e0e771220da166957bcf69ebec6488a6043fc"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 242,
+              "line_start": 227,
+              "publication_locator": "cited publication",
+              "quoted_text": "giving rise to X = A (p) or V'(X) = 4-'(X/A) = p.                     Al. Arrival Processes\n\n  Consider the case where the delay cost v is positive.               The arrival process of class-i jobs to the system, which\nHere, the cost faced by an individual user consists of                reflects the aggregation of infinitesimal users' job flow,\ntwo components: a direct payment of p per job, and                    follows a stationary Poisson process with a price-\n\n\n\n\n                                                 This content downloaded from\n                               108.30.55.84 on Mon, 24 Aug 2026 10:55:53 UTC\n                                         All use subject to https://about.jstor.org/terms\n\f                                                                                Priority Pricingfor the MIMI1 Queue / 873\n\ndependent arrival rate Xi. The R arrival processes are                 by the system (per unit of time) to the organization,\nstochastically independent.                                            where we assume for now that the system administra-",
+              "quoted_text_sha256": "8c4f3fa3ff332865c66b530bd5d47052099a25e60f8e628e81e40f0b79403549"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1129,
+          "line_start": 1118,
+          "publication_locator": "cited publication",
+          "quoted_text": "Wi(.) = The expected waiting time of a class-i job                      KLEINROCK, L. 1976. Queueing System, Vols. I and II.\n         in the queue in steady state;                                       John Wiley, New York.\n Wi ( )= The expected sojourn time of a class-i job                     KNUDSEN, N. C. 1972. Individual and Social Optimiza-\n         in the system in steady state.                                      tion in a Multi-Server Queue With a General Cost-\n                                                                             Benefit Structure. Econometrica 40, 515-528.\nFor the M/M/1 queue with nonpreemptive priority                         KREPS, D. 1990. A Course in Microeconomic Theory.\ndiscipline (Heyman and Sobel 1982, p. 435)                                 Princeton University Press, Princeton, N.J.\n                                                                        MARCHAND, M. 1974. Priority Pricing. Mgmt. Sci. 20,\n   _ i( L1()\n W1CX)  = W1 Wqc1+ -+\n                   Ci AR   (A-)\n                      cj. (-                                                  1131-1140.",
+          "quoted_text_sha256": "3d4ea9e6a681852678041c515ca723bbd6135188a798aa6a8e1ff6381a37e825"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "priority_time_dependent_price_formula": {
+      "source_anchors": [
+        {
+          "line_end": 805,
+          "line_start": 760,
+          "publication_locator": "cited publication",
+          "quoted_text": "and incentive-compatibility in the general setting                   E[pt+(ri)] = E[Ai Ti + 112B *Ti r]\nwith heterogeneous service requirements. What price                                 = Ai * ci + B * c?,\nstructure is optimal and incentive compatible? The\n                                                                    since E[r,] = 2ci . It follows that\nspecific PTD pricing scheme we propose is given by\np+(t) = (p+(t), p2+(t), . . ., pZ(t)) with                          p* = E[pt((ri)] for alli= 1, 2, ...,R- 1.\n                                                                    Likewise\nPti(t) = Ait + V12Bt2 (19)\n\nwhere                                                                A\n                                                                     PR= -=-a'R\n                                                                              -2CR V XkR\n                                                                                 CR+(E    2= E[p+(TR)]\n                                                                                       - -)R E[R(R)\n                                                                           SR- SR k=1 Sk-l Sk\n\n                                                                    which completes the proof of optimality.\n B        =     E     .k    *     Xk(20)\n       k= 1 Sk-l Sk                                                    b. Next we prove incentive-compatibility, that is,\n                                                                    class-i users will find it in their best interest to join\n                                                                    priority-class i. As in Theorem 2, we prove local\n Ai 2+ 2 + - __ 2) (21)                                             optimality and then transitivity.\n         z-1 9 k=i+l 'kISk k Sk-1SIk\n                                                                       i. Local optimality: If a class-i job (i = 1,\nwith Ai = EL cIX*, ai = ViXA AR, Si = REk=1     ckXCk\n                                        - 1) joins priority-class i, its expected total cost\nSo = 0, S) = 1 - Si, and where X * are evaluated at the\n                                                                     is E[pt((ri)] + vi * (Wi7 + ci), where Wi' denotes\noptimum of Theorem 1, and summations from R to\n                                                                    the expected queueing time (excluding service) for\n(R - 1) are interpreted as zero (see the Appendix for\n                                                                    priority-class i. On the other hand, if the user chooses\na summary of the notation). Expression (21) may also\n                                                                    priority-class (i + 1), the expected total cost of the job\nbe written in the equivalent recursive form\n                                                                     is given by E[pl+(Tri)] + vi * (Wl1+1 + ci). Thus, for\n                                                                     all i= 1, 2, . . ., R - I wehave\nAi=Ai-,- a- -2 + -2ai_) i=2,3 ... R\n                                                                     ELpo(Tri)] + vi Wi7- EE[p +I(ri)] + viWi'+ I\n\nwith                                                                            r a, ai+ + lAR AR\n                                                                           =Ni I 37 +1 13i23+1 CI -S\n           aR\nAR = - -2                                                                   _AR\n        SR-1 * SR\n                                                                                          - 1 i S [civS3i+1 + civi+1 IX1 1i-I",
+          "quoted_text_sha256": "4a60e2854eccb53a2b4697ea52ed33d040b40fd962c0cc43869b5f645ce49664"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "ptd_optimality_and_incentive_compatibility_definition": {
+      "source_anchors": [
+        {
+          "line_end": 731,
+          "line_start": 692,
+          "publication_locator": "cited publication",
+          "quoted_text": "  Under this general framework, an equilibrium can                     geneous service requirements. The answer is negative,\nbe defined in a similar way to (12) and (13). Let WJi                  as the following example demonstrates. Consider the\ndenote the expected total waiting time in the system                   case of two job classes (R = 2) and let p(t) = (pI (t),\nfor a class-i job picking priority-class j. Then, ( X (p),            P2(t)) be given by (16). Ifp(t) is optimal and incentive-\nf(p)) is an equilibrium with respect to the PTD pricing compatible, optimality implies that for a class-i job,\nscheme p(t) if for each i = 1, 2, . . ., R              we just have E[pi(ri)] = p*, where p* are given by\n                                                                       Theorem 1. Also from (16)\nE[pr,(p)(ri)] + viWri,(p)(2(p), r(p))\n\n   = min E[pj(ri)] + viWj(X(p), r(p))}                                 E[p2(T )] =- E[pl(Tri)] =- P\n                                                                                             a   a\n\n\nand                                                                          and                          (17)\n\nVi'(Xi(p)) = E[prj(p)(Ti)] + Vi Wr,(p)(X (p), r(p))\n                                                                       E[pl(T2)] = a * E[p2(T2)] = a *2\nwhere Ti is the actual processing requirement of a\n                                                                      where a = K1/K2.\nclass-i job.\n                                                                         In order for the pricing schedule p(t) to be incentive-\n  A PTD pricing scheme p0(t) will be called optimal\n                                                                       compatible, it should satisfy\nand incentive-compatible if it satisfies the following\nconditions:\n                                                                       E[pI(TI)] + v* W < S E[p2(rl)] + V1 WY\n   1. Incentive-compatibility: For all i = 1, 2, . .. , R\n                                                                       and\n   ri(p?)                   =        i      (14)\n                                                                       E[pi(T2)] + v2 * Wl q E[p2(T2)] + V2 WY-\n      2.       Optimality:                                       The                 resulting                         arrival\n                                                                       Hence using (17), incentive-compatibility implies\n  the expected                                          net                value                 of        the            system\nis, for all i= 1, 2, .. ., R\n                                                                       pi +V* 1 S-*p* + VI * W\n  X(pO)                =     _X*                (15)                                         a\n\n\n\nwhere X * achieves the overall optimum.                                      and                          (18)",
+          "quoted_text_sha256": "0c50f43265ad3a7580c1b84755d8e82dd80cffa10c6140bb1ee6592c437baf71"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "service_process_condition": {
+      "source_anchors": [
+        {
+          "line_end": 271,
+          "line_start": 264,
+          "publication_locator": "cited publication",
+          "quoted_text": "A4. Service Process                                                      Vi'(Xi) = pi + vi Wi (5)\nThe processor is modeled as an M/M/1 queueing                          where (5) is analogous to (1) with total expected class-\nsystem with nonpreemptive priority among job                           i user cost consisting of two components: a direct\nclasses. The processing requirement Hi(-) of a class-i                 payment of pi per job, and the expected class-i delay\njob, ri, follows an exponential distribution with finite cost, given by vi * Wi(X).\nmean ci. Processing requirements are independent           The following theorem generalizes the net value\nacross jobs and identically distributed within job       maximizing pricing scheme, (3), to the multiclass case.\nclasses.",
+          "quoted_text_sha256": "9725ec8e4ca0b7224c0f911c1c0e0e771220da166957bcf69ebec6488a6043fc"
+        }
+      ],
+      "source_kind": "assumption"
+    },
+    "theorem_1": {
+      "source_anchors": [
+        {
+          "line_end": 305,
+          "line_start": 272,
+          "publication_locator": "cited publication",
+          "quoted_text": "                                                                       Theorem 1. Under the above assumptions, the optimal\nA5. Decision Structure\n                                                                      price per class-i job is given by\nWe assume the individual decision structure: users do\nnot collude, and each maximizes his expected net\n                                                                                 R aow.\n                                                                        Pi =, vjXi, for i = 1, 2, ..., R (6)\nbenefit.\n\n  The specific assumptions of exponential service                      where Wj is the expected delay of a class-j job, and\ntime distributions and nonpreemptive priority among                    the derivatives a Wj/0 Xi are evaluated at X = X *, the\njob classes will be invoked only from the next section;                arrival-rate vector that maximizes (4).\n\nthe results derived in this section are quite general,\n                                                                       Proof. The ith first-order condition for maximizing\nand apply to any service-time distribution and head-\n                                                                       (4) is\nof-the-line priority discipline. We assume throughout\n                                                                                     R\nthat the joining and pliority decisions are made by\n                                                                          Vi'            (Xi)=>           viyj.         (7)\natomistic individual users, each maximizing the                                          j=I A\nexpected net benefit. This individual decision struc-\n                                                                       Furthermore, the class-i demand relationship is again\nture is in sharp contrast to the class (or collusive)\n                                                                       given by (5)\ndecision structure, where each class is represented by\na single decision maker who makes the arrival-rate                      Vi/(Xi) = Pi + Vi * wi\nand priority decisions for the class so as to maximize\n                                                                       Combining the above equations we obtain, at\nthe expected net value of the class as a whole. Clearly,\n                                                                        X= A*\npricing decisions for our individual decision structure\n                                                                                 R a",
+          "quoted_text_sha256": "6749dc5d9419be654b73c72d7271440733b80c0be23ccbba85937826f2382979"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_2": {
+      "source_anchors": [
+        {
+          "line_end": 559,
+          "line_start": 550,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 2. Let p* be the optimal PD price vector                        an equality.\ngiven by (10). Then, p* is incentive-compatible as well. This proves the local optimality of choosing priority\nThat is                                               class i, that is\n\n                                                                        TCQ = pi* + vi Wi-;-< p, I + vi Wi-1 = TC-'\np*I + vi W, CPk* + Vi Wk\n                                                                        and\n                    for any k E{ 1, 2, . . ., R -{i\n\n                                                                        TC' = p* + vi Wi < p+I + vi W1+ I = TQ+l.",
+          "quoted_text_sha256": "9d19bb322f5ee51cdd1f52b6ea72a8565658e4ebb7d7f14862c364993333cf2b"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_3": {
+      "semantic_context": [
+        {
+          "semantic_role": "definition",
+          "source_anchors": [
+            {
+              "line_end": 731,
+              "line_start": 692,
+              "publication_locator": "cited publication",
+              "quoted_text": "  Under this general framework, an equilibrium can                     geneous service requirements. The answer is negative,\nbe defined in a similar way to (12) and (13). Let WJi                  as the following example demonstrates. Consider the\ndenote the expected total waiting time in the system                   case of two job classes (R = 2) and let p(t) = (pI (t),\nfor a class-i job picking priority-class j. Then, ( X (p),            P2(t)) be given by (16). Ifp(t) is optimal and incentive-\nf(p)) is an equilibrium with respect to the PTD pricing compatible, optimality implies that for a class-i job,\nscheme p(t) if for each i = 1, 2, . . ., R              we just have E[pi(ri)] = p*, where p* are given by\n                                                                       Theorem 1. Also from (16)\nE[pr,(p)(ri)] + viWri,(p)(2(p), r(p))\n\n   = min E[pj(ri)] + viWj(X(p), r(p))}                                 E[p2(T )] =- E[pl(Tri)] =- P\n                                                                                             a   a\n\n\nand                                                                          and                          (17)\n\nVi'(Xi(p)) = E[prj(p)(Ti)] + Vi Wr,(p)(X (p), r(p))\n                                                                       E[pl(T2)] = a * E[p2(T2)] = a *2\nwhere Ti is the actual processing requirement of a\n                                                                      where a = K1/K2.\nclass-i job.\n                                                                         In order for the pricing schedule p(t) to be incentive-\n  A PTD pricing scheme p0(t) will be called optimal\n                                                                       compatible, it should satisfy\nand incentive-compatible if it satisfies the following\nconditions:\n                                                                       E[pI(TI)] + v* W < S E[p2(rl)] + V1 WY\n   1. Incentive-compatibility: For all i = 1, 2, . .. , R\n                                                                       and\n   ri(p?)                   =        i      (14)\n                                                                       E[pi(T2)] + v2 * Wl q E[p2(T2)] + V2 WY-\n      2.       Optimality:                                       The                 resulting                         arrival\n                                                                       Hence using (17), incentive-compatibility implies\n  the expected                                          net                value                 of        the            system\nis, for all i= 1, 2, .. ., R\n                                                                       pi +V* 1 S-*p* + VI * W\n  X(pO)                =     _X*                (15)                                         a\n\n\n\nwhere X * achieves the overall optimum.                                      and                          (18)",
+              "quoted_text_sha256": "0c50f43265ad3a7580c1b84755d8e82dd80cffa10c6140bb1ee6592c437baf71"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 846,
+          "line_start": 806,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3. The PTD pricing scheme (19) is optimal\n                                                                                                          + viSi(Si+1 - Si-1)]\nand incentive-compatible.\n                                                                               AR\n\nProof. a. We first prove the optimality of (19). It is                         s1~~~-5vl+*i+ X* + civi+i X*'\nsufficient to prove that for all i = 1, 2, ...,\nE[pt+(ri)] = pi*, where p* are given by Theorem 1.                             *i-)              i+         ki\nFor all i = 1, 2,.. .,R -1, we have from Theorem 1\n\n                                                                            _AR\nP' E VkXk-\n      k=1 xi\n\n\n                                                                            * [i+1(ciVi+1 - CE+lv1) CkXk)j <\n       =[332 + 1E (-!2 + -2 _ ak) ]\n          i (i k=i+l S)k-lSk Ek k-I\n                                                                     since by construction ci vi+1 < ci+1 vi. Thus\n\n                                                                     E[pt(ri)] + iviW < E[p ++I(ri)] + viWlq+\n            k= I k-1 i2\n        -A1 -. c,\n                                                                    i.e., any class-i job will prefer priority-class i over\n        =Ai * ci + B * c?I                                          priority-class (i + 1).\n\n\n\n\n                                               This content downloaded from\n                             108.30.55.84 on Mon, 24 Aug 2026 10:55:53 UTC\n                                       All use subject to https://about.jstor.org/terms\n\f880 / Mendelson and Whang\n\n  In a similar way, for i = 2, 3,..., R                                which completes the proof of transitivity for i < j <\n                                                                       k. Transitivity for i > j > k follows in a similar way.\n{E[pt(ri)] + vj WI - {E[pti (ri)] + vi Wiq Ij\n                                                                         Incentive-compatibility follows by repeated appli-\n                                                                       cation of the transitivity principle, showing that\n       = ai- + a + l | [ AR hAR]                                       TC' < TC' for all i = 1, 2, ...,5 R, j E {1, 25 ....5\n                                                                       R}-{i}.",
+          "quoted_text_sha256": "ad2762a1b12e8d814bc3e2d97cd10f9fcb0e0ac2d326afc991c29268675fcae7"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem_4": {
+      "source_anchors": [
+        {
+          "line_end": 985,
+          "line_start": 940,
+          "publication_locator": "cited publication",
+          "quoted_text": "                                                                        Theorem 4. For all user classes i = 1, 2, ..., R,\njob is, therefore, given by\n                                                                        the cheating penalty ll'(k) satisfies 0 = H'(i) <\n  R       R   t2                                        HI .(i + 1) < H 1.(i + 2) < ... < H' .(R) and H` (l) >\n  E       Ek        =     E      -   Vk           Xkl(Sk-I\n                                                        Hli(2) >3k)\n                                                                  ... > H'(i) = 0. Equivalently, ll'(k) is a\nk=l k=- 2\n                                                                        unimodalfunction of k.\nwhich is the quadratic term of (19). The linear term\nof the proposed price schedule can be interpreted in a                  Proof. Suppose that j > i. Then, by the definition of\nsimilar way as the externality cost inflicted on other                  ll'(k), we have\njobs arriving before the tagged job starts its service:\nthe first term of Ai t, ait/(Si_1 ?) is the externality cost            IH.(j + 1) - HIi(j)\ninflicted by the tagged job on the jobs of its own\nclasses (i.e., class-i), while                                              = v1(J471+ - Wj) -c1(Aj-A1+1) (24)\n\n                                                                        But we know from Theorem 3 that\n     k=i+l k-I k Sk- k\n                                                                        IIji(j + 1) = vj(JW,7 - W,) - cj(Aj - Aj+l) > 0\nrepresents the externality cost inflicted on the lower\nclass jobs. To further decompose the second term, the                  or\nfirst part\n\n      R\n\n\n      t , E ak\n    k=i+l Sk_1 Sk\n                                                                         WUq>- W,q >-(A --Aj+1). (25)\n                                         It follows from equations (24) and (25) that\nis incurred by the lower class jobs which have arrived\nbefore the tagged job arrives, and the second part\n          R   1\n                                                                        HIi(j + 1) - Hi(j) > c _ C)(Aj - Aj+1) > 0\nt - E 3 2\n    k=i+l Ak-lk\n                                                                       where the last inequality follows from vi/ci > vj/cj and\nis incurred by the lower class jobs coming after the                   Aj > Aj+1. This shows that 0 = H'(i) < IIi(i + 1) <\n                                                                        ... < li(R).\ntagged job, but before the tagged job starts its service.\n                                                                            A similar argument for the case j < i implies\nAltogether, the price represents the conditional expec-\ntation of the tagged job's externality on the system.\n                                                                        fIi(l) > WI(2) > . . . > iii(i) = O.\n  From a class-i user's viewpoint, the total expected",
+          "quoted_text_sha256": "06f7d57fef297bc02fde8ae6b9f2d188797b209b28c860551ec03d0996411665"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "value_function_condition": {
+      "source_anchors": [
+        {
+          "line_end": 257,
+          "line_start": 244,
+          "publication_locator": "cited publication",
+          "quoted_text": "A2. Value Function\n                                                                       belongs. Under a given prionity scheme, this problem\nThe value function of the class-i job stream can be                    can be formulated as\nexpressed as Vi (Xi), and the total value is given by the                        F       R\nsum of Vi(Xi) over all classes, that is, the expected                   max V(X) - E viLi(X)J (4)\n(gross) value function is given by                                          X        i=l\n\n\n           R                                                           where Li is the mean number of class-i jobs in the\nV(X)= E V1(Xi)                                                         system in steady state, viLi is the expected delay cost\n           i=l1\n                                                                       incurred by class-i jobs per unit of time, and V(2X) =\nwhere Vi(Xi) are differentiable, nondecreasing and                     E 1 Vi(Xi) is the total gross value per unit of time.\nconcave functions of their arguments Xi for all i.                       Consider the multiple class analog of the demand",
+          "quoted_text_sha256": "d298df159c8958eadd2e7e083b2ac1cc990f6309f26f489bc3cff525ad634c9c"
+        }
+      ],
+      "source_kind": "assumption"
+    }
+  },
+  "source_artifact_sha256": "48eec2a13fea8cbfcf732cd1f31fc7d7828d2af25f403589ec4f96d2f9d3c06f",
+  "source_coverage_mode": "named_theoretical_statements"
+}

@@ -12,7 +12,7 @@ high-ratio dispatcher.
 
 namespace HT26EFXChores
 
-open EconCSLib.FairDivision
+open AppliedModelingLib.FairDivision
 
 /-- Every four-agent nonnegative bi-valued additive chore profile admits an
 EFX allocation. -/

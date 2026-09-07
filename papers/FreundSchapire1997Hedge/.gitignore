@@ -1,0 +1,24 @@
+source-audited*
+*.pdf
+!docs/DependencyDAG.pdf
+!docs/HUMAN_REVIEW_PACKET.pdf
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+# Local paper sources are audit inputs, not contribution outputs.
+source/
+sources/
+source_tex/
+.audit_source/
+*.7z
+*.bz2
+*.gz
+*.rar
+*.tar
+*.tar.*
+*.tgz
+*.txz
+*.xz
+*.zip

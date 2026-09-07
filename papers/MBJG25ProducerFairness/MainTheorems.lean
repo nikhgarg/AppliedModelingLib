@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Econometrics.RatingModels.BinaryRating
+import AppliedModelingLib.Applications.RatingSystems.BinaryRating
 
 /-!
 # Paper-Facing Theorems: Balancing Producer Fairness and Efficiency
@@ -26,9 +26,9 @@ theorem paper_theorem3_1_variance_weak_decrease
     (hq1 : q ≤ 1)
     (hetaLow_nonneg : 0 ≤ etaLow)
     (heta_le : etaLow ≤ etaHigh) :
-    EconCSLib.Statistics.priorWeightedVariance alpha beta etaHigh t q ≤
-      EconCSLib.Statistics.priorWeightedVariance alpha beta etaLow t q := by
-  exact EconCSLib.Statistics.priorWeightedVariance_weak_decrease
+    AppliedModelingLib.Statistics.priorWeightedVariance alpha beta etaHigh t q ≤
+      AppliedModelingLib.Statistics.priorWeightedVariance alpha beta etaLow t q := by
+  exact AppliedModelingLib.Statistics.priorWeightedVariance_weak_decrease
     hshape ht hq0 hq1 hetaLow_nonneg heta_le
 
 /--
@@ -49,9 +49,9 @@ theorem paper_theorem3_1_variance_strict_decrease_interior
     (hq1 : q < 1)
     (hetaLow_nonneg : 0 ≤ etaLow)
     (heta_lt : etaLow < etaHigh) :
-    EconCSLib.Statistics.priorWeightedVariance alpha beta etaHigh t q <
-      EconCSLib.Statistics.priorWeightedVariance alpha beta etaLow t q := by
-  exact EconCSLib.Statistics.priorWeightedVariance_strict_decrease_of_interior_quality
+    AppliedModelingLib.Statistics.priorWeightedVariance alpha beta etaHigh t q <
+      AppliedModelingLib.Statistics.priorWeightedVariance alpha beta etaLow t q := by
+  exact AppliedModelingLib.Statistics.priorWeightedVariance_strict_decrease_of_interior_quality
     hshape ht hq0 hq1 hetaLow_nonneg heta_lt
 
 /--
@@ -66,9 +66,9 @@ theorem paper_theorem3_1_squared_bias_nondecreasing
     (ht : 0 < t)
     (hetaLow_nonneg : 0 ≤ etaLow)
     (heta_le : etaLow ≤ etaHigh) :
-    EconCSLib.Statistics.priorWeightedSquaredBias alpha beta etaLow t q ≤
-      EconCSLib.Statistics.priorWeightedSquaredBias alpha beta etaHigh t q := by
-  exact EconCSLib.Statistics.priorWeightedSquaredBias_mono
+    AppliedModelingLib.Statistics.priorWeightedSquaredBias alpha beta etaLow t q ≤
+      AppliedModelingLib.Statistics.priorWeightedSquaredBias alpha beta etaHigh t q := by
+  exact AppliedModelingLib.Statistics.priorWeightedSquaredBias_mono
     hshape ht hetaLow_nonneg heta_le
 
 /--
@@ -79,10 +79,10 @@ As a function of true quality, squared posterior-mean bias is Jensen-convex.
 theorem paper_theorem3_2_squared_bias_convex_in_quality
     {alpha beta eta t : ℝ}
     (hden : eta * alpha + eta * beta + t ≠ 0) :
-    EconCSLib.Statistics.JensenConvex
-      (fun q => EconCSLib.Statistics.priorWeightedSquaredBias
+    AppliedModelingLib.Statistics.JensenConvex
+      (fun q => AppliedModelingLib.Statistics.priorWeightedSquaredBias
         alpha beta eta t q) := by
-  exact EconCSLib.Statistics.priorWeightedSquaredBias_jensenConvex_quality
+  exact AppliedModelingLib.Statistics.priorWeightedSquaredBias_jensenConvex_quality
     hden
 
 /--
@@ -96,8 +96,8 @@ theorem paper_theorem3_2_squared_bias_global_min_at_prior_mean
     (hshape : 0 < alpha + beta)
     (heta_nonneg : 0 ≤ eta)
     (ht : 0 < t) :
-    EconCSLib.Statistics.GlobalMinAt
-      (fun q => EconCSLib.Statistics.priorWeightedSquaredBias
+    AppliedModelingLib.Statistics.GlobalMinAt
+      (fun q => AppliedModelingLib.Statistics.priorWeightedSquaredBias
         alpha beta eta t q)
       (alpha / (alpha + beta)) := by
   have hden_pos : 0 < eta * alpha + eta * beta + t := by
@@ -106,7 +106,7 @@ theorem paper_theorem3_2_squared_bias_global_min_at_prior_mean
         add_pos_of_nonneg_of_pos
           (mul_nonneg heta_nonneg hshape.le) ht
       _ = eta * alpha + eta * beta + t := by ring
-  exact EconCSLib.Statistics.priorWeightedSquaredBias_globalMin_priorMean
+  exact AppliedModelingLib.Statistics.priorWeightedSquaredBias_globalMin_priorMean
     (hshape := ne_of_gt hshape)
     (hden := ne_of_gt hden_pos)
 
@@ -118,10 +118,10 @@ As a function of true quality, posterior-mean variance is Jensen-concave.
 theorem paper_theorem3_2_variance_concave_in_quality
     {alpha beta eta t : ℝ}
     (ht : 0 ≤ t) :
-    EconCSLib.Statistics.JensenConcave
-      (fun q => EconCSLib.Statistics.priorWeightedVariance
+    AppliedModelingLib.Statistics.JensenConcave
+      (fun q => AppliedModelingLib.Statistics.priorWeightedVariance
         alpha beta eta t q) := by
-  exact EconCSLib.Statistics.priorWeightedVariance_jensenConcave_quality ht
+  exact AppliedModelingLib.Statistics.priorWeightedVariance_jensenConcave_quality ht
 
 /--
 Theorem 3.2, variance maximizer clause.
@@ -132,11 +132,11 @@ As a function of true quality, posterior-mean variance has a global maximum at
 theorem paper_theorem3_2_variance_global_max_at_half
     {alpha beta eta t : ℝ}
     (ht : 0 ≤ t) :
-    EconCSLib.Statistics.GlobalMaxAt
-      (fun q => EconCSLib.Statistics.priorWeightedVariance
+    AppliedModelingLib.Statistics.GlobalMaxAt
+      (fun q => AppliedModelingLib.Statistics.priorWeightedVariance
         alpha beta eta t q)
       (1 / 2) := by
-  exact EconCSLib.Statistics.priorWeightedVariance_globalMax_half ht
+  exact AppliedModelingLib.Statistics.priorWeightedVariance_globalMax_half ht
 
 /--
 Boundary counterexample to the strict variance-decrease clause of Theorem 3.1.
@@ -147,9 +147,9 @@ increases.
 -/
 theorem paper_theorem3_1_variance_strict_decrease_counterexample_quality_zero
     (alpha beta t etaLow etaHigh : ℝ) :
-    ¬ EconCSLib.Statistics.priorWeightedVariance alpha beta etaHigh t 0 <
-      EconCSLib.Statistics.priorWeightedVariance alpha beta etaLow t 0 := by
-  exact EconCSLib.Statistics.not_strictly_decreasing_priorWeightedVariance_quality_zero
+    ¬ AppliedModelingLib.Statistics.priorWeightedVariance alpha beta etaHigh t 0 <
+      AppliedModelingLib.Statistics.priorWeightedVariance alpha beta etaLow t 0 := by
+  exact AppliedModelingLib.Statistics.not_strictly_decreasing_priorWeightedVariance_quality_zero
     alpha beta t etaLow etaHigh
 
 /--
@@ -161,9 +161,9 @@ increases.
 -/
 theorem paper_theorem3_1_variance_strict_decrease_counterexample_quality_one
     (alpha beta t etaLow etaHigh : ℝ) :
-    ¬ EconCSLib.Statistics.priorWeightedVariance alpha beta etaHigh t 1 <
-      EconCSLib.Statistics.priorWeightedVariance alpha beta etaLow t 1 := by
-  exact EconCSLib.Statistics.not_strictly_decreasing_priorWeightedVariance_quality_one
+    ¬ AppliedModelingLib.Statistics.priorWeightedVariance alpha beta etaHigh t 1 <
+      AppliedModelingLib.Statistics.priorWeightedVariance alpha beta etaLow t 1 := by
+  exact AppliedModelingLib.Statistics.not_strictly_decreasing_priorWeightedVariance_quality_one
     alpha beta t etaLow etaHigh
 
 end MBJG25ProducerFairness

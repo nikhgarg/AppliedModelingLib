@@ -12,7 +12,7 @@ the reusable one-proposal DA transition and proves the paper's
 -/
 
 namespace GS62CollegeAdmissions
-open EconCSLib.Matching
+open AppliedModelingLib.Matching
 
 variable {M W : Type*} [Fintype M] [Fintype W]
   [DecidableEq M] [DecidableEq W]

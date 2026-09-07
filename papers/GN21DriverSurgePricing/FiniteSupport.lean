@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.MDP
+import AppliedModelingLib.Foundations.Probability.MDP
 
 /-!
 # Finite Support for Driver Surge Pricing
@@ -8,7 +8,7 @@ The source GN21 paper is continuous-time; these declarations are intentionally
 kept separate from the continuous CTMC theorem ledger.
 -/
 
-open EconCSLib
+open AppliedModelingLib
 
 namespace GN21DriverSurgePricing
 

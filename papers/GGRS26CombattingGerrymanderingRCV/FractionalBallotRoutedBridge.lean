@@ -14,7 +14,7 @@ transitions.  No trace or terminal outcome is supplied as an assumption.
 
 namespace GGRS26CombattingGerrymanderingRCV
 
-open EconCSLib.SocialChoice.Voting
+open AppliedModelingLib.SocialChoice.Voting
 
 variable {Voter Candidate : Type*} [DecidableEq Voter] [DecidableEq Candidate]
 variable {voters : Finset Voter} {ballots : Voter -> Ballot Candidate} {quota : ℝ}
@@ -31,15 +31,17 @@ noncomputable def fractionalBallotRoutedSTVTransferPolicy
   electUpdate active winner beforeWeight afterWeight :=
     quota ≤ ballotRoutedTally voters ballots active beforeWeight winner ∧
       afterWeight =
-        fractionalSTVNextWeight voters ballots quota
-          (fractionalSTVStepFromFocus voters ballots quota active beforeWeight winner)
+        scaleOnSupport (ballotRoutedSupport voters ballots active winner)
+          (fractionalSurplusFactor
+            (ballotRoutedTally voters ballots active beforeWeight winner) quota)
           beforeWeight
   eliminateUpdate _active _loser beforeWeight afterWeight :=
     afterWeight = beforeWeight
   elect_exists := by
     intro active winner beforeWeight _hweight _hactive hquota
-    exact ⟨fractionalSTVNextWeight voters ballots quota
-      (fractionalSTVStepFromFocus voters ballots quota active beforeWeight winner)
+    exact ⟨scaleOnSupport (ballotRoutedSupport voters ballots active winner)
+      (fractionalSurplusFactor
+        (ballotRoutedTally voters ballots active beforeWeight winner) quota)
       beforeWeight, ⟨hquota, rfl⟩⟩
   eliminate_exists := by
     intro _active _loser beforeWeight _hweight _hactive
@@ -47,60 +49,25 @@ noncomputable def fractionalBallotRoutedSTVTransferPolicy
   elect_preserves_nonneg := by
     intro active winner beforeWeight afterWeight hweight hupdate
     rcases hupdate with ⟨hquota, rfl⟩
-    apply fractionalSTVNextWeight_nonneg hweight hquotaPos
-    intro focused hfocus hkind
-    have hfocused : winner = focused := by
-      simpa [fractionalSTVStepFromFocus] using Option.some.inj hfocus
-    subst focused
-    simpa using hquota
-  elect_support_weight_le_before := by
-    intro active winner beforeWeight afterWeight hweight hupdate voter hvoter hsupport
-    rcases hupdate with ⟨hquota, rfl⟩
-    have hquota' :
-        quota ≤ fractionalActiveTally voters ballots beforeWeight active winner := by
-      simpa [ballotRoutedTally, fractionalActiveTally] using hquota
-    have htallyPos :
-        0 < fractionalActiveTally voters ballots beforeWeight active winner :=
-      lt_of_lt_of_le hquotaPos hquota'
-    have hfactorLe :
-        fractionalSurplusFactor
-            (fractionalActiveTally voters ballots beforeWeight active winner) quota ≤ 1 := by
-      rw [fractionalSurplusFactor]
-      apply (div_le_iff₀ htallyPos).mpr
-      linarith
-    have hsupport' :
-        voter ∈ Ballot.activeSupport voters ballots active winner := by
-      simpa [ballotRoutedSupport] using hsupport
-    have hkind :
-        (fractionalSTVStepFromFocus voters ballots quota active beforeWeight winner).kind =
-          StepKind.elect := by
-      simp [fractionalSTVStepFromFocus, hquota']
-    have hscaled :
-        fractionalSurplusFactor
-            (fractionalActiveTally voters ballots beforeWeight active winner) quota *
-            beforeWeight voter ≤ beforeWeight voter := by
-      simpa using
-        (mul_le_mul_of_nonneg_right hfactorLe (hweight voter hvoter))
-    simpa [fractionalSTVNextWeight, hkind, scaleOnSupport, hsupport'] using hscaled
+    intro voter hvoter
+    by_cases hsupport : voter ∈ ballotRoutedSupport voters ballots active winner
+    · simp only [scaleOnSupport, hsupport, if_true]
+      apply mul_nonneg
+      · rw [fractionalSurplusFactor]
+        exact div_nonneg (sub_nonneg.mpr hquota)
+          (le_trans hquotaPos.le hquota)
+      · exact hweight voter hvoter
+    · simp only [scaleOnSupport, hsupport, if_false]
+      exact hweight voter hvoter
   elect_unchanged_off_support := by
     intro active winner beforeWeight afterWeight _hweight hupdate voter _hvoter houtside
-    rcases hupdate with ⟨hquota, rfl⟩
-    have hquota' :
-        quota ≤ fractionalActiveTally voters ballots beforeWeight active winner := by
-      simpa [ballotRoutedTally, fractionalActiveTally] using hquota
-    have houtside' :
-        voter ∉ Ballot.activeSupport voters ballots active winner := by
-      simpa [ballotRoutedSupport] using houtside
-    have hkind :
-        (fractionalSTVStepFromFocus voters ballots quota active beforeWeight winner).kind =
-          StepKind.elect := by
-      simp [fractionalSTVStepFromFocus, hquota']
-    simp [fractionalSTVNextWeight, hkind, scaleOnSupport, houtside']
+    rcases hupdate with ⟨_hquota, rfl⟩
+    simp [scaleOnSupport, houtside]
   elect_support_mass_drop_exactly_quota := by
     intro active winner beforeWeight afterWeight _hweight hupdate
     rcases hupdate with ⟨hquota, rfl⟩
     let support := ballotRoutedSupport voters ballots active winner
-    let tally := fractionalActiveTally voters ballots beforeWeight active winner
+    let tally := ballotRoutedTally voters ballots active beforeWeight winner
     have htallyPos : 0 < tally := by
       exact lt_of_lt_of_le hquotaPos (by simpa [tally] using hquota)
     have htallyNe : tally ≠ 0 := ne_of_gt htallyPos
@@ -108,14 +75,7 @@ noncomputable def fractionalBallotRoutedSTVTransferPolicy
       (support := support) (voters := support) (weight := beforeWeight)
       (focusedTally := tally) (quota := quota) (by intro voter hvoter; exact hvoter)
       (by rfl) htallyNe
-    have hquota' :
-        quota ≤ fractionalActiveTally voters ballots beforeWeight active winner := by
-      simpa [ballotRoutedTally, fractionalActiveTally] using hquota
-    have hkind :
-        (fractionalSTVStepFromFocus voters ballots quota active beforeWeight winner).kind =
-          StepKind.elect := by
-      simp [fractionalSTVStepFromFocus, hquota']
-    simpa [fractionalSTVNextWeight, hkind, support, tally, ballotRoutedSupport] using hdrop
+    simpa [support, tally, fractionalSurplusFactor] using hdrop
   eliminate_weight_unchanged := by
     intro _active _loser beforeWeight afterWeight _hweight hupdate voter _hvoter
     simpa [hupdate]
@@ -182,7 +142,21 @@ theorem exists_ballotRoutedSTVTransition_of_quotaFirstMinimumTallyChoice
     refine ⟨after, ?_⟩
     refine BallotRoutedSTVTransition.elect focused hnotTerminal hfocused hroom hquota
       (by rfl) (by rfl) ?_
-    exact ⟨hquota, rfl⟩
+    refine ⟨hquota, ?_⟩
+    funext voter
+    have hquotaSum :
+        quota ≤
+          ∑ routedVoter ∈ Ballot.activeSupport voters ballots before.active focused,
+            before.weight routedVoter := by
+      simpa [ballotRoutedTally, ballotRoutedSupport] using hquota
+    change
+      fractionalSTVNextWeight voters ballots quota step before.weight voter =
+        scaleOnSupport (ballotRoutedSupport voters ballots before.active focused)
+          (fractionalSurplusFactor
+            (ballotRoutedTally voters ballots before.active before.weight focused) quota)
+          before.weight voter
+    simp [step, fractionalSTVNextWeight, fractionalSTVStepFromFocus, hquotaSum,
+      ballotRoutedSupport, ballotRoutedTally, fractionalActiveTally]
   · have hnoQuotaExists :
         ¬ ∃ candidate, candidate ∈ before.active ∧
           quota ≤ fractionalActiveTally voters ballots before.weight before.active candidate := by

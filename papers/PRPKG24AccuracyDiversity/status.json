@@ -112,36 +112,36 @@
   "open_source_boundaries": [],
   "paper_interface": {
     "declaration_rows": 133,
-    "line_count": 2887,
-    "maintainability_issue": "The large interface deliberately separates 30 direct normal named-theory endpoints from support-only aliases and 19 explicit source-condition rows. Its source-facing formulas and corrections retain provenance comments; normal-scope v10 artifacts are reused only after exact source/Lean identity checks.",
+    "line_count": 2988,
+    "maintainability_issue": "The large interface separates the selected transparent specifications from proof endpoints, governing definitions, and supplemental material.",
     "oversized": true,
     "path": "papers/PRPKG24AccuracyDiversity/PaperInterface.lean",
-    "review_rows": 81,
-    "review_rows_meaning": "81 selected Lean declarations, not 81 independently source-presented claims: 31 direct/support declarations plus 50 Spec/proof declarations. The source-facing audit has 30 normal claim rows and 19 source-condition rows, for 49 source-facing rows."
+    "review_rows": 25,
+    "review_rows_meaning": "25 selected source-facing claims. Governing definitions are reviewed separately; Example 1 is supplemental."
   },
   "repository_visibility": "public",
   "review_entrypoint": "papers/PRPKG24AccuracyDiversity/FINAL_VALIDATION_REPORT.md",
   "review_surface": {
     "assumption_names": [
-      "assumption_example1_positive_calibrated_exponential_parameters",
-      "assumption_finite_discrete_top_value_domain",
-      "assumption_positive_source_preference_law",
-      "assumption_positive_type_likelihoods",
-      "assumption_bounded_upper_endpoint_density_domain",
-      "assumption_exponential_order_statistic_domain",
-      "assumption_pareto_finite_mean_domain",
-      "assumption_common_mean_argmax_domain",
-      "assumption_nonnegative_homogeneity_exponent",
-      "assumption_decaying_bernoulli_probability_domain",
-      "assumption_decaying_bernoulli_top_one_nondegenerate_domain",
-      "assumption_bernoulli_success_probability_range",
-      "assumption_theorem3_varying_bernoulli_probability_domain",
-      "assumption_corollary3_iid_bernoulli_probability_domain",
-      "assumption_uniform_top_k_positive_count_domain",
-      "assumption_lemmaD2_cdf_power_sandwich_monotone_bounded_support",
-      "assumption_proposition4_radial_nonsatisfaction_kernel",
-      "assumption_proposition4_continuous_sphere_laplace_boundary",
-      "assumption_positive_rounding_population_size"
+      "PRPKG24AccuracyDiversity.assumption_example1_positive_calibrated_exponential_parameters",
+      "PRPKG24AccuracyDiversity.assumption_finite_discrete_top_value_domain",
+      "PRPKG24AccuracyDiversity.assumption_positive_source_preference_law",
+      "PRPKG24AccuracyDiversity.assumption_positive_type_likelihoods",
+      "PRPKG24AccuracyDiversity.assumption_bounded_upper_endpoint_density_domain",
+      "PRPKG24AccuracyDiversity.assumption_exponential_order_statistic_domain",
+      "PRPKG24AccuracyDiversity.assumption_pareto_finite_mean_domain",
+      "PRPKG24AccuracyDiversity.assumption_common_mean_argmax_domain",
+      "PRPKG24AccuracyDiversity.assumption_nonnegative_homogeneity_exponent",
+      "PRPKG24AccuracyDiversity.assumption_decaying_bernoulli_probability_domain",
+      "PRPKG24AccuracyDiversity.assumption_decaying_bernoulli_top_one_nondegenerate_domain",
+      "PRPKG24AccuracyDiversity.assumption_bernoulli_success_probability_range",
+      "PRPKG24AccuracyDiversity.assumption_theorem3_varying_bernoulli_probability_domain",
+      "PRPKG24AccuracyDiversity.assumption_corollary3_iid_bernoulli_probability_domain",
+      "PRPKG24AccuracyDiversity.assumption_uniform_top_k_positive_count_domain",
+      "PRPKG24AccuracyDiversity.assumption_lemmaD2_cdf_power_sandwich_monotone_bounded_support",
+      "PRPKG24AccuracyDiversity.assumption_proposition4_radial_nonsatisfaction_kernel",
+      "PRPKG24AccuracyDiversity.assumption_proposition4_continuous_sphere_laplace_boundary",
+      "PRPKG24AccuracyDiversity.assumption_positive_rounding_population_size"
     ],
     "assumption_policy": "strict",
     "assumption_source_file": "papers/PRPKG24AccuracyDiversity/Assumptions.lean",
@@ -229,7 +229,8 @@
       "exponential_homogeneity_support",
       "exponential_homogeneity_support_formula",
       "pareto_homogeneity_support",
-      "pareto_homogeneity_support_formula"
+      "pareto_homogeneity_support_formula",
+      "example1_calibrated_log_relaxationSpec"
     ],
     "include_names": [
       "theorem1_i_formulaSpec",
@@ -280,12 +281,12 @@
       "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
       "require_explicit_source_routes": true,
       "require_source_claim_atoms": true,
-      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
       "review_surface_audit_file": "papers/PRPKG24AccuracyDiversity/audit/review_surface_llm.json",
       "surface_audit_threshold": 40,
       "surface_warning_threshold": 120
     },
-    "normal_scope_status": "The normal named-theory map routes 30 source-facing claim rows by expanded model semantics: common iid products for Definition 3/Proposition 5; selected-type PMFs for Equation (3), Theorem 1(i)-(iv), Theorem 2, Theorem 3, and Corollary 3; exact top-k rather than at-most-k where required; and finite Bernoulli laws with explicit domain witnesses. The 2026-08-15 direct review compared every current row with its exact source anchor and current endpoint or Spec; 19 source-condition rows remain separately recorded. The older v10 statement, dashboard, and source-record sidecars are historical provenance rather than current raw credentials. Any later source or semantic interface change requires a new direct review or a valid item-level reissue.",
+    "normal_scope_status": "The current normal named-theory map contains 29 claim-bearing items: 25 selected result claims and four governing definitions. The August 15, 2026 direct review is historical; the current v11 ledger records the selected source-to-Spec comparisons.",
     "proposition_spec_proofs": {
       "corollary1Spec": "corollary1Spec_proof",
       "corollary3_iid_bernoulli_conclusionSpec": "corollary3_iid_bernoulli_conclusionSpec_proof",
@@ -332,14 +333,35 @@
     },
     "slices": [
       {
-        "id": "main_named_results",
-        "name_regex": "^(definition|example|theorem|corollary|proposition)",
-        "title": "Definitions and main results"
-      },
-      {
-        "id": "appendix_named_results",
-        "name_regex": "^lemma",
-        "title": "Appendix lemmas"
+        "id": "additional_source_results",
+        "names": [
+          "theorem1_i_formulaSpec",
+          "theorem1_ii_formulaSpec",
+          "theorem1_iii_formulaSpec",
+          "theorem1_iv_formulaSpec",
+          "theorem1_v_selected_maximizer_conclusionSpec",
+          "corollary1Spec",
+          "proposition2_corrected_finite_and_sequence_sourceSpec",
+          "corollary3_iid_bernoulli_conclusionSpec",
+          "theorem2_i_corrected_pmf_source_model_endpointSpec",
+          "theorem2_ii_corrected_pmf_source_model_endpointSpec",
+          "theorem2_iii_corrected_pmf_source_model_endpointSpec",
+          "theorem2_iv_corrected_pmf_source_model_endpointSpec",
+          "theorem3_log_share_conclusionSpec",
+          "theorem3_all_consumed_argmax_conclusionSpec",
+          "lemma1_bounded_topk_loss_asymptotic_of_pdf_sourceSpec",
+          "proposition4Spec",
+          "lemmaD1_i_corrected_uniform_optimizer_shares_sourceSpec",
+          "lemmaD1_ii_corrected_powerTail_optimizer_shares_sourceSpec",
+          "lemmaD1_iii_corrected_probability_optimizer_shares_sourceSpec",
+          "lemmaD1_iv_corrected_powerTail_optimizer_shares_sourceSpec",
+          "lemmaD2_bounded_fixed_rank_integral_asymptotic_of_pdf_sourceSpec",
+          "lemmaD3_corrected_exponential_fixed_rank_sourceSpec",
+          "lemmaD4_corrected_pareto_fixed_rank_sourceSpec",
+          "lemmaD5Spec",
+          "proposition5_iid_topk_identitySpec"
+        ],
+        "title": "Additional source results"
       }
     ],
     "source_file": "papers/PRPKG24AccuracyDiversity/PaperInterface.lean",

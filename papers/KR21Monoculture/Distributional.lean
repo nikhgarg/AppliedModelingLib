@@ -1,7 +1,7 @@
 import KR21Monoculture.Theorem1
-import EconCSLib.Foundations.Probability.MeasureInequalities
+import AppliedModelingLib.Foundations.Probability.MeasureInequalities
 
-open EconCSLib MeasureTheory
+open AppliedModelingLib MeasureTheory
 
 namespace KR21Monoculture
 

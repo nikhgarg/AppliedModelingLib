@@ -1,6 +1,6 @@
 import KR21Monoculture.AppendixBSmoothingStability
-import EconCSLib.Foundations.Math.IntervalCrossing
-import EconCSLib.Foundations.Probability.IndependentProduct
+import AppliedModelingLib.Foundations.Math.IntervalCrossing
+import AppliedModelingLib.Foundations.Probability.IndependentProduct
 import Mathlib.Probability.Distributions.Gaussian.Real
 
 /-!
@@ -18,7 +18,7 @@ from almost-sure local constancy of the actual ranking map, not postulated as
 an approximation property of a law named "Gaussian mixture".
 -/
 
-open EconCSLib
+open AppliedModelingLib
 open scoped BigOperators
 open MeasureTheory
 open ProbabilityTheory
@@ -44,7 +44,7 @@ private theorem appendixB1NoiseWeight_nonneg_for_mixture
 
 /-- The actual one-coordinate B.1 component-selection PMF. -/
 noncomputable def appendixB1NoisePMF : PMF AppendixB1NoiseAtom :=
-  EconCSLib.finiteWeightedPMF
+  AppliedModelingLib.finiteWeightedPMF
     appendixB1NoiseWeight appendixB1NoiseWeight_nonneg_for_mixture
     (by rw [appendixB1NoiseWeight_sum]; norm_num)
 
@@ -52,14 +52,14 @@ noncomputable def appendixB1NoisePMF : PMF AppendixB1NoiseAtom :=
     (e : AppendixB1NoiseAtom) :
     (appendixB1NoisePMF e).toReal = appendixB1NoiseWeight e := by
   rw [appendixB1NoisePMF,
-    EconCSLib.finiteWeightedPMF_apply_toReal]
+    AppliedModelingLib.finiteWeightedPMF_apply_toReal]
   rw [appendixB1NoiseWeight_sum]
   simp
 
 /-- Three independent B.1 component labels, one for each candidate. -/
 noncomputable def appendixB1NoiseTriplePMF : PMF AppendixB1NoiseTriple :=
-  EconCSLib.pmfProd
-    (EconCSLib.pmfProd appendixB1NoisePMF appendixB1NoisePMF)
+  AppliedModelingLib.pmfProd
+    (AppliedModelingLib.pmfProd appendixB1NoisePMF appendixB1NoisePMF)
     appendixB1NoisePMF
 
 /-- Three independent standard Gaussian perturbations. -/
@@ -129,13 +129,13 @@ def appendixB1GaussianMixtureRank
     (s : ℝ) :
     (AppendixB1NoiseTriple × AppendixBGaussianTriple) → Ranking 1 :=
   fun omega =>
-    EconCSLib.SocialChoice.Ranking.rankByScore
+    AppliedModelingLib.SocialChoice.Ranking.rankByScore
       (appendixB1GaussianMixtureScore s omega)
 
 theorem appendixB1GaussianMixtureRank_measurable (s : ℝ) :
     Measurable (appendixB1GaussianMixtureRank s) := by
   unfold appendixB1GaussianMixtureRank
-  exact EconCSLib.SocialChoice.Ranking.measurable_rankByScore _
+  exact AppliedModelingLib.SocialChoice.Ranking.measurable_rankByScore _
     (appendixB1GaussianMixtureScore_measurable s)
 
 /-- The actual B.1 ranking PMF induced by the finite Gaussian mixture. -/
@@ -172,7 +172,7 @@ theorem appendixB1DiscreteTripleAtom_toRanking
 private theorem rankByScore_eq_of_strict_ranking_order
     {n : ℕ} (score : Candidate n → ℝ) (pi : Ranking n)
     (hstrict : ∀ i j : Candidate n, i < j → score (pi j) < score (pi i)) :
-    EconCSLib.SocialChoice.Ranking.rankByScore score = pi := by
+    AppliedModelingLib.SocialChoice.Ranking.rankByScore score = pi := by
   have hsort : pi = Tuple.sort (fun c : Candidate n => -score c) := by
     refine (Tuple.eq_sort_iff
       (f := fun c : Candidate n => -score c) (σ := pi)).mpr ?_
@@ -188,14 +188,14 @@ private theorem rankByScore_eq_of_strict_ranking_order
       have h := hstrict i j hij
       change -score (pi i) = -score (pi j) at heq
       linarith
-  simpa [EconCSLib.SocialChoice.Ranking.rankByScore] using hsort.symm
+  simpa [AppliedModelingLib.SocialChoice.Ranking.rankByScore] using hsort.symm
 
 /-- For tie-free three-score vectors, the source classifier is the canonical ranking. -/
 private theorem appendixBRankingAtom_rankByScore_eq_of_noTies
     (score : Candidate 1 → ℝ)
     (hnoTie : ∀ i j : Candidate 1, i ≠ j → score i ≠ score j) :
     (appendixBRankingAtomOfScores (score 0) (score 1) (score 2)).toRanking =
-      EconCSLib.SocialChoice.Ranking.rankByScore score := by
+      AppliedModelingLib.SocialChoice.Ranking.rankByScore score := by
   classical
   by_cases htop : score 1 ≤ score 0 ∧ score 2 ≤ score 0
   · have h10 : score 1 < score 0 :=
@@ -203,7 +203,7 @@ private theorem appendixBRankingAtom_rankByScore_eq_of_noTies
     by_cases h21 : score 2 ≤ score 1
     · have h21' : score 2 < score 1 :=
         lt_of_le_of_ne h21 (hnoTie 2 1 (by decide))
-      have hrank : EconCSLib.SocialChoice.Ranking.rankByScore score =
+      have hrank : AppliedModelingLib.SocialChoice.Ranking.rankByScore score =
           rum3Ranking012 := by
         apply rankByScore_eq_of_strict_ranking_order
         intro i j hij
@@ -215,7 +215,7 @@ private theorem appendixBRankingAtom_rankByScore_eq_of_noTies
     · have h12 : score 1 < score 2 := lt_of_not_ge h21
       have h20 : score 2 < score 0 :=
         lt_of_le_of_ne htop.2 (hnoTie 2 0 (by decide))
-      have hrank : EconCSLib.SocialChoice.Ranking.rankByScore score =
+      have hrank : AppliedModelingLib.SocialChoice.Ranking.rankByScore score =
           rum3Ranking021 := by
         apply rankByScore_eq_of_strict_ranking_order
         intro i j hij
@@ -229,7 +229,7 @@ private theorem appendixBRankingAtom_rankByScore_eq_of_noTies
       by_cases h20 : score 2 ≤ score 0
       · have h20' : score 2 < score 0 :=
           lt_of_le_of_ne h20 (hnoTie 2 0 (by decide))
-        have hrank : EconCSLib.SocialChoice.Ranking.rankByScore score =
+        have hrank : AppliedModelingLib.SocialChoice.Ranking.rankByScore score =
             rum3Ranking102 := by
           apply rankByScore_eq_of_strict_ranking_order
           intro i j hij
@@ -238,7 +238,7 @@ private theorem appendixBRankingAtom_rankByScore_eq_of_noTies
         simpa only [appendixBRankingAtomOfScores, if_neg htop,
           if_pos hmiddle, if_pos h20, AppendixBRankingAtom.toRanking] using hrank.symm
       · have h02 : score 0 < score 2 := lt_of_not_ge h20
-        have hrank : EconCSLib.SocialChoice.Ranking.rankByScore score =
+        have hrank : AppliedModelingLib.SocialChoice.Ranking.rankByScore score =
             rum3Ranking120 := by
           apply rankByScore_eq_of_strict_ranking_order
           intro i j hij
@@ -253,7 +253,7 @@ private theorem appendixBRankingAtom_rankByScore_eq_of_noTies
           apply lt_of_not_ge
           intro h20
           exact htop ⟨h10, h20⟩
-        have hrank : EconCSLib.SocialChoice.Ranking.rankByScore score =
+        have hrank : AppliedModelingLib.SocialChoice.Ranking.rankByScore score =
             rum3Ranking201 := by
           apply rankByScore_eq_of_strict_ranking_order
           intro i j hij
@@ -267,7 +267,7 @@ private theorem appendixBRankingAtom_rankByScore_eq_of_noTies
           apply lt_of_not_ge
           intro h21
           exact hmiddle ⟨h01, h21⟩
-        have hrank : EconCSLib.SocialChoice.Ranking.rankByScore score =
+        have hrank : AppliedModelingLib.SocialChoice.Ranking.rankByScore score =
             rum3Ranking210 := by
           apply rankByScore_eq_of_strict_ranking_order
           intro i j hij
@@ -280,7 +280,7 @@ private theorem appendixBRankingAtom_rankByScore_eq_of_noTies
 /-- At each source B.1 component triple, the canonical score rank is its displayed atom. -/
 theorem appendixB1_rankByScore_discreteTriple_eq
     (noise : AppendixB1NoiseTriple) :
-    EconCSLib.SocialChoice.Ranking.rankByScore
+    AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (appendixB1DiscreteScore (appendixB1NoiseTripleFunction noise)) =
       appendixB1DiscreteTripleRank noise := by
   symm
@@ -315,27 +315,27 @@ private theorem pmf_map_apply_toReal_fintype
       appendixB1NoiseWeight e0 * appendixB1NoiseWeight e1 *
         appendixB1NoiseWeight e2 := by
   rw [appendixB1NoiseTriplePMF,
-    EconCSLib.pmfProd_apply_toReal,
-    EconCSLib.pmfProd_apply_toReal]
+    AppliedModelingLib.pmfProd_apply_toReal,
+    AppliedModelingLib.pmfProd_apply_toReal]
   simp [mul_assoc]
 
 private theorem rankingPMFOfMeasure_from_finitePMF_eq_map
     {α : Type*} [Fintype α] [MeasurableSpace α] [MeasurableSingletonClass α]
     (law : PMF α) (rank : α → Ranking 1) (hrank : Measurable rank) :
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
         law.toMeasure rank hrank = law.map rank := by
   apply PMF.ext
   intro pi
   apply (ENNReal.toReal_eq_toReal_iff'
-    ((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    ((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
       law.toMeasure rank hrank).apply_ne_top pi)
     ((law.map rank).apply_ne_top pi)).mp
   rw [← PMF.toMeasure_apply_singleton
-    (EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    (AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
       law.toMeasure rank hrank) pi MeasurableSet.of_discrete]
   rw [← PMF.toMeasure_apply_singleton (law.map rank) pi
     MeasurableSet.of_discrete]
-  unfold EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+  unfold AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
   rw [Measure.toPMF_toMeasure]
   rw [PMF.toMeasure_map rank law hrank]
 
@@ -351,7 +351,7 @@ theorem appendixB1NoiseTriplePMF_map_discreteTripleAtom :
   rw [Fintype.sum_prod_type]
   simp_rw [Fintype.sum_prod_type]
   rw [appendixB1AtomPMF,
-    EconCSLib.finiteWeightedPMF_apply_toReal,
+    AppliedModelingLib.finiteWeightedPMF_apply_toReal,
     appendixB1RankingWeight_sum]
   simp only [div_one]
   rw [appendixB1RankingWeight_eq_iid_rum_pushforward]
@@ -376,7 +376,7 @@ theorem appendixB1GaussianMixtureRankingPMF_zero :
     unfold appendixB1GaussianLatentMeasure
     exact measurePreserving_fst
   have htransport :=
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
       appendixB1GaussianLatentMeasure appendixB1NoiseTriplePMF.toMeasure
       Prod.fst hmeasure
       (appendixB1GaussianMixtureRank 0)
@@ -386,7 +386,7 @@ theorem appendixB1GaussianMixtureRankingPMF_zero :
         intro omega
         exact congrFun appendixB1GaussianMixtureRank_zero omega)
   change
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
       appendixB1GaussianLatentMeasure
       (appendixB1GaussianMixtureRank 0)
       (appendixB1GaussianMixtureRank_measurable 0) = _
@@ -401,15 +401,15 @@ theorem appendixB1GaussianMixtureRankingPMF_atom_continuousAt
     (pi : Ranking 1) :
     ContinuousAt
       (fun s => ((appendixB1GaussianMixtureRankingPMF s) pi).toReal) 0 := by
-  apply EconCSLib.continuousAt_of_epsilonContinuousAt
-  change EconCSLib.EpsilonContinuousAt
+  apply AppliedModelingLib.continuousAt_of_epsilonContinuousAt
+  change AppliedModelingLib.EpsilonContinuousAt
     (fun s =>
-      ((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+      ((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
         appendixB1GaussianLatentMeasure
         (appendixB1GaussianMixtureRank s)
         (appendixB1GaussianMixtureRank_measurable s)) pi).toReal) 0
   refine
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_atom_epsilonContinuousAt_of_ae_eventually_eq
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_atom_epsilonContinuousAt_of_ae_eventually_eq
       appendixB1GaussianLatentMeasure appendixB1GaussianMixtureRank
       appendixB1GaussianMixtureRank_measurable ?_ pi
   filter_upwards [] with omega
@@ -426,9 +426,9 @@ theorem appendixB1GaussianMixtureRankingPMF_atom_continuousAt
     funext c
     simp [appendixB1GaussianMixtureScore]
   change ∀ᶠ θ in nhds 0,
-    EconCSLib.SocialChoice.Ranking.rankByScore
+    AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (appendixB1GaussianMixtureScore θ omega) =
-      EconCSLib.SocialChoice.Ranking.rankByScore
+      AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (appendixB1GaussianMixtureScore 0 omega)
   rw [hzero]
   simpa [appendixB1GaussianMixtureScore, noise, perturb] using hstable
@@ -436,10 +436,10 @@ theorem appendixB1GaussianMixtureRankingPMF_atom_continuousAt
 /-- The B.1 source's strict reversal persists for a positive Gaussian component scale. -/
 theorem appendixB1_gaussianMixture_reversal :
     ∃ delta : ℝ, 0 < delta ∧ ∀ s : ℝ, 0 < s → s < delta →
-      EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+      AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
           (appendixB1GaussianMixtureRankingPMF s)
           (appendixB1GaussianMixtureRankingPMF s) appendixB1Value -
-        EconCSLib.SocialChoice.Ranking.expectedSecondMoverShared
+        AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverShared
           (appendixB1GaussianMixtureRankingPMF s) appendixB1Value < 0 := by
   exact appendixB1_reversal_persists_of_atomwise_continuity
     appendixB1GaussianMixtureRankingPMF
@@ -461,7 +461,7 @@ private theorem appendixB2NoiseWeight_nonneg_for_mixture
 
 /-- The actual one-coordinate B.2 component-selection PMF. -/
 noncomputable def appendixB2NoisePMF : PMF AppendixB2NoiseAtom :=
-  EconCSLib.finiteWeightedPMF
+  AppliedModelingLib.finiteWeightedPMF
     appendixB2NoiseWeight appendixB2NoiseWeight_nonneg_for_mixture
     (by rw [appendixB2NoiseWeight_sum]; norm_num)
 
@@ -469,14 +469,14 @@ noncomputable def appendixB2NoisePMF : PMF AppendixB2NoiseAtom :=
     (e : AppendixB2NoiseAtom) :
     (appendixB2NoisePMF e).toReal = appendixB2NoiseWeight e := by
   rw [appendixB2NoisePMF,
-    EconCSLib.finiteWeightedPMF_apply_toReal]
+    AppliedModelingLib.finiteWeightedPMF_apply_toReal]
   rw [appendixB2NoiseWeight_sum]
   simp
 
 /-- Three independent B.2 component labels, one for each candidate. -/
 noncomputable def appendixB2NoiseTriplePMF : PMF AppendixB2NoiseTriple :=
-  EconCSLib.pmfProd
-    (EconCSLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
+  AppliedModelingLib.pmfProd
+    (AppliedModelingLib.pmfProd appendixB2NoisePMF appendixB2NoisePMF)
     appendixB2NoisePMF
 
 /-- The fixed latent probability space for B.2 Gaussian smoothing. -/
@@ -555,13 +555,13 @@ def appendixB2AlgorithmGaussianMixtureRank
     (s : ℝ) :
     (AppendixB2NoiseTriple × AppendixBGaussianTriple) → Ranking 1 :=
   fun omega =>
-    EconCSLib.SocialChoice.Ranking.rankByScore
+    AppliedModelingLib.SocialChoice.Ranking.rankByScore
       (appendixB2AlgorithmGaussianMixtureScore s omega)
 
 theorem appendixB2AlgorithmGaussianMixtureRank_measurable (s : ℝ) :
     Measurable (appendixB2AlgorithmGaussianMixtureRank s) := by
   unfold appendixB2AlgorithmGaussianMixtureRank
-  exact EconCSLib.SocialChoice.Ranking.measurable_rankByScore _
+  exact AppliedModelingLib.SocialChoice.Ranking.measurable_rankByScore _
     (appendixB2AlgorithmGaussianMixtureScore_measurable s)
 
 /-- The ranking generated by the B.2 human Gaussian-mixture scores. -/
@@ -569,13 +569,13 @@ def appendixB2HumanGaussianMixtureRank
     (s : ℝ) :
     (AppendixB2NoiseTriple × AppendixBGaussianTriple) → Ranking 1 :=
   fun omega =>
-    EconCSLib.SocialChoice.Ranking.rankByScore
+    AppliedModelingLib.SocialChoice.Ranking.rankByScore
       (appendixB2HumanGaussianMixtureScore s omega)
 
 theorem appendixB2HumanGaussianMixtureRank_measurable (s : ℝ) :
     Measurable (appendixB2HumanGaussianMixtureRank s) := by
   unfold appendixB2HumanGaussianMixtureRank
-  exact EconCSLib.SocialChoice.Ranking.measurable_rankByScore _
+  exact AppliedModelingLib.SocialChoice.Ranking.measurable_rankByScore _
     (appendixB2HumanGaussianMixtureScore_measurable s)
 
 /-- The actual B.2 algorithmic ranking PMF induced by the finite Gaussian mixture. -/
@@ -628,7 +628,7 @@ theorem appendixB2HumanDiscreteTripleRank_measurable :
 
 theorem appendixB2_algorithm_rankByScore_discreteTriple_eq
     (noise : AppendixB2NoiseTriple) :
-    EconCSLib.SocialChoice.Ranking.rankByScore
+    AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (appendixB2AlgorithmDiscreteScore (appendixB2NoiseTripleFunction noise)) =
       appendixB2AlgorithmDiscreteTripleRank noise := by
   symm
@@ -639,7 +639,7 @@ theorem appendixB2_algorithm_rankByScore_discreteTriple_eq
 
 theorem appendixB2_human_rankByScore_discreteTriple_eq
     (noise : AppendixB2NoiseTriple) :
-    EconCSLib.SocialChoice.Ranking.rankByScore
+    AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (appendixB2HumanDiscreteScore (appendixB2NoiseTripleFunction noise)) =
       appendixB2HumanDiscreteTripleRank noise := by
   symm
@@ -669,8 +669,8 @@ theorem appendixB2HumanGaussianMixtureRank_zero :
       appendixB2NoiseWeight e0 * appendixB2NoiseWeight e1 *
         appendixB2NoiseWeight e2 := by
   rw [appendixB2NoiseTriplePMF,
-    EconCSLib.pmfProd_apply_toReal,
-    EconCSLib.pmfProd_apply_toReal]
+    AppliedModelingLib.pmfProd_apply_toReal,
+    AppliedModelingLib.pmfProd_apply_toReal]
   simp [mul_assoc]
 
 /-- The finite component product pushes forward to the exact B.2 algorithmic atom table. -/
@@ -685,7 +685,7 @@ theorem appendixB2NoiseTriplePMF_map_algorithmDiscreteTripleAtom :
   rw [Fintype.sum_prod_type]
   simp_rw [Fintype.sum_prod_type]
   rw [appendixB2AlgorithmAtomPMF,
-    EconCSLib.finiteWeightedPMF_apply_toReal,
+    AppliedModelingLib.finiteWeightedPMF_apply_toReal,
     appendixB2AlgorithmRankingWeight_sum]
   simp only [div_one]
   rw [appendixB2AlgorithmRankingWeight_eq_iid_rum_pushforward]
@@ -706,7 +706,7 @@ theorem appendixB2NoiseTriplePMF_map_humanDiscreteTripleAtom :
   rw [Fintype.sum_prod_type]
   simp_rw [Fintype.sum_prod_type]
   rw [appendixB2HumanAtomPMF,
-    EconCSLib.finiteWeightedPMF_apply_toReal,
+    AppliedModelingLib.finiteWeightedPMF_apply_toReal,
     appendixB2HumanRankingWeight_sum]
   simp only [div_one]
   rw [appendixB2HumanRankingWeight_eq_iid_rum_pushforward]
@@ -740,7 +740,7 @@ theorem appendixB2AlgorithmGaussianMixtureRankingPMF_zero :
     unfold appendixB2GaussianLatentMeasure
     exact measurePreserving_fst
   have htransport :=
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
       appendixB2GaussianLatentMeasure appendixB2NoiseTriplePMF.toMeasure
       Prod.fst hmeasure
       (appendixB2AlgorithmGaussianMixtureRank 0)
@@ -751,7 +751,7 @@ theorem appendixB2AlgorithmGaussianMixtureRankingPMF_zero :
         intro omega
         exact congrFun appendixB2AlgorithmGaussianMixtureRank_zero omega)
   change
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
       appendixB2GaussianLatentMeasure
       (appendixB2AlgorithmGaussianMixtureRank 0)
       (appendixB2AlgorithmGaussianMixtureRank_measurable 0) = _
@@ -769,7 +769,7 @@ theorem appendixB2HumanGaussianMixtureRankingPMF_zero :
     unfold appendixB2GaussianLatentMeasure
     exact measurePreserving_fst
   have htransport :=
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_eq_of_measurePreserving
       appendixB2GaussianLatentMeasure appendixB2NoiseTriplePMF.toMeasure
       Prod.fst hmeasure
       (appendixB2HumanGaussianMixtureRank 0)
@@ -780,7 +780,7 @@ theorem appendixB2HumanGaussianMixtureRankingPMF_zero :
         intro omega
         exact congrFun appendixB2HumanGaussianMixtureRank_zero omega)
   change
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
       appendixB2GaussianLatentMeasure
       (appendixB2HumanGaussianMixtureRank 0)
       (appendixB2HumanGaussianMixtureRank_measurable 0) = _
@@ -795,15 +795,15 @@ theorem appendixB2AlgorithmGaussianMixtureRankingPMF_atom_continuousAt
     (pi : Ranking 1) :
     ContinuousAt
       (fun s => ((appendixB2AlgorithmGaussianMixtureRankingPMF s) pi).toReal) 0 := by
-  apply EconCSLib.continuousAt_of_epsilonContinuousAt
-  change EconCSLib.EpsilonContinuousAt
+  apply AppliedModelingLib.continuousAt_of_epsilonContinuousAt
+  change AppliedModelingLib.EpsilonContinuousAt
     (fun s =>
-      ((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+      ((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
         appendixB2GaussianLatentMeasure
         (appendixB2AlgorithmGaussianMixtureRank s)
         (appendixB2AlgorithmGaussianMixtureRank_measurable s)) pi).toReal) 0
   refine
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_atom_epsilonContinuousAt_of_ae_eventually_eq
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_atom_epsilonContinuousAt_of_ae_eventually_eq
       appendixB2GaussianLatentMeasure appendixB2AlgorithmGaussianMixtureRank
       appendixB2AlgorithmGaussianMixtureRank_measurable ?_ pi
   filter_upwards [] with omega
@@ -820,9 +820,9 @@ theorem appendixB2AlgorithmGaussianMixtureRankingPMF_atom_continuousAt
     funext c
     simp [appendixB2AlgorithmGaussianMixtureScore]
   change ∀ᶠ θ in nhds 0,
-    EconCSLib.SocialChoice.Ranking.rankByScore
+    AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (appendixB2AlgorithmGaussianMixtureScore θ omega) =
-      EconCSLib.SocialChoice.Ranking.rankByScore
+      AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (appendixB2AlgorithmGaussianMixtureScore 0 omega)
   rw [hzero]
   simpa [appendixB2AlgorithmGaussianMixtureScore, noise, perturb] using hstable
@@ -832,15 +832,15 @@ theorem appendixB2HumanGaussianMixtureRankingPMF_atom_continuousAt
     (pi : Ranking 1) :
     ContinuousAt
       (fun s => ((appendixB2HumanGaussianMixtureRankingPMF s) pi).toReal) 0 := by
-  apply EconCSLib.continuousAt_of_epsilonContinuousAt
-  change EconCSLib.EpsilonContinuousAt
+  apply AppliedModelingLib.continuousAt_of_epsilonContinuousAt
+  change AppliedModelingLib.EpsilonContinuousAt
     (fun s =>
-      ((EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure
+      ((AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure
         appendixB2GaussianLatentMeasure
         (appendixB2HumanGaussianMixtureRank s)
         (appendixB2HumanGaussianMixtureRank_measurable s)) pi).toReal) 0
   refine
-    EconCSLib.SocialChoice.Ranking.rankingPMFOfMeasure_atom_epsilonContinuousAt_of_ae_eventually_eq
+    AppliedModelingLib.SocialChoice.Ranking.rankingPMFOfMeasure_atom_epsilonContinuousAt_of_ae_eventually_eq
       appendixB2GaussianLatentMeasure appendixB2HumanGaussianMixtureRank
       appendixB2HumanGaussianMixtureRank_measurable ?_ pi
   filter_upwards [] with omega
@@ -857,9 +857,9 @@ theorem appendixB2HumanGaussianMixtureRankingPMF_atom_continuousAt
     funext c
     simp [appendixB2HumanGaussianMixtureScore]
   change ∀ᶠ θ in nhds 0,
-    EconCSLib.SocialChoice.Ranking.rankByScore
+    AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (appendixB2HumanGaussianMixtureScore θ omega) =
-      EconCSLib.SocialChoice.Ranking.rankByScore
+      AppliedModelingLib.SocialChoice.Ranking.rankByScore
         (appendixB2HumanGaussianMixtureScore 0 omega)
   rw [hzero]
   simpa [appendixB2HumanGaussianMixtureScore, noise, perturb] using hstable
@@ -868,10 +868,10 @@ theorem appendixB2HumanGaussianMixtureRankingPMF_atom_continuousAt
 theorem appendixB2_gaussianMixture_reversal :
     ∃ delta : ℝ, 0 < delta ∧ ∀ s : ℝ, 0 < s → s < delta →
       0 <
-        EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+        AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
             (appendixB2HumanGaussianMixtureRankingPMF s)
             (appendixB2AlgorithmGaussianMixtureRankingPMF s) appendixB2Value -
-          EconCSLib.SocialChoice.Ranking.expectedSecondMoverIndependent
+          AppliedModelingLib.SocialChoice.Ranking.expectedSecondMoverIndependent
             (appendixB2HumanGaussianMixtureRankingPMF s)
             (appendixB2HumanGaussianMixtureRankingPMF s) appendixB2Value := by
   exact appendixB2_reversal_persists_of_atomwise_continuity

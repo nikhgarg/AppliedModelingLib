@@ -1,4 +1,4 @@
-import EconCSLib.SocialChoice.FairDivision.Chores
+import AppliedModelingLib.SocialChoice.FairDivision.Chores
 import Mathlib.Tactic
 
 /-!

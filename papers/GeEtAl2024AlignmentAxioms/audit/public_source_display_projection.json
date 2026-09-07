@@ -1,0 +1,716 @@
+{
+  "generator": "python3 scripts/public_source_display_projection.py",
+  "paper_id": "GeEtAl2024AlignmentAxioms",
+  "private_source_map_sha256": "7ea8859629abb71b790aae880dc95240d67cbde8d29c906e8190378fae46a25f",
+  "public_manifest_path": "papers/GeEtAl2024AlignmentAxioms/audit/public_source_display_projection.json",
+  "public_source_map_sha256": "a8aabca10411710b499321ed1e4411b85821863bfb42fdecedcad6973661f3bb",
+  "raw_source_artifact_included": false,
+  "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
+  "schema": 1,
+  "selected_source_item_ids": [
+    "appendix_b_unique_pmc_infeasible_example",
+    "c1_rule_model",
+    "definition2_1_pareto_optimality",
+    "definition2_2_and_attached_consequences",
+    "definition4_1_majority_consistency",
+    "definition4_2_winner_monotonicity",
+    "definitionC_1_ranking_separability",
+    "lcpo_rule_model",
+    "lemma3_2",
+    "lemma3_3",
+    "lemma3_4",
+    "lemma3_5",
+    "leximax_plurality_rule_model",
+    "linear_kemeny_rule_model",
+    "linear_social_choice_model",
+    "majority_loss_rule_model",
+    "pareto_kemeny_rule_model",
+    "standard_loss_rule_model",
+    "theorem3_1",
+    "theorem3_6",
+    "theorem3_7_and_attached_consequences",
+    "theorem4_3",
+    "theoremC_2",
+    "theoremC_3",
+    "theoremC_4",
+    "theoremC_5",
+    "theoremC_6"
+  ],
+  "selected_source_items": {
+    "appendix_b_unique_pmc_infeasible_example": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 211,
+              "line_start": 158,
+              "publication_locator": "cited publication",
+              "quoted_text": "2     The Linear Social Choice Model\nLet C be a set of m distinct prompt/responses, referred to as candidates, and let V = {1, . . . , n} be\na set of n human participants, known as voters. We denote by Rd the d-dimensional real space in\nwhich both candidate feature vectors and chosen parameter vectors lie.\nEach candidate c ∈ C is associated with a distinct feature vector xc ∈ Rd . A parameter vector\nθ ∈ Rd induces a linear reward function rθ : C 7→ R defined by taking the dot product with feature\nvectors rθ (c) = ⟨θ, xc ⟩. We will primarily be interested in how these parameterized functions rank\nthe candidates by reward. Let Ra≻b = {θ | rθ (a) ≥ rθ (b)} be the region where the reward of a is\nat least as large as that of b. Note that Ra≻b and Rb≻a split Rd into two half spaces, separated by\nthe hyperplane orthogonal to xa − xb . Parameter vectors θ on the hyperplane have rθ (a) = rθ (b),\nwhile rankings in the interior of either half-space strictly rank one over the other.\nFor a ranking σ over the candidates, we say that θ induces σ, denoted θ ▷ σ, if a ≻σ b implies\nrθ (a) ≥ rθ (b). Let Rσ = {θ | θ ▷ σ} be the set of vectors θ thatTinduce it. Note that this can\nbe written as the intersection of corresponding half spaces Rσ = a,b:a≻σ b Ra≻b . Further, the\n\n\n                                                    3\n\fcollection of {Rσ } essentially form a partition of Rd , covering the space and intersecting only at\ntheir boundaries.\nWe call a θ non-degenerate if it is fully on one side of each of the separating hyperplanes, i.e.,\nrθ (a) ̸= rθ (b) for all a, b ∈ C. Non-degenerate parameter vectors lie in the interior of some Rσ ,\nand thus induce exactly one ranking. We call σ feasible if Rσ has a nonempty interior, i.e., is induced\nby some nondegenerate θ.3\nEach voter i ∈ V submits a ranking over the candidate σi . We assume that the feature space is\nrich enough that voter preferences can be captured via non-degenerate parameter vectors. In other\nwords, we assume that each σi is feasible. We refer to the vector of voter rankings π = (σi )i∈V as\na profile. Further, for two candidates a, b, we write na≻b (π) := |{i ∈ V | a ≻σi b}| for the number\nof voters that prefer a to b, and wa≻b (π) = na≻b (π)/n for the proportion of such voters. When the\nprofile π is clear from context, we may shorten these to na≻b and wa≻b , respectively.\nWe define a parameter aggregation rule as a function that takes as input a profile π and outputs a\nparameter vector θ∗ . Our goal is to design parameter aggregation rules such that rθ∗ satisfies desir-\nable properties with respect to the voter preferences. However, as the properties we care about will\nonly be with respect to how rθ∗ ranks the candidates, it will be more convenient to work with what\nwe call linear rank aggregation rules that take as input a profile π and output a feasible ranking σ.\nThere is a natural way to interpret a parameter aggregation rule as a linear rank aggregation rule,\nnamely, output any feasible ranking induced by θ∗ . The exact properties of the parameter aggrega-\ntion rule could in principle be sensitive to the tie-breaking of non-degenerate outputs, however, all\nof our results will be robust to such tie-breaking.4\nWe pay special attention to a prominent family of rules from social choice theory referred to as C1\nrules [14], whose outputs depend only on majority relationships, i.e., they only need to know for\neach pair of candidates (a, b) whether the majority prefers a or b.\nIn our study, we examine several axioms borrowed from social choice theory to evaluate the reason-\nableness (fairness) of our aggregation mechanisms. These axioms include:\nDefinition 2.1 (Pareto Optimality). A linear rank aggregation rule f satisfies Pareto optimality if,\nwhenever every voter prefers candidate a over candidate b on π, i.e., wa≻b (π) = 1, then candidate\na is ranked higher than candidate b in the output ranking, i.e., a ≻f (π) b.\nDefinition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.\n\nNote that a PMC ranking for each π need not exist, but when one does, it is unique. The words “σ\nis feasible” allude to the possibility that no non-degenerate parameter vector θ induces the unique\nPMC ranking. Indeed, we have such an example; see Appendix B for details.",
+              "quoted_text_sha256": "1b59a52d5b49a164ded4baefa32e7b57370f67403aac86cd19533ed4f4992741"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 1385,
+              "line_start": 1333,
+              "publication_locator": "cited publication",
+              "quoted_text": "B    PMC Infeasibility Example\n\nConsider the case with d = 3 and seven candidates: one special candidate a∗ located at\n(1/4, 1/4, 1/4), and six others c±                                    ±\n                                 i located at standard basis vectors ei . We have three voters with\nparameter vectors (1, 2ε, ε), (2ε, 1, ε), and (2ε, ε, 1), where ε < 1/5 is a small positive number.\nThese voters have the following induced rankings:\n\n\n                                                        23\n\f                                          Rank          v1       v2   v3\n                                              1         c+\n                                                         1       c+\n                                                                  2   c+\n                                                                       3\n                                                         ∗        ∗\n                                              2         a        a    a∗\n                                              3         c+\n                                                         2       c+\n                                                                  1   c+\n                                                                       1\n                                              4         c+\n                                                         3       c+\n                                                                  3   c+\n                                                                       2\n                                              5         c−\n                                                         3       c−\n                                                                  3   c−\n                                                                       2\n                                              6         c−\n                                                         2       c−\n                                                                  1   c−\n                                                                       1\n                                              7         c−\n                                                         1       c−\n                                                                  2   c−\n                                                                       3\n\n                                                −   − −\nWe argue the ranking a∗ ≻ c+       +      +\n                             1 ≻ c2 ≻ c3 ≻ c3 ≻ c2 ≻ c1 is a PMC ranking but no linear reward\n                       ∗\nfunction can position a at the top of this ranking.\nFor any reward vector θ = (θ1 , θ2 , θ3 ) ∈ R3 , the reward for a∗ is :\n                                                     1\n                                         raθ∗ =        (θ1 + θ2 + θ3 )\n                                                     4\nGiven the placement of c±                                        ±\n                          i at the standard basis vectors, each ci achieves a reward equivalent to one\nof the absolute values of the components of θ, thus surpassing raθ∗ since\n                                                  raθ∗ < max |θi |.\n                                                             i\n",
+              "quoted_text_sha256": "d044cf8732da09076de8c93cb96477eb9ec7c8a9c1b9906366564a00580ac3f3"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1385,
+          "line_start": 1333,
+          "publication_locator": "cited publication",
+          "quoted_text": "B    PMC Infeasibility Example\n\nConsider the case with d = 3 and seven candidates: one special candidate a∗ located at\n(1/4, 1/4, 1/4), and six others c±                                    ±\n                                 i located at standard basis vectors ei . We have three voters with\nparameter vectors (1, 2ε, ε), (2ε, 1, ε), and (2ε, ε, 1), where ε < 1/5 is a small positive number.\nThese voters have the following induced rankings:\n\n\n                                                        23\n\f                                          Rank          v1       v2   v3\n                                              1         c+\n                                                         1       c+\n                                                                  2   c+\n                                                                       3\n                                                         ∗        ∗\n                                              2         a        a    a∗\n                                              3         c+\n                                                         2       c+\n                                                                  1   c+\n                                                                       1\n                                              4         c+\n                                                         3       c+\n                                                                  3   c+\n                                                                       2\n                                              5         c−\n                                                         3       c−\n                                                                  3   c−\n                                                                       2\n                                              6         c−\n                                                         2       c−\n                                                                  1   c−\n                                                                       1\n                                              7         c−\n                                                         1       c−\n                                                                  2   c−\n                                                                       3\n\n                                                −   − −\nWe argue the ranking a∗ ≻ c+       +      +\n                             1 ≻ c2 ≻ c3 ≻ c3 ≻ c2 ≻ c1 is a PMC ranking but no linear reward\n                       ∗\nfunction can position a at the top of this ranking.\nFor any reward vector θ = (θ1 , θ2 , θ3 ) ∈ R3 , the reward for a∗ is :\n                                                     1\n                                         raθ∗ =        (θ1 + θ2 + θ3 )\n                                                     4\nGiven the placement of c±                                        ±\n                          i at the standard basis vectors, each ci achieves a reward equivalent to one\nof the absolute values of the components of θ, thus surpassing raθ∗ since\n                                                  raθ∗ < max |θi |.\n                                                             i\n",
+          "quoted_text_sha256": "d044cf8732da09076de8c93cb96477eb9ec7c8a9c1b9906366564a00580ac3f3"
+        }
+      ],
+      "source_kind": "claim"
+    },
+    "c1_rule_model": {
+      "source_anchors": [
+        {
+          "line_end": 198,
+          "line_start": 196,
+          "publication_locator": "cited publication",
+          "quoted_text": "We pay special attention to a prominent family of rules from social choice theory referred to as C1\nrules [14], whose outputs depend only on majority relationships, i.e., they only need to know for\neach pair of candidates (a, b) whether the majority prefers a or b.",
+          "quoted_text_sha256": "3399f7b5768b92436fa288e46e8022c21f45a270abd004daf08b1669e38710c2"
+        },
+        {
+          "line_end": 401,
+          "line_start": 397,
+          "publication_locator": "cited publication",
+          "quoted_text": "However, despite this good news for PMC, we show that this does not help in achieving PO. In fact,\nour negative result extends to every C1 linear rank aggregation rule. Note that if f minimizing ℓ in\nthe majority formulation breaks ties consistently (i.e., if multiple feasible rankings are optimal, then\nit consistently chooses the same one), then it is C1. We then have the following result, whose proof\nis relegated to Appendix A.6.",
+          "quoted_text_sha256": "899bc9c6f3ba4c770c66013cf43131d0821c1a043583d428d9e54ac1ecd6b3e0"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition2_1_pareto_optimality": {
+      "source_anchors": [
+        {
+          "line_end": 203,
+          "line_start": 201,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 2.1 (Pareto Optimality). A linear rank aggregation rule f satisfies Pareto optimality if,\nwhenever every voter prefers candidate a over candidate b on π, i.e., wa≻b (π) = 1, then candidate\na is ranked higher than candidate b in the output ranking, i.e., a ≻f (π) b.",
+          "quoted_text_sha256": "0ffba40ea27f0f2f8c63a883ed022d9a4170ecd25c45ae630d2dc431e1f3d933"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition2_2_and_attached_consequences": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 211,
+              "line_start": 158,
+              "publication_locator": "cited publication",
+              "quoted_text": "2     The Linear Social Choice Model\nLet C be a set of m distinct prompt/responses, referred to as candidates, and let V = {1, . . . , n} be\na set of n human participants, known as voters. We denote by Rd the d-dimensional real space in\nwhich both candidate feature vectors and chosen parameter vectors lie.\nEach candidate c ∈ C is associated with a distinct feature vector xc ∈ Rd . A parameter vector\nθ ∈ Rd induces a linear reward function rθ : C 7→ R defined by taking the dot product with feature\nvectors rθ (c) = ⟨θ, xc ⟩. We will primarily be interested in how these parameterized functions rank\nthe candidates by reward. Let Ra≻b = {θ | rθ (a) ≥ rθ (b)} be the region where the reward of a is\nat least as large as that of b. Note that Ra≻b and Rb≻a split Rd into two half spaces, separated by\nthe hyperplane orthogonal to xa − xb . Parameter vectors θ on the hyperplane have rθ (a) = rθ (b),\nwhile rankings in the interior of either half-space strictly rank one over the other.\nFor a ranking σ over the candidates, we say that θ induces σ, denoted θ ▷ σ, if a ≻σ b implies\nrθ (a) ≥ rθ (b). Let Rσ = {θ | θ ▷ σ} be the set of vectors θ thatTinduce it. Note that this can\nbe written as the intersection of corresponding half spaces Rσ = a,b:a≻σ b Ra≻b . Further, the\n\n\n                                                    3\n\fcollection of {Rσ } essentially form a partition of Rd , covering the space and intersecting only at\ntheir boundaries.\nWe call a θ non-degenerate if it is fully on one side of each of the separating hyperplanes, i.e.,\nrθ (a) ̸= rθ (b) for all a, b ∈ C. Non-degenerate parameter vectors lie in the interior of some Rσ ,\nand thus induce exactly one ranking. We call σ feasible if Rσ has a nonempty interior, i.e., is induced\nby some nondegenerate θ.3\nEach voter i ∈ V submits a ranking over the candidate σi . We assume that the feature space is\nrich enough that voter preferences can be captured via non-degenerate parameter vectors. In other\nwords, we assume that each σi is feasible. We refer to the vector of voter rankings π = (σi )i∈V as\na profile. Further, for two candidates a, b, we write na≻b (π) := |{i ∈ V | a ≻σi b}| for the number\nof voters that prefer a to b, and wa≻b (π) = na≻b (π)/n for the proportion of such voters. When the\nprofile π is clear from context, we may shorten these to na≻b and wa≻b , respectively.\nWe define a parameter aggregation rule as a function that takes as input a profile π and outputs a\nparameter vector θ∗ . Our goal is to design parameter aggregation rules such that rθ∗ satisfies desir-\nable properties with respect to the voter preferences. However, as the properties we care about will\nonly be with respect to how rθ∗ ranks the candidates, it will be more convenient to work with what\nwe call linear rank aggregation rules that take as input a profile π and output a feasible ranking σ.\nThere is a natural way to interpret a parameter aggregation rule as a linear rank aggregation rule,\nnamely, output any feasible ranking induced by θ∗ . The exact properties of the parameter aggrega-\ntion rule could in principle be sensitive to the tie-breaking of non-degenerate outputs, however, all\nof our results will be robust to such tie-breaking.4\nWe pay special attention to a prominent family of rules from social choice theory referred to as C1\nrules [14], whose outputs depend only on majority relationships, i.e., they only need to know for\neach pair of candidates (a, b) whether the majority prefers a or b.\nIn our study, we examine several axioms borrowed from social choice theory to evaluate the reason-\nableness (fairness) of our aggregation mechanisms. These axioms include:\nDefinition 2.1 (Pareto Optimality). A linear rank aggregation rule f satisfies Pareto optimality if,\nwhenever every voter prefers candidate a over candidate b on π, i.e., wa≻b (π) = 1, then candidate\na is ranked higher than candidate b in the output ranking, i.e., a ≻f (π) b.\nDefinition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.\n\nNote that a PMC ranking for each π need not exist, but when one does, it is unique. The words “σ\nis feasible” allude to the possibility that no non-degenerate parameter vector θ induces the unique\nPMC ranking. Indeed, we have such an example; see Appendix B for details.",
+              "quoted_text_sha256": "1b59a52d5b49a164ded4baefa32e7b57370f67403aac86cd19533ed4f4992741"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 211,
+          "line_start": 204,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.\n\nNote that a PMC ranking for each π need not exist, but when one does, it is unique. The words “σ\nis feasible” allude to the possibility that no non-degenerate parameter vector θ induces the unique\nPMC ranking. Indeed, we have such an example; see Appendix B for details.",
+          "quoted_text_sha256": "4a9f2046703fd4a1147304226b0f87f319951f14febb00c071bae34ccc1725d1"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition4_1_majority_consistency": {
+      "source_anchors": [
+        {
+          "line_end": 443,
+          "line_start": 441,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 4.1 (majority consistency). A linear rank aggregation rule satisfies majority consistency\nif when a candidate a is ranked first by a majority of voters in the input profile, a is ranked first in\nthe output ranking.",
+          "quoted_text_sha256": "891ff1b58e17667f17e4fda3957da2293096a0f7bdb0d2fb200416d1c657851c"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definition4_2_winner_monotonicity": {
+      "source_anchors": [
+        {
+          "line_end": 454,
+          "line_start": 452,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 4.2 (winner monotonicity). A linear rank aggregation rule satisfies winner monotonicity\nif, when a candidate a is ranked first in the output ranking, elevating a in any voter’s preference\ndoes not cause a to lose their top position in the updated aggregate ranking.",
+          "quoted_text_sha256": "169423b82d171f3e6d8b6075f26436842f1666e20a7ca7f113918e6d1f839fe3"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "definitionC_1_ranking_separability": {
+      "source_anchors": [
+        {
+          "line_end": 1391,
+          "line_start": 1389,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition C.1 (Separability). A ranking aggregation rule satisfies ranking separability (or separa-\nbility for short) if, when two profiles yield identical output rankings, when combined into a single\nprofile, this should also produce the same output ranking.",
+          "quoted_text_sha256": "da7985f01d6891a4032a8ff4fd8904bd4e757f2c4624ce18b37d7a0dbd24f3ed"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "lcpo_rule_model": {
+      "source_anchors": [
+        {
+          "line_end": 438,
+          "line_start": 416,
+          "publication_locator": "cited publication",
+          "quoted_text": "The Copeland rule assigns a Copeland score to each alternative equal to the number of other alter-\nnatives it beats in a pairwise competition, i.e., the score for a is |{b | wa≻b > 1/2}|. It then ranks\nthe candidates in descending order according to their Copeland scores (breaking ties arbitrarily). It\n\n\n                                                     7\n\fis known that Copeland satisfies PO, PMC, and additional axiomatic properties. However, in linear\nsocial choice, since not every ranking is feasible, we cannot always output the Copeland ranking.\nWe, therefore, define a new linear rank aggregation rule, which we call leximax Copeland. This\nrule chooses a feasible ranking as follows. It ranks first the candidate with the highest Copeland\nscore that can be feasibly ranked first under some parameter vector θ. Subject to this first position,\nit ranks second the candidate with the highest Copeland score which can be feasibly ranked second,\nand continues this process for subsequent positions.\nCopeland’s rule is a C1 rule because it only requires the majority relationships between the can-\ndidates. Analogously, leximax Copeland is also a C1 linear rank aggregation rule. Therefore, by\nTheorem 3.7, it does not satisfy the PO criterion. To address this issue, we define a variant called\nleximax Copeland subject to PO (LCPO), which incorporates the PO criterion. Under LCPO, for\nevery pair of alternatives where one dominates the other, the rule restricts rankings to place the\ndominating alternative above the dominated one.\nThe rule remains well-defined since the set of feasible rankings when enforcing the PO criterion is\nnon-empty, as whenever a dominates b, all the rankings in the input profile rank a above b. Note that\nif the Copeland ranking is feasible, then this rule outputs that ranking, since unrestricted Copeland\nsatisfies PO.",
+          "quoted_text_sha256": "335ab41e175a4e832529370109638927dbcabf94ba8feeb4c010756a78f6c793"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "lemma3_2": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 319,
+              "line_start": 278,
+              "publication_locator": "cited publication",
+              "quoted_text": "We begin with a small instance of just three candidates C core = {a, b, c} to gain some traction on\nhow ℓ behaves. We will later extend this instance with additional candidates to demonstrate a profile\nwhere PO and PMC fail. The candidates will have feature vectors xa := (2, 1), xb := (1, 1), and\nxc := (0, 0), respectively. Furthermore, a p-fraction of voters (for p to be chosen later) will rank\na ≻ b ≻ c, while the remaining (1 − p)-fraction will have inverted preferences, ranking c ≻ b ≻ a.6\nLet                                              X\n                              Lcore (θ) :=                  wx≻y ℓ(rθ (y) − rθ (x))\n                                              x̸=y∈C core\n\n      5\n     Typically, BTL is presented as choosing θ maximizing the likelihood of seeing the pairwise com-\n                                                                erθ (a)\nparisons we observed, assuming that Pr[a ≻ b] = erθ (a)           +erθ (b)\n                                                                           . That is, we choose θ maximizing\n       (                ) na≻b\n            erθ (a)\nQ\n  a̸=b erθ (a) +erθ (b)         . By taking the log and swapping the sign, we see that this is equivalent to mini-\n                    (                     )\n        P                   rθ (b)−rθ (a)\nmizing a̸=b log 1 + e                      .\n    6\n      It so happens that these rankings are feasible, but for now we will not worry about this as loss function-\nbased rules still make sense regardless of whether the inputs are feasible. For the final example, we will ensure\nthat the rankings are feasible.\n\n\n                                                        5\n\fwith wx≻y ∈ {1 − p, p} be the loss function on this instance (scaling nx≻y down to wx≻y leads to\nan equivalent formulation). Let g(x) = p · ℓ(−x) + (1 − p)ℓ(x). Note that we can rewrite Lcom as\n                    Lcore (θ) = g(rθ (a) − rθ (b)) + g(rθ (a) − rθ (c)) + g(rθ (b) − rθ (c)).\nNote that rθ (c) = 0 for all θ, so we can simplify this to\n                              Lcore (θ) = g(rθ (a) − rθ (b)) + g(rθ (a)) + g(rθ (b)).\nWe will consider an unconstrained version of this problem where we are free to choose rewards\nra , rb ∈ R arbitrarily, and later show by which vectors θ these optimal values can be induced. That\nis, we will first find ra , rb ∈ R minimizing\n                                Lunconstr (ra , rb ) := g(ra − rb ) + g(ra ) + g(rb ).\nLet OP T core = {θ | Lcore (θ) = inf θ′ Lcore (θ′ )} and OP T unconstr {(ra , rb ) | Lunconstr (ra , rb ) =\ninf ra′ ,rb′ Lunconstr (ra′ , rb′ )} be the set of minimizers for these two loss functions. In Appendix A, we\nestablish the following results about these optimal sets.\nLemma 3.2. There exists a rational p ∈ (1/2, 1] and values A1 < A2 with A2 > 0 such that\nOP T unconstr is nonempty and for all (ra , rb ) ∈ OP T unconstr , ra > A2 and rb ≤ A1 .",
+              "quoted_text_sha256": "6877b3a10a27e0e5b792fe9454872ff2bb3e85bc2327b6f19014da1409d830f9"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 1130,
+              "line_start": 992,
+              "publication_locator": "cited publication",
+              "quoted_text": "A.1   Proof of Lemma 3.2\n\nProof. We begin with some observations on g. First, we have that since ℓ is nonnegative, g must also\nbe nonnegative. This along with the fact that limx→∞ ℓ(x) = ∞, we have that both limx→∞ g(x) =\n∞ and limx→−∞ g(x) = ∞. Together, these imply that Lunconstr attains a minimum. Indeed,\nLunconstr (0, 0) = 3g(0), and there is some bound B such that for all x > B and x < −B,\ng(x) > 3g(0). We can therefore restrict the optimization problem to ra , rb ∈ [−B, B] without\nchanging the solutions. Since Lunconstr is continuous and [−B, B]2 is compact, a minimum is\nattained.\nNext, note that g is convex because compositions of convex functions with monotonic functions and\nconvex combinations of convex functions are convex [24]. From this, we claim that if there is an\noptimal solution (ra , rb ), then (ra , ra /2) is also an optimal solution. Indeed, fix such an (ra , rb ),\n                    Lunconstr (ra , ra /2) = g(ra − ra /2) + g(ra ) + g(ra /2)\n                                           = g(ra ) + 2g(ra /2)\n                                           = g(ra ) + 2g(1/2(ra − rb ) + 1/2rb )\n                                           ≤ g(ra ) + 2(1/2g(ra − rb ) + 1/2g(rb ))\n                                          = Lunconstr (ra , rb ),\nwhere the inequality comes from convexity. This implies that (ra , ra /2) is also optimal.\nBy above, we have that if (rb , ra ) is optimal, it must be the case that ra minimizes\n                                      h(ra ) := 2g(ra /2) + g(ra ).\nObserve that h is again convex by monotonic composition and convex combinations.\nNext, we will make use of the following facts about convex functions. Although they need not be\ndifferentiable, right- and left-hand derivatives always exist. For a function k these are defined as\n                                    ′            k(x + h) − k(x)\n                                   k+ (x) = lim+\n                                              h→0       h\n                                    ′            k(x + h) − k(x)\n                                   k− (x) = lim−                 .\n                                           h→0          h\nFurther, if k is convex, we have that [24]:\n                          ′      ′\n                     (i) k+ and k− are nondecreasing,\n                             ′        ′\n                     (ii)   k− (x) ≤ k+ (x) for every x,\n                                                         ′            ′\n                     (iii) x minimizes k if and only if k− (x) ≤ 0 ≤ k+ (x),\n                           ′      ′\n                     (iv) k+ and k− are right and left continuous, respectively.\n\nThey also follow standard linearity and chain rule properties, which allow for simpler computation.\nFor example:\n                                      ′         ′         ′\n       if k(x) = aα(x) + bβ(x), then k+ (x) = aα+ (x) + bβ+ (x),\n                              ′         ′                     ′         ′\n       if k(x) = α(γx), then k+ (x) = γα+ (γx) if γ ≥ 0, and k+ (x) = γα− (γx) if γ < 0,\n(all of these hold for left-hand derivatives by swapping the positions of + and −) [9].\nNext, we claim that we can find a valid p (rational with 1/2 < p < 1) and w > 0 such that\n ′\ng+ (w) > 0, while h′+ (w) < 0. To that end, expanding the first derivative, we have\n                                 ′\n                                g+ (x) = −pℓ′− (−x) + (1 − p)ℓ′+ (x).\n\n\nAs long as ℓ′− (−x) + ℓ′+ (x) > 0, this is strictly more than 0 for p satisfying\n                                                   ℓ′+ (x)\n                                         p<                     .                                      (2)\n                                              ℓ− (−x) + ℓ′+ (x)\n                                               ′\n\n\n\n                                                    19\n\fFor h,\n              h′+ (x) = 2 · (1/2)g′+ (x/2) + g′+ (x)\n\n\n                      = −pℓ′− (−x/2) + (1 − p)ℓ′+ (x/2) − pℓ′− (−x) + (1 − p)ℓ′+ (x).\n                      = −p [ℓ′− (−x/2) + ℓ′− (−x)] + (1 − p) [ℓ′+ (x/2) + ℓ′+ (x)].\n\n\nAs long as ℓ′− (−x/2) + ℓ′− (−x) + ℓ′+ (x/2) + ℓ′+ (x) > 0, then this is strictly less than 0 for\n\n                                            ℓ′+ (x/2) + ℓ′+ (x)\n                           p>                                               .                           (3)\n                                 ℓ− (−x/2) + ℓ′− (−x) + ℓ′+ (x/2) + ℓ′+ (x)\n                                  ′\n\nNow, choose w > 0 such that ℓ′− (−w/2) > ℓ′− (−w) ≥ 0. This is possible by using the following\nprocedure. We know ℓ′− (0) > 0 (as otherwise ℓ(0) < ℓ(x) for all x < 0, contradicting our assump-\ntion on ℓ). We will split into cases depending on whether ℓ is nondecreasing or strictly-convex (at\nleast one must be true by the theorem assumptions).\nFirst, suppose ℓ is non-decreasing. This implies that ℓ′− (x) ≥ 0 for all x. We know that there is\na point x < 0 such that ℓ′− (x) < ℓ′− (0) (as otherwise ℓ would eventually become negative). Let\nd = ℓ′− (x). Take w such that\n                                   −w = sup{x | ℓ′− (x) = d}.\nNote that ℓ′− (−w) = d because ℓ′− is left continuous (from (iv) above). Since −w < 0, so − w2 >\n−w. This implies that ℓ′− (− w2 ) > d, as otherwise −w would not be the supremum of such points.\nIn addition, we have that d ≥ 0 because ℓ is nondecreasing.\nNext, suppose ℓ is strictly convex. then ℓ′− is strictly increasing. Further, since it is left continuous\nand ℓ′0 (0) > 0, there is a γ > 0 such that for all x ∈ [−γ, 0], ℓ′− (x) ≥ 0. Therefore, choosing w = γ\nwill do: ℓ′− (−γ) ≥ 0 by choice of γ, and −γ/2 > −γ, so ℓ′− (−γ/2) > ℓ′− (−γ) since ℓ′− is strictly\nincreasing.\nFor this choice of w, we first claim that the preconditions of denominators being positive hold for\n(2) and (3). Indeed, let us write z1 , z2 , z3 , z4 for ℓ′− (−2w), ℓ′− (−w), ℓ′+ (w), ℓ′+ (2w). We know that\n                                           z1 ≤ z2 ≤ z3 ≤ z4\nby properties of convexity, and since ℓ′− (−w/2) > ℓ′− (−w) ≥ 0, we have that 0 ≤ z1 < z2 . The\ndenominators are of the form z1 + z4 and z1 + z2 + z3 + z4 , which are now both necessarily positive.\nIn addition, we also claim that a rational p with 1/2 < p < 1 satisfying both inequalities (2) and (3)\nwill exist. Note that inequality (2) can now be represented as z1z+z\n                                                                  4\n                                                                     4\n                                                                       , and we have that\n                                                  z4\n                                                       ≤1\n                                               z1 + z4\nbecause 0 ≤ z1 < z4 . Additionally, inequality (3) can be represented as\n                                                 z3 + z4\n                                            z1 + z2 + z3 + z4\nwhich is at least 1/2 because z3 + z4 > z1 + z2 . Finally, we have\n                                        z3        z4        z4\n                                             ≤         <\n                                     z2 + z3   z2 + z4   z1 + z4\nwhich implies that\n                                          z3 + z4           z4\n                                                       <         .\n                                     z1 + z2 + z3 + z4   z1 + z4\nHence, there exists some rational p in this interval, which is necessarily between 1/2 and 1, as\nneeded.\nTo summarize, we have found a valid p and value w > 0 such that h′+ (w) < 0 while g+    ′\n                                                                                          (w) > 0.\n         ′                                                                        ′\nBecause h+ is right continuous (from (iv) above), there is some γ > 0 such that h+ (w + γ) < 0 as\nwell. We will now show for all (ra , rb ) ∈ OP T unconstr , ra > w + γ and rb ≤ w. Indeed, note that\nra must minimize h, so h′+ (ra ) ≥ 0 (from (iii) above), which implies ra > w + c. For rb , suppose\n\n\n                                                    20\n\f                                                ′\nfor a contradiction rb > w as well. Note that g+  (w) > 0 means g is increasing to the right of w. Let\n                                       ′   ′\nd = min(ra , rb ) − w > 0. Consider (ra , rb ) = (ra − d, rb − d). We then have\n                           Lunconstr (ra′ , rb′ ) = g(ra′ − rb′ ) + g(ra′ ) + g(rb′ )\n                                                = g(ra − rb ) + g(ra′ ) + g(rb′ )\n                                                < g(ra − rb ) + g(ra ) + g(rb )\n                                                = Lunconstr (ra , rb ).\nwhere the equality holds because ra′ − rb′ = ra − rb and the inequality because g is increasing to the\nright of w. Therefore, we reach a contradiction, because then (ra , rb ) would not be optimal. Thus,\nwe have found values satisfying the lemma statement with A1 = w and A2 = w + γ.\n",
+              "quoted_text_sha256": "9d13f13e6b10d58be45b822cd1508254f88b6cbbdb720b6e10d1dd7e02a6e0e3"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 319,
+          "line_start": 318,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 3.2. There exists a rational p ∈ (1/2, 1] and values A1 < A2 with A2 > 0 such that\nOP T unconstr is nonempty and for all (ra , rb ) ∈ OP T unconstr , ra > A2 and rb ≤ A1 .",
+          "quoted_text_sha256": "edbfa417ac81fab021fcdb17ad35875155493f88b5319056ee3ca9dd0681e1d1"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma3_3": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 322,
+              "line_start": 278,
+              "publication_locator": "cited publication",
+              "quoted_text": "We begin with a small instance of just three candidates C core = {a, b, c} to gain some traction on\nhow ℓ behaves. We will later extend this instance with additional candidates to demonstrate a profile\nwhere PO and PMC fail. The candidates will have feature vectors xa := (2, 1), xb := (1, 1), and\nxc := (0, 0), respectively. Furthermore, a p-fraction of voters (for p to be chosen later) will rank\na ≻ b ≻ c, while the remaining (1 − p)-fraction will have inverted preferences, ranking c ≻ b ≻ a.6\nLet                                              X\n                              Lcore (θ) :=                  wx≻y ℓ(rθ (y) − rθ (x))\n                                              x̸=y∈C core\n\n      5\n     Typically, BTL is presented as choosing θ maximizing the likelihood of seeing the pairwise com-\n                                                                erθ (a)\nparisons we observed, assuming that Pr[a ≻ b] = erθ (a)           +erθ (b)\n                                                                           . That is, we choose θ maximizing\n       (                ) na≻b\n            erθ (a)\nQ\n  a̸=b erθ (a) +erθ (b)         . By taking the log and swapping the sign, we see that this is equivalent to mini-\n                    (                     )\n        P                   rθ (b)−rθ (a)\nmizing a̸=b log 1 + e                      .\n    6\n      It so happens that these rankings are feasible, but for now we will not worry about this as loss function-\nbased rules still make sense regardless of whether the inputs are feasible. For the final example, we will ensure\nthat the rankings are feasible.\n\n\n                                                        5\n\fwith wx≻y ∈ {1 − p, p} be the loss function on this instance (scaling nx≻y down to wx≻y leads to\nan equivalent formulation). Let g(x) = p · ℓ(−x) + (1 − p)ℓ(x). Note that we can rewrite Lcom as\n                    Lcore (θ) = g(rθ (a) − rθ (b)) + g(rθ (a) − rθ (c)) + g(rθ (b) − rθ (c)).\nNote that rθ (c) = 0 for all θ, so we can simplify this to\n                              Lcore (θ) = g(rθ (a) − rθ (b)) + g(rθ (a)) + g(rθ (b)).\nWe will consider an unconstrained version of this problem where we are free to choose rewards\nra , rb ∈ R arbitrarily, and later show by which vectors θ these optimal values can be induced. That\nis, we will first find ra , rb ∈ R minimizing\n                                Lunconstr (ra , rb ) := g(ra − rb ) + g(ra ) + g(rb ).\nLet OP T core = {θ | Lcore (θ) = inf θ′ Lcore (θ′ )} and OP T unconstr {(ra , rb ) | Lunconstr (ra , rb ) =\ninf ra′ ,rb′ Lunconstr (ra′ , rb′ )} be the set of minimizers for these two loss functions. In Appendix A, we\nestablish the following results about these optimal sets.\nLemma 3.2. There exists a rational p ∈ (1/2, 1] and values A1 < A2 with A2 > 0 such that\nOP T unconstr is nonempty and for all (ra , rb ) ∈ OP T unconstr , ra > A2 and rb ≤ A1 .\nLemma 3.3. Suppose Lemma 3.2 holds for values p, A1 and A2 , then, for this same choice of p,\nOP T core is nonempty and there exist A3 and A4 with A3 > 0 such that for all (θ1 , θ2 ) ∈ OP T core ,\nθ1 > A3 and θ2 < A4 .",
+              "quoted_text_sha256": "eef978dce862e1ebb0b1a572837bfb16e7ea611f8b9ad3b107dfdacc0c2dcaf0"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 1161,
+              "line_start": 1131,
+              "publication_locator": "cited publication",
+              "quoted_text": "A.2   Proof of Lemma 3.3\n\nProof. Fix p inducing a nonempty OP T unconstr satisfying Lemma 3.2 with values A1 and A2 .\nWe first claim that for any (ra , rb ) (regardless of optimality), it is possible to find a θ such that\nrθ (a) = ra and rθ (b) = rb . Indeed, note that\n                                     [[2, 1], [1, 1]] · [θ1, θ2] = [rθ(a), rθ(b)].\n\nSince M = [[2, 1],\n           [1, 1]] is invertible with inverse\n                                         M^−1 = [[1, −1],\n                                                 [−1, 2]],\nfor any ra , rb , we can simply set\n                                             θ = M^−1 [ra, rb].\n\nThus, OP T com is nonempty, and is simply the image of OP T unconstr\nunder M^−1. Now, fix\n(ra , rb ) ∈ OP T unconstr ,\nand let θ = M^−1 [ra, rb].\nBy assumption, we have ra > A2 and rb ≤ A1 .\n\n\n\n\n\n\n\n\n\nThis implies that θ1 = ra − rb > A2 − A1 , while θ2 = 2rb − ra < 2A1 − A2 . Thus, setting\nA3 = A2 − A1 and A4 = 2A1 − A2 satisfy the desired properties.\n",
+              "quoted_text_sha256": "84221e168ee380043489a6ed22d915ead5bd6c6d5bfeb9ed9187102edb41d054"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 322,
+          "line_start": 320,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 3.3. Suppose Lemma 3.2 holds for values p, A1 and A2 , then, for this same choice of p,\nOP T core is nonempty and there exist A3 and A4 with A3 > 0 such that for all (θ1 , θ2 ) ∈ OP T core ,\nθ1 > A3 and θ2 < A4 .",
+          "quoted_text_sha256": "8d0d50acd41470a69b0bb1e20b690ac491f9129a51366eb03f30f469c6551093"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma3_4": {
+      "semantic_context": [
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 353,
+              "line_start": 324,
+              "publication_locator": "cited publication",
+              "quoted_text": "We will now explicitly construct a family of instances with candidate feature vectors parameterized\nby a value ε ∈ R such that for sufficiently small ε > 0, the output of f fails the two axioms. Fix\np, A3 and A4 from Lemma 3.3, and choose δ with 0 < δ < 1 such that δA4 − A3 < 0 (δ < A3 /A4\nworks if A4 > 0, and otherwise, any 0 < δ < 1 will do).\nEach instance will have six candidates, which we will think of as two groups of three, C = C core ∪\nC copies . The first group C core = {a, b, c} will be the same as the three-candidate instance from\nabove, while the second group C copies = {a′ , b′ , c′ } will be new. The candidates a, b, c will still be\nlocated at xa := (2, 1), xb := (1, 1), and xc := (0, 0), respectively. The candidates a′ , b′ , c′ will\nbe located near their undecorated counterparts at xa′ := xa + (−ε, 0), xb′ := xb + (−ε, 0) and\nxc′ := xc + (−ε, δ · ε).\nNext, we describe the voter preferences. A p-fraction of voters will have the ranking a ≻ a′ ≻ b ≻\nb′ ≻ c′ ≻ c, and the remaining (1−p)-fraction of voters will have ranking c′ ≻ c ≻ b′ ≻ b ≻ a′ ≻ a.\nAs long as 0 < ε < 1 (which will be the case for our final chosen ε), these are both feasible rankings.\nThe former is induced by the nondegenerate feature vector (1, 1)7 and the latter by (−1, 0).8\nFor each ε ∈ R, let                                 X\n                                      Lε (θ) =             wx≻y ℓ(rθ (y) − rθ (x))\n                                                  x̸=y∈C\n\nwith wx≻y ∈ {0, 1 − p, p, 1} be the loss function we are optimizing using candidate locations\nparameterized by ε.\nWe will show that for sufficiently small ε > 0, inf θ∈Rc′ ≻c Lε (θ) > inf θ Lε (θ). This means that\nf must output a ranking with c ≻ c′ . Observe that this is a PO violation because all voters agree\nthat c′ ≻ c. Furthermore, this is a PMC violation because a majority of voters have the ranking\na ≻ a′ ≻ b ≻ b′ ≻ c′ ≻ c, yet this is not the output.\nLet OP T (ε) be the set of vectors optimizing Lε . The rest of the proof will follow from the following\ntwo lemmas, whose proofs are in Appendix A.\n\nLemma 3.4. OP T (0) ⊆ Rc′ ≻c .\n\nLemma 3.5. Suppose OP T (0) ⊆ Rc′ ≻c , then, for sufficiently small ε > 0, inf θ:θ∈Rc′ ≻c Lε (θ) >",
+              "quoted_text_sha256": "003bc03d6094a3741d79bb395f9b289e3d9a7369d19156d5e536053c1101365f"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 1177,
+              "line_start": 1162,
+              "publication_locator": "cited publication",
+              "quoted_text": "A.3   Proof of Lemma 3.4\n\nProof. We first claim that OP T (0) = OP T core . This will follow from showing\n                                      L0 (θ) = 4 · Lcore (θ) + 3 · ℓ(0).\nIndeed, in L0 , the copied candidates are in exactly the same location as their counterparts. Hence,\neach term in Lcore appears 4 times, one for each combination of original and copy. In addition\nto these, there are the 6 terms for each ordered pair of (a, a′ ), (b, b′ ), and (c, c′ ). Note that, each\nrθ (x) = rθ (x′ ) for each x ∈ {a, b, c} regardless of θ since they are in the same location. Therefore,\nthe ℓ portion is always ℓ(0), and the corresponding wx≻x′ and wx′ ≻x terms add up to one for each\npair. Hence, the total sum of these terms is 3 · ℓ(0). Since L0 is equivalent to Lcore up to positive\nscaling and translation, they have the same optima.\nFinally, fix a θ ∈ OP T (0). Since θ ∈ OP T core , by Lemma 3.3, θ1 > A3 and θ2 < A4 . Thus,\n                      rθ (c′ ) = ε · (−θ1 + δθ2 ) < ε(−A3 + δA4 ) < 0 = rθ (c)\n\nby choice of δ. Hence, θ ∈ Rc′ ≻c\n",
+              "quoted_text_sha256": "418f794371e0f7101f31bd07b79584855e80ab0869ba3e7c787aa19cbab83857"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 351,
+          "line_start": 351,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 3.4. OP T (0) ⊆ Rc′ ≻c .",
+          "quoted_text_sha256": "b718f604d1a258de0eddcc0457c04c586ddeb7425e5b83b67668c51cf97d6b38"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "lemma3_5": {
+      "semantic_context": [
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 354,
+              "line_start": 324,
+              "publication_locator": "cited publication",
+              "quoted_text": "We will now explicitly construct a family of instances with candidate feature vectors parameterized\nby a value ε ∈ R such that for sufficiently small ε > 0, the output of f fails the two axioms. Fix\np, A3 and A4 from Lemma 3.3, and choose δ with 0 < δ < 1 such that δA4 − A3 < 0 (δ < A3 /A4\nworks if A4 > 0, and otherwise, any 0 < δ < 1 will do).\nEach instance will have six candidates, which we will think of as two groups of three, C = C core ∪\nC copies . The first group C core = {a, b, c} will be the same as the three-candidate instance from\nabove, while the second group C copies = {a′ , b′ , c′ } will be new. The candidates a, b, c will still be\nlocated at xa := (2, 1), xb := (1, 1), and xc := (0, 0), respectively. The candidates a′ , b′ , c′ will\nbe located near their undecorated counterparts at xa′ := xa + (−ε, 0), xb′ := xb + (−ε, 0) and\nxc′ := xc + (−ε, δ · ε).\nNext, we describe the voter preferences. A p-fraction of voters will have the ranking a ≻ a′ ≻ b ≻\nb′ ≻ c′ ≻ c, and the remaining (1−p)-fraction of voters will have ranking c′ ≻ c ≻ b′ ≻ b ≻ a′ ≻ a.\nAs long as 0 < ε < 1 (which will be the case for our final chosen ε), these are both feasible rankings.\nThe former is induced by the nondegenerate feature vector (1, 1)7 and the latter by (−1, 0).8\nFor each ε ∈ R, let                                 X\n                                      Lε (θ) =             wx≻y ℓ(rθ (y) − rθ (x))\n                                                  x̸=y∈C\n\nwith wx≻y ∈ {0, 1 − p, p, 1} be the loss function we are optimizing using candidate locations\nparameterized by ε.\nWe will show that for sufficiently small ε > 0, inf θ∈Rc′ ≻c Lε (θ) > inf θ Lε (θ). This means that\nf must output a ranking with c ≻ c′ . Observe that this is a PO violation because all voters agree\nthat c′ ≻ c. Furthermore, this is a PMC violation because a majority of voters have the ranking\na ≻ a′ ≻ b ≻ b′ ≻ c′ ≻ c, yet this is not the output.\nLet OP T (ε) be the set of vectors optimizing Lε . The rest of the proof will follow from the following\ntwo lemmas, whose proofs are in Appendix A.\n\nLemma 3.4. OP T (0) ⊆ Rc′ ≻c .\n\nLemma 3.5. Suppose OP T (0) ⊆ Rc′ ≻c , then, for sufficiently small ε > 0, inf θ:θ∈Rc′ ≻c Lε (θ) >\ninf θ Lε (θ).",
+              "quoted_text_sha256": "4b70cf7ef4bb464eb913e7ca92fc93d66cf8259ce5b376b3d6c57b009047d238"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 1211,
+              "line_start": 1178,
+              "publication_locator": "cited publication",
+              "quoted_text": "A.4   Proof of Lemma 3.5\n\nProof. We first show that when optimizing each Lε , it is sufficient to consider only θ coming from\na bounded region. Indeed, observe that Lε (0) = 62 ℓ(0) for all ε. Since limx→∞ ℓ(x) = ∞, we\n\n\n                                                      21\n\f                                                         (6)ℓ(0)     ε\ncan find some B > 0 such that for all x > B, ℓ(x) > 21−p = L1−p        (0)\n                                                                           . For a pair of candidates\n           com\nx ̸= y ∈ C     , in the two terms concerning these candidates, we have\n                            wx≻y ℓ(rθ (y) − rθ (x)) + wy≻x ℓ(rθ (x) − rθ (y))\n                          ≥ (1 − p) (ℓ(rθ (y) − rθ (x)) + ℓ(rθ (x) − rθ (y)))\n                          ≥ (1 − p)ℓ(|rθ (y) − rθ (x)|).\n\nApplying this to {a, b} and {b, c},\n                      Lε (θ) ≥ (1 − p) (ℓ(|rθ (a) − rθ (b)| + ℓ(|rθ (b)) − rθ (c)|))\n                             = (1 − p)(ℓ(|θ1 |) + ℓ(|θ1 + θ2 |)\nThis implies that we may restrict our attention to θ in the region\n\n                                Rbounded = {θ | |θ1 | ≤ B, |θ2 | ≤ 2B}.\n\n              / Rbounded , either |θ1 | > B or |θ1 + θ2 | > B. In either case, we have Lε (θ) ≥\nIndeed, for θ ∈\n(1 − p)ℓ(B) > Lε (0).\nNote that Lε (θ) is continuous not only in θ, but also in ε. Additionally, Rbounded is closed and\nbounded, and hence, compact. Therefore, by Berge’s Maximum Theorem, OP T (ε) is nonempty and\nupper semi-continuous in ε [3]. As per the definition of upper semi-continuous, since OP T (0) ⊆\n                                                                                             ′\nRc′ ≻c , an open set, for sufficiently small ε > 0, OP T (ε) ⊆ Rc′ ≻c . Finally, note that Rc ≻c ∩\nRbounded is compact, so a minimum is attained, and this minimum must therefore be strictly larger\nthan the values attained by members of OP T (ε).\n",
+              "quoted_text_sha256": "b042f7c766913b4cae6b19cd80b90ad7fcb44f6a9eaf4e9078bb4fc9796bc7cf"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 354,
+          "line_start": 353,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 3.5. Suppose OP T (0) ⊆ Rc′ ≻c , then, for sufficiently small ε > 0, inf θ:θ∈Rc′ ≻c Lε (θ) >\ninf θ Lε (θ).",
+          "quoted_text_sha256": "770a155248396d54e035e11f19e470654061c1b712cfe225a148dbc05fafc3f5"
+        }
+      ],
+      "source_kind": "lemma"
+    },
+    "leximax_plurality_rule_model": {
+      "source_anchors": [
+        {
+          "line_end": 1539,
+          "line_start": 1530,
+          "publication_locator": "cited publication",
+          "quoted_text": "C.3   Leximax Plurality\n\nPlurality is probably the most ubiquitous voting rule in the world. Its ranking variant ranks the can-\ndidates in decreasing order with respect to their plurality scores. The plurality score of a candidate\nis equal to the number of her appearances in the first position. This rule is known to satisfy several\naxioms but in linear social choice cannot be directly applied, as not all rankings are feasibly.\nSimilarly to leximax Copeland, we define Leximax Plurality as follows. It ranks first the candidate\nwith the highest plurality score that can be ranked first under some parameter vector. Subject to\nthis first position, it ranks second the candidate with the highest plurality score that can feasibly be\nranked second, and so on, until all the positions are filled.",
+          "quoted_text_sha256": "d8f97f701617d954011fbb0a5ca545b5e247d1c3c213eab4e560a9d5afb1e1ba"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "linear_kemeny_rule_model": {
+      "source_anchors": [
+        {
+          "line_end": 1449,
+          "line_start": 1423,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fC.2   Linear Kemeny Rule\n\nNext, we consider a different rule from social choice theory, the Kemeny rule, which can be trans-\nformed to the linear setting while maintaining the separability can be achieved along with PMC.\nGiven an input profile π, the Kemeny rule returns a ranking σ ∗ that minimizes the total number of\npairwise disagreements with voters rankings, i.e.\n                                            X X\n                              σ ∗ ∈ arg min                1(b ≻σ a)\n                                        σ∈S m\n                                                 i∈V (a,b):a≻σi b\n        m\nwhere S contains all possible permutations of the m candidates. This expression can be equiva-\nlently written as                        X\n                          σ ∗ ∈ arg min        na≻b (π) · 1(b ≻σ a).\n                                      σ∈S m\n                                                a̸=b∈C\nHere, we define the linear Kemeny rule, which outputs a parameter vector θ∗ that induces a ranking\nthat minimizes the total number of pairwise disagreements with voters’ rankings, i.e.,\n                                        X\n                          θ∗ ∈ arg min       na≻b (π) · 1(rθ (b) > rθ (a)).\n                                 θ∈Rd    a̸=b∈C\nNote that this rule conforms to the standard loss formulation, where the loss function is binary: it is\n0 if two rankings agree with respect to the relative ranking of a pair of candidates and 1 otherwise.\nSince binary loss is not convex, it does not fit in the impossibility result of Theorem 3.1.\nNote that Kemeny is generally NP-hard to compute; however, even for linear Kemeny, there is\nat least an exponential time aglorithm by brute-force computing the score of every ranking, and\ndetermining whether or not it is feasible.",
+          "quoted_text_sha256": "0aed82cac73b4134fb793c9a6868170b5772c388cc14e134c043e61449d01698"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "linear_social_choice_model": {
+      "source_anchors": [
+        {
+          "line_end": 198,
+          "line_start": 158,
+          "publication_locator": "cited publication",
+          "quoted_text": "2     The Linear Social Choice Model\nLet C be a set of m distinct prompt/responses, referred to as candidates, and let V = {1, . . . , n} be\na set of n human participants, known as voters. We denote by Rd the d-dimensional real space in\nwhich both candidate feature vectors and chosen parameter vectors lie.\nEach candidate c ∈ C is associated with a distinct feature vector xc ∈ Rd . A parameter vector\nθ ∈ Rd induces a linear reward function rθ : C 7→ R defined by taking the dot product with feature\nvectors rθ (c) = ⟨θ, xc ⟩. We will primarily be interested in how these parameterized functions rank\nthe candidates by reward. Let Ra≻b = {θ | rθ (a) ≥ rθ (b)} be the region where the reward of a is\nat least as large as that of b. Note that Ra≻b and Rb≻a split Rd into two half spaces, separated by\nthe hyperplane orthogonal to xa − xb . Parameter vectors θ on the hyperplane have rθ (a) = rθ (b),\nwhile rankings in the interior of either half-space strictly rank one over the other.\nFor a ranking σ over the candidates, we say that θ induces σ, denoted θ ▷ σ, if a ≻σ b implies\nrθ (a) ≥ rθ (b). Let Rσ = {θ | θ ▷ σ} be the set of vectors θ thatTinduce it. Note that this can\nbe written as the intersection of corresponding half spaces Rσ = a,b:a≻σ b Ra≻b . Further, the\n\n\n                                                    3\n\fcollection of {Rσ } essentially form a partition of Rd , covering the space and intersecting only at\ntheir boundaries.\nWe call a θ non-degenerate if it is fully on one side of each of the separating hyperplanes, i.e.,\nrθ (a) ̸= rθ (b) for all a, b ∈ C. Non-degenerate parameter vectors lie in the interior of some Rσ ,\nand thus induce exactly one ranking. We call σ feasible if Rσ has a nonempty interior, i.e., is induced\nby some nondegenerate θ.3\nEach voter i ∈ V submits a ranking over the candidate σi . We assume that the feature space is\nrich enough that voter preferences can be captured via non-degenerate parameter vectors. In other\nwords, we assume that each σi is feasible. We refer to the vector of voter rankings π = (σi )i∈V as\na profile. Further, for two candidates a, b, we write na≻b (π) := |{i ∈ V | a ≻σi b}| for the number\nof voters that prefer a to b, and wa≻b (π) = na≻b (π)/n for the proportion of such voters. When the\nprofile π is clear from context, we may shorten these to na≻b and wa≻b , respectively.\nWe define a parameter aggregation rule as a function that takes as input a profile π and outputs a\nparameter vector θ∗ . Our goal is to design parameter aggregation rules such that rθ∗ satisfies desir-\nable properties with respect to the voter preferences. However, as the properties we care about will\nonly be with respect to how rθ∗ ranks the candidates, it will be more convenient to work with what\nwe call linear rank aggregation rules that take as input a profile π and output a feasible ranking σ.\nThere is a natural way to interpret a parameter aggregation rule as a linear rank aggregation rule,\nnamely, output any feasible ranking induced by θ∗ . The exact properties of the parameter aggrega-\ntion rule could in principle be sensitive to the tie-breaking of non-degenerate outputs, however, all\nof our results will be robust to such tie-breaking.4\nWe pay special attention to a prominent family of rules from social choice theory referred to as C1\nrules [14], whose outputs depend only on majority relationships, i.e., they only need to know for\neach pair of candidates (a, b) whether the majority prefers a or b.",
+          "quoted_text_sha256": "956b107a41a2670a9debb531bd4c6ed271e71c43af803c5dcb35470d7f4e2292"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "majority_loss_rule_model": {
+      "source_anchors": [
+        {
+          "line_end": 386,
+          "line_start": 370,
+          "publication_locator": "cited publication",
+          "quoted_text": "3.2   Majority-Based Loss Formulation\n\nDespite the negative results for loss-function-based rules, we may hope for a remedy using slightly\ndifferent information. Specifically, we consider a similar loss-based function that rather than getting\npenalized for disagreeing with each voter only gets penalized if it disagrees with a majority of voters.\nThat is, we choose θ minimizing\n                                       X\n                    Lmaj (θ; π, ℓ) =         I[wa≻b (π) > 1/2] · ℓ(rθ(b) − rθ(a) ).\n                                       a̸=b∈C\n\nDefining a parameter aggregation function based on this loss suffers from the same caveat as before,\nthat in some cases no optimal θ exists. Nevertheless, we can apply an analogous fix for a ranking\nvariant. We say that a linear rank aggregation rule f minimizes ℓ in the majority formulation if for\nall σ = f (π),\n                               inf σ Lmaj (θ; π, ℓ) = inf Lmaj (θ; π, ℓ).\n                               θ:θ∈R                      θ\n",
+          "quoted_text_sha256": "6d0435e582f44289a5185fcff84edf323a28b48db384d89001ca36efa7932bb6"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "pareto_kemeny_rule_model": {
+      "source_anchors": [
+        {
+          "line_end": 1508,
+          "line_start": 1506,
+          "publication_locator": "cited publication",
+          "quoted_text": "A possibly easy fix to the problem that linear Kemeny does not satisfy PO would be to enforce the\nPO criterion, as we did for the LCPO, i.e., to restrict to parameter vectors that respect PO. However,\nwe show that if we do that, then linear Kemeny subject to PO does not satisfy separability anymore.",
+          "quoted_text_sha256": "ba63497d209d559e6acdaddc6b4595c4d85ae6a758ddfabbe23d908433e47f41"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "standard_loss_rule_model": {
+      "source_anchors": [
+        {
+          "line_end": 259,
+          "line_start": 237,
+          "publication_locator": "cited publication",
+          "quoted_text": "\f3         Loss-Based Rules\n3.1       Standard Loss Formulation\n\nWe begin our study of linear social choice by considering a quite broad yet natural class of rules\nthat capture how RLHF is currently being done. Their core idea is the following: when considering\nparameter vector θ, for each voter i that ranks a pair of candidates a ≻i b, we should incur some\nloss for giving b a higher reward than a. To formalize this, let ℓ : R → R be a loss function, which\nwe assume is nonnegative. We can then choose a parameter vector minimizing\n                                         X\n                           L(θ; π, ℓ) =       na≻b (π) · ℓ(rθ (b) − rθ (a)).\n                                             a̸=b∈C\n\nNote that the BTL model fits within this framework using ℓ(x) = ln(1 + ex ), i.e., binary cross-\nentropy loss.5 One caveat to this approach, however, is that an optimal θ need not be well-defined:\nit is possible that no minimum is attained. Fortunately, since we only care about rankings induced\nby optimal parameter vectors, we can conveniently remedy this by saying the output is any ranking\nthat is induced by parameter vectors that are arbitrarily close to optimal. More formally, we say that\na linear rank aggregation rule f minimizes ℓ if for all σ = f (π),\n                                       inf L(θ; π, ℓ) = inf L(θ; π, ℓ).                                       (1)\n                                     θ:θ∈Rσ                    θ\n\nEven if no minimum is attained, there is always a choice of feasible ranking σ such that Equation (1)\nis satisfied.",
+          "quoted_text_sha256": "04f1191485c54dbdddb236db4163a1210ea51720420fca8afbde39b2eeda4356"
+        }
+      ],
+      "source_kind": "definition"
+    },
+    "theorem3_1": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 269,
+              "line_start": 237,
+              "publication_locator": "cited publication",
+              "quoted_text": "\f3         Loss-Based Rules\n3.1       Standard Loss Formulation\n\nWe begin our study of linear social choice by considering a quite broad yet natural class of rules\nthat capture how RLHF is currently being done. Their core idea is the following: when considering\nparameter vector θ, for each voter i that ranks a pair of candidates a ≻i b, we should incur some\nloss for giving b a higher reward than a. To formalize this, let ℓ : R → R be a loss function, which\nwe assume is nonnegative. We can then choose a parameter vector minimizing\n                                         X\n                           L(θ; π, ℓ) =       na≻b (π) · ℓ(rθ (b) − rθ (a)).\n                                             a̸=b∈C\n\nNote that the BTL model fits within this framework using ℓ(x) = ln(1 + ex ), i.e., binary cross-\nentropy loss.5 One caveat to this approach, however, is that an optimal θ need not be well-defined:\nit is possible that no minimum is attained. Fortunately, since we only care about rankings induced\nby optimal parameter vectors, we can conveniently remedy this by saying the output is any ranking\nthat is induced by parameter vectors that are arbitrarily close to optimal. More formally, we say that\na linear rank aggregation rule f minimizes ℓ if for all σ = f (π),\n                                       inf L(θ; π, ℓ) = inf L(θ; π, ℓ).                                       (1)\n                                     θ:θ∈Rσ                    θ\n\nEven if no minimum is attained, there is always a choice of feasible ranking σ such that Equation (1)\nis satisfied.\nWith this definition in hand, we proceed to our first main result, which spells rather bad news for\nthis class of rules: Any loss-based aggregation rule using a nondecreasing and convex loss function\n(of which BTL is one, and hinge loss is another) will fail our two core axioms, PMC and PO. This\npaints a negative picture for current RLHF methods with respect to their social choice guarantees.\nNote that we will exclude the discussion of loss functions with a global minimum at zero, like ReLU,\nbecause the loss minimizer will be zero, making all rankings vacuous consequently. And we have\nfocused on convex loss functions due to their practical optimization ease.\nTheorem 3.1. If a linear rank aggregation rule f optimizes a loss function ℓ that satisfies\ninf x ℓ(x) < ℓ(0) and is either nondecreasing and weakly convex, or strictly convex (and possibly\nnonmonotone), then f fails PMC and PO.",
+              "quoted_text_sha256": "5f0e4f6bf1ca894b5e09bb1182ae244c0b81a39117fc56a7d94d402a77343614"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 368,
+              "line_start": 271,
+              "publication_locator": "cited publication",
+              "quoted_text": "Proof. Fix a loss function ℓ satisfying the theorem conditions. Note that since ℓ is convex, we may\nalso assume it is continuous [24, Corollary 10.1.1]. Furthermore, since inf x ℓ(x) < ℓ(0), we know\nthat there exists x ̸= 0 such that ℓ(x) < ℓ(0). The case where x > 0 is relatively simple (as\nsuch loss functions lead to unnatural behavior), and we handle it at the end of the proof. For now,\nwe assume that there exists x < 0 such that ℓ(x) < ℓ(0). Note that this also implies that for all\ny ≥ 0, ℓ is lower bounded by the affine linear function connecting (x, ℓ(x)) and (0, ℓ(0)), and thus,\nlimx→∞ ℓ(x) = ∞.\nWe begin with a small instance of just three candidates C core = {a, b, c} to gain some traction on\nhow ℓ behaves. We will later extend this instance with additional candidates to demonstrate a profile\nwhere PO and PMC fail. The candidates will have feature vectors xa := (2, 1), xb := (1, 1), and\nxc := (0, 0), respectively. Furthermore, a p-fraction of voters (for p to be chosen later) will rank\na ≻ b ≻ c, while the remaining (1 − p)-fraction will have inverted preferences, ranking c ≻ b ≻ a.6\nLet                                              X\n                              Lcore (θ) :=                  wx≻y ℓ(rθ (y) − rθ (x))\n                                              x̸=y∈C core\n\n      5\n     Typically, BTL is presented as choosing θ maximizing the likelihood of seeing the pairwise com-\n                                                                erθ (a)\nparisons we observed, assuming that Pr[a ≻ b] = erθ (a)           +erθ (b)\n                                                                           . That is, we choose θ maximizing\n       (                ) na≻b\n            erθ (a)\nQ\n  a̸=b erθ (a) +erθ (b)         . By taking the log and swapping the sign, we see that this is equivalent to mini-\n                    (                     )\n        P                   rθ (b)−rθ (a)\nmizing a̸=b log 1 + e                      .\n    6\n      It so happens that these rankings are feasible, but for now we will not worry about this as loss function-\nbased rules still make sense regardless of whether the inputs are feasible. For the final example, we will ensure\nthat the rankings are feasible.\n\n\n                                                        5\n\fwith wx≻y ∈ {1 − p, p} be the loss function on this instance (scaling nx≻y down to wx≻y leads to\nan equivalent formulation). Let g(x) = p · ℓ(−x) + (1 − p)ℓ(x). Note that we can rewrite Lcom as\n                    Lcore (θ) = g(rθ (a) − rθ (b)) + g(rθ (a) − rθ (c)) + g(rθ (b) − rθ (c)).\nNote that rθ (c) = 0 for all θ, so we can simplify this to\n                              Lcore (θ) = g(rθ (a) − rθ (b)) + g(rθ (a)) + g(rθ (b)).\nWe will consider an unconstrained version of this problem where we are free to choose rewards\nra , rb ∈ R arbitrarily, and later show by which vectors θ these optimal values can be induced. That\nis, we will first find ra , rb ∈ R minimizing\n                                Lunconstr (ra , rb ) := g(ra − rb ) + g(ra ) + g(rb ).\nLet OP T core = {θ | Lcore (θ) = inf θ′ Lcore (θ′ )} and OP T unconstr {(ra , rb ) | Lunconstr (ra , rb ) =\ninf ra′ ,rb′ Lunconstr (ra′ , rb′ )} be the set of minimizers for these two loss functions. In Appendix A, we\nestablish the following results about these optimal sets.\nLemma 3.2. There exists a rational p ∈ (1/2, 1] and values A1 < A2 with A2 > 0 such that\nOP T unconstr is nonempty and for all (ra , rb ) ∈ OP T unconstr , ra > A2 and rb ≤ A1 .\nLemma 3.3. Suppose Lemma 3.2 holds for values p, A1 and A2 , then, for this same choice of p,\nOP T core is nonempty and there exist A3 and A4 with A3 > 0 such that for all (θ1 , θ2 ) ∈ OP T core ,\nθ1 > A3 and θ2 < A4 .\n\nWe will now explicitly construct a family of instances with candidate feature vectors parameterized\nby a value ε ∈ R such that for sufficiently small ε > 0, the output of f fails the two axioms. Fix\np, A3 and A4 from Lemma 3.3, and choose δ with 0 < δ < 1 such that δA4 − A3 < 0 (δ < A3 /A4\nworks if A4 > 0, and otherwise, any 0 < δ < 1 will do).\nEach instance will have six candidates, which we will think of as two groups of three, C = C core ∪\nC copies . The first group C core = {a, b, c} will be the same as the three-candidate instance from\nabove, while the second group C copies = {a′ , b′ , c′ } will be new. The candidates a, b, c will still be\nlocated at xa := (2, 1), xb := (1, 1), and xc := (0, 0), respectively. The candidates a′ , b′ , c′ will\nbe located near their undecorated counterparts at xa′ := xa + (−ε, 0), xb′ := xb + (−ε, 0) and\nxc′ := xc + (−ε, δ · ε).\nNext, we describe the voter preferences. A p-fraction of voters will have the ranking a ≻ a′ ≻ b ≻\nb′ ≻ c′ ≻ c, and the remaining (1−p)-fraction of voters will have ranking c′ ≻ c ≻ b′ ≻ b ≻ a′ ≻ a.\nAs long as 0 < ε < 1 (which will be the case for our final chosen ε), these are both feasible rankings.\nThe former is induced by the nondegenerate feature vector (1, 1)7 and the latter by (−1, 0).8\nFor each ε ∈ R, let                                 X\n                                      Lε (θ) =             wx≻y ℓ(rθ (y) − rθ (x))\n                                                  x̸=y∈C\n\nwith wx≻y ∈ {0, 1 − p, p, 1} be the loss function we are optimizing using candidate locations\nparameterized by ε.\nWe will show that for sufficiently small ε > 0, inf θ∈Rc′ ≻c Lε (θ) > inf θ Lε (θ). This means that\nf must output a ranking with c ≻ c′ . Observe that this is a PO violation because all voters agree\nthat c′ ≻ c. Furthermore, this is a PMC violation because a majority of voters have the ranking\na ≻ a′ ≻ b ≻ b′ ≻ c′ ≻ c, yet this is not the output.\nLet OP T (ε) be the set of vectors optimizing Lε . The rest of the proof will follow from the following\ntwo lemmas, whose proofs are in Appendix A.\n\nLemma 3.4. OP T (0) ⊆ Rc′ ≻c .\n\nLemma 3.5. Suppose OP T (0) ⊆ Rc′ ≻c , then, for sufficiently small ε > 0, inf θ:θ∈Rc′ ≻c Lε (θ) >\ninf θ Lε (θ).\n   7\n       This induces rewards 3, 3 − ε, 2, 2 − ε, (1 − δ) · ε and 0 for a, a′ , b, b′ , c′ , and c, respectively.\n   8\n       This induces rewards ε, 0, −1 + ε, −1, −2 + ε and −2. for c′ , c, b′ , b, a′ , and a, respectively.\n\n\n                                                              6\n\fFinally, we handle the case that exists x > 0 such that ℓ(x) < ℓ(0). Note that by convexity, this\nimplies that for all y < 0, ℓ(y) > ℓ(0) > ℓ(x), so inf y≤0 ℓ(y) < inf y ℓ(y). Now, consider an\ninstance with two candidates {a, b} located at xa = (1, 0) and xb = (0, 1), and a single voter\nranking a ≻ b (feasible via the parameter vector (1, 0)). It is possible to achieve a loss of ℓ(x), e.g.,\nby outputting the parameter vector (0, x). On the other hand, any θ inducing the ranking a ≻ b will\nbe lower bounded by ℓ(0) > ℓ(x) from above. Hence, f must output b ≻ a, which is both a PO and\nPMC violation.",
+              "quoted_text_sha256": "76a0fb3d6bdde2618cbeca54008c6e3ae1b7719a058a56218fda1f14e8b19be5"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 269,
+          "line_start": 267,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3.1. If a linear rank aggregation rule f optimizes a loss function ℓ that satisfies\ninf x ℓ(x) < ℓ(0) and is either nondecreasing and weakly convex, or strictly convex (and possibly\nnonmonotone), then f fails PMC and PO.",
+          "quoted_text_sha256": "f2b34e01c6dd9cf8eacf8ebf0207d339945bf69e77666bada62cb077130f1b81"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem3_6": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 390,
+              "line_start": 370,
+              "publication_locator": "cited publication",
+              "quoted_text": "3.2   Majority-Based Loss Formulation\n\nDespite the negative results for loss-function-based rules, we may hope for a remedy using slightly\ndifferent information. Specifically, we consider a similar loss-based function that rather than getting\npenalized for disagreeing with each voter only gets penalized if it disagrees with a majority of voters.\nThat is, we choose θ minimizing\n                                       X\n                    Lmaj (θ; π, ℓ) =         I[wa≻b (π) > 1/2] · ℓ(rθ(b) − rθ(a) ).\n                                       a̸=b∈C\n\nDefining a parameter aggregation function based on this loss suffers from the same caveat as before,\nthat in some cases no optimal θ exists. Nevertheless, we can apply an analogous fix for a ranking\nvariant. We say that a linear rank aggregation rule f minimizes ℓ in the majority formulation if for\nall σ = f (π),\n                               inf σ Lmaj (θ; π, ℓ) = inf Lmaj (θ; π, ℓ).\n                               θ:θ∈R                      θ\n\nWe first show (in Appendix A.5) that this does indeed help achieve PMC with essentially all loss\nfunctions.\nTheorem 3.6. Fix a nondecreasing loss function ℓ with ℓ(0) > inf x ℓ(x). If a linear rank aggrega-\ntion rule f minimizes ℓ in the majority formulation, then f satisfies PMC.",
+              "quoted_text_sha256": "f1afa4137516090a8c41e3ca95cc0514bb1f97b68940cc83d8d92e6fa501761c"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 1225,
+              "line_start": 1212,
+              "publication_locator": "cited publication",
+              "quoted_text": "A.5   Proof of Theorem 3.6\n\nProof. Without loss of generality, we may assume that inf x ℓ(x) = 0, as otherwise we could trans-\nlate ℓ without affecting the optimization problem. Fix a profile π with feasible PMC ranking σ, and\nlet θP M C be a non-degenerate parameter vector that induces σ.\nFirst, we show that inf θ Lmaj (θ; π, ℓ) = 0. Indeed, note that c · θP M C ∈ Rπ for all c > 0. Further,\nnote that for any a, b with wa≻b (π) > 1/2, rθP M C (b) − rθP M C (a) < 0. Therefore, by making c\nlarge, the nonzero terms in Lmaj will have an input to ℓ negative and becoming arbitrarily large in\nmagnitude. Since ℓ is nondecreasing, these approach the infemum of 0.\nNext, for any σ ′ ̸= σ, inf θ Lmaj (θ; π, ℓ) ≥ ℓ(0). Indeed, there must be some pair of candidates a, b\n                                               ′\nwith a ≻σ b and b ≻σ′ a. For any θ ∈ Rσ , rθ (b) ≥ rθ (a), so ℓ(rθ (b) − rθ (a)) ≥ ℓ(0), and this\nlower bounds the loss function.\n",
+              "quoted_text_sha256": "ad8a4c8747b0107db10d2ea6be81b339242eb186bf0e15f0fb098fadaa37fd65"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 390,
+          "line_start": 389,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 3.6. Fix a nondecreasing loss function ℓ with ℓ(0) > inf x ℓ(x). If a linear rank aggrega-\ntion rule f minimizes ℓ in the majority formulation, then f satisfies PMC.",
+          "quoted_text_sha256": "696c4c1ab8fe7241d27b3a508d14c2824730053849ed12363bb67d3a8213c188"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem3_7_and_attached_consequences": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 211,
+              "line_start": 196,
+              "publication_locator": "cited publication",
+              "quoted_text": "We pay special attention to a prominent family of rules from social choice theory referred to as C1\nrules [14], whose outputs depend only on majority relationships, i.e., they only need to know for\neach pair of candidates (a, b) whether the majority prefers a or b.\nIn our study, we examine several axioms borrowed from social choice theory to evaluate the reason-\nableness (fairness) of our aggregation mechanisms. These axioms include:\nDefinition 2.1 (Pareto Optimality). A linear rank aggregation rule f satisfies Pareto optimality if,\nwhenever every voter prefers candidate a over candidate b on π, i.e., wa≻b (π) = 1, then candidate\na is ranked higher than candidate b in the output ranking, i.e., a ≻f (π) b.\nDefinition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.\n\nNote that a PMC ranking for each π need not exist, but when one does, it is unique. The words “σ\nis feasible” allude to the possibility that no non-degenerate parameter vector θ induces the unique\nPMC ranking. Indeed, we have such an example; see Appendix B for details.",
+              "quoted_text_sha256": "6b0c7fe8f093156c9880a48d298d566149416f2d0ee1753a32daa1a76586c61b"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 1265,
+              "line_start": 1226,
+              "publication_locator": "cited publication",
+              "quoted_text": "A.6   Proof of Theorem 3.7\n\nProof. We construct an explicit instance and pairwise majority relationships such that no matter\nwhat feasible ranking a rule picks, there is an underlying profile where that output was a PO viola-\ntion.\n                                                       −\nWe will have 9 candidates; 8 will be labeled c+                                              ∗\n                                              i and ci for i = 1, 2, 3, 4, and one labeled c .\n                                   4        ±\nThey will have feature vectors in R . Each ci will be located at xc± = ±ei where ei is the i’th\n                                                                           i\n                                                        −\nstandard basis vector, i.e., c+                                                          ∗\n                              2 is at (0, 1, 0, 0) and c4 is at (0, 0, 0, −1). Finally, c will be located at\n(1/5, 1/5, 1/5, 1/5).\nThere will be 5 voters. Their pairwise majority graph will be as follows. Candidate c∗ will pairwise\n                                                                −\nbeat all others. In addition, each c+                                         +\n                                    i will pairwise beat each cj . Among the ci candidates, there will\nbe a cycle c1 ≻ c2 ≻ c3 ≻ c4 ≻ c1 and between the remaining two pairs c+\n             +      +     +      +    +                                              +       +\n                                                                               1 ≻ c3 and c2 ≻ c4 .\n                                                                                                   +\n\nThe c−                                                               −    −     −     −      −\n      i candidates will be the exact reverse of this, i.e., a cycle c4 ≻ c3 ≻ c2 ≻ c1 ≻ c4 , along\n       −     −        −     −\nwith c3 ≻ c1 and c4 ≻ c2 . A pictorial representation can be found in Figure 1.\nA C1 rule must pick a θ solely based on the pairwise majority graph. We will show that regardless\nof what θ it outputs, this will lead to a PO violation.\n\n\n                                                    22\n\f                                 c+\n                                  1                c+\n                                                    2                          c−\n                                                                                1             c−\n                                                                                               2\n\n",
+              "quoted_text_sha256": "85d6045f012cf56082af56f88c87793fd15f2fefe54d682fdf119d93ee97c0a4"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 410,
+              "line_start": 397,
+              "publication_locator": "cited publication",
+              "quoted_text": "However, despite this good news for PMC, we show that this does not help in achieving PO. In fact,\nour negative result extends to every C1 linear rank aggregation rule. Note that if f minimizing ℓ in\nthe majority formulation breaks ties consistently (i.e., if multiple feasible rankings are optimal, then\nit consistently chooses the same one), then it is C1. We then have the following result, whose proof\nis relegated to Appendix A.6.\nTheorem 3.7. All C1 linear rank aggregation rules fail PO.\n\nThis result is quite unfortunate, because if there were a rule that is both C1 and PO, we would\nautomatically achieve PMC: Whenever there is a feasible PMC ranking, a C1 rule cannot distinguish\nbetween this profile and a profile where all voters submit this ranking, hence, under the PO criterion,\nit must output it. Furthermore, whenever there is a PMC ranking, outputting it is necessarily PO,\nas for every pair, a majority of voters agree with the PMC ranking. Interestingly, in the proof, we\nconstruct a profile which has a PMC ranking, yet it is not feasible, and no matter how a C1 linear\nrank aggregation rule breaks ties, there is an underlying profile in which this output violates PO.",
+              "quoted_text_sha256": "3ad4ee4701efe2cf8aacc2b272b6174a7f7c1abea9930270d2da816dffbe2d12"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 410,
+          "line_start": 397,
+          "publication_locator": "cited publication",
+          "quoted_text": "However, despite this good news for PMC, we show that this does not help in achieving PO. In fact,\nour negative result extends to every C1 linear rank aggregation rule. Note that if f minimizing ℓ in\nthe majority formulation breaks ties consistently (i.e., if multiple feasible rankings are optimal, then\nit consistently chooses the same one), then it is C1. We then have the following result, whose proof\nis relegated to Appendix A.6.\nTheorem 3.7. All C1 linear rank aggregation rules fail PO.\n\nThis result is quite unfortunate, because if there were a rule that is both C1 and PO, we would\nautomatically achieve PMC: Whenever there is a feasible PMC ranking, a C1 rule cannot distinguish\nbetween this profile and a profile where all voters submit this ranking, hence, under the PO criterion,\nit must output it. Furthermore, whenever there is a PMC ranking, outputting it is necessarily PO,\nas for every pair, a majority of voters agree with the PMC ranking. Interestingly, in the proof, we\nconstruct a profile which has a PMC ranking, yet it is not feasible, and no matter how a C1 linear\nrank aggregation rule breaks ties, there is an underlying profile in which this output violates PO.",
+          "quoted_text_sha256": "3ad4ee4701efe2cf8aacc2b272b6174a7f7c1abea9930270d2da816dffbe2d12"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theorem4_3": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 459,
+              "line_start": 412,
+              "publication_locator": "cited publication",
+              "quoted_text": "4     Social Choice-Based Rule\nIn light of the above negative results, in this section, we ask whether there are linear rank aggre-\ngation rules that concurrently satisfy our two core axioms, PO and PMC. We answer this question\naffirmatively by presenting a new method based on a prominent rule from voting theory.\nThe Copeland rule assigns a Copeland score to each alternative equal to the number of other alter-\nnatives it beats in a pairwise competition, i.e., the score for a is |{b | wa≻b > 1/2}|. It then ranks\nthe candidates in descending order according to their Copeland scores (breaking ties arbitrarily). It\n\n\n                                                     7\n\fis known that Copeland satisfies PO, PMC, and additional axiomatic properties. However, in linear\nsocial choice, since not every ranking is feasible, we cannot always output the Copeland ranking.\nWe, therefore, define a new linear rank aggregation rule, which we call leximax Copeland. This\nrule chooses a feasible ranking as follows. It ranks first the candidate with the highest Copeland\nscore that can be feasibly ranked first under some parameter vector θ. Subject to this first position,\nit ranks second the candidate with the highest Copeland score which can be feasibly ranked second,\nand continues this process for subsequent positions.\nCopeland’s rule is a C1 rule because it only requires the majority relationships between the can-\ndidates. Analogously, leximax Copeland is also a C1 linear rank aggregation rule. Therefore, by\nTheorem 3.7, it does not satisfy the PO criterion. To address this issue, we define a variant called\nleximax Copeland subject to PO (LCPO), which incorporates the PO criterion. Under LCPO, for\nevery pair of alternatives where one dominates the other, the rule restricts rankings to place the\ndominating alternative above the dominated one.\nThe rule remains well-defined since the set of feasible rankings when enforcing the PO criterion is\nnon-empty, as whenever a dominates b, all the rankings in the input profile rank a above b. Note that\nif the Copeland ranking is feasible, then this rule outputs that ranking, since unrestricted Copeland\nsatisfies PO.\nIn addition to PO and PMC, we wish to show that LCPO satisfies two additional properties, which\nwe define presently.\nDefinition 4.1 (majority consistency). A linear rank aggregation rule satisfies majority consistency\nif when a candidate a is ranked first by a majority of voters in the input profile, a is ranked first in\nthe output ranking.\n\nMajority consistency ensures that the collective decision reflects the preference of the majority when\nthere is a clear favorite. This principle aligns with PMC, but specifically focuses on the majority’s\nfavorite alternative. However, as we discussed above, a PMC ranking does not necessarily exist, and\neven when it exists, it is not necessarily feasible. By contrast, when a majority winner exists, this\ncandidate is necessarily ranked first by a majority of voters in the input profile, who themselves (by\nassumption) submit feasible rankings. Therefore, we need not handle the case where it is impossible\nto rank the majority winner first.\nDefinition 4.2 (winner monotonicity). A linear rank aggregation rule satisfies winner monotonicity\nif, when a candidate a is ranked first in the output ranking, elevating a in any voter’s preference\ndoes not cause a to lose their top position in the updated aggregate ranking.\n\nWinner monotonicity ensures that improving a leading candidate’s position among individual voters\nwill not result in that candidate’s demotion.\nWe now state and prove the main result of this section.\nTheorem 4.3. LCPO satisfies PO, PMC, majority consistency and winner monotonicity.",
+              "quoted_text_sha256": "f02310b88c546391f3f8f373d2f7423c4629185b2610a4522a64f31779e944ff"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 499,
+              "line_start": 461,
+              "publication_locator": "cited publication",
+              "quoted_text": "Proof. LCPO trivially satisfies PO since it always outputs a ranking that respects the PO criterion.\nMoreover, since Copeland satisfies PMC, and whenever Copeland’s ranking is in the domain, lexi-\nmax Copeland subject to PO returns this ranking, it clearly satisfies PMC.\nNote that if an alternative a is ranked first by at least half of the voters, then a has the highest\nCopeland score, meaning that leximax Copeland subject to PO will rank this candidate first if this is\npossible. We see that this is indeed possible, by noticing that there is at least one feasible ranking in\nthe input profile where a is ranked first, and any such input ranking is feasible (by assumption) and\nsatisfies the PO requirement. Therefore, majority consistency is satisfied.\nIt remains to show that LCPO satisfies winner monotonicity. Suppose that on input profile π, the\nrule outputs a ranking σ where candidate a is ranked first. Now, consider a profile π ′ which is similar\nto π with the only exception being a ranking in which a is placed in a higher position. Let S be the\nset of agents that ranked above a in Copeland’s ranking under π and let S ′ be the set of agents that\nranked above a in Copeland’s ranking under π ′ . Note that S ′ ⊆ S, since when moving from π to π ′ ,\nonly the Copeland score of a can increase, and therefore it is not possible for a candidate b to beat a\nunder π ′ but not under π.\n\n\n                                                   8\n\fNow, suppose that R and R′ are the set of rankings that satisfy the PO criterion with respect to π and\nπ ′ , respectively. We show that R′ ⊆ R. First, note that since a is ranked first under π, no alternative\ndominates a in π, as otherwise the PO criterion would be violated. Therefore, we get that no other\nalternative dominates a in π ′ as well. Moreover, note that if b dominates c in π, then this remains\ntrue in π ′ as well. On the other hand, it is possible that a dominates an alternative b in π ′ but not in\nπ. From all of the above, we conclude that R′ ⊆ R.\nSince a is ranked first in σ, we get that for every candidate b ∈ S, there is no ranking in R in which\nb is ranked first, since otherwise, LCPO would output such a ranking. This also means that for every\ncandidate b in S ′ , there is no ranking in R′ in which b is ranked first, since R′ ⊆ R and S ′ ⊆ S.\nMoreover, note that every ranking in R in which a is ranked first is also in R′ since it satisfies all the\nPO restrictions of π ′ . Therefore, under π ′ , LCPO outputs a ranking in which a is ranked first.\n\nLeximax Copeland subject to PO can be implemented in polynomial time by solving O(|C|2 ) rela-\ntively small linear programs. Specifically, given an input profile, we sequentially choose the candi-\ndate that is ranked in position r + 1 as follows. We denote by σr the partial ranking, where the first\nr positions have been fixed. For each candidate c that has not been ranked yet, we want to check\nif there is a parameter vector that adheres to the partial ranking σr , respects the Pareto optimality\ncriterion and ranks c at position r + 1. Since all these constraints can be expressed as pairwise\ncomparisons, we can use a linear program such as the one described in Footnote 4 to check if such\na feasible ranking exists. Among the candidates meeting this criterion, we select the one with the\nhighest Copeland score for position r.",
+              "quoted_text_sha256": "c68d10e61f838f83a1592f45be5c4fa78d52f1731a1e8d701f38f32f4240e3de"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 459,
+          "line_start": 459,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 4.3. LCPO satisfies PO, PMC, majority consistency and winner monotonicity.",
+          "quoted_text_sha256": "0abe628c9614239e0e5ac3a1380fc0dea419da318b526f3558ed3ae14dd36f56"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theoremC_2": {
+      "semantic_context": [
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 1419,
+              "line_start": 1401,
+              "publication_locator": "cited publication",
+              "quoted_text": "Proof. Consider the following two profiles on 7 candidates with five and three voters each:\n\n                    Rank     v1    v2    v3        v4    v5           Rank     v6   v7   v8\n                      1       a     b    b         c     d                 1   a    b    c\n                      2       g     a    a         e     c                 2   d    a    a\n                      3       d     c    e         f     f                 3   b    e    e\n                      4       e     e    d         g     g                 4   f    d    b\n                      5       f     d    f         b     b                 5   c    c    f\n                      6       b     g    g         a     e                 6   g    g    g\n                      7       c     f    c         d     a                 7   e    f    d\n\nIn the first profile, the Copeland scores are 5, 4, 3, 3, 3, 2, 1 for candidates a, b, c, d, e, f, g, respec-\ntively. Similarly, in the second profile, they are 6, 5, 3, 3, 3, 1, 0. So under any consistent tie-breaking\nrule, both of these profiles would output the ranking a ≻ b ≻ c ≻ d ≻ e ≻ f ≻ g.\nHowever, if we combine these two profiles, then the score of a is 5 while the score of b is 6, and\nthus, b will be ranked above a, violating separability.\nTo see that this also holds for LCPO, note that when every ranking is feasible, LCPO coincides with\nCopeland. We can simply have 7 candidates in R7 all located at unit vectors, and voters with inputs\nfrom the above profiles.",
+              "quoted_text_sha256": "9fb3116aae8f429469569b6ada5b32682011cf6965c4a5af85b9e300bef13440"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1399,
+          "line_start": 1398,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem C.2. Both Copeland (in traditional social choice) and LCPO (in linear social choice) fail\nseparability.",
+          "quoted_text_sha256": "02184a6cc709c3a52319cdd46c5ec80817ef62279264efc29ff2c9304e6e8b11"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theoremC_3": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 1456,
+              "line_start": 1423,
+              "publication_locator": "cited publication",
+              "quoted_text": "\fC.2   Linear Kemeny Rule\n\nNext, we consider a different rule from social choice theory, the Kemeny rule, which can be trans-\nformed to the linear setting while maintaining the separability can be achieved along with PMC.\nGiven an input profile π, the Kemeny rule returns a ranking σ ∗ that minimizes the total number of\npairwise disagreements with voters rankings, i.e.\n                                            X X\n                              σ ∗ ∈ arg min                1(b ≻σ a)\n                                        σ∈S m\n                                                 i∈V (a,b):a≻σi b\n        m\nwhere S contains all possible permutations of the m candidates. This expression can be equiva-\nlently written as                        X\n                          σ ∗ ∈ arg min        na≻b (π) · 1(b ≻σ a).\n                                      σ∈S m\n                                                a̸=b∈C\nHere, we define the linear Kemeny rule, which outputs a parameter vector θ∗ that induces a ranking\nthat minimizes the total number of pairwise disagreements with voters’ rankings, i.e.,\n                                        X\n                          θ∗ ∈ arg min       na≻b (π) · 1(rθ (b) > rθ (a)).\n                                 θ∈Rd    a̸=b∈C\nNote that this rule conforms to the standard loss formulation, where the loss function is binary: it is\n0 if two rankings agree with respect to the relative ranking of a pair of candidates and 1 otherwise.\nSince binary loss is not convex, it does not fit in the impossibility result of Theorem 3.1.\nNote that Kemeny is generally NP-hard to compute; however, even for linear Kemeny, there is\nat least an exponential time aglorithm by brute-force computing the score of every ranking, and\ndetermining whether or not it is feasible.\nTheorem C.3. Linear Kemeny satisfies PMC and separability.\n\nProof. PMC holds because the linear Kemeny score minimizes disagreements even among non-\ntransitive rankings, making the PMC ranking the optimal choice whenever it is feasible. Separability\nis evident as the Kemeny score of a ranking over two datasets is simply the sum of the scores in each\ndataset. If the same ranking minimizes the score in both datasets independently, it will also minimize\nthe score in their combination.",
+              "quoted_text_sha256": "4dfda6a4ad9a46551bfd4081eff52c392dca173cd9586989f072697147cb9f30"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1450,
+          "line_start": 1450,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem C.3. Linear Kemeny satisfies PMC and separability.",
+          "quoted_text_sha256": "d1708cfa8817e39517e68a2c130b8389bbafa5f3f354159d24c49824670d6127"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theoremC_4": {
+      "semantic_context": [
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 1504,
+              "line_start": 1459,
+              "publication_locator": "cited publication",
+              "quoted_text": "Proof. Consider the scenario with 20 candidates whose feature vectors are represented in the table\nbelow:\n\n                             Candidate        Feature Vector\n                                  1           (2000000, 0, 0, 0, 0, 0, 0)\n                                  2           (0, 2000000, 0, 0, 0, 0, 0)\n                                  3           (0, 200000, 0, 0, 0, 0, 0)\n                                  4           (0, 100000, 100000, 0, 0, 0, 0)\n                                  5           (0, 0, 200000, 0, 0, 0, 0)\n                                  6           (0, 0, 20000, 0, 0, 0, 0)\n                                  7           (0, 0, 10000, 10000, 0, 0, 0)\n                                  8           (0, 0, 0, 20000, 0, 0, 0)\n                                  9           (0, 0, 0, 2000, 0, 0, 0)\n                                 10           (0, 0, 0, 1000, 1000, 0, 0)\n                                 11           (0, 0, 0, 0, 2000, 0, 0)\n                                 12           (0, 0, 0, 0, 200, 0, 0)\n                                 13           (0, 0, 0, 0, 100, 100, 0)\n                                 14           (0, 0, 0, 0, 0, 200, 0)\n                                 15           (0, 0, 0, 0, 0, 20, 0)\n                                 16           (0, 0, 0, 0, 0, 10, 10)\n                                 17           (0, 0, 0, 0, 0, 0, 20)\n                                 18           (0, 0, 0, 0, 0, 0, 2)\n                                 19           (1, 0, 0, 0, 0, 0, 1)\n                                 20           (2, 0, 0, 0, 0, 0, 0)\n\n\n                                                     25\n\fEach vector is constructed such that candidates are prioritized based on the magnitude of their\nfirst non-zero entry, leading to a natural ordering within grouped subsets: {1, 2} ≻ {3, 4, 5} ≻\n{6, 7, 8} ≻ {9, 10, 11} ≻ {12, 13, 14} ≻ {15, 16, 17} ≻ {18, 19, 20}. We will have six voters,\nwith rankings induced by the parameter vectors described below.\n\n                                      Voter    Parameter Vector\n                                        v1     (2, 1, 7, 6, 5, 4, 3)\n                                        v2     (3, 2, 1, 7, 6, 5, 4)\n                                        v3     (4, 3, 2, 1, 7, 6, 5)\n                                        v4     (5, 4, 3, 2, 1, 7, 6)\n                                        v5     (6, 5, 4, 3, 2, 1, 7)\n                                        v6     (7, 6, 5, 4, 3, 2, 1)\n\nEach voter ranks candidates within the group in increasing order except for a single reversed group.\nFor instance, v1 ranks candidates as 1 ≻ 2 ≻ 5 ≻ 4 ≻ 3 and so forth. Under this setup, no param-\neter vector θ can create a ranking that satisfies all voters’ preferences due to the cyclic nature and\nindividual group preferences.\nWe can check that linear Kemeny rule outputs a ranking in which candidate 2 is ranked above 1.\nFrom this analysis, we also conclude that the rules does not satisfy majority consistency either.",
+              "quoted_text_sha256": "0f588bbf88d442d53e2551521f68e95a84cfd267e5fafb2fb2ebc9586b976617"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1457,
+          "line_start": 1457,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem C.4. Linear Kemeny does not satisfy PO or majority consistency.",
+          "quoted_text_sha256": "8c97fa3efdd84805a22caa6bc7a658a0d46e18ab7458b0e86e65fff6cb6fdfc6"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theoremC_5": {
+      "semantic_context": [
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 1528,
+              "line_start": 1506,
+              "publication_locator": "cited publication",
+              "quoted_text": "A possibly easy fix to the problem that linear Kemeny does not satisfy PO would be to enforce the\nPO criterion, as we did for the LCPO, i.e., to restrict to parameter vectors that respect PO. However,\nwe show that if we do that, then linear Kemeny subject to PO does not satisfy separability anymore.\nTheorem C.5. Linear Kemeny subject to PO violates separability and majority consistency.\n\nProof. First, consider a set of candidates and a profile similar to the one that is given in the proof\nof Theorem C.4. When we restrict to reward functions that 1 above 2, then we can check that Linear\nKemeny subject to PO outputs one of the rankings that are in the input profile. Without loss of\ngenerality, assume that it outputs the ranking of v1 .\nSecond, consider the same set of candidates and three voters, with rankings induced by the following\nparameter vectors:\n\n                                      Voter    Parameter Vector\n                                        v1′    (2, 1, 7, 6, 5, 4, 3)\n                                        v2′    (2, 1, 7, 6, 5, 4, 3)\n                                        v3′    (1, 7, 6, 5, 4, 3, 2)\n\nIn this case, Linear Kemeny subject to PO outputs the ranking of v1′ which is the same with this of\nvoter v1 .\nWhen the two profiles are combined, then we do not anymore restrict on rankings in which 1 is above\n2, since 1 does not Pareto dominates 2 anymore. Then, we can check that linear Kemeny subject to\nPO outputs a different ranking than before in which 2 is ranked above 1. From this example, we see\nthat linear Kemenery subject to PO still violates majority consistency.",
+              "quoted_text_sha256": "1fb6c6aed6726c5ef570bf07fd88507bb321d3df900abb4066f549e7e547a022"
+            }
+          ]
+        },
+        {
+          "semantic_role": "model_construction",
+          "source_anchors": [
+            {
+              "line_end": 1504,
+              "line_start": 1459,
+              "publication_locator": "cited publication",
+              "quoted_text": "Proof. Consider the scenario with 20 candidates whose feature vectors are represented in the table\nbelow:\n\n                             Candidate        Feature Vector\n                                  1           (2000000, 0, 0, 0, 0, 0, 0)\n                                  2           (0, 2000000, 0, 0, 0, 0, 0)\n                                  3           (0, 200000, 0, 0, 0, 0, 0)\n                                  4           (0, 100000, 100000, 0, 0, 0, 0)\n                                  5           (0, 0, 200000, 0, 0, 0, 0)\n                                  6           (0, 0, 20000, 0, 0, 0, 0)\n                                  7           (0, 0, 10000, 10000, 0, 0, 0)\n                                  8           (0, 0, 0, 20000, 0, 0, 0)\n                                  9           (0, 0, 0, 2000, 0, 0, 0)\n                                 10           (0, 0, 0, 1000, 1000, 0, 0)\n                                 11           (0, 0, 0, 0, 2000, 0, 0)\n                                 12           (0, 0, 0, 0, 200, 0, 0)\n                                 13           (0, 0, 0, 0, 100, 100, 0)\n                                 14           (0, 0, 0, 0, 0, 200, 0)\n                                 15           (0, 0, 0, 0, 0, 20, 0)\n                                 16           (0, 0, 0, 0, 0, 10, 10)\n                                 17           (0, 0, 0, 0, 0, 0, 20)\n                                 18           (0, 0, 0, 0, 0, 0, 2)\n                                 19           (1, 0, 0, 0, 0, 0, 1)\n                                 20           (2, 0, 0, 0, 0, 0, 0)\n\n\n                                                     25\n\fEach vector is constructed such that candidates are prioritized based on the magnitude of their\nfirst non-zero entry, leading to a natural ordering within grouped subsets: {1, 2} ≻ {3, 4, 5} ≻\n{6, 7, 8} ≻ {9, 10, 11} ≻ {12, 13, 14} ≻ {15, 16, 17} ≻ {18, 19, 20}. We will have six voters,\nwith rankings induced by the parameter vectors described below.\n\n                                      Voter    Parameter Vector\n                                        v1     (2, 1, 7, 6, 5, 4, 3)\n                                        v2     (3, 2, 1, 7, 6, 5, 4)\n                                        v3     (4, 3, 2, 1, 7, 6, 5)\n                                        v4     (5, 4, 3, 2, 1, 7, 6)\n                                        v5     (6, 5, 4, 3, 2, 1, 7)\n                                        v6     (7, 6, 5, 4, 3, 2, 1)\n\nEach voter ranks candidates within the group in increasing order except for a single reversed group.\nFor instance, v1 ranks candidates as 1 ≻ 2 ≻ 5 ≻ 4 ≻ 3 and so forth. Under this setup, no param-\neter vector θ can create a ranking that satisfies all voters’ preferences due to the cyclic nature and\nindividual group preferences.\nWe can check that linear Kemeny rule outputs a ranking in which candidate 2 is ranked above 1.\nFrom this analysis, we also conclude that the rules does not satisfy majority consistency either.",
+              "quoted_text_sha256": "0f588bbf88d442d53e2551521f68e95a84cfd267e5fafb2fb2ebc9586b976617"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1509,
+          "line_start": 1509,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem C.5. Linear Kemeny subject to PO violates separability and majority consistency.",
+          "quoted_text_sha256": "9abdbe07ea20398e4f84e75f7ae32fd13b78ee9ffbbeaff0e989de21d4ad0057"
+        }
+      ],
+      "source_kind": "theorem"
+    },
+    "theoremC_6": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 1572,
+              "line_start": 1530,
+              "publication_locator": "cited publication",
+              "quoted_text": "C.3   Leximax Plurality\n\nPlurality is probably the most ubiquitous voting rule in the world. Its ranking variant ranks the can-\ndidates in decreasing order with respect to their plurality scores. The plurality score of a candidate\nis equal to the number of her appearances in the first position. This rule is known to satisfy several\naxioms but in linear social choice cannot be directly applied, as not all rankings are feasibly.\nSimilarly to leximax Copeland, we define Leximax Plurality as follows. It ranks first the candidate\nwith the highest plurality score that can be ranked first under some parameter vector. Subject to\nthis first position, it ranks second the candidate with the highest plurality score that can feasibly be\nranked second, and so on, until all the positions are filled.\n\n\n                                                  26\n\fTheorem C.6. Leximax Plurality satisfies majority consistency, winner monotonicity and separa-\nbility.\n\nProof. Note that leximax Plurality always returns a ranking in which the candidate with the highest\nplurality score is ranked first, since there exists at least one feasible ranking in which this candidate\nis ranked first. From this observation, we immediately see that leximax Plurality satisfies majority\nconsistency.\nNow, suppose that on input profile π, the rule outputs a ranking such that candidate a is ranked first.\nThis means that a has the highest plurality score. Now, consider a profile π ′ which is similar to π\nwith the only exception being a ranking in which a is ranked in a higher position. It is clear that a\ncontinues to have the highest plurality score and therefore leximax Plurality will output a ranking in\nwhich a is ranked first. Therefore, winner monotonicity is satisfied. .\nIt remains to prove that the rule satisfies separability. Suppose that under two different profiles π1\nand π2 , the rule outputs σ, and under the aggregated profile π3 , it outputs σ ′ . We will show that\nσ = σ ′ . One main observation is that if a candidate a has a higher plurality score than a candidate b\nunder both π1 and π2 , then a has a higher plurality score than b under π3 as well. We will show the\ndesired property by induction on the positions of the ranking σ. Start from the first position in which\nsay candidate a is ranked first. From above, we know that a has the highest plurality score under\nboth π1 and π2 , which remains true in π3 , and therefore a is ranked first in σ ′ . Now, assume that up\nto position t − 1, σ and σ ′ are similar and denote with a′ the candidate that is ranked at position t of\nσ. We denote by S1 , S2 and S3 the set of candidates that are not ranked among the first t positions\nin σ and have higher plurality score than a′ under π1 , π2 , and π3 respectively. Since, a′ is ranked at\nthe t-th postion in σ, we get that, subject to the fixed first t − 1 position, no candidate in S1 ∪ S2 can\nbe ranked at the t-th position. The theorem follows by noticing that S3 ⊆ S1 ∪ S2 , which follows\nfrom the main observation above.\n\n\n\n\n                                                   27",
+              "quoted_text_sha256": "6d6521bdb2280db55cf2191d7eef596611757347047d858883063a021f252135"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 1544,
+          "line_start": 1543,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fTheorem C.6. Leximax Plurality satisfies majority consistency, winner monotonicity and separa-\nbility.",
+          "quoted_text_sha256": "e58303a8e844d26c8bcba0106dfab115284de88ba40150d46066b319699d395a"
+        }
+      ],
+      "source_kind": "theorem"
+    }
+  },
+  "source_artifact_sha256": "f529f160b3948006993860690b17106037212012b0dfe25d9d76ef013eed22b6",
+  "source_coverage_mode": "named_theoretical_statements"
+}

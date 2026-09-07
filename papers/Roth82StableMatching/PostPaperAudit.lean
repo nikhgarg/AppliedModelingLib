@@ -14,7 +14,7 @@ indexed serial procedure, and the Section 6 numerical witness.
 -/
 
 namespace Roth82StableMatching
-open EconCSLib.Matching
+open AppliedModelingLib.Matching
 
 namespace PostPaperAudit
 

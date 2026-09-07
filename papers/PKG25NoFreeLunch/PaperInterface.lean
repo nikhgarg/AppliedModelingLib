@@ -7,6 +7,7 @@ import PKG25NoFreeLunch.JointLawGeneralPartition
 import PKG25NoFreeLunch.JointLawDependentPartition
 import PKG25NoFreeLunch.JointLawMixture
 import PKG25NoFreeLunch.JointSourceModel
+import PKG25NoFreeLunch.SourceStrategy
 import PKG25NoFreeLunch.Proposition9FinalMixture
 import PKG25NoFreeLunch.Proposition7UniformMixture
 
@@ -101,6 +102,22 @@ theorem source_formula_probability_strategy_accuracy {n : ℕ}
     S.strategyAccuracy C =
       ∫ z : S.X × Label,
         if S.strategyClassifier C z.1 = z.2 then (1 : ℝ) else 0 ∂S.joint :=
+  rfl
+
+/-- The exact source-domain classifier applies `C : [0,1]^n → {0,1}` only to
+the cube profile supplied by the calibrated predictors. -/
+theorem source_formula_source_strategy_classifier {n : ℕ}
+    (S : JointLawCollaborationSetting n) (C : SourceCollaborationStrategy n)
+    (x : S.X) :
+    S.sourceStrategyClassifier C x = C (S.sourcePredictionProfile x) := rfl
+
+/-- The exact source-domain strategy accuracy is the raw joint-law integral. -/
+theorem source_formula_source_strategy_accuracy {n : ℕ}
+    (S : JointLawCollaborationSetting n) (C : SourceCollaborationStrategy n)
+    (_hwell : SourceStrategyWellFormed S C) :
+    S.sourceStrategyAccuracy C =
+      ∫ z : S.X × Label,
+        if S.sourceStrategyClassifier C z.1 = z.2 then (1 : ℝ) else 0 ∂S.joint :=
   rfl
 
 /-! ## Finite witness specialization -/
@@ -255,7 +272,7 @@ profile to a binary label.
 Source status: direct source definition, theorem section lines 26--29.
 -/
 abbrev source_definition_collaboration_strategy (n : ℕ) :=
-  CollaborationStrategy n
+  SourceCollaborationStrategy n
 
 /--
 An agent's induced classifier rounds that agent's probability prediction.
@@ -997,6 +1014,53 @@ theorem source_formula_proposition9_explicit_final_mixture {n : ℕ}
     norm_num [Smix, T, w]
 
 /--
+The Proposition 9 proof's displayed two-setting mixture equations for an
+arbitrary weight in `[0,1]`.  Strategy accuracy is asserted whenever it is
+well-formed on both component settings, which is the explicit expectation
+definedness convention used throughout this formalization.
+-/
+theorem source_formula_proposition9_weighted_mixture {n : ℕ}
+    (S1 S2 : JointLawCollaborationSetting n) (lambda : ℝ)
+    (hlambda0 : 0 ≤ lambda) (hlambda1 : lambda ≤ 1) :
+    ∃ Smix : JointLawCollaborationSetting n,
+      (∀ i : Fin n,
+        Smix.agentAccuracy i =
+          lambda * S1.agentAccuracy i +
+            (1 - lambda) * S2.agentAccuracy i) ∧
+      (∀ C : CollaborationStrategy n,
+        source_assumption_strategy_expectation_well_formed S1 C →
+        source_assumption_strategy_expectation_well_formed S2 C →
+          source_assumption_strategy_expectation_well_formed Smix C ∧
+            Smix.strategyAccuracy C =
+              lambda * S1.strategyAccuracy C +
+                (1 - lambda) * S2.strategyAccuracy C) := by
+  let settings : Fin 2 → JointLawCollaborationSetting n := fun r =>
+    if r = 0 then S1 else S2
+  let weights : Fin 2 → ℝ := fun r =>
+    if r = 0 then lambda else 1 - lambda
+  have hweights_nonneg : ∀ r : Fin 2, 0 ≤ weights r := by
+    intro r
+    fin_cases r
+    · simpa [weights] using hlambda0
+    · simpa [weights] using sub_nonneg.mpr hlambda1
+  have hweights_sum : ∑ r : Fin 2, weights r = 1 := by
+    norm_num [weights]
+  rcases source_proposition6_linear_combination_settings
+      settings weights hweights_nonneg hweights_sum with
+    ⟨Smix, hagent, hstrategy⟩
+  refine ⟨Smix, ?_, ?_⟩
+  · intro i
+    simpa [settings, weights] using hagent i
+  · intro C hS1 hS2
+    have hall : ∀ r : Fin 2,
+        source_assumption_strategy_expectation_well_formed (settings r) C := by
+      intro r
+      fin_cases r
+      · simpa [settings] using hS1
+      · simpa [settings] using hS2
+    simpa [settings, weights] using hstrategy C hall
+
+/--
 The source's final Proposition 9 mixture is an actual strict counterexample,
 not only a componentwise accounting identity.  The checked finite witness uses
 the explicit weights `7/8` and `1/8`, then embeds unchanged into the raw
@@ -1022,6 +1086,80 @@ theorem source_proposition9_explicit_final_mixture_strict_counterexample
     JointLawCollaborationSetting.ofFinite_agentAccuracy] using
     (proposition9FinalMixture_strategyAccuracy_lt_agentAccuracy
       (C := C) (k := k) (p := p) (q := q) hk hp hq hpk hqk hCp hCq i)
+
+/-! ## Exact source-domain bridges
+
+The finite construction library is intentionally totalized to real profiles.
+These endpoints expose the source's `[0,1]^n` strategy domain instead, and
+use `extendSourceStrategy` only as a displayed proof bridge.
+-/
+
+theorem source_proposition6_linear_combination_source_settings
+    {n ell : ℕ} (S : Fin ell → JointLawCollaborationSetting n)
+    (w : Fin ell → ℝ) (hw_nonneg : ∀ r : Fin ell, 0 ≤ w r)
+    (hw_sum : ∑ r : Fin ell, w r = 1) :
+    ∃ Smix : JointLawCollaborationSetting n,
+      (∀ i : Fin n,
+        Smix.agentAccuracy i = ∑ r : Fin ell, w r * (S r).agentAccuracy i) ∧
+      (∀ C : SourceCollaborationStrategy n,
+        (∀ r : Fin ell, SourceStrategyWellFormed (S r) C) →
+          SourceStrategyWellFormed Smix C ∧
+            Smix.sourceStrategyAccuracy C =
+              ∑ r : Fin ell, w r * (S r).sourceStrategyAccuracy C) := by
+  rcases source_proposition6_linear_combination_settings S w hw_nonneg hw_sum with
+    ⟨Smix, hagent, hstrategy⟩
+  refine ⟨Smix, hagent, ?_⟩
+  intro C hwell
+  have hwell' : ∀ r : Fin ell,
+      source_assumption_strategy_expectation_well_formed (S r)
+        (extendSourceStrategy C) := by
+    intro r
+    exact (sourceStrategyWellFormed_iff_extension (S r) C).mp (hwell r)
+  rcases hstrategy (extendSourceStrategy C) hwell' with ⟨hSmix, hacc⟩
+  refine ⟨(sourceStrategyWellFormed_iff_extension Smix C).mpr hSmix, ?_⟩
+  simp only [JointLawCollaborationSetting.sourceStrategyAccuracy_eq_extension]
+  exact hacc
+
+theorem source_theorem1_no_free_lunch_source {n : ℕ} [Nonempty (Fin n)]
+    (C : SourceCollaborationStrategy n) :
+    SourceReliableJointLaw C → SourceNonCollaborative C := by
+  intro hrel
+  exact sourceNonCollaborative_of_extension
+    (main_no_free_lunch_jointLaw (extendSourceStrategy C)
+      (reliableJointLaw_of_sourceReliableJointLaw hrel))
+
+theorem source_proposition7_reliability_forces_fixed_deferral_source
+    {n : ℕ} [Nonempty (Fin n)] (C : SourceCollaborationStrategy n) :
+    SourceReliableJointLaw C → ∃ k : Fin n, SourceDefersAwayFromHalf C k := by
+  intro hrel
+  exact source_defers_of_reliable hrel
+
+theorem source_lemma8_bad_tuple_source_counterexample_setting
+    {n : ℕ} {C : SourceCollaborationStrategy n} {p : Fin n → ℝ}
+    (hp : Interior p) {k : Fin n} (hhalf_ne : p k ≠ (1 : ℝ) / 2)
+    (hbad : C (Interior.toUnitCubeProfile p hp) ≠ roundProb (p k)) :
+    ∃ S : JointLawCollaborationSetting n,
+      SourceStrategyWellFormed S C ∧
+        S.sourceStrategyAccuracy C < S.agentAccuracy k ∧
+          ∀ i : Fin n, S.sourceStrategyAccuracy C ≤ S.agentAccuracy i := by
+  have hbad' : extendSourceStrategy C p ≠ roundProb (p k) := by
+    rw [show extendSourceStrategy C p = C (Interior.toUnitCubeProfile p hp) by
+      exact extendSourceStrategy_apply_cube C (Interior.toUnitCubeProfile p hp)]
+    exact hbad
+  rcases source_lemma8_bad_tuple_counterexample_setting (C := extendSourceStrategy C)
+      hp hhalf_ne hbad' with ⟨S, hwell, hstrict, hweak⟩
+  refine ⟨S, (sourceStrategyWellFormed_iff_extension S C).mpr hwell, ?_, ?_⟩
+  · simpa only [JointLawCollaborationSetting.sourceStrategyAccuracy_eq_extension]
+      using hstrict
+  · intro i
+    simpa only [JointLawCollaborationSetting.sourceStrategyAccuracy_eq_extension]
+      using hweak i
+
+theorem source_proposition9_reliability_forces_fixed_tie_label_source
+    {n : ℕ} [Nonempty (Fin n)] (C : SourceCollaborationStrategy n) (k : Fin n)
+    (hrel : SourceReliableJointLaw C) (hk : SourceDefersAwayFromHalf C k) :
+    ∃ alpha : Label, SourceConstantOnHalfSlice C k alpha :=
+  source_constant_half_of_reliable k hrel hk
 
 /-- Transparent v11 semantic target for `source_accuracy_loss_correction`. -/
 def source_accuracy_loss_correctionSpec (prediction : Label) (eta : ℝ) : Prop :=
@@ -1068,7 +1206,7 @@ def source_formula_probability_agent_accuracySpec {n : ℕ}
 
 /-- Transparent v11 semantic target for the source definition `source_definition_collaboration_strategy`. -/
 def source_definition_collaboration_strategySpec (n : ℕ) : Prop :=
-  source_definition_collaboration_strategy n = (CollaborationStrategy n)
+  source_definition_collaboration_strategy n = (UnitCubeProfile n → Label)
 
 /-- Transparent v11 semantic target for `source_formula_probability_strategy_classifier`. -/
 def source_formula_probability_strategy_classifierSpec {n : ℕ}
@@ -1230,17 +1368,20 @@ def source_proposition6_linear_combination_settingsSpec
   ∃ Smix : JointLawCollaborationSetting n,
       (∀ i : Fin n,
         Smix.agentAccuracy i = ∑ r : Fin ell, w r * (S r).agentAccuracy i) ∧
-      (∀ C : CollaborationStrategy n,
-        (∀ r : Fin ell,
-          source_assumption_strategy_expectation_well_formed (S r) C) →
-        source_assumption_strategy_expectation_well_formed Smix C ∧
-          Smix.strategyAccuracy C =
-            ∑ r : Fin ell, w r * (S r).strategyAccuracy C)
+      (∀ C : SourceCollaborationStrategy n,
+        (∀ r : Fin ell, SourceStrategyWellFormed (S r) C) →
+          SourceStrategyWellFormed Smix C ∧
+            Smix.sourceStrategyAccuracy C =
+              ∑ r : Fin ell, w r * (S r).sourceStrategyAccuracy C)
 
 /-- Transparent v11 semantic target for `source_theorem1_no_free_lunch`. -/
 def source_theorem1_no_free_lunchSpec {n : ℕ} [Nonempty (Fin n)]
-    (C : CollaborationStrategy n) : Prop :=
-  ReliableJointLaw C → NonCollaborative C
+    (C : SourceCollaborationStrategy n) : Prop :=
+  SourceReliableJointLaw C →
+    ∃ k : Fin n, ∃ alpha : Label,
+      (∀ p : UnitCubeProfile n, Interior p.1 → p.1 k ≠ (1 : ℝ) / 2 →
+        C p = roundProb (p.1 k)) ∧
+      (∀ p : UnitCubeProfile n, Interior p.1 → p.1 k = (1 : ℝ) / 2 → C p = alpha)
 
 /-- Transparent v11 semantic target for `source_iff_converse_boundary_counterexample`. -/
 def source_iff_converse_boundary_counterexampleSpec : Prop :=
@@ -1249,8 +1390,11 @@ def source_iff_converse_boundary_counterexampleSpec : Prop :=
 
 /-- Transparent v11 semantic target for `source_proposition7_reliability_forces_fixed_deferral`. -/
 def source_proposition7_reliability_forces_fixed_deferralSpec
-    {n : ℕ} [Nonempty (Fin n)] (C : CollaborationStrategy n) : Prop :=
-  ReliableJointLaw C → ∃ k : Fin n, DefersAwayFromHalf C k
+    {n : ℕ} [Nonempty (Fin n)] (C : SourceCollaborationStrategy n) : Prop :=
+  SourceReliableJointLaw C →
+    ∃ k : Fin n,
+      ∀ p : UnitCubeProfile n, Interior p.1 → p.1 k ≠ (1 : ℝ) / 2 →
+        C p = roundProb (p.1 k)
 
 /-- Transparent v11 semantic target for `source_proposition7_uniform_mixture_strict_counterexample`. -/
 def source_proposition7_uniform_mixture_strict_counterexampleSpec
@@ -1262,13 +1406,13 @@ def source_proposition7_uniform_mixture_strict_counterexampleSpec
 
 /-- Transparent v11 semantic target for `source_lemma8_bad_tuple_counterexample_setting`. -/
 def source_lemma8_bad_tuple_counterexample_settingSpec
-    {n : ℕ} {C : CollaborationStrategy n} {p : Fin n → ℝ} (hp : Interior p)
+    {n : ℕ} {C : SourceCollaborationStrategy n} {p : Fin n → ℝ} (hp : Interior p)
     {k : Fin n} (hhalf_ne : p k ≠ (1 : ℝ) / 2)
-    (hbad : C p ≠ roundProb (p k)) : Prop :=
+    (hbad : C (Interior.toUnitCubeProfile p hp) ≠ roundProb (p k)) : Prop :=
   ∃ S : JointLawCollaborationSetting n,
-      source_assumption_strategy_expectation_well_formed S C ∧
-        S.strategyAccuracy C < S.agentAccuracy k ∧
-          ∀ i : Fin n, S.strategyAccuracy C ≤ S.agentAccuracy i
+      SourceStrategyWellFormed S C ∧
+        S.sourceStrategyAccuracy C < S.agentAccuracy k ∧
+          ∀ i : Fin n, S.sourceStrategyAccuracy C ≤ S.agentAccuracy i
 
 /-- Transparent v11 semantic target for `source_formula_lemma8_masses`. -/
 def source_formula_lemma8_massesSpec
@@ -1429,9 +1573,12 @@ def source_proposition9_s2_strict_gapSpec {n : ℕ}
 
 /-- Transparent v11 semantic target for `source_proposition9_reliability_forces_fixed_tie_label`. -/
 def source_proposition9_reliability_forces_fixed_tie_labelSpec
-    {n : ℕ} [Nonempty (Fin n)] (C : CollaborationStrategy n) (k : Fin n)
-    (hrel : ReliableJointLaw C) (hk : DefersAwayFromHalf C k) : Prop :=
-  ∃ alpha : Label, ConstantOnHalfSlice C k alpha
+    {n : ℕ} [Nonempty (Fin n)] (C : SourceCollaborationStrategy n) (k : Fin n)
+    (hrel : SourceReliableJointLaw C)
+    (hk : ∀ p : UnitCubeProfile n, Interior p.1 → p.1 k ≠ (1 : ℝ) / 2 →
+      C p = roundProb (p.1 k)) : Prop :=
+  ∃ alpha : Label,
+    ∀ p : UnitCubeProfile n, Interior p.1 → p.1 k = (1 : ℝ) / 2 → C p = alpha
 
 /-- Transparent v11 semantic target for `source_formula_proposition9_explicit_final_mixture`. -/
 def source_formula_proposition9_explicit_final_mixtureSpec {n : ℕ}
@@ -1546,38 +1693,68 @@ theorem source_formula_individual_accuracySpec_proof : source_formula_individual
 def source_formula_induced_collaboration_classifierSpec : Prop :=
   (∀  {n : ℕ}
     (S : JointLawCollaborationSetting n)
-    (C : CollaborationStrategy n)
-    (x : S.X), S.strategyClassifier C x = C (fun i => S.pred i x))
+    (C : SourceCollaborationStrategy n)
+    (x : S.X), S.sourceStrategyClassifier C x = C (S.sourcePredictionProfile x))
 
 /-- Checked proof endpoint for the v11 source-item target `source_formula_induced_collaboration_classifier`. -/
 theorem source_formula_induced_collaboration_classifierSpec_proof : source_formula_induced_collaboration_classifierSpec := by
   unfold source_formula_induced_collaboration_classifierSpec
-  exact source_formula_probability_strategy_classifier
+  exact source_formula_source_strategy_classifier
 
 /-- Transparent v11 source-item target for `source_definition_strategy_accuracy`. -/
 def source_definition_strategy_accuracySpec : Prop :=
   (∀  {n : ℕ}
-    (S : JointLawCollaborationSetting n) (C : CollaborationStrategy n)
-    (_hwell : source_assumption_strategy_expectation_well_formed S C), S.strategyAccuracy C =
+    (S : JointLawCollaborationSetting n) (C : SourceCollaborationStrategy n)
+    (_hwell : SourceStrategyWellFormed S C), S.sourceStrategyAccuracy C =
       ∫ z : S.X × Label,
-        if S.strategyClassifier C z.1 = z.2 then (1 : ℝ) else 0 ∂S.joint)
+        if S.sourceStrategyClassifier C z.1 = z.2 then (1 : ℝ) else 0 ∂S.joint)
 
 /-- Checked proof endpoint for the v11 source-item target `source_definition_strategy_accuracy`. -/
 theorem source_definition_strategy_accuracySpec_proof : source_definition_strategy_accuracySpec := by
   unfold source_definition_strategy_accuracySpec
-  exact source_formula_probability_strategy_accuracy
+  exact source_formula_source_strategy_accuracy
+
+/-- Transparent v11 source-item target for the nonempty-agent convention that
+makes the source minimum over `[n]` meaningful. -/
+def source_model_nonempty_agent_domainSpec : Prop :=
+  ∀ {n : ℕ} [Nonempty (Fin n)],
+    ∀ C : SourceCollaborationStrategy n, SourceReliableJointLaw C →
+      ∃ k : Fin n, SourceDefersAwayFromHalf C k
+
+/-- The approved convention is carried as an explicit instance in the result
+binder rather than silently totalizing the empty-agent case. -/
+theorem source_model_nonempty_agent_domainSpec_proof :
+    source_model_nonempty_agent_domainSpec := by
+  intro n inst C hrel
+  exact source_defers_of_reliable hrel
+
+/-- Transparent v11 source-item target for source Definition 3 reliability. -/
+def source_definition_reliabilitySpec : Prop :=
+  ∀ {n : ℕ} [Nonempty (Fin n)] (C : SourceCollaborationStrategy n),
+    SourceReliableJointLaw C ↔
+      ∀ S : JointLawCollaborationSetting n,
+        SourceStrategyWellFormed S C →
+          ∃ i : Fin n, S.agentAccuracy i ≤ S.sourceStrategyAccuracy C
+
+theorem source_definition_reliabilitySpec_proof : source_definition_reliabilitySpec := by
+  intro n inst C
+  rfl
 
 /-- Transparent v11 source-item target for `source_definition_non_collaboration`. -/
 def source_definition_non_collaborationSpec : Prop :=
-  (∀  {n : ℕ}
-    (C : CollaborationStrategy n), NonCollaborative C ↔
+  (∀  {n : ℕ} [Nonempty (Fin n)]
+    (C : SourceCollaborationStrategy n), SourceNonCollaborative C ↔
       ∃ k : Fin n, ∃ α : Label,
-        DefersAwayFromHalf C k ∧ ConstantOnHalfSlice C k α)
+        (∀ p : UnitCubeProfile n, Interior p.1 → p.1 k ≠ (1 : ℝ) / 2 →
+          C p = roundProb (p.1 k)) ∧
+        (∀ p : UnitCubeProfile n, Interior p.1 → p.1 k = (1 : ℝ) / 2 →
+          C p = α))
 
 /-- Checked proof endpoint for the v11 source-item target `source_definition_non_collaboration`. -/
 theorem source_definition_non_collaborationSpec_proof : source_definition_non_collaborationSpec := by
   unfold source_definition_non_collaborationSpec
-  exact source_formula_non_collaborative_iff
+  intro n inst C
+  rfl
 
 /-- Transparent v11 source-item target for `source_definition_correct`. -/
 def source_definition_correctSpec : Prop :=
@@ -1628,17 +1805,16 @@ def source_proposition6_linear_combinationSpec : Prop :=
     (hw_sum : ∑ r : Fin ell, w r = 1), ∃ Smix : JointLawCollaborationSetting n,
       (∀ i : Fin n,
         Smix.agentAccuracy i = ∑ r : Fin ell, w r * (S r).agentAccuracy i) ∧
-      (∀ C : CollaborationStrategy n,
-        (∀ r : Fin ell,
-          source_assumption_strategy_expectation_well_formed (S r) C) →
-        source_assumption_strategy_expectation_well_formed Smix C ∧
-          Smix.strategyAccuracy C =
-            ∑ r : Fin ell, w r * (S r).strategyAccuracy C))
+      (∀ C : SourceCollaborationStrategy n,
+        (∀ r : Fin ell, SourceStrategyWellFormed (S r) C) →
+          SourceStrategyWellFormed Smix C ∧
+            Smix.sourceStrategyAccuracy C =
+              ∑ r : Fin ell, w r * (S r).sourceStrategyAccuracy C))
 
 /-- Checked proof endpoint for the v11 source-item target `source_proposition6_linear_combination`. -/
 theorem source_proposition6_linear_combinationSpec_proof : source_proposition6_linear_combinationSpec := by
   unfold source_proposition6_linear_combinationSpec
-  exact source_proposition6_linear_combination_settings
+  exact source_proposition6_linear_combination_source_settings
 
 /-- Transparent v11 source-item target for `source_partition_finite_measurable_repair`. -/
 def source_partition_finite_measurable_repairSpec : Prop :=
@@ -1675,13 +1851,8 @@ theorem source_partition_finite_measurable_repairSpec_proof : source_partition_f
 
 /-- Transparent v11 source-item target for `source_unnumbered_iff_restatement`. -/
 def source_unnumbered_iff_restatementSpec : Prop :=
-  (NonCollaborative boundaryFlipStrategy ∧
-      ¬ ReliableJointLaw boundaryFlipStrategy)
-
-/-- Checked proof endpoint for the v11 source-item target `source_unnumbered_iff_restatement`. -/
-theorem source_unnumbered_iff_restatementSpec_proof : source_unnumbered_iff_restatementSpec := by
-  unfold source_unnumbered_iff_restatementSpec
-  exact source_iff_converse_boundary_counterexample
+  ∀ {n : ℕ} [Nonempty (Fin n)] (C : CollaborationStrategy n),
+    ReliableJointLaw C ↔ NonCollaborative C
 
 /-- Transparent v11 source-item target for `source_formula_proposition7_average_mixture`. -/
 def source_formula_proposition7_average_mixtureSpec : Prop :=
@@ -1741,5 +1912,39 @@ def source_formula_proposition9_final_mixtureSpec : Prop :=
 theorem source_formula_proposition9_final_mixtureSpec_proof : source_formula_proposition9_final_mixtureSpec := by
   unfold source_formula_proposition9_final_mixtureSpec
   exact ⟨source_formula_proposition9_explicit_final_mixture, source_proposition9_explicit_final_mixture_strict_counterexample⟩
+
+/-! ## Current result-review targets
+
+The source definitions, formulas, models, and conventions above are reviewed
+through their actual Lean declarations.  The following propositions are the
+remaining asserted source results that need distinct proof endpoints in
+`ProofInterface.lean`.
+-/
+
+/-- Proposition 7: reliability forces off-tie deferral to one fixed agent. -/
+def source_proposition7_fixed_deferralSpec : Prop :=
+  ∀ {n : ℕ} [Nonempty (Fin n)] (C : SourceCollaborationStrategy n),
+    SourceReliableJointLaw C → ∃ k : Fin n,
+      ∀ p : UnitCubeProfile n, Interior p.1 → p.1 k ≠ (1 : ℝ) / 2 →
+        C p = roundProb (p.1 k)
+
+/-- Lemma 8: a bad off-tie profile yields the stated weak/strict witness. -/
+def source_lemma8_bad_tupleSpec : Prop :=
+  ∀ {n : ℕ} {C : SourceCollaborationStrategy n} {p : Fin n → ℝ}
+    (hp : Interior p) {k : Fin n}, p k ≠ (1 : ℝ) / 2 →
+      C (Interior.toUnitCubeProfile p hp) ≠ roundProb (p k) →
+        ∃ S : JointLawCollaborationSetting n,
+          SourceStrategyWellFormed S C ∧
+            S.sourceStrategyAccuracy C < S.agentAccuracy k ∧
+              ∀ i : Fin n, S.sourceStrategyAccuracy C ≤ S.agentAccuracy i
+
+/-- Proposition 9: reliability and off-tie deferral force a fixed tie label. -/
+def source_proposition9_constant_tie_labelSpec : Prop :=
+  ∀ {n : ℕ} [Nonempty (Fin n)] (C : SourceCollaborationStrategy n) (k : Fin n),
+    SourceReliableJointLaw C →
+      (∀ p : UnitCubeProfile n, Interior p.1 → p.1 k ≠ (1 : ℝ) / 2 →
+        C p = roundProb (p.1 k)) →
+        ∃ alpha : Label,
+          ∀ p : UnitCubeProfile n, Interior p.1 → p.1 k = (1 : ℝ) / 2 → C p = alpha
 
 end PKG25NoFreeLunch

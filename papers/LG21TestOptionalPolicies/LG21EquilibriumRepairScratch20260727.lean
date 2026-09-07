@@ -11,8 +11,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib
-open EconCSLib.Probability
+open AppliedModelingLib
+open AppliedModelingLib.Probability
 open MeasureTheory
 open ProbabilityTheory
 
@@ -146,7 +146,7 @@ theorem lg21_equilibrium_repair_optional_sequential_equilibrium_of_all_take
   constructor
   · intro base
     exact
-      EconCSLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
+      AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
         (hReport base)
   · exact hconsistent
 
@@ -265,7 +265,7 @@ theorem lg21_equilibrium_repair_report_required_sequential_equilibrium_of_cutoff
   constructor
   · intro base
     exact
-      EconCSLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
+      AppliedModelingLib.noProfitableBinaryChoiceDeviation_of_choice_iff_payoff_le
         (hTake · base)
   · exact hconsistent
 

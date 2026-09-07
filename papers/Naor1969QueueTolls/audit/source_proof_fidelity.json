@@ -1,0 +1,86 @@
+{
+  "checked_proof_steps": [
+    {
+      "checked_conclusion": "Lean constructs a normalized stationary generator law, proves the finite generating-function identity, and proves the admission/service flow equality together with the traffic-intensity ratio identity for positive capacity.",
+      "id": "NAOR1969-STATIONARY-FLOW-01",
+      "scope": "The source-facing stationary-law and stationary-performance endpoints expose the finite threshold, positive service rate, positive traffic intensity, and the nonzero-capacity side condition of equation (11).",
+      "source_locator": "cited publication:132-281",
+      "source_step": "Solve the finite birth-death balance equations by normalized geometric masses, then derive the generating function and equality of admitted and completed stationary flows."
+    },
+    {
+      "checked_conclusion": "Lean proves the advertised discrete conclusion directly: the one-step welfare difference has the sign of service value minus cumulative delay exposure, that exposure is monotone, and the first crossing is a global welfare maximizer no higher than the self-interested floor threshold.",
+      "id": "NAOR1969-SOCIAL-DISCRETE-REPLACEMENT-01",
+      "scope": "This is a proof-route deviation, not a source defect or a weakened endpoint. The real-exponent v₀ parametrization remains an explicitly inventoried proof-support formula and is not assumed by Lean.",
+      "source_locator": "cited publication:341-503",
+      "source_step": "The source introduces a continuous crossing value v₀ through equation (23), uses its floor in equation (24), and obtains the comparison in equation (25)."
+    },
+    {
+      "checked_conclusion": "Lean maximizes the revenue objective on the finite social prefix and proves by an exact one-step revenue identity that revenue cannot increase after the social crossing; it therefore obtains a revenue maximizer no higher than a social maximizer.",
+      "id": "NAOR1969-REVENUE-DISCRETE-REPLACEMENT-01",
+      "scope": "This establishes the printed discrete ordering without assuming the real-exponent vᵣ parametrization. The source formula remains proof support in the source inventory.",
+      "source_locator": "cited publication:768-834",
+      "source_step": "The source introduces the continuous revenue crossing value vᵣ in equation (28), identifies a floor threshold in equation (29), and compares it with v₀ in equation (30)."
+    },
+    {
+      "checked_conclusion": "Lean proves the floor threshold induced by exactly that mixed-bound interval and proves algebraically that customer income plus toll revenue equals the social-welfare objective at every capacity.",
+      "id": "NAOR1969-TOLL-TRANSFER-01",
+      "scope": "The paper-facing toll endpoint assumes a selected social maximizer from the preceding result and concludes both threshold implementation and combined-income optimality.",
+      "source_locator": "cited publication:731-761",
+      "source_step": "Choose a fee strictly above the rejecting-state gain cutoff and no greater than the accepting-state gain cutoff, then include collected revenue in combined income."
+    }
+  ],
+  "defects": [],
+  "model_conventions": [
+    {
+      "checked_scope": "The finite-capacity birth-death rates, normalized geometric law, and paper-local stationary probability are linked by explicit bridge theorems.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "A threshold n is a finite queue capacity: an arrival joins exactly when the observed queue length is below n, and the state law is supported on the natural numbers from zero through n.",
+      "id": "NAOR1969-FINITE-ADMISSION-01",
+      "source_locator": "cited publication:82-95; cited publication:132-173",
+      "why_needed": "The source describes the finite-threshold policy in prose before writing balance equations. Lean represents it by the birth rate rho times mu below capacity and zero at capacity."
+    },
+    {
+      "checked_scope": "The self-threshold endpoint proves nonnegative gain strictly below the floor and negative gain at and above it; the toll endpoint uses a strict lower and weak upper fee bound.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "A customer joins when the joining gain is zero; hence the lower private-gain cutoff is weak and the upper rejection cutoff is strict.",
+      "id": "NAOR1969-TIE-AT-ZERO-01",
+      "source_locator": "cited publication:89-95; cited publication:296-338",
+      "why_needed": "This fixes the floor convention in equations (13)--(16) and the mixed strict/weak toll interval in equation (26)."
+    },
+    {
+      "checked_scope": "The stationary mass, normalizer, mean, generating function, welfare, and revenue APIs are total finite-sum expressions; nonunit rational identities are auxiliary consequences only.",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "All finite-capacity stationary quantities are represented by finite sums at rho equal to one, rather than by undefined rational displays; these sums give the finite values the source says are obtained by limits.",
+      "id": "NAOR1969-RHO-ONE-01",
+      "source_locator": "cited publication:283-288; cited publication:477-490",
+      "why_needed": "The source suppresses singularity qualifications for several displayed geometric formulas. The finite-sum representation preserves their intended traffic-intensity-one meaning without adding a non-source exclusion."
+    }
+  ],
+  "paper": "Naor1969QueueTolls",
+  "policy": "This ledger records source-proof review by exact source locator and mathematical conclusion. The continuous crossing formulas are explicit proof support; the completed discrete endpoints use an alternate finite-sum proof and introduce no added paper assumption.",
+  "review_status": "reviewed_no_defects",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The M/M/1 finite-admission model, truncated geometric stationary law, generating function, stationary mean, and arrival/service flow identities.",
+      "source_locator": "cited publication:82-281"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The individual joining-gain calculation, tie convention, and self-interested floor threshold.",
+      "source_locator": "cited publication:296-338"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The social objective, discrete global-maximizer conclusion, and the continuous v₀ crossing presentation used in the printed derivation.",
+      "source_locator": "cited publication:341-503"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The toll interval, transfer-inclusive objective, toll-revenue objective, and revenue/social threshold ordering.",
+      "source_locator": "cited publication:731-847"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "1f0b933683a0f80dd0f70091fde0be6168bfbe7d8ec979f06008b4b691880614"
+}

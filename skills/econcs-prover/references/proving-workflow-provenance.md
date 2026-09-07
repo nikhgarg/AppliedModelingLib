@@ -106,7 +106,7 @@ The broader source ledger for AI-formalization workflows lives in
   *Kimina-Prover Preview*; Chen et al., *Seed-Prover*; Lin, Sun, Welleck, and
   Yang, *Lean-STaR*; and Li et al., *HunyuanProver*.
   Lesson used here: self-correction, subgoal decomposition, guided tree search,
-  and synthetic-data loops are useful inspiration, but EconCSLib agents should
+  and synthetic-data loops are useful inspiration, but AppliedModelingLib agents should
   still work through narrow Lean checks, local retrieval, and readable final
   proofs.
 

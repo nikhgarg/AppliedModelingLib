@@ -18,7 +18,7 @@ noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
 open scoped ENNReal
-open EconCSLib Probability
+open AppliedModelingLib Probability
 
 /--
 An attained reporter law whose PBO is a strictly increasing conditional
@@ -137,7 +137,7 @@ theorem lg21_selectedGaussianSignal_selectedScoreLaw_absolutelyContinuous_testLa
   exact Measure.smul_absolutelyContinuous.trans
     ((withDensity_absolutelyContinuous scoreLaw
       (selectionMass posterior event)).trans
-      (EconCSLib.Probability.gaussianReal_absolutelyContinuous_of_positive_variances
+      (AppliedModelingLib.Probability.gaussianReal_absolutelyContinuous_of_positive_variances
         priorMean skill hscoreNN hnoiseNN))
 
 /-- The observed-score marginal of a positive selected Gaussian experiment is

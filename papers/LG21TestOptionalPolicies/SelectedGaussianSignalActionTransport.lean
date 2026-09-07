@@ -1,13 +1,13 @@
 import LG21TestOptionalPolicies.SelectedGaussianSignalPosteriorBridge
 import LG21TestOptionalPolicies.SelectedSignalPosteriorBridge
-import EconCSLib.Foundations.Probability.FiniteGaussianSignalKernelRCD
+import AppliedModelingLib.Foundations.Probability.FiniteGaussianSignalKernelRCD
 
 namespace LG21TestOptionalPolicies
 
 noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
-open EconCSLib Probability
+open AppliedModelingLib Probability
 open scoped ENNReal ProbabilityTheory
 
 /--

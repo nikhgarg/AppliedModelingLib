@@ -19,10 +19,10 @@ def bayes_optimal_definitionSpec {Ω σ : Type*} [Fintype Ω] [DecidableEq Ω]
     (posterior : σ → Fin N → Fin K → ℝ) : Prop :=
   DSWG24DiscretizationBias.ProofBridge.bayesOptimal (Ω := Ω) (σ := σ) (N := N) (K := K) (μ := μ) (observedDataset := observedDataset) (trueLabels := trueLabels) (posterior := posterior) ↔
     ∀ xs i y,
-        EconCSLib.pmfProb μ
+        AppliedModelingLib.pmfProb μ
             (fun w => observedDataset w = xs ∧ trueLabels w i = y) =
           posterior xs i y *
-            EconCSLib.pmfProb μ (fun w => observedDataset w = xs)
+            AppliedModelingLib.pmfProb μ (fun w => observedDataset w = xs)
 
 /-- Source-facing semantic target for the definition `posteriorSimplex`. -/
 def posterior_simplex_definitionSpec {X Y : Type*} [Fintype Y] (q : X → Y → ℝ) : Prop :=
@@ -44,6 +44,12 @@ def calibration_definitionSpec {X Y : Type*} [MeasurableSpace (X × Y)] [Decidab
             else 0) ∂μ) =
             ∫ xy, (if q xy.1 y ∈ s then q xy.1 y else 0) ∂μ
 
+/-- Source-facing semantic target for the weak argmax definition. -/
+def argmax_rule_definitionSpec {X Y : Type*}
+    (q : X → Y → ℝ) (rule : X → Y) : Prop :=
+  DSWG24DiscretizationBias.ProofBridge.isArgmaxRule (X := X) (Y := Y) q rule ↔
+    ∀ x y, q x y ≤ q x (rule x)
+
 /-- Source-facing semantic target for the definition `isTieBrokenArgmaxRule`. -/
 def tie_broken_argmax_definitionSpec {N K : ℕ}
     (q : Fin N → Fin K → ℝ) (rule : Fin N → Fin K) : Prop :=
@@ -60,6 +66,17 @@ def independent_rule_definitionSpec {X : Type*} {N K : ℕ}
     (rule : (Fin N → X) → Fin N → Fin K) : Prop :=
   DSWG24DiscretizationBias.ProofBridge.isIndependentRule (X := X) (N := N) (K := K) (rule := rule) ↔
     ∃ d : X → Fin K, ∀ xs i, rule xs i = d (xs i)
+
+/-- Source-facing semantic target for the randomized independent-rule definition. -/
+def independent_randomized_rule_definitionSpec {X : Type*} {N K : ℕ}
+    (jointProbability : (Fin N → X) → (Fin N → Fin K) → ℝ) : Prop :=
+  DSWG24DiscretizationBias.ProofBridge.isIndependentRandomizedRule
+      (X := X) (N := N) (K := K) jointProbability ↔
+    ∃ rowProbability : X → Fin K → ℝ,
+      (∀ x y, 0 ≤ rowProbability x y) ∧
+        (∀ x, (∑ y : Fin K, rowProbability x y) = 1) ∧
+          ∀ xs decision,
+            jointProbability xs decision = ∏ i : Fin N, rowProbability (xs i) (decision i)
 
 /-- Source-facing semantic target for the definition `maximizesEquation1`. -/
 def integer_optimization_rule_definitionSpec {N K : ℕ} (γ : ℝ)
@@ -84,6 +101,25 @@ def nontrivial_reference_family_definitionSpec {Sample : Type*} {N K : ℕ}
     referenceSimplexAt prefAt ∧
         (∀ sample, isAggregateFirstArgmax (posterior sample) (aggregateArgmax sample)) ∧
           (∀ sample, 1 / (N : ℝ) ≤ prefAt sample (aggregateArgmax sample))
+
+/-- Source-facing semantic target for the dataset-indexed reference distribution. -/
+def reference_distribution_definitionSpec {Sample : Type*} {K : ℕ}
+    (prefAt : Sample → Fin K → ℝ) : Prop :=
+  DSWG24DiscretizationBias.ProofBridge.referenceSimplexAt (Sample := Sample) (K := K) prefAt ↔
+    ∀ sample,
+      (∀ y, 0 ≤ prefAt sample y) ∧ (∑ y : Fin K, prefAt sample y) = 1
+
+/-- Source-facing semantic target for the aggregate-most-likely class definition. -/
+def dataset_most_likely_class_definitionSpec {Sample : Type*} {N K : ℕ}
+    (posterior : Sample → Fin N → Fin K → ℝ)
+    (aggregateArgmax : Sample → Fin K) : Prop :=
+  (∀ sample,
+    DSWG24DiscretizationBias.ProofBridge.isAggregateFirstArgmax
+      (posterior sample) (aggregateArgmax sample)) ↔
+    ∀ sample,
+      DSWG24DiscretizationBias.ProofBridge.isFirstArgmax
+        (DSWG24DiscretizationBias.ProofBridge.aggregatePosterior (posterior sample))
+        (aggregateArgmax sample)
 
 /-- Source-facing semantic target migrated from `theorem1iNoInformationBiasSpec`. -/
 def theorem1i_no_information_biasSpec
@@ -115,7 +151,8 @@ def theorem1iii_argmax_bias_le_maeSpec
     (hsimplex : posteriorSimplex q)
     (hscore : ∀ y : Y, Measurable (fun xy : X × Y => q xy.1 y))
     (hcal : calibrated μ q) : Prop :=
-  continuousJointPriorBias μ argmaxRule y ≤ continuousJointClassifierMAE μ q
+  continuousJointPriorBias μ argmaxRule y ≤ continuousJointClassifierMAE μ q ∧
+    continuousJointAggregateBias μ q argmaxRule y ≤ continuousJointClassifierMAE μ q
 
 /-- Source-facing semantic target migrated from `theorem1iiiTightBinaryExampleSpec`. -/
 def theorem1iii_tight_binary_exampleSpec : Prop :=
@@ -128,7 +165,7 @@ def theorem2i_joint_rule_existsSpec
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (hK : 2 ≤ K) (hNK : K < N)
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (γ : ℝ) (posterior : σ → Fin N → Fin K → ℝ)
@@ -147,20 +184,20 @@ def theorem2ii_argmax_accuracy_maximizingSpec
     {ω σ : Type*} {N K : ℕ} [NeZero K]
     (hK : 2 ≤ K) (hNK : K < N)
     (expect : (ω → ℝ) → ℝ)
-    (hlin : EconCSLib.Decision.FiniteLinearExpectation expect)
+    (hlin : AppliedModelingLib.Decision.FiniteLinearExpectation expect)
     (observedDataset : ω → σ)
     (trueLabels : ω → Fin N → Fin K)
     (posterior : σ → Fin N → Fin K → ℝ)
     {decisionRule argmaxRule : σ → Fin N → Fin K}
     (hargmax :
-      ∀ xs, EconCSLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs))
+      ∀ xs, AppliedModelingLib.Decision.IsPointwiseMax (posterior xs) (argmaxRule xs))
     (hbayesRow : ∀ i (choose : σ → Fin K),
       expect (fun x =>
           if choose (observedDataset x) = trueLabels x i then (1 : ℝ) else 0) =
         expect (fun x => posterior (observedDataset x) i (choose (observedDataset x)))) : Prop :=
-  EconCSLib.Decision.expectedDecisionAccuracy
+  AppliedModelingLib.Decision.expectedDecisionAccuracy
           expect observedDataset trueLabels decisionRule ≤
-        EconCSLib.Decision.expectedDecisionAccuracy
+        AppliedModelingLib.Decision.expectedDecisionAccuracy
           expect observedDataset trueLabels argmaxRule
 
 /-- Source-facing semantic target migrated from `theorem2iiiParetoOptimalAgreesArgmaxSpec`. -/
@@ -181,7 +218,7 @@ def theorem2iii_non_argmax_not_paretoSpec
         (Theorem2iii.expectedDatasetFidelityAt
           (Theorem2iii.iidSamplePMF μ N) prefAt)
         (fun sample => Theorem2iii.sampledDecision rule sample) →
-      EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0
+      AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0
 
 /-- Source-facing semantic target migrated from `theorem2iiiWeightedObjectiveMaximizerAgreesArgmaxSpec`. -/
 def theorem2iii_weighted_objective_maximizer_agrees_argmaxSpec
@@ -207,7 +244,96 @@ def theorem2iii_weighted_objective_maximizer_agrees_argmaxSpec
             (Theorem2iii.expectedDatasetFidelityAt
               (Theorem2iii.iidSamplePMF μ N) prefAt)
             (fun sample => Theorem2iii.sampledDecision rule sample)) →
-      EconCSLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0
+      AppliedModelingLib.pmfProb μ (fun x : X => rule x ≠ argmaxRule x) = 0
+
+/-- Source-facing randomized Pareto endpoint for Theorem 2(iii). -/
+def theorem2iii_randomized_non_argmax_not_paretoSpec
+    {Z X : Type*} [Fintype Z] [DecidableEq Z] {N K : ℕ}
+    (ν : PMF Z) (feature : Z → X) (posterior : X → Fin K → ℝ)
+    (rule : Z → Fin K) (argmaxRule : X → Fin K)
+    (aggregateArgmax : (Fin N → X) → Fin K)
+    (prefAt : (Fin N → X) → Fin K → ℝ) : Prop :=
+  2 ≤ K → K < N →
+  (∀ x, isFirstArgmax (posterior x) (argmaxRule x)) →
+    0 < AppliedModelingLib.pmfProb ν
+      (fun z : Z => rule z ≠ argmaxRule (feature z)) →
+    sourcePNq
+      (fun sample : Fin N → X => Theorem2iii.sampledPosterior posterior sample)
+      aggregateArgmax prefAt →
+    0 < N →
+      ¬ Pareto.ParetoOptimal
+        (Theorem2iii.expectedDatasetAccuracy (Theorem2iii.iidSamplePMF ν N)
+          (fun sample => Theorem2iii.sampledPosterior
+            (fun z y => posterior (feature z) y) sample))
+        (Theorem2iii.expectedDatasetFidelityAt (Theorem2iii.iidSamplePMF ν N)
+          (fun sample => prefAt (fun i => feature (sample i))))
+        (fun sample => Theorem2iii.sampledDecision rule sample)
+
+/-- Source-facing randomized weighted-objective endpoint for Theorem 2(iii). -/
+def theorem2iii_randomized_weighted_objective_maximizer_agrees_argmaxSpec
+    {Z X : Type*} [Fintype Z] [DecidableEq Z] {N K : ℕ}
+    (ν : PMF Z) (feature : Z → X) (posterior : X → Fin K → ℝ)
+    (rule : Z → Fin K) (argmaxRule : X → Fin K)
+    (aggregateArgmax : (Fin N → X) → Fin K)
+    (prefAt : (Fin N → X) → Fin K → ℝ) (γ : ℝ) : Prop :=
+  2 ≤ K → K < N →
+  (∀ x, isFirstArgmax (posterior x) (argmaxRule x)) →
+    0 < AppliedModelingLib.pmfProb ν
+      (fun z : Z => rule z ≠ argmaxRule (feature z)) →
+    sourcePNq
+      (fun sample : Fin N → X => Theorem2iii.sampledPosterior posterior sample)
+      aggregateArgmax prefAt →
+    0 ≤ γ → γ < 1 → 0 < N →
+      ¬ ∀ other : (Fin N → Z) → Fin N → Fin K,
+        Pareto.weightedObjective γ
+            (Theorem2iii.expectedDatasetAccuracy (Theorem2iii.iidSamplePMF ν N)
+              (fun sample => Theorem2iii.sampledPosterior
+                (fun z y => posterior (feature z) y) sample))
+            (Theorem2iii.expectedDatasetFidelityAt (Theorem2iii.iidSamplePMF ν N)
+              (fun sample => prefAt (fun i => feature (sample i)))) other ≤
+          Pareto.weightedObjective γ
+            (Theorem2iii.expectedDatasetAccuracy (Theorem2iii.iidSamplePMF ν N)
+              (fun sample => Theorem2iii.sampledPosterior
+                (fun z y => posterior (feature z) y) sample))
+            (Theorem2iii.expectedDatasetFidelityAt (Theorem2iii.iidSamplePMF ν N)
+              (fun sample => prefAt (fun i => feature (sample i))))
+            (fun sample => Theorem2iii.sampledDecision rule sample)
+
+/-- Combined randomized independent-rule endpoints for Theorem 2(iii). -/
+def theorem2iii_randomized_augmented_endpointsSpec
+    {Z X : Type*} [Fintype Z] [DecidableEq Z] {N K : ℕ}
+    (ν : PMF Z) (feature : Z → X) (posterior : X → Fin K → ℝ)
+    (rule : Z → Fin K) (argmaxRule : X → Fin K)
+    (aggregateArgmax : (Fin N → X) → Fin K)
+    (prefAt : (Fin N → X) → Fin K → ℝ) (γ : ℝ) : Prop :=
+  (∀ x, isFirstArgmax (posterior x) (argmaxRule x)) →
+    0 < AppliedModelingLib.pmfProb ν
+      (fun z : Z => rule z ≠ argmaxRule (feature z)) →
+    sourcePNq
+      (fun sample : Fin N → X => Theorem2iii.sampledPosterior posterior sample)
+      aggregateArgmax prefAt →
+    0 ≤ γ → γ < 1 → 0 < N →
+      (¬ Pareto.ParetoOptimal
+        (Theorem2iii.expectedDatasetAccuracy (Theorem2iii.iidSamplePMF ν N)
+          (fun sample => Theorem2iii.sampledPosterior
+            (fun z y => posterior (feature z) y) sample))
+        (Theorem2iii.expectedDatasetFidelityAt (Theorem2iii.iidSamplePMF ν N)
+          (fun sample => prefAt (fun i => feature (sample i))))
+        (fun sample => Theorem2iii.sampledDecision rule sample)) ∧
+      (¬ ∀ other : (Fin N → Z) → Fin N → Fin K,
+        Pareto.weightedObjective γ
+            (Theorem2iii.expectedDatasetAccuracy (Theorem2iii.iidSamplePMF ν N)
+              (fun sample => Theorem2iii.sampledPosterior
+                (fun z y => posterior (feature z) y) sample))
+            (Theorem2iii.expectedDatasetFidelityAt (Theorem2iii.iidSamplePMF ν N)
+              (fun sample => prefAt (fun i => feature (sample i)))) other ≤
+          Pareto.weightedObjective γ
+            (Theorem2iii.expectedDatasetAccuracy (Theorem2iii.iidSamplePMF ν N)
+              (fun sample => Theorem2iii.sampledPosterior
+                (fun z y => posterior (feature z) y) sample))
+            (Theorem2iii.expectedDatasetFidelityAt (Theorem2iii.iidSamplePMF ν N)
+              (fun sample => prefAt (fun i => feature (sample i))))
+            (fun sample => Theorem2iii.sampledDecision rule sample))
 
 end
 

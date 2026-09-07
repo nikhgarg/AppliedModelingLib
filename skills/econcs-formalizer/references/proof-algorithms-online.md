@@ -1,6 +1,6 @@
 # Algorithms: Online
 
-Use for `EconCSLib/Algorithms/Online/*`, AdWords/MSVV, generalized online
+Use for `AppliedModelingLib/Algorithms/Online/*`, AdWords/MSVV, generalized online
 matching, regret, and Yao-style lower bounds.
 
 ## AdWords and Online Matching

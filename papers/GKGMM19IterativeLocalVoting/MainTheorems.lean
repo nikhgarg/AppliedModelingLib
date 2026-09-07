@@ -11,10 +11,11 @@ import Mathlib.Order.Filter.Extr
 import Mathlib.Probability.ProbabilityMassFunction.Integrals
 import Mathlib.Probability.ProductMeasure
 import Mathlib.Probability.Moments.SubGaussian
-import EconCSLib.Foundations.Math.FiniteSum
-import EconCSLib.Foundations.Math.FiniteDimensionalNormsDerivative
-import EconCSLib.Foundations.Probability.BoundedDensity
-import EconCSLib.Foundations.Probability.Weighted
+import AppliedModelingLib.Foundations.Math.FiniteSum
+import AppliedModelingLib.Foundations.Math.FiniteDimensionalNormsDerivative
+import AppliedModelingLib.Foundations.Optimization.ProjectedStochasticConvergence
+import AppliedModelingLib.Foundations.Probability.BoundedDensity
+import AppliedModelingLib.Foundations.Probability.Weighted
 
 /-!
 # Paper-Facing Model: Iterative Local Voting in Continuous Spaces
@@ -62,10 +63,10 @@ noncomputable def finiteCoordinateNorm
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (p : SourceNorm) (x : Coord → ℝ) : ℝ :=
   match p with
-  | SourceNorm.l1 => EconCSLib.FiniteDimensionalNorms.l1 x
-  | SourceNorm.l2 => EconCSLib.FiniteDimensionalNorms.l2 x
-  | SourceNorm.linfty => EconCSLib.FiniteDimensionalNorms.linf x
-  | SourceNorm.lp p => EconCSLib.FiniteDimensionalNorms.lp p x
+  | SourceNorm.l1 => AppliedModelingLib.FiniteDimensionalNorms.l1 x
+  | SourceNorm.l2 => AppliedModelingLib.FiniteDimensionalNorms.l2 x
+  | SourceNorm.linfty => AppliedModelingLib.FiniteDimensionalNorms.linf x
+  | SourceNorm.lp p => AppliedModelingLib.FiniteDimensionalNorms.lp p x
 
 /-- Concrete finite-coordinate distance induced by `finiteCoordinateNorm`. -/
 noncomputable def finiteCoordinateDistance
@@ -77,46 +78,46 @@ theorem finiteCoordinateNorm_l1
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x : Coord → ℝ) :
     finiteCoordinateNorm SourceNorm.l1 x =
-      EconCSLib.FiniteDimensionalNorms.l1 x := rfl
+      AppliedModelingLib.FiniteDimensionalNorms.l1 x := rfl
 
 theorem finiteCoordinateNorm_l2
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x : Coord → ℝ) :
     finiteCoordinateNorm SourceNorm.l2 x =
-      EconCSLib.FiniteDimensionalNorms.l2 x := rfl
+      AppliedModelingLib.FiniteDimensionalNorms.l2 x := rfl
 
 theorem finiteCoordinateNorm_linf
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x : Coord → ℝ) :
     finiteCoordinateNorm SourceNorm.linfty x =
-      EconCSLib.FiniteDimensionalNorms.linf x := rfl
+      AppliedModelingLib.FiniteDimensionalNorms.linf x := rfl
 
 theorem finiteCoordinateNorm_lp
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (p : ℝ) (x : Coord → ℝ) :
     finiteCoordinateNorm (SourceNorm.lp p) x =
-      EconCSLib.FiniteDimensionalNorms.lp p x := rfl
+      AppliedModelingLib.FiniteDimensionalNorms.lp p x := rfl
 
 theorem finiteCoordinateDistance_l1
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x y : Coord → ℝ) :
     finiteCoordinateDistance SourceNorm.l1 x y =
-      EconCSLib.FiniteDimensionalNorms.l1 (fun m => x m - y m) := rfl
+      AppliedModelingLib.FiniteDimensionalNorms.l1 (fun m => x m - y m) := rfl
 
 theorem finiteCoordinateDistance_l2
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x y : Coord → ℝ) :
     finiteCoordinateDistance SourceNorm.l2 x y =
-      EconCSLib.FiniteDimensionalNorms.l2 (fun m => x m - y m) := rfl
+      AppliedModelingLib.FiniteDimensionalNorms.l2 (fun m => x m - y m) := rfl
 
 theorem finiteDimensionalNorms_l2_eq_lp_two
     {Coord : Type*} [Fintype Coord] (x : Coord → ℝ) :
-    EconCSLib.FiniteDimensionalNorms.l2 x =
-      EconCSLib.FiniteDimensionalNorms.lp 2 x := by
-  rw [EconCSLib.FiniteDimensionalNorms.l2,
-    EconCSLib.FiniteDimensionalNorms.l2Sq,
-    EconCSLib.FiniteDimensionalNorms.lp,
-    EconCSLib.FiniteDimensionalNorms.lpPower]
+    AppliedModelingLib.FiniteDimensionalNorms.l2 x =
+      AppliedModelingLib.FiniteDimensionalNorms.lp 2 x := by
+  rw [AppliedModelingLib.FiniteDimensionalNorms.l2,
+    AppliedModelingLib.FiniteDimensionalNorms.l2Sq,
+    AppliedModelingLib.FiniteDimensionalNorms.lp,
+    AppliedModelingLib.FiniteDimensionalNorms.lpPower]
   have hsum :
       (∑ i : Coord, |x i| ^ (2 : ℝ)) =
         ∑ i : Coord, x i ^ 2 := by
@@ -129,49 +130,49 @@ theorem finiteCoordinateDistance_linf
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x y : Coord → ℝ) :
     finiteCoordinateDistance SourceNorm.linfty x y =
-      EconCSLib.FiniteDimensionalNorms.linf (fun m => x m - y m) := rfl
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun m => x m - y m) := rfl
 
 theorem finiteCoordinateDistance_lp
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (p : ℝ) (x y : Coord → ℝ) :
     finiteCoordinateDistance (SourceNorm.lp p) x y =
-      EconCSLib.FiniteDimensionalNorms.lp p (fun m => x m - y m) := rfl
+      AppliedModelingLib.FiniteDimensionalNorms.lp p (fun m => x m - y m) := rfl
 
 theorem finiteCoordinateDistance_l1_self
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x : Coord → ℝ) :
     finiteCoordinateDistance SourceNorm.l1 x x = 0 := by
-  exact EconCSLib.FiniteDimensionalNorms.normL1_sub_self x
+  exact AppliedModelingLib.FiniteDimensionalNorms.normL1_sub_self x
 
 theorem finiteCoordinateDistance_l2_self
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x : Coord → ℝ) :
     finiteCoordinateDistance SourceNorm.l2 x x = 0 := by
-  exact EconCSLib.FiniteDimensionalNorms.normL2_sub_self x
+  exact AppliedModelingLib.FiniteDimensionalNorms.normL2_sub_self x
 
 theorem finiteCoordinateDistance_linf_self
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x : Coord → ℝ) :
     finiteCoordinateDistance SourceNorm.linfty x x = 0 := by
-  exact EconCSLib.FiniteDimensionalNorms.linf_sub_self x
+  exact AppliedModelingLib.FiniteDimensionalNorms.linf_sub_self x
 
 theorem finiteCoordinateDistance_lp_self_of_pos
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     {p : ℝ} (hp : 0 < p) (x : Coord → ℝ) :
     finiteCoordinateDistance (SourceNorm.lp p) x x = 0 := by
-  exact EconCSLib.FiniteDimensionalNorms.lp_sub_self_of_pos hp x
+  exact AppliedModelingLib.FiniteDimensionalNorms.lp_sub_self_of_pos hp x
 
 theorem finiteCoordinateDistance_l1_nonneg
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x y : Coord → ℝ) :
     0 ≤ finiteCoordinateDistance SourceNorm.l1 x y := by
-  exact EconCSLib.FiniteDimensionalNorms.normL1_nonneg (fun m => x m - y m)
+  exact AppliedModelingLib.FiniteDimensionalNorms.normL1_nonneg (fun m => x m - y m)
 
 theorem finiteCoordinateDistance_l2_nonneg
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x y : Coord → ℝ) :
     0 ≤ finiteCoordinateDistance SourceNorm.l2 x y := by
-  exact EconCSLib.FiniteDimensionalNorms.normL2_nonneg (fun m => x m - y m)
+  exact AppliedModelingLib.FiniteDimensionalNorms.normL2_nonneg (fun m => x m - y m)
 
 theorem finiteCoordinateNorm_l2_nonneg
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
@@ -185,7 +186,7 @@ theorem finiteCoordinateDistance_l2_coord_abs_le
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x y : Coord → ℝ) (i : Coord) :
     |x i - y i| ≤ finiteCoordinateDistance SourceNorm.l2 x y := by
-  exact EconCSLib.FiniteDimensionalNorms.normL2_coord_abs_le
+  exact AppliedModelingLib.FiniteDimensionalNorms.normL2_coord_abs_le
     (fun m => x m - y m) i
 
 /-- A single coordinate displacement is bounded by finite-coordinate `L∞` distance. -/
@@ -199,13 +200,23 @@ theorem finiteCoordinateDistance_linf_coord_abs_le
     (f := fun j => |x j - y j|)
     (Finset.mem_univ i)
 
+/-- A single coordinate displacement is bounded by finite-coordinate `L1` distance. -/
+theorem finiteCoordinateDistance_l1_coord_abs_le
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (x y : Coord → ℝ) (i : Coord) :
+    |x i - y i| ≤ finiteCoordinateDistance SourceNorm.l1 x y := by
+  rw [finiteCoordinateDistance_l1, AppliedModelingLib.FiniteDimensionalNorms.l1]
+  exact Finset.single_le_sum
+    (fun j _hj => abs_nonneg (x j - y j))
+    (Finset.mem_univ i)
+
 /-- Finite-coordinate `L∞` distance is bounded by a uniform coordinate bound. -/
 theorem finiteCoordinateDistance_linf_le_of_forall_coord_abs_le
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     {x y : Coord → ℝ} {r : ℝ}
     (h : ∀ i, |x i - y i| ≤ r) :
     finiteCoordinateDistance SourceNorm.linfty x y ≤ r := by
-  rw [finiteCoordinateDistance_linf, EconCSLib.FiniteDimensionalNorms.linf]
+  rw [finiteCoordinateDistance_linf, AppliedModelingLib.FiniteDimensionalNorms.linf]
   exact Finset.sup'_le
     (s := (Finset.univ : Finset Coord))
     (H := Finset.univ_nonempty)
@@ -218,50 +229,50 @@ theorem finiteCoordinateNorm_l2_smul
     (a : ℝ) (x : Coord → ℝ) :
     finiteCoordinateNorm SourceNorm.l2 (fun i => a * x i) =
       |a| * finiteCoordinateNorm SourceNorm.l2 x := by
-  exact EconCSLib.FiniteDimensionalNorms.normL2_smul a x
+  exact AppliedModelingLib.FiniteDimensionalNorms.normL2_smul a x
 
 theorem finiteCoordinateDistance_linf_nonneg
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x y : Coord → ℝ) :
     0 ≤ finiteCoordinateDistance SourceNorm.linfty x y := by
-  exact EconCSLib.FiniteDimensionalNorms.linf_nonneg (fun m => x m - y m)
+  exact AppliedModelingLib.FiniteDimensionalNorms.linf_nonneg (fun m => x m - y m)
 
 theorem finiteCoordinateDistance_lp_nonneg
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (p : ℝ) (x y : Coord → ℝ) :
     0 ≤ finiteCoordinateDistance (SourceNorm.lp p) x y := by
-  exact EconCSLib.FiniteDimensionalNorms.lp_nonneg p (fun m => x m - y m)
+  exact AppliedModelingLib.FiniteDimensionalNorms.lp_nonneg p (fun m => x m - y m)
 
 theorem finiteCoordinateNorm_l1_pos_of_exists_ne_zero
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     {x : Coord → ℝ} (hx : ∃ m, x m ≠ 0) :
     0 < finiteCoordinateNorm SourceNorm.l1 x := by
-  exact EconCSLib.FiniteDimensionalNorms.normL1_pos_of_exists_ne_zero hx
+  exact AppliedModelingLib.FiniteDimensionalNorms.normL1_pos_of_exists_ne_zero hx
 
 theorem finiteCoordinateNorm_l2_pos_of_exists_ne_zero
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     {x : Coord → ℝ} (hx : ∃ m, x m ≠ 0) :
     0 < finiteCoordinateNorm SourceNorm.l2 x := by
-  exact EconCSLib.FiniteDimensionalNorms.normL2_pos_of_exists_ne_zero hx
+  exact AppliedModelingLib.FiniteDimensionalNorms.normL2_pos_of_exists_ne_zero hx
 
 theorem finiteCoordinateNorm_linf_pos_of_exists_ne_zero
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     {x : Coord → ℝ} (hx : ∃ m, x m ≠ 0) :
     0 < finiteCoordinateNorm SourceNorm.linfty x := by
-  exact EconCSLib.FiniteDimensionalNorms.linf_pos_of_exists_ne_zero hx
+  exact AppliedModelingLib.FiniteDimensionalNorms.linf_pos_of_exists_ne_zero hx
 
 theorem finiteCoordinateNorm_lp_pos_of_exists_ne_zero
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     {p : ℝ} (hp : 0 < p) {x : Coord → ℝ} (hx : ∃ m, x m ≠ 0) :
     0 < finiteCoordinateNorm (SourceNorm.lp p) x := by
-  exact EconCSLib.FiniteDimensionalNorms.lp_pos_of_exists_ne_zero hp hx
+  exact AppliedModelingLib.FiniteDimensionalNorms.lp_pos_of_exists_ne_zero hp hx
 
 theorem finiteCoordinateDistance_l1_pos_of_exists_ne
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     {x y : Coord → ℝ} (hxy : ∃ m, x m ≠ y m) :
     0 < finiteCoordinateDistance SourceNorm.l1 x y := by
   rcases hxy with ⟨m, hm⟩
-  exact EconCSLib.FiniteDimensionalNorms.normL1_pos_of_exists_ne_zero
+  exact AppliedModelingLib.FiniteDimensionalNorms.normL1_pos_of_exists_ne_zero
     ⟨m, sub_ne_zero.mpr hm⟩
 
 theorem finiteCoordinateDistance_l2_pos_of_exists_ne
@@ -269,7 +280,7 @@ theorem finiteCoordinateDistance_l2_pos_of_exists_ne
     {x y : Coord → ℝ} (hxy : ∃ m, x m ≠ y m) :
     0 < finiteCoordinateDistance SourceNorm.l2 x y := by
   rcases hxy with ⟨m, hm⟩
-  exact EconCSLib.FiniteDimensionalNorms.normL2_pos_of_exists_ne_zero
+  exact AppliedModelingLib.FiniteDimensionalNorms.normL2_pos_of_exists_ne_zero
     ⟨m, sub_ne_zero.mpr hm⟩
 
 theorem finiteCoordinateDistance_l2_eq_zero_iff
@@ -293,7 +304,7 @@ theorem finiteCoordinateDistance_linf_pos_of_exists_ne
     {x y : Coord → ℝ} (hxy : ∃ m, x m ≠ y m) :
     0 < finiteCoordinateDistance SourceNorm.linfty x y := by
   rcases hxy with ⟨m, hm⟩
-  exact EconCSLib.FiniteDimensionalNorms.linf_pos_of_exists_ne_zero
+  exact AppliedModelingLib.FiniteDimensionalNorms.linf_pos_of_exists_ne_zero
     ⟨m, sub_ne_zero.mpr hm⟩
 
 theorem finiteCoordinateDistance_lp_pos_of_exists_ne
@@ -302,7 +313,7 @@ theorem finiteCoordinateDistance_lp_pos_of_exists_ne
     (hxy : ∃ m, x m ≠ y m) :
     0 < finiteCoordinateDistance (SourceNorm.lp p) x y := by
   rcases hxy with ⟨m, hm⟩
-  exact EconCSLib.FiniteDimensionalNorms.lp_pos_of_exists_ne_zero hp
+  exact AppliedModelingLib.FiniteDimensionalNorms.lp_pos_of_exists_ne_zero hp
     ⟨m, sub_ne_zero.mpr hm⟩
 
 /-- Voter behavior model in the source paper. -/
@@ -394,7 +405,7 @@ noncomputable def lpGradientCandidate
     {Coord : Type*} [Fintype Coord]
     (p : ℝ) (x absDeriv : Coord → ℝ) : Coord → ℝ :=
   fun i => (|x i| ^ (p - 1) * absDeriv i) /
-    (EconCSLib.FiniteDimensionalNorms.lpPower p x) ^ ((p - 1) / p)
+    (AppliedModelingLib.FiniteDimensionalNorms.lpPower p x) ^ ((p - 1) / p)
 
 /--
 Lemma 3 algebra core: the finite `Lq` power sum of the displayed
@@ -410,21 +421,21 @@ theorem lpGradientCandidate_lq_power_sum_eq_one
     {p q : ℝ} (hdual : HolderDualFinite p q)
     {x absDeriv : Coord → ℝ}
     (hx : ∀ i, x i ≠ 0) (habsDeriv : ∀ i, |absDeriv i| = 1) :
-    EconCSLib.FiniteDimensionalNorms.lpPower q
+    AppliedModelingLib.FiniteDimensionalNorms.lpPower q
       (lpGradientCandidate p x absDeriv) = 1 := by
   have hp : 0 < p := hdual.1
   have hp_ne : p ≠ 0 := hp.ne'
   have hmul : (p - 1) * q = p :=
     HolderDualFinite.sub_one_mul_right_eq_left hdual
-  let S : ℝ := EconCSLib.FiniteDimensionalNorms.lpPower p x
+  let S : ℝ := AppliedModelingLib.FiniteDimensionalNorms.lpPower p x
   have hSpos : 0 < S := by
-    exact EconCSLib.FiniteDimensionalNorms.lpPower_pos_of_exists_ne_zero hp
+    exact AppliedModelingLib.FiniteDimensionalNorms.lpPower_pos_of_exists_ne_zero hp
       ⟨Classical.arbitrary Coord, hx (Classical.arbitrary Coord)⟩
   have hSnonneg : 0 ≤ S := hSpos.le
   have hexp : ((p - 1) / p) * q = 1 := by
     field_simp [hp_ne]
     nlinarith [hmul]
-  rw [EconCSLib.FiniteDimensionalNorms.lpPower]
+  rw [AppliedModelingLib.FiniteDimensionalNorms.lpPower]
   calc
     (∑ i : Coord, |lpGradientCandidate p x absDeriv i| ^ q)
         = ∑ i : Coord, |x i| ^ p / S := by
@@ -469,7 +480,7 @@ theorem lpGradientCandidate_lq_norm_eq_one
     (hx : ∀ i, x i ≠ 0) (habsDeriv : ∀ i, |absDeriv i| = 1) :
     finiteCoordinateNorm (SourceNorm.lp q)
       (lpGradientCandidate p x absDeriv) = 1 := by
-  rw [finiteCoordinateNorm, EconCSLib.FiniteDimensionalNorms.lp,
+  rw [finiteCoordinateNorm, AppliedModelingLib.FiniteDimensionalNorms.lp,
     lpGradientCandidate_lq_power_sum_eq_one hdual hx habsDeriv]
   exact Real.one_rpow (1 / q)
 
@@ -493,14 +504,14 @@ theorem lpCostGradientCandidate_eq_source_formula
     {p : ℝ} (hp : 0 < p) (d : Coord → ℝ) :
     lpCostGradientCandidate p d =
       fun i => (|d i| ^ (p - 1) * (d i / |d i|)) /
-        (EconCSLib.FiniteDimensionalNorms.lp p d) ^ (p - 1) := by
-  let S : ℝ := EconCSLib.FiniteDimensionalNorms.lpPower p d
+        (AppliedModelingLib.FiniteDimensionalNorms.lp p d) ^ (p - 1) := by
+  let S : ℝ := AppliedModelingLib.FiniteDimensionalNorms.lpPower p d
   have hSnonneg : 0 ≤ S :=
-    EconCSLib.FiniteDimensionalNorms.lpPower_nonneg p d
+    AppliedModelingLib.FiniteDimensionalNorms.lpPower_nonneg p d
   have hden :
       S ^ ((p - 1) / p) =
-        (EconCSLib.FiniteDimensionalNorms.lp p d) ^ (p - 1) := by
-    rw [EconCSLib.FiniteDimensionalNorms.lp]
+        (AppliedModelingLib.FiniteDimensionalNorms.lp p d) ^ (p - 1) := by
+    rw [AppliedModelingLib.FiniteDimensionalNorms.lp]
     change S ^ ((p - 1) / p) = (S ^ (1 / p)) ^ (p - 1)
     rw [← Real.rpow_mul hSnonneg (1 / p) (p - 1)]
     congr 1
@@ -537,7 +548,7 @@ theorem lpCostGradientCandidate_eq_deriv_coeff_formula
     {p : ℝ} (hp : 0 < p) {d : Coord → ℝ} (hd : ∀ i, d i ≠ 0) :
     lpCostGradientCandidate p d =
       fun i => (|d i| ^ (p - 2) * d i) /
-        (EconCSLib.FiniteDimensionalNorms.lp p d) ^ (p - 1) := by
+        (AppliedModelingLib.FiniteDimensionalNorms.lp p d) ^ (p - 1) := by
   funext i
   have hsrc := congrFun (lpCostGradientCandidate_eq_source_formula hp d) i
   rw [hsrc, lpCostGradientCandidate_numerator_eq_lpPower_deriv_coeff (hd i)]
@@ -550,9 +561,9 @@ theorem hasFDerivAt_finiteCoordinate_lpPower
     {Coord : Type*} [Fintype Coord]
     {p : ℝ} (hp : 1 < p) (d : Coord → ℝ) :
     HasFDerivAt
-      (fun y : Coord → ℝ => EconCSLib.FiniteDimensionalNorms.lpPower p y)
-      (EconCSLib.FiniteDimensionalNorms.lpPowerFDeriv p d) d := by
-  exact EconCSLib.FiniteDimensionalNorms.hasFDerivAt_lpPower hp d
+      (fun y : Coord → ℝ => AppliedModelingLib.FiniteDimensionalNorms.lpPower p y)
+      (AppliedModelingLib.FiniteDimensionalNorms.lpPowerFDeriv p d) d := by
+  exact AppliedModelingLib.FiniteDimensionalNorms.hasFDerivAt_lpPower hp d
 
 /--
 The derivative linear map of the finite-coordinate `Lp` norm is represented by
@@ -561,42 +572,42 @@ the source candidate-gradient vector away from zero coordinates.
 theorem lpFDeriv_eq_coordinateLinearFunctional_lpCostGradientCandidate
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     {p : ℝ} (hp : 1 < p) {d : Coord → ℝ} (hd : ∀ i, d i ≠ 0) :
-    EconCSLib.FiniteDimensionalNorms.lpFDeriv p d =
-      EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+    AppliedModelingLib.FiniteDimensionalNorms.lpFDeriv p d =
+      AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
         (lpCostGradientCandidate p d) := by
   ext h
-  simp [EconCSLib.FiniteDimensionalNorms.lpFDeriv,
-    EconCSLib.FiniteDimensionalNorms.lpPowerFDeriv,
-    EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional]
+  simp [AppliedModelingLib.FiniteDimensionalNorms.lpFDeriv,
+    AppliedModelingLib.FiniteDimensionalNorms.lpPowerFDeriv,
+    AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional]
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i _hi
   have hp_pos : 0 < p := lt_trans zero_lt_one hp
-  have hSpos : 0 < EconCSLib.FiniteDimensionalNorms.lpPower p d :=
-    EconCSLib.FiniteDimensionalNorms.lpPower_pos_of_exists_ne_zero hp_pos
+  have hSpos : 0 < AppliedModelingLib.FiniteDimensionalNorms.lpPower p d :=
+    AppliedModelingLib.FiniteDimensionalNorms.lpPower_pos_of_exists_ne_zero hp_pos
       ⟨i, hd i⟩
   have hcoeff : (p⁻¹ *
-        EconCSLib.FiniteDimensionalNorms.lpPower p d ^ (p⁻¹ - 1)) *
+        AppliedModelingLib.FiniteDimensionalNorms.lpPower p d ^ (p⁻¹ - 1)) *
       (p * |d i| ^ (p - 2) * d i) =
         (|d i| ^ (p - 2) * d i) /
-          (EconCSLib.FiniteDimensionalNorms.lp p d) ^ (p - 1) := by
+          (AppliedModelingLib.FiniteDimensionalNorms.lp p d) ^ (p - 1) := by
     have hp_ne : p ≠ 0 := ne_of_gt hp_pos
     have hden_pos :
-        0 < EconCSLib.FiniteDimensionalNorms.lpPower p d ^ ((p - 1) / p) :=
+        0 < AppliedModelingLib.FiniteDimensionalNorms.lpPower p d ^ ((p - 1) / p) :=
       Real.rpow_pos_of_pos hSpos _
     have hpow :
-        EconCSLib.FiniteDimensionalNorms.lpPower p d ^ (p⁻¹ - 1) =
-          (EconCSLib.FiniteDimensionalNorms.lpPower p d ^ ((p - 1) / p))⁻¹ := by
+        AppliedModelingLib.FiniteDimensionalNorms.lpPower p d ^ (p⁻¹ - 1) =
+          (AppliedModelingLib.FiniteDimensionalNorms.lpPower p d ^ ((p - 1) / p))⁻¹ := by
       have hexp : p⁻¹ - 1 = -((p - 1) / p) := by
         field_simp [hp_ne]
         ring
       rw [hexp, Real.rpow_neg hSpos.le]
     have hden :
-        EconCSLib.FiniteDimensionalNorms.lpPower p d ^ ((p - 1) / p) =
-          (EconCSLib.FiniteDimensionalNorms.lp p d) ^ (p - 1) := by
-      let S : ℝ := EconCSLib.FiniteDimensionalNorms.lpPower p d
+        AppliedModelingLib.FiniteDimensionalNorms.lpPower p d ^ ((p - 1) / p) =
+          (AppliedModelingLib.FiniteDimensionalNorms.lp p d) ^ (p - 1) := by
+      let S : ℝ := AppliedModelingLib.FiniteDimensionalNorms.lpPower p d
       have hSnonneg : 0 ≤ S := hSpos.le
-      rw [EconCSLib.FiniteDimensionalNorms.lp]
+      rw [AppliedModelingLib.FiniteDimensionalNorms.lp]
       change S ^ ((p - 1) / p) = (S ^ (1 / p)) ^ (p - 1)
       rw [← Real.rpow_mul hSnonneg (1 / p) (p - 1)]
       congr 1
@@ -607,12 +618,12 @@ theorem lpFDeriv_eq_coordinateLinearFunctional_lpCostGradientCandidate
     congrFun (lpCostGradientCandidate_eq_deriv_coeff_formula hp_pos hd) i
   rw [hvec]
   calc
-    (p⁻¹ * EconCSLib.FiniteDimensionalNorms.lpPower p d ^ (p⁻¹ - 1)) *
+    (p⁻¹ * AppliedModelingLib.FiniteDimensionalNorms.lpPower p d ^ (p⁻¹ - 1)) *
         (p * |d i| ^ (p - 2) * d i * h i)
-        = ((p⁻¹ * EconCSLib.FiniteDimensionalNorms.lpPower p d ^ (p⁻¹ - 1)) *
+        = ((p⁻¹ * AppliedModelingLib.FiniteDimensionalNorms.lpPower p d ^ (p⁻¹ - 1)) *
             (p * |d i| ^ (p - 2) * d i)) * h i := by ring
     _ = ((|d i| ^ (p - 2) * d i) /
-          (EconCSLib.FiniteDimensionalNorms.lp p d) ^ (p - 1)) * h i := by
+          (AppliedModelingLib.FiniteDimensionalNorms.lp p d) ^ (p - 1)) * h i := by
           rw [hcoeff]
 
 /--
@@ -624,11 +635,11 @@ theorem hasFDerivAt_lpCostGradientCandidate
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     {p : ℝ} (hp : 1 < p) {d : Coord → ℝ} (hd : ∀ i, d i ≠ 0) :
     HasFDerivAt
-      (fun y : Coord → ℝ => EconCSLib.FiniteDimensionalNorms.lp p y)
-      (EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+      (fun y : Coord → ℝ => AppliedModelingLib.FiniteDimensionalNorms.lp p y)
+      (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
         (lpCostGradientCandidate p d)) d := by
   rw [← lpFDeriv_eq_coordinateLinearFunctional_lpCostGradientCandidate hp hd]
-  exact EconCSLib.FiniteDimensionalNorms.hasFDerivAt_lp hp
+  exact AppliedModelingLib.FiniteDimensionalNorms.hasFDerivAt_lp hp
     ⟨Classical.arbitrary Coord, hd (Classical.arbitrary Coord)⟩
 
 /--
@@ -642,34 +653,34 @@ theorem hasFDerivAt_neg_lpCostGradientCandidate
     {x ideal : Coord → ℝ} (hcoord : ∀ i, x i ≠ ideal i) :
     HasFDerivAt
       (fun y : Coord → ℝ =>
-        -EconCSLib.FiniteDimensionalNorms.lp p
+        -AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - ideal i))
-      (EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+      (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
         (fun i => -lpCostGradientCandidate p (fun j => x j - ideal j) i)) x := by
   have hd : ∀ i, (fun j => x j - ideal j) i ≠ 0 := by
     intro i
     exact sub_ne_zero.mpr (hcoord i)
   have hbase :
       HasFDerivAt
-        (fun y : Coord → ℝ => EconCSLib.FiniteDimensionalNorms.lp p y)
-        (EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+        (fun y : Coord → ℝ => AppliedModelingLib.FiniteDimensionalNorms.lp p y)
+        (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
           (lpCostGradientCandidate p (fun i => x i - ideal i)))
         (fun i => x i - ideal i) :=
     hasFDerivAt_lpCostGradientCandidate hp hd
   have hcost :
       HasFDerivAt
         (fun y : Coord → ℝ =>
-          EconCSLib.FiniteDimensionalNorms.lp p
+          AppliedModelingLib.FiniteDimensionalNorms.lp p
             (fun i => y i - ideal i))
-        (EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+        (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
           (lpCostGradientCandidate p (fun i => x i - ideal i))) x := by
     simpa [Function.comp_def] using
       (hasFDerivAt_comp_sub (𝕜 := ℝ)
-        (f := fun y : Coord → ℝ => EconCSLib.FiniteDimensionalNorms.lp p y)
-        (f' := EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+        (f := fun y : Coord → ℝ => AppliedModelingLib.FiniteDimensionalNorms.lp p y)
+        (f' := AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
           (lpCostGradientCandidate p (fun i => x i - ideal i)))
         (x := x) ideal).mpr hbase
-  simpa [EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional_neg] using
+  simpa [AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional_neg] using
     hcost.neg
 
 /--
@@ -725,7 +736,7 @@ coordinate equalities is null for any bounded-density measure.
 theorem boundedDensity_coordinateEqualityBadEvent_null
     {Coord : Type*} [Fintype Coord] [MeasurableSpace (Coord → ℝ)]
     {ν μ : Measure (Coord → ℝ)} {C : ℝ≥0∞}
-    (hbd : EconCSLib.Probability.HasBoundedDensity ν μ C)
+    (hbd : AppliedModelingLib.Probability.HasBoundedDensity ν μ C)
     (x : Coord → ℝ)
     (hcoord : ∀ i, ν (coordinateEqualityHyperplane x i) = 0) :
     μ (coordinateEqualityBadEvent x) = 0 := by
@@ -761,12 +772,38 @@ theorem productMeasure_boundedDensity_coordinateEqualityBadEvent_null
     {Coord : Type*} [Fintype Coord] (ρ : Measure ℝ) [SigmaFinite ρ] [NoAtoms ρ]
     {μ : Measure (Coord → ℝ)} {C : ℝ≥0∞}
     (hbd :
-      EconCSLib.Probability.HasBoundedDensity
+      AppliedModelingLib.Probability.HasBoundedDensity
         (Measure.pi (fun _ : Coord => ρ)) μ C)
     (x : Coord → ℝ) :
     μ (coordinateEqualityBadEvent x) = 0 := by
   exact boundedDensity_coordinateEqualityBadEvent_null hbd x
     (productMeasure_coordinateEqualityHyperplane_null ρ x)
+
+/--
+Every coordinate hyperplane is Lebesgue-null in a finite real product.  This
+is the source-faithful base-measure fact needed for C3; it does not impose
+independence of the coordinates of an ideal point.
+-/
+theorem volume_coordinateEqualityHyperplane_null
+    {Coord : Type*} [Fintype Coord]
+    (x : Coord → ℝ) (i : Coord) :
+    (volume : Measure (Coord → ℝ)) (coordinateEqualityHyperplane x i) = 0 := by
+  simpa [MeasureTheory.volume_pi, coordinateEqualityHyperplane, eq_comm] using
+    Measure.pi_hyperplane (fun _ : Coord => (volume : Measure ℝ)) i (x i)
+
+/--
+A bounded density with respect to finite-dimensional Lebesgue measure assigns
+probability zero to a coordinate equality.  This uses only the C3 density
+condition stated in the paper, not a product-density strengthening.
+-/
+theorem volume_boundedDensity_coordinateEqualityBadEvent_null
+    {Coord : Type*} [Fintype Coord]
+    {μ : Measure (Coord → ℝ)} {C : ℝ≥0∞}
+    (hbd : AppliedModelingLib.Probability.HasBoundedDensity (volume : Measure (Coord → ℝ)) μ C)
+    (x : Coord → ℝ) :
+    μ (coordinateEqualityBadEvent x) = 0 := by
+  exact boundedDensity_coordinateEqualityBadEvent_null hbd x
+    (volume_coordinateEqualityHyperplane_null x)
 
 /-- Outside the coordinate-equality bad event, every coordinate differs. -/
 theorem notMem_coordinateEqualityBadEvent_iff
@@ -787,6 +824,52 @@ theorem coordinate_noncollision_of_forall_notMem_coordinateEqualityBadEvent
   intro t
   exact (notMem_coordinateEqualityBadEvent_iff (trajectory t) (ideal t)).mp
     (havoid t)
+
+/--
+The slab event relevant to the source's `L1/L∞` Model A proof: at least one
+coordinate of the ideal lies strictly closer than the query radius.  Outside
+this event, the exact raw maximizer is the coordinate-sign response.
+-/
+def l1LinfSlabBadEvent
+    {Coord : Type*} (center : Coord → ℝ) (radius : ℝ) : Set (Coord → ℝ) :=
+  {ideal | ∃ i, |center i - ideal i| < radius}
+
+/-- Avoiding the `L1/L∞` slab event is exactly the coordinatewise good condition. -/
+theorem notMem_l1LinfSlabBadEvent_iff
+    {Coord : Type*} (center ideal : Coord → ℝ) (radius : ℝ) :
+    ideal ∉ l1LinfSlabBadEvent center radius ↔
+      ∀ i, radius ≤ |center i - ideal i| := by
+  simp [l1LinfSlabBadEvent]
+
+/-- The coordinate-slab exceptional event is Borel measurable. -/
+theorem measurableSet_l1LinfSlabBadEvent
+    {Coord : Type*} [Fintype Coord]
+    (center : Coord → ℝ) (radius : ℝ) :
+    MeasurableSet (l1LinfSlabBadEvent center radius) := by
+  classical
+  change MeasurableSet {ideal : Coord → ℝ | ∃ i, |center i - ideal i| < radius}
+  rw [show {ideal : Coord → ℝ | ∃ i, |center i - ideal i| < radius} =
+      ⋃ i : Coord, {ideal : Coord → ℝ | |center i - ideal i| < radius} by
+    ext ideal
+    simp]
+  apply MeasurableSet.iUnion
+  intro i
+  exact measurableSet_Iio.preimage
+    ((measurable_const.sub (measurable_pi_apply i)).abs)
+
+/-- The strict `L1/L∞` slab event is contained in the closed coordinate slabs used by C3. -/
+theorem l1LinfSlabBadEvent_subset_coordinateSlabs
+    {Coord : Type*} (center : Coord → ℝ) (radius : ℝ) :
+    l1LinfSlabBadEvent center radius ⊆
+      {ideal : Coord → ℝ |
+        ∃ i, ideal i ∈ Set.Icc (center i - radius) (center i + radius)} := by
+  intro ideal hideal
+  rcases hideal with ⟨i, hi⟩
+  have hi' : |ideal i - center i| < radius := by
+    simpa [abs_sub_comm] using hi
+  have hbounds := abs_lt.mp hi'
+  refine ⟨i, ?_⟩
+  constructor <;> linarith
 
 /--
 Finite-coordinate slab bad region used in Lemma 2's `(p = 1, q = ∞)` case:
@@ -810,7 +893,7 @@ theorem boundedDensity_coordinateSlabBadRegion_le
     {Coord : Type*} [Fintype Coord] [DecidableEq Coord]
     {μ : Measure (Coord → ℝ)} {C : ℝ≥0∞}
     (hbd :
-      EconCSLib.Probability.HasBoundedDensity
+      AppliedModelingLib.Probability.HasBoundedDensity
         (volume : Measure (Coord → ℝ)) μ C)
     (boxLo boxHi center : Coord → ℝ) (radius : ℝ) :
     μ (coordinateSlabBadRegion boxLo boxHi center radius)
@@ -837,7 +920,7 @@ theorem boundedDensity_coordinateSlabBadRegion_le
           refine Finset.sum_le_sum ?_
           intro i _hi
           exact
-            EconCSLib.Probability.HasBoundedDensity.measure_coordinate_slab_Icc_le_const_mul_volume
+            AppliedModelingLib.Probability.HasBoundedDensity.measure_coordinate_slab_Icc_le_const_mul_volume
               hbd boxLo boxHi i (center i) radius
     _ =
         C *
@@ -875,7 +958,7 @@ theorem ae_forall_coordinate_ne_of_productMeasure_boundedDensity
     (ρ : Measure ℝ) [SigmaFinite ρ] [NoAtoms ρ]
     {μ : Measure (Coord → ℝ)} {C : ℝ≥0∞}
     (hbd :
-      EconCSLib.Probability.HasBoundedDensity
+      AppliedModelingLib.Probability.HasBoundedDensity
         (Measure.pi (fun _ : Coord => ρ)) μ C)
     (x : Coord → ℝ) :
     ∀ᵐ ideal ∂μ, ∀ i, x i ≠ ideal i := by
@@ -883,34 +966,52 @@ theorem ae_forall_coordinate_ne_of_productMeasure_boundedDensity
     (productMeasure_boundedDensity_coordinateEqualityBadEvent_null ρ hbd x)
 
 /--
+The source C3 bounded-density condition directly gives almost-everywhere
+coordinate noncollision in the finite-dimensional representation.
+-/
+theorem ae_forall_coordinate_ne_of_volume_boundedDensity
+    {Coord : Type*} [Fintype Coord]
+    {μ : Measure (Coord → ℝ)} {C : ℝ≥0∞}
+    (hbd : AppliedModelingLib.Probability.HasBoundedDensity (volume : Measure (Coord → ℝ)) μ C)
+    (x : Coord → ℝ) :
+    ∀ᵐ ideal ∂μ, ∀ i, x i ≠ ideal i := by
+  exact ae_forall_coordinate_ne_of_coordinateEqualityBadEvent_null
+    (volume_boundedDensity_coordinateEqualityBadEvent_null hbd x)
+
+/--
 Structured finite-coordinate version of the paper's bounded-density ideal-point
 condition C3, separated from the source-facing abstract `ILVEnvironment` field.
+The density is with respect to the full finite-dimensional Lebesgue measure,
+as in the paper; no coordinate-independence condition is imposed.
 -/
 structure FiniteCoordinateIdealDistributionData
     (Coord : Type*) [Fintype Coord] where
   idealMeasure : Measure (Coord → ℝ)
-  baseMarginal : Measure ℝ
+  probability : IsProbabilityMeasure idealMeasure
   densityBound : ℝ≥0∞
-  baseSigmaFinite : SigmaFinite baseMarginal
-  baseNoAtoms : NoAtoms baseMarginal
+  densityBound_ne_top : densityBound ≠ ⊤
   hasBoundedDensity :
-    EconCSLib.Probability.HasBoundedDensity
-      (Measure.pi (fun _ : Coord => baseMarginal)) idealMeasure densityBound
+    AppliedModelingLib.Probability.HasBoundedDensity
+      (volume : Measure (Coord → ℝ)) idealMeasure densityBound
+  /-- Source condition C3 states that the bounded density is measurable. -/
+  density_measurable :
+    ∃ density : (Coord → ℝ) → ℝ≥0∞,
+      Measurable density ∧
+        idealMeasure = (volume : Measure (Coord → ℝ)).withDensity density ∧
+          ∀ᵐ ideal ∂(volume : Measure (Coord → ℝ)), density ideal ≤ densityBound
 
 namespace FiniteCoordinateIdealDistributionData
 
 /--
-The structured product bounded-density C3 carrier supplies the a.e.
+The full-space bounded-density C3 carrier supplies the a.e.
 coordinate-noncollision condition used by Appendix C.4 Lemma 3.
 -/
 theorem coordinate_noncollision_ae
     {Coord : Type*} [Fintype Coord]
     (D : FiniteCoordinateIdealDistributionData Coord) (x : Coord → ℝ) :
     ∀ᵐ ideal ∂D.idealMeasure, ∀ i, x i ≠ ideal i := by
-  letI : SigmaFinite D.baseMarginal := D.baseSigmaFinite
-  letI : NoAtoms D.baseMarginal := D.baseNoAtoms
-  exact ae_forall_coordinate_ne_of_productMeasure_boundedDensity
-    D.baseMarginal D.hasBoundedDensity x
+  exact ae_forall_coordinate_ne_of_volume_boundedDensity
+    D.hasBoundedDensity x
 
 end FiniteCoordinateIdealDistributionData
 
@@ -941,6 +1042,17 @@ theorem ilvRadius_pos {r0 : ℝ} (hr0 : 0 < r0) {t : ℕ} (ht : 0 < t) :
 theorem ilvRadius_succ_pos {r0 : ℝ} (hr0 : 0 < r0) (t : ℕ) :
     0 < ilvRadius r0 (t + 1) := by
   exact ilvRadius_pos hr0 (Nat.succ_pos t)
+
+/-- Every positive-time harmonic ILV radius is bounded by its initial scale. -/
+theorem ilvRadius_succ_le_initial {r0 : ℝ} (hr0 : 0 ≤ r0) (t : ℕ) :
+    ilvRadius r0 (t + 1) ≤ r0 := by
+  unfold ilvRadius
+  have hpositive : (0 : ℝ) < ((t + 1 : ℕ) : ℝ) := by
+    exact_mod_cast Nat.succ_pos t
+  have hone_le : (1 : ℝ) ≤ ((t + 1 : ℕ) : ℝ) := by
+    exact_mod_cast Nat.succ_le_succ (Nat.zero_le t)
+  rw [div_le_iff₀ hpositive]
+  simpa using mul_le_mul_of_nonneg_left hone_le hr0
 
 theorem ilvTailRadius_pos {r0 : ℝ} (hr0 : 0 < r0) (N t : ℕ) :
     0 < ilvTailRadius r0 N t := by
@@ -1116,6 +1228,16 @@ def LocalNeighborhood {Voter Point : Type*}
     E.normDistance q candidate center ≤ r}
 
 /--
+The source Model A query ball before Algorithm 1 projects the returned point
+onto the feasible solution space.  Unlike `LocalNeighborhood`, this raw ball
+does not impose membership in `E.solutionSpace`.
+-/
+def RawLocalNeighborhood {Voter Point : Type*}
+    (E : ILVEnvironment Voter Point) (q : SourceNorm)
+    (center : Point) (r : ℝ) : Set Point :=
+  {candidate | E.normDistance q candidate center ≤ r}
+
+/--
 Model A response at one query: the returned point is feasible in the queried
 local neighborhood and maximizes the queried voter's utility over that
 neighborhood.
@@ -1128,17 +1250,41 @@ def ModelAResponseAt {Voter Point : Type*}
       E.utility voter candidate ≤ E.utility voter response
 
 /--
+Source-faithful Model A response at one query: a voter maximizes utility over
+the raw `Lq` ball, and Algorithm 1 performs the separate projection onto the
+solution space afterward.
+-/
+def ModelARawResponseAt {Voter Point : Type*}
+    (E : ILVEnvironment Voter Point) (q : SourceNorm)
+    (center : Point) (r : ℝ) (voter : Voter) (response : Point) : Prop :=
+  response ∈ RawLocalNeighborhood E q center r ∧
+    ∀ candidate, candidate ∈ RawLocalNeighborhood E q center r →
+      E.utility voter candidate ≤ E.utility voter response
+
+/--
 Finite-coordinate Model B normalized direction, with the subgradient vector
-supplied explicitly.
+supplied explicitly.  The printed quotient is undefined at the zero
+subgradient; the source-definedness convention is that a zero gradient causes
+no movement, so its normalized direction is the zero vector.
 -/
 noncomputable def modelBFiniteNormalizedDirection
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (q : SourceNorm) (gradient : Coord → ℝ) : Coord → ℝ :=
-  fun i => gradient i / finiteCoordinateNorm q gradient
+  if gradient = 0 then fun _ => 0 else
+    fun i => gradient i / finiteCoordinateNorm q gradient
+
+/-- Away from the explicit zero-gradient branch, Model B uses the printed quotient. -/
+theorem modelBFiniteNormalizedDirection_of_ne_zero
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (q : SourceNorm) (gradient : Coord → ℝ) (hgradient : gradient ≠ 0) :
+    modelBFiniteNormalizedDirection q gradient =
+      fun i => gradient i / finiteCoordinateNorm q gradient := by
+  simp [modelBFiniteNormalizedDirection, hgradient]
 
 /--
-Finite-coordinate Model B one-step response formula:
-`x' = x + r * g / ||g||_q`, where `g` is the supplied subgradient vector.
+Finite-coordinate Model B one-step response formula.  For a nonzero supplied
+subgradient it is `x' = x + r * g / ||g||_q`; for the zero subgradient the
+source-definedness convention leaves the current point unchanged.
 -/
 noncomputable def ModelBFiniteResponseAt
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
@@ -1146,6 +1292,31 @@ noncomputable def ModelBFiniteResponseAt
     (gradient response : Coord → ℝ) : Prop :=
   response =
     fun i => center i + r * modelBFiniteNormalizedDirection q gradient i
+
+/--
+The paper's displayed subgradient relation for a voter utility.  The direction
+of the inequality is kept exactly as printed in the Model B paragraph.
+-/
+def FiniteSourceSubgradientAt
+    {Coord : Type*} [Fintype Coord]
+    (utility : (Coord → ℝ) → ℝ) (x gradient : Coord → ℝ) : Prop :=
+  ∀ y,
+    utility y - utility x ≥
+      AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
+        gradient (fun i => y i - x i)
+
+/--
+Finite-coordinate Model B with its source subgradient premise visible: a voter
+moves from the current point by the full radius in a displayed utility
+subgradient direction.
+-/
+noncomputable def ModelBFiniteResponseWithSourceSubgradient
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (utility : (Coord → ℝ) → ℝ) (q : SourceNorm)
+    (center : Coord → ℝ) (r : ℝ) (response : Coord → ℝ) : Prop :=
+  ∃ gradient,
+    FiniteSourceSubgradientAt utility center gradient ∧
+      ModelBFiniteResponseAt q center r gradient response
 
 /--
 A response minimizes distance to a voter's ideal point over a feasible local
@@ -1165,6 +1336,13 @@ theorem mem_localNeighborhood_iff {Voter Point : Type*}
     candidate ∈ LocalNeighborhood E q center r ↔
       candidate ∈ E.solutionSpace ∧
         E.normDistance q candidate center ≤ r := by
+  rfl
+
+theorem mem_rawLocalNeighborhood_iff {Voter Point : Type*}
+    (E : ILVEnvironment Voter Point) (q : SourceNorm)
+    (center candidate : Point) (r : ℝ) :
+    candidate ∈ RawLocalNeighborhood E q center r ↔
+      E.normDistance q candidate center ≤ r := by
   rfl
 
 theorem localNeighborhood_mem_solutionSpace {Voter Point : Type*}
@@ -1206,6 +1384,23 @@ theorem modelAResponseAt_iff_isMaxOn {Voter Point : Type*}
         IsMaxOn (E.utility voter) (LocalNeighborhood E q center r) response := by
   rfl
 
+theorem modelARawResponseAt_iff {Voter Point : Type*}
+    (E : ILVEnvironment Voter Point) (q : SourceNorm)
+    (center : Point) (r : ℝ) (voter : Voter) (response : Point) :
+    ModelARawResponseAt E q center r voter response ↔
+      response ∈ RawLocalNeighborhood E q center r ∧
+        ∀ candidate, candidate ∈ RawLocalNeighborhood E q center r →
+          E.utility voter candidate ≤ E.utility voter response := by
+  rfl
+
+theorem modelARawResponseAt_iff_isMaxOn {Voter Point : Type*}
+    (E : ILVEnvironment Voter Point) (q : SourceNorm)
+    (center : Point) (r : ℝ) (voter : Voter) (response : Point) :
+    ModelARawResponseAt E q center r voter response ↔
+      response ∈ RawLocalNeighborhood E q center r ∧
+        IsMaxOn (E.utility voter) (RawLocalNeighborhood E q center r) response := by
+  rfl
+
 theorem modelBFiniteResponseAt_formula
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (q : SourceNorm) (center : Coord → ℝ) (r : ℝ)
@@ -1213,8 +1408,40 @@ theorem modelBFiniteResponseAt_formula
     ModelBFiniteResponseAt q center r gradient response ↔
       response =
         fun i => center i + r *
-          (gradient i / finiteCoordinateNorm q gradient) := by
+          modelBFiniteNormalizedDirection q gradient i := by
   rfl
+
+/-- The source-defined zero-gradient branch of Model B leaves the point fixed. -/
+theorem modelBFiniteResponseAt_of_gradient_eq_zero
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {q : SourceNorm} {center response : Coord → ℝ} {r : ℝ}
+    (hresponse : ModelBFiniteResponseAt q center r 0 response) :
+    response = center := by
+  rw [modelBFiniteResponseAt_formula] at hresponse
+  simpa [modelBFiniteNormalizedDirection] using hresponse
+
+/-- Away from the zero-gradient branch, Model B is the printed quotient formula. -/
+theorem modelBFiniteResponseAt_of_gradient_ne_zero_formula
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {q : SourceNorm} {center gradient response : Coord → ℝ} {r : ℝ}
+    (hgradient : gradient ≠ 0) :
+    ModelBFiniteResponseAt q center r gradient response ↔
+      response = fun i => center i + r *
+        (gradient i / finiteCoordinateNorm q gradient) := by
+  simp [modelBFiniteResponseAt_formula, modelBFiniteNormalizedDirection, hgradient]
+
+/--
+The coordinatewise-boundary reading of Model B used by the Proposition 2
+proof for an `L∞` neighborhood.  Every non-tied coordinate moves by the full
+radius toward that coordinate of the voter's ideal; a tied coordinate does not
+move.  This rule depends on derivative signs, not on their relative
+magnitudes.
+-/
+def ModelBCoordinatewiseBoundaryResponseAt
+    {Coord : Type*} [Fintype Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) (response : Coord → ℝ) : Prop :=
+  response = fun i =>
+    center i - r * ((center i - ideal i) / |center i - ideal i|)
 
 /-- Coordinate increment form of the finite Model B response formula. -/
 theorem modelBFiniteResponseAt_coord_increment
@@ -1256,19 +1483,27 @@ theorem modelBFiniteNormalizedDirection_l2_norm_le_one
     rw [hdir]
     have hnorm :
         finiteCoordinateNorm SourceNorm.l2 (fun _ : Coord => 0) = 0 := by
-      exact EconCSLib.FiniteDimensionalNorms.normL2_zero
+      exact AppliedModelingLib.FiniteDimensionalNorms.normL2_zero
     linarith
   · have hnonneg : 0 ≤ finiteCoordinateNorm SourceNorm.l2 gradient := by
       simpa [finiteCoordinateNorm] using
-        (EconCSLib.FiniteDimensionalNorms.normL2_nonneg gradient)
+        (AppliedModelingLib.FiniteDimensionalNorms.normL2_nonneg gradient)
     have hpos : 0 < finiteCoordinateNorm SourceNorm.l2 gradient :=
       lt_of_le_of_ne' hnonneg hzero
+    have hgradient : gradient ≠ 0 := by
+      intro hgradient
+      subst gradient
+      apply hzero
+      simpa [finiteCoordinateNorm] using
+        (AppliedModelingLib.FiniteDimensionalNorms.normL2_zero (ι := Coord))
     have hdir :
         modelBFiniteNormalizedDirection SourceNorm.l2 gradient =
           fun i => (finiteCoordinateNorm SourceNorm.l2 gradient)⁻¹ *
             gradient i := by
+      rw [modelBFiniteNormalizedDirection_of_ne_zero _ _ hgradient]
       funext i
-      simp [modelBFiniteNormalizedDirection, div_eq_mul_inv, mul_comm]
+      rw [div_eq_mul_inv]
+      ring
     rw [hdir, finiteCoordinateNorm_l2_smul, abs_of_pos (inv_pos.mpr hpos)]
     field_simp [hpos.ne']
     exact le_rfl
@@ -1311,6 +1546,15 @@ theorem modelBFiniteResponseAt_lp_boundary_distance
     (hresponse : ModelBFiniteResponseAt (SourceNorm.lp q) center r gradient response) :
     finiteCoordinateDistance (SourceNorm.lp q) response center = |r| := by
   rw [modelBFiniteResponseAt_formula] at hresponse
+  have hgradient : gradient ≠ 0 := by
+    intro hgradient
+    subst gradient
+    have hzeroNorm :
+        finiteCoordinateNorm (SourceNorm.lp q) (fun _ : Coord => (0 : ℝ)) = 0 := by
+      simpa [finiteCoordinateNorm] using
+        (AppliedModelingLib.FiniteDimensionalNorms.lp_zero_of_pos (ι := Coord) hq)
+    exact zero_ne_one (hzeroNorm.symm.trans hnorm)
+  rw [modelBFiniteNormalizedDirection_of_ne_zero _ _ hgradient] at hresponse
   rw [hresponse]
   have hvec :
       (fun i => (center i + r * (gradient i /
@@ -1321,10 +1565,10 @@ theorem modelBFiniteResponseAt_lp_boundary_distance
     ring
   unfold finiteCoordinateDistance
   rw [hvec]
-  change EconCSLib.FiniteDimensionalNorms.lp q (fun i => r * gradient i) = |r|
-  have hnorm' : EconCSLib.FiniteDimensionalNorms.lp q gradient = 1 := by
+  change AppliedModelingLib.FiniteDimensionalNorms.lp q (fun i => r * gradient i) = |r|
+  have hnorm' : AppliedModelingLib.FiniteDimensionalNorms.lp q gradient = 1 := by
     simpa [finiteCoordinateNorm] using hnorm
-  rw [EconCSLib.FiniteDimensionalNorms.lp_smul_of_pos hq, hnorm']
+  rw [AppliedModelingLib.FiniteDimensionalNorms.lp_smul_of_pos hq, hnorm']
   simp
 
 /--
@@ -1339,8 +1583,19 @@ theorem modelBFiniteNormalizedDirection_lpCostGradientCandidate_eq_self
       (lpCostGradientCandidate p (fun i => x i - ideal i)) =
         lpCostGradientCandidate p (fun i => x i - ideal i) := by
   ext i
-  rw [modelBFiniteNormalizedDirection,
-    lemma3_finite_holder_dual_gradient_candidate_norm_formula_impl hdual hcoord]
+  have hnorm :=
+    lemma3_finite_holder_dual_gradient_candidate_norm_formula_impl hdual hcoord
+  have hgradient :
+      lpCostGradientCandidate p (fun i => x i - ideal i) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hnorm
+    have hzeroNorm :
+        finiteCoordinateNorm (SourceNorm.lp q) (fun _ : Coord => (0 : ℝ)) = 0 := by
+      simpa [finiteCoordinateNorm] using
+        (AppliedModelingLib.FiniteDimensionalNorms.lp_zero_of_pos (ι := Coord) hdual.2.1)
+    exact zero_ne_one (hzeroNorm.symm.trans hnorm)
+  rw [modelBFiniteNormalizedDirection_of_ne_zero _ _ hgradient,
+    hnorm]
   simp
 
 /--
@@ -1358,11 +1613,21 @@ theorem modelBFiniteNormalizedDirection_neg_lpCostGradientCandidate_eq_self
   have hnorm :
       finiteCoordinateNorm (SourceNorm.lp q)
         (fun i => -lpCostGradientCandidate p (fun j => x j - ideal j) i) = 1 := by
-    simpa [finiteCoordinateNorm, EconCSLib.FiniteDimensionalNorms.lp,
-      EconCSLib.FiniteDimensionalNorms.lpPower] using
+    simpa [finiteCoordinateNorm, AppliedModelingLib.FiniteDimensionalNorms.lp,
+      AppliedModelingLib.FiniteDimensionalNorms.lpPower] using
       (lemma3_finite_holder_dual_gradient_candidate_norm_formula_impl
         (Coord := Coord) hdual hcoord)
-  rw [modelBFiniteNormalizedDirection, hnorm]
+  have hgradient :
+      (fun i => -lpCostGradientCandidate p (fun j => x j - ideal j) i) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hnorm
+    have hzeroNorm :
+        finiteCoordinateNorm (SourceNorm.lp q) (fun _ : Coord => (0 : ℝ)) = 0 := by
+      simpa [finiteCoordinateNorm] using
+        (AppliedModelingLib.FiniteDimensionalNorms.lp_zero_of_pos (ι := Coord) hdual.2.1)
+    exact zero_ne_one (hzeroNorm.symm.trans hnorm)
+  rw [modelBFiniteNormalizedDirection_of_ne_zero _ _ hgradient]
+  rw [hnorm]
   simp
 
 /--
@@ -1382,8 +1647,8 @@ theorem modelBFiniteResponseAt_neg_lpCostGradientCandidate_boundary_distance
   have hnorm :
       finiteCoordinateNorm (SourceNorm.lp q)
         (fun i => -lpCostGradientCandidate p (fun j => center j - ideal j) i) = 1 := by
-    simpa [finiteCoordinateNorm, EconCSLib.FiniteDimensionalNorms.lp,
-      EconCSLib.FiniteDimensionalNorms.lpPower] using
+    simpa [finiteCoordinateNorm, AppliedModelingLib.FiniteDimensionalNorms.lp,
+      AppliedModelingLib.FiniteDimensionalNorms.lpPower] using
       (lemma3_finite_holder_dual_gradient_candidate_norm_formula_impl
         (Coord := Coord) hdual hcoord)
   exact modelBFiniteResponseAt_lp_boundary_distance hdual.2.1 hnorm hresponse
@@ -1620,7 +1885,7 @@ def FiniteSubgradientAt
     (cost : (Coord → ℝ) → ℝ) (x g : Coord → ℝ) : Prop :=
   ∀ y,
     cost x +
-      EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional g
+      AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional g
         (fun i => y i - x i) ≤ cost y
 
 theorem finiteSubgradientAt_formula
@@ -1629,26 +1894,26 @@ theorem finiteSubgradientAt_formula
     FiniteSubgradientAt cost x g ↔
       ∀ y,
         cost x +
-          EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional g
+          AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional g
             (fun i => y i - x i) ≤ cost y := by
   rfl
 
 theorem coordinateLinearFunctional_apply
     {Coord : Type*} [Fintype Coord] (g d : Coord → ℝ) :
-    EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional g d =
+    AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional g d =
       ∑ i : Coord, g i * d i := by
-  simp [EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional]
+  simp [AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional]
 
 theorem coordinateLinearFunctional_apply_finset_weighted_sum
     {Coord Component : Type*} [Fintype Coord]
     (components : Finset Component) (coeff : Component → ℝ)
     (componentGradient : Component → Coord → ℝ) (d : Coord → ℝ) :
-    EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+    AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
         (fun i => components.sum (fun k => coeff k * componentGradient k i)) d =
       components.sum
         (fun k =>
           coeff k *
-            EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+            AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
               (componentGradient k) d) := by
   rw [coordinateLinearFunctional_apply]
   simp_rw [coordinateLinearFunctional_apply]
@@ -1697,7 +1962,7 @@ theorem finiteSubgradientAt_finset_nonneg_weighted_sum
       ∀ k ∈ components,
         coeff k * componentCost k x +
             coeff k *
-              EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+              AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
                 (componentGradient k) d ≤
           coeff k * componentCost k y := by
     intro k hk
@@ -1710,18 +1975,18 @@ theorem finiteSubgradientAt_finset_nonneg_weighted_sum
           components.sum
             (fun k =>
               coeff k *
-                EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+                AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
                   (componentGradient k) d) =
         components.sum
           (fun k =>
             coeff k * componentCost k x +
               coeff k *
-                EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+                AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
                   (componentGradient k) d) := by
     rw [← Finset.sum_add_distrib]
   calc
     (components.sum (fun k => coeff k * componentCost k x)) +
-        EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+        AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
           (fun i => components.sum (fun k => coeff k * componentGradient k i))
           (fun i => y i - x i)
         =
@@ -1729,7 +1994,7 @@ theorem finiteSubgradientAt_finset_nonneg_weighted_sum
             components.sum
               (fun k =>
                 coeff k *
-                  EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+                  AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
                     (componentGradient k) d) := by
             rw [coordinateLinearFunctional_apply_finset_weighted_sum]
     _ =
@@ -1737,7 +2002,7 @@ theorem finiteSubgradientAt_finset_nonneg_weighted_sum
             (fun k =>
               coeff k * componentCost k x +
                 coeff k *
-                  EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+                  AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
                     (componentGradient k) d) := hleft
     _ ≤ components.sum (fun k => coeff k * componentCost k y) := hsum
 
@@ -1786,7 +2051,7 @@ theorem finiteSubgradientAt_of_convexOn_univ_hasFDerivAt
     (hconv : ConvexOn ℝ Set.univ cost)
     (hderiv :
       HasFDerivAt cost
-        (EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional g) x) :
+        (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional g) x) :
     FiniteSubgradientAt cost x g := by
   intro y
   let line : ℝ →ᵃ[ℝ] (Coord → ℝ) := AffineMap.lineMap x y
@@ -1795,14 +2060,14 @@ theorem finiteSubgradientAt_of_convexOn_univ_hasFDerivAt
     simpa [line, Set.preimage_univ] using hconv.comp_affineMap line
   have hlineDeriv :
       HasDerivAt (fun t : ℝ => cost (line t))
-        (EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional g
+        (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional g
           (fun i => y i - x i)) 0 := by
     have hline : HasDerivAt line (fun i => y i - x i) (0 : ℝ) := by
       simpa [line] using
         (AffineMap.hasDerivAt_lineMap (a := x) (b := y) (x := (0 : ℝ)))
     have hderiv_line :
         HasFDerivAt cost
-          (EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional g)
+          (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional g)
           (line 0) := by
       simpa [line, AffineMap.lineMap_apply] using hderiv
     simpa using hderiv_line.comp_hasDerivAt 0 hline
@@ -1819,7 +2084,7 @@ theorem convexOn_univ_finiteCoordinate_lp_cost
     {p : ℝ} (hp : 1 ≤ p) (ideal : Coord → ℝ) :
     ConvexOn ℝ Set.univ
       (fun y : Coord → ℝ =>
-        EconCSLib.FiniteDimensionalNorms.lp p
+        AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - ideal i)) := by
   let pE : ENNReal := ENNReal.ofReal p
   have hp_nonneg : 0 ≤ p := le_trans zero_le_one hp
@@ -1844,17 +2109,17 @@ theorem convexOn_univ_finiteCoordinate_lp_cost
   have hcomp := hconv.comp_affineMap shiftedToPiLp
   have hfun :
       (fun y : Coord → ℝ =>
-        EconCSLib.FiniteDimensionalNorms.lp p
+        AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - ideal i)) =
       (fun y : Coord → ℝ => ‖shiftedToPiLp y‖) := by
     funext y
     calc
-      EconCSLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal i)
-          = EconCSLib.FiniteDimensionalNorms.lp pE.toReal
+      AppliedModelingLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal i)
+          = AppliedModelingLib.FiniteDimensionalNorms.lp pE.toReal
               (fun i => y i - ideal i) := by rw [hpE_toReal]
       _ = ‖(WithLp.toLp pE (fun i => y i - ideal i) :
               @PiLp pE Coord (fun _ => ℝ))‖ := by
-            exact EconCSLib.FiniteDimensionalNorms.lp_toReal_eq_piLp_norm
+            exact AppliedModelingLib.FiniteDimensionalNorms.lp_toReal_eq_piLp_norm
               pE hpE_pos (fun i => y i - ideal i)
       _ = ‖shiftedToPiLp y‖ := by
             rfl
@@ -1872,11 +2137,11 @@ theorem finiteSubgradientAt_lpCostGradientCandidate_of_convexOn
     (hconv :
       ConvexOn ℝ Set.univ
         (fun y : Coord → ℝ =>
-          EconCSLib.FiniteDimensionalNorms.lp p
+          AppliedModelingLib.FiniteDimensionalNorms.lp p
             (fun i => y i - ideal i))) :
     FiniteSubgradientAt
       (fun y : Coord → ℝ =>
-        EconCSLib.FiniteDimensionalNorms.lp p
+        AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - ideal i))
       x
       (lpCostGradientCandidate p (fun i => x i - ideal i)) := by
@@ -1885,22 +2150,22 @@ theorem finiteSubgradientAt_lpCostGradientCandidate_of_convexOn
     exact sub_ne_zero.mpr (hcoord i)
   have hbase :
       HasFDerivAt
-        (fun y : Coord → ℝ => EconCSLib.FiniteDimensionalNorms.lp p y)
-        (EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+        (fun y : Coord → ℝ => AppliedModelingLib.FiniteDimensionalNorms.lp p y)
+        (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
           (lpCostGradientCandidate p (fun i => x i - ideal i)))
         (fun i => x i - ideal i) :=
     hasFDerivAt_lpCostGradientCandidate hp hd
   have hderiv :
       HasFDerivAt
         (fun y : Coord → ℝ =>
-          EconCSLib.FiniteDimensionalNorms.lp p
+          AppliedModelingLib.FiniteDimensionalNorms.lp p
             (fun i => y i - ideal i))
-        (EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+        (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
           (lpCostGradientCandidate p (fun i => x i - ideal i))) x := by
     simpa [Function.comp_def] using
       (hasFDerivAt_comp_sub (𝕜 := ℝ)
-        (f := fun y : Coord → ℝ => EconCSLib.FiniteDimensionalNorms.lp p y)
-        (f' := EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+        (f := fun y : Coord → ℝ => AppliedModelingLib.FiniteDimensionalNorms.lp p y)
+        (f' := AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
           (lpCostGradientCandidate p (fun i => x i - ideal i)))
         (x := x) ideal).mpr hbase
   exact finiteSubgradientAt_of_convexOn_univ_hasFDerivAt hconv hderiv
@@ -1915,7 +2180,7 @@ theorem finiteSubgradientAt_lpCostGradientCandidate
     (hcoord : ∀ i, x i ≠ ideal i) :
     FiniteSubgradientAt
       (fun y : Coord → ℝ =>
-        EconCSLib.FiniteDimensionalNorms.lp p
+        AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - ideal i))
       x
       (lpCostGradientCandidate p (fun i => x i - ideal i)) := by
@@ -1934,7 +2199,7 @@ theorem finiteSubgradientAt_l2DistanceGradientCandidate
   have hcost :
       (fun y : Coord → ℝ => finiteCoordinateDistance SourceNorm.l2 y ideal) =
         fun y : Coord → ℝ =>
-          EconCSLib.FiniteDimensionalNorms.lp 2 (fun i => y i - ideal i) := by
+          AppliedModelingLib.FiniteDimensionalNorms.lp 2 (fun i => y i - ideal i) := by
     funext y
     rw [finiteCoordinateDistance_l2,
       finiteDimensionalNorms_l2_eq_lp_two]
@@ -1942,10 +2207,579 @@ theorem finiteSubgradientAt_l2DistanceGradientCandidate
   exact finiteSubgradientAt_lpCostGradientCandidate
     (p := (2 : ℝ)) hp hcoord
 
+/--
+The Euclidean cost direction normalized by the full Euclidean distance.  Unlike
+the general finite-`Lp` coordinate formula, this `p = 2` specialization is
+defined and differentiable whenever the two points differ in at least one
+coordinate.
+-/
+noncomputable def l2DistanceNormalizedGradient
+    {Coord : Type*} [Fintype Coord]
+    (x ideal : Coord → ℝ) : Coord → ℝ :=
+  fun i => (x i - ideal i) /
+    AppliedModelingLib.FiniteDimensionalNorms.l2 (fun j => x j - ideal j)
+
+/-- At the Euclidean endpoint, the general finite-`Lp` candidate simplifies to the normalized `L2` direction. -/
+theorem lpCostGradientCandidate_two_eq_l2DistanceNormalizedGradient
+    {Coord : Type*} [Fintype Coord]
+    (x ideal : Coord → ℝ) :
+    lpCostGradientCandidate 2 (fun i => x i - ideal i) =
+      l2DistanceNormalizedGradient x ideal := by
+  rw [lpCostGradientCandidate_eq_source_formula (by norm_num : (0 : ℝ) < 2)]
+  ext i
+  rw [← finiteDimensionalNorms_l2_eq_lp_two]
+  norm_num
+  unfold l2DistanceNormalizedGradient
+  by_cases hzero : x i - ideal i = 0
+  · simp [hzero]
+  · have habs : |x i - ideal i| ≠ 0 := abs_ne_zero.mpr hzero
+    have hnumerator : |x i - ideal i| *
+        ((x i - ideal i) / |x i - ideal i|) = x i - ideal i := by
+      field_simp [habs]
+    rw [hnumerator]
+
+/--
+Away from its ideal point, the normalized Euclidean direction is a subgradient
+of the finite-coordinate Euclidean distance.
+-/
+theorem finiteSubgradientAt_l2DistanceNormalizedGradient
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {x ideal : Coord → ℝ}
+    (hne : ∃ i, x i ≠ ideal i) :
+    FiniteSubgradientAt
+      (fun y : Coord → ℝ => finiteCoordinateDistance SourceNorm.l2 y ideal)
+      x (l2DistanceNormalizedGradient x ideal) := by
+  have hconvLp :
+      ConvexOn ℝ Set.univ
+        (fun y : Coord → ℝ =>
+          AppliedModelingLib.FiniteDimensionalNorms.lp 2 (fun i => y i - ideal i)) :=
+    convexOn_univ_finiteCoordinate_lp_cost (p := (2 : ℝ)) (by norm_num) ideal
+  have hconv :
+      ConvexOn ℝ Set.univ
+        (fun y : Coord → ℝ =>
+          AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => y i - ideal i)) := by
+    rw [show (fun y : Coord → ℝ =>
+      AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => y i - ideal i)) =
+        (fun y : Coord → ℝ =>
+          AppliedModelingLib.FiniteDimensionalNorms.lp 2 (fun i => y i - ideal i)) by
+      funext y
+      exact finiteDimensionalNorms_l2_eq_lp_two _]
+    exact hconvLp
+  have hbase :
+      HasFDerivAt
+        (fun y : Coord → ℝ => AppliedModelingLib.FiniteDimensionalNorms.l2 y)
+        (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
+          (fun i => (x i - ideal i) /
+            AppliedModelingLib.FiniteDimensionalNorms.l2 (fun j => x j - ideal j)))
+        (fun i => x i - ideal i) := by
+    apply AppliedModelingLib.FiniteDimensionalNorms.hasFDerivAt_l2
+    simpa only [sub_ne_zero] using hne
+  have hderiv :
+      HasFDerivAt
+        (fun y : Coord → ℝ =>
+          AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => y i - ideal i))
+        (AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
+          (l2DistanceNormalizedGradient x ideal)) x := by
+    simpa [l2DistanceNormalizedGradient, Function.comp_def] using
+      (hasFDerivAt_comp_sub (𝕜 := ℝ)
+        (f := fun y : Coord → ℝ => AppliedModelingLib.FiniteDimensionalNorms.l2 y)
+        (f' := AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
+          (fun i => (x i - ideal i) /
+            AppliedModelingLib.FiniteDimensionalNorms.l2 (fun j => x j - ideal j)))
+        (x := x) ideal).mpr hbase
+  change FiniteSubgradientAt
+    (fun y : Coord → ℝ =>
+      AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => y i - ideal i))
+    x (l2DistanceNormalizedGradient x ideal)
+  exact finiteSubgradientAt_of_convexOn_univ_hasFDerivAt hconv hderiv
+
+/-- The Euclidean distance between the restrictions of two vectors to a finite coordinate block. -/
+noncomputable def finiteCoordinateBlockL2Distance
+    {Coord : Type*} [Fintype Coord]
+    (block : Finset Coord) (x ideal : Coord → ℝ) : ℝ :=
+  AppliedModelingLib.FiniteDimensionalNorms.l2
+    (fun i : {i : Coord // i ∈ block} => x i - ideal i)
+
+/-- Restricting a finite-coordinate Euclidean distance to a coordinate block cannot increase it. -/
+theorem finiteCoordinateBlockL2Distance_le_l2
+    {Coord : Type*} [Fintype Coord]
+    (block : Finset Coord) (x ideal : Coord → ℝ) :
+    finiteCoordinateBlockL2Distance block x ideal ≤
+      AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => x i - ideal i) := by
+  unfold finiteCoordinateBlockL2Distance AppliedModelingLib.FiniteDimensionalNorms.l2
+    AppliedModelingLib.FiniteDimensionalNorms.l2Sq
+  apply Real.sqrt_le_sqrt
+  calc
+    (∑ i : {i : Coord // i ∈ block}, (x i - ideal i) ^ 2) =
+        ∑ i ∈ block, (x i - ideal i) ^ 2 :=
+      (Finset.sum_subtype (p := fun i => i ∈ block) block
+        (by intro i; rfl) (fun i => (x i - ideal i) ^ 2)).symm
+    _ ≤ ∑ i ∈ (Finset.univ : Finset Coord), (x i - ideal i) ^ 2 := by
+      exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ block)
+        (fun i _ _ => sq_nonneg (x i - ideal i))
+
+/--
+The normalized Euclidean direction on a finite coordinate block, extended by
+zero outside that block.
+-/
+noncomputable def l2BlockDistanceNormalizedGradient
+    {Coord : Type*} [Fintype Coord]
+    (block : Finset Coord) (x ideal : Coord → ℝ) : Coord → ℝ :=
+  by
+    classical
+    exact fun i => if i ∈ block then
+      (x i - ideal i) / finiteCoordinateBlockL2Distance block x ideal
+    else 0
+
+theorem l2BlockDistanceNormalizedGradient_eq_subtype
+    {Coord : Type*} [Fintype Coord]
+    (block : Finset Coord) (x ideal : Coord → ℝ) (i : {i : Coord // i ∈ block}) :
+    l2BlockDistanceNormalizedGradient block x ideal i =
+      l2DistanceNormalizedGradient
+        (fun j : {j : Coord // j ∈ block} => x j)
+        (fun j : {j : Coord // j ∈ block} => ideal j) i := by
+  simp [l2BlockDistanceNormalizedGradient, finiteCoordinateBlockL2Distance,
+    l2DistanceNormalizedGradient]
+
+theorem coordinateLinearFunctional_l2BlockDistanceNormalizedGradient
+    {Coord : Type*} [Fintype Coord]
+    (block : Finset Coord) (x ideal d : Coord → ℝ) :
+    AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
+      (l2BlockDistanceNormalizedGradient block x ideal) d =
+      AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
+        (l2DistanceNormalizedGradient
+          (fun j : {j : Coord // j ∈ block} => x j)
+          (fun j : {j : Coord // j ∈ block} => ideal j))
+        (fun j : {j : Coord // j ∈ block} => d j) := by
+  classical
+  rw [coordinateLinearFunctional_apply, coordinateLinearFunctional_apply]
+  calc
+    (∑ i : Coord, l2BlockDistanceNormalizedGradient block x ideal i * d i) =
+        ∑ i ∈ block, l2BlockDistanceNormalizedGradient block x ideal i * d i := by
+      symm
+      apply Finset.sum_subset (Finset.subset_univ block)
+      intro i _hiBlock hiNotBlock
+      simp [l2BlockDistanceNormalizedGradient, hiNotBlock]
+    _ = ∑ i : {i : Coord // i ∈ block},
+        l2BlockDistanceNormalizedGradient block x ideal i * d i :=
+      Finset.sum_subtype block (by simp) _
+    _ = ∑ i : {i : Coord // i ∈ block},
+        l2DistanceNormalizedGradient
+          (fun j : {j : Coord // j ∈ block} => x j)
+          (fun j : {j : Coord // j ∈ block} => ideal j) i * d i := by
+      apply Finset.sum_congr rfl
+      intro i _hi
+      rw [l2BlockDistanceNormalizedGradient_eq_subtype]
+
+/--
+Away from its block-restricted ideal point, the zero-extended normalized
+Euclidean block direction is a subgradient of the corresponding block
+distance.
+-/
+theorem finiteSubgradientAt_blockL2DistanceNormalizedGradient
+    {Coord : Type*} [Fintype Coord]
+    (block : Finset Coord) (x ideal : Coord → ℝ)
+    (hne : ∃ i, i ∈ block ∧ x i ≠ ideal i) :
+    FiniteSubgradientAt
+      (fun y : Coord → ℝ => finiteCoordinateBlockL2Distance block y ideal)
+      x (l2BlockDistanceNormalizedGradient block x ideal) := by
+  rcases hne with ⟨i, hi, hxi⟩
+  letI : Nonempty {i : Coord // i ∈ block} := ⟨⟨i, hi⟩⟩
+  let xBlock : {i : Coord // i ∈ block} → ℝ := fun j => x j
+  let idealBlock : {i : Coord // i ∈ block} → ℝ := fun j => ideal j
+  have hneBlock : ∃ j : {i : Coord // i ∈ block}, xBlock j ≠ idealBlock j :=
+    ⟨⟨i, hi⟩, hxi⟩
+  have hbase := finiteSubgradientAt_l2DistanceNormalizedGradient
+    (Coord := {i : Coord // i ∈ block}) (x := xBlock) (ideal := idealBlock) hneBlock
+  intro y
+  simpa only [finiteCoordinateBlockL2Distance, xBlock, idealBlock,
+    coordinateLinearFunctional_l2BlockDistanceNormalizedGradient] using
+    hbase (fun i : {i : Coord // i ∈ block} => y i)
+
+theorem l2BlockDistanceNormalizedGradient_eq_zero_of_not_mem
+    {Coord : Type*} [Fintype Coord]
+    (block : Finset Coord) (x ideal : Coord → ℝ) {i : Coord}
+    (hi : i ∉ block) :
+    l2BlockDistanceNormalizedGradient block x ideal i = 0 := by
+  simp [l2BlockDistanceNormalizedGradient, hi]
+
+/--
+The zero-extended block direction has the same Euclidean quantity as the
+normalized direction on the corresponding subtype of coordinates.
+-/
+theorem l2_l2BlockDistanceNormalizedGradient_eq_subtype
+    {Coord : Type*} [Fintype Coord]
+    (block : Finset Coord) (x ideal : Coord → ℝ) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2
+      (l2BlockDistanceNormalizedGradient block x ideal) =
+      AppliedModelingLib.FiniteDimensionalNorms.l2
+        (l2DistanceNormalizedGradient
+          (fun j : {j : Coord // j ∈ block} => x j)
+          (fun j : {j : Coord // j ∈ block} => ideal j)) := by
+  classical
+  unfold AppliedModelingLib.FiniteDimensionalNorms.l2 AppliedModelingLib.FiniteDimensionalNorms.l2Sq
+  congr 1
+  calc
+    (∑ i : Coord, l2BlockDistanceNormalizedGradient block x ideal i ^ 2) =
+        ∑ i ∈ block, l2BlockDistanceNormalizedGradient block x ideal i ^ 2 := by
+      symm
+      apply Finset.sum_subset (Finset.subset_univ block)
+      intro i _hiBlock hiNotBlock
+      simp [l2BlockDistanceNormalizedGradient, hiNotBlock]
+    _ = ∑ i : {i : Coord // i ∈ block},
+        l2BlockDistanceNormalizedGradient block x ideal i ^ 2 :=
+      Finset.sum_subtype block (by simp) _
+    _ = ∑ i : {i : Coord // i ∈ block},
+        l2DistanceNormalizedGradient
+          (fun j : {j : Coord // j ∈ block} => x j)
+          (fun j : {j : Coord // j ∈ block} => ideal j) i ^ 2 := by
+      apply Finset.sum_congr rfl
+      intro i _hi
+      rw [l2BlockDistanceNormalizedGradient_eq_subtype]
+
+/-- Zero-extended normalized directions on pairwise-disjoint coordinate blocks are disjoint. -/
+theorem l2BlockDistanceNormalizedGradients_coordinatewise_disjoint
+    {Coord Component : Type*} [Fintype Coord]
+    (components : Finset Component) (block : Component → Finset Coord)
+    (x : Coord → ℝ) (ideal : Component → Coord → ℝ)
+    (hblocks : ∀ k l, k ∈ components → l ∈ components → k ≠ l →
+      Disjoint (block k) (block l)) :
+    ∀ i k l, k ∈ components → l ∈ components → k ≠ l →
+      l2BlockDistanceNormalizedGradient (block k) x (ideal k) i = 0 ∨
+        l2BlockDistanceNormalizedGradient (block l) x (ideal l) i = 0 := by
+  intro i k l hk hl hkl
+  by_cases hik : i ∈ block k
+  · right
+    apply l2BlockDistanceNormalizedGradient_eq_zero_of_not_mem
+    intro hil
+    exact (Finset.disjoint_left.mp (hblocks k l hk hl hkl)) hik hil
+  · left
+    exact l2BlockDistanceNormalizedGradient_eq_zero_of_not_mem _ _ _ hik
+
+/-- The exact finite Model A response for an `L2` query ball. -/
+noncomputable def l2BallResponse
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) : Coord → ℝ :=
+  if finiteCoordinateDistance SourceNorm.l2 center ideal ≤ r then ideal else
+    fun i => center i - r * l2DistanceNormalizedGradient center ideal i
+
+/-- Outside the open ideal-containing ball, the exact response has the displayed radial form. -/
+theorem l2BallResponse_eq_radial_of_not_distance_le
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ}
+    (houtside : ¬ finiteCoordinateDistance SourceNorm.l2 center ideal ≤ r) :
+    l2BallResponse center ideal r =
+      fun i => center i - r * l2DistanceNormalizedGradient center ideal i := by
+  rw [l2BallResponse, if_neg houtside]
+
+/-- A nonzero normalized finite-coordinate Euclidean direction has norm one. -/
+theorem l2DistanceNormalizedGradient_l2_eq_one
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ}
+    (hne : ∃ i, center i ≠ ideal i) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2
+      (l2DistanceNormalizedGradient center ideal) = 1 := by
+  have hpos : 0 < AppliedModelingLib.FiniteDimensionalNorms.l2
+      (fun i => center i - ideal i) := by
+    apply AppliedModelingLib.FiniteDimensionalNorms.normL2_pos_of_exists_ne_zero
+    simpa only [sub_ne_zero] using hne
+  unfold l2DistanceNormalizedGradient
+  have hrewrite :
+      (fun i => (center i - ideal i) /
+        AppliedModelingLib.FiniteDimensionalNorms.l2 (fun j => center j - ideal j)) =
+        (fun i => (AppliedModelingLib.FiniteDimensionalNorms.l2
+          (fun j => center j - ideal j))⁻¹ * (center i - ideal i)) := by
+    funext i
+    rw [div_eq_inv_mul]
+  rw [hrewrite, AppliedModelingLib.FiniteDimensionalNorms.normL2_smul,
+    abs_of_pos (inv_pos.mpr hpos), inv_mul_cancel₀ hpos.ne']
+
+/-- A nonzero block-restricted Euclidean direction has full ambient `L2` quantity one. -/
+theorem l2BlockDistanceNormalizedGradient_l2_eq_one
+    {Coord : Type*} [Fintype Coord]
+    (block : Finset Coord) (x ideal : Coord → ℝ)
+    (hne : ∃ i, i ∈ block ∧ x i ≠ ideal i) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2
+      (l2BlockDistanceNormalizedGradient block x ideal) = 1 := by
+  rcases hne with ⟨i, hi, hxi⟩
+  letI : Nonempty {i : Coord // i ∈ block} := ⟨⟨i, hi⟩⟩
+  rw [l2_l2BlockDistanceNormalizedGradient_eq_subtype]
+  apply l2DistanceNormalizedGradient_l2_eq_one
+  exact ⟨⟨i, hi⟩, hxi⟩
+
+/-- The radial part of the exact `L2` response remains in its query ball. -/
+theorem l2BallResponse_l2_distance_le
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 ≤ r) :
+    finiteCoordinateDistance SourceNorm.l2
+      (l2BallResponse center ideal r) center ≤ r := by
+  by_cases hinside : finiteCoordinateDistance SourceNorm.l2 center ideal ≤ r
+  · rw [l2BallResponse, if_pos hinside]
+    change AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => ideal i - center i) ≤ r
+    rw [AppliedModelingLib.FiniteDimensionalNorms.normL2_sub_rev]
+    exact hinside
+  · have hne : ∃ i, center i ≠ ideal i := by
+      by_contra hne
+      push Not at hne
+      apply hinside
+      change AppliedModelingLib.FiniteDimensionalNorms.l2
+        (fun i => center i - ideal i) ≤ r
+      have hzero : (fun i => center i - ideal i) = 0 := by
+        ext i
+        simp [hne i]
+      calc
+        AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => center i - ideal i) =
+            AppliedModelingLib.FiniteDimensionalNorms.l2 0 := by rw [hzero]
+        _ = 0 := AppliedModelingLib.FiniteDimensionalNorms.normL2_zero
+        _ ≤ r := hr
+    rw [l2BallResponse, if_neg hinside]
+    change AppliedModelingLib.FiniteDimensionalNorms.l2
+      (fun i => (center i - r * l2DistanceNormalizedGradient center ideal i) - center i) ≤ r
+    have hrewrite :
+        (fun i => (center i - r * l2DistanceNormalizedGradient center ideal i) - center i) =
+          fun i => (-r) * l2DistanceNormalizedGradient center ideal i := by
+      funext i
+      ring
+    rw [hrewrite, AppliedModelingLib.FiniteDimensionalNorms.normL2_smul,
+      l2DistanceNormalizedGradient_l2_eq_one hne, abs_neg, abs_of_nonneg hr]
+    linarith
+
+/--
+Outside the ideal-containing ball, the radial response reduces its Euclidean
+cost by exactly the query radius.
+-/
+theorem l2BallResponse_l2_cost_eq_sub_of_not_distance_le
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 ≤ r)
+    (houtside : ¬ finiteCoordinateDistance SourceNorm.l2 center ideal ≤ r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2
+      (fun i => l2BallResponse center ideal r i - ideal i) =
+      AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => center i - ideal i) - r := by
+  have hlt : r < AppliedModelingLib.FiniteDimensionalNorms.l2
+      (fun i => center i - ideal i) := by
+    exact lt_of_not_ge houtside
+  have hpos : 0 < AppliedModelingLib.FiniteDimensionalNorms.l2
+      (fun i => center i - ideal i) := lt_of_le_of_lt hr hlt
+  have hfactor : 0 ≤ 1 - r /
+      AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => center i - ideal i) := by
+    rw [sub_nonneg]
+    exact (div_le_one₀ hpos).mpr (le_of_lt hlt)
+  rw [l2BallResponse_eq_radial_of_not_distance_le houtside]
+  have hrewrite :
+      (fun i => (center i - r * l2DistanceNormalizedGradient center ideal i) - ideal i) =
+        fun i => (1 - r /
+          AppliedModelingLib.FiniteDimensionalNorms.l2 (fun j => center j - ideal j)) *
+            (center i - ideal i) := by
+    funext i
+    unfold l2DistanceNormalizedGradient
+    field_simp [hpos.ne']
+    ring
+  rw [hrewrite, AppliedModelingLib.FiniteDimensionalNorms.normL2_smul,
+    abs_of_nonneg hfactor]
+  field_simp [hpos.ne']
+
+/-- The exact finite `L2` response minimizes Euclidean cost over its `L2` query ball. -/
+theorem l2BallResponse_minimizes_l2_on_l2Ball
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal candidate : Coord → ℝ} {r : ℝ} (hr : 0 ≤ r)
+    (hcandidate : finiteCoordinateDistance SourceNorm.l2 candidate center ≤ r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2
+        (fun i => l2BallResponse center ideal r i - ideal i) ≤
+      AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => candidate i - ideal i) := by
+  by_cases hinside : finiteCoordinateDistance SourceNorm.l2 center ideal ≤ r
+  · rw [l2BallResponse, if_pos hinside]
+    simpa only [sub_self, AppliedModelingLib.FiniteDimensionalNorms.normL2_zero] using
+      AppliedModelingLib.FiniteDimensionalNorms.normL2_nonneg
+        (fun i => candidate i - ideal i)
+  · rw [l2BallResponse_l2_cost_eq_sub_of_not_distance_le hr hinside]
+    have hcandidate' : AppliedModelingLib.FiniteDimensionalNorms.l2
+        (fun i => center i - candidate i) ≤ r := by
+      rw [AppliedModelingLib.FiniteDimensionalNorms.normL2_sub_rev]
+      exact hcandidate
+    have htriangle := AppliedModelingLib.FiniteDimensionalNorms.normL2_add_le
+      (fun i => center i - candidate i) (fun i => candidate i - ideal i)
+    have hbound : AppliedModelingLib.FiniteDimensionalNorms.l2
+        (fun i => center i - ideal i) ≤
+        r + AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => candidate i - ideal i) := by
+      calc
+        AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => center i - ideal i) =
+            AppliedModelingLib.FiniteDimensionalNorms.l2
+              (fun i => (center i - candidate i) + (candidate i - ideal i)) := by
+          congr 1
+          funext i
+          ring
+        _ ≤ AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => center i - candidate i) +
+            AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => candidate i - ideal i) := htriangle
+        _ ≤ r + AppliedModelingLib.FiniteDimensionalNorms.l2 (fun i => candidate i - ideal i) := by
+          gcongr
+    linarith
+
+/-- The strict ideal-containing-ball event used by the finite `L2/L2` Model A argument. -/
+def l2BallBadEvent
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center : Coord → ℝ) (radius : ℝ) : Set (Coord → ℝ) :=
+  {ideal | finiteCoordinateDistance SourceNorm.l2 center ideal < radius}
+
+/-- A strict Euclidean ball is contained in every chosen-coordinate strict slab envelope. -/
+theorem l2BallBadEvent_subset_l1LinfSlabBadEvent
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center : Coord → ℝ) (radius : ℝ) :
+    l2BallBadEvent center radius ⊆ l1LinfSlabBadEvent center radius := by
+  intro ideal hideal
+  let i : Coord := Classical.choice inferInstance
+  refine ⟨i, ?_⟩
+  exact (finiteCoordinateDistance_l2_coord_abs_le center ideal i).trans_lt hideal
+
+/-- The direction encoded by the exact finite `L2` Model A response. -/
+noncomputable def l2BallDirection
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) : Coord → ℝ :=
+  fun i => (center i - l2BallResponse center ideal r i) / r
+
+/-- On and outside the strict ideal-containing ball, the exact direction is the normalized Euclidean subgradient. -/
+theorem l2BallResponse_eq_radial_of_distance_le
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r)
+    (hgood : r ≤ finiteCoordinateDistance SourceNorm.l2 center ideal) :
+    l2BallResponse center ideal r =
+      fun i => center i - r * l2DistanceNormalizedGradient center ideal i := by
+  by_cases houtside : ¬ finiteCoordinateDistance SourceNorm.l2 center ideal ≤ r
+  · exact l2BallResponse_eq_radial_of_not_distance_le houtside
+  · push Not at houtside
+    have heq : finiteCoordinateDistance SourceNorm.l2 center ideal = r :=
+      le_antisymm houtside hgood
+    rw [l2BallResponse, if_pos houtside]
+    ext i
+    unfold l2DistanceNormalizedGradient
+    rw [show AppliedModelingLib.FiniteDimensionalNorms.l2
+      (fun j => center j - ideal j) = r by exact heq]
+    field_simp [hr.ne']
+    ring
+
+/-- Off the strict ball event, the exact finite `L2` Model A direction is the ordinary sampled subgradient. -/
+theorem l2BallDirection_eq_l2DistanceNormalizedGradient_of_notMem_badEvent
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r)
+    (hgood : ideal ∉ l2BallBadEvent center r) :
+    l2BallDirection center ideal r = l2DistanceNormalizedGradient center ideal := by
+  have hdistance : r ≤ finiteCoordinateDistance SourceNorm.l2 center ideal := by
+    exact not_lt.mp hgood
+  unfold l2BallDirection
+  rw [l2BallResponse_eq_radial_of_distance_le hr hdistance]
+  ext i
+  field_simp [hr.ne']
+  ring
+
+/-- The exact finite `L2` Model A direction has Euclidean norm at most one. -/
+theorem l2BallDirection_l2_le_one
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2 (l2BallDirection center ideal r) ≤ 1 := by
+  unfold l2BallDirection
+  have hrewrite :
+      (fun i => (center i - l2BallResponse center ideal r i) / r) =
+        fun i => r⁻¹ * (center i - l2BallResponse center ideal r i) := by
+    funext i
+    rw [div_eq_inv_mul]
+  rw [hrewrite, AppliedModelingLib.FiniteDimensionalNorms.normL2_smul,
+    abs_of_pos (inv_pos.mpr hr)]
+  have hball := l2BallResponse_l2_distance_le (center := center) (ideal := ideal) hr.le
+  change AppliedModelingLib.FiniteDimensionalNorms.l2
+    (fun i => l2BallResponse center ideal r i - center i) ≤ r at hball
+  rw [AppliedModelingLib.FiniteDimensionalNorms.normL2_sub_rev] at hball
+  exact (inv_mul_le_iff₀ hr).mpr (by simpa using hball)
+
+/-- The normalized Euclidean sampled direction has norm at most one, including at its zero convention. -/
+theorem l2DistanceNormalizedGradient_l2_le_one
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2
+      (l2DistanceNormalizedGradient center ideal) ≤ 1 := by
+  by_cases hne : ∃ i, center i ≠ ideal i
+  · rw [l2DistanceNormalizedGradient_l2_eq_one hne]
+  · push Not at hne
+    have hzero : l2DistanceNormalizedGradient center ideal = 0 := by
+      unfold l2DistanceNormalizedGradient
+      ext i
+      simp [hne i]
+    rw [hzero]
+    simp [AppliedModelingLib.FiniteDimensionalNorms.l2,
+      AppliedModelingLib.FiniteDimensionalNorms.l2Sq]
+
+/-- The state-dependent difference between the exact `L2` response direction and its sampled subgradient. -/
+noncomputable def l2BallDirectionSubgradientPerturbation
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) : Coord → ℝ :=
+  fun i => l2BallDirection center ideal r i - l2DistanceNormalizedGradient center ideal i
+
+/-- The exact `L2` perturbation vanishes off the strict ideal-containing ball event. -/
+theorem l2BallDirectionSubgradientPerturbation_eq_zero_of_notMem_badEvent
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r)
+    (hgood : ideal ∉ l2BallBadEvent center r) :
+    l2BallDirectionSubgradientPerturbation center ideal r = 0 := by
+  unfold l2BallDirectionSubgradientPerturbation
+  rw [l2BallDirection_eq_l2DistanceNormalizedGradient_of_notMem_badEvent hr hgood]
+  ext i
+  simp
+
+/-- The exact finite `L2` perturbation has Euclidean norm at most two. -/
+theorem l2BallDirectionSubgradientPerturbation_l2_le_two
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2
+      (l2BallDirectionSubgradientPerturbation center ideal r) ≤ 2 := by
+  unfold l2BallDirectionSubgradientPerturbation
+  have htriangle := AppliedModelingLib.FiniteDimensionalNorms.normL2_add_le
+    (l2BallDirection center ideal r) (fun i => -l2DistanceNormalizedGradient center ideal i)
+  have hneg : AppliedModelingLib.FiniteDimensionalNorms.l2
+      (fun i => -l2DistanceNormalizedGradient center ideal i) =
+        AppliedModelingLib.FiniteDimensionalNorms.l2 (l2DistanceNormalizedGradient center ideal) := by
+    rw [show (fun i => -l2DistanceNormalizedGradient center ideal i) =
+      (fun i => (-1 : ℝ) * l2DistanceNormalizedGradient center ideal i) by
+        funext i; ring,
+      AppliedModelingLib.FiniteDimensionalNorms.normL2_smul]
+    simp
+  calc
+    AppliedModelingLib.FiniteDimensionalNorms.l2
+        (fun i => l2BallDirection center ideal r i -
+          l2DistanceNormalizedGradient center ideal i) =
+        AppliedModelingLib.FiniteDimensionalNorms.l2
+          (fun i => l2BallDirection center ideal r i +
+            (-l2DistanceNormalizedGradient center ideal i)) := by
+      congr 1
+    _ ≤ AppliedModelingLib.FiniteDimensionalNorms.l2 (l2BallDirection center ideal r) +
+        AppliedModelingLib.FiniteDimensionalNorms.l2
+          (fun i => -l2DistanceNormalizedGradient center ideal i) := htriangle
+    _ ≤ 2 := by
+      rw [hneg]
+      have hd := l2BallDirection_l2_le_one (center := center) (ideal := ideal) hr
+      have hg := l2DistanceNormalizedGradient_l2_le_one center ideal
+      linarith
+
+/-- The exact finite `L2` perturbation has squared Euclidean norm at most four. -/
+theorem l2BallDirectionSubgradientPerturbation_l2Sq_le_four
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2Sq
+      (l2BallDirectionSubgradientPerturbation center ideal r) ≤ 4 := by
+  have h := AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_le_sq_of_normL2_le
+    (x := l2BallDirectionSubgradientPerturbation center ideal r)
+    (by norm_num : (0 : ℝ) ≤ 2)
+    (l2BallDirectionSubgradientPerturbation_l2_le_two hr)
+  norm_num at h ⊢
+  exact h
+
 theorem unitSign_abs_eq_one {d : ℝ} (hd : d ≠ 0) :
     abs (d / |d|) = 1 := by
   have hpos : 0 < |d| := abs_pos.mpr hd
   rw [abs_div, abs_abs, div_self hpos.ne']
+
+theorem unitSign_abs_le_one (d : ℝ) :
+    abs (d / |d|) ≤ 1 := by
+  by_cases hd : d = 0
+  · simp [hd]
+  · rw [unitSign_abs_eq_one hd]
 
 theorem unitSign_mul_self_eq_abs {d : ℝ} (hd : d ≠ 0) :
     (d / |d|) * d = |d| := by
@@ -1977,17 +2811,17 @@ theorem finiteSubgradientAt_l1Cost_unitSignCandidate
     {x ideal : Coord → ℝ} (hcoord : ∀ i, x i ≠ ideal i) :
     FiniteSubgradientAt
       (fun y : Coord → ℝ =>
-        EconCSLib.FiniteDimensionalNorms.l1 (fun i => y i - ideal i))
+        AppliedModelingLib.FiniteDimensionalNorms.l1 (fun i => y i - ideal i))
       x
       (fun i => (x i - ideal i) / |x i - ideal i|) := by
   intro y
   have hlinear :
-      EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+      AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
           (fun i => (x i - ideal i) / |x i - ideal i|)
           (fun i => y i - x i) =
         ∑ i : Coord,
           ((x i - ideal i) / |x i - ideal i|) * (y i - x i) := by
-    simp [EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional]
+    simp [AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional]
   rw [hlinear]
   change
     (∑ i : Coord, |x i - ideal i|) +
@@ -2013,7 +2847,7 @@ theorem finiteCoordinateNorm_linf_l1CostUnitSign_eq_one
     {x ideal : Coord → ℝ} (hcoord : ∀ i, x i ≠ ideal i) :
     finiteCoordinateNorm SourceNorm.linfty
       (fun i => (x i - ideal i) / |x i - ideal i|) = 1 := by
-  rw [finiteCoordinateNorm, EconCSLib.FiniteDimensionalNorms.linf]
+  rw [finiteCoordinateNorm, AppliedModelingLib.FiniteDimensionalNorms.linf]
   exact Finset.sup'_eq_of_forall
     (s := (Finset.univ : Finset Coord))
     (H := Finset.univ_nonempty)
@@ -2021,12 +2855,566 @@ theorem finiteCoordinateNorm_linf_l1CostUnitSign_eq_one
     (a := 1)
     (fun i _hi => unitSign_abs_eq_one (sub_ne_zero.mpr (hcoord i)))
 
+/-- At the `L1` endpoint, the displayed finite-`Lp` direction is the unit-sign subgradient. -/
+theorem lpCostGradientCandidate_one_eq_unitSign
+    {Coord : Type*} [Fintype Coord] (d : Coord → ℝ) :
+    lpCostGradientCandidate 1 d = fun i => d i / |d i| := by
+  ext i
+  simp [lpCostGradientCandidate, lpGradientCandidate]
+
+theorem lpCostGradientCandidate_one_coord_abs_le_one
+    {Coord : Type*} [Fintype Coord] (d : Coord → ℝ) (i : Coord) :
+    |lpCostGradientCandidate 1 d i| ≤ 1 := by
+  rw [lpCostGradientCandidate_one_eq_unitSign]
+  exact unitSign_abs_le_one (d i)
+
+/-- The `p = 1` endpoint of the displayed candidate is a subgradient of the finite `L1` cost. -/
+theorem finiteSubgradientAt_lpCostGradientCandidate_one
+    {Coord : Type*} [Fintype Coord]
+    {x ideal : Coord → ℝ} (hcoord : ∀ i, x i ≠ ideal i) :
+    FiniteSubgradientAt
+      (fun y : Coord → ℝ =>
+        AppliedModelingLib.FiniteDimensionalNorms.lp 1 (fun i => y i - ideal i))
+      x
+      (lpCostGradientCandidate 1 (fun i => x i - ideal i)) := by
+  rw [lpCostGradientCandidate_one_eq_unitSign]
+  simp_rw [AppliedModelingLib.FiniteDimensionalNorms.lp_one]
+  exact finiteSubgradientAt_l1Cost_unitSignCandidate hcoord
+
+/-- The `L1/L∞` endpoint turns Model B's normalized direction into the unit-sign update. -/
+theorem modelBFiniteResponseAt_neg_lpCostGradientCandidate_one_formula
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} (hcoord : ∀ i, center i ≠ ideal i)
+    (r : ℝ) (response : Coord → ℝ) :
+    ModelBFiniteResponseAt SourceNorm.linfty center r
+        (fun i => -lpCostGradientCandidate 1 (fun j => center j - ideal j) i)
+        response ↔
+      response = fun i => center i - r *
+        lpCostGradientCandidate 1 (fun j => center j - ideal j) i := by
+  have hnorm : finiteCoordinateNorm SourceNorm.linfty
+      (fun i => -lpCostGradientCandidate 1 (fun j => center j - ideal j) i) = 1 := by
+    rw [lpCostGradientCandidate_one_eq_unitSign]
+    rw [finiteCoordinateNorm, AppliedModelingLib.FiniteDimensionalNorms.linf]
+    exact Finset.sup'_eq_of_forall
+      (s := (Finset.univ : Finset Coord))
+      (H := Finset.univ_nonempty)
+      (f := fun i => abs (-((center i - ideal i) / |center i - ideal i|)))
+      (a := 1)
+      (fun i _hi => by
+        change abs (-((center i - ideal i) / |center i - ideal i|)) = 1
+        rw [abs_neg, unitSign_abs_eq_one (sub_ne_zero.mpr (hcoord i))])
+  have hgradient :
+      (fun i => -lpCostGradientCandidate 1 (fun j => center j - ideal j) i) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hnorm
+    have hzeroNorm :
+        finiteCoordinateNorm SourceNorm.linfty (fun _ : Coord => (0 : ℝ)) = 0 := by
+      simpa [finiteCoordinateNorm] using
+        (AppliedModelingLib.FiniteDimensionalNorms.linf_zero (ι := Coord))
+    exact zero_ne_one (hzeroNorm.symm.trans hnorm)
+  rw [modelBFiniteResponseAt_formula,
+    modelBFiniteNormalizedDirection_of_ne_zero _ _ hgradient]
+  rw [hnorm]
+  constructor <;> intro hresponse
+  · rw [hresponse]
+    funext i
+    simp
+    ring
+  · rw [hresponse]
+    funext i
+    simp
+    ring
+
+/-- The unprojected sign step used by the source `L1/L∞` local-minimization argument. -/
+noncomputable def l1LinfRawResponse
+    {Coord : Type*} [Fintype Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) : Coord → ℝ :=
+  fun i => center i - r * ((center i - ideal i) / |center i - ideal i|)
+
+/-- On a coordinate that does not cross its ideal point, the sign step reduces its `L1` cost by exactly its radius. -/
+theorem l1LinfRawResponse_coordinate_cost
+    {Coord : Type*} [Fintype Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} {i : Coord}
+    (hrnonneg : 0 ≤ r)
+    (hr : r ≤ |center i - ideal i|) :
+    |l1LinfRawResponse center ideal r i - ideal i| =
+      |center i - ideal i| - r := by
+  by_cases hzero : center i = ideal i
+  · have hrzero : r ≤ 0 := by simpa [hzero] using hr
+    have : r = 0 := le_antisymm hrzero hrnonneg
+    simp [l1LinfRawResponse, hzero, this]
+  let d : ℝ := center i - ideal i
+  have hpos : 0 < |d| := abs_pos.mpr (sub_ne_zero.mpr hzero)
+  have hfactor : 0 ≤ 1 - r / |d| := by
+    rw [sub_nonneg]
+    exact (div_le_one₀ hpos).mpr (by simpa [d] using hr)
+  change |center i - r * ((center i - ideal i) / |center i - ideal i|) - ideal i| =
+    |center i - ideal i| - r
+  have heq : center i - r * ((center i - ideal i) / |center i - ideal i|) - ideal i =
+      (1 - r / |d|) * d := by
+    dsimp [d]
+    field_simp [hpos.ne']
+    ring
+  rw [heq, abs_mul, abs_of_nonneg hfactor]
+  have hfinal : (1 - r / |d|) * |d| = |d| - r := by
+    field_simp [hpos.ne']
+  simpa [d] using hfinal
+
+/-- Every sign step of nonnegative radius remains in the finite `L∞` query ball. -/
+theorem l1LinfRawResponse_coordinate_distance_le
+    {Coord : Type*} [Fintype Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} {i : Coord}
+    (hr : 0 ≤ r) :
+    |l1LinfRawResponse center ideal r i - center i| ≤ r := by
+  simp only [l1LinfRawResponse]
+  rw [sub_sub_cancel_left, abs_neg, abs_mul, abs_of_nonneg hr]
+  calc
+    r * abs ((center i - ideal i) / |center i - ideal i|) =
+        abs ((center i - ideal i) / |center i - ideal i|) * r := mul_comm _ _
+    _ ≤ 1 * r := mul_le_mul_of_nonneg_right (unitSign_abs_le_one _) hr
+    _ = r := one_mul r
+
+/-- Every point in the finite `L∞` ball has at least the coordinate cost reached by the sign step. -/
+theorem l1Linf_coordinate_cost_lower_bound_of_linfBall
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal candidate : Coord → ℝ} {r : ℝ} {i : Coord}
+    (hcandidate : finiteCoordinateDistance SourceNorm.linfty candidate center ≤ r) :
+    |center i - ideal i| - r ≤ |candidate i - ideal i| := by
+  apply (sub_le_iff_le_add).mpr
+  have hcandidate_i : |candidate i - center i| ≤ r :=
+    le_trans (finiteCoordinateDistance_linf_coord_abs_le candidate center i) hcandidate
+  calc
+    |center i - ideal i| = |(center i - candidate i) + (candidate i - ideal i)| := by
+      congr 1
+      ring
+    _ ≤ |center i - candidate i| + |candidate i - ideal i| := abs_add_le _ _
+    _ = |candidate i - center i| + |candidate i - ideal i| := by rw [abs_sub_comm]
+    _ ≤ r + |candidate i - ideal i| := by gcongr
+    _ = |candidate i - ideal i| + r := by ring
+
+/-- Equality in the coordinate lower bound uniquely identifies the sign-step coordinate. -/
+theorem l1LinfRawResponse_coordinate_eq_of_cost_eq
+    {Coord : Type*} [Fintype Coord]
+    {center ideal candidate : Coord → ℝ} {r : ℝ} {i : Coord}
+    (hr : 0 ≤ r)
+    (hgood : r ≤ |center i - ideal i|)
+    (hcandidate : |candidate i - center i| ≤ r)
+    (heq : |candidate i - ideal i| = |center i - ideal i| - r) :
+    candidate i = l1LinfRawResponse center ideal r i := by
+  by_cases hzero : center i = ideal i
+  · have hrzero : r ≤ 0 := by simpa [hzero] using hgood
+    have hr_eq_zero : r = 0 := le_antisymm hrzero hr
+    have hcandidate_eq : candidate i = center i := by
+      have hdiff_zero : candidate i - center i = 0 := by
+        apply abs_eq_zero.mp
+        simpa [hr_eq_zero] using hcandidate
+      linarith
+    simp [l1LinfRawResponse, hzero, hr_eq_zero, hcandidate_eq]
+  let d : ℝ := center i - ideal i
+  have hdne : d ≠ 0 := sub_ne_zero.mpr hzero
+  have hbounds := abs_le.mp hcandidate
+  rcases le_total 0 d with hd | hd
+  · have hdpos : 0 < d := lt_of_le_of_ne hd (Ne.symm hdne)
+    have habs : |center i - ideal i| = d := by
+      simp [d, abs_of_nonneg hd]
+    have hbelow : ideal i ≤ center i - r := by
+      rw [habs] at hgood
+      dsimp [d] at hgood
+      linarith
+    have hcandidate_above_ideal : 0 ≤ candidate i - ideal i := by
+      linarith [hbounds.1]
+    have hraw : l1LinfRawResponse center ideal r i = center i - r := by
+      simp [l1LinfRawResponse, d, abs_of_pos hdpos, div_self hdpos.ne']
+    rw [abs_of_nonneg hcandidate_above_ideal, habs] at heq
+    rw [hraw]
+    linarith
+  · have hdneg : d < 0 := lt_of_le_of_ne hd hdne
+    have habs : |center i - ideal i| = -d := by
+      simp [d, abs_of_neg hdneg]
+    have habove : center i + r ≤ ideal i := by
+      rw [habs] at hgood
+      dsimp [d] at hgood
+      linarith
+    have hcandidate_below_ideal : candidate i - ideal i ≤ 0 := by
+      linarith [hbounds.2]
+    have hsign_d : d / |d| = -1 := by
+      rw [abs_of_neg hdneg]
+      field_simp [hdneg.ne]
+    have hsign : (center i - ideal i) / |center i - ideal i| = -1 := by
+      simpa [d] using hsign_d
+    have hraw : l1LinfRawResponse center ideal r i = center i + r := by
+      simp [l1LinfRawResponse, hsign]
+    rw [abs_of_nonpos hcandidate_below_ideal, habs] at heq
+    rw [hraw]
+    dsimp [d] at heq
+    linarith
+
+/-- The sign step minimizes finite `L1` distance over the full finite `L∞` ball when no coordinate crosses its ideal point. -/
+theorem l1LinfRawResponse_minimizes_l1_on_linfBall
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ}
+    (hr : 0 ≤ r)
+    (hgood : ∀ i, r ≤ |center i - ideal i|)
+    {candidate : Coord → ℝ}
+    (hcandidate : finiteCoordinateDistance SourceNorm.linfty candidate center ≤ r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l1
+        (fun i => l1LinfRawResponse center ideal r i - ideal i) ≤
+      AppliedModelingLib.FiniteDimensionalNorms.l1 (fun i => candidate i - ideal i) := by
+  rw [AppliedModelingLib.FiniteDimensionalNorms.l1, AppliedModelingLib.FiniteDimensionalNorms.l1]
+  apply Finset.sum_le_sum
+  intro i _hi
+  rw [l1LinfRawResponse_coordinate_cost hr (hgood i)]
+  exact l1Linf_coordinate_cost_lower_bound_of_linfBall hcandidate
+
+/-- The `L1/L∞` sign response is the unique finite-ball minimizer on the good event. -/
+theorem l1LinfRawResponse_eq_of_l1_cost_le_on_linfBall
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal response : Coord → ℝ} {r : ℝ}
+    (hr : 0 ≤ r)
+    (hgood : ∀ i, r ≤ |center i - ideal i|)
+    (hresponse_ball :
+      finiteCoordinateDistance SourceNorm.linfty response center ≤ r)
+    (hresponse_cost :
+      AppliedModelingLib.FiniteDimensionalNorms.l1 (fun i => response i - ideal i) ≤
+        AppliedModelingLib.FiniteDimensionalNorms.l1
+          (fun i => l1LinfRawResponse center ideal r i - ideal i)) :
+    response = l1LinfRawResponse center ideal r := by
+  have hcoord_lower : ∀ i,
+      |center i - ideal i| - r ≤ |response i - ideal i| :=
+    fun i => l1Linf_coordinate_cost_lower_bound_of_linfBall hresponse_ball
+  have hraw_sum :
+      (∑ i : Coord, |l1LinfRawResponse center ideal r i - ideal i|) =
+        ∑ i : Coord, (|center i - ideal i| - r) := by
+    apply Finset.sum_congr rfl
+    intro i _hi
+    exact l1LinfRawResponse_coordinate_cost hr (hgood i)
+  have hsum_lower :
+      (∑ i : Coord, (|center i - ideal i| - r)) ≤
+        ∑ i : Coord, |response i - ideal i| := by
+    apply Finset.sum_le_sum
+    intro i _hi
+    exact hcoord_lower i
+  have hsum_upper :
+      (∑ i : Coord, |response i - ideal i|) ≤
+        ∑ i : Coord, (|center i - ideal i| - r) := by
+    simpa only [AppliedModelingLib.FiniteDimensionalNorms.l1, hraw_sum] using hresponse_cost
+  have hsum_eq :
+      (∑ i : Coord, |response i - ideal i|) =
+        ∑ i : Coord, (|center i - ideal i| - r) :=
+    le_antisymm hsum_upper hsum_lower
+  have hdelta_sum :
+      (∑ i : Coord, (|response i - ideal i| - (|center i - ideal i| - r))) = 0 := by
+    rw [Finset.sum_sub_distrib]
+    linarith
+  have hdelta_nonneg : ∀ i : Coord,
+      0 ≤ |response i - ideal i| - (|center i - ideal i| - r) :=
+    fun i => sub_nonneg.mpr (hcoord_lower i)
+  have hcoord_eq : ∀ i : Coord,
+      |response i - ideal i| = |center i - ideal i| - r := by
+    intro i
+    have hzero := (Finset.sum_eq_zero_iff_of_nonneg
+      (fun j _hj => hdelta_nonneg j)).mp hdelta_sum i (Finset.mem_univ i)
+    exact sub_eq_zero.mp hzero
+  ext i
+  apply l1LinfRawResponse_coordinate_eq_of_cost_eq hr (hgood i)
+  · exact le_trans (finiteCoordinateDistance_linf_coord_abs_le response center i)
+      hresponse_ball
+  · exact hcoord_eq i
+
+/-- The coordinatewise clamp of an ideal point to an `L∞` ball. -/
+noncomputable def l1LinfBallResponse
+    {Coord : Type*} [Fintype Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) : Coord → ℝ :=
+  fun i => max (center i - r) (min (center i + r) (ideal i))
+
+/-- The coordinatewise clamp remains in its finite `L∞` ball. -/
+theorem l1LinfBallResponse_linf_distance_le
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 ≤ r) :
+    finiteCoordinateDistance SourceNorm.linfty
+      (l1LinfBallResponse center ideal r) center ≤ r := by
+  apply finiteCoordinateDistance_linf_le_of_forall_coord_abs_le
+  intro i
+  apply abs_le.mpr
+  constructor
+  · have hlow : center i - r ≤
+        max (center i - r) (min (center i + r) (ideal i)) := le_max_left _ _
+    change -r ≤ max (center i - r) (min (center i + r) (ideal i)) - center i
+    linarith
+  · have hleft : center i - r ≤ center i + r := by linarith
+    have hright : min (center i + r) (ideal i) ≤ center i + r := min_le_left _ _
+    have hupp : max (center i - r) (min (center i + r) (ideal i)) ≤ center i + r :=
+      max_le hleft hright
+    change max (center i - r) (min (center i + r) (ideal i)) - center i ≤ r
+    linarith
+
+/-- The coordinatewise clamp minimizes absolute distance to the ideal over its coordinate interval. -/
+theorem l1LinfBallResponse_coordinate_cost_le
+    {Coord : Type*} [Fintype Coord]
+    {center ideal candidate : Coord → ℝ} {r : ℝ} {i : Coord}
+    (hr : 0 ≤ r)
+    (hcandidate : |candidate i - center i| ≤ r) :
+    |l1LinfBallResponse center ideal r i - ideal i| ≤
+      |candidate i - ideal i| := by
+  have hbounds := abs_le.mp hcandidate
+  by_cases hlow : ideal i ≤ center i - r
+  · have hclamp : l1LinfBallResponse center ideal r i = center i - r := by
+      rw [l1LinfBallResponse]
+      exact max_eq_left (le_trans (min_le_right _ _) hlow)
+    rw [hclamp, abs_of_nonneg (by linarith), abs_of_nonneg (by linarith)]
+    linarith
+  by_cases hhigh : center i + r ≤ ideal i
+  · have hclamp : l1LinfBallResponse center ideal r i = center i + r := by
+      rw [l1LinfBallResponse, min_eq_left hhigh]
+      exact max_eq_right (by linarith)
+    rw [hclamp, abs_of_nonpos (by linarith), abs_of_nonpos (by linarith)]
+    linarith
+  have hideal_lower : center i - r ≤ ideal i := le_of_not_ge hlow
+  have hideal_upper : ideal i ≤ center i + r := le_of_not_ge hhigh
+  have hclamp : l1LinfBallResponse center ideal r i = ideal i := by
+    simp [l1LinfBallResponse, hideal_lower, hideal_upper]
+  rw [hclamp, sub_self, abs_zero]
+  exact abs_nonneg _
+
+/-- The clamp is the exact finite `L1` minimizer over the finite `L∞` ball. -/
+theorem l1LinfBallResponse_minimizes_l1_on_linfBall
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal candidate : Coord → ℝ} {r : ℝ}
+    (hr : 0 ≤ r)
+    (hcandidate : finiteCoordinateDistance SourceNorm.linfty candidate center ≤ r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l1
+        (fun i => l1LinfBallResponse center ideal r i - ideal i) ≤
+      AppliedModelingLib.FiniteDimensionalNorms.l1 (fun i => candidate i - ideal i) := by
+  rw [AppliedModelingLib.FiniteDimensionalNorms.l1, AppliedModelingLib.FiniteDimensionalNorms.l1]
+  apply Finset.sum_le_sum
+  intro i _hi
+  apply l1LinfBallResponse_coordinate_cost_le hr
+  exact le_trans (finiteCoordinateDistance_linf_coord_abs_le candidate center i)
+    hcandidate
+
+/-- Outside the source slab bad event, the exact clamp equals the coordinate-sign response. -/
+theorem l1LinfBallResponse_eq_l1LinfRawResponse_of_good
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ}
+    (hr : 0 ≤ r)
+    (hgood : ∀ i, r ≤ |center i - ideal i|) :
+    l1LinfBallResponse center ideal r = l1LinfRawResponse center ideal r := by
+  apply l1LinfRawResponse_eq_of_l1_cost_le_on_linfBall hr hgood
+  · exact l1LinfBallResponse_linf_distance_le hr
+  · apply l1LinfBallResponse_minimizes_l1_on_linfBall hr
+    apply finiteCoordinateDistance_linf_le_of_forall_coord_abs_le
+    intro i
+    exact l1LinfRawResponse_coordinate_distance_le hr
+
+/--
+The direction encoded by the exact coordinatewise Model A response.  For a
+positive radius, Algorithm 1's raw response is `center - r * direction`; the
+zero-radius convention is harmless and makes this a total finite-coordinate
+function.
+-/
+noncomputable def l1LinfBallDirection
+    {Coord : Type*} [Fintype Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) : Coord → ℝ :=
+  fun i => (center i - l1LinfBallResponse center ideal r i) / r
+
+/-- The exact clamp response has the displayed Algorithm 1 step form. -/
+theorem l1LinfBallResponse_eq_center_sub_radius_mul_direction
+    {Coord : Type*} [Fintype Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) :
+    l1LinfBallResponse center ideal r =
+      fun i => center i - r * l1LinfBallDirection center ideal r i := by
+  ext i
+  by_cases hr : r = 0
+  · subst r
+    simp [l1LinfBallDirection, l1LinfBallResponse]
+  · rw [l1LinfBallDirection]
+    have hcancel : r * ((center i - l1LinfBallResponse center ideal r i) / r) =
+        center i - l1LinfBallResponse center ideal r i := by
+      rw [mul_comm, div_mul_cancel₀ _ hr]
+    linarith
+
+/-- Each coordinate of the positive-radius clamp direction has absolute value at most one. -/
+theorem l1LinfBallDirection_coordinate_abs_le_one
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} {i : Coord} (hr : 0 < r) :
+    |l1LinfBallDirection center ideal r i| ≤ 1 := by
+  rw [l1LinfBallDirection, abs_div, abs_of_pos hr]
+  have hball := finiteCoordinateDistance_linf_coord_abs_le
+    (l1LinfBallResponse center ideal r) center i
+  have hball' := le_trans hball
+    (l1LinfBallResponse_linf_distance_le (center := center) (ideal := ideal) hr.le)
+  rw [abs_sub_comm] at hball'
+  exact (div_le_iff₀ hr).mpr (by simpa using hball')
+
+/-- The exact Model A direction has squared Euclidean norm at most the dimension. -/
+theorem l1LinfBallDirection_l2Sq_le_card
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2Sq (l1LinfBallDirection center ideal r) ≤
+      Fintype.card Coord := by
+  have hnorm := AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_le_card_mul_sq_of_abs_le
+    (l1LinfBallDirection center ideal r) (by norm_num : (0 : ℝ) ≤ 1)
+    (fun i => l1LinfBallDirection_coordinate_abs_le_one (center := center)
+      (ideal := ideal) (i := i) hr)
+  norm_num at hnorm ⊢
+  exact hnorm
+
+/-- Outside the slab event, the exact Model A direction is the `L1` unit-sign subgradient. -/
+theorem l1LinfBallDirection_eq_lpCostGradientCandidate_one_of_good
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r)
+    (hgood : ∀ i, r ≤ |center i - ideal i|) :
+    l1LinfBallDirection center ideal r =
+      lpCostGradientCandidate 1 (fun i => center i - ideal i) := by
+  ext i
+  rw [l1LinfBallDirection,
+    l1LinfBallResponse_eq_l1LinfRawResponse_of_good hr.le hgood,
+    l1LinfRawResponse,
+    lpCostGradientCandidate_one_eq_unitSign]
+  have habspos : 0 < |center i - ideal i| :=
+    lt_of_lt_of_le hr (hgood i)
+  field_simp [hr.ne', habspos.ne']
+  ring
+
+/--
+Outside the named source slab event, the exact Model A direction is the
+ordinary sampled `L1` subgradient.  This is the direct event-level bridge used
+by the rare-perturbation argument.
+-/
+theorem l1LinfBallDirection_eq_lpCostGradientCandidate_one_of_notMem_slabBadEvent
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r)
+    (hgood : ideal ∉ l1LinfSlabBadEvent center r) :
+    l1LinfBallDirection center ideal r =
+      lpCostGradientCandidate 1 (fun i => center i - ideal i) := by
+  apply l1LinfBallDirection_eq_lpCostGradientCandidate_one_of_good hr
+  exact (notMem_l1LinfSlabBadEvent_iff center ideal r).mp hgood
+
+/--
+The exact Model A direction minus the ordinary sampled `L1` subgradient.
+It vanishes off the C3-controlled coordinate-slab event, so it is the
+rare state-dependent perturbation in the stochastic approximation proof.
+-/
+noncomputable def l1LinfBallDirectionSubgradientPerturbation
+    {Coord : Type*} [Fintype Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) : Coord → ℝ :=
+  fun i => l1LinfBallDirection center ideal r i -
+    lpCostGradientCandidate 1 (fun j => center j - ideal j) i
+
+/-- Off the slab event, the exact Model A perturbation is zero. -/
+theorem l1LinfBallDirectionSubgradientPerturbation_eq_zero_of_notMem_slabBadEvent
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r)
+    (hgood : ideal ∉ l1LinfSlabBadEvent center r) :
+    l1LinfBallDirectionSubgradientPerturbation center ideal r = 0 := by
+  unfold l1LinfBallDirectionSubgradientPerturbation
+  rw [l1LinfBallDirection_eq_lpCostGradientCandidate_one_of_notMem_slabBadEvent hr hgood]
+  ext i
+  simp
+
+/-- A coordinatewise difference between the exact Model A direction and a sampled `L1` subgradient is at most two. -/
+theorem l1LinfBallDirection_subgradient_gap_coordinate_abs_le_two
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} {i : Coord} (hr : 0 < r) :
+    |l1LinfBallDirection center ideal r i -
+        lpCostGradientCandidate 1 (fun j => center j - ideal j) i| ≤ 2 := by
+  calc
+    |l1LinfBallDirection center ideal r i -
+        lpCostGradientCandidate 1 (fun j => center j - ideal j) i| ≤
+        |l1LinfBallDirection center ideal r i| +
+          |lpCostGradientCandidate 1 (fun j => center j - ideal j) i| := by
+      simpa using (abs_sub_le
+        (l1LinfBallDirection center ideal r i) 0
+        (lpCostGradientCandidate 1 (fun j => center j - ideal j) i))
+    _ ≤ 2 := by
+      have hdirection := l1LinfBallDirection_coordinate_abs_le_one
+        (center := center) (ideal := ideal) (i := i) hr
+      have hsubgradient := lpCostGradientCandidate_one_coord_abs_le_one
+        (fun j => center j - ideal j) i
+      linarith
+
+/-- The Model A/sample-subgradient discrepancy has squared Euclidean norm at most four times dimension. -/
+theorem l1LinfBallDirection_subgradient_gap_l2Sq_le_four_card
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2Sq
+      (fun i => l1LinfBallDirection center ideal r i -
+        lpCostGradientCandidate 1 (fun j => center j - ideal j) i) ≤
+      4 * Fintype.card Coord := by
+  have hnorm := AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_le_card_mul_sq_of_abs_le
+    (fun i => l1LinfBallDirection center ideal r i -
+      lpCostGradientCandidate 1 (fun j => center j - ideal j) i)
+    (by norm_num : (0 : ℝ) ≤ 2)
+    (fun i => l1LinfBallDirection_subgradient_gap_coordinate_abs_le_two
+      (center := center) (ideal := ideal) (i := i) hr)
+  norm_num at hnorm ⊢
+  nlinarith
+
+/-- The rare Model A perturbation has squared Euclidean norm at most `4 * card`. -/
+theorem l1LinfBallDirectionSubgradientPerturbation_l2Sq_le_four_card
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2Sq
+      (l1LinfBallDirectionSubgradientPerturbation center ideal r) ≤
+      4 * Fintype.card Coord := by
+  simpa only [l1LinfBallDirectionSubgradientPerturbation] using
+    l1LinfBallDirection_subgradient_gap_l2Sq_le_four_card
+      (center := center) (ideal := ideal) hr
+
+/-- The rare Model A perturbation has Euclidean norm at most `2 * sqrt(card)`. -/
+theorem l1LinfBallDirectionSubgradientPerturbation_l2_le_two_mul_sqrt_card
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 < r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2
+      (l1LinfBallDirectionSubgradientPerturbation center ideal r) ≤
+      2 * Real.sqrt (Fintype.card Coord) := by
+  apply AppliedModelingLib.FiniteDimensionalNorms.normL2_le_of_normL2Sq_le
+  · positivity
+  · calc
+      AppliedModelingLib.FiniteDimensionalNorms.l2Sq
+          (l1LinfBallDirectionSubgradientPerturbation center ideal r) ≤
+          4 * Fintype.card Coord :=
+        l1LinfBallDirectionSubgradientPerturbation_l2Sq_le_four_card hr
+      _ = (2 * Real.sqrt (Fintype.card Coord)) ^ 2 := by
+        rw [mul_pow, Real.sq_sqrt (Nat.cast_nonneg _)]
+        norm_num
+
+/--
+Projecting the exact raw Model A clamp is a finite projected SSGM update with
+its displayed clamp direction.  This identity is valid on both the good and
+the slab-bad event.
+-/
+theorem finiteProjectedSSGMUpdateAt_of_l1LinfBallResponse
+    {Coord : Type*} [Fintype Coord]
+    (project : (Coord → ℝ) → Coord → ℝ)
+    {previous ideal raw next : Coord → ℝ} (radius : ℝ)
+    (hraw : raw = l1LinfBallResponse previous ideal radius)
+    (hproject : Algorithm1ProjectedUpdate project raw next) :
+    FiniteProjectedSSGMUpdateAt project previous radius
+      (l1LinfBallDirection previous ideal radius)
+      (fun _ => 0) (fun _ => 0) next := by
+  unfold FiniteProjectedSSGMUpdateAt Algorithm1ProjectedUpdate at *
+  rw [hproject, hraw, l1LinfBallResponse_eq_center_sub_radius_mul_direction]
+  congr
+  ext i
+  ring
+
+/-- The sign step has finite `L∞` distance at most its nonnegative radius. -/
+theorem l1LinfRawResponse_linf_distance_le
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} (hr : 0 ≤ r) :
+    finiteCoordinateDistance SourceNorm.linfty
+      (l1LinfRawResponse center ideal r) center ≤ r := by
+  apply finiteCoordinateDistance_linf_le_of_forall_coord_abs_le
+  intro i
+  exact l1LinfRawResponse_coordinate_distance_le hr
+
 theorem finiteCoordinate_linf_eq_active_abs
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     {d : Coord → ℝ} {i0 : Coord}
     (hmax : ∀ i, |d i| ≤ |d i0|) :
-    EconCSLib.FiniteDimensionalNorms.linf d = |d i0| := by
-  rw [EconCSLib.FiniteDimensionalNorms.linf]
+    AppliedModelingLib.FiniteDimensionalNorms.linf d = |d i0| := by
+  rw [AppliedModelingLib.FiniteDimensionalNorms.linf]
   apply le_antisymm
   · exact Finset.sup'_le
       (s := (Finset.univ : Finset Coord))
@@ -2046,7 +3434,7 @@ theorem finiteSubgradientAt_linfCost_singleActiveCoordinate
     (hnz : x i0 ≠ ideal i0) :
     FiniteSubgradientAt
       (fun y : Coord → ℝ =>
-        EconCSLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i))
+        AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i))
       x
       (fun i => if i = i0 then
           (x i0 - ideal i0) / |x i0 - ideal i0| else 0) := by
@@ -2056,19 +3444,19 @@ theorem finiteSubgradientAt_linfCost_singleActiveCoordinate
   have hd0 : d0 ≠ 0 := by
     exact sub_ne_zero.mpr hnz
   have hcostx :
-      EconCSLib.FiniteDimensionalNorms.linf
+      AppliedModelingLib.FiniteDimensionalNorms.linf
           (fun i => x i - ideal i) = |d0| := by
     exact finiteCoordinate_linf_eq_active_abs
       (d := fun i => x i - ideal i) (i0 := i0) hmax
   have hlinear :
-      EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+      AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
           (fun i => if i = i0 then d0 / |d0| else 0)
           (fun i => y i - x i) =
         (d0 / |d0|) * (y i0 - x i0) := by
-    simp [EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional, d0]
+    simp [AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional, d0]
   have hleft :
-      EconCSLib.FiniteDimensionalNorms.linf (fun i => x i - ideal i) +
-          EconCSLib.FiniteDimensionalNorms.coordinateLinearFunctional
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => x i - ideal i) +
+          AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
             (fun i => if i = i0 then
                 (x i0 - ideal i0) / |x i0 - ideal i0| else 0)
             (fun i => y i - x i) =
@@ -2085,9 +3473,9 @@ theorem finiteSubgradientAt_linfCost_singleActiveCoordinate
   have hcoord : (d0 / |d0|) * z0 ≤ |z0| :=
     unitSign_mul_le_abs hd0
   have hsup :
-      |z0| ≤ EconCSLib.FiniteDimensionalNorms.linf
+      |z0| ≤ AppliedModelingLib.FiniteDimensionalNorms.linf
         (fun i => y i - ideal i) := by
-    rw [EconCSLib.FiniteDimensionalNorms.linf]
+    rw [AppliedModelingLib.FiniteDimensionalNorms.linf]
     exact Finset.le_sup'
       (s := (Finset.univ : Finset Coord))
       (f := fun i => |y i - ideal i|)
@@ -2102,7 +3490,7 @@ theorem finiteCoordinateNorm_l1_singleActiveSign_eq_one
       (fun i => if i = i0 then
         (x i0 - ideal i0) / |x i0 - ideal i0| else 0) = 1 := by
   have hd0 : x i0 - ideal i0 ≠ 0 := sub_ne_zero.mpr hnz
-  rw [finiteCoordinateNorm, EconCSLib.FiniteDimensionalNorms.l1]
+  rw [finiteCoordinateNorm, AppliedModelingLib.FiniteDimensionalNorms.l1]
   change
     (∑ i : Coord,
       abs (if i = i0 then
@@ -2113,6 +3501,1323 @@ theorem finiteCoordinateNorm_l1_singleActiveSign_eq_one
     simp [hne]
   · intro hnot
     exact False.elim (hnot (Finset.mem_univ i0))
+
+/-- A deterministic active coordinate attaining the finite `L∞` displacement. -/
+noncomputable def linfL1ActiveCoordinate
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) : Coord :=
+  Classical.choose (Finset.exists_max_image (Finset.univ : Finset Coord)
+    (fun i => |center i - ideal i|) Finset.univ_nonempty)
+
+/-- The canonical active coordinate dominates every coordinate displacement. -/
+theorem linfL1ActiveCoordinate_is_max
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) :
+    ∀ i, |center i - ideal i| ≤
+      |center (linfL1ActiveCoordinate center ideal) -
+        ideal (linfL1ActiveCoordinate center ideal)| := by
+  have hchoice := Classical.choose_spec
+    (Finset.exists_max_image (Finset.univ : Finset Coord)
+      (fun i => |center i - ideal i|) Finset.univ_nonempty)
+  intro i
+  exact hchoice.2 i (Finset.mem_univ i)
+
+/-- The signed coordinate direction selected by the `L∞/L1` local argument. -/
+noncomputable def linfL1SingleActiveDirection
+    {Coord : Type*} [DecidableEq Coord]
+    (center ideal : Coord → ℝ) (i0 : Coord) : Coord → ℝ :=
+  fun i => if i = i0 then
+    (center i0 - ideal i0) / |center i0 - ideal i0| else 0
+
+/-- All coordinates attaining the finite `L∞` displacement. -/
+noncomputable def linfL1ActiveCoordinates
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) : Finset Coord :=
+  Finset.univ.filter (fun i =>
+    |center i - ideal i| =
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun j => center j - ideal j))
+
+/-- The deterministic active coordinate belongs to the finite active-coordinate set. -/
+theorem linfL1ActiveCoordinate_mem_activeCoordinates
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) :
+    linfL1ActiveCoordinate center ideal ∈ linfL1ActiveCoordinates center ideal := by
+  apply Finset.mem_filter.mpr
+  refine ⟨Finset.mem_univ _, ?_⟩
+  symm
+  exact finiteCoordinate_linf_eq_active_abs
+    (linfL1ActiveCoordinate_is_max center ideal)
+
+/-- The number of active `L∞` coordinates is the corresponding finite indicator sum. -/
+theorem linfL1ActiveCoordinates_card_eq_indicatorSum
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) :
+    ((linfL1ActiveCoordinates center ideal).card : ℝ) =
+      ∑ i : Coord, if |center i - ideal i| =
+        AppliedModelingLib.FiniteDimensionalNorms.linf (fun j => center j - ideal j)
+        then 1 else 0 := by
+  simpa [linfL1ActiveCoordinates] using
+    (Finset.sum_boole (fun i : Coord => |center i - ideal i| =
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun j => center j - ideal j))
+      (Finset.univ : Finset Coord)).symm
+
+/--
+The uniform average of active signed-coordinate directions.  Unlike an
+arbitrary tie-break, this definition is directly Borel-measurable in finite
+coordinates and remains a valid `L∞` sample-cost subgradient at ties.
+-/
+noncomputable def linfL1SymmetricActiveDirection
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    (center ideal : Coord → ℝ) : Coord → ℝ :=
+  let active := linfL1ActiveCoordinates center ideal
+  if AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => center i - ideal i) = 0 then
+    fun _ => 0
+  else
+    fun i => if i ∈ active then
+      ((center i - ideal i) / |center i - ideal i|) / (active.card : ℝ)
+    else 0
+
+/-- Off the zero-displacement case, the symmetric direction is the uniform active sum. -/
+theorem linfL1SymmetricActiveDirection_eq_weighted_sum_of_linf_ne_zero
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ}
+    (hnonzero : AppliedModelingLib.FiniteDimensionalNorms.linf
+      (fun i => center i - ideal i) ≠ 0) :
+    linfL1SymmetricActiveDirection center ideal = fun i =>
+      (linfL1ActiveCoordinates center ideal).sum (fun j =>
+        (1 / ((linfL1ActiveCoordinates center ideal).card : ℝ)) *
+          linfL1SingleActiveDirection center ideal j i) := by
+  classical
+  let active := linfL1ActiveCoordinates center ideal
+  funext i
+  by_cases hi : i ∈ active
+  · rw [linfL1SymmetricActiveDirection]
+    simp only [if_neg hnonzero, active, if_pos hi]
+    rw [Finset.sum_eq_single i]
+    · simp [linfL1SingleActiveDirection]
+      ring
+    · intro j hj hji
+      have hij : i ≠ j := Ne.symm hji
+      simp [linfL1SingleActiveDirection, hij]
+    · exact fun h => (h hi).elim
+  · rw [linfL1SymmetricActiveDirection]
+    simp only [if_neg hnonzero, active, if_neg hi]
+    symm
+    apply Finset.sum_eq_zero
+    intro j hj
+    have hij : i ≠ j := by
+      intro h
+      apply hi
+      simpa [h] using hj
+    simp [linfL1SingleActiveDirection, hij]
+
+/-- The active signed direction is a finite subgradient of the `L∞` sample cost. -/
+theorem finiteSubgradientAt_linfL1SingleActiveDirection
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} {i0 : Coord}
+    (hr : 0 < r)
+    (hmax : ∀ i, |center i - ideal i| ≤ |center i0 - ideal i0|)
+    (hnoncross : r ≤ |center i0 - ideal i0|) :
+    FiniteSubgradientAt
+      (fun y : Coord → ℝ =>
+        AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i))
+      center (linfL1SingleActiveDirection center ideal i0) := by
+  apply finiteSubgradientAt_linfCost_singleActiveCoordinate hmax
+  intro hzero
+  have : r ≤ 0 := by simpa [hzero] using hnoncross
+  exact (not_lt_of_ge this) hr
+
+/--
+Any coordinate attaining the finite `L∞` displacement defines a sample-cost
+subgradient.  The zero-displacement case uses the zero subgradient directly,
+so this statement does not require a positive query radius.
+-/
+theorem finiteSubgradientAt_linfL1SingleActiveDirection_of_max
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ} {i0 : Coord}
+    (hmax : ∀ i, |center i - ideal i| ≤ |center i0 - ideal i0|) :
+    FiniteSubgradientAt
+      (fun y : Coord → ℝ =>
+        AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i))
+      center (linfL1SingleActiveDirection center ideal i0) := by
+  by_cases hnz : center i0 ≠ ideal i0
+  · exact finiteSubgradientAt_linfCost_singleActiveCoordinate hmax hnz
+  · have hcenter : center = ideal := by
+      ext i
+      have hi : |center i - ideal i| = 0 := by
+        apply le_antisymm
+        · have hi_le : |center i - ideal i| ≤ 0 := by
+            calc
+              |center i - ideal i| ≤ |center i0 - ideal i0| := hmax i
+              _ = 0 := by simp [not_ne_iff.mp hnz]
+          exact hi_le
+        · exact abs_nonneg _
+      exact sub_eq_zero.mp (abs_eq_zero.mp hi)
+    subst center
+    intro y
+    have hcost : AppliedModelingLib.FiniteDimensionalNorms.linf
+        (fun i => ideal i - ideal i) = 0 := by
+      simp [AppliedModelingLib.FiniteDimensionalNorms.linf]
+    have hdirection : linfL1SingleActiveDirection ideal ideal i0 = fun _ => 0 := by
+      funext i
+      simp [linfL1SingleActiveDirection]
+    change AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => ideal i - ideal i) +
+        AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
+          (linfL1SingleActiveDirection ideal ideal i0) (fun i => y i - ideal i) ≤
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i)
+    rw [hcost, hdirection]
+    simpa [AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional] using
+      (AppliedModelingLib.FiniteDimensionalNorms.linf_nonneg (fun i => y i - ideal i))
+
+/--
+Uniformly averaging the signed directions of all maximum-displacement
+coordinates gives a symmetric finite subgradient of the `L∞` sample cost.
+This avoids a nonmeasurable arbitrary tie-break in the stochastic route.
+-/
+theorem finiteSubgradientAt_linfL1SymmetricActiveDirection
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    (center ideal : Coord → ℝ) :
+    FiniteSubgradientAt
+      (fun y : Coord → ℝ =>
+        AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i))
+      center (linfL1SymmetricActiveDirection center ideal) := by
+  classical
+  let active := linfL1ActiveCoordinates center ideal
+  have hactive_mem : linfL1ActiveCoordinate center ideal ∈ active := by
+    simpa [active] using
+      linfL1ActiveCoordinate_mem_activeCoordinates center ideal
+  have hactive_nonempty : active.Nonempty := ⟨_, hactive_mem⟩
+  have hcard_pos : 0 < active.card := Finset.card_pos.mpr hactive_nonempty
+  have hcard_ne : (active.card : ℝ) ≠ 0 := by
+    exact_mod_cast (Nat.ne_of_gt hcard_pos)
+  by_cases hzero : AppliedModelingLib.FiniteDimensionalNorms.linf
+      (fun i => center i - ideal i) = 0
+  · have hcenter : center = ideal := by
+      ext i
+      have hi : |center i - ideal i| ≤ 0 := by
+        calc
+          |center i - ideal i| ≤
+              |center (linfL1ActiveCoordinate center ideal) -
+                ideal (linfL1ActiveCoordinate center ideal)| :=
+            linfL1ActiveCoordinate_is_max center ideal i
+          _ = AppliedModelingLib.FiniteDimensionalNorms.linf
+              (fun j => center j - ideal j) := by
+            symm
+            exact finiteCoordinate_linf_eq_active_abs
+              (linfL1ActiveCoordinate_is_max center ideal)
+          _ = 0 := hzero
+      exact sub_eq_zero.mp (abs_eq_zero.mp (le_antisymm hi (abs_nonneg _)))
+    subst center
+    intro y
+    change AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => ideal i - ideal i) +
+        AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional
+          (linfL1SymmetricActiveDirection ideal ideal)
+          (fun i => y i - ideal i) ≤
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i)
+    have hcost : AppliedModelingLib.FiniteDimensionalNorms.linf
+        (fun i => ideal i - ideal i) = 0 := by
+      simp [AppliedModelingLib.FiniteDimensionalNorms.linf]
+    have hdirection : linfL1SymmetricActiveDirection ideal ideal = fun _ => 0 := by
+      rw [linfL1SymmetricActiveDirection]
+      simp
+    rw [hcost, hdirection]
+    simpa [AppliedModelingLib.FiniteDimensionalNorms.coordinateLinearFunctional] using
+      (AppliedModelingLib.FiniteDimensionalNorms.linf_nonneg (fun i => y i - ideal i))
+  · have hcoeff : ∀ j, j ∈ active → 0 ≤ 1 / (active.card : ℝ) := by
+      intro _ _
+      exact div_nonneg (by norm_num) (by positivity)
+    have hcomponent : ∀ j, j ∈ active →
+        FiniteSubgradientAt
+          (fun y : Coord → ℝ =>
+            AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i))
+          center (linfL1SingleActiveDirection center ideal j) := by
+      intro j hj
+      apply finiteSubgradientAt_linfL1SingleActiveDirection_of_max
+      intro i
+      have hjmax : |center j - ideal j| =
+          AppliedModelingLib.FiniteDimensionalNorms.linf
+            (fun k => center k - ideal k) := by
+        change j ∈ Finset.univ.filter (fun k =>
+          |center k - ideal k| =
+            AppliedModelingLib.FiniteDimensionalNorms.linf
+              (fun l => center l - ideal l)) at hj
+        exact (Finset.mem_filter.mp hj).2
+      calc
+        |center i - ideal i| ≤
+            AppliedModelingLib.FiniteDimensionalNorms.linf
+              (fun k => center k - ideal k) :=
+          by
+            rw [AppliedModelingLib.FiniteDimensionalNorms.linf_eq_sup_abs]
+            exact Finset.le_sup'
+              (s := (Finset.univ : Finset Coord))
+              (f := fun k => |center k - ideal k|)
+              (Finset.mem_univ i)
+        _ = |center j - ideal j| := hjmax.symm
+    have hweighted := finiteSubgradientAt_finset_nonneg_weighted_sum
+      active hcoeff hcomponent
+    have hcost : ∀ y : Coord → ℝ,
+        active.sum (fun _ =>
+          (1 / (active.card : ℝ)) *
+            AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i)) =
+          AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i) := by
+      intro y
+      rw [Finset.sum_const]
+      simp only [nsmul_eq_mul]
+      field_simp
+    rw [linfL1SymmetricActiveDirection_eq_weighted_sum_of_linf_ne_zero hzero]
+    convert hweighted using 1
+    ext y
+    symm
+    exact hcost y
+
+/-- Every coordinate of the symmetric active `L∞` direction has absolute value at most one. -/
+theorem linfL1SymmetricActiveDirection_coordinate_abs_le_one
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    (center ideal : Coord → ℝ) (i : Coord) :
+    |linfL1SymmetricActiveDirection center ideal i| ≤ 1 := by
+  classical
+  let active := linfL1ActiveCoordinates center ideal
+  have hactive_mem : linfL1ActiveCoordinate center ideal ∈ active := by
+    simpa [active] using
+      linfL1ActiveCoordinate_mem_activeCoordinates center ideal
+  have hcard_pos : 0 < active.card :=
+    Finset.card_pos.mpr ⟨_, hactive_mem⟩
+  have hcard_one : (1 : ℝ) ≤ active.card := by
+    exact_mod_cast hcard_pos
+  by_cases hzero : AppliedModelingLib.FiniteDimensionalNorms.linf
+      (fun j => center j - ideal j) = 0
+  · rw [linfL1SymmetricActiveDirection]
+    simp [hzero]
+  · rw [linfL1SymmetricActiveDirection]
+    simp only [if_neg hzero]
+    by_cases hi : i ∈ active
+    · rw [if_pos hi]
+      have hi_active : |center i - ideal i| =
+          AppliedModelingLib.FiniteDimensionalNorms.linf
+            (fun j => center j - ideal j) := by
+        change i ∈ Finset.univ.filter (fun j =>
+          |center j - ideal j| =
+            AppliedModelingLib.FiniteDimensionalNorms.linf
+              (fun k => center k - ideal k)) at hi
+        exact (Finset.mem_filter.mp hi).2
+      have hcoord_ne : center i - ideal i ≠ 0 := by
+        intro hcoord
+        apply hzero
+        rw [← hi_active, hcoord, abs_zero]
+      calc
+        |((center i - ideal i) / |center i - ideal i|) /
+            (active.card : ℝ)| =
+            (|center i - ideal i| / |center i - ideal i|) /
+              (active.card : ℝ) := by
+          simp [abs_div, abs_abs]
+        _ = 1 / (active.card : ℝ) := by
+          rw [div_self (ne_of_gt (abs_pos.mpr hcoord_ne))]
+        _ ≤ 1 := (div_le_one₀ (by positivity)).mpr hcard_one
+    · rw [if_neg hi]
+      norm_num
+
+/-- Away from the ideal, the symmetric active `L∞` subgradient has `L1` norm one. -/
+theorem finiteCoordinateNorm_l1_linfL1SymmetricActiveDirection_eq_one
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ}
+    (hnonzero : AppliedModelingLib.FiniteDimensionalNorms.linf
+      (fun i => center i - ideal i) ≠ 0) :
+    finiteCoordinateNorm SourceNorm.l1
+      (linfL1SymmetricActiveDirection center ideal) = 1 := by
+  classical
+  let active := linfL1ActiveCoordinates center ideal
+  have hactive_mem : linfL1ActiveCoordinate center ideal ∈ active := by
+    simpa [active] using
+      linfL1ActiveCoordinate_mem_activeCoordinates center ideal
+  have hcard_pos : 0 < active.card :=
+    Finset.card_pos.mpr ⟨_, hactive_mem⟩
+  rw [finiteCoordinateNorm, AppliedModelingLib.FiniteDimensionalNorms.l1,
+    linfL1SymmetricActiveDirection]
+  simp only [if_neg hnonzero]
+  change (∑ i : Coord,
+      |if i ∈ active then
+        (center i - ideal i) / |center i - ideal i| / (active.card : ℝ) else 0|) = 1
+  have hterm : ∀ i ∈ active,
+      |(center i - ideal i) / |center i - ideal i| / (active.card : ℝ)| =
+        1 / (active.card : ℝ) := by
+    intro i hi
+    have hi_active : |center i - ideal i| =
+        AppliedModelingLib.FiniteDimensionalNorms.linf
+          (fun j => center j - ideal j) := by
+      change i ∈ Finset.univ.filter (fun j =>
+        |center j - ideal j| =
+          AppliedModelingLib.FiniteDimensionalNorms.linf
+            (fun k => center k - ideal k)) at hi
+      exact (Finset.mem_filter.mp hi).2
+    have hcoord_ne : center i - ideal i ≠ 0 := by
+      intro hcoord
+      apply hnonzero
+      rw [← hi_active, hcoord, abs_zero]
+    calc
+      |(center i - ideal i) / |center i - ideal i| / (active.card : ℝ)| =
+          (|center i - ideal i| / |center i - ideal i|) /
+            (active.card : ℝ) := by
+        simp [abs_div, abs_abs]
+      _ = 1 / (active.card : ℝ) := by
+        rw [div_self (ne_of_gt (abs_pos.mpr hcoord_ne))]
+  calc
+    (∑ i : Coord,
+        |if i ∈ active then
+          (center i - ideal i) / |center i - ideal i| / (active.card : ℝ) else 0|) =
+        ∑ i : Coord, if i ∈ active then
+          |(center i - ideal i) / |center i - ideal i| / (active.card : ℝ)| else 0 := by
+      apply Finset.sum_congr rfl
+      intro i _hi
+      by_cases hi : i ∈ active <;> simp [hi]
+    _ =
+        active.sum (fun i =>
+          |(center i - ideal i) / |center i - ideal i| / (active.card : ℝ)|) := by
+      rw [← Finset.sum_filter]
+      simp
+    _ = active.sum (fun _ => 1 / (active.card : ℝ)) := by
+      apply Finset.sum_congr rfl
+      exact hterm
+    _ = 1 := by
+      rw [Finset.sum_const]
+      simp only [nsmul_eq_mul]
+      field_simp [Nat.ne_of_gt hcard_pos]
+
+/--
+For a nonzero `L∞` displacement, negating the symmetric cost subgradient
+already has unit `L1` norm, so Model B's normalized utility direction is
+exactly that negative subgradient.
+-/
+theorem modelBFiniteNormalizedDirection_l1_neg_linfL1SymmetricActiveDirection
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ}
+    (hnonzero : AppliedModelingLib.FiniteDimensionalNorms.linf
+      (fun i => center i - ideal i) ≠ 0) :
+    modelBFiniteNormalizedDirection SourceNorm.l1
+      (fun i => -linfL1SymmetricActiveDirection center ideal i) =
+      fun i => -linfL1SymmetricActiveDirection center ideal i := by
+  have hnorm : finiteCoordinateNorm SourceNorm.l1
+      (fun i => -linfL1SymmetricActiveDirection center ideal i) = 1 := by
+    rw [finiteCoordinateNorm, AppliedModelingLib.FiniteDimensionalNorms.l1]
+    simpa only [abs_neg] using
+      finiteCoordinateNorm_l1_linfL1SymmetricActiveDirection_eq_one hnonzero
+  have hgradient :
+      (fun i => -linfL1SymmetricActiveDirection center ideal i) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hnorm
+    have hzeroNorm :
+        finiteCoordinateNorm SourceNorm.l1 (fun _ : Coord => (0 : ℝ)) = 0 := by
+      simpa [finiteCoordinateNorm] using
+        (AppliedModelingLib.FiniteDimensionalNorms.normL1_zero (ι := Coord))
+    exact zero_ne_one (hzeroNorm.symm.trans hnorm)
+  rw [modelBFiniteNormalizedDirection_of_ne_zero _ _ hgradient]
+  rw [hnorm]
+  funext i
+  ring
+
+/--
+The one-coordinate local step in the corrected `L∞/L1` Model A argument.
+Its exact optimality requires the active-coordinate margin hypotheses proved
+below; when a crossing or a near tie occurs, the paper permits a different
+exact local minimizer.
+-/
+noncomputable def linfL1SingleActiveRawResponse
+    {Coord : Type*} [DecidableEq Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) (i0 : Coord) : Coord → ℝ :=
+  fun i => center i - r * linfL1SingleActiveDirection center ideal i0 i
+
+/--
+The corrected good event for the `L∞/L1` local argument: the selected maximum
+does not cross its ideal and is separated from every competing displacement by
+the query radius.
+-/
+def LinfL1CorrectedGood
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) : Prop :=
+  r ≤ |center (linfL1ActiveCoordinate center ideal) -
+    ideal (linfL1ActiveCoordinate center ideal)| ∧
+  ∀ i, i ≠ linfL1ActiveCoordinate center ideal →
+    |center i - ideal i| ≤
+      |center (linfL1ActiveCoordinate center ideal) -
+        ideal (linfL1ActiveCoordinate center ideal)| - r
+
+/-- The complement of the corrected `L∞/L1` local good event. -/
+def linfL1CorrectedBadEvent
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center : Coord → ℝ) (r : ℝ) : Set (Coord → ℝ) :=
+  {ideal | ¬ LinfL1CorrectedGood center ideal r}
+
+/-- A broad pairwise near-tie event for finite `L∞` displacements. -/
+def linfL1NearTieBadEvent
+    {Coord : Type*} (center : Coord → ℝ) (r : ℝ) : Set (Coord → ℝ) :=
+  {ideal | ∃ i j, i ≠ j ∧
+    abs (abs (center i - ideal i) - abs (center j - ideal j)) < r}
+
+/-- The finite pairwise near-tie envelope is Borel measurable. -/
+theorem measurableSet_linfL1NearTieBadEvent
+    {Coord : Type*} [Fintype Coord]
+    (center : Coord → ℝ) (radius : ℝ) :
+    MeasurableSet (linfL1NearTieBadEvent center radius) := by
+  classical
+  change MeasurableSet {ideal : Coord → ℝ | ∃ i j, i ≠ j ∧
+    abs (abs (center i - ideal i) - abs (center j - ideal j)) < radius}
+  rw [show {ideal : Coord → ℝ | ∃ i j, i ≠ j ∧
+      abs (abs (center i - ideal i) - abs (center j - ideal j)) < radius} =
+      ⋃ i : Coord, ⋃ j : Coord, {ideal : Coord → ℝ | i ≠ j ∧
+        abs (abs (center i - ideal i) - abs (center j - ideal j)) < radius} by
+    ext ideal
+    simp]
+  apply MeasurableSet.iUnion
+  intro i
+  apply MeasurableSet.iUnion
+  intro j
+  by_cases hij : i = j
+  · simp [hij]
+  · have hdiff : Measurable (fun ideal : Coord → ℝ =>
+        abs (center i - ideal i) - abs (center j - ideal j)) :=
+      ((measurable_const.sub (measurable_pi_apply i)).abs).sub
+        ((measurable_const.sub (measurable_pi_apply j)).abs)
+    rw [show {ideal : Coord → ℝ | i ≠ j ∧
+        abs (abs (center i - ideal i) - abs (center j - ideal j)) < radius} =
+        {ideal : Coord → ℝ |
+          abs (abs (center i - ideal i) - abs (center j - ideal j)) < radius} by
+      ext ideal
+      simp [hij]]
+    exact (measurableSet_Iio : MeasurableSet (Set.Iio radius)).preimage hdiff.abs
+
+/-- A near tie in absolute values is a small difference strip or a small sum strip. -/
+theorem abs_abs_sub_abs_lt_implies_abs_sub_or_abs_add_lt
+    {u v r : ℝ} (h : abs (abs u - abs v) < r) :
+    |u - v| < r ∨ |u + v| < r := by
+  rcases le_total 0 u with hu | hu <;> rcases le_total 0 v with hv | hv
+  · left
+    simpa [abs_of_nonneg hu, abs_of_nonneg hv] using h
+  · right
+    rw [abs_of_nonneg hu, abs_of_nonpos hv] at h
+    rw [show u - -v = u + v by ring] at h
+    exact h
+  · right
+    rw [abs_of_nonpos hu, abs_of_nonneg hv] at h
+    rw [show -u - v = -(u + v) by ring, abs_neg] at h
+    exact h
+  · left
+    rw [abs_of_nonpos hu, abs_of_nonpos hv] at h
+    rw [show -u - -v = -(u - v) by ring, abs_neg] at h
+    exact h
+
+/--
+The pairwise near-tie event is contained in the union of closed linear slabs
+for coordinate differences and coordinate sums.  This is the measurable
+bounded-density envelope used by the corrected C3 argument.
+-/
+theorem linfL1NearTieBadEvent_subset_linearSlabs
+    {Coord : Type*} (center : Coord → ℝ) (r : ℝ) :
+    linfL1NearTieBadEvent center r ⊆
+      {ideal : Coord → ℝ | ∃ i j, i ≠ j ∧
+        (ideal i - ideal j ∈ Set.Icc (center i - center j - r)
+          (center i - center j + r) ∨
+          ideal i + ideal j ∈ Set.Icc (center i + center j - r)
+            (center i + center j + r))} := by
+  intro ideal hideal
+  rcases hideal with ⟨i, j, hij, hnear⟩
+  rcases abs_abs_sub_abs_lt_implies_abs_sub_or_abs_add_lt hnear with hdiff | hsum
+  · refine ⟨i, j, hij, Or.inl ?_⟩
+    have hbounds := abs_lt.mp hdiff
+    constructor <;> linarith
+  · refine ⟨i, j, hij, Or.inr ?_⟩
+    have hbounds := abs_lt.mp hsum
+    constructor <;> linarith
+
+/--
+Closed bounded-box envelope for the corrected pairwise near-tie event.  Each
+pair contributes a difference slab and a sum slab, which are both generic
+linear-coordinate slabs after a volume-preserving shear.
+-/
+def linfL1LinearTieSlabBadRegion
+    {Coord : Type*} [Fintype Coord] [DecidableEq Coord]
+    (boxLo boxHi center : Coord → ℝ) (r : ℝ) : Set (Coord → ℝ) :=
+  ⋃ i ∈ (Finset.univ : Finset Coord), ⋃ j ∈ (Finset.univ.erase i),
+    {ideal : Coord → ℝ |
+      ideal ∈ Set.Icc boxLo boxHi ∧
+        (ideal i - ideal j ∈ Set.Icc (center i - center j - r)
+          (center i - center j + r) ∨
+          ideal i + ideal j ∈ Set.Icc (center i + center j - r)
+            (center i + center j + r))}
+
+/-- The bounded near-tie event is contained in its closed linear-slab envelope. -/
+theorem inter_linfL1NearTieBadEvent_subset_linearTieSlabBadRegion
+    {Coord : Type*} [Fintype Coord] [DecidableEq Coord]
+    (boxLo boxHi center : Coord → ℝ) (r : ℝ) :
+    (Set.Icc boxLo boxHi ∩ linfL1NearTieBadEvent center r) ⊆
+      linfL1LinearTieSlabBadRegion boxLo boxHi center r := by
+  intro ideal hideal
+  rcases linfL1NearTieBadEvent_subset_linearSlabs center r hideal.2 with
+    ⟨i, j, hij, hslab⟩
+  rw [linfL1LinearTieSlabBadRegion]
+  refine Set.mem_iUnion.2 ⟨i, ?_⟩
+  refine Set.mem_iUnion.2 ⟨Finset.mem_univ i, ?_⟩
+  refine Set.mem_iUnion.2 ⟨j, ?_⟩
+  refine Set.mem_iUnion.2 ⟨Finset.mem_erase.mpr ⟨hij.symm, Finset.mem_univ j⟩, ?_⟩
+  exact ⟨hideal.1, hslab⟩
+
+/--
+The corrected exceptional event is covered by a coordinate crossing slab or a
+pairwise near-tie event.  This is the source correction's deterministic C3
+reduction.
+-/
+theorem linfL1CorrectedBadEvent_subset_slab_union_nearTie
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center : Coord → ℝ) (r : ℝ) :
+    linfL1CorrectedBadEvent center r ⊆
+      l1LinfSlabBadEvent center r ∪ linfL1NearTieBadEvent center r := by
+  intro ideal hbad
+  by_cases hslab : ideal ∈ l1LinfSlabBadEvent center r
+  · exact Or.inl hslab
+  right
+  have hcross : ∀ i, r ≤ |center i - ideal i| :=
+    (notMem_l1LinfSlabBadEvent_iff center ideal r).mp hslab
+  let i0 : Coord := linfL1ActiveCoordinate center ideal
+  have hmax : ∀ i, |center i - ideal i| ≤ |center i0 - ideal i0| := by
+    simpa [i0] using linfL1ActiveCoordinate_is_max center ideal
+  by_contra hnotie
+  have hmargin : ∀ i, i ≠ i0 → |center i - ideal i| ≤
+      |center i0 - ideal i0| - r := by
+    intro i hi
+    by_contra hnotle
+    have hlt : |center i0 - ideal i0| < |center i - ideal i| + r := by
+      linarith
+    have hdiff : abs (abs (center i0 - ideal i0) -
+        abs (center i - ideal i)) < r := by
+      rw [abs_of_nonneg (sub_nonneg.mpr (hmax i))]
+      linarith
+    exact hnotie ⟨i0, i, hi.symm, hdiff⟩
+  exact hbad ⟨hcross i0, hmargin⟩
+
+/-- The finite nonempty coordinate subsets used by the exact `L∞/L1` water-filling level. -/
+noncomputable def linfL1WaterfillSubsets
+    (Coord : Type*) [Fintype Coord] : Finset (Finset Coord) := by
+  classical
+  exact ((Finset.univ : Finset Coord).powerset.erase ∅)
+
+/-- There is always a nonempty coordinate subset in the water-filling maximum. -/
+theorem linfL1WaterfillSubsets_nonempty
+    (Coord : Type*) [Fintype Coord] [Nonempty Coord] :
+    (linfL1WaterfillSubsets Coord).Nonempty := by
+  classical
+  let i0 : Coord := Classical.choice inferInstance
+  refine ⟨{i0}, Finset.mem_erase.mpr ⟨Finset.singleton_ne_empty _, ?_⟩⟩
+  simp
+
+/--
+The finite water-filling level for minimizing `L∞` distance to `ideal` over an
+`L1` ball around `center`.  It is the maximum subset-average residual, clipped
+at zero; this finite formula avoids a nonmeasurable argmin choice.
+-/
+noncomputable def linfL1WaterfillLevel
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) : ℝ :=
+  max 0 ((linfL1WaterfillSubsets Coord).sup'
+    (linfL1WaterfillSubsets_nonempty Coord)
+    fun A => ((∑ i ∈ A, |center i - ideal i|) - r) / (A.card : ℝ))
+
+/-- The finite water-filling level is Borel in the current state and ideal. -/
+theorem measurable_linfL1WaterfillLevel
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (r : ℝ) :
+    Measurable (fun z : (Coord → ℝ) × (Coord → ℝ) =>
+      linfL1WaterfillLevel z.1 z.2 r) := by
+  classical
+  unfold linfL1WaterfillLevel
+  apply measurable_const.max
+  have hsup := Finset.measurable_sup' (α := ℝ) (δ := (Coord → ℝ) × (Coord → ℝ))
+    (s := linfL1WaterfillSubsets Coord)
+    (f := fun A z => ((∑ i ∈ A, |z.1 i - z.2 i|) - r) / (A.card : ℝ))
+    (linfL1WaterfillSubsets_nonempty Coord) (by
+      intro A _hA
+      have hsum : Measurable (fun z : (Coord → ℝ) × (Coord → ℝ) =>
+          ∑ i ∈ A, |z.1 i - z.2 i|) :=
+        Finset.measurable_sum A fun i _ =>
+          (((measurable_pi_apply i).comp measurable_fst).sub
+            ((measurable_pi_apply i).comp measurable_snd)).abs
+      exact (hsum.sub measurable_const).div measurable_const)
+  convert hsup using 1
+  funext z
+  exact (Finset.sup'_apply
+    (C := fun _ : (Coord → ℝ) × (Coord → ℝ) => ℝ)
+    (linfL1WaterfillSubsets_nonempty Coord)
+    (fun A z => ((∑ i ∈ A, |z.1 i - z.2 i|) - r) / (A.card : ℝ)) z).symm
+
+/-- The exact water-filling raw response for the source `L∞/L1` Model A endpoint. -/
+noncomputable def linfL1WaterfillRawResponse
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) : Coord → ℝ :=
+  fun i => center i -
+    ((center i - ideal i) / |center i - ideal i|) *
+      max (|center i - ideal i| - linfL1WaterfillLevel center ideal r) 0
+
+/-- The exact water-filling raw response is Borel in state and ideal. -/
+theorem measurable_linfL1WaterfillRawResponse
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (r : ℝ) :
+    Measurable (fun z : (Coord → ℝ) × (Coord → ℝ) =>
+      linfL1WaterfillRawResponse z.1 z.2 r) := by
+  apply measurable_pi_lambda
+  intro i
+  unfold linfL1WaterfillRawResponse
+  have hdisplacement : Measurable (fun z : (Coord → ℝ) × (Coord → ℝ) =>
+      z.1 i - z.2 i) :=
+    ((measurable_pi_apply i).comp measurable_fst).sub
+      ((measurable_pi_apply i).comp measurable_snd)
+  have hamount : Measurable (fun z : (Coord → ℝ) × (Coord → ℝ) =>
+      max (|z.1 i - z.2 i| - linfL1WaterfillLevel z.1 z.2 r) 0) :=
+    (hdisplacement.abs.sub (measurable_linfL1WaterfillLevel r)).max measurable_const
+  exact ((measurable_pi_apply i).comp measurable_fst).sub
+    ((hdisplacement.div hdisplacement.abs).mul hamount)
+
+/-- The water-filling level is nonnegative by construction. -/
+theorem linfL1WaterfillLevel_nonneg
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) :
+    0 ≤ linfL1WaterfillLevel center ideal r := by
+  unfold linfL1WaterfillLevel
+  exact le_max_left _ _
+
+/-- Every nonempty subset's residual average is bounded by the water-filling level. -/
+theorem linfL1WaterfillSubset_average_le_level
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) (A : Finset Coord)
+    (hA : A ∈ linfL1WaterfillSubsets Coord) :
+    ((∑ i ∈ A, |center i - ideal i|) - r) / (A.card : ℝ) ≤
+      linfL1WaterfillLevel center ideal r := by
+  unfold linfL1WaterfillLevel
+  exact (Finset.le_sup' (f := fun B : Finset Coord =>
+    ((∑ i ∈ B, |center i - ideal i|) - r) / (B.card : ℝ)) hA).trans
+      (le_max_right _ _)
+
+/-- Coordinates whose displacement remains above the water-filling level. -/
+noncomputable def linfL1WaterfillActiveCoordinates
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) : Finset Coord := by
+  classical
+  exact Finset.univ.filter (fun i =>
+    linfL1WaterfillLevel center ideal r < |center i - ideal i|)
+
+/-- The total water-filling motion is the residual sum over its active coordinates. -/
+theorem linfL1Waterfill_sum_amount_eq_active_sum
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) :
+    (∑ i : Coord, max
+      (|center i - ideal i| - linfL1WaterfillLevel center ideal r) 0) =
+      ∑ i ∈ linfL1WaterfillActiveCoordinates center ideal r,
+        (|center i - ideal i| - linfL1WaterfillLevel center ideal r) := by
+  classical
+  rw [linfL1WaterfillActiveCoordinates, Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro i _hi
+  by_cases hactive : linfL1WaterfillLevel center ideal r < |center i - ideal i|
+  · rw [max_eq_left (by linarith)]
+    simp [hactive]
+  · rw [max_eq_right (by linarith)]
+    simp [hactive]
+
+/-- A nonempty water-filling active set is among the finite subsets defining its level. -/
+theorem linfL1WaterfillActiveCoordinates_mem_subsets
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ)
+    (hnonempty : (linfL1WaterfillActiveCoordinates center ideal r).Nonempty) :
+    linfL1WaterfillActiveCoordinates center ideal r ∈
+      linfL1WaterfillSubsets Coord := by
+  classical
+  rw [linfL1WaterfillSubsets]
+  exact Finset.mem_erase.mpr ⟨Finset.nonempty_iff_ne_empty.mp hnonempty, by
+    rw [Finset.mem_powerset]
+    exact (linfL1WaterfillActiveCoordinates center ideal r).subset_univ⟩
+
+/-- A water-filling coordinate moves toward its ideal by exactly its displayed amount. -/
+theorem linfL1WaterfillRawResponse_coordinate_distance_eq_amount
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) (i : Coord) :
+    |linfL1WaterfillRawResponse center ideal r i - center i| =
+      max (|center i - ideal i| - linfL1WaterfillLevel center ideal r) 0 := by
+  let amount : ℝ := max
+    (|center i - ideal i| - linfL1WaterfillLevel center ideal r) 0
+  have hlevel : 0 ≤ linfL1WaterfillLevel center ideal r :=
+    linfL1WaterfillLevel_nonneg center ideal r
+  change |(center i - (center i - ideal i) / |center i - ideal i| * amount) - center i| = amount
+  rw [sub_sub_cancel_left, abs_neg, abs_mul]
+  by_cases hzero : center i - ideal i = 0
+  · have hamount : amount = 0 := by
+      dsimp [amount]
+      rw [hzero, abs_zero, zero_sub, max_eq_right]
+      linarith
+    simp [hzero, hamount]
+  · rw [unitSign_abs_eq_one hzero, one_mul, abs_of_nonneg]
+    exact le_max_right _ _
+
+/-- The total exact water-filling motion never exceeds the available `L1` radius. -/
+theorem linfL1Waterfill_sum_amount_le_radius
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) {r : ℝ} (hr : 0 ≤ r) :
+    (∑ i : Coord, max
+      (|center i - ideal i| - linfL1WaterfillLevel center ideal r) 0) ≤ r := by
+  rw [linfL1Waterfill_sum_amount_eq_active_sum]
+  let active := linfL1WaterfillActiveCoordinates center ideal r
+  by_cases hactive : active.Nonempty
+  · have hmember : active ∈ linfL1WaterfillSubsets Coord := by
+      simpa [active] using
+        linfL1WaterfillActiveCoordinates_mem_subsets center ideal r hactive
+    have havg := linfL1WaterfillSubset_average_le_level center ideal r active hmember
+    have hcardNat : 0 < active.card := Finset.card_pos.mpr hactive
+    have hcard : 0 < (active.card : ℝ) := by exact_mod_cast hcardNat
+    have hmul : (∑ i ∈ active, |center i - ideal i|) - r ≤
+        linfL1WaterfillLevel center ideal r * (active.card : ℝ) :=
+      (div_le_iff₀ hcard).mp havg
+    have hsum : (∑ i ∈ active,
+        (|center i - ideal i| - linfL1WaterfillLevel center ideal r)) =
+        (∑ i ∈ active, |center i - ideal i|) -
+          (active.card : ℝ) * linfL1WaterfillLevel center ideal r := by
+      rw [Finset.sum_sub_distrib, Finset.sum_const, nsmul_eq_mul]
+    rw [hsum]
+    nlinarith
+  · have hempty : active = ∅ := Finset.not_nonempty_iff_eq_empty.mp hactive
+    simp [active, hempty, hr]
+
+/-- The exact water-filling response lies in the source `L1` query ball. -/
+theorem linfL1WaterfillRawResponse_l1_distance_le
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) {r : ℝ} (hr : 0 ≤ r) :
+    finiteCoordinateDistance SourceNorm.l1
+      (linfL1WaterfillRawResponse center ideal r) center ≤ r := by
+  rw [finiteCoordinateDistance_l1, AppliedModelingLib.FiniteDimensionalNorms.l1]
+  calc
+    (∑ i : Coord, |linfL1WaterfillRawResponse center ideal r i - center i|) =
+        ∑ i : Coord, max
+          (|center i - ideal i| - linfL1WaterfillLevel center ideal r) 0 := by
+      apply Finset.sum_congr rfl
+      intro i _hi
+      exact linfL1WaterfillRawResponse_coordinate_distance_eq_amount center ideal r i
+    _ ≤ r := linfL1Waterfill_sum_amount_le_radius center ideal hr
+
+/--
+Every feasible `L1`-ball candidate bounds each nonempty subset's average
+residual; this is the finite dual lower bound for water-filling.
+-/
+theorem linfL1Subset_average_le_linf_cost_of_l1Ball
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal candidate : Coord → ℝ} {r : ℝ}
+    (hball : finiteCoordinateDistance SourceNorm.l1 candidate center ≤ r)
+    (A : Finset Coord) (hA : A.Nonempty) :
+    ((∑ i ∈ A, |center i - ideal i|) - r) / (A.card : ℝ) ≤
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => candidate i - ideal i) := by
+  let cost : ℝ := AppliedModelingLib.FiniteDimensionalNorms.linf
+    (fun i => candidate i - ideal i)
+  have hcardNat : 0 < A.card := Finset.card_pos.mpr hA
+  have hcard : 0 < (A.card : ℝ) := by exact_mod_cast hcardNat
+  have hcoordinate : ∀ i ∈ A, |center i - ideal i| ≤
+      cost + |candidate i - center i| := by
+    intro i _hi
+    calc
+      |center i - ideal i| ≤ |center i - candidate i| + |candidate i - ideal i| := by
+        simpa using abs_sub_le (center i) (candidate i) (ideal i)
+      _ = |candidate i - center i| + |candidate i - ideal i| := by
+        rw [abs_sub_comm (center i) (candidate i)]
+      _ ≤ |candidate i - center i| + cost := by
+        apply add_le_add_right
+        unfold cost AppliedModelingLib.FiniteDimensionalNorms.linf
+        exact Finset.le_sup' (s := (Finset.univ : Finset Coord))
+          (f := fun j => |candidate j - ideal j|) (Finset.mem_univ i)
+      _ = cost + |candidate i - center i| := by ring
+  have hsum_coordinate := Finset.sum_le_sum hcoordinate
+  have hstep_subset : (∑ i ∈ A, |candidate i - center i|) ≤
+      ∑ i : Coord, |candidate i - center i| :=
+    Finset.sum_le_sum_of_subset_of_nonneg A.subset_univ
+      (by intro i _hi _hnot; exact abs_nonneg _)
+  have hstep : (∑ i : Coord, |candidate i - center i|) ≤ r := by
+    simpa [finiteCoordinateDistance_l1, AppliedModelingLib.FiniteDimensionalNorms.l1]
+      using hball
+  have hsum : (∑ i ∈ A, |center i - ideal i|) ≤
+      (A.card : ℝ) * cost + r := by
+    rw [Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul] at hsum_coordinate
+    linarith
+  apply (div_le_iff₀ hcard).mpr
+  linarith
+
+/-- The water-filling level is a lower bound on the `L∞` cost of every feasible candidate. -/
+theorem linfL1WaterfillLevel_le_linf_cost_of_l1Ball
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal candidate : Coord → ℝ} {r : ℝ}
+    (hball : finiteCoordinateDistance SourceNorm.l1 candidate center ≤ r) :
+    linfL1WaterfillLevel center ideal r ≤
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => candidate i - ideal i) := by
+  classical
+  unfold linfL1WaterfillLevel
+  apply max_le
+  · exact AppliedModelingLib.FiniteDimensionalNorms.linf_nonneg _
+  · apply Finset.sup'_le
+    intro A hA
+    have hAne : A.Nonempty := by
+      exact Finset.nonempty_iff_ne_empty.mpr (Finset.mem_erase.mp hA).1
+    exact linfL1Subset_average_le_linf_cost_of_l1Ball hball A hAne
+
+/-- Every coordinate of the water-filled response has residual cost at most its level. -/
+theorem linfL1WaterfillRawResponse_coordinate_cost_le_level
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) (i : Coord) :
+    |linfL1WaterfillRawResponse center ideal r i - ideal i| ≤
+      linfL1WaterfillLevel center ideal r := by
+  let level : ℝ := linfL1WaterfillLevel center ideal r
+  let d : ℝ := center i - ideal i
+  let amount : ℝ := max (|d| - level) 0
+  have hlevel : 0 ≤ level := by
+    simpa [level] using linfL1WaterfillLevel_nonneg center ideal r
+  unfold linfL1WaterfillRawResponse
+  have hrewrite : center i -
+      ((center i - ideal i) / |center i - ideal i|) *
+        max (|center i - ideal i| - linfL1WaterfillLevel center ideal r) 0 - ideal i =
+      d - (d / |d|) * amount := by
+    dsimp [d, amount, level]
+    ring
+  rw [hrewrite]
+  change |d - (d / |d|) * amount| ≤ level
+  by_cases hzero : d = 0
+  · rw [hzero]
+    simpa using hlevel
+  by_cases hle : |d| ≤ level
+  · have hamount : amount = 0 := by
+      dsimp [amount]
+      rw [max_eq_right]
+      linarith
+    rw [hamount]
+    simpa using hle
+  · have hlt : level < |d| := lt_of_not_ge hle
+    have hamount : amount = |d| - level := by
+      dsimp [amount]
+      rw [max_eq_left]
+      linarith
+    rw [hamount]
+    have hden : |d| ≠ 0 := abs_ne_zero.mpr hzero
+    have hcalc : d - (d / |d|) * (|d| - level) = (level / |d|) * d := by
+      field_simp [hden]
+      ring
+    rw [hcalc, abs_mul, abs_div, abs_abs, abs_of_nonneg hlevel]
+    field_simp [hden]
+    exact le_rfl
+
+/-- The water-filled response attains `L∞` cost at most the water-filling level. -/
+theorem linfL1WaterfillRawResponse_linf_cost_le_level
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) :
+    AppliedModelingLib.FiniteDimensionalNorms.linf
+      (fun i => linfL1WaterfillRawResponse center ideal r i - ideal i) ≤
+        linfL1WaterfillLevel center ideal r := by
+  unfold AppliedModelingLib.FiniteDimensionalNorms.linf
+  apply Finset.sup'_le
+  intro i _hi
+  exact linfL1WaterfillRawResponse_coordinate_cost_le_level center ideal r i
+
+/-- The Borel water-filled point is an exact `L∞` minimizer over the source `L1` query ball. -/
+theorem linfL1WaterfillRawResponse_minimizes_linf_on_l1Ball
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal candidate : Coord → ℝ} {r : ℝ}
+    (hr : 0 ≤ r)
+    (hcandidate : finiteCoordinateDistance SourceNorm.l1 candidate center ≤ r) :
+    AppliedModelingLib.FiniteDimensionalNorms.linf
+        (fun i => linfL1WaterfillRawResponse center ideal r i - ideal i) ≤
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => candidate i - ideal i) := by
+  exact (linfL1WaterfillRawResponse_linf_cost_le_level center ideal r).trans
+    (linfL1WaterfillLevel_le_linf_cost_of_l1Ball hcandidate)
+
+/-- The canonical one-coordinate response used off the corrected exceptional event. -/
+noncomputable def linfL1CanonicalRawResponse
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    (center ideal : Coord → ℝ) (r : ℝ) : Coord → ℝ :=
+  linfL1SingleActiveRawResponse center ideal r (linfL1ActiveCoordinate center ideal)
+
+/-- The normalized direction encoded by an arbitrary positive-radius `L1` raw response. -/
+noncomputable def linfL1RawDirection
+    {Coord : Type*}
+    (center raw : Coord → ℝ) (r : ℝ) : Coord → ℝ :=
+  fun i => (center i - raw i) / r
+
+/-- The normalized raw-direction map is Borel at every fixed positive or zero radius. -/
+theorem measurable_linfL1RawDirection
+    {Coord : Type*}
+    (r : ℝ) :
+    Measurable (fun z : (Coord → ℝ) × (Coord → ℝ) =>
+      linfL1RawDirection z.1 z.2 r) := by
+  apply measurable_pi_lambda
+  intro i
+  exact (((measurable_pi_apply i).comp measurable_fst).sub
+    ((measurable_pi_apply i).comp measurable_snd)).div measurable_const
+
+/-- The one-coordinate response uses exactly its nonnegative `L1` query radius. -/
+theorem linfL1SingleActiveRawResponse_l1_distance_eq
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} {i0 : Coord}
+    (hr : 0 ≤ r) (hnz : center i0 ≠ ideal i0) :
+    finiteCoordinateDistance SourceNorm.l1
+      (linfL1SingleActiveRawResponse center ideal r i0) center = r := by
+  rw [finiteCoordinateDistance_l1, AppliedModelingLib.FiniteDimensionalNorms.l1]
+  rw [Finset.sum_eq_single i0]
+  · rw [linfL1SingleActiveRawResponse, linfL1SingleActiveDirection,
+      if_pos rfl, sub_sub_cancel_left, abs_neg, abs_mul, abs_of_nonneg hr,
+      unitSign_abs_eq_one (sub_ne_zero.mpr hnz)]
+    ring
+  · intro i _hi hne
+    simp [linfL1SingleActiveRawResponse, linfL1SingleActiveDirection, hne]
+  · intro hnot
+    exact False.elim (hnot (Finset.mem_univ i0))
+
+/-- The one-coordinate response is always feasible for its nonnegative `L1` query ball. -/
+theorem linfL1SingleActiveRawResponse_l1_distance_le
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} {i0 : Coord}
+    (hr : 0 ≤ r) :
+    finiteCoordinateDistance SourceNorm.l1
+      (linfL1SingleActiveRawResponse center ideal r i0) center ≤ r := by
+  by_cases hnz : center i0 = ideal i0
+  · rw [finiteCoordinateDistance_l1, AppliedModelingLib.FiniteDimensionalNorms.l1]
+    have hraw : linfL1SingleActiveRawResponse center ideal r i0 = center := by
+      ext i
+      by_cases hi : i = i0
+      · subst i
+        simp [linfL1SingleActiveRawResponse, linfL1SingleActiveDirection, hnz]
+      · simp [linfL1SingleActiveRawResponse, linfL1SingleActiveDirection, hi]
+    simp [hraw, hr]
+  · exact (linfL1SingleActiveRawResponse_l1_distance_eq hr hnz).le
+
+/--
+If the selected displacement exceeds every competing displacement by at least
+the query radius and cannot cross its ideal, the one-coordinate step has the
+displayed `L∞` cost.
+-/
+theorem linfL1SingleActiveRawResponse_linf_cost_eq
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ} {r : ℝ} {i0 : Coord}
+    (hr : 0 ≤ r)
+    (hmax : ∀ i, |center i - ideal i| ≤ |center i0 - ideal i0|)
+    (hnoncross : r ≤ |center i0 - ideal i0|)
+    (hmargin : ∀ i, i ≠ i0 → |center i - ideal i| ≤
+      |center i0 - ideal i0| - r) :
+    AppliedModelingLib.FiniteDimensionalNorms.linf
+        (fun i => linfL1SingleActiveRawResponse center ideal r i0 i - ideal i) =
+      |center i0 - ideal i0| - r := by
+  rw [AppliedModelingLib.FiniteDimensionalNorms.linf]
+  apply le_antisymm
+  · apply Finset.sup'_le
+    intro i _hi
+    by_cases hi : i = i0
+    · subst i
+      have hcost := l1LinfRawResponse_coordinate_cost
+        (center := center) (ideal := ideal) (i := i0) hr hnoncross
+      simpa [linfL1SingleActiveRawResponse, linfL1SingleActiveDirection,
+        l1LinfRawResponse] using hcost.le
+    · simpa [linfL1SingleActiveRawResponse, linfL1SingleActiveDirection, hi] using
+        hmargin i hi
+  · rw [show (|center i0 - ideal i0| - r) =
+        |linfL1SingleActiveRawResponse center ideal r i0 i0 - ideal i0| by
+          have hcost := l1LinfRawResponse_coordinate_cost
+            (center := center) (ideal := ideal) (i := i0) hr hnoncross
+          simpa [linfL1SingleActiveRawResponse, linfL1SingleActiveDirection,
+            l1LinfRawResponse] using hcost.symm]
+    exact Finset.le_sup'
+      (s := (Finset.univ : Finset Coord))
+      (f := fun i => |linfL1SingleActiveRawResponse center ideal r i0 i - ideal i|)
+      (Finset.mem_univ i0)
+
+/-- Every `L1`-ball candidate retains at least the active displacement minus its radius. -/
+theorem linfL1_active_cost_lower_bound_of_l1Ball
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center ideal candidate : Coord → ℝ} {r : ℝ} {i0 : Coord}
+    (hcandidate : finiteCoordinateDistance SourceNorm.l1 candidate center ≤ r) :
+    |center i0 - ideal i0| - r ≤
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => candidate i - ideal i) := by
+  apply le_trans ?_ (Finset.le_sup'
+    (s := (Finset.univ : Finset Coord))
+    (f := fun i => |candidate i - ideal i|)
+    (Finset.mem_univ i0))
+  apply (sub_le_iff_le_add).mpr
+  have hcoord : |candidate i0 - center i0| ≤ r :=
+    le_trans (finiteCoordinateDistance_l1_coord_abs_le candidate center i0) hcandidate
+  calc
+    |center i0 - ideal i0| =
+        |(center i0 - candidate i0) + (candidate i0 - ideal i0)| := by
+      congr 1
+      ring
+    _ ≤ |center i0 - candidate i0| + |candidate i0 - ideal i0| := abs_add_le _ _
+    _ = |candidate i0 - center i0| + |candidate i0 - ideal i0| := by
+      rw [abs_sub_comm]
+    _ ≤ r + |candidate i0 - ideal i0| := by gcongr
+    _ = |candidate i0 - ideal i0| + r := by ring
+
+/--
+Corrected local optimality for the `L∞`-cost, `L1`-query endpoint.  The
+non-crossing premise is the additional exceptional case omitted by the
+printed appendix argument.
+-/
+theorem linfL1SingleActiveRawResponse_minimizes_linf_on_l1Ball
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal candidate : Coord → ℝ} {r : ℝ} {i0 : Coord}
+    (hr : 0 ≤ r)
+    (hmax : ∀ i, |center i - ideal i| ≤ |center i0 - ideal i0|)
+    (hnoncross : r ≤ |center i0 - ideal i0|)
+    (hmargin : ∀ i, i ≠ i0 → |center i - ideal i| ≤
+      |center i0 - ideal i0| - r)
+    (hcandidate : finiteCoordinateDistance SourceNorm.l1 candidate center ≤ r) :
+    AppliedModelingLib.FiniteDimensionalNorms.linf
+        (fun i => linfL1SingleActiveRawResponse center ideal r i0 i - ideal i) ≤
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => candidate i - ideal i) := by
+  rw [linfL1SingleActiveRawResponse_linf_cost_eq hr hmax hnoncross hmargin]
+  exact linfL1_active_cost_lower_bound_of_l1Ball hcandidate
+
+/--
+At positive radius, the corrected one-coordinate optimizer is the unique
+`L∞`-cost minimizer on the `L1` query ball.  This removes Model A's
+tie-breaking ambiguity off the corrected exceptional event.
+-/
+theorem linfL1SingleActiveRawResponse_eq_of_linf_cost_le_on_l1Ball
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal response : Coord → ℝ} {r : ℝ} {i0 : Coord}
+    (hr : 0 < r)
+    (hmax : ∀ i, |center i - ideal i| ≤ |center i0 - ideal i0|)
+    (hnoncross : r ≤ |center i0 - ideal i0|)
+    (hmargin : ∀ i, i ≠ i0 → |center i - ideal i| ≤
+      |center i0 - ideal i0| - r)
+    (hresponse_ball : finiteCoordinateDistance SourceNorm.l1 response center ≤ r)
+    (hresponse_cost :
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => response i - ideal i) ≤
+        AppliedModelingLib.FiniteDimensionalNorms.linf
+          (fun i => linfL1SingleActiveRawResponse center ideal r i0 i - ideal i)) :
+    response = linfL1SingleActiveRawResponse center ideal r i0 := by
+  have hnz : center i0 ≠ ideal i0 := by
+    intro hzero
+    have : r ≤ 0 := by simpa [hzero] using hnoncross
+    exact (not_lt_of_ge this) hr
+  have hrawcost := linfL1SingleActiveRawResponse_linf_cost_eq hr.le
+    hmax hnoncross hmargin
+  have hcost_upper :
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => response i - ideal i) ≤
+        |center i0 - ideal i0| - r := by
+    rw [← hrawcost]
+    exact hresponse_cost
+  have hcoord_ball : |response i0 - center i0| ≤ r :=
+    le_trans (finiteCoordinateDistance_l1_coord_abs_le response center i0)
+      hresponse_ball
+  have hcoord_lower : |center i0 - ideal i0| - r ≤
+      |response i0 - ideal i0| := by
+    apply (sub_le_iff_le_add).mpr
+    calc
+      |center i0 - ideal i0| =
+          |(center i0 - response i0) + (response i0 - ideal i0)| := by
+        congr 1
+        ring
+      _ ≤ |center i0 - response i0| + |response i0 - ideal i0| := abs_add_le _ _
+      _ = |response i0 - center i0| + |response i0 - ideal i0| := by
+        rw [abs_sub_comm]
+      _ ≤ r + |response i0 - ideal i0| := by gcongr
+      _ = |response i0 - ideal i0| + r := by ring
+  have hcoord_upper : |response i0 - ideal i0| ≤
+      |center i0 - ideal i0| - r := by
+    exact le_trans (Finset.le_sup'
+      (s := (Finset.univ : Finset Coord))
+      (f := fun i => |response i - ideal i|)
+      (Finset.mem_univ i0)) hcost_upper
+  have hcoord_cost : |response i0 - ideal i0| =
+      |center i0 - ideal i0| - r :=
+    le_antisymm hcoord_upper hcoord_lower
+  have hactive_eq : response i0 =
+      linfL1SingleActiveRawResponse center ideal r i0 i0 := by
+    have hsingle := l1LinfRawResponse_coordinate_eq_of_cost_eq hr.le hnoncross
+      hcoord_ball hcoord_cost
+    simpa [linfL1SingleActiveRawResponse, linfL1SingleActiveDirection,
+      l1LinfRawResponse] using hsingle
+  have hactive_step : |response i0 - center i0| = r := by
+    rw [hactive_eq, linfL1SingleActiveRawResponse,
+      linfL1SingleActiveDirection, if_pos rfl, sub_sub_cancel_left, abs_neg,
+      abs_mul, abs_of_pos hr, unitSign_abs_eq_one (sub_ne_zero.mpr hnz)]
+    ring
+  have hsum_le : (∑ i : Coord, |response i - center i|) ≤ r := by
+    simpa [finiteCoordinateDistance_l1, AppliedModelingLib.FiniteDimensionalNorms.l1] using
+      hresponse_ball
+  have hsum_eq : (∑ i : Coord, |response i - center i|) = r := by
+    apply le_antisymm hsum_le
+    rw [← hactive_step]
+    exact Finset.single_le_sum
+      (fun j _hj => abs_nonneg (response j - center j))
+      (Finset.mem_univ i0)
+  have hdelta_sum : (∑ i : Coord,
+      (|response i - center i| - if i = i0 then r else 0)) = 0 := by
+    rw [Finset.sum_sub_distrib]
+    have hbase : (∑ i : Coord, if i = i0 then r else 0) = r := by
+      rw [Finset.sum_eq_single i0]
+      · simp
+      · intro i _hi hne
+        simp [hne]
+      · intro hnot
+        exact False.elim (hnot (Finset.mem_univ i0))
+    linarith
+  have hdelta_nonneg : ∀ i : Coord,
+      0 ≤ |response i - center i| - if i = i0 then r else 0 := by
+    intro i
+    by_cases hi : i = i0
+    · simpa [hi, hactive_step]
+    · simp [hi, abs_nonneg]
+  have hdelta_zero : ∀ i : Coord,
+      (|response i - center i| - (if i = i0 then r else 0)) = 0 := by
+    intro i
+    exact (Finset.sum_eq_zero_iff_of_nonneg
+      (fun j _hj => hdelta_nonneg j)).mp hdelta_sum i (Finset.mem_univ i)
+  ext i
+  by_cases hi : i = i0
+  · subst i
+    exact hactive_eq
+  · have hzero : |response i - center i| = 0 := by
+      simpa [hi] using hdelta_zero i
+    have hresponse_center : response i = center i := by
+      exact sub_eq_zero.mp (abs_eq_zero.mp hzero)
+    simp [linfL1SingleActiveRawResponse, linfL1SingleActiveDirection, hi,
+      hresponse_center]
+
+/-- A normalized direction from an `L1`-ball raw response has coordinate magnitude at most one. -/
+theorem linfL1RawDirection_coordinate_abs_le_one
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center raw : Coord → ℝ} {r : ℝ} {i : Coord}
+    (hr : 0 < r)
+    (hraw_ball : finiteCoordinateDistance SourceNorm.l1 raw center ≤ r) :
+    |linfL1RawDirection center raw r i| ≤ 1 := by
+  rw [linfL1RawDirection, abs_div, abs_of_pos hr]
+  apply (div_le_iff₀ hr).mpr
+  have hcoord : |raw i - center i| ≤ r :=
+    le_trans (finiteCoordinateDistance_l1_coord_abs_le raw center i) hraw_ball
+  simpa [abs_sub_comm] using hcoord
+
+/-- Every normalized direction from an `L1`-ball raw response has bounded squared Euclidean norm. -/
+theorem linfL1RawDirection_l2Sq_le_card
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {center raw : Coord → ℝ} {r : ℝ}
+    (hr : 0 < r)
+    (hraw_ball : finiteCoordinateDistance SourceNorm.l1 raw center ≤ r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2Sq (linfL1RawDirection center raw r) ≤
+      Fintype.card Coord := by
+  have hnorm := AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_le_card_mul_sq_of_abs_le
+    (linfL1RawDirection center raw r) (by norm_num : (0 : ℝ) ≤ 1)
+    (fun i => linfL1RawDirection_coordinate_abs_le_one hr hraw_ball)
+  norm_num at hnorm ⊢
+  exact hnorm
+
+/--
+The arbitrary Model A/raw-sampled-subgradient discrepancy for the corrected
+`L∞/L1` endpoint.  It vanishes off the corrected exceptional event.
+-/
+noncomputable def linfL1RawDirectionSubgradientPerturbation
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    (center ideal raw : Coord → ℝ) (r : ℝ) : Coord → ℝ :=
+  fun i => linfL1RawDirection center raw r i -
+    linfL1SingleActiveDirection center ideal (linfL1ActiveCoordinate center ideal) i
+
+/--
+The discrepancy between an arbitrary exact `L∞/L1` Model A direction and the
+Borel symmetric active subgradient.  This is the perturbation used by the
+stochastic convergence route: the symmetric direction has an exact population
+mean even on the measure-zero tie surfaces.
+-/
+noncomputable def linfL1RawDirectionSymmetricPerturbation
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    (center ideal raw : Coord → ℝ) (r : ℝ) : Coord → ℝ :=
+  fun i => linfL1RawDirection center raw r i -
+    linfL1SymmetricActiveDirection center ideal i
+
+/-- The corrected Model A discrepancy has a uniform squared Euclidean bound. -/
+theorem linfL1RawDirectionSubgradientPerturbation_l2Sq_le_four_card
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal raw : Coord → ℝ} {r : ℝ}
+    (hr : 0 < r)
+    (hraw_ball : finiteCoordinateDistance SourceNorm.l1 raw center ≤ r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2Sq
+      (linfL1RawDirectionSubgradientPerturbation center ideal raw r) ≤
+      4 * Fintype.card Coord := by
+  have hnorm := AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_le_card_mul_sq_of_abs_le
+    (linfL1RawDirectionSubgradientPerturbation center ideal raw r)
+    (by norm_num : (0 : ℝ) ≤ 2)
+    (fun i => by
+      unfold linfL1RawDirectionSubgradientPerturbation
+      calc
+        |linfL1RawDirection center raw r i -
+            linfL1SingleActiveDirection center ideal
+              (linfL1ActiveCoordinate center ideal) i| ≤
+            |linfL1RawDirection center raw r i| +
+              |linfL1SingleActiveDirection center ideal
+                (linfL1ActiveCoordinate center ideal) i| := by
+          simpa using (abs_sub_le
+            (linfL1RawDirection center raw r i) 0
+            (linfL1SingleActiveDirection center ideal
+              (linfL1ActiveCoordinate center ideal) i))
+        _ ≤ 2 := by
+          have hraw := linfL1RawDirection_coordinate_abs_le_one (i := i) hr hraw_ball
+          have hactive : |linfL1SingleActiveDirection center ideal
+              (linfL1ActiveCoordinate center ideal) i| ≤ 1 := by
+            unfold linfL1SingleActiveDirection
+            split <;> simp [unitSign_abs_le_one]
+          linarith)
+  norm_num at hnorm ⊢
+  nlinarith
+
+/-- The symmetric-direction perturbation has the same uniform energy bound. -/
+theorem linfL1RawDirectionSymmetricPerturbation_l2Sq_le_four_card
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal raw : Coord → ℝ} {r : ℝ}
+    (hr : 0 < r)
+    (hraw_ball : finiteCoordinateDistance SourceNorm.l1 raw center ≤ r) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2Sq
+      (linfL1RawDirectionSymmetricPerturbation center ideal raw r) ≤
+      4 * Fintype.card Coord := by
+  have hnorm := AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_le_card_mul_sq_of_abs_le
+    (linfL1RawDirectionSymmetricPerturbation center ideal raw r)
+    (by norm_num : (0 : ℝ) ≤ 2)
+    (fun i => by
+      unfold linfL1RawDirectionSymmetricPerturbation
+      calc
+        |linfL1RawDirection center raw r i -
+            linfL1SymmetricActiveDirection center ideal i| ≤
+            |linfL1RawDirection center raw r i| +
+              |linfL1SymmetricActiveDirection center ideal i| := by
+          simpa using abs_sub_le
+            (linfL1RawDirection center raw r i) 0
+            (linfL1SymmetricActiveDirection center ideal i)
+        _ ≤ 2 := by
+          have hraw := linfL1RawDirection_coordinate_abs_le_one (i := i) hr hraw_ball
+          have hsymm := linfL1SymmetricActiveDirection_coordinate_abs_le_one
+            center ideal i
+          linarith)
+  norm_num at hnorm ⊢
+  nlinarith
+
+/-- On the corrected good event, the canonical response minimizes `L∞` cost on its `L1` ball. -/
+theorem linfL1CanonicalRawResponse_minimizes_linf_on_l1Ball
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal candidate : Coord → ℝ} {r : ℝ}
+    (hr : 0 ≤ r)
+    (hgood : LinfL1CorrectedGood center ideal r)
+    (hcandidate : finiteCoordinateDistance SourceNorm.l1 candidate center ≤ r) :
+    AppliedModelingLib.FiniteDimensionalNorms.linf
+        (fun i => linfL1CanonicalRawResponse center ideal r i - ideal i) ≤
+      AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => candidate i - ideal i) := by
+  exact linfL1SingleActiveRawResponse_minimizes_linf_on_l1Ball hr
+    (linfL1ActiveCoordinate_is_max center ideal) hgood.1 hgood.2 hcandidate
+
+/-- At positive radius, the corrected canonical direction is an `L∞` sample-cost subgradient. -/
+theorem finiteSubgradientAt_linfL1CanonicalDirection
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ} {r : ℝ}
+    (hr : 0 < r)
+    (hgood : LinfL1CorrectedGood center ideal r) :
+    FiniteSubgradientAt
+      (fun y : Coord → ℝ =>
+        AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i))
+      center
+      (linfL1SingleActiveDirection center ideal
+        (linfL1ActiveCoordinate center ideal)) := by
+  exact finiteSubgradientAt_linfL1SingleActiveDirection hr
+    (linfL1ActiveCoordinate_is_max center ideal) hgood.1
 
 /--
 A finite-coordinate trajectory follows the projected SSGM recurrence at every
@@ -2277,6 +4982,63 @@ theorem finiteProjectedSSGMUpdateAt_of_modelBFiniteResponseAt
   ring
 
 /--
+At the `L1/L∞` endpoint, the source Model A raw sign response followed by
+Algorithm 1's projection is exactly a projected subgradient update.  The
+separate good-event hypothesis is needed only to establish that this raw point
+is the Model A maximizer, not for this algebraic recurrence.
+-/
+theorem finiteProjectedSSGMUpdateAt_of_l1LinfRawResponse
+    {Coord : Type*} [Fintype Coord]
+    (project : (Coord → ℝ) → Coord → ℝ)
+    {previous ideal raw next : Coord → ℝ} (radius : ℝ)
+    (hraw : raw = l1LinfRawResponse previous ideal radius)
+    (hproject : Algorithm1ProjectedUpdate project raw next) :
+    FiniteProjectedSSGMUpdateAt project previous radius
+      (lpCostGradientCandidate 1 (fun i => previous i - ideal i))
+      (fun _ => 0) (fun _ => 0) next := by
+  unfold FiniteProjectedSSGMUpdateAt Algorithm1ProjectedUpdate at *
+  rw [hproject, hraw]
+  congr
+  ext i
+  rw [lpCostGradientCandidate_one_eq_unitSign]
+  simp [l1LinfRawResponse]
+
+/--
+The corrected `L∞/L1` single-active-coordinate Model A response followed by
+Algorithm 1's projection is a projected subgradient update on its good event.
+-/
+theorem finiteProjectedSSGMUpdateAt_of_linfL1SingleActiveRawResponse
+    {Coord : Type*} [Fintype Coord] [DecidableEq Coord]
+    (project : (Coord → ℝ) → Coord → ℝ)
+    {previous ideal raw next : Coord → ℝ} (radius : ℝ) (i0 : Coord)
+    (hraw : raw = linfL1SingleActiveRawResponse previous ideal radius i0)
+    (hproject : Algorithm1ProjectedUpdate project raw next) :
+    FiniteProjectedSSGMUpdateAt project previous radius
+      (linfL1SingleActiveDirection previous ideal i0)
+      (fun _ => 0) (fun _ => 0) next := by
+  unfold FiniteProjectedSSGMUpdateAt Algorithm1ProjectedUpdate at *
+  rw [hproject, hraw]
+  congr
+  ext i
+  simp [linfL1SingleActiveRawResponse]
+
+/-- The canonical corrected response has the corresponding projected subgradient-update form. -/
+theorem finiteProjectedSSGMUpdateAt_of_linfL1CanonicalRawResponse
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    (project : (Coord → ℝ) → Coord → ℝ)
+    {previous ideal raw next : Coord → ℝ} (radius : ℝ)
+    (hraw : raw = linfL1CanonicalRawResponse previous ideal radius)
+    (hproject : Algorithm1ProjectedUpdate project raw next) :
+    FiniteProjectedSSGMUpdateAt project previous radius
+      (linfL1SingleActiveDirection previous ideal
+        (linfL1ActiveCoordinate previous ideal))
+      (fun _ => 0) (fun _ => 0) next := by
+  apply finiteProjectedSSGMUpdateAt_of_linfL1SingleActiveRawResponse project radius
+    (linfL1ActiveCoordinate previous ideal)
+  · simpa [linfL1CanonicalRawResponse] using hraw
+  · exact hproject
+
+/--
 Theorem 2-specific bridge: when Model B moves in the utility-gradient direction,
 the negative of the Appendix C.4 cost-gradient candidate, Lemma 3 removes the
 normalization and the projected step is an SSGM update using the positive
@@ -2378,7 +5140,7 @@ theorem followsFiniteProjectedSampleSubgradientMethod_lpCost_of_modelBFiniteResp
       ∀ t : ℕ,
         ConvexOn ℝ Set.univ
           (fun y : Coord → ℝ =>
-            EconCSLib.FiniteDimensionalNorms.lp p
+            AppliedModelingLib.FiniteDimensionalNorms.lp p
               (fun i => y i - ideal t i)))
     (hresponse :
       ∀ t : ℕ,
@@ -2389,7 +5151,7 @@ theorem followsFiniteProjectedSampleSubgradientMethod_lpCost_of_modelBFiniteResp
       ∀ t : ℕ, Algorithm1ProjectedUpdate project (raw t) (trajectory (t + 1))) :
     FollowsFiniteProjectedSampleSubgradientMethod
       (fun t y =>
-        EconCSLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
+        AppliedModelingLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
       project trajectory radius
       (fun t => lpCostGradientCandidate p (fun i => trajectory t i - ideal t i))
       (fun _t _i => 0) (fun _t _i => 0) := by
@@ -2421,7 +5183,7 @@ theorem followsFiniteProjectedSampleSubgradientMethod_lpCost_of_modelBFiniteResp
       ∀ t : ℕ, Algorithm1ProjectedUpdate project (raw t) (trajectory (t + 1))) :
     FollowsFiniteProjectedSampleSubgradientMethod
       (fun t y =>
-        EconCSLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
+        AppliedModelingLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
       project trajectory radius
       (fun t => lpCostGradientCandidate p (fun i => trajectory t i - ideal t i))
       (fun _t _i => 0) (fun _t _i => 0) := by
@@ -2453,7 +5215,7 @@ theorem followsFiniteProjectedSampleSubgradientMethod_lpCost_of_modelBFiniteResp
       ∀ t : ℕ, Algorithm1ProjectedUpdate project (raw t) (trajectory (t + 1))) :
     FollowsFiniteProjectedSampleSubgradientMethod
       (fun t y =>
-        EconCSLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
+        AppliedModelingLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
       project trajectory radius
       (fun t => lpCostGradientCandidate p (fun i => trajectory t i - ideal t i))
       (fun _t _i => 0) (fun _t _i => 0) := by
@@ -2487,7 +5249,7 @@ theorem followsFiniteProjectedSampleSubgradientMethod_lpCost_of_modelBFiniteResp
       ∀ t : ℕ, Algorithm1ProjectedUpdate project (raw t) (trajectory (t + 1))) :
     FollowsFiniteProjectedSampleSubgradientMethod
         (fun t y =>
-          EconCSLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
+          AppliedModelingLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
         project trajectory radius
         (fun t => lpCostGradientCandidate p (fun i => trajectory t i - ideal t i))
         (fun _t _i => 0) (fun _t _i => 0) ∧
@@ -2495,7 +5257,7 @@ theorem followsFiniteProjectedSampleSubgradientMethod_lpCost_of_modelBFiniteResp
   have hfollow :
       FollowsFiniteProjectedSampleSubgradientMethod
         (fun t y =>
-          EconCSLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
+          AppliedModelingLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
         project trajectory radius
         (fun t => lpCostGradientCandidate p (fun i => trajectory t i - ideal t i))
         (fun _t _i => 0) (fun _t _i => 0) :=
@@ -2523,7 +5285,7 @@ theorem followsFiniteProjectedSampleSubgradientMethod_lpCost_of_modelBFiniteResp
       ∀ t : ℕ, Algorithm1ProjectedUpdate project (raw t) (trajectory (t + 1))) :
     FollowsFiniteProjectedSampleSubgradientMethod
         (fun t y =>
-          EconCSLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
+          AppliedModelingLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
         project trajectory radius
         (fun t => lpCostGradientCandidate p (fun i => trajectory t i - ideal t i))
         (fun _t _i => 0) (fun _t _i => 0) ∧
@@ -2552,11 +5314,23 @@ theorem finiteSubgradientAt_lpCostGradientCandidate_ae
     ∀ᵐ ideal ∂D.idealMeasure,
       FiniteSubgradientAt
         (fun y : Coord → ℝ =>
-          EconCSLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal i))
+          AppliedModelingLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal i))
         x
         (lpCostGradientCandidate p (fun i => x i - ideal i)) := by
   filter_upwards [D.coordinate_noncollision_ae x] with ideal hcoord
   exact finiteSubgradientAt_lpCostGradientCandidate hp hcoord
+
+theorem finiteSubgradientAt_lpCostGradientCandidate_one_ae
+    {Coord : Type*} [Fintype Coord]
+    (D : FiniteCoordinateIdealDistributionData Coord) (x : Coord → ℝ) :
+    ∀ᵐ ideal ∂D.idealMeasure,
+      FiniteSubgradientAt
+        (fun y : Coord → ℝ =>
+          AppliedModelingLib.FiniteDimensionalNorms.lp 1 (fun i => y i - ideal i))
+        x
+        (lpCostGradientCandidate 1 (fun i => x i - ideal i)) := by
+  filter_upwards [D.coordinate_noncollision_ae x] with ideal hcoord
+  exact finiteSubgradientAt_lpCostGradientCandidate_one hcoord
 
 theorem modelBFiniteNormalizedDirection_neg_lpCostGradientCandidate_eq_self_ae
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
@@ -2609,7 +5383,7 @@ theorem finiteProjectedSampleSubgradientMethod_lpCost_modelB_with_ilvRadius_ssgm
     SSGMStepSizeConditions (ilvRadius r0) ∧
       FollowsFiniteProjectedSampleSubgradientMethod
         (fun t y =>
-          EconCSLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
+          AppliedModelingLib.FiniteDimensionalNorms.lp p (fun i => y i - ideal t i))
         project trajectory (ilvRadius r0)
         (fun t => lpCostGradientCandidate p (fun i => trajectory t i - ideal t i))
         (fun _t _i => 0) (fun _t _i => 0) ∧
@@ -2827,9 +5601,9 @@ theorem FiniteModelBILVTrace.lpCost_eq_selectedVoter_lpCost
     {E : ILVEnvironment Voter (Coord → ℝ)} {p q r0 : ℝ}
     (T : FiniteModelBILVTrace E p q r0) :
     ∀ t : ℕ, ∀ y : Coord → ℝ,
-      EconCSLib.FiniteDimensionalNorms.lp p
+      AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - T.ideal t i) =
-        EconCSLib.FiniteDimensionalNorms.lp p
+        AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - E.ideal (T.voter t) i) := by
   intro t y
   rw [T.ideal_eq_selectedVoter t]
@@ -2842,7 +5616,7 @@ theorem FiniteModelBILVTrace.ssgmInputs
     SSGMStepSizeConditions (ilvRadius r0) ∧
       FollowsFiniteProjectedSampleSubgradientMethod
         (fun t y =>
-          EconCSLib.FiniteDimensionalNorms.lp p (fun i => y i - T.ideal t i))
+          AppliedModelingLib.FiniteDimensionalNorms.lp p (fun i => y i - T.ideal t i))
         T.project
         (E.trajectory (SourceNorm.lp q) VoterResponseModel.modelB)
         (ilvRadius r0)
@@ -2874,7 +5648,7 @@ theorem FiniteModelBILVTrace.followsSampleSubgradientMethod
     (hdual : HolderDualFinite p q) (hr0 : 0 < r0) :
     FollowsFiniteProjectedSampleSubgradientMethod
       (fun t y =>
-        EconCSLib.FiniteDimensionalNorms.lp p (fun i => y i - T.ideal t i))
+        AppliedModelingLib.FiniteDimensionalNorms.lp p (fun i => y i - T.ideal t i))
       T.project
       (E.trajectory (SourceNorm.lp q) VoterResponseModel.modelB)
       (ilvRadius r0)
@@ -2920,6 +5694,20 @@ theorem ConditionsC123.idealDistribution_bounded_measurable_density_condition
   h.2.2
 
 /--
+Concrete reading of source condition C2: the designated ideal is feasible and
+is the unique utility-maximizing solution for each voter.
+-/
+def HasUniqueIdealSolution {Voter Point : Type*}
+    (E : ILVEnvironment Voter Point) : Prop :=
+  ∀ voter,
+    E.ideal voter ∈ E.solutionSpace ∧
+      (∀ x, x ∈ E.solutionSpace →
+        E.utility voter x ≤ E.utility voter (E.ideal voter)) ∧
+      ∀ x, x ∈ E.solutionSpace →
+        E.utility voter x = E.utility voter (E.ideal voter) →
+          x = E.ideal voter
+
+/--
 Source-side reading of the C1 convexity clause in a concrete Lean environment.
 This is the direct paper-level source assumption used by the
 projection-residual proof.
@@ -2947,28 +5735,26 @@ def C1ConvexSolutionSpaceSource.toConvexSolutionSpaceSource
   convex_solutionSpace := fun _ => S.convex_solutionSpace
 
 /--
-Environment-tied finite-coordinate C3 carrier.
+Environment-indexed finite-coordinate C3 data.
 
-This records the exact future bridge target: an abstract source C3 proof for
-`E` plus concrete finite-coordinate product-density data for sampled ideal
-points. The data field supplies the formal a.e. noncollision lemmas; the source
-field records that it is being used as the concrete realization of C3 for this
-environment.
+The concrete probability law is the C3 content used by the finite-coordinate
+formalization: it is a probability measure on ideal points with a bounded,
+measurable density with respect to full-dimensional Lebesgue measure.  The
+environment parameter keeps this data aligned with a particular paper model;
+it does not add a second opaque C3 proposition.
 -/
 structure FiniteCoordinateC3Carrier
     {Voter Coord : Type*} [Fintype Coord]
     (E : ILVEnvironment Voter (Coord → ℝ)) where
   data : FiniteCoordinateIdealDistributionData Coord
-  source_c3 : E.idealDistribution_bounded_measurable_density
 
 def FiniteCoordinateC3Carrier.of_conditions
     {Voter Coord : Type*} [Fintype Coord]
     {E : ILVEnvironment Voter (Coord → ℝ)}
     (D : FiniteCoordinateIdealDistributionData Coord)
-    (hC : ConditionsC123 E) :
+    (_hC : ConditionsC123 E) :
     FiniteCoordinateC3Carrier E :=
-  { data := D
-    source_c3 := hC.idealDistribution_bounded_measurable_density_condition }
+  { data := D }
 
 theorem FiniteCoordinateC3Carrier.coordinate_noncollision_ae
     {Voter Coord : Type*} [Fintype Coord]
@@ -3463,7 +6249,7 @@ theorem Theorem2FiniteSSGMBridge.ssgmInputs
     SSGMStepSizeConditions (ilvRadius B.r0) ∧
       FollowsFiniteProjectedSampleSubgradientMethod
         (fun t y =>
-          EconCSLib.FiniteDimensionalNorms.lp p
+          AppliedModelingLib.FiniteDimensionalNorms.lp p
             (fun i => y i - B.trace.ideal t i))
         B.trace.project
         (E.trajectory (SourceNorm.lp q) VoterResponseModel.modelB)
@@ -3491,9 +6277,9 @@ theorem Theorem2FiniteSSGMBridge.lpCost_eq_selectedVoter_lpCost
     {E : ILVEnvironment Voter (Coord → ℝ)} {p q : ℝ}
     (B : Theorem2FiniteSSGMBridge E p q) :
     ∀ t : ℕ, ∀ y : Coord → ℝ,
-      EconCSLib.FiniteDimensionalNorms.lp p
+      AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - B.trace.ideal t i) =
-        EconCSLib.FiniteDimensionalNorms.lp p
+        AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun i => y i - E.ideal (B.trace.voter t) i) :=
   B.trace.lpCost_eq_selectedVoter_lpCost
 
@@ -3560,6 +6346,552 @@ theorem finiteCoordinate_lpNormedUtilities_formula
   · intro h v x
     simpa [hNorm p x (E.ideal v)] using h v x
 
+/--
+Source-faithful finite-coordinate Model A realization of the `L1/L∞` sign
+step.  The response is optimal over Algorithm 1's raw query ball; its
+subsequent projection onto the solution space is a separate operation.
+-/
+theorem l1LinfRawResponse_is_modelARawResponseAt
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.l1)
+    {center ideal : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 ≤ r)
+    (hgood : ∀ i, r ≤ |center i - ideal i|) :
+    ModelARawResponseAt E SourceNorm.linfty center r voter
+      (l1LinfRawResponse center ideal r) := by
+  constructor
+  · rw [mem_rawLocalNeighborhood_iff E]
+    simpa [hNorm SourceNorm.linfty (l1LinfRawResponse center ideal r) center] using
+      l1LinfRawResponse_linf_distance_le (center := center) (ideal := ideal) hr
+  · intro candidate hcandidate
+    rw [mem_rawLocalNeighborhood_iff E] at hcandidate
+    rw [finiteCoordinate_lpNormedUtilities_formula E hNorm SourceNorm.l1] at hUtil
+    rw [hUtil voter candidate, hUtil voter (l1LinfRawResponse center ideal r), hideal]
+    apply neg_le_neg
+    apply l1LinfRawResponse_minimizes_l1_on_linfBall hr hgood
+    simpa [hNorm SourceNorm.linfty candidate center] using hcandidate
+
+/--
+The coordinatewise clamp is an exact source Model A response for `L1` utility
+and an `L∞` raw query ball, before Algorithm 1 applies its projection.
+-/
+theorem l1LinfBallResponse_is_modelARawResponseAt
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.l1)
+    {center ideal : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 ≤ r) :
+    ModelARawResponseAt E SourceNorm.linfty center r voter
+      (l1LinfBallResponse center ideal r) := by
+  constructor
+  · rw [mem_rawLocalNeighborhood_iff E]
+    simpa [hNorm SourceNorm.linfty (l1LinfBallResponse center ideal r) center] using
+      l1LinfBallResponse_linf_distance_le (center := center) (ideal := ideal) hr
+  · intro candidate hcandidate
+    rw [mem_rawLocalNeighborhood_iff E] at hcandidate
+    rw [finiteCoordinate_lpNormedUtilities_formula E hNorm SourceNorm.l1] at hUtil
+    rw [hUtil voter candidate, hUtil voter (l1LinfBallResponse center ideal r), hideal]
+    apply neg_le_neg
+    apply l1LinfBallResponse_minimizes_l1_on_linfBall hr
+    simpa [hNorm SourceNorm.linfty candidate center] using hcandidate
+
+/--
+The radial response is an exact source Model A response for `L2` utility and
+an `L2` raw query ball, before Algorithm 1 applies its separate projection.
+-/
+theorem l2BallResponse_is_modelARawResponseAt
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.l2)
+    {center ideal : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 ≤ r) :
+    ModelARawResponseAt E SourceNorm.l2 center r voter
+      (l2BallResponse center ideal r) := by
+  constructor
+  · rw [mem_rawLocalNeighborhood_iff E]
+    simpa [hNorm SourceNorm.l2 (l2BallResponse center ideal r) center] using
+      l2BallResponse_l2_distance_le (center := center) (ideal := ideal) hr
+  · intro candidate hcandidate
+    rw [mem_rawLocalNeighborhood_iff E] at hcandidate
+    rw [finiteCoordinate_lpNormedUtilities_formula E hNorm SourceNorm.l2] at hUtil
+    rw [hUtil voter candidate, hUtil voter (l2BallResponse center ideal r), hideal]
+    apply neg_le_neg
+    apply l2BallResponse_minimizes_l2_on_l2Ball hr
+    simpa [hNorm SourceNorm.l2 candidate center] using hcandidate
+
+/--
+Corrected source Model A bridge for `L∞` utility and an `L1` raw query ball.
+The active-coordinate gap hypotheses distinguish the ordinary exact step from
+the rare crossing and near-tie cases, where Model A may choose another exact
+minimizer.
+-/
+theorem linfL1SingleActiveRawResponse_is_modelARawResponseAt
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.linfty)
+    {center ideal : Coord → ℝ} {r : ℝ} {i0 : Coord} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 ≤ r)
+    (hmax : ∀ i, |center i - ideal i| ≤ |center i0 - ideal i0|)
+    (hnoncross : r ≤ |center i0 - ideal i0|)
+    (hmargin : ∀ i, i ≠ i0 → |center i - ideal i| ≤
+      |center i0 - ideal i0| - r) :
+    ModelARawResponseAt E SourceNorm.l1 center r voter
+      (linfL1SingleActiveRawResponse center ideal r i0) := by
+  constructor
+  · rw [mem_rawLocalNeighborhood_iff E]
+    rw [hNorm SourceNorm.l1]
+    exact linfL1SingleActiveRawResponse_l1_distance_le hr
+  · intro candidate hcandidate
+    rw [mem_rawLocalNeighborhood_iff E] at hcandidate
+    rw [finiteCoordinate_lpNormedUtilities_formula E hNorm SourceNorm.linfty] at hUtil
+    rw [hUtil voter candidate,
+      hUtil voter (linfL1SingleActiveRawResponse center ideal r i0), hideal]
+    apply neg_le_neg
+    apply linfL1SingleActiveRawResponse_minimizes_linf_on_l1Ball
+      hr hmax hnoncross hmargin
+    simpa [hNorm SourceNorm.l1 candidate center] using hcandidate
+
+/-- The canonical response is an exact raw Model A response off the corrected event. -/
+theorem linfL1CanonicalRawResponse_is_modelARawResponseAt
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.linfty)
+    {center ideal : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 ≤ r)
+    (hgood : LinfL1CorrectedGood center ideal r) :
+    ModelARawResponseAt E SourceNorm.l1 center r voter
+      (linfL1CanonicalRawResponse center ideal r) := by
+  exact linfL1SingleActiveRawResponse_is_modelARawResponseAt hNorm hUtil
+    hideal hr (linfL1ActiveCoordinate_is_max center ideal) hgood.1 hgood.2
+
+/--
+The Borel water-filled response is an exact source Model A response for
+`L∞` utility and an `L1` raw query ball, including the corrected exceptional
+crossing and near-tie cases.
+-/
+theorem linfL1WaterfillRawResponse_is_modelARawResponseAt
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.linfty)
+    {center ideal : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 ≤ r) :
+    ModelARawResponseAt E SourceNorm.l1 center r voter
+      (linfL1WaterfillRawResponse center ideal r) := by
+  constructor
+  · rw [mem_rawLocalNeighborhood_iff E]
+    simpa [hNorm SourceNorm.l1 (linfL1WaterfillRawResponse center ideal r) center] using
+      linfL1WaterfillRawResponse_l1_distance_le center ideal hr
+  · intro candidate hcandidate
+    rw [mem_rawLocalNeighborhood_iff E] at hcandidate
+    rw [finiteCoordinate_lpNormedUtilities_formula E hNorm SourceNorm.linfty] at hUtil
+    rw [hUtil voter candidate, hUtil voter (linfL1WaterfillRawResponse center ideal r), hideal]
+    apply neg_le_neg
+    apply linfL1WaterfillRawResponse_minimizes_linf_on_l1Ball hr
+    simpa [hNorm SourceNorm.l1 candidate center] using hcandidate
+
+/--
+Off the corrected exceptional event, every exact raw Model A response equals
+the canonical single-active-coordinate response.  Thus no unspecified Model A
+tie-breaking remains in the stochastic-subgradient reduction on that event.
+-/
+theorem modelARawResponseAt_linfL1_eq_canonicalResponse_of_good
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.linfty)
+    {center ideal response : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 < r)
+    (hgood : LinfL1CorrectedGood center ideal r)
+    (hresponse : ModelARawResponseAt E SourceNorm.l1 center r voter response) :
+    response = linfL1CanonicalRawResponse center ideal r := by
+  have hcanonical := linfL1CanonicalRawResponse_is_modelARawResponseAt
+    hNorm hUtil hideal hr.le hgood
+  have hutility : E.utility voter (linfL1CanonicalRawResponse center ideal r) ≤
+      E.utility voter response :=
+    hresponse.2 _ hcanonical.1
+  rw [finiteCoordinate_lpNormedUtilities_formula E hNorm SourceNorm.linfty] at hUtil
+  have hcost : AppliedModelingLib.FiniteDimensionalNorms.linf
+      (fun i => response i - ideal i) ≤
+      AppliedModelingLib.FiniteDimensionalNorms.linf
+        (fun i => linfL1CanonicalRawResponse center ideal r i - ideal i) := by
+    rw [hUtil voter (linfL1CanonicalRawResponse center ideal r),
+      hUtil voter response, hideal] at hutility
+    simpa [finiteCoordinateDistance, finiteCoordinateNorm] using (neg_le_neg hutility)
+  have hresponse_ball :
+      finiteCoordinateDistance SourceNorm.l1 response center ≤ r := by
+    have hresponse_ball_E : E.normDistance SourceNorm.l1 response center ≤ r :=
+      (mem_rawLocalNeighborhood_iff E SourceNorm.l1 center response r).mp hresponse.1
+    simpa [hNorm SourceNorm.l1 response center] using hresponse_ball_E
+  exact linfL1SingleActiveRawResponse_eq_of_linf_cost_le_on_l1Ball hr
+    (linfL1ActiveCoordinate_is_max center ideal) hgood.1 hgood.2
+    hresponse_ball (by simpa [linfL1CanonicalRawResponse] using hcost)
+
+/-- On the corrected good event, the normalized arbitrary-response direction is the active subgradient. -/
+theorem linfL1RawDirection_eq_canonicalDirection_of_good
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.linfty)
+    {center ideal raw : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 < r)
+    (hgood : LinfL1CorrectedGood center ideal r)
+    (hresponse : ModelARawResponseAt E SourceNorm.l1 center r voter raw) :
+    linfL1RawDirection center raw r =
+      linfL1SingleActiveDirection center ideal
+        (linfL1ActiveCoordinate center ideal) := by
+  have hraw := modelARawResponseAt_linfL1_eq_canonicalResponse_of_good
+    hNorm hUtil hideal hr hgood hresponse
+  ext i
+  rw [linfL1RawDirection, hraw, linfL1CanonicalRawResponse,
+    linfL1SingleActiveRawResponse]
+  field_simp [hr.ne']
+  ring
+
+/--
+Away from the corrected crossing-or-near-tie event, the Borel symmetric
+active subgradient is the unique active-coordinate subgradient.
+-/
+theorem linfL1SymmetricActiveDirection_eq_singleActiveDirection_of_good
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ} {r : ℝ}
+    (hr : 0 < r)
+    (hgood : LinfL1CorrectedGood center ideal r) :
+    linfL1SymmetricActiveDirection center ideal =
+      linfL1SingleActiveDirection center ideal
+        (linfL1ActiveCoordinate center ideal) := by
+  classical
+  let i0 := linfL1ActiveCoordinate center ideal
+  have hmax_eq : AppliedModelingLib.FiniteDimensionalNorms.linf
+      (fun i => center i - ideal i) = |center i0 - ideal i0| := by
+    exact finiteCoordinate_linf_eq_active_abs
+      (linfL1ActiveCoordinate_is_max center ideal)
+  have hnonzero : AppliedModelingLib.FiniteDimensionalNorms.linf
+      (fun i => center i - ideal i) ≠ 0 := by
+    rw [hmax_eq]
+    exact ne_of_gt (lt_of_lt_of_le hr hgood.1)
+  have hactive : linfL1ActiveCoordinates center ideal = {i0} := by
+    apply Finset.ext
+    intro i
+    constructor
+    · intro hi
+      by_cases hieq : i = i0
+      · simpa [hieq]
+      · have hmem : |center i - ideal i| =
+          AppliedModelingLib.FiniteDimensionalNorms.linf
+            (fun j => center j - ideal j) :=
+          (Finset.mem_filter.mp hi).2
+        have heq : |center i - ideal i| = |center i0 - ideal i0| := by
+          rw [hmem, hmax_eq]
+        have hstrict : |center i - ideal i| < |center i0 - ideal i0| := by
+          exact lt_of_le_of_lt (hgood.2 i (by simpa [i0] using hieq))
+            (sub_lt_self _ hr)
+        exact False.elim ((ne_of_lt hstrict) heq)
+    · intro hi
+      have hieq : i = i0 := by simpa using hi
+      subst i
+      exact linfL1ActiveCoordinate_mem_activeCoordinates center ideal
+  rw [linfL1SymmetricActiveDirection]
+  simp only [if_neg hnonzero]
+  rw [hactive]
+  funext i
+  by_cases hi : i = i0 <;> simp [i0, linfL1SingleActiveDirection, hi]
+
+/-- On the corrected good event, the raw direction equals the symmetric Borel subgradient. -/
+theorem linfL1RawDirection_eq_symmetricDirection_of_good
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.linfty)
+    {center ideal raw : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 < r)
+    (hgood : LinfL1CorrectedGood center ideal r)
+    (hresponse : ModelARawResponseAt E SourceNorm.l1 center r voter raw) :
+    linfL1RawDirection center raw r =
+      linfL1SymmetricActiveDirection center ideal := by
+  rw [linfL1RawDirection_eq_canonicalDirection_of_good
+    hNorm hUtil hideal hr hgood hresponse]
+  symm
+  exact linfL1SymmetricActiveDirection_eq_singleActiveDirection_of_good hr hgood
+
+/-- The symmetric-direction perturbation is zero on the corrected good event. -/
+theorem linfL1RawDirectionSymmetricPerturbation_eq_zero_of_good
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.linfty)
+    {center ideal raw : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 < r)
+    (hgood : LinfL1CorrectedGood center ideal r)
+    (hresponse : ModelARawResponseAt E SourceNorm.l1 center r voter raw) :
+    linfL1RawDirectionSymmetricPerturbation center ideal raw r = 0 := by
+  unfold linfL1RawDirectionSymmetricPerturbation
+  rw [linfL1RawDirection_eq_symmetricDirection_of_good
+    hNorm hUtil hideal hr hgood hresponse]
+  ext i
+  simp
+
+/--
+For the concrete water-filled response, corrected goodness forces the unique
+single-active optimizer; this statement is purely finite-dimensional and does
+not depend on an ambient voting environment.
+-/
+theorem linfL1WaterfillRawResponse_eq_canonicalResponse_of_good
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ} {r : ℝ}
+    (hr : 0 < r)
+    (hgood : LinfL1CorrectedGood center ideal r) :
+    linfL1WaterfillRawResponse center ideal r =
+      linfL1CanonicalRawResponse center ideal r := by
+  apply linfL1SingleActiveRawResponse_eq_of_linf_cost_le_on_l1Ball hr
+    (linfL1ActiveCoordinate_is_max center ideal) hgood.1 hgood.2
+  · exact linfL1WaterfillRawResponse_l1_distance_le center ideal hr.le
+  · apply linfL1WaterfillRawResponse_minimizes_linf_on_l1Ball hr.le
+    exact linfL1SingleActiveRawResponse_l1_distance_le hr.le
+
+/-- The normalized water-filled direction is symmetric-active off the corrected event. -/
+theorem linfL1WaterfillRawDirection_eq_symmetricDirection_of_good
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ} {r : ℝ}
+    (hr : 0 < r)
+    (hgood : LinfL1CorrectedGood center ideal r) :
+    linfL1RawDirection center (linfL1WaterfillRawResponse center ideal r) r =
+      linfL1SymmetricActiveDirection center ideal := by
+  rw [linfL1WaterfillRawResponse_eq_canonicalResponse_of_good hr hgood,
+    linfL1SymmetricActiveDirection_eq_singleActiveDirection_of_good hr hgood]
+  ext i
+  rw [linfL1RawDirection, linfL1CanonicalRawResponse,
+    linfL1SingleActiveRawResponse]
+  field_simp [hr.ne']
+  ring
+
+/-- The concrete water-filled symmetric perturbation vanishes on the corrected good event. -/
+theorem linfL1WaterfillRawDirectionSymmetricPerturbation_eq_zero_of_good
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {center ideal : Coord → ℝ} {r : ℝ}
+    (hr : 0 < r)
+    (hgood : LinfL1CorrectedGood center ideal r) :
+    linfL1RawDirectionSymmetricPerturbation
+      center ideal (linfL1WaterfillRawResponse center ideal r) r = 0 := by
+  unfold linfL1RawDirectionSymmetricPerturbation
+  rw [linfL1WaterfillRawDirection_eq_symmetricDirection_of_good hr hgood]
+  ext i
+  simp
+
+/-- The normalized raw direction is the symmetric sampled subgradient plus its perturbation. -/
+theorem linfL1RawDirection_eq_symmetricDirection_add_perturbation
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    (center ideal raw : Coord → ℝ) (r : ℝ) :
+    linfL1RawDirection center raw r = fun i =>
+      linfL1SymmetricActiveDirection center ideal i +
+        linfL1RawDirectionSymmetricPerturbation center ideal raw r i := by
+  ext i
+  simp only [linfL1RawDirectionSymmetricPerturbation]
+  ring
+
+/--
+Corrected Appendix Lemma 2, Part A for an arbitrary exact Model A response:
+outside the crossing-or-near-tie event, its normalized raw displacement is a
+valid `L∞` sample-cost subgradient.  No tie-breaking rule is needed because
+the local minimizer is unique on this event.
+-/
+theorem finiteSubgradientAt_linfL1RawDirection_of_notMem_correctedBadEvent
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.linfty)
+    {center ideal raw : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 < r)
+    (hgood : ideal ∉ linfL1CorrectedBadEvent center r)
+    (hresponse : ModelARawResponseAt E SourceNorm.l1 center r voter raw) :
+    FiniteSubgradientAt
+      (fun y : Coord → ℝ =>
+        AppliedModelingLib.FiniteDimensionalNorms.linf (fun i => y i - ideal i))
+      center (linfL1RawDirection center raw r) := by
+  have hgood' : LinfL1CorrectedGood center ideal r := by
+    simpa [linfL1CorrectedBadEvent] using hgood
+  rw [linfL1RawDirection_eq_canonicalDirection_of_good
+    hNorm hUtil hideal hr hgood' hresponse]
+  exact finiteSubgradientAt_linfL1SingleActiveDirection_of_max
+    (linfL1ActiveCoordinate_is_max center ideal)
+
+/-- The corrected perturbation is zero on the corrected good event. -/
+theorem linfL1RawDirectionSubgradientPerturbation_eq_zero_of_good
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.linfty)
+    {center ideal raw : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 < r)
+    (hgood : LinfL1CorrectedGood center ideal r)
+    (hresponse : ModelARawResponseAt E SourceNorm.l1 center r voter raw) :
+    linfL1RawDirectionSubgradientPerturbation center ideal raw r = 0 := by
+  unfold linfL1RawDirectionSubgradientPerturbation
+  rw [linfL1RawDirection_eq_canonicalDirection_of_good
+    hNorm hUtil hideal hr hgood hresponse]
+  ext i
+  simp
+
+/-- The arbitrary raw direction is the canonical sample subgradient plus its rare perturbation. -/
+theorem linfL1RawDirection_eq_canonicalDirection_add_perturbation
+    {Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    (center ideal raw : Coord → ℝ) (r : ℝ) :
+    linfL1RawDirection center raw r = fun i =>
+      linfL1SingleActiveDirection center ideal (linfL1ActiveCoordinate center ideal) i +
+        linfL1RawDirectionSubgradientPerturbation center ideal raw r i := by
+  ext i
+  simp only [linfL1RawDirectionSubgradientPerturbation]
+  ring
+
+/-- Every exact raw Model A response supplies the uniform corrected perturbation bound. -/
+theorem linfL1RawResponse_perturbation_l2Sq_le_four_card
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    {center ideal raw : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hr : 0 < r)
+    (hresponse : ModelARawResponseAt E SourceNorm.l1 center r voter raw) :
+    AppliedModelingLib.FiniteDimensionalNorms.l2Sq
+      (linfL1RawDirectionSubgradientPerturbation center ideal raw r) ≤
+      4 * Fintype.card Coord := by
+  apply linfL1RawDirectionSubgradientPerturbation_l2Sq_le_four_card hr
+  have hraw_ball_E : E.normDistance SourceNorm.l1 raw center ≤ r :=
+    (mem_rawLocalNeighborhood_iff E SourceNorm.l1 center raw r).mp hresponse.1
+  simpa [hNorm SourceNorm.l1 raw center] using hraw_ball_E
+
+/--
+The actual Model A response and subsequent projection have the canonical
+`L∞/L1` projected-subgradient form whenever the corrected good event holds.
+-/
+theorem finiteProjectedSSGMUpdateAt_of_modelARawResponseAt_linfL1_good
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.linfty)
+    {center ideal raw next : Coord → ℝ} {r : ℝ} {voter : Voter}
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 < r)
+    (hgood : LinfL1CorrectedGood center ideal r)
+    (hresponse : ModelARawResponseAt E SourceNorm.l1 center r voter raw)
+    (hproject : Algorithm1ProjectedUpdate project raw next) :
+    FiniteProjectedSSGMUpdateAt project center r
+      (linfL1SingleActiveDirection center ideal
+        (linfL1ActiveCoordinate center ideal))
+      (fun _ => 0) (fun _ => 0) next := by
+  apply finiteProjectedSSGMUpdateAt_of_linfL1CanonicalRawResponse project r
+  · exact modelARawResponseAt_linfL1_eq_canonicalResponse_of_good
+      hNorm hUtil hideal hr hgood hresponse
+  · exact hproject
+
+/--
+On the source slab-good event, every exact raw Model A `L1/L∞` response is
+the coordinate-sign response.  This removes any tie-breaking ambiguity from
+the appendix's Model A-to-subgradient step.
+-/
+theorem modelARawResponseAt_l1Linf_eq_signResponse_of_good
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.l1)
+    {center ideal response : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 ≤ r)
+    (hgood : ∀ i, r ≤ |center i - ideal i|)
+    (hresponse : ModelARawResponseAt E SourceNorm.linfty center r voter response) :
+    response = l1LinfRawResponse center ideal r := by
+  have hraw_ball : l1LinfRawResponse center ideal r ∈
+      RawLocalNeighborhood E SourceNorm.linfty center r := by
+    rw [mem_rawLocalNeighborhood_iff E]
+    simpa [hNorm SourceNorm.linfty (l1LinfRawResponse center ideal r) center] using
+      l1LinfRawResponse_linf_distance_le (center := center) (ideal := ideal) hr
+  have hutility : E.utility voter (l1LinfRawResponse center ideal r) ≤
+      E.utility voter response :=
+    hresponse.2 _ hraw_ball
+  rw [finiteCoordinate_lpNormedUtilities_formula E hNorm SourceNorm.l1] at hUtil
+  have hcost : AppliedModelingLib.FiniteDimensionalNorms.l1
+      (fun i => response i - ideal i) ≤
+      AppliedModelingLib.FiniteDimensionalNorms.l1
+        (fun i => l1LinfRawResponse center ideal r i - ideal i) := by
+    rw [hUtil voter (l1LinfRawResponse center ideal r), hUtil voter response, hideal] at hutility
+    simpa [finiteCoordinateDistance, finiteCoordinateNorm] using (neg_le_neg hutility)
+  have hresponse_ball :
+      finiteCoordinateDistance SourceNorm.linfty response center ≤ r := by
+    have hresponse_ball_E : E.normDistance SourceNorm.linfty response center ≤ r :=
+      (mem_rawLocalNeighborhood_iff E SourceNorm.linfty center response r).mp hresponse.1
+    simpa [hNorm SourceNorm.linfty response center] using hresponse_ball_E
+  exact l1LinfRawResponse_eq_of_l1_cost_le_on_linfBall hr hgood hresponse_ball hcost
+
+/--
+The source raw Model A response, its separate Algorithm 1 projection, and the
+slab-good event yield the exact `L1` projected stochastic-subgradient update.
+-/
+theorem finiteProjectedSSGMUpdateAt_of_modelARawResponseAt_l1Linf_good
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.l1)
+    {center ideal raw next : Coord → ℝ} {r : ℝ} {voter : Voter}
+    {project : (Coord → ℝ) → Coord → ℝ}
+    (hideal : E.ideal voter = ideal)
+    (hr : 0 ≤ r)
+    (hgood : ∀ i, r ≤ |center i - ideal i|)
+    (hresponse : ModelARawResponseAt E SourceNorm.linfty center r voter raw)
+    (hproject : Algorithm1ProjectedUpdate project raw next) :
+    FiniteProjectedSSGMUpdateAt project center r
+      (lpCostGradientCandidate 1 (fun i => center i - ideal i))
+      (fun _ => 0) (fun _ => 0) next := by
+  apply finiteProjectedSSGMUpdateAt_of_l1LinfRawResponse project r
+  · exact modelARawResponseAt_l1Linf_eq_signResponse_of_good
+      hNorm hUtil hideal hr hgood hresponse
+  · exact hproject
+
+/--
+Conditional finite-coordinate Model A realization of the source `L1/L∞`
+sign-step argument.  The feasibility premise is explicit: C1 convexity alone
+does not imply that this coordinatewise step remains in an arbitrary convex
+solution space.
+-/
+theorem l1LinfRawResponse_is_modelAResponseAt
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (hNorm : UsesFiniteCoordinateNormDistance E)
+    (hUtil : IsLpNormedUtilities E SourceNorm.l1)
+    {center ideal : Coord → ℝ} {r : ℝ} {voter : Voter}
+    (hideal : E.ideal voter = ideal)
+    (hraw_mem : l1LinfRawResponse center ideal r ∈ E.solutionSpace)
+    (hr : 0 ≤ r)
+    (hgood : ∀ i, r ≤ |center i - ideal i|) :
+    ModelAResponseAt E SourceNorm.linfty center r voter
+      (l1LinfRawResponse center ideal r) := by
+  constructor
+  · rw [finiteCoordinate_localNeighborhood_formula E hNorm]
+    exact ⟨hraw_mem, l1LinfRawResponse_linf_distance_le hr⟩
+  · intro candidate hcandidate
+    rw [finiteCoordinate_localNeighborhood_formula E hNorm] at hcandidate
+    rw [finiteCoordinate_lpNormedUtilities_formula E hNorm SourceNorm.l1] at hUtil
+    rw [hUtil voter candidate, hUtil voter (l1LinfRawResponse center ideal r), hideal]
+    apply neg_le_neg
+    exact l1LinfRawResponse_minimizes_l1_on_linfBall hr hgood hcandidate.2
+
 /-- Definition 1 specialized to the finite-coordinate `L1` formula. -/
 theorem finiteCoordinate_l1NormedUtilities_formula
     {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
@@ -3567,7 +6899,7 @@ theorem finiteCoordinate_l1NormedUtilities_formula
     (hNorm : UsesFiniteCoordinateNormDistance E) :
     IsLpNormedUtilities E SourceNorm.l1 ↔
       ∀ v x, E.utility v x =
-        -EconCSLib.FiniteDimensionalNorms.l1
+        -AppliedModelingLib.FiniteDimensionalNorms.l1
           (fun m => x m - E.ideal v m) := by
   simpa [finiteCoordinateDistance, finiteCoordinateNorm] using
     finiteCoordinate_lpNormedUtilities_formula E hNorm SourceNorm.l1
@@ -3579,7 +6911,7 @@ theorem finiteCoordinate_l2NormedUtilities_formula
     (hNorm : UsesFiniteCoordinateNormDistance E) :
     IsLpNormedUtilities E SourceNorm.l2 ↔
       ∀ v x, E.utility v x =
-        -EconCSLib.FiniteDimensionalNorms.l2
+        -AppliedModelingLib.FiniteDimensionalNorms.l2
           (fun m => x m - E.ideal v m) := by
   simpa [finiteCoordinateDistance, finiteCoordinateNorm] using
     finiteCoordinate_lpNormedUtilities_formula E hNorm SourceNorm.l2
@@ -3591,7 +6923,7 @@ theorem finiteCoordinate_linfNormedUtilities_formula
     (hNorm : UsesFiniteCoordinateNormDistance E) :
     IsLpNormedUtilities E SourceNorm.linfty ↔
       ∀ v x, E.utility v x =
-        -EconCSLib.FiniteDimensionalNorms.linf
+        -AppliedModelingLib.FiniteDimensionalNorms.linf
           (fun m => x m - E.ideal v m) := by
   simpa [finiteCoordinateDistance, finiteCoordinateNorm] using
     finiteCoordinate_lpNormedUtilities_formula E hNorm SourceNorm.linfty
@@ -3603,7 +6935,7 @@ theorem finiteCoordinate_lpRealNormedUtilities_formula
     (hNorm : UsesFiniteCoordinateNormDistance E) (p : ℝ) :
     IsLpNormedUtilities E (SourceNorm.lp p) ↔
       ∀ v x, E.utility v x =
-        -EconCSLib.FiniteDimensionalNorms.lp p
+        -AppliedModelingLib.FiniteDimensionalNorms.lp p
           (fun m => x m - E.ideal v m) := by
   simpa [finiteCoordinateDistance, finiteCoordinateNorm] using
     finiteCoordinate_lpNormedUtilities_formula E hNorm (SourceNorm.lp p)
@@ -3620,7 +6952,118 @@ structure WeightedEuclideanStructure
   weight : Voter → Component → ℝ
   weightNorm2 : Voter → ℝ
   componentDistance : Component → Point → Voter → ℝ
-  weightsAndIdealsDistributionCondition : Prop
+
+/--
+Finite-coordinate joint voter data for Definition 2.  One sample contains the
+entire nonnegative weight vector and ideal point; their dependence within a
+voter is retained, while the canonical process later draws these joint samples
+independently over time.
+-/
+structure WeightedEuclideanJointSampleData
+    (Coord Component : Type*) [Fintype Coord] [Fintype Component] where
+  jointMeasure : Measure ((Component → ℝ) × (Coord → ℝ))
+  probability : IsProbabilityMeasure jointMeasure
+  densityBound : ℝ≥0∞
+  densityBound_ne_top : densityBound ≠ ⊤
+  hasBoundedDensity :
+    AppliedModelingLib.Probability.HasBoundedDensity
+      ((volume : Measure (Component → ℝ)).prod (volume : Measure (Coord → ℝ)))
+      jointMeasure densityBound
+  /-- The paper states that the joint voter density is measurable, not merely
+  that the resulting measure has a bounded-density representation. -/
+  joint_density_measurable :
+    ∃ density : ((Component → ℝ) × (Coord → ℝ)) → ℝ≥0∞,
+      Measurable density ∧
+        jointMeasure =
+          ((volume : Measure (Component → ℝ)).prod (volume : Measure (Coord → ℝ))).withDensity
+            density ∧
+          ∀ᵐ sample ∂((volume : Measure (Component → ℝ)).prod
+            (volume : Measure (Coord → ℝ))), density sample ≤ densityBound
+  idealDistribution : FiniteCoordinateIdealDistributionData Coord
+  ideal_marginal : Measure.map Prod.snd jointMeasure = idealDistribution.idealMeasure
+  weightSet : Set (Component → ℝ)
+  weightSet_nonempty : weightSet.Nonempty
+  weightSet_bounded : Bornology.IsBounded weightSet
+  weightSet_closed : IsClosed weightSet
+  weightSet_convex : Convex ℝ weightSet
+  weightSet_nonnegative : ∀ weight, weight ∈ weightSet → ∀ k, 0 ≤ weight k
+  weight_ae_mem_set : ∀ᵐ sample ∂jointMeasure, sample.1 ∈ weightSet
+  weight_nonzero_ae : ∀ᵐ sample ∂jointMeasure, sample.1 ≠ 0
+  component_nonempty : Nonempty Component
+  coordinate_nonempty : Nonempty Coord
+  componentBlock : Component → Finset Coord
+  componentBlocks_nonempty : ∀ k, (componentBlock k).Nonempty
+  componentBlocks_disjoint : ∀ k l, k ≠ l →
+    Disjoint (componentBlock k) (componentBlock l)
+  componentBlocks_cover : ∀ i, ∃ k, i ∈ componentBlock k
+
+namespace WeightedEuclideanJointSampleData
+
+/-- The weight vector carried by one joint Definition 2 sample. -/
+def sampleWeight
+    {Coord Component : Type*} [Fintype Coord] [Fintype Component]
+    (D : WeightedEuclideanJointSampleData Coord Component) :
+    ((Component → ℝ) × (Coord → ℝ)) → Component → ℝ :=
+  fun sample => sample.1
+
+/-- The Euclidean normalization of the weight vector in one joint sample. -/
+noncomputable def sampleWeightNorm2
+    {Coord Component : Type*} [Fintype Coord] [Fintype Component]
+    (D : WeightedEuclideanJointSampleData Coord Component) :
+    ((Component → ℝ) × (Coord → ℝ)) → ℝ :=
+  fun sample => AppliedModelingLib.FiniteDimensionalNorms.l2 (sampleWeight D sample)
+
+/-- The common full ideal vector, restricted later to the relevant component block. -/
+def sampleIdeal
+    {Coord Component : Type*} [Fintype Coord] [Fintype Component]
+    (D : WeightedEuclideanJointSampleData Coord Component) :
+    ((Component → ℝ) × (Coord → ℝ)) → Component → Coord → ℝ :=
+  fun sample _ => sample.2
+
+theorem sampleWeight_nonnegative_ae
+    {Coord Component : Type*} [Fintype Coord] [Fintype Component]
+    (D : WeightedEuclideanJointSampleData Coord Component) :
+    ∀ᵐ sample ∂D.jointMeasure, ∀ k, 0 ≤ D.sampleWeight sample k := by
+  filter_upwards [D.weight_ae_mem_set] with sample hmem
+  exact D.weightSet_nonnegative sample.1 hmem
+
+theorem sampleWeightNorm2_sq
+    {Coord Component : Type*} [Fintype Coord] [Fintype Component]
+    (D : WeightedEuclideanJointSampleData Coord Component)
+    (sample : (Component → ℝ) × (Coord → ℝ)) :
+    ∑ k, D.sampleWeight sample k ^ 2 = D.sampleWeightNorm2 sample ^ 2 := by
+  calc
+    (∑ k, D.sampleWeight sample k ^ 2) =
+        AppliedModelingLib.FiniteDimensionalNorms.l2Sq (D.sampleWeight sample) :=
+      (AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_eq_sum_sq _).symm
+    _ = D.sampleWeightNorm2 sample ^ 2 := by
+      simpa [sampleWeightNorm2] using
+        (AppliedModelingLib.FiniteDimensionalNorms.normL2_sq_eq_normL2Sq
+          (D.sampleWeight sample)).symm
+
+theorem sampleWeightNorm2_pos_ae
+    {Coord Component : Type*} [Fintype Coord] [Fintype Component]
+    (D : WeightedEuclideanJointSampleData Coord Component) :
+    ∀ᵐ sample ∂D.jointMeasure, 0 < D.sampleWeightNorm2 sample := by
+  filter_upwards [D.weight_nonzero_ae] with sample hnonzero
+  apply AppliedModelingLib.FiniteDimensionalNorms.normL2_pos_of_exists_ne_zero
+  by_contra hnot
+  apply hnonzero
+  funext k
+  by_contra hk
+  exact hnot ⟨k, hk⟩
+
+theorem normalizedWeight_nonnegative_ae
+    {Coord Component : Type*} [Fintype Coord] [Fintype Component]
+    (D : WeightedEuclideanJointSampleData Coord Component) :
+    ∀ᵐ sample ∂D.jointMeasure, ∀ k,
+      0 ≤ D.sampleWeight sample k / D.sampleWeightNorm2 sample := by
+  filter_upwards [D.sampleWeight_nonnegative_ae, D.sampleWeightNorm2_pos_ae]
+    with sample hweight hnorm
+  intro k
+  exact div_nonneg (hweight k) hnorm.le
+
+end WeightedEuclideanJointSampleData
 
 /-- Source Definition 2 formula: `- sum_k w_v^k / ||w_v||_2 * ||x^k-x_v^k||_2`. -/
 noncomputable def weightedEuclideanUtilityFormula
@@ -3645,16 +7088,7 @@ def IsWeightedEuclideanUtilitiesWith
     {Voter Point Component : Type*}
     (E : ILVEnvironment Voter Point)
     (W : WeightedEuclideanStructure Voter Point Component) : Prop :=
-  W.weightsAndIdealsDistributionCondition ∧
-    ∀ v x, E.utility v x = weightedEuclideanUtilityFormula W v x
-
-theorem IsWeightedEuclideanUtilitiesWith.weightsAndIdealsDistributionCondition
-    {Voter Point Component : Type*}
-    {E : ILVEnvironment Voter Point}
-    {W : WeightedEuclideanStructure Voter Point Component}
-    (h : IsWeightedEuclideanUtilitiesWith E W) :
-    W.weightsAndIdealsDistributionCondition :=
-  h.1
+  ∀ v x, E.utility v x = weightedEuclideanUtilityFormula W v x
 
 theorem IsWeightedEuclideanUtilitiesWith.utility_eq_formula
     {Voter Point Component : Type*}
@@ -3663,7 +7097,7 @@ theorem IsWeightedEuclideanUtilitiesWith.utility_eq_formula
     (h : IsWeightedEuclideanUtilitiesWith E W)
     (v : Voter) (x : Point) :
     E.utility v x = weightedEuclideanUtilityFormula W v x :=
-  h.2 v x
+  h v x
 
 theorem IsWeightedEuclideanUtilitiesWith.utility_eq_neg_sum
     {Voter Point Component : Type*}
@@ -3681,11 +7115,10 @@ theorem IsWeightedEuclideanUtilitiesWith.intro_formula
     {Voter Point Component : Type*}
     {E : ILVEnvironment Voter Point}
     {W : WeightedEuclideanStructure Voter Point Component}
-    (hcondition : W.weightsAndIdealsDistributionCondition)
     (hformula :
       ∀ v x, E.utility v x = weightedEuclideanUtilityFormula W v x) :
     IsWeightedEuclideanUtilitiesWith E W :=
-  ⟨hcondition, hformula⟩
+  hformula
 
 /-- Data for source Definition 3, decomposability across coordinates. -/
 structure DecomposableStructure
@@ -3693,7 +7126,9 @@ structure DecomposableStructure
   coords : Finset Coord
   coordinate : Coord → Point → ℝ
   coordinateUtility : Coord → Voter → ℝ → ℝ
-  coordinateUtilitiesConcave : Prop
+  /-- Source Definition 3: each one-coordinate voter utility is concave. -/
+  coordinateUtilitiesConcave :
+    ∀ coordinate voter, ConcaveOn ℝ Set.univ (coordinateUtility coordinate voter)
 
 /-- Source Definition 3 formula: `sum_m f_v^m(x^m)`. -/
 noncomputable def decomposableUtilityFormula
@@ -3715,16 +7150,15 @@ def IsDecomposableUtilitiesWith
     {Voter Point Coord : Type*}
     (E : ILVEnvironment Voter Point)
     (D : DecomposableStructure Voter Point Coord) : Prop :=
-  D.coordinateUtilitiesConcave ∧
-    ∀ v x, E.utility v x = decomposableUtilityFormula D v x
+  ∀ v x, E.utility v x = decomposableUtilityFormula D v x
 
 theorem IsDecomposableUtilitiesWith.coordinateUtilitiesConcave
     {Voter Point Coord : Type*}
     {E : ILVEnvironment Voter Point}
     {D : DecomposableStructure Voter Point Coord}
     (h : IsDecomposableUtilitiesWith E D) :
-    D.coordinateUtilitiesConcave :=
-  h.1
+    ∀ coordinate voter, ConcaveOn ℝ Set.univ (D.coordinateUtility coordinate voter) :=
+  D.coordinateUtilitiesConcave
 
 theorem IsDecomposableUtilitiesWith.utility_eq_formula
     {Voter Point Coord : Type*}
@@ -3733,7 +7167,7 @@ theorem IsDecomposableUtilitiesWith.utility_eq_formula
     (h : IsDecomposableUtilitiesWith E D)
     (v : Voter) (x : Point) :
     E.utility v x = decomposableUtilityFormula D v x :=
-  h.2 v x
+  h v x
 
 theorem IsDecomposableUtilitiesWith.utility_eq_sum
     {Voter Point Coord : Type*}
@@ -3749,10 +7183,9 @@ theorem IsDecomposableUtilitiesWith.intro_formula
     {Voter Point Coord : Type*}
     {E : ILVEnvironment Voter Point}
     {D : DecomposableStructure Voter Point Coord}
-    (hconcave : D.coordinateUtilitiesConcave)
     (hformula : ∀ v x, E.utility v x = decomposableUtilityFormula D v x) :
     IsDecomposableUtilitiesWith E D :=
-  ⟨hconcave, hformula⟩
+  hformula
 
 /--
 Source-side deterministic data for Proposition 1's weighted-Euclidean `L2`
@@ -3833,6 +7266,103 @@ structure WeightedEuclideanL2ComponentTraceSource
                           W.weightNorm2 (selectedVoter t)) *
                         componentGradient t k i) +
                   noise t i + bias t i))
+
+/--
+The finite-coordinate algebra behind Definition 2's normalized weighted
+direction.  Disjoint coordinate blocks and unit component directions turn the
+coefficient square-sum condition into an exact Euclidean unit-norm identity.
+-/
+theorem weightedEuclidean_l2_direction_norm_eq_one_of_coordinate_blocks
+    {Coord Component : Type*} [Fintype Coord] [Nonempty Coord]
+    (components : Finset Component) (coefficient : Component → ℝ)
+    (componentGradient : Component → Coord → ℝ)
+    (hdisjoint :
+      ∀ i k l, k ∈ components → l ∈ components → k ≠ l →
+        componentGradient k i = 0 ∨ componentGradient l i = 0)
+    (hunit : ∀ k, k ∈ components →
+      finiteCoordinateNorm SourceNorm.l2 (componentGradient k) = 1)
+    (hweights : ∑ k ∈ components, coefficient k ^ 2 = 1) :
+    finiteCoordinateNorm SourceNorm.l2
+      (fun i => components.sum (fun k => coefficient k * componentGradient k i)) = 1 := by
+  rw [finiteCoordinateNorm_l2]
+  apply AppliedModelingLib.FiniteDimensionalNorms.l2_finset_weighted_sum_eq_one_of_coordinatewise_disjoint
+    components coefficient componentGradient hdisjoint
+  · intro k hk
+    calc
+      AppliedModelingLib.FiniteDimensionalNorms.l2Sq (componentGradient k) =
+          AppliedModelingLib.FiniteDimensionalNorms.l2 (componentGradient k) ^ 2 :=
+        (AppliedModelingLib.FiniteDimensionalNorms.normL2_sq_eq_normL2Sq _).symm
+      _ = 1 := by
+        rw [← finiteCoordinateNorm_l2, hunit k hk]
+        norm_num
+  · exact hweights
+
+/--
+The preceding block calculation specialized to Definition 2's coefficients.
+The explicit nonzero and squared-norm equations are the normalization facts
+needed to interpret `weightNorm2` as the Euclidean norm of the weight vector.
+-/
+theorem weightedEuclidean_l2_normalized_direction_norm_eq_one_of_coordinate_blocks
+    {Voter Coord Component : Type*} [Fintype Coord] [Nonempty Coord]
+    (W : WeightedEuclideanStructure Voter (Coord → ℝ) Component) (v : Voter)
+    (componentGradient : Component → Coord → ℝ)
+    (hdisjoint :
+      ∀ i k l, k ∈ W.components → l ∈ W.components → k ≠ l →
+        componentGradient k i = 0 ∨ componentGradient l i = 0)
+    (hunit : ∀ k, k ∈ W.components →
+      finiteCoordinateNorm SourceNorm.l2 (componentGradient k) = 1)
+    (hweightNorm_ne_zero : W.weightNorm2 v ≠ 0)
+    (hweightNorm_sq :
+      ∑ k ∈ W.components, W.weight v k ^ 2 = W.weightNorm2 v ^ 2) :
+    finiteCoordinateNorm SourceNorm.l2
+      (fun i => W.components.sum (fun k =>
+        (W.weight v k / W.weightNorm2 v) * componentGradient k i)) = 1 := by
+  apply weightedEuclidean_l2_direction_norm_eq_one_of_coordinate_blocks
+    W.components (fun k => W.weight v k / W.weightNorm2 v)
+    componentGradient hdisjoint hunit
+  have hweightNorm_sq_ne_zero : W.weightNorm2 v ^ 2 ≠ 0 :=
+    pow_ne_zero _ hweightNorm_ne_zero
+  calc
+    (∑ k ∈ W.components, (W.weight v k / W.weightNorm2 v) ^ 2) =
+        ∑ k ∈ W.components, W.weight v k ^ 2 / W.weightNorm2 v ^ 2 := by
+      apply Finset.sum_congr rfl
+      intro k _hk
+      field_simp
+    _ = (∑ k ∈ W.components, W.weight v k ^ 2) / W.weightNorm2 v ^ 2 := by
+      rw [Finset.sum_div]
+    _ = 1 := by
+      rw [hweightNorm_sq, div_self hweightNorm_sq_ne_zero]
+
+/--
+Definition 2's normalized weighted direction has Euclidean quantity one when
+its component distances are Euclidean distances on disjoint coordinate blocks.
+-/
+theorem weightedEuclidean_l2_normalized_block_direction_norm_eq_one
+    {Voter Coord Component : Type*} [Fintype Coord] [Nonempty Coord]
+    (W : WeightedEuclideanStructure Voter (Coord → ℝ) Component) (v : Voter)
+    (block : Component → Finset Coord) (ideal : Component → Coord → ℝ)
+    (x : Coord → ℝ)
+    (hblocks : ∀ k l, k ∈ W.components → l ∈ W.components → k ≠ l →
+      Disjoint (block k) (block l))
+    (hnonzero : ∀ k, k ∈ W.components →
+      ∃ i, i ∈ block k ∧ x i ≠ ideal k i)
+    (hweightNorm_ne_zero : W.weightNorm2 v ≠ 0)
+    (hweightNorm_sq :
+      ∑ k ∈ W.components, W.weight v k ^ 2 = W.weightNorm2 v ^ 2) :
+    finiteCoordinateNorm SourceNorm.l2
+      (fun i => W.components.sum (fun k =>
+        (W.weight v k / W.weightNorm2 v) *
+          l2BlockDistanceNormalizedGradient (block k) x (ideal k) i)) = 1 := by
+  apply weightedEuclidean_l2_normalized_direction_norm_eq_one_of_coordinate_blocks
+    W v (fun k => l2BlockDistanceNormalizedGradient (block k) x (ideal k))
+  · exact l2BlockDistanceNormalizedGradients_coordinatewise_disjoint
+      W.components block x ideal hblocks
+  · intro k hk
+    rw [finiteCoordinateNorm_l2]
+    exact l2BlockDistanceNormalizedGradient_l2_eq_one
+      (block k) x (ideal k) (hnonzero k hk)
+  · exact hweightNorm_ne_zero
+  · exact hweightNorm_sq
 
 /--
 Concrete component-distance trace source for Proposition 1.  This version
@@ -3920,6 +7450,142 @@ noncomputable def weightedEuclideanL2ComponentTraceSource_of_concreteComponentTr
     simpa [S.component_distance_eq_l2 t k hk] using hsub
   projected_update := S.projected_update
 
+/--
+Source-faithful component trace for Definition 2: each component distance is
+the Euclidean distance on its own finite coordinate block, and its direction is
+extended by zero on all other coordinates.
+-/
+structure WeightedEuclideanL2BlockComponentTraceSource
+    {Voter Coord Component : Type*} [Fintype Coord] [Nonempty Coord]
+    (E : ILVEnvironment Voter (Coord → ℝ))
+    (W : WeightedEuclideanStructure Voter (Coord → ℝ) Component)
+    (model : VoterResponseModel) (r0 : ℝ) where
+  project : (Coord → ℝ) → Coord → ℝ
+  selectedVoter : ℕ → Voter
+  componentBlock : Component → Finset Coord
+  componentIdeal : Component → Voter → Coord → ℝ
+  noise : ℕ → Coord → ℝ
+  bias : ℕ → Coord → ℝ
+  r0_pos : 0 < r0
+  project_norm : IsNormProjectionOnto E SourceNorm.l2 project
+  initial_feasible :
+    E.trajectory SourceNorm.l2 model 0 ∈ E.solutionSpace
+  componentBlocks_disjoint :
+    ∀ k l, k ∈ W.components → l ∈ W.components → k ≠ l →
+      Disjoint (componentBlock k) (componentBlock l)
+  weightNorm2_ne_zero :
+    ∀ t : ℕ, W.weightNorm2 (selectedVoter t) ≠ 0
+  weightNorm2_sq :
+    ∀ t : ℕ,
+      ∑ k ∈ W.components, W.weight (selectedVoter t) k ^ 2 =
+        W.weightNorm2 (selectedVoter t) ^ 2
+  coefficient_nonneg :
+    ∀ t : ℕ, ∀ k, k ∈ W.components →
+      0 ≤ W.weight (selectedVoter t) k / W.weightNorm2 (selectedVoter t)
+  component_distance_eq_block_l2 :
+    ∀ t : ℕ, ∀ k, k ∈ W.components → ∀ x : Coord → ℝ,
+      W.componentDistance k x (selectedVoter t) =
+        finiteCoordinateBlockL2Distance (componentBlock k) x
+          (componentIdeal k (selectedVoter t))
+  component_noncollision :
+    ∀ t : ℕ, ∀ k, k ∈ W.components →
+      ∃ i, i ∈ componentBlock k ∧
+        E.trajectory SourceNorm.l2 model t i ≠
+          componentIdeal k (selectedVoter t) i
+  projected_update :
+    ∀ t : ℕ,
+      E.trajectory SourceNorm.l2 model (t + 1) =
+        project
+          (fun i =>
+            E.trajectory SourceNorm.l2 model t i -
+              ilvRadius r0 (t + 1) *
+                (W.components.sum
+                    (fun k =>
+                      (W.weight (selectedVoter t) k /
+                          W.weightNorm2 (selectedVoter t)) *
+                        l2BlockDistanceNormalizedGradient (componentBlock k)
+                          (E.trajectory SourceNorm.l2 model t)
+                          (componentIdeal k (selectedVoter t)) i) +
+                  noise t i + bias t i))
+
+noncomputable def weightedEuclideanL2ComponentTraceSource_of_blockComponentTraceSource
+    {Voter Coord Component : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {W : WeightedEuclideanStructure Voter (Coord → ℝ) Component}
+    {model : VoterResponseModel} {r0 : ℝ}
+    (S : WeightedEuclideanL2BlockComponentTraceSource E W model r0) :
+    WeightedEuclideanL2ComponentTraceSource E W model r0 where
+  project := S.project
+  selectedVoter := S.selectedVoter
+  componentGradient := fun t k =>
+    l2BlockDistanceNormalizedGradient (S.componentBlock k)
+      (E.trajectory SourceNorm.l2 model t)
+      (S.componentIdeal k (S.selectedVoter t))
+  noise := S.noise
+  bias := S.bias
+  r0_pos := S.r0_pos
+  project_norm := S.project_norm
+  initial_feasible := S.initial_feasible
+  coefficient_nonneg := S.coefficient_nonneg
+  component_subgradient := by
+    intro t k hk
+    have hsub :
+        FiniteSubgradientAt
+          (fun x : Coord → ℝ =>
+            finiteCoordinateBlockL2Distance (S.componentBlock k) x
+              (S.componentIdeal k (S.selectedVoter t)))
+          (E.trajectory SourceNorm.l2 model t)
+          (l2BlockDistanceNormalizedGradient (S.componentBlock k)
+            (E.trajectory SourceNorm.l2 model t)
+            (S.componentIdeal k (S.selectedVoter t))) :=
+      finiteSubgradientAt_blockL2DistanceNormalizedGradient
+        (S.componentBlock k) (E.trajectory SourceNorm.l2 model t)
+        (S.componentIdeal k (S.selectedVoter t))
+        (S.component_noncollision t k hk)
+    simpa only [S.component_distance_eq_block_l2 t k hk] using hsub
+  projected_update := S.projected_update
+
+/-- Every component direction in the source-faithful block trace has `L2` quantity one. -/
+theorem WeightedEuclideanL2BlockComponentTraceSource.componentGradient_l2_eq_one
+    {Voter Coord Component : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {W : WeightedEuclideanStructure Voter (Coord → ℝ) Component}
+    {model : VoterResponseModel} {r0 : ℝ}
+    (S : WeightedEuclideanL2BlockComponentTraceSource E W model r0)
+    (t : ℕ) (k : Component) (hk : k ∈ W.components) :
+    finiteCoordinateNorm SourceNorm.l2
+      (l2BlockDistanceNormalizedGradient (S.componentBlock k)
+        (E.trajectory SourceNorm.l2 model t)
+        (S.componentIdeal k (S.selectedVoter t))) = 1 := by
+  rw [finiteCoordinateNorm_l2]
+  exact l2BlockDistanceNormalizedGradient_l2_eq_one
+    (S.componentBlock k) (E.trajectory SourceNorm.l2 model t)
+    (S.componentIdeal k (S.selectedVoter t))
+    (S.component_noncollision t k hk)
+
+/-- The source-faithful block trace has a unit normalized weighted direction at every step. -/
+theorem WeightedEuclideanL2BlockComponentTraceSource.weightedDirection_l2_eq_one
+    {Voter Coord Component : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {W : WeightedEuclideanStructure Voter (Coord → ℝ) Component}
+    {model : VoterResponseModel} {r0 : ℝ}
+    (S : WeightedEuclideanL2BlockComponentTraceSource E W model r0) (t : ℕ) :
+    finiteCoordinateNorm SourceNorm.l2
+      (fun i => W.components.sum (fun k =>
+        (W.weight (S.selectedVoter t) k /
+            W.weightNorm2 (S.selectedVoter t)) *
+          l2BlockDistanceNormalizedGradient (S.componentBlock k)
+            (E.trajectory SourceNorm.l2 model t)
+            (S.componentIdeal k (S.selectedVoter t)) i)) = 1 := by
+  apply weightedEuclidean_l2_normalized_block_direction_norm_eq_one
+    W (S.selectedVoter t) S.componentBlock
+    (fun k => S.componentIdeal k (S.selectedVoter t))
+    (E.trajectory SourceNorm.l2 model t)
+  · exact S.componentBlocks_disjoint
+  · exact S.component_noncollision t
+  · exact S.weightNorm2_ne_zero t
+  · exact S.weightNorm2_sq t
+
 noncomputable def weightedEuclideanL2SSGMTraceSource_of_componentTraceSource
     {Voter Coord Component : Type*} [Fintype Coord] [Nonempty Coord]
     {E : ILVEnvironment Voter (Coord → ℝ)}
@@ -3959,6 +7625,21 @@ noncomputable def weightedEuclideanL2SSGMTraceSource_of_componentTraceSource
         W.components
         (fun k hk => S.coefficient_nonneg t k hk)
         (fun k hk => S.component_subgradient t k hk)
+
+/--
+The source-faithful block trace instantiates the deterministic sampled
+subgradient recurrence for the weighted-Euclidean branch of Proposition 1.
+-/
+noncomputable def weightedEuclideanL2SSGMTraceSource_of_blockComponentTraceSource
+    {Voter Coord Component : Type*} [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    {W : WeightedEuclideanStructure Voter (Coord → ℝ) Component}
+    {model : VoterResponseModel} {r0 : ℝ}
+    (hW : IsWeightedEuclideanUtilitiesWith E W)
+    (S : WeightedEuclideanL2BlockComponentTraceSource E W model r0) :
+    WeightedEuclideanL2SSGMTraceSource E W model r0 :=
+  weightedEuclideanL2SSGMTraceSource_of_componentTraceSource hW
+    (weightedEuclideanL2ComponentTraceSource_of_blockComponentTraceSource S)
 
 /--
 Proof-facing deterministic data for Proposition 1's weighted-Euclidean `L2`
@@ -4502,6 +8183,27 @@ def ILVConvergesToSocietalOptimal {Voter Point : Type*}
     (q : SourceNorm) (model : VoterResponseModel) : Prop :=
   E.convergesWithProbabilityOne (E.trajectory q model) E.socialOptimal
 
+/--
+Outcome-indexed formulation of Algorithm 1/2 convergence to a social optimum.
+Unlike the legacy abstract environment predicate, this statement explicitly
+exhibits the probability space and the random trajectory whose almost-sure
+limit is socially optimal.
+-/
+def OutcomeIndexedILVConvergesToSocietalOptimal
+    {Voter Omega Point : Type*} [MeasurableSpace Omega] [TopologicalSpace Point]
+    (E : ILVEnvironment Voter Point) (mu : Measure Omega)
+    (trajectory : ℕ → Omega → Point) : Prop :=
+  AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+    mu trajectory E.socialOptimal
+
+/-- Outcome-indexed formulation of convergence to the Proposition 2 median set. -/
+def OutcomeIndexedILVConvergesToMedianSet
+    {Voter Omega Point : Type*} [MeasurableSpace Omega] [TopologicalSpace Point]
+    (E : ILVEnvironment Voter Point) (mu : Measure Omega)
+    (trajectory : ℕ → Omega → Point) : Prop :=
+  AppliedModelingLib.Optimization.OutcomeIndexedConvergesToSet
+    mu trajectory E.medianSet
+
 /-- Paper shorthand: ILV converges w.p. 1 to the median set. -/
 def ILVConvergesToMedianSet {Voter Point : Type*}
     (E : ILVEnvironment Voter Point)
@@ -4520,8 +8222,23 @@ def IsDirectionalEquilibrium {Voter Point : Type*}
   E.directionalField xstar = E.zeroDirection
 
 /--
-Theorem 3 source formula for the normalized-gradient directional field:
-`G(x) = E_v[grad f_v(x) / ||grad f_v(x)||_2]`.
+Theorem 3's source-defined normalized gradient.  The paper prints the quotient
+`grad f_v(x) / ||grad f_v(x)||_2`; when that gradient is zero, the approved
+source-definedness convention uses the zero direction instead.
+-/
+noncomputable def theorem3NormalizedGradientDirection
+    {Voter Point : Type*} (E : ILVEnvironment Voter Point)
+    (voter : Voter) (x : Point) : Point := by
+  classical
+  exact if E.utilityGradient voter x = E.zeroDirection then E.zeroDirection else
+    E.scalarDirection
+      ((E.normDistance SourceNorm.l2
+        (E.utilityGradient voter x) E.zeroDirection)⁻¹)
+      (E.utilityGradient voter x)
+
+/--
+Theorem 3 source formula for the normalized-gradient directional field,
+including the explicit zero-gradient branch.
 
 The generic `Point` type is the paper's continuous decision space.  The
 environment supplies the source gradient, scalar multiplication, and voter
@@ -4533,11 +8250,7 @@ def Theorem3DirectionalFieldFormula {Voter Point : Type*}
   ∀ x : Point,
     E.directionalField x =
       E.voterExpectation
-        (fun voter =>
-          E.scalarDirection
-            ((E.normDistance SourceNorm.l2
-              (E.utilityGradient voter x) E.zeroDirection)⁻¹)
-            (E.utilityGradient voter x))
+        (fun voter => theorem3NormalizedGradientDirection E voter x)
 
 /--
 Finite-coordinate weighted expectation used by the concrete Theorem 3 analytic
@@ -4554,6 +8267,11 @@ def finiteScalarDirection
     {Coord : Type*} (a : ℝ) (x : Coord → ℝ) : Coord → ℝ :=
   fun i => a * x i
 
+/-- Finite-coordinate dot product used by the Theorem 3 drift projection. -/
+def finiteDot {Coord : Type*} [Fintype Coord]
+    (x y : Coord → ℝ) : ℝ :=
+  ∑ i : Coord, x i * y i
+
 /--
 Concrete finite-coordinate normalized-gradient directional field from Theorem 3:
 `G(x) = E_v[∇u_v(x) / ||∇u_v(x)||₂]`.
@@ -4565,8 +8283,7 @@ noncomputable def finiteTheorem3DirectionalField
     (x : Coord → ℝ) : Coord → ℝ :=
   finiteVoterExpectation weight
     (fun voter =>
-      finiteScalarDirection
-        ((finiteCoordinateNorm SourceNorm.l2 (utilityGradient voter x))⁻¹)
+      modelBFiniteNormalizedDirection SourceNorm.l2
         (utilityGradient voter x))
 
 /--
@@ -4583,9 +8300,7 @@ theorem finiteTheorem3DirectionalField_coord_eq_modelBNormalizedExpectation
         weight voter *
           modelBFiniteNormalizedDirection SourceNorm.l2
             (utilityGradient voter x) i := by
-  simp [finiteTheorem3DirectionalField, finiteVoterExpectation,
-    finiteScalarDirection, modelBFiniteNormalizedDirection, div_eq_mul_inv,
-    mul_comm]
+  simp [finiteTheorem3DirectionalField, finiteVoterExpectation]
 
 /--
 Expected signed raw Model B coordinate increment equals the signed coordinate
@@ -4732,11 +8447,204 @@ theorem theorem3DirectionalFieldFormula_of_finiteDirectionalFieldModel
     {E : ILVEnvironment Voter (Coord → ℝ)}
     (M : FiniteTheorem3DirectionalFieldModel E) :
     Theorem3DirectionalFieldFormula E := by
+  classical
   intro x
+  rw [M.directionalField_eq, M.voterExpectation_eq]
   funext i
-  simp [M.directionalField_eq, finiteTheorem3DirectionalField,
-    M.utilityGradient_eq, M.voterExpectation_eq, finiteVoterExpectation,
-    M.scalarDirection_eq, finiteScalarDirection, M.normDistance_l2_zero_eq]
+  simp only [finiteTheorem3DirectionalField, finiteVoterExpectation]
+  apply Finset.sum_congr rfl
+  intro voter _
+  rw [theorem3NormalizedGradientDirection]
+  simp only [M.utilityGradient_eq, M.scalarDirection_eq, M.zeroDirection_eq]
+  by_cases hzero : M.utilityGradient voter x = 0
+  · have hzero' : M.utilityGradient voter x = (fun _ : Coord => 0) := by
+      simpa using hzero
+    rw [if_pos hzero']
+    simp [modelBFiniteNormalizedDirection, hzero]
+  · have hzero' : M.utilityGradient voter x ≠ (fun _ : Coord => 0) := by
+      simpa using hzero
+    have hnorm :
+        E.normDistance SourceNorm.l2 (M.utilityGradient voter x)
+          (fun _ : Coord => 0) =
+          finiteCoordinateNorm SourceNorm.l2 (M.utilityGradient voter x) := by
+      simpa [M.zeroDirection_eq] using
+        M.normDistance_l2_zero_eq (M.utilityGradient voter x)
+    rw [modelBFiniteNormalizedDirection_of_ne_zero _ _ hzero]
+    rw [if_neg hzero', hnorm]
+    simp [finiteScalarDirection, div_eq_mul_inv]
+    apply Or.inl
+    ring
+
+/--
+Theorem 3's population directional field.  The paper samples a voter from a
+population distribution and writes its directional field as an expectation;
+this definition is the finite-dimensional, measure-theoretic reading of that
+display.  It is deliberately distinct from the older finite-support helper:
+the voter type need not be finite.
+
+The zero-gradient convention is inherited from
+`modelBFiniteNormalizedDirection`: a voter with zero gradient contributes the
+zero direction rather than invoking an undefined quotient.
+-/
+noncomputable def populationTheorem3DirectionalField
+    {Voter Coord : Type*} [MeasurableSpace Voter] [Fintype Coord] [Nonempty Coord]
+    (population : Measure Voter)
+    (utilityGradient : Voter → (Coord → ℝ) → Coord → ℝ)
+    (x : Coord → ℝ) : Coord → ℝ :=
+  fun i => ∫ voter,
+    modelBFiniteNormalizedDirection SourceNorm.l2
+      (utilityGradient voter x) i ∂population
+
+/--
+Measure/population source semantics for Theorem 3.  This is the paper's
+`E_v[∇f_v(x) / ‖∇f_v(x)‖₂]` model, not a finite-voter specialization.  The
+integrability field makes the displayed expectation mathematically meaningful
+rather than relying on Lean's totalized integral.
+-/
+structure PopulationTheorem3DirectionalFieldModel
+    {Voter Coord : Type*} [MeasurableSpace Voter] [Fintype Coord] [Nonempty Coord]
+    (E : ILVEnvironment Voter (Coord → ℝ)) where
+  population : Measure Voter
+  population_probability : IsProbabilityMeasure population
+  utilityGradient : Voter → (Coord → ℝ) → Coord → ℝ
+  utilityGradient_eq : E.utilityGradient = utilityGradient
+  utilityGradient_source_subgradient :
+    ∀ voter x,
+      FiniteSourceSubgradientAt (E.utility voter) x (utilityGradient voter x)
+  scalarDirection_eq : E.scalarDirection = finiteScalarDirection
+  zeroDirection_eq : E.zeroDirection = fun _ => 0
+  normDistance_l2_zero_eq :
+    ∀ g : Coord → ℝ,
+      E.normDistance SourceNorm.l2 g E.zeroDirection =
+        finiteCoordinateNorm SourceNorm.l2 g
+  normalized_gradient_integrable :
+    ∀ x i,
+      Integrable
+        (fun voter =>
+          modelBFiniteNormalizedDirection SourceNorm.l2
+            (utilityGradient voter x) i)
+        population
+  directionalField_eq :
+    E.directionalField =
+      populationTheorem3DirectionalField population utilityGradient
+  voterExpectation_normalized_eq :
+    ∀ x,
+      E.voterExpectation (fun voter => theorem3NormalizedGradientDirection E voter x) =
+        populationTheorem3DirectionalField population utilityGradient x
+
+/--
+The population model realizes the paper's displayed directional-field formula.
+The proof only unfolds the source-defined zero-gradient branch; it does not
+replace the population integral with a finite sum.
+-/
+theorem theorem3DirectionalFieldFormula_of_populationDirectionalFieldModel
+    {Voter Coord : Type*} [MeasurableSpace Voter] [Fintype Coord] [Nonempty Coord]
+    {E : ILVEnvironment Voter (Coord → ℝ)}
+    (M : PopulationTheorem3DirectionalFieldModel E) :
+    Theorem3DirectionalFieldFormula E := by
+  intro x
+  rw [M.directionalField_eq, M.voterExpectation_normalized_eq]
+
+/--
+The finite-dimensional scalar projection of the population Theorem 3 field is
+the corresponding population integral.  This is the measure-theoretic
+replacement for the old finite-voter weighted-sum identity; it uses only the
+coordinate integrability required by the population source model.
+-/
+theorem populationTheorem3DirectionalField_finiteDot_eq_integral
+    {Voter Coord : Type*} [MeasurableSpace Voter] [Fintype Coord] [Nonempty Coord]
+    (population : Measure Voter)
+    (utilityGradient : Voter → (Coord → ℝ) → Coord → ℝ)
+    (x a : Coord → ℝ)
+    (hintegrable :
+      ∀ i,
+        Integrable
+          (fun voter =>
+            modelBFiniteNormalizedDirection SourceNorm.l2
+              (utilityGradient voter x) i)
+          population) :
+    finiteDot a (populationTheorem3DirectionalField population utilityGradient x) =
+      ∫ voter,
+        finiteDot a
+          (modelBFiniteNormalizedDirection SourceNorm.l2
+            (utilityGradient voter x)) ∂population := by
+  simp only [finiteDot, populationTheorem3DirectionalField]
+  rw [MeasureTheory.integral_finset_sum]
+  · exact Finset.sum_congr rfl fun i _ => by
+      simpa [mul_comm] using
+        (MeasureTheory.integral_mul_const (a i)
+          (fun voter =>
+            modelBFiniteNormalizedDirection SourceNorm.l2
+              (utilityGradient voter x) i)).symm
+  · intro i _
+    exact (hintegrable i).const_mul (a i)
+
+/--
+The literal Model B raw response used by the population Theorem 3 route.  Its
+zero-gradient branch is inherited from `modelBFiniteNormalizedDirection`, so
+this definition remains source-defined at a stationary individual utility.
+-/
+noncomputable def populationTheorem3ModelBRawResponse
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (utilityGradient : Voter → (Coord → ℝ) → Coord → ℝ)
+    (x : Coord → ℝ) (r : ℝ) (voter : Voter) : Coord → ℝ :=
+  fun i => x i + r *
+    modelBFiniteNormalizedDirection SourceNorm.l2
+      (utilityGradient voter x) i
+
+theorem populationTheorem3ModelBRawResponse_is_modelBFiniteResponseAt
+    {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
+    (utilityGradient : Voter → (Coord → ℝ) → Coord → ℝ)
+    (x : Coord → ℝ) (r : ℝ) (voter : Voter) :
+    ModelBFiniteResponseAt SourceNorm.l2 x r (utilityGradient voter x)
+      (populationTheorem3ModelBRawResponse utilityGradient x r voter) := by
+  rw [modelBFiniteResponseAt_formula]
+  rfl
+
+/--
+The scalar expected raw-response increment is the step radius times the scalar
+projection of the measure/population directional field.  This is the exact
+integral analogue of the finite-weight identity used in the former adapter.
+-/
+theorem populationTheorem3_expected_finiteDot_modelB_raw_increment
+    {Voter Coord : Type*} [MeasurableSpace Voter] [Fintype Coord] [Nonempty Coord]
+    (population : Measure Voter)
+    (utilityGradient : Voter → (Coord → ℝ) → Coord → ℝ)
+    (x a : Coord → ℝ) (r : ℝ)
+    (hintegrable :
+      ∀ i,
+        Integrable
+          (fun voter =>
+            modelBFiniteNormalizedDirection SourceNorm.l2
+              (utilityGradient voter x) i)
+          population) :
+    (∫ voter,
+      finiteDot a
+        (fun i =>
+          populationTheorem3ModelBRawResponse utilityGradient x r voter i - x i)
+        ∂population) =
+      r * finiteDot a
+        (populationTheorem3DirectionalField population utilityGradient x) := by
+  have hresponse :
+      (fun voter =>
+        finiteDot a
+          (fun i =>
+            populationTheorem3ModelBRawResponse utilityGradient x r voter i - x i)) =
+        fun voter =>
+          r * finiteDot a
+            (modelBFiniteNormalizedDirection SourceNorm.l2
+              (utilityGradient voter x)) := by
+    funext voter
+    simp only [populationTheorem3ModelBRawResponse]
+    unfold finiteDot
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    ring
+  rw [hresponse, MeasureTheory.integral_const_mul]
+  congr 1
+  exact (populationTheorem3DirectionalField_finiteDot_eq_integral
+    population utilityGradient x a hintegrable).symm
 
 /--
 If two real coordinates have the same strict sign and the second has magnitude
@@ -5023,11 +8931,6 @@ structure Theorem3AnalyticDriftSemantics
                       projection xstar
                         (E.trajectory SourceNorm.l2 VoterResponseModel.modelB n)
 
-/-- Finite-coordinate dot product used by the Theorem 3 drift projection. -/
-def finiteDot {Coord : Type*} [Fintype Coord]
-    (x y : Coord → ℝ) : ℝ :=
-  ∑ i : Coord, x i * y i
-
 /-- Finite-dimensional Cauchy-Schwarz for the paper-local finite dot product. -/
 theorem finiteDot_abs_le_l2_mul_l2
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
@@ -5037,25 +8940,25 @@ theorem finiteDot_abs_le_l2_mul_l2
         finiteCoordinateNorm SourceNorm.l2 y := by
   have hsq :
       finiteDot x y ^ 2 ≤
-        EconCSLib.FiniteDimensionalNorms.l2Sq x *
-          EconCSLib.FiniteDimensionalNorms.l2Sq y := by
-    simpa [finiteDot, EconCSLib.FiniteDimensionalNorms.l2Sq] using
+        AppliedModelingLib.FiniteDimensionalNorms.l2Sq x *
+          AppliedModelingLib.FiniteDimensionalNorms.l2Sq y := by
+    simpa [finiteDot, AppliedModelingLib.FiniteDimensionalNorms.l2Sq] using
       (Finset.sum_mul_sq_le_sq_mul_sq
         (s := (Finset.univ : Finset Coord)) (f := x) (g := y))
   calc
     |finiteDot x y|
         ≤ Real.sqrt
-            (EconCSLib.FiniteDimensionalNorms.l2Sq x *
-              EconCSLib.FiniteDimensionalNorms.l2Sq y) := by
+            (AppliedModelingLib.FiniteDimensionalNorms.l2Sq x *
+              AppliedModelingLib.FiniteDimensionalNorms.l2Sq y) := by
           exact Real.abs_le_sqrt hsq
     _ =
         finiteCoordinateNorm SourceNorm.l2 x *
           finiteCoordinateNorm SourceNorm.l2 y := by
           rw [finiteCoordinateNorm_l2, finiteCoordinateNorm_l2,
-            EconCSLib.FiniteDimensionalNorms.l2,
-            EconCSLib.FiniteDimensionalNorms.l2,
+            AppliedModelingLib.FiniteDimensionalNorms.l2,
+            AppliedModelingLib.FiniteDimensionalNorms.l2,
             Real.sqrt_mul
-              (EconCSLib.FiniteDimensionalNorms.normL2Sq_nonneg x)]
+              (AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_nonneg x)]
 
 /--
 Increment form of finite-dimensional Cauchy-Schwarz.  This is the deterministic
@@ -5138,7 +9041,7 @@ theorem finiteDot_centered_response_increment_mem_Icc_of_stepBound
       finiteDot_response_increment_abs_le_l2_mul_radius_of_stepBound
         a center (response voter) (hstep voter)
   simpa [value] using
-    (EconCSLib.FiniteSum.weighted_centered_value_mem_Icc_of_abs_le_bound
+    (AppliedModelingLib.FiniteSum.weighted_centered_value_mem_Icc_of_abs_le_bound
       weight value hweight_nonneg hweight_sum hvalue hB selected)
 
 theorem finiteDot_centered_response_increment_abs_le_of_stepBound
@@ -5245,7 +9148,7 @@ theorem finiteDot_modelB_centered_response_increment_mem_Icc
     exact finiteDot_modelB_response_increment_abs_le_l2_mul_radius
       a center (utilityGradient voter) (response voter) hr (hresponse voter)
   simpa [value] using
-    (EconCSLib.FiniteSum.weighted_centered_value_mem_Icc_of_abs_le_bound
+    (AppliedModelingLib.FiniteSum.weighted_centered_value_mem_Icc_of_abs_le_bound
       weight value hweight_nonneg hweight_sum hvalue hB selected)
 
 theorem abs_le_of_mem_Icc_neg {x c : ℝ}
@@ -5418,7 +9321,7 @@ noncomputable def theorem3FiniteWeightedVoterSequenceMeasure
     Measure (ℕ → Voter) :=
   Measure.infinitePi
     (fun _ : ℕ =>
-      (EconCSLib.finiteWeightedPMF weight hweight_nonneg
+      (AppliedModelingLib.finiteWeightedPMF weight hweight_nonneg
         (by simpa [hweight_sum] using zero_lt_one)).toMeasure)
 
 /--
@@ -5434,8 +9337,8 @@ theorem finiteDot_modelB_centered_response_increment_pmfExp_eq_zero
     (hweight_sum : (∑ voter : Voter, weight voter) = 1)
     (a center : Coord → ℝ)
     (response : Voter → Coord → ℝ) :
-    EconCSLib.pmfExp
-        (EconCSLib.finiteWeightedPMF weight hweight_nonneg
+    AppliedModelingLib.pmfExp
+        (AppliedModelingLib.finiteWeightedPMF weight hweight_nonneg
           (by simpa [hweight_sum] using zero_lt_one))
         (fun selected : Voter =>
           finiteDot a (fun i => response selected i - center i) -
@@ -5444,38 +9347,38 @@ theorem finiteDot_modelB_centered_response_increment_pmfExp_eq_zero
                 finiteDot a (fun i => response voter i - center i))) =
       0 := by
   let μ : PMF Voter :=
-    EconCSLib.finiteWeightedPMF weight hweight_nonneg
+    AppliedModelingLib.finiteWeightedPMF weight hweight_nonneg
       (by simpa [hweight_sum] using zero_lt_one)
   let value : Voter → ℝ :=
     fun voter => finiteDot a (fun i => response voter i - center i)
   have hmean :
-      EconCSLib.pmfExp μ value =
+      AppliedModelingLib.pmfExp μ value =
         ∑ voter : Voter, weight voter * value voter := by
     simpa [μ, value] using
-      (EconCSLib.finiteWeightedPMF_pmfExp_eq_weighted_sum_of_sum_eq_one
+      (AppliedModelingLib.finiteWeightedPMF_pmfExp_eq_weighted_sum_of_sum_eq_one
         (weight := weight) (hweight_nonneg := hweight_nonneg)
         (hsum := hweight_sum) (f := value))
   have hcentered :
-      EconCSLib.pmfExp μ
+      AppliedModelingLib.pmfExp μ
           (fun selected : Voter =>
             value selected -
               (∑ voter : Voter, weight voter * value voter)) = 0 := by
     calc
-      EconCSLib.pmfExp μ
+      AppliedModelingLib.pmfExp μ
           (fun selected : Voter =>
             value selected -
               (∑ voter : Voter, weight voter * value voter))
           =
-            EconCSLib.pmfExp μ value -
-              EconCSLib.pmfExp μ
+            AppliedModelingLib.pmfExp μ value -
+              AppliedModelingLib.pmfExp μ
                 (fun _selected : Voter =>
                   ∑ voter : Voter, weight voter * value voter) := by
-              rw [EconCSLib.pmfExp_sub]
+              rw [AppliedModelingLib.pmfExp_sub]
       _ =
           (∑ voter : Voter, weight voter * value voter) -
             (∑ voter : Voter, weight voter * value voter) := by
             rw [hmean]
-            simp [EconCSLib.pmfExp_const]
+            simp [AppliedModelingLib.pmfExp_const]
       _ = 0 := by ring
   simpa [μ, value] using hcentered
 
@@ -5489,8 +9392,8 @@ theorem finiteDot_modelB_centered_response_increment_pmfExp_eq_zero_sequence
     (center : ℕ → Coord → ℝ)
     (response : ℕ → Voter → Coord → ℝ)
     (t : ℕ) :
-    EconCSLib.pmfExp
-        (EconCSLib.finiteWeightedPMF weight hweight_nonneg
+    AppliedModelingLib.pmfExp
+        (AppliedModelingLib.finiteWeightedPMF weight hweight_nonneg
           (by simpa [hweight_sum] using zero_lt_one))
         (fun selected : Voter =>
           finiteDot a (fun i => response t selected i - center t i) -
@@ -5521,35 +9424,35 @@ theorem finiteDot_modelB_centered_response_increment_integral_toMeasure_eq_zero
           (∑ voter : Voter,
             weight voter *
               finiteDot a (fun i => response voter i - center i)))
-      ∂(EconCSLib.finiteWeightedPMF weight hweight_nonneg
+      ∂(AppliedModelingLib.finiteWeightedPMF weight hweight_nonneg
           (by simpa [hweight_sum] using zero_lt_one)).toMeasure =
       0 := by
   let μ : PMF Voter :=
-    EconCSLib.finiteWeightedPMF weight hweight_nonneg
+    AppliedModelingLib.finiteWeightedPMF weight hweight_nonneg
       (by simpa [hweight_sum] using zero_lt_one)
   let X : Voter → ℝ :=
     fun selected =>
       finiteDot a (fun i => response selected i - center i) -
         (∑ voter : Voter,
           weight voter * finiteDot a (fun i => response voter i - center i))
-  have hpmf : EconCSLib.pmfExp μ X = 0 := by
+  have hpmf : AppliedModelingLib.pmfExp μ X = 0 := by
     simpa [μ, X] using
       finiteDot_modelB_centered_response_increment_pmfExp_eq_zero
         weight hweight_nonneg hweight_sum a center response
   have hintegral : (∫ selected : Voter, X selected ∂μ.toMeasure) =
-      EconCSLib.pmfExp μ X := by
-    simpa [EconCSLib.pmfExp] using (PMF.integral_eq_sum μ X)
+      AppliedModelingLib.pmfExp μ X := by
+    simpa [AppliedModelingLib.pmfExp] using (PMF.integral_eq_sum μ X)
   calc
     ∫ selected : Voter,
         (finiteDot a (fun i => response selected i - center i) -
           (∑ voter : Voter,
             weight voter *
               finiteDot a (fun i => response voter i - center i)))
-      ∂(EconCSLib.finiteWeightedPMF weight hweight_nonneg
+      ∂(AppliedModelingLib.finiteWeightedPMF weight hweight_nonneg
           (by simpa [hweight_sum] using zero_lt_one)).toMeasure
         = ∫ selected : Voter, X selected ∂μ.toMeasure := by
             rfl
-    _ = EconCSLib.pmfExp μ X := hintegral
+    _ = AppliedModelingLib.pmfExp μ X := hintegral
     _ = 0 := hpmf
 
 /--
@@ -5584,7 +9487,7 @@ theorem finiteDot_modelB_centered_response_increment_mem_Icc_and_integral_toMeas
             (∑ voter : Voter,
               weight voter *
                 finiteDot a (fun i => response voter i - center i)))
-        ∂(EconCSLib.finiteWeightedPMF weight hweight_nonneg
+        ∂(AppliedModelingLib.finiteWeightedPMF weight hweight_nonneg
             (by simpa [hweight_sum] using zero_lt_one)).toMeasure =
         0 := by
   constructor
@@ -5624,10 +9527,10 @@ theorem finiteDot_modelB_centered_response_increment_hasSubgaussianMGF_toMeasure
               finiteDot a (fun i => response voter i - center i)))
       ((‖(2 * (finiteCoordinateNorm SourceNorm.l2 a * r)) -
           (-(2 * (finiteCoordinateNorm SourceNorm.l2 a * r)))‖₊ / 2) ^ 2)
-      (EconCSLib.finiteWeightedPMF weight hweight_nonneg
+      (AppliedModelingLib.finiteWeightedPMF weight hweight_nonneg
         (by simpa [hweight_sum] using zero_lt_one)).toMeasure := by
   let μ : PMF Voter :=
-    EconCSLib.finiteWeightedPMF weight hweight_nonneg
+    AppliedModelingLib.finiteWeightedPMF weight hweight_nonneg
       (by simpa [hweight_sum] using zero_lt_one)
   let X : Voter → ℝ :=
     fun selected =>
@@ -5686,7 +9589,7 @@ theorem finiteDot_modelB_centered_response_increment_hasSubgaussianMGF_toMeasure
               finiteDot a (fun i => response t voter i - center t i)))
       ((‖(2 * (finiteCoordinateNorm SourceNorm.l2 a * radius t)) -
           (-(2 * (finiteCoordinateNorm SourceNorm.l2 a * radius t)))‖₊ / 2) ^ 2)
-      (EconCSLib.finiteWeightedPMF weight hweight_nonneg
+      (AppliedModelingLib.finiteWeightedPMF weight hweight_nonneg
         (by simpa [hweight_sum] using zero_lt_one)).toMeasure := by
   exact
     finiteDot_modelB_centered_response_increment_hasSubgaussianMGF_toMeasure
@@ -5726,7 +9629,7 @@ theorem finiteDot_modelB_centered_response_increment_hasSubgaussianMGF_toMeasure
             ilvRadius r0 (t + 1))) -
           (-(2 * (finiteCoordinateNorm SourceNorm.l2 a *
             ilvRadius r0 (t + 1))))‖₊ / 2) ^ 2)
-      (EconCSLib.finiteWeightedPMF weight hweight_nonneg
+      (AppliedModelingLib.finiteWeightedPMF weight hweight_nonneg
         (by simpa [hweight_sum] using zero_lt_one)).toMeasure := by
   exact
     finiteDot_modelB_centered_response_increment_hasSubgaussianMGF_toMeasure_sequence
@@ -6085,26 +9988,26 @@ theorem finiteProjection_firstOrder_segmentInequality_of_l2_normProjection
     simpa [hNorm SourceNorm.l2 next raw, hNorm SourceNorm.l2 y raw]
       using hdistE
   have hsq :
-      EconCSLib.FiniteDimensionalNorms.l2Sq
+      AppliedModelingLib.FiniteDimensionalNorms.l2Sq
           (fun i => next i - raw i) ≤
-        EconCSLib.FiniteDimensionalNorms.l2Sq
+        AppliedModelingLib.FiniteDimensionalNorms.l2Sq
           (fun i => y i - raw i) := by
     rw [finiteCoordinateDistance, finiteCoordinateNorm,
-      EconCSLib.FiniteDimensionalNorms.l2] at hdist
+      AppliedModelingLib.FiniteDimensionalNorms.l2] at hdist
     exact
       (Real.sqrt_le_sqrt_iff
-        (EconCSLib.FiniteDimensionalNorms.normL2Sq_nonneg
+        (AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_nonneg
           (fun i => y i - raw i))).mp hdist
   have hquad :
-      EconCSLib.FiniteDimensionalNorms.l2Sq
+      AppliedModelingLib.FiniteDimensionalNorms.l2Sq
           (fun i => y i - raw i) =
-        EconCSLib.FiniteDimensionalNorms.l2Sq
+        AppliedModelingLib.FiniteDimensionalNorms.l2Sq
             (fun i => next i - raw i) -
           2 * ε *
             finiteDot (fun i => raw i - next i) (fun i => z i - next i) +
           ε ^ 2 *
             finiteDot (fun i => z i - next i) (fun i => z i - next i) := by
-    unfold EconCSLib.FiniteDimensionalNorms.l2Sq finiteDot y
+    unfold AppliedModelingLib.FiniteDimensionalNorms.l2Sq finiteDot y
     rw [Finset.mul_sum, Finset.mul_sum,
       ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
     apply Finset.sum_congr rfl
@@ -6237,23 +10140,23 @@ theorem finiteDot_step_progress_of_projection_normalCone
 
 theorem finiteDot_self_eq_l2Sq
     {Coord : Type*} [Fintype Coord] (x : Coord → ℝ) :
-    finiteDot x x = EconCSLib.FiniteDimensionalNorms.l2Sq x := by
-  simp [finiteDot, EconCSLib.FiniteDimensionalNorms.l2Sq, pow_two]
+    finiteDot x x = AppliedModelingLib.FiniteDimensionalNorms.l2Sq x := by
+  simp [finiteDot, AppliedModelingLib.FiniteDimensionalNorms.l2Sq, pow_two]
 
 theorem finiteDot_self_eq_finiteCoordinateNorm_l2_sq
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
     (x : Coord → ℝ) :
     finiteDot x x = finiteCoordinateNorm SourceNorm.l2 x ^ 2 := by
   rw [finiteDot_self_eq_l2Sq, finiteCoordinateNorm_l2,
-    EconCSLib.FiniteDimensionalNorms.l2]
+    AppliedModelingLib.FiniteDimensionalNorms.l2]
   exact (Real.sq_sqrt
-    (EconCSLib.FiniteDimensionalNorms.normL2Sq_nonneg x)).symm
+    (AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_nonneg x)).symm
 
 theorem finiteDot_self_nonneg
     {Coord : Type*} [Fintype Coord] (x : Coord → ℝ) :
     0 ≤ finiteDot x x := by
   rw [finiteDot_self_eq_l2Sq]
-  exact EconCSLib.FiniteDimensionalNorms.normL2Sq_nonneg x
+  exact AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_nonneg x
 
 theorem finiteDot_step_progress_nonneg_of_projection_normalCone
     {Coord : Type*} [Fintype Coord]
@@ -6315,12 +10218,17 @@ theorem finiteDot_modelBFiniteNormalizedDirection_eq_inv_mul
         direction =
       (finiteCoordinateNorm SourceNorm.l2 gradient)⁻¹ *
         finiteDot gradient direction := by
-  unfold finiteDot modelBFiniteNormalizedDirection
-  rw [Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro i _hi
-  rw [div_eq_mul_inv]
-  ring
+  by_cases hgradient : gradient = 0
+  · subst gradient
+    simp [finiteDot, modelBFiniteNormalizedDirection]
+  · rw [modelBFiniteNormalizedDirection_of_ne_zero _ _ hgradient]
+    unfold finiteDot
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i _hi
+    change (gradient i / finiteCoordinateNorm SourceNorm.l2 gradient) * direction i = _
+    rw [div_eq_mul_inv]
+    ring
 
 theorem finiteDot_gradient_normalizedDirection_eq_norm
     {Coord : Type*} [Fintype Coord] [Nonempty Coord]
@@ -6334,20 +10242,22 @@ theorem finiteDot_gradient_normalizedDirection_eq_norm
       (exists_coord_ne_zero_of_ne_zero hgradient)
   have hsq :
       finiteCoordinateNorm SourceNorm.l2 gradient ^ 2 =
-        EconCSLib.FiniteDimensionalNorms.l2Sq gradient := by
-    rw [finiteCoordinateNorm_l2, EconCSLib.FiniteDimensionalNorms.l2]
+        AppliedModelingLib.FiniteDimensionalNorms.l2Sq gradient := by
+    rw [finiteCoordinateNorm_l2, AppliedModelingLib.FiniteDimensionalNorms.l2]
     exact Real.sq_sqrt
-      (EconCSLib.FiniteDimensionalNorms.normL2Sq_nonneg gradient)
+      (AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_nonneg gradient)
   calc
     finiteDot gradient
         (modelBFiniteNormalizedDirection SourceNorm.l2 gradient)
         =
           (finiteCoordinateNorm SourceNorm.l2 gradient)⁻¹ *
             finiteDot gradient gradient := by
-          unfold finiteDot modelBFiniteNormalizedDirection
+          rw [modelBFiniteNormalizedDirection_of_ne_zero _ _ hgradient]
+          unfold finiteDot
           rw [Finset.mul_sum]
           apply Finset.sum_congr rfl
           intro i _hi
+          change gradient i * (gradient i / finiteCoordinateNorm SourceNorm.l2 gradient) = _
           rw [div_eq_mul_inv]
           ring
     _ =
@@ -6370,8 +10280,10 @@ theorem modelBFiniteNormalizedDirection_l2_norm_eq_one_of_ne_zero
       modelBFiniteNormalizedDirection SourceNorm.l2 gradient =
         fun i => (finiteCoordinateNorm SourceNorm.l2 gradient)⁻¹ *
           gradient i := by
+    rw [modelBFiniteNormalizedDirection_of_ne_zero _ _ hgradient]
     funext i
-    simp [modelBFiniteNormalizedDirection, div_eq_mul_inv, mul_comm]
+    rw [div_eq_mul_inv]
+    ring
   rw [hdir, finiteCoordinateNorm_l2_smul, abs_of_pos (inv_pos.mpr hpos)]
   field_simp [hpos.ne']
 
@@ -6433,15 +10345,15 @@ theorem finiteDot_abs_le_l2_mul_of_self_le_sq
     |finiteDot a e| ≤ finiteCoordinateNorm SourceNorm.l2 a * B := by
   have hnorme : finiteCoordinateNorm SourceNorm.l2 e ≤ B := by
     have hs :
-        EconCSLib.FiniteDimensionalNorms.l2Sq e ≤ B ^ 2 := by
+        AppliedModelingLib.FiniteDimensionalNorms.l2Sq e ≤ B ^ 2 := by
       simpa [finiteDot_self_eq_l2Sq] using he
     have hsqrt :
-        Real.sqrt (EconCSLib.FiniteDimensionalNorms.l2Sq e) ≤
+        Real.sqrt (AppliedModelingLib.FiniteDimensionalNorms.l2Sq e) ≤
           Real.sqrt (B ^ 2) :=
       Real.sqrt_le_sqrt hs
     calc
       finiteCoordinateNorm SourceNorm.l2 e
-          = Real.sqrt (EconCSLib.FiniteDimensionalNorms.l2Sq e) := by
+          = Real.sqrt (AppliedModelingLib.FiniteDimensionalNorms.l2Sq e) := by
             rfl
       _ ≤ Real.sqrt (B ^ 2) := hsqrt
       _ = B := by
@@ -7389,7 +11301,7 @@ theorem finiteDot_self_pos_of_ne_zero
     {x : Coord → ℝ} (hx : x ≠ fun _ => 0) :
     0 < finiteDot x x := by
   rw [finiteDot_self_eq_l2Sq]
-  exact EconCSLib.FiniteDimensionalNorms.normL2Sq_pos_of_exists_ne_zero
+  exact AppliedModelingLib.FiniteDimensionalNorms.normL2Sq_pos_of_exists_ne_zero
     (exists_coord_ne_zero_of_ne_zero hx)
 
 theorem finiteDot_self_pos_of_ne_zeroDirection
@@ -7775,10 +11687,10 @@ theorem finiteCoordinate_l2Sq_tendsto_zero_of_coordinatewise
       Filter.Tendsto (fun n : ℕ => x n i) Filter.atTop (nhds (xstar i))) :
     Filter.Tendsto
       (fun n : ℕ =>
-        EconCSLib.FiniteDimensionalNorms.l2Sq
+        AppliedModelingLib.FiniteDimensionalNorms.l2Sq
           (fun i => x n i - xstar i))
       Filter.atTop (nhds 0) := by
-  unfold EconCSLib.FiniteDimensionalNorms.l2Sq
+  unfold AppliedModelingLib.FiniteDimensionalNorms.l2Sq
   have hsum :
       Filter.Tendsto
         (fun n : ℕ =>
@@ -7813,12 +11725,12 @@ theorem finiteCoordinateDistance_l2_tendsto_zero_of_coordinatewise
       Filter.Tendsto
         (fun n : ℕ =>
           Real.sqrt
-            (EconCSLib.FiniteDimensionalNorms.l2Sq
+            (AppliedModelingLib.FiniteDimensionalNorms.l2Sq
               (fun i => x n i - xstar i)))
         Filter.atTop (nhds (Real.sqrt 0)) :=
     Real.continuous_sqrt.continuousAt.tendsto.comp hsumsq
   simpa [finiteCoordinateDistance, finiteCoordinateNorm,
-    EconCSLib.FiniteDimensionalNorms.l2] using hsqrt
+    AppliedModelingLib.FiniteDimensionalNorms.l2] using hsqrt
 
 theorem finiteCoordinateILVTrajectory_l2Distance_tendsto_zero_model
     {Voter Coord : Type*} [Fintype Coord] [Nonempty Coord]
@@ -10487,13 +14399,10 @@ structure FiniteTheorem3ConcreteFiniteDotProjectedTraceGlobalDeterministicTraceC
                             E.trajectory SourceNorm.l2
                                 VoterResponseModel.modelB (t + N) i +
                               ilvTailRadius r0 N t *
-                                (M.utilityGradient voter
-                                  (E.trajectory SourceNorm.l2
-                                    VoterResponseModel.modelB (t + N)) i /
-                                  finiteCoordinateNorm SourceNorm.l2
-                                    (M.utilityGradient voter
-                                      (E.trajectory SourceNorm.l2
-                                        VoterResponseModel.modelB (t + N))))) ∧
+                                modelBFiniteNormalizedDirection SourceNorm.l2
+                                  (M.utilityGradient voter
+                                    (E.trajectory SourceNorm.l2
+                                      VoterResponseModel.modelB (t + N))) i) ∧
                       ∀ sampledVoter : ℕ → Voter,
                         ∃ raw : ℕ → Coord → ℝ,
                         ∃ project : (Coord → ℝ) → Coord → ℝ,
@@ -10555,13 +14464,10 @@ structure FiniteTheorem3GlobalProjectedAlgorithm1TraceSource
                             E.trajectory SourceNorm.l2
                                 VoterResponseModel.modelB (t + N) i +
                               ilvTailRadius r0 N t *
-                                (M.utilityGradient (sampledVoter t)
-                                  (E.trajectory SourceNorm.l2
-                                    VoterResponseModel.modelB (t + N)) i /
-                                  finiteCoordinateNorm SourceNorm.l2
-                                    (M.utilityGradient (sampledVoter t)
-                                      (E.trajectory SourceNorm.l2
-                                        VoterResponseModel.modelB (t + N)))))
+                                modelBFiniteNormalizedDirection SourceNorm.l2
+                                  (M.utilityGradient (sampledVoter t)
+                                    (E.trajectory SourceNorm.l2
+                                      VoterResponseModel.modelB (t + N))) i)
                           (E.trajectory SourceNorm.l2
                             VoterResponseModel.modelB (t + 1 + N))
   feasible_direction :
@@ -10619,13 +14525,10 @@ structure FiniteTheorem3GlobalProjectedAlgorithm1UpdateSource
               E.trajectory SourceNorm.l2
                   VoterResponseModel.modelB (t + N) i +
                 ilvTailRadius r0 N t *
-                  (M.utilityGradient (sampledVoter t)
-                    (E.trajectory SourceNorm.l2
-                      VoterResponseModel.modelB (t + N)) i /
-                    finiteCoordinateNorm SourceNorm.l2
-                      (M.utilityGradient (sampledVoter t)
-                        (E.trajectory SourceNorm.l2
-                          VoterResponseModel.modelB (t + N)))))
+                  modelBFiniteNormalizedDirection SourceNorm.l2
+                    (M.utilityGradient (sampledVoter t)
+                      (E.trajectory SourceNorm.l2
+                        VoterResponseModel.modelB (t + N))) i)
             (E.trajectory SourceNorm.l2
               VoterResponseModel.modelB (t + 1 + N))
 
@@ -10824,13 +14727,10 @@ structure FiniteTheorem3GlobalProjectedAlgorithm1PerVoterStepTraceSource
                             E.trajectory SourceNorm.l2
                                 VoterResponseModel.modelB (t + N) i +
                               ilvTailRadius r0 N t *
-                                (M.utilityGradient (sampledVoter t)
-                                  (E.trajectory SourceNorm.l2
-                                    VoterResponseModel.modelB (t + N)) i /
-                                  finiteCoordinateNorm SourceNorm.l2
-                                    (M.utilityGradient (sampledVoter t)
-                                      (E.trajectory SourceNorm.l2
-                                        VoterResponseModel.modelB (t + N)))))
+                                modelBFiniteNormalizedDirection SourceNorm.l2
+                                  (M.utilityGradient (sampledVoter t)
+                                    (E.trajectory SourceNorm.l2
+                                      VoterResponseModel.modelB (t + N))) i)
                           (E.trajectory SourceNorm.l2
                             VoterResponseModel.modelB (t + 1 + N))
   per_voter_feasible_step :
@@ -10991,13 +14891,10 @@ noncomputable def
       fun i =>
         E.trajectory SourceNorm.l2 VoterResponseModel.modelB (t + N) i +
           ilvTailRadius S.r0 N t *
-            (M.utilityGradient voter
-              (E.trajectory SourceNorm.l2
-                VoterResponseModel.modelB (t + N)) i /
-              finiteCoordinateNorm SourceNorm.l2
-                (M.utilityGradient voter
-                  (E.trajectory SourceNorm.l2
-                    VoterResponseModel.modelB (t + N))))
+            modelBFiniteNormalizedDirection SourceNorm.l2
+              (M.utilityGradient voter
+                (E.trajectory SourceNorm.l2
+                  VoterResponseModel.modelB (t + N))) i
     refine ⟨response, ?_, ?_⟩
     · intro t voter
       rfl
@@ -11064,13 +14961,10 @@ structure FiniteTheorem3ConcreteFiniteDotProjectedTraceGlobalDeterministicTraceS
                             E.trajectory SourceNorm.l2
                                 VoterResponseModel.modelB (t + N) i +
                               ilvTailRadius r0 N t *
-                                (M.utilityGradient voter
-                                  (E.trajectory SourceNorm.l2
-                                    VoterResponseModel.modelB (t + N)) i /
-                                  finiteCoordinateNorm SourceNorm.l2
-                                    (M.utilityGradient voter
-                                      (E.trajectory SourceNorm.l2
-                                        VoterResponseModel.modelB (t + N))))) ∧
+                                modelBFiniteNormalizedDirection SourceNorm.l2
+                                  (M.utilityGradient voter
+                                    (E.trajectory SourceNorm.l2
+                                      VoterResponseModel.modelB (t + N))) i) ∧
                       ∀ sampledVoter : ℕ → Voter,
                         ∃ raw : ℕ → Coord → ℝ,
                         ∃ project : (Coord → ℝ) → Coord → ℝ,
@@ -11193,13 +15087,7 @@ def finiteTheorem3ConcreteFiniteDotProjectedTraceGlobalDeterministicSkeleton_of_
       ⟨response, hResponseFormula, hSampledTrace⟩
     refine ⟨response, ?_, hSampledTrace⟩
     intro t voter
-    exact
-      (modelBFiniteResponseAt_formula SourceNorm.l2
-        (E.trajectory SourceNorm.l2 VoterResponseModel.modelB (t + N))
-        (ilvTailRadius S.r0 N t)
-        (M.utilityGradient voter
-          (E.trajectory SourceNorm.l2 VoterResponseModel.modelB (t + N)))
-        (response t voter)).mpr (hResponseFormula t voter)
+    exact hResponseFormula t voter
 
 theorem
     theorem3_finite_directionalEquilibrium_of_concreteFiniteDotProjectedTraceGlobalPathwise
@@ -13797,7 +17685,7 @@ structure Theorem2SourceToFiniteSSGMBridge
 /--
 Deterministic source semantics needed to construct Theorem 2's finite SSGM
 input package.  This record is intentionally non-stochastic: it interprets the
-paper's finite-dimensional norm, C3 product-density data, initial radius, and
+paper's finite-dimensional norm, C3 full-space bounded-density data, initial radius, and
 Model B Algorithm 1 trace before the SSGM convergence theorem is invoked.
 -/
 structure Theorem2SourceSemantics
@@ -14559,7 +18447,7 @@ Concrete finite-coordinate interpretation of the deterministic source model.
 
 This record is the non-SSGM layer that turns the abstract `ILVEnvironment`
 fields into the paper's finite-coordinate Algorithm 1 semantics: concrete norm
-distance, product-density/C3 data, positive radius and Model B trace data,
+distance, full-space bounded-density C3 data, positive radius and Model B trace data,
 weighted-Euclidean projected-SSGM inputs and objective identification,
 decomposable median-set source formulas, and `L∞` coordinate-replacement
 semantics.  It deliberately contains no stochastic convergence conclusion.
@@ -14868,9 +18756,8 @@ theorem weightedEuclideanUtilities_formula
     (E : ILVEnvironment Voter Point)
     (W : WeightedEuclideanStructure Voter Point Component) :
     IsWeightedEuclideanUtilitiesWith E W ↔
-      W.weightsAndIdealsDistributionCondition ∧
-        ∀ v x, E.utility v x = -W.components.sum
-          (fun k => (W.weight v k / W.weightNorm2 v) * W.componentDistance k x v) := by
+      ∀ v x, E.utility v x = -W.components.sum
+        (fun k => (W.weight v k / W.weightNorm2 v) * W.componentDistance k x v) := by
   rfl
 
 theorem decomposableUtilities_formula
@@ -14878,9 +18765,8 @@ theorem decomposableUtilities_formula
     (E : ILVEnvironment Voter Point)
     (D : DecomposableStructure Voter Point Coord) :
     IsDecomposableUtilitiesWith E D ↔
-      D.coordinateUtilitiesConcave ∧
-        ∀ v x, E.utility v x =
-          D.coords.sum (fun m => D.coordinateUtility m v (D.coordinate m x)) := by
+      ∀ v x, E.utility v x =
+        D.coords.sum (fun m => D.coordinateUtility m v (D.coordinate m x)) := by
   rfl
 
 end GKGMM19IterativeLocalVoting

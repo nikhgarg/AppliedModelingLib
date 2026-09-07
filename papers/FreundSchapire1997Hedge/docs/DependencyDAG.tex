@@ -1,0 +1,103 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[
+  x=1cm,
+  y=1cm,
+  every node/.append style={outer sep=4pt}
+]
+
+\dagPaperMetadata{A Decision-Theoretic Generalization of On-Line Learning and an Application to Boosting}{Yoav Freund and Robert E. Schapire}{Journal of Computer and System Sciences}{1997}{https://doi.org/10.1006/jcss.1997.1504}
+\dagPaperLegendRightOfMetadata{
+\node[dag_result, dag_template_legend] (legRes) at (0,0) {formalized\\result};
+\node[dag_lemma, dag_template_legend] (legLem) at (4.2,0) {formalized\\lemma};
+\node[dag_model, dag_template_legend] (legDef) at (8.4,0) {model, algorithm,\\or attributed support};
+}
+\daglegend{(legRes)(legLem)(legDef)}{Legend}
+
+\begin{dagPaperBody}
+\begin{scope}[xshift=2.0cm]
+
+\node[dag_model, text width=5.2cm] (HedgeModel) at (18,0)
+  {\textbf{Figure 1 / Hedge model}\\finite experts, normalized weights, bounded losses, multiplicative update, and mixture loss};
+
+\node[dag_lemma, text width=5.0cm] (Lemma1) at (18,-4.4)
+  {\textbf{Lemma 1}\\logarithmic finite-weight potential bound};
+
+\node[dag_result, text width=5.0cm] (Theorem2) at (9,-8.8)
+  {\textbf{Theorem 2, Eqs. (7)--(8)}\\single-strategy and nonempty-subset comparator bounds};
+
+\node[dag_lemma, text width=5.0cm] (Lemma4) at (18,-8.8)
+  {\textbf{Lemma 4}\\corrected zero-bound extension and square-root regret bound};
+
+\node[dag_model, text width=5.2cm] (AllocationVovk) at (0,-8.8)
+  {\textbf{Online allocation and attributed Theorem 13}\\global finite-expert policy family and checked finite Vovk-game construction};
+
+\node[dag_result, text width=5.0cm] (Theorem3) at (0,-13.2)
+  {\textbf{Theorem 3}\\necessary two-constant allocation tradeoff};
+
+\node[dag_model, text width=5.2cm] (DecisionModel) at (9,-13.2)
+  {\textbf{Decision-prediction model}\\unrestricted decisions/outcomes and finite-mixture expected-loss identity};
+
+\node[dag_result, text width=5.0cm] (Theorem5) at (9,-17.6)
+  {\textbf{Theorem 5}\\best-expert decision-prediction bound};
+
+\node[dag_model, text width=5.4cm] (BoostingModels) at (27,-8.8)
+  {\textbf{Figures 2--5}\\AdaBoost, soft vote, M1, M2, and regression reductions with typed update domains};
+
+\node[dag_result, text width=4.7cm] (Theorem6) at (22,-13.2)
+  {\textbf{Theorem 6}\\binary AdaBoost product training-error bound};
+
+\node[dag_result, text width=4.7cm] (Theorem10) at (28,-13.2)
+  {\textbf{Theorem 10}\\AdaBoost.M1 product bound on the formula-defined execution domain};
+
+\node[dag_result, text width=4.7cm] (Theorem11) at (34,-13.2)
+  {\textbf{Theorem 11}\\AdaBoost.M2 product bound on the formula-defined execution domain};
+
+\node[dag_result, text width=4.7cm] (Theorem12) at (40,-13.2)
+  {\textbf{Theorem 12}\\AdaBoost.R MSE bound on the formula-defined execution domain};
+
+\node[dag_result, text width=4.7cm] (Theorem9) at (16,-17.6)
+  {\textbf{Theorem 9}\\soft normalized-vote error bound};
+
+\node[dag_result, text width=4.7cm] (Equation21) at (23,-17.6)
+  {\textbf{Eq. (21)}\\binary-KL and squared-edge error chain};
+
+\node[dag_result, text width=4.7cm] (Equation22) at (23,-22.0)
+  {\textbf{Eq. (22)}\\uniform-edge exponential rate};
+
+\node[dag_result, text width=4.7cm] (Equation23) at (23,-26.4)
+  {\textbf{Eq. (23)}\\sufficient boosting-iteration budget};
+
+\node[dag_model, text width=5.2cm] (VCModel) at (34,-17.6)
+  {\textbf{Weighted thresholds and attributed Theorem 7}\\finite-trace VC dimension and finite-iid generalization support};
+
+\node[dag_result, text width=5.0cm] (Theorem8) at (34,-22.0)
+  {\textbf{Theorem 8}\\VC bound for affine thresholds of $T$ weak hypotheses};
+
+\draw[dag_arrow] (HedgeModel) -- (Lemma1);
+\draw[dag_arrow] (Lemma1.south west) -- (Theorem2.north east);
+\draw[dag_arrow] (HedgeModel.east) -- ++(1.2,0) |- (Lemma4.east);
+\draw[dag_arrow] (AllocationVovk) -- (Theorem3);
+
+\draw[dag_arrow] (Theorem2) -- (DecisionModel);
+\draw[dag_arrow] (Lemma4.south west) -- (DecisionModel.north east);
+\draw[dag_arrow] (DecisionModel) -- (Theorem5);
+
+\draw[dag_arrow] (Lemma1.south east) -- (BoostingModels.north west);
+\draw[dag_arrow] (BoostingModels.south west) -- (Theorem6.north east);
+\draw[dag_arrow] (BoostingModels) -- (Theorem10);
+\draw[dag_arrow] (BoostingModels.south east) -- (Theorem11.north west);
+\draw[dag_arrow] (BoostingModels.east) -| (Theorem12.north);
+\draw[dag_arrow] (Theorem6) -- (Theorem9);
+\draw[dag_arrow] (Theorem6) -- (Equation21);
+\draw[dag_arrow] (Equation21) -- (Equation22);
+\draw[dag_arrow] (Equation22) -- (Equation23);
+
+\draw[dag_arrow] (VCModel) -- (Theorem8);
+
+\end{scope}
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

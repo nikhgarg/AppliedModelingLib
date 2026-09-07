@@ -1,12 +1,12 @@
 # Mechanism Design and Auctions
 
-Use for `EconCSLib/MechanismDesign/Auctions/*`, digital goods, GSP/position
+Use for `AppliedModelingLib/MechanismDesign/Auctions/*`, digital goods, GSP/position
 auctions, combinatorial auctions, and generic mechanism-design wrappers.
 
 ## Digital Goods and Posted Prices
 
 - When starting a mechanism-design or auction paper, first look at nearby
-  formalized papers and `EconCSLib/MechanismDesign` for proof moves that should
+  formalized papers and `AppliedModelingLib/MechanismDesign` for proof moves that should
   become reusable EC infrastructure. Build the reusable layer during the paper
   proof when it directly helps the active theorem and is likely useful for
   another auction/mechanism paper.
@@ -39,14 +39,14 @@ auctions, combinatorial auctions, and generic mechanism-design wrappers.
   surface for strategy, best-response, uniqueness, and cutoff-boundary claims;
   do not force pointwise best response at null cutoff boundaries unless the
   paper explicitly needs it. The reusable library surface is
-  `EconCSLib.IsChoiceEquilibriumAE` with projections
+  `AppliedModelingLib.IsChoiceEquilibriumAE` with projections
   `isChoiceEquilibriumAE_feasible_ae`,
   `isChoiceEquilibriumAE_best_response_ae`,
   `isChoiceEquilibriumAE_consistency`, the pointwise bridge
   `isChoiceEquilibriumAE_of_pointwise`, and the off-null-set constructor
   `isChoiceEquilibriumAE_of_forall_not_mem_null`.
 - For binary cutoff strategies with null boundaries, use
-  `EconCSLib.NoProfitableBinaryChoiceDeviationAE` and
+  `AppliedModelingLib.NoProfitableBinaryChoiceDeviationAE` and
   `bool_choice_eq_decide_threshold_ae_of_noProfitableBinaryChoiceDeviationAE_no_tie`
   before writing paper-local a.e. case splits. If the payoff is affine with a
   positive slope, `chosen_reference_le_value_ae_of_affine_noProfitableBinaryChoiceDeviationAE`
@@ -72,9 +72,9 @@ auctions, combinatorial auctions, and generic mechanism-design wrappers.
   best-response consequences such as
   `lg21OptionalReportingBaseSourceEquilibriumData_actorMean_le_reported_score_ae`
   plus contradiction bridges like
-  `lg21_ae_property_contradicts_positive_failure_mass`. When a GLM20 or
-  similar proof starts treating an indifference cutoff as a pointwise
-  obligation, inspect these LG21 wrappers before adding new assumptions.
+  `lg21_ae_property_contradicts_positive_failure_mass`. When a similar proof
+  starts treating an indifference cutoff as a pointwise obligation, inspect
+  these released wrappers before adding new assumptions.
 - Reuse the LG21 pattern at the library layer, not by copying LG21-specific
   wrappers: project an a.e. equilibrium to `IsChoiceEquilibriumAE`, project
   binary actions to `NoProfitableBinaryChoiceDeviationAE`, derive affine
@@ -103,7 +103,7 @@ auctions, combinatorial auctions, and generic mechanism-design wrappers.
   intermediate-value step inside an opaque certificate. Prove or reuse a
   one-dimensional decreasing-crossing theorem first: a continuous strictly
   decreasing merit term with opposite endpoint comparisons gives a positive
-  threshold and exact weak/strict side characterizations. In `EconCSLib` this
+  threshold and exact weak/strict side characterizations. In `AppliedModelingLib` this
   is the role of
   `exists_threshold_of_continuous_strictAntiOn_Icc_crossing` and
   `exists_threshold_le_of_continuous_strictAntiOn_Icc`. When the source proof
@@ -122,9 +122,8 @@ auctions, combinatorial auctions, and generic mechanism-design wrappers.
 - If a monotone-composition theorem has a `Set.MapsTo` premise only because
   the cutoff-domain was stated abstractly, immediately add the `Set.univ`
   specialization when the concrete merit formula is real-valued. This removes
-  a noisy obligation from downstream paper wrappers. For GLM20, the preferred
-  entry points are the `_univ` versions of the equation-(46) full/full and
-  equation-(50) sub/full cost-threshold lemmas.
+  a noisy obligation from downstream paper wrappers. Prefer `_univ` entry
+  points for cost-threshold lemmas whenever no smaller domain is needed.
 - For two-school full-test application payoffs, encode the displayed CDF
   expression first and prove monotonicity directly from signs. A typical term
   has negative CDF coefficients, while each standardized cutoff
@@ -144,19 +143,15 @@ auctions, combinatorial auctions, and generic mechanism-design wrappers.
   forces the higher-cost zero to lie to the right.
 - After the two-point cutoff-in-cost comparison is proved, immediately package
   the function-level version: any selected cutoff function satisfying the
-  zero-payoff equation at each cost is `StrictMonoOn` over the cost domain
-  (for GLM20 this is
-  `paper_proposition5_twoFull_apply_payoff_cutoff_strictMonoOn_cost`).  This
-  is the form needed for later monotone-composition and threshold-crossing
-  arguments.
+  zero-payoff equation at each cost is `StrictMonoOn` over the cost domain.
+  This is the form needed for later monotone-composition and
+  threshold-crossing arguments.
 - When a zero-payoff cutoff solves an equation of the form
   `basePayoff q - cost = 0`, do not leave selected-cutoff continuity as a
   certificate.  Prove the selected cutoff is a right inverse of the strictly
   increasing `basePayoff`, then apply
-  `continuousOn_rightInverse_of_strictMono`.  For GLM20 this yields
-  `paper_proposition5_twoFull_apply_payoff_cutoff_continuousOn_cost` and the
-  standard-Gaussian regular selected-cutoff wrapper without differentiating the
-  implicit equation.
+  `continuousOn_rightInverse_of_strictMono`.  This yields selected-cutoff
+  continuity without differentiating the implicit equation.
 - For two-policy school games, define a concrete binary-policy surface whose
   equilibrium predicate unfolds to the weighted objective best-response
   condition before writing high-level theorem wrappers.  This removes repeated
@@ -175,31 +170,21 @@ auctions, combinatorial auctions, and generic mechanism-design wrappers.
 - When a paper condition requires two ordered cost thresholds from related
   monotone merit crossings, construct both roots in one wrapper and prove the
   ordering there instead of passing a loose `lowRoot < highRoot` premise
-  through downstream statements.  For GLM20 Proposition 5(ii), the useful
-  pattern is
-  `paper_proposition5_low_and_high_cost_thresholds_of_merit_crossings`:
-  build both crossings, expose each side characterization, and prove
-  `c_hat'_g < c_hat''_g` from the high-threshold merit comparison at the
-  lower root.
+  through downstream statements. Build both crossings, expose each side
+  characterization, and prove the strict root ordering from the high-threshold
+  merit comparison at the lower root.
 - After constructing ordered thresholds, immediately compose them with the
   paper's mass/cutoff equivalences and companion school objective split if
-  this yields a named condition bundle.  This avoids leaving a green threshold
-  lemma disconnected from the paper theorem.  For GLM20, the follow-on wrapper
-  is
-  `paper_proposition5_part_ii_objective_pair_iff_theorem3_fullSub_condition_of_merit_crossings`.
+  this yields a named condition bundle. This avoids leaving a proved threshold
+  lemma disconnected from the paper theorem.
   Apply the same pattern to one-threshold cases: after constructing a
   condition threshold, compose it with mass/cutoff identities and weighted
-  objective bookkeeping in the same session when that closes a named condition
-  bundle, as in
-  `paper_proposition5_part_i_objective_pair_iff_theorem3_subFull_condition_of_merit_crossings`.
-- Once the two part-level condition bundles are green, add the paper-level
-  wrapper immediately if it is mostly existential packaging.  For GLM20, the
-  useful endpoint is
-  `paper_theorem3_source_conditions_of_proposition5_merit_crossings`: it
-  constructs all three threshold functions from the part-level merit crossings
-  and composes them with the binary policy-equilibrium bridge.  This gives the
-  human-facing file one theorem to audit before the remaining concrete
-  Gaussian objective premises are attacked.
+  objective bookkeeping when that closes a named source-condition bundle.
+- Once the part-level condition bundles are proved, add the paper-level wrapper
+  immediately if it is mostly existential packaging. Construct the threshold
+  functions from the part-level merit crossings and compose them with the
+  binary policy-equilibrium bridge. This gives the human-facing file one
+  theorem to audit before proving the concrete objective premises.
 - After proving a strategic payoff is continuous and strictly increasing, use a
   generic crossing lemma before specializing tail limits. The reusable theorem
   `existsUnique_zero_and_nonneg_iff_of_continuous_strictMono_crossing` turns
@@ -207,11 +192,9 @@ auctions, combinatorial auctions, and generic mechanism-design wrappers.
   and an exact nonnegative upper-threshold region.
 - When a condition wrapper assumes an objective comparison is equivalent to a
   merit inequality, immediately add the formula-level version if the source
-  proof actually identifies the two objective values separately.  The proof is
-  usually just `glm20_policy_pair_objective_le_iff_of_value_eq`, and it keeps
-  the remaining concrete-model target as value equalities rather than custom
-  iff lemmas.  For GLM20 this closed the ordered P5(ii) school-`J2` branch via
-  `paper_proposition5_part_ii_school2_cutoff_objective_iff_exactly_one_cost_case_of_low_and_high_merit_formulas`.
+  proof actually identifies the two objective values separately. The bridge is
+  usually elementary rewriting, and it keeps the concrete-model target as
+  value equalities rather than custom iff lemmas.
 - When a strategic proof says a mass inequality is "equivalent" to a cutoff
   case, check whether the mass is simply a strictly antitone upper-tail
   function evaluated at the cutoff. If so, prove a tiny paper-facing bridge
@@ -251,21 +234,20 @@ auctions, combinatorial auctions, and generic mechanism-design wrappers.
   Lean statement actually matches the paper.
 - For strategic applicant-pool fixed points, do not treat applicant mass as an
   exogenous scalar function if the paper's capacity equation first substitutes
-  student application thresholds. Define the self-consistent mass map explicitly
-  (for GLM20, `glm20Lemma3StrategicApplicantMass`: plug the Equation (7)
-  group cutoff into the application-gated joint applicant mass before solving
-  capacity), then prove the `∃!` equilibrium against that map. This keeps the
-  remaining analytic seam precise: bivariate Gaussian identification and
-  regularity of the application-gated mass, rather than vague "equilibrium
+  student application thresholds. Define the self-consistent mass map
+  explicitly by substituting the group cutoff into the application-gated joint
+  applicant mass before solving capacity, then prove the `∃!` equilibrium
+  against that map. This isolates the analytic obligations as identification
+  and regularity of the application-gated mass rather than vague "equilibrium
   consistency".
 - Reuse the shared admissions, testing, optimization, and game modules before
   adding paper-local strategic scaffolding. Search
-  `EconCSLib.Applications.Admissions.PolicySurface`,
-  `EconCSLib.Applications.Admissions.StrategicPolicy`,
-  `EconCSLib.Applications.Admissions.StrategicApplication`,
-  `EconCSLib.Foundations.Optimization.StrategicEquilibrium`,
-  `EconCSLib.Foundations.Optimization.ChoiceEquilibriumAE`, and
-  `EconCSLib.Foundations.Optimization.BinaryPolicyGame` during intake. If a
+  `AppliedModelingLib.Applications.Admissions.PolicySurface`,
+  `AppliedModelingLib.Applications.Admissions.StrategicPolicy`,
+  `AppliedModelingLib.Applications.Admissions.StrategicApplication`,
+  `AppliedModelingLib.Foundations.Optimization.StrategicEquilibrium`,
+  `AppliedModelingLib.Foundations.Optimization.ChoiceEquilibriumAE`, and
+  `AppliedModelingLib.Foundations.Optimization.BinaryPolicyGame` during intake. If a
   paper-local alias unfolds to a shared definition, add the shared definition
   to the local `simp` or `unfold` list rather than changing the source-facing
   theorem statement.
@@ -315,10 +297,9 @@ auctions, combinatorial auctions, and generic mechanism-design wrappers.
   paper formula separate from the verified upper-tail endpoint until the
   source scaling is checked; if they differ by a boundary term, add an audit
   theorem proving equality only in the degenerate case or proving non-equality
-  under ordinary nonzero assumptions. For finite enrollment regions such as
-  GLM20's `kappa` term, derive finite-interval product-density and
-  first-moment theorems by subtracting two proved upper-tail identities before
-  doing any paper-specific algebra.
+  under ordinary nonzero assumptions. For finite enrollment regions, derive
+  finite-interval product-density and first-moment theorems by subtracting two
+  proved upper-tail identities before doing any paper-specific algebra.
 - For `kappa`-style lower-tail Owen first moments, it can be faster and more
   faithful to prove the lower-tail theorem directly once the upper-tail route
   has supplied the integration-by-parts pattern. Add the shared identities
@@ -327,9 +308,9 @@ auctions, combinatorial auctions, and generic mechanism-design wrappers.
   library, then expose paper wrappers for
   `∫_{-∞}^{q} z φ(z) Φ(A*sqrt(1+c^2)+c*z) dz`. Then add a thin source-scaling
   bridge if the displayed expression differs only by a density scaling or
-  cutoff substitution. Keep that premise explicit: GLM20's displayed `kappa`
-  has a source-specific prefactor and boundary-density argument, so proving the
-  normalized lower-tail integral is not by itself the full paper formula.
+  cutoff substitution. Keep that premise explicit: a source-specific prefactor
+  or boundary-density argument is an additional obligation, so the normalized
+  lower-tail integral alone does not prove the full displayed formula.
   If the source density is raw normal rather than standard normal, prove the
   reusable scaling fact `scale * normalDensity L raw = phi (L.standardize raw)`
   once and then use a source-density formula wrapper, instead of forcing the

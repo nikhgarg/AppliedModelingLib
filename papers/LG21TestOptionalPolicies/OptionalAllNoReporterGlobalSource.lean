@@ -1,4 +1,4 @@
-import EconCSLib.Foundations.Probability.FiniteGaussianSignalKernelRCD
+import AppliedModelingLib.Foundations.Probability.FiniteGaussianSignalKernelRCD
 import LG21TestOptionalPolicies.FullProfileGaussianSequentialBridge
 import LG21TestOptionalPolicies.OptionalAllNoReporterCandidateSource
 import LG21TestOptionalPolicies.SelectedConditionalRCD
@@ -19,8 +19,8 @@ namespace LG21TestOptionalPolicies
 
 noncomputable section
 
-open EconCSLib MeasureTheory ProbabilityTheory Set
-open EconCSLib.Probability
+open AppliedModelingLib MeasureTheory ProbabilityTheory Set
+open AppliedModelingLib.Probability
 
 /-! ## Global candidate-entry certificate -/
 

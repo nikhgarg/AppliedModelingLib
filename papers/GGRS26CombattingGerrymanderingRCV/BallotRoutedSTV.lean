@@ -1,4 +1,4 @@
-import EconCSLib.SocialChoice.Voting
+import AppliedModelingLib.SocialChoice.Voting
 
 open scoped BigOperators
 
@@ -18,7 +18,7 @@ vote mass or candidates outside the election's initial candidate set.
 
 namespace GGRS26CombattingGerrymanderingRCV
 
-open EconCSLib.SocialChoice.Voting
+open AppliedModelingLib.SocialChoice.Voting
 
 /--
 One reachable state of a ballot-routed STV count.  `elected` records candidate
@@ -110,11 +110,11 @@ theorem ballotRoutedTally_eq_zero_of_support_eq_empty
 /--
 A transfer policy operates on voter weights, while ballot routing itself is
 fixed by recomputing each tally from `Ballot.nextActive`.  Election updates may
-choose which supporting weight is retained or transferred; they cannot modify
-non-supporters, cannot increase a supporting ballot's retained weight, and
-must remove exactly one quota from the winner's pre-election support.  The
-per-ballot condition rules out reassignment of one voter's voting weight to
-another while covering both fractional and random-voter transfer.
+choose how the winning support's surplus is distributed among its ballots;
+they cannot modify non-supporters and must leave total transferable winning
+support equal to the pre-election tally minus exactly one quota.  This covers
+fractional and random-voter transfer without imposing an additional
+per-supporter upper bound that the source does not state.
 Every policy obligation is conditioned on nonnegative preweights, the
 reachability invariant carried by `BallotRoutedSTVState`; the interface
 intentionally does not demand behavior on fictitious signed-weight states.
@@ -139,12 +139,6 @@ structure BallotRoutedSTVTransferPolicy {Voter Candidate : Type*}
     (∀ voter, voter ∈ voters -> 0 ≤ beforeWeight voter) ->
     electUpdate active winner beforeWeight afterWeight ->
       ∀ voter, voter ∈ voters -> 0 ≤ afterWeight voter
-  elect_support_weight_le_before : ∀ active winner beforeWeight afterWeight,
-    (∀ voter, voter ∈ voters -> 0 ≤ beforeWeight voter) ->
-    electUpdate active winner beforeWeight afterWeight ->
-      ∀ voter, voter ∈ voters ->
-        voter ∈ ballotRoutedSupport voters ballots active winner ->
-          afterWeight voter ≤ beforeWeight voter
   elect_unchanged_off_support : ∀ active winner beforeWeight afterWeight,
     (∀ voter, voter ∈ voters -> 0 ≤ beforeWeight voter) ->
     electUpdate active winner beforeWeight afterWeight ->

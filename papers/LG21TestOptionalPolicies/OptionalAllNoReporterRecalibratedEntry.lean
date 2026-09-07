@@ -15,7 +15,7 @@ namespace LG21TestOptionalPolicies
 noncomputable section
 
 open MeasureTheory ProbabilityTheory Set
-open EconCSLib.Probability
+open AppliedModelingLib.Probability
 
 /-- The literal report event selected by an optional-reporting candidate. -/
 def lg21OptionalCandidateSourceReportEvent

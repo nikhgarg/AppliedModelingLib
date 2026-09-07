@@ -1,6 +1,6 @@
 import PRPKG24AccuracyDiversity.SeparableAsymptotic
-import EconCSLib.Foundations.Math.GammaAsymptotics
-import EconCSLib.Foundations.Probability.Pareto
+import AppliedModelingLib.Foundations.Math.GammaAsymptotics
+import AppliedModelingLib.Foundations.Probability.Pareto
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
@@ -90,13 +90,13 @@ theorem paretoPowerMarginalScale_pos (α : ℝ) (q : ℕ) :
 /-- Concrete iid product measure for the paper's scale-one Pareto source law. -/
 noncomputable def paretoIidSampleMeasure (α : ℝ) (q : ℕ) :
     MeasureTheory.Measure (Fin q → ℝ) :=
-  EconCSLib.Probability.Pareto.iidProductMeasure 1 α q
+  AppliedModelingLib.Probability.Pareto.iidProductMeasure 1 α q
 
 theorem paretoIidSampleMeasure_isProbabilityMeasure
     {α : ℝ} (hα_pos : 0 < α) (q : ℕ) :
     MeasureTheory.IsProbabilityMeasure (paretoIidSampleMeasure α q) := by
   simpa [paretoIidSampleMeasure] using
-    EconCSLib.Probability.Pareto.isProbabilityMeasure_iidProductMeasure
+    AppliedModelingLib.Probability.Pareto.isProbabilityMeasure_iidProductMeasure
       (t := 1) (r := α) (by norm_num) hα_pos q
 
 theorem paretoIidSampleMeasure_isProbabilityMeasure_of_gt_one
@@ -135,7 +135,7 @@ structure ParetoIidOrderStatisticEventualFOCCertificate {T : ℕ} [NeZero T]
     (likelihood : ItemType T → ℝ) (k : ℕ) (α : ℝ) where
   base_error : ℕ → ℝ
   base_error_nonneg : ∀ N, 0 ≤ base_error N
-  base_error_tends_to_zero : EconCSLib.Math.TendsToZero base_error
+  base_error_tends_to_zero : AppliedModelingLib.Math.TendsToZero base_error
   floor : ℕ
   count_floor_eventually :
     ∀ᶠ N in Filter.atTop,
@@ -193,7 +193,7 @@ end ParetoIidOrderStatisticEventualFOCCertificate
 /-- A number in `(0,1)` is not an integer pole of `Gamma` after negation. -/
 private theorem gamma_neg_delta_ne_zero_of_pos_lt_one
     {δ : ℝ} (hδ_pos : 0 < δ) (hδ_lt_one : δ < 1) :
-    Real.Gamma (-δ) ≠ 0 := EconCSLib.Math.gamma_neg_delta_ne_zero_of_pos_lt_one hδ_pos hδ_lt_one
+    Real.Gamma (-δ) ≠ 0 := AppliedModelingLib.Math.gamma_neg_delta_ne_zero_of_pos_lt_one hδ_pos hδ_lt_one
 
 /--
 Finite gamma recurrence product for a shift `-δ` with `0 < δ < 1`.
@@ -204,7 +204,7 @@ gamma-ratio form needed for Pareto order-statistic tails.
 theorem gamma_neg_delta_prod_range_eq_gamma_div
     {δ : ℝ} (hδ_pos : 0 < δ) (hδ_lt_one : δ < 1) (q : ℕ) :
     (∏ j ∈ Finset.range (q + 1), (-δ + (j : ℝ))) =
-      Real.Gamma ((q : ℝ) + 1 - δ) / Real.Gamma (-δ) := EconCSLib.Math.gamma_neg_delta_prod_range_eq_gamma_div hδ_pos hδ_lt_one q
+      Real.Gamma ((q : ℝ) + 1 - δ) / Real.Gamma (-δ) := AppliedModelingLib.Math.gamma_neg_delta_prod_range_eq_gamma_div hδ_pos hδ_lt_one q
 
 /--
 Gamma-ratio asymptotic for the Pareto rank calculation:
@@ -212,10 +212,10 @@ Gamma-ratio asymptotic for the Pareto rank calculation:
 -/
 theorem gamma_ratio_nat_add_one_sub_asymptoticEquivalent
     {δ : ℝ} (hδ_pos : 0 < δ) (hδ_lt_one : δ < 1) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun q : ℕ =>
         Real.Gamma ((q : ℝ) + 1) / Real.Gamma ((q : ℝ) + 1 - δ))
-      (fun q : ℕ => (q : ℝ) ^ δ) := EconCSLib.Math.gamma_ratio_nat_add_one_sub_asymptoticEquivalent hδ_pos hδ_lt_one
+      (fun q : ℕ => (q : ℝ) ^ δ) := AppliedModelingLib.Math.gamma_ratio_nat_add_one_sub_asymptoticEquivalent hδ_pos hδ_lt_one
 
 /--
 Finite-difference bridge for the Pareto order-statistic rank calculation.
@@ -229,7 +229,7 @@ theorem pareto_rank_scaled_limit_of_value_asymptotic_and_scaled_drop
     {μ : ℕ → ℕ → ℝ} {α C : ℝ} {r : ℕ}
     (hα : 1 < α) (hC : 0 < C)
     (hvalue :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun q : ℕ => μ (q - r) q)
         (fun q : ℕ => C * ((q : ℝ) ^ (1 / α))))
     (hdrop :
@@ -252,7 +252,7 @@ theorem pareto_rank_scaled_limit_of_value_asymptotic_and_scaled_drop
           (μ (q + 1 - r) (q + 1) - μ (q - r) q) /
             (((q + 1 : ℕ) : ℝ) ^ (-(1 - 1 / α))))
         Filter.atTop (nhds (C * (1 / α))) :=
-    EconCSLib.Math.scaled_difference_limit_of_value_asymptotic_and_scaled_drop
+    AppliedModelingLib.Math.scaled_difference_limit_of_value_asymptotic_and_scaled_drop
       (value := fun q : ℕ => μ (q - r) q)
       (δ := 1 / α) (C := C) hC.ne' hvalue hdrop
   have htarget : C * (1 / α) = C / α := by ring
@@ -372,7 +372,7 @@ theorem paretoCommonMarginalFactor_rpow_neg_le
   have hpow_pos : 0 < x ^ η := Real.rpow_pos_of_pos hx_pos η
   have hupper :
       Real.Gamma (x + η) / Real.Gamma x ≤ x ^ η :=
-    EconCSLib.Math.gamma_add_ratio_le_rpow hx_pos hη_pos hη_lt_one
+    AppliedModelingLib.Math.gamma_add_ratio_le_rpow hx_pos hη_pos hη_lt_one
   have hinv := one_div_le_one_div_of_le hratio_pos hupper
   calc
     (((q + 1 : ℕ) : ℝ) ^ (-(paretoMarginalExponent α)))
@@ -411,7 +411,7 @@ theorem paretoCommonMarginalFactor_le_pred_rpow_neg
       using paretoCommonMarginal_den_eq hα q
   have hbound :
       Real.Gamma x / Real.Gamma (x + η) ≤ (x - 1) ^ (-η) :=
-    EconCSLib.Math.gamma_div_gamma_add_le_pred_rpow_neg
+    AppliedModelingLib.Math.gamma_div_gamma_add_le_pred_rpow_neg
       hx_gt_one hη_pos hη_lt_one
   calc
     paretoCommonMarginalFactor α q
@@ -452,7 +452,7 @@ by Lemma D.4.
 -/
 theorem paretoRankGammaRatioMean_value_asymptoticEquivalent
     {α : ℝ} (hα : 1 < α) (r : ℕ) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun q : ℕ => paretoRankGammaRatioMean α r q)
       (fun q : ℕ => paretoRankValueCoeff α r * ((q : ℝ) ^ (1 / α))) := by
   have hα_pos : 0 < α := lt_trans zero_lt_one hα
@@ -464,7 +464,7 @@ theorem paretoRankGammaRatioMean_value_asymptoticEquivalent
     (paretoRankValueCoeff_pos hα r).ne'
   have hgamma :=
     gamma_ratio_nat_add_one_sub_asymptoticEquivalent hδ_pos hδ_lt_one
-  rw [EconCSLib.Math.AsymptoticEquivalent] at hgamma ⊢
+  rw [AppliedModelingLib.Math.AsymptoticEquivalent] at hgamma ⊢
   refine Filter.Tendsto.congr' ?_ hgamma
   filter_upwards [Filter.eventually_gt_atTop 0] with q hq
   have hq_pos : 0 < (q : ℝ) := by exact_mod_cast hq
@@ -1116,15 +1116,15 @@ theorem paretoIidSampleMeasure_rank_eq_rankGammaRatio
   calc
     expectedOrderStatisticMeanSeq (paretoIidSampleMeasure α) (q - r) q
         =
-          EconCSLib.Probability.expectedUpperOrderStatistic
+          AppliedModelingLib.Probability.expectedUpperOrderStatistic
             (paretoIidSampleMeasure α q) ⟨r, hrq⟩ := by
           simpa [expectedOrderStatisticMeanSeq] using
-            EconCSLib.Probability.expectedSampleOrderStatisticMean_eq_expectedUpperOrderStatistic_of_rank_from_top
+            AppliedModelingLib.Probability.expectedSampleOrderStatisticMean_eq_expectedUpperOrderStatistic_of_rank_from_top
               (μ := paretoIidSampleMeasure α q) (r := r) (a := q) hrq
     _ = paretoRankGammaRatioMean α r q := by
           simpa [paretoIidSampleMeasure, paretoRankGammaRatioMean,
             paretoRankValueCoeff] using
-            EconCSLib.Probability.Pareto.iidProductMeasure_one_expectedUpperOrderStatistic_eq_gamma_ratio
+            AppliedModelingLib.Probability.Pareto.iidProductMeasure_one_expectedUpperOrderStatistic_eq_gamma_ratio
               (α := α) hα (q := q) (rankFromTop := ⟨r, hrq⟩)
 
 theorem paretoIidSampleMeasure_fixed_rank_eq_rankGammaRatio_eventually
@@ -1259,7 +1259,7 @@ theorem paretoIidOrderStatistic_power_bound_le_weightedForwardMarginal
       T hα hq hk t
   unfold paretoIidOrderStatisticConsumptionModel
     ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-    TopKValueOracle.toConsumptionModel EconCSLib.Allocation.marginal
+    TopKValueOracle.toConsumptionModel AppliedModelingLib.Allocation.marginal
   exact mul_le_mul_of_nonneg_left hbase (hlike_pos t).le
 
 /-- The concrete iid Pareto top-`k` source has positive forward marginals. -/
@@ -1286,7 +1286,7 @@ theorem pareto_rank_scaled_limit_of_canonical_value_asymptotic_and_scaled_drop
     {μ : ℕ → ℕ → ℝ} {α : ℝ} {r : ℕ}
     (hα : 1 < α)
     (hvalue :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun q : ℕ => μ (q - r) q)
         (fun q : ℕ =>
           (Real.Gamma ((r : ℝ) + 1 - 1 / α) /
@@ -1355,7 +1355,7 @@ noncomputable def paretoPowerMarginalScaledMarginalLimitCertificate
     have hpow_ne :
         (((q : ℝ) + 1) ^ (-(paretoMarginalExponent α))) ≠ 0 :=
       (Real.rpow_pos_of_pos (by positivity) _).ne'
-    simp [EconCSLib.Probability.TopKExpectationOracle.marginalTopK,
+    simp [AppliedModelingLib.Probability.TopKExpectationOracle.marginalTopK,
       topKExpectationOracleOfTopKValueOracle, paretoPowerMarginalOracle,
       TopKValueOracle.common, paretoPowerMarginalScale,
       paretoPowerMarginalValue_forward_marginal, hpow_ne]
@@ -1389,7 +1389,7 @@ namespace ParetoOrderStatisticScaledMarginalCertificate
 def toOrderStatisticScaledMarginalCertificate
     {μ : ℕ → ℕ → ℝ} {k : ℕ} {α limitCoeff : ℝ}
     (C : ParetoOrderStatisticScaledMarginalCertificate μ k α limitCoeff) :
-    EconCSLib.Probability.OrderStatisticScaledMarginalCertificate μ k
+    AppliedModelingLib.Probability.OrderStatisticScaledMarginalCertificate μ k
       (paretoPowerMarginalScale α) limitCoeff where
   k_pos := C.k_pos
   coeff_pos := C.coeff_pos
@@ -1406,7 +1406,7 @@ Pareto order-statistic probability calculation.
 theorem marginal_asymptoticEquivalent
     {μ : ℕ → ℕ → ℝ} {k : ℕ} {α limitCoeff : ℝ}
     (C : ParetoOrderStatisticScaledMarginalCertificate μ k α limitCoeff) :
-    EconCSLib.Math.AsymptoticEquivalent
+    AppliedModelingLib.Math.AsymptoticEquivalent
       (fun q : ℕ =>
         orderStatisticTopKSumFromMean μ k (q + 1) -
           orderStatisticTopKSumFromMean μ k q)
@@ -1421,7 +1421,7 @@ def ofMarginalAsymptoticEquivalent
     {μ : ℕ → ℕ → ℝ} {k : ℕ} {α limitCoeff : ℝ}
     (hα : 1 < α) (hk : 0 < k) (hcoeff : 0 < limitCoeff)
     (hmargin :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun q : ℕ =>
           orderStatisticTopKSumFromMean μ k (q + 1) -
             orderStatisticTopKSumFromMean μ k q)
@@ -1440,15 +1440,15 @@ def ofConstMulScaleAsymptoticEquivalent
     {μ : ℕ → ℕ → ℝ} {k : ℕ} {α limitCoeff : ℝ}
     (hα : 1 < α) (hk : 0 < k) (hcoeff : 0 < limitCoeff)
     (hmargin :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun q : ℕ =>
           orderStatisticTopKSumFromMean μ k (q + 1) -
             orderStatisticTopKSumFromMean μ k q)
         (fun q : ℕ => limitCoeff * paretoPowerMarginalScale α q)) :
     ParetoOrderStatisticScaledMarginalCertificate μ k α limitCoeff := by
-  let G : EconCSLib.Probability.OrderStatisticScaledMarginalCertificate μ k
+  let G : AppliedModelingLib.Probability.OrderStatisticScaledMarginalCertificate μ k
       (paretoPowerMarginalScale α) limitCoeff :=
-    EconCSLib.Probability.OrderStatisticScaledMarginalCertificate.ofConstMulScaleAsymptoticEquivalent
+    AppliedModelingLib.Probability.OrderStatisticScaledMarginalCertificate.ofConstMulScaleAsymptoticEquivalent
         hk hcoeff
         (by
           filter_upwards with q
@@ -1472,15 +1472,15 @@ def ofFiniteRankMarginalSumAsymptoticEquivalent
     {μ : ℕ → ℕ → ℝ} {k : ℕ} {α limitCoeff : ℝ}
     (hα : 1 < α) (hk : 0 < k) (hcoeff : 0 < limitCoeff)
     (hmargin :
-      EconCSLib.Math.AsymptoticEquivalent
+      AppliedModelingLib.Math.AsymptoticEquivalent
         (fun q : ℕ =>
           ∑ i : Fin k,
             (μ (q + 1 - i.val) (q + 1) - μ (q - i.val) q))
         (fun q : ℕ => limitCoeff * paretoPowerMarginalScale α q)) :
     ParetoOrderStatisticScaledMarginalCertificate μ k α limitCoeff := by
-  let G : EconCSLib.Probability.OrderStatisticScaledMarginalCertificate μ k
+  let G : AppliedModelingLib.Probability.OrderStatisticScaledMarginalCertificate μ k
       (paretoPowerMarginalScale α) limitCoeff :=
-    EconCSLib.Probability.OrderStatisticScaledMarginalCertificate.ofFiniteRankMarginalSumAsymptoticEquivalent
+    AppliedModelingLib.Probability.OrderStatisticScaledMarginalCertificate.ofFiniteRankMarginalSumAsymptoticEquivalent
         hk hcoeff
         (by
           filter_upwards with q
@@ -1513,9 +1513,9 @@ def ofFiniteRankScaledLimits
               paretoPowerMarginalScale α q)
           Filter.atTop (nhds (rankCoeff i))) :
     ParetoOrderStatisticScaledMarginalCertificate μ k α limitCoeff := by
-  let G : EconCSLib.Probability.OrderStatisticScaledMarginalCertificate μ k
+  let G : AppliedModelingLib.Probability.OrderStatisticScaledMarginalCertificate μ k
       (paretoPowerMarginalScale α) limitCoeff :=
-    EconCSLib.Probability.OrderStatisticScaledMarginalCertificate.ofFiniteRankScaledLimits
+    AppliedModelingLib.Probability.OrderStatisticScaledMarginalCertificate.ofFiniteRankScaledLimits
         rankCoeff hk hcoeff
         (by
           filter_upwards with q
@@ -1591,7 +1591,7 @@ noncomputable def toTopKScaledMarginalLimitCertificate
       (paretoPowerMarginalScale α)
       (fun _ : ItemType T => limitCoeff) := by
   simpa [topKExpectationOracleOfTopKValueOracle,
-      EconCSLib.Probability.TopKExpectationOracle.orderStatisticTopKExpectationOracle,
+      AppliedModelingLib.Probability.TopKExpectationOracle.orderStatisticTopKExpectationOracle,
       TopKValueOracle.ofOrderStatisticMean]
     using
       C.toOrderStatisticScaledMarginalCertificate
@@ -1609,7 +1609,7 @@ theorem paretoPowerMarginalScale_tendsto_zero
       (((q + 1 : ℕ) : ℝ) ^ (-(paretoMarginalExponent α))))
     Filter.atTop (nhds 0)
   simpa [Nat.cast_add, Nat.cast_one] using
-    EconCSLib.Math.tendsto_nat_succ_cast_rpow_neg_nhds_zero
+    AppliedModelingLib.Math.tendsto_nat_succ_cast_rpow_neg_nhds_zero
       (paretoMarginalExponent_pos hα)
 
 /--
@@ -1651,16 +1651,16 @@ theorem paretoIidOrderStatisticTopK_forward_zero_pos
     calc
       paretoIidOrderStatisticMeanSeq α 1 1
           =
-            EconCSLib.Probability.expectedUpperOrderStatistic
+            AppliedModelingLib.Probability.expectedUpperOrderStatistic
               (paretoIidSampleMeasure α 1) ⟨0, by norm_num⟩ := by
             simpa [paretoIidOrderStatisticMeanSeq] using
-              EconCSLib.Probability.expectedSampleOrderStatisticMean_eq_expectedUpperOrderStatistic_of_rank_from_top
+              AppliedModelingLib.Probability.expectedSampleOrderStatisticMean_eq_expectedUpperOrderStatistic_of_rank_from_top
                 (μ := paretoIidSampleMeasure α 1) (r := 0) (a := 1)
                 (by norm_num)
       _ = paretoRankGammaRatioMean α 0 1 := by
             simpa [paretoIidSampleMeasure, paretoRankGammaRatioMean,
               paretoRankValueCoeff] using
-              EconCSLib.Probability.Pareto.iidProductMeasure_one_expectedUpperOrderStatistic_eq_gamma_ratio
+              AppliedModelingLib.Probability.Pareto.iidProductMeasure_one_expectedUpperOrderStatistic_eq_gamma_ratio
                 (α := α) hα (q := 1)
                 (rankFromTop := ⟨0, by norm_num⟩)
   have hpos : 0 < paretoIidOrderStatisticMeanSeq α 1 1 := by
@@ -1710,7 +1710,7 @@ theorem paretoIidOrderStatistic_count_positive_eventually
         paretoIidOrderStatisticTopK_forward_zero_pos T hα hk dst
       unfold M paretoIidOrderStatisticConsumptionModel
         ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-        EconCSLib.Allocation.marginal TopKValueOracle.toConsumptionModel
+        AppliedModelingLib.Allocation.marginal TopKValueOracle.toConsumptionModel
       exact mul_pos (hlike_pos dst) hbase
     have hforward_tend :=
       paretoIidOrderStatisticTopK_forward_marginal_tendsto_zero
@@ -1741,7 +1741,7 @@ theorem paretoIidOrderStatistic_count_positive_eventually
     unfold M paretoIidOrderStatisticConsumptionModel
       ConsumptionModel.weightedBackwardMarginal
       ConsumptionModel.weightedForwardMarginal ConsumptionModel.marginalValue
-      EconCSLib.Allocation.marginal TopKValueOracle.toConsumptionModel
+      AppliedModelingLib.Allocation.marginal TopKValueOracle.toConsumptionModel
     rw [dif_neg (Nat.ne_of_gt hqpos)]
     exact hltq
   rcases Filter.eventually_atTop.1 hdom_ev with ⟨source_threshold, hthreshold⟩
@@ -1756,8 +1756,8 @@ theorem paretoIidOrderStatistic_count_positive_eventually
     by_contra hnone
     push Not at hnone
     have hsum_le :
-        EconCSLib.Allocation.total a ≤ T * source_threshold := by
-      unfold EconCSLib.Allocation.total
+        AppliedModelingLib.Allocation.total a ≤ T * source_threshold := by
+      unfold AppliedModelingLib.Allocation.total
       calc
         (∑ t : ItemType T, a.count t)
             ≤ ∑ _t : ItemType T, source_threshold :=
@@ -1826,7 +1826,7 @@ theorem paretoIidOrderStatistic_large_gap_count_eventually
         qdst ≤ N →
         k < qsrc →
         k < qdst →
-        EconCSLib.Math.invSqrtSuccError N * (N : ℝ) <
+        AppliedModelingLib.Math.invSqrtSuccError N * (N : ℝ) <
           (qsrc : ℝ) / likelihood src ^ (α / (α - 1)) -
             (qdst : ℝ) / likelihood dst ^ (α / (α - 1)) →
         (paretoIidOrderStatisticConsumptionModel likelihood k α).weightedBackwardMarginal
@@ -1846,7 +1846,7 @@ theorem paretoIidOrderStatistic_large_gap_count_eventually
       0 < ∑ i : Fin k, paretoRankMarginalCoeff α i.val :=
     paretoRankMarginalCoeff_sum_pos hα hk
   exact
-    EconCSLib.Allocation.powerLawEnvelope_large_gap_count_eventually
+    AppliedModelingLib.Allocation.powerLawEnvelope_large_gap_count_eventually
       likelihood
       (paretoIidOrderStatisticConsumptionModel likelihood k α).valueOfCount
       (η := η) (γ := γ)
@@ -1875,7 +1875,7 @@ structure ParetoIidOrderStatisticLargeGapCertificate {T : ℕ} [NeZero T]
     (likelihood : ItemType T → ℝ) (k : ℕ) (α : ℝ) where
   base_error : ℕ → ℝ
   base_error_nonneg : ∀ N, 0 ≤ base_error N
-  base_error_tends_to_zero : EconCSLib.Math.TendsToZero base_error
+  base_error_tends_to_zero : AppliedModelingLib.Math.TendsToZero base_error
   floor : ℕ
   large_gap_count :
     ∀ᶠ N in Filter.atTop,
@@ -1899,9 +1899,9 @@ noncomputable def paretoIidOrderStatistic_largeGapCertificate
     (hα : 1 < α) (hk : 0 < k)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
     ParetoIidOrderStatisticLargeGapCertificate likelihood k α where
-  base_error := EconCSLib.Math.invSqrtSuccError
-  base_error_nonneg := EconCSLib.Math.invSqrtSuccError_nonneg
-  base_error_tends_to_zero := EconCSLib.Math.invSqrtSuccError_tendsToZero
+  base_error := AppliedModelingLib.Math.invSqrtSuccError
+  base_error_nonneg := AppliedModelingLib.Math.invSqrtSuccError_nonneg
+  base_error_tends_to_zero := AppliedModelingLib.Math.invSqrtSuccError_tendsToZero
   floor := k
   large_gap_count :=
     paretoIidOrderStatistic_large_gap_count_eventually
@@ -2004,7 +2004,7 @@ theorem paretoPowerMarginalError_nonneg {T : ℕ}
 theorem paretoPowerMarginalError_tends_to_zero {T : ℕ}
     (likelihood : ItemType T → ℝ) (α : ℝ)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
-    EconCSLib.Math.TendsToZero
+    AppliedModelingLib.Math.TendsToZero
       (paretoPowerMarginalError likelihood α) :=
   powerLawSublinearFOCError_tends_to_zero likelihood (α / (α - 1)) hlike_pos
 
@@ -2047,7 +2047,7 @@ structure TailIndexHomogeneityCertificate
   likelihood_pos : ∀ t, 0 < M.likelihood t
   asymptotic_homogeneity :
     ConsumptionModel.AsymptoticHomogeneityTarget
-      (fun _ => M) (paretoProfile M.likelihood α) EconCSLib.Math.ExactInvRate
+      (fun _ => M) (paretoProfile M.likelihood α) AppliedModelingLib.Math.ExactInvRate
 
 /--
 Auxiliary tail-index homogeneity bridge from an explicit certificate.
@@ -2056,7 +2056,7 @@ theorem homogeneity_of_tail_index
     {T : ℕ} [NeZero T] (M : ConsumptionModel T) (α : ℝ)
     (hcert : TailIndexHomogeneityCertificate M α) :
     ConsumptionModel.AsymptoticHomogeneityTarget
-      (fun _ => M) (paretoProfile M.likelihood α) EconCSLib.Math.ExactInvRate := hcert.asymptotic_homogeneity
+      (fun _ => M) (paretoProfile M.likelihood α) AppliedModelingLib.Math.ExactInvRate := hcert.asymptotic_homogeneity
 
 /--
 Finite pairwise difference bound for Pareto types.
